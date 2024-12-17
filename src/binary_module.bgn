@@ -11,6 +11,20 @@ format Varint:
         3 => value :u62
 
 
+enum BinaryOp:
+    :u8
+    ADD
+    SUB
+    MUL
+    DIV
+    MOD
+    BAND
+    BOR
+    BXOR
+    NOT
+    SHL
+    SHR
+
 enum AbstractOp:
     :u8
     NOP
@@ -31,7 +45,6 @@ enum AbstractOp:
     END_FORMAT
 
     DEFINE_FIELD
-    
     END_FIELD
     
     DEFINE_FUNCTION
@@ -72,25 +85,13 @@ enum AbstractOp:
     DEFINE_VARIABLE
     END_VARIABLE
     
-    ASSIGN
+    BINARY
 
     ACCESS
     ENUM_MEMBER
 
     INDEX
     APPEND
-
-    ADD
-    SUB
-    MUL
-    DIV
-    MOD
-    BAND
-    BOR
-    BXOR
-    NOT
-    SHL
-    SHR
     INC
     DEC
     NEG
@@ -100,6 +101,7 @@ enum AbstractOp:
     IMMEDIATE_BOOL
     IMMEDIATE_INT
     IMMEDIATE_STRING
+    IDENT_REF
 
 format String:
     length :Varint
@@ -142,7 +144,7 @@ format Storage:
             size :Varint
             ..
         StorageType.VECTOR:
-            ..
+            ref :Varint
         StorageType.VARIANT:
             ref :Varint 
             size :Varint
@@ -154,18 +156,27 @@ format Storages:
 format Code:
     op :AbstractOp
     match op:
-        AbstractOp.DEFINE_METADATA => name :Varint
-        AbstractOp.IMMEDIATE_INT => int_value :u64
-        AbstractOp.IMMEDIATE_STRING => string :Varint
+        AbstractOp.DEFINE_METADATA => ident :Varint
+        AbstractOp.IMMEDIATE_INT:
+            ident :Varint
+            int_value :u64
+        AbstractOp.IMMEDIATE_STRING:
+            ident :Varint
+        AbstractOp.IDENT_REF:
+            ident :Varint
         AbstractOp.DEFINE_FORMAT:
             ident :Varint
-            str_ref :Varint
         AbstractOp.DEFINE_FIELD:
             ident :Varint
-            str_ref :Varint
         AbstractOp.DEFINE_UNION => ident :Varint
         AbstractOp.DEFINE_UNION_MEMBER => ident :Varint
         AbstractOp.SPECIFY_STORAGE_TYPE => storage :Storages
+        AbstractOp.BINARY:
+            ident :Varint
+            bop :BinaryOp
+            left_ref :Varint
+            right_ref :Varint
+
 
 format Refs:
     refs_length :Varint

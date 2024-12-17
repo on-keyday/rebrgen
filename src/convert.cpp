@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "convert.hpp"
 #include <core/ast/traverse.h>
 #include <format>
@@ -15,9 +14,44 @@ namespace rebgn {
         if (!n) {
             return error("Invalid integer literal: {}", node->value);
         }
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident.error();
+        }
         m.op(AbstractOp::IMMEDIATE_INT, [&](auto& c) {
             c.int_value(*n);
+            c.ident(*ident);
         });
+        m.prev_expr_id = ident->value();
+        return none;
+    }
+
+    Error define_StrLiteral(Module& m, std::shared_ptr<ast::StrLiteral>& node) {
+        auto str_ref = m.string_table.find(node->value);
+        if (str_ref == m.string_table.end()) {
+            auto ident = m.new_id();
+            if (!ident) {
+                return ident.error();
+            }
+            m.string_table[node->value] = ident->value();
+            str_ref = m.string_table.find(node->value);
+        }
+        m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
+            c.ident(*varint(str_ref->second));
+        });
+        m.prev_expr_id = str_ref->second;
+        return none;
+    }
+
+    Error define_Ident(Module& m, std::shared_ptr<ast::Ident>& node) {
+        auto ident = m.lookup_ident(node);
+        if (!ident) {
+            return ident.error();
+        }
+        m.op(AbstractOp::IDENT_REF, [&](Code& c) {
+            c.ident(*ident);
+        });
+        m.prev_expr_id = ident->value();
         return none;
     }
 
@@ -115,45 +149,90 @@ namespace rebgn {
             m.op(AbstractOp::END_UNION);
             return none;
         }
+        if (auto a = ast::as<ast::ArrayType>(typ)) {
+            if (a->length_value) {
+                push(StorageType::ARRAY, [&](Storage& c) {
+                    c.size(*varint(*a->length_value));
+                });
+            }
+            else {
+                auto err = convert_node_definition(m, a->length);
+                if (err) {
+                    return err;
+                }
+                auto length_ref = m.prev_expr_id;
+                push(StorageType::VECTOR, [&](Storage& c) {
+                    c.ref(*varint(length_ref));
+                });
+            }
+            auto err = define_storage(m, s, a->element_type);
+            if (err) {
+                return err;
+            }
+            return none;
+        }
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
 
     Error define_Field(Module& m, std::shared_ptr<ast::Field>& node) {
-        auto str_ref = m.lookup_ident(node->ident);
-        if (!str_ref) {
-            return str_ref.error();
-        }
-        auto ident = m.new_id();
+        auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();
         }
-        m.op(AbstractOp::DEFINE_FIELD, [&](auto& c) {
+        m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
             c.ident(*ident);
-            c.str_ref(*str_ref);
         });
+        if (!ast::as<ast::UnionType>(node->field_type)) {
+            Storages s;
+            auto err = define_storage(m, s, node->field_type);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(std::move(s));
+            });
+        }
         m.op(AbstractOp::END_FIELD);
+        return none;
     }
 
     Error define_Format(Module& m, std::shared_ptr<ast::Format>& node) {
-        auto str_ref = m.lookup_ident(node->ident);
-        if (!str_ref) {
-            return str_ref.error();
-        }
-        auto ident = m.new_id();
+        auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();
         }
-        m.op(AbstractOp::DEFINE_FORMAT, [&](auto& c) {
-            c.str_ref(*str_ref);
+        m.op(AbstractOp::DEFINE_FORMAT, [&](Code& c) {
             c.ident(*ident);
         });
-        for (auto& f : node->body->elements) {
+        for (auto& f : node->body->struct_type->fields) {
             auto err = convert_node_definition(m, f);
             if (err) {
                 return err;
             }
         }
         m.op(AbstractOp::END_FORMAT);
+        return none;
+    }
+
+    Error define_Enum(Module& m, std::shared_ptr<ast::Enum>& node) {
+        auto ident = m.lookup_ident(node->ident);
+        if (!ident) {
+            return ident.error();
+        }
+        m.op(AbstractOp::DEFINE_ENUM, [&](Code& c) {
+            c.ident(*ident);
+        });
+        for (auto& me : node->members) {
+            auto ident = m.lookup_ident(me->ident);
+            if (!ident) {
+                return ident.error();
+            }
+            m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
+                c.ident(*ident);
+            });
+            m.op(AbstractOp::END_ENUM_MEMBER);
+        }
+        m.op(AbstractOp::END_ENUM);
         return none;
     }
 
@@ -165,10 +244,12 @@ namespace rebgn {
                 return err;
             }
         }
+        return none;
     }
 
     Error define_Metadata(Module& m, std::shared_ptr<ast::Metadata>& node) {
         node->values;
+        return none;
     }
 
     Error define_Program(Module& m, std::shared_ptr<ast::Program>& node) {
@@ -178,26 +259,35 @@ namespace rebgn {
                 return err;
             }
         }
+        return none;
     }
 
-#define SWITCH_CASE \
-    SWITCH          \
-    CASE(Program)   \
-    CASE(Metadata)  \
-    CASE(Binary)    \
-    CASE(Format)
+#define SWITCH_CASE  \
+    SWITCH           \
+    CASE(Program)    \
+    CASE(Metadata)   \
+    CASE(Binary)     \
+    CASE(Format)     \
+    CASE(Field)      \
+    CASE(Enum)       \
+    CASE(IntLiteral) \
+    CASE(StrLiteral) \
+    CASE(Ident)
+
 #define SWITCH   \
     if (false) { \
     }
 #define CASE(U)                                     \
     else if constexpr (std::is_same_v<T, ast::U>) { \
-        return define_##U(m, node);                 \
+        err = define_##U(m, node);                  \
     }
     Error convert_node_definition(Module& m, const std::shared_ptr<ast::Node>& n) {
+        Error err;
         ast::visit(n, [&](auto&& node) {
-            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::param_at<0>;
+            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
             SWITCH_CASE
         });
+        return err;
     }
 
     expected<Module> convert(std::shared_ptr<brgen::ast::Node>& node) {

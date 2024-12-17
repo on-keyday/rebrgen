@@ -19,19 +19,22 @@ namespace rebgn {
             v.prefix(0);
             v.value(n);
         }
-        if (n < 0x4000) {
+        else if (n < 0x4000) {
             v.prefix(1);
             v.value(n);
         }
-        if (n < 0x200000) {
+        else if (n < 0x200000) {
             v.prefix(2);
             v.value(n);
         }
-        if (n < 0x10000000) {
+        else if (n < 0x10000000) {
             v.prefix(3);
             v.value(n);
         }
-        return unexpect_error("Invalid varint value: {}", n);
+        else {
+            return unexpect_error("Invalid varint value: {}", n);
+        }
+        return v;
     }
 
     struct Module {
@@ -40,9 +43,11 @@ namespace rebgn {
         std::vector<Code> code;
         std::uint64_t object_id = 1;
 
+        std::uint64_t prev_expr_id = null_id;
+
         expected<Varint> lookup_ident(std::shared_ptr<ast::Ident> ident) {
             if (!ident) {
-                return expected<Varint>(null_id);
+                return new_id();  // ephemeral id
             }
             auto [base, _] = *ast::tool::lookup_base(ident);
             auto it = ident_table.find(base);

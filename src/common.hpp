@@ -24,7 +24,7 @@ namespace rebgn {
         return futils::helper::either::unexpected(error(fmt, std::forward<Args>(args)...));
     }
 
-    futils::helper::either::unexpected<Error> unexpect_error(Error&& err) {
+    inline futils::helper::either::unexpected<Error> unexpect_error(Error&& err) {
         return futils::helper::either::unexpected(std::forward<decltype(err)>(err));
     }
 

@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "memory": "cpp"
     },
     "editor.formatOnSave": true,
     "C_Cpp.clang_format_style": "file",

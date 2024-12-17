@@ -1,0 +1,114 @@
+config.cpp.namespace = "rebgn"
+config.cpp.bytes_type = "std::string"
+config.cpp.sys_include = "string"
+
+format Varint:
+    prefix :u2
+    match prefix:
+        0 => value :u6
+        1 => value :u14
+        2 => value :u30
+        3 => value :u62
+
+
+enum AbstractOp:
+    :u8
+    NOP
+
+    
+    METADATA
+    IMPORT
+    SPECIFY_ENDIAN
+    SPECIFY_BIT_ORDER
+    SPECIFY_ALIGNMENT
+    SPECIFY_LENGTH
+    EXPLICIT_ERROR
+    MAP_TYPE
+
+    DEFINE_FORMAT
+    END_FORMAT
+
+    DEFINE_FIELD
+    END_FIELD
+    
+    DEFINE_FUNCTION
+    END_FUNCTION
+    
+    DEFINE_ENUM
+    END_ENUM
+    
+    DEFINE_ENUM_MEMBER
+    END_ENUM_MEMBER
+    
+    DEFINE_UNION
+    END_UNION
+
+    
+    ENCODE_INT
+    DECODE_INT
+    ENCODE_FLOAT
+    DECODE_FLOAT
+    CALL_ENCODE
+    CALL_DECODE
+
+    LOOP
+    END_LOOP
+
+    IF
+    ELIF
+    ELSE
+    END_IF
+
+    MATCH
+    CASE
+    END_MATCH
+
+    DEFINE_VARIABLE
+    END_VARIABLE
+    
+    ASSIGN
+
+    ACCESS
+    ENUM_MEMBER
+
+    INDEX
+    APPEND
+
+    ADD
+    SUB
+    MUL
+    DIV
+    MOD
+    AND
+    OR
+    XOR
+    NOT
+    SHL
+    SHR
+    INC
+    DEC
+    NEG
+    CALL
+    RET
+
+    IMMEDIATE_BOOL
+    IMMEDIATE_INT
+    IMMEDIATE_STRING
+
+format String:
+    length :Varint
+    data :[length.value]u8
+
+format StringRef:
+    code :Varint
+    string :String
+
+
+format Code:
+    op :AbstractOp
+
+format BinaryModule:
+    string_refs_length :Varint
+    string_refs :[string_refs_length.value]StringRef
+    code_length :Varint
+    code :[code_length.value]Code

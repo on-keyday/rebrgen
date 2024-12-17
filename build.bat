@@ -1,0 +1,10 @@
+@echo off
+setlocal
+
+set BUILD_TYPE=Debug
+set BUILD_MODE=native
+set INSTALL_PREFIX=.
+set FUTILS_DIR=C:/workspace/utils_backup
+
+cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX% -D CMAKE_BUILD_TYPE=%BUILD_TYPE% -S . -B ./built/%BUILD_MODE%/%BUILD_TYPE%
+cmake --build ./built/%BUILD_MODE%/%BUILD_TYPE% --target install

@@ -16,7 +16,8 @@ enum AbstractOp:
     NOP
 
     
-    METADATA
+    DEFINE_METADATA
+    END_METADATA
     IMPORT
     SPECIFY_ENDIAN
     SPECIFY_BIT_ORDER
@@ -29,6 +30,7 @@ enum AbstractOp:
     END_FORMAT
 
     DEFINE_FIELD
+    STORAGE_TYPE
     END_FIELD
     
     DEFINE_FUNCTION
@@ -79,9 +81,9 @@ enum AbstractOp:
     MUL
     DIV
     MOD
-    AND
-    OR
-    XOR
+    BAND
+    BOR
+    BXOR
     NOT
     SHL
     SHR
@@ -103,12 +105,55 @@ format StringRef:
     code :Varint
     string :String
 
+enum StorageType:
+    :u8
+    # terminal
+    INT   
+    UINT 
+    FLOAT 
+    STRUCT 
+    BYTE_VECTOR # special case of vector
+
+    # qualifiers
+    ENUM
+    ARRAY
+    VECTOR
+
+
+format Storage:
+    type :StorageType
+    match type:
+        StorageType.INT => size :Varint
+        StorageType.UINT => size :Varint
+        StorageType.FLOAT => size :Varint
+        StorageType.STRUCT => ident :Varint
+        StorageType.BYTE_VECTOR => ..
+        StorageType.ENUM:
+            .. # todo: will be recursive
+        StorageType.ARRAY:
+            size :Varint
+            ..
+        StorageType.VECTOR:
+            ..
+
+format Storages:
+    length :Varint
+    storages :[length.value]Storage
 
 format Code:
     op :AbstractOp
+    match op:
+        AbstractOp.DEFINE_METADATA => name :StringRef
+        AbstractOp.IMMEDIATE_INT => int_value :u64
+        AbstractOp.DEFINE_FORMAT => ident :Varint
+        AbstractOp.DEFINE_FIELD => ident :Varint
+
+format Refs:
+    refs_length :Varint
+    refs :[refs_length.value]Varint
 
 format BinaryModule:
-    string_refs_length :Varint
-    string_refs :[string_refs_length.value]StringRef
+    strings :Refs
+    identifiers :Refs
     code_length :Varint
     code :[code_length.value]Code

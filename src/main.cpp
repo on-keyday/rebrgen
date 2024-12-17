@@ -1,0 +1,20 @@
+/*license*/
+#include <cmdline/template/help_option.h>
+#include <cmdline/template/parse_and_err.h>
+#include <wrap/cout.h>
+struct Flags : futils::cmdline::templ::HelpOption {};
+auto& cout = futils::wrap::cout_wrap();
+
+int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
+    cout << "Implement command...\n";
+    return 0;
+}
+
+int main(int argc, char** argv) {
+    Flags flags;
+    return futils::cmdline::templ::parse_or_err<std::string>(
+        argc, argv, flags, [](auto&& str, bool err) { cout << str; },
+        [](Flags& flags, futils::cmdline::option::Context& ctx) {
+            return Main(flags, ctx);
+        });
+}

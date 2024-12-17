@@ -5,6 +5,7 @@
 #include <array>
 #include <optional>
 #include <variant>
+#include <string_view>
 
 #include <binary/flags.h>
 #include <binary/float.h>
@@ -21,12 +22,12 @@ namespace rebgn {
         SPECIFY_BIT_ORDER = 5,
         SPECIFY_ALIGNMENT = 6,
         SPECIFY_LENGTH = 7,
-        EXPLICIT_ERROR = 8,
-        MAP_TYPE = 9,
-        DEFINE_FORMAT = 10,
-        END_FORMAT = 11,
-        DEFINE_FIELD = 12,
-        STORAGE_TYPE = 13,
+        SPECIFY_STORAGE_TYPE = 8,
+        EXPLICIT_ERROR = 9,
+        MAP_TYPE = 10,
+        DEFINE_FORMAT = 11,
+        END_FORMAT = 12,
+        DEFINE_FIELD = 13,
         END_FIELD = 14,
         DEFINE_FUNCTION = 15,
         END_FUNCTION = 16,
@@ -36,58 +37,460 @@ namespace rebgn {
         END_ENUM_MEMBER = 20,
         DEFINE_UNION = 21,
         END_UNION = 22,
-        ENCODE_INT = 23,
-        DECODE_INT = 24,
-        ENCODE_FLOAT = 25,
-        DECODE_FLOAT = 26,
-        CALL_ENCODE = 27,
-        CALL_DECODE = 28,
-        LOOP = 29,
-        END_LOOP = 30,
-        IF = 31,
-        ELIF = 32,
-        ELSE = 33,
-        END_IF = 34,
-        MATCH = 35,
-        CASE = 36,
-        END_MATCH = 37,
-        DEFINE_VARIABLE = 38,
-        END_VARIABLE = 39,
-        ASSIGN = 40,
-        ACCESS = 41,
-        ENUM_MEMBER = 42,
-        INDEX = 43,
-        APPEND = 44,
-        ADD = 45,
-        SUB = 46,
-        MUL = 47,
-        DIV = 48,
-        MOD = 49,
-        BAND = 50,
-        BOR = 51,
-        BXOR = 52,
-        NOT = 53,
-        SHL = 54,
-        SHR = 55,
-        INC = 56,
-        DEC = 57,
-        NEG = 58,
-        CALL = 59,
-        RET = 60,
-        IMMEDIATE_BOOL = 61,
-        IMMEDIATE_INT = 62,
-        IMMEDIATE_STRING = 63,
+        DEFINE_UNION_MEMBER = 23,
+        END_UNION_MEMBER = 24,
+        ENCODE_INT = 25,
+        DECODE_INT = 26,
+        ENCODE_FLOAT = 27,
+        DECODE_FLOAT = 28,
+        CALL_ENCODE = 29,
+        CALL_DECODE = 30,
+        LOOP = 31,
+        END_LOOP = 32,
+        IF = 33,
+        ELIF = 34,
+        ELSE = 35,
+        END_IF = 36,
+        MATCH = 37,
+        CASE = 38,
+        END_MATCH = 39,
+        DEFINE_VARIABLE = 40,
+        END_VARIABLE = 41,
+        ASSIGN = 42,
+        ACCESS = 43,
+        ENUM_MEMBER = 44,
+        INDEX = 45,
+        APPEND = 46,
+        ADD = 47,
+        SUB = 48,
+        MUL = 49,
+        DIV = 50,
+        MOD = 51,
+        BAND = 52,
+        BOR = 53,
+        BXOR = 54,
+        NOT = 55,
+        SHL = 56,
+        SHR = 57,
+        INC = 58,
+        DEC = 59,
+        NEG = 60,
+        CALL = 61,
+        RET = 62,
+        IMMEDIATE_BOOL = 63,
+        IMMEDIATE_INT = 64,
+        IMMEDIATE_STRING = 65,
     };
+    constexpr const char* to_string(AbstractOp e) {
+        switch (e) {
+            case AbstractOp::NOP:
+                return "NOP";
+            case AbstractOp::DEFINE_METADATA:
+                return "DEFINE_METADATA";
+            case AbstractOp::END_METADATA:
+                return "END_METADATA";
+            case AbstractOp::IMPORT:
+                return "IMPORT";
+            case AbstractOp::SPECIFY_ENDIAN:
+                return "SPECIFY_ENDIAN";
+            case AbstractOp::SPECIFY_BIT_ORDER:
+                return "SPECIFY_BIT_ORDER";
+            case AbstractOp::SPECIFY_ALIGNMENT:
+                return "SPECIFY_ALIGNMENT";
+            case AbstractOp::SPECIFY_LENGTH:
+                return "SPECIFY_LENGTH";
+            case AbstractOp::SPECIFY_STORAGE_TYPE:
+                return "SPECIFY_STORAGE_TYPE";
+            case AbstractOp::EXPLICIT_ERROR:
+                return "EXPLICIT_ERROR";
+            case AbstractOp::MAP_TYPE:
+                return "MAP_TYPE";
+            case AbstractOp::DEFINE_FORMAT:
+                return "DEFINE_FORMAT";
+            case AbstractOp::END_FORMAT:
+                return "END_FORMAT";
+            case AbstractOp::DEFINE_FIELD:
+                return "DEFINE_FIELD";
+            case AbstractOp::END_FIELD:
+                return "END_FIELD";
+            case AbstractOp::DEFINE_FUNCTION:
+                return "DEFINE_FUNCTION";
+            case AbstractOp::END_FUNCTION:
+                return "END_FUNCTION";
+            case AbstractOp::DEFINE_ENUM:
+                return "DEFINE_ENUM";
+            case AbstractOp::END_ENUM:
+                return "END_ENUM";
+            case AbstractOp::DEFINE_ENUM_MEMBER:
+                return "DEFINE_ENUM_MEMBER";
+            case AbstractOp::END_ENUM_MEMBER:
+                return "END_ENUM_MEMBER";
+            case AbstractOp::DEFINE_UNION:
+                return "DEFINE_UNION";
+            case AbstractOp::END_UNION:
+                return "END_UNION";
+            case AbstractOp::DEFINE_UNION_MEMBER:
+                return "DEFINE_UNION_MEMBER";
+            case AbstractOp::END_UNION_MEMBER:
+                return "END_UNION_MEMBER";
+            case AbstractOp::ENCODE_INT:
+                return "ENCODE_INT";
+            case AbstractOp::DECODE_INT:
+                return "DECODE_INT";
+            case AbstractOp::ENCODE_FLOAT:
+                return "ENCODE_FLOAT";
+            case AbstractOp::DECODE_FLOAT:
+                return "DECODE_FLOAT";
+            case AbstractOp::CALL_ENCODE:
+                return "CALL_ENCODE";
+            case AbstractOp::CALL_DECODE:
+                return "CALL_DECODE";
+            case AbstractOp::LOOP:
+                return "LOOP";
+            case AbstractOp::END_LOOP:
+                return "END_LOOP";
+            case AbstractOp::IF:
+                return "IF";
+            case AbstractOp::ELIF:
+                return "ELIF";
+            case AbstractOp::ELSE:
+                return "ELSE";
+            case AbstractOp::END_IF:
+                return "END_IF";
+            case AbstractOp::MATCH:
+                return "MATCH";
+            case AbstractOp::CASE:
+                return "CASE";
+            case AbstractOp::END_MATCH:
+                return "END_MATCH";
+            case AbstractOp::DEFINE_VARIABLE:
+                return "DEFINE_VARIABLE";
+            case AbstractOp::END_VARIABLE:
+                return "END_VARIABLE";
+            case AbstractOp::ASSIGN:
+                return "ASSIGN";
+            case AbstractOp::ACCESS:
+                return "ACCESS";
+            case AbstractOp::ENUM_MEMBER:
+                return "ENUM_MEMBER";
+            case AbstractOp::INDEX:
+                return "INDEX";
+            case AbstractOp::APPEND:
+                return "APPEND";
+            case AbstractOp::ADD:
+                return "ADD";
+            case AbstractOp::SUB:
+                return "SUB";
+            case AbstractOp::MUL:
+                return "MUL";
+            case AbstractOp::DIV:
+                return "DIV";
+            case AbstractOp::MOD:
+                return "MOD";
+            case AbstractOp::BAND:
+                return "BAND";
+            case AbstractOp::BOR:
+                return "BOR";
+            case AbstractOp::BXOR:
+                return "BXOR";
+            case AbstractOp::NOT:
+                return "NOT";
+            case AbstractOp::SHL:
+                return "SHL";
+            case AbstractOp::SHR:
+                return "SHR";
+            case AbstractOp::INC:
+                return "INC";
+            case AbstractOp::DEC:
+                return "DEC";
+            case AbstractOp::NEG:
+                return "NEG";
+            case AbstractOp::CALL:
+                return "CALL";
+            case AbstractOp::RET:
+                return "RET";
+            case AbstractOp::IMMEDIATE_BOOL:
+                return "IMMEDIATE_BOOL";
+            case AbstractOp::IMMEDIATE_INT:
+                return "IMMEDIATE_INT";
+            case AbstractOp::IMMEDIATE_STRING:
+                return "IMMEDIATE_STRING";
+        }
+        return "";
+    }
+
+    constexpr std::optional<AbstractOp> AbstractOp_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "NOP") {
+            return AbstractOp::NOP;
+        }
+        if (str == "DEFINE_METADATA") {
+            return AbstractOp::DEFINE_METADATA;
+        }
+        if (str == "END_METADATA") {
+            return AbstractOp::END_METADATA;
+        }
+        if (str == "IMPORT") {
+            return AbstractOp::IMPORT;
+        }
+        if (str == "SPECIFY_ENDIAN") {
+            return AbstractOp::SPECIFY_ENDIAN;
+        }
+        if (str == "SPECIFY_BIT_ORDER") {
+            return AbstractOp::SPECIFY_BIT_ORDER;
+        }
+        if (str == "SPECIFY_ALIGNMENT") {
+            return AbstractOp::SPECIFY_ALIGNMENT;
+        }
+        if (str == "SPECIFY_LENGTH") {
+            return AbstractOp::SPECIFY_LENGTH;
+        }
+        if (str == "SPECIFY_STORAGE_TYPE") {
+            return AbstractOp::SPECIFY_STORAGE_TYPE;
+        }
+        if (str == "EXPLICIT_ERROR") {
+            return AbstractOp::EXPLICIT_ERROR;
+        }
+        if (str == "MAP_TYPE") {
+            return AbstractOp::MAP_TYPE;
+        }
+        if (str == "DEFINE_FORMAT") {
+            return AbstractOp::DEFINE_FORMAT;
+        }
+        if (str == "END_FORMAT") {
+            return AbstractOp::END_FORMAT;
+        }
+        if (str == "DEFINE_FIELD") {
+            return AbstractOp::DEFINE_FIELD;
+        }
+        if (str == "END_FIELD") {
+            return AbstractOp::END_FIELD;
+        }
+        if (str == "DEFINE_FUNCTION") {
+            return AbstractOp::DEFINE_FUNCTION;
+        }
+        if (str == "END_FUNCTION") {
+            return AbstractOp::END_FUNCTION;
+        }
+        if (str == "DEFINE_ENUM") {
+            return AbstractOp::DEFINE_ENUM;
+        }
+        if (str == "END_ENUM") {
+            return AbstractOp::END_ENUM;
+        }
+        if (str == "DEFINE_ENUM_MEMBER") {
+            return AbstractOp::DEFINE_ENUM_MEMBER;
+        }
+        if (str == "END_ENUM_MEMBER") {
+            return AbstractOp::END_ENUM_MEMBER;
+        }
+        if (str == "DEFINE_UNION") {
+            return AbstractOp::DEFINE_UNION;
+        }
+        if (str == "END_UNION") {
+            return AbstractOp::END_UNION;
+        }
+        if (str == "DEFINE_UNION_MEMBER") {
+            return AbstractOp::DEFINE_UNION_MEMBER;
+        }
+        if (str == "END_UNION_MEMBER") {
+            return AbstractOp::END_UNION_MEMBER;
+        }
+        if (str == "ENCODE_INT") {
+            return AbstractOp::ENCODE_INT;
+        }
+        if (str == "DECODE_INT") {
+            return AbstractOp::DECODE_INT;
+        }
+        if (str == "ENCODE_FLOAT") {
+            return AbstractOp::ENCODE_FLOAT;
+        }
+        if (str == "DECODE_FLOAT") {
+            return AbstractOp::DECODE_FLOAT;
+        }
+        if (str == "CALL_ENCODE") {
+            return AbstractOp::CALL_ENCODE;
+        }
+        if (str == "CALL_DECODE") {
+            return AbstractOp::CALL_DECODE;
+        }
+        if (str == "LOOP") {
+            return AbstractOp::LOOP;
+        }
+        if (str == "END_LOOP") {
+            return AbstractOp::END_LOOP;
+        }
+        if (str == "IF") {
+            return AbstractOp::IF;
+        }
+        if (str == "ELIF") {
+            return AbstractOp::ELIF;
+        }
+        if (str == "ELSE") {
+            return AbstractOp::ELSE;
+        }
+        if (str == "END_IF") {
+            return AbstractOp::END_IF;
+        }
+        if (str == "MATCH") {
+            return AbstractOp::MATCH;
+        }
+        if (str == "CASE") {
+            return AbstractOp::CASE;
+        }
+        if (str == "END_MATCH") {
+            return AbstractOp::END_MATCH;
+        }
+        if (str == "DEFINE_VARIABLE") {
+            return AbstractOp::DEFINE_VARIABLE;
+        }
+        if (str == "END_VARIABLE") {
+            return AbstractOp::END_VARIABLE;
+        }
+        if (str == "ASSIGN") {
+            return AbstractOp::ASSIGN;
+        }
+        if (str == "ACCESS") {
+            return AbstractOp::ACCESS;
+        }
+        if (str == "ENUM_MEMBER") {
+            return AbstractOp::ENUM_MEMBER;
+        }
+        if (str == "INDEX") {
+            return AbstractOp::INDEX;
+        }
+        if (str == "APPEND") {
+            return AbstractOp::APPEND;
+        }
+        if (str == "ADD") {
+            return AbstractOp::ADD;
+        }
+        if (str == "SUB") {
+            return AbstractOp::SUB;
+        }
+        if (str == "MUL") {
+            return AbstractOp::MUL;
+        }
+        if (str == "DIV") {
+            return AbstractOp::DIV;
+        }
+        if (str == "MOD") {
+            return AbstractOp::MOD;
+        }
+        if (str == "BAND") {
+            return AbstractOp::BAND;
+        }
+        if (str == "BOR") {
+            return AbstractOp::BOR;
+        }
+        if (str == "BXOR") {
+            return AbstractOp::BXOR;
+        }
+        if (str == "NOT") {
+            return AbstractOp::NOT;
+        }
+        if (str == "SHL") {
+            return AbstractOp::SHL;
+        }
+        if (str == "SHR") {
+            return AbstractOp::SHR;
+        }
+        if (str == "INC") {
+            return AbstractOp::INC;
+        }
+        if (str == "DEC") {
+            return AbstractOp::DEC;
+        }
+        if (str == "NEG") {
+            return AbstractOp::NEG;
+        }
+        if (str == "CALL") {
+            return AbstractOp::CALL;
+        }
+        if (str == "RET") {
+            return AbstractOp::RET;
+        }
+        if (str == "IMMEDIATE_BOOL") {
+            return AbstractOp::IMMEDIATE_BOOL;
+        }
+        if (str == "IMMEDIATE_INT") {
+            return AbstractOp::IMMEDIATE_INT;
+        }
+        if (str == "IMMEDIATE_STRING") {
+            return AbstractOp::IMMEDIATE_STRING;
+        }
+        return std::nullopt;
+    }
     enum class StorageType : std::uint8_t {
         INT = 0,
         UINT = 1,
         FLOAT = 2,
-        STRUCT = 3,
+        STRUCT_REF = 3,
         BYTE_VECTOR = 4,
         ENUM = 5,
         ARRAY = 6,
         VECTOR = 7,
+        VARIANT = 8,
     };
+    constexpr const char* to_string(StorageType e) {
+        switch (e) {
+            case StorageType::INT:
+                return "INT";
+            case StorageType::UINT:
+                return "UINT";
+            case StorageType::FLOAT:
+                return "FLOAT";
+            case StorageType::STRUCT_REF:
+                return "STRUCT_REF";
+            case StorageType::BYTE_VECTOR:
+                return "BYTE_VECTOR";
+            case StorageType::ENUM:
+                return "ENUM";
+            case StorageType::ARRAY:
+                return "ARRAY";
+            case StorageType::VECTOR:
+                return "VECTOR";
+            case StorageType::VARIANT:
+                return "VARIANT";
+        }
+        return "";
+    }
+
+    constexpr std::optional<StorageType> StorageType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "INT") {
+            return StorageType::INT;
+        }
+        if (str == "UINT") {
+            return StorageType::UINT;
+        }
+        if (str == "FLOAT") {
+            return StorageType::FLOAT;
+        }
+        if (str == "STRUCT_REF") {
+            return StorageType::STRUCT_REF;
+        }
+        if (str == "BYTE_VECTOR") {
+            return StorageType::BYTE_VECTOR;
+        }
+        if (str == "ENUM") {
+            return StorageType::ENUM;
+        }
+        if (str == "ARRAY") {
+            return StorageType::ARRAY;
+        }
+        if (str == "VECTOR") {
+            return StorageType::VECTOR;
+        }
+        if (str == "VARIANT") {
+            return StorageType::VARIANT;
+        }
+        return std::nullopt;
+    }
     struct Varint;
     struct String;
     struct Storage;
@@ -122,21 +525,26 @@ namespace rebgn {
             Varint size;
         };
         struct union_struct_7 {
-            Varint ident;
+            Varint ref;
         };
         struct union_struct_8 {
         };
         struct union_struct_9 {
+            Varint ref;
         };
         struct union_struct_10 {
             Varint size;
         };
         struct union_struct_11 {
         };
-        std::variant<std::monostate, union_struct_4, union_struct_5, union_struct_6, union_struct_7, union_struct_8, union_struct_9, union_struct_10, union_struct_11> union_variant_3;
-        std::optional<Varint> ident() const;
-        bool ident(Varint&& v);
-        bool ident(const Varint& v);
+        struct union_struct_12 {
+            Varint ref;
+            Varint size;
+        };
+        std::variant<std::monostate, union_struct_4, union_struct_5, union_struct_6, union_struct_7, union_struct_8, union_struct_9, union_struct_10, union_struct_11, union_struct_12> union_variant_3;
+        std::optional<Varint> ref() const;
+        bool ref(Varint&& v);
+        bool ref(const Varint& v);
         std::optional<Varint> size() const;
         bool size(Varint&& v);
         bool size(const Varint& v);
@@ -164,28 +572,51 @@ namespace rebgn {
     };
     struct Code {
         AbstractOp op{};
-        struct union_struct_14 {
-            StringRef name;
-        };
         struct union_struct_15 {
-            std::uint64_t int_value = 0;
+            Varint name;
         };
         struct union_struct_16 {
-            Varint ident;
+            std::uint64_t int_value = 0;
         };
         struct union_struct_17 {
+            Varint string;
+        };
+        struct union_struct_18 {
+            Varint ident;
+            Varint str_ref;
+        };
+        struct union_struct_19 {
+            Varint ident;
+            Varint str_ref;
+        };
+        struct union_struct_20 {
             Varint ident;
         };
-        std::variant<std::monostate, union_struct_14, union_struct_15, union_struct_16, union_struct_17> union_variant_13;
+        struct union_struct_21 {
+            Varint ident;
+        };
+        struct union_struct_22 {
+            Storages storage;
+        };
+        std::variant<std::monostate, union_struct_15, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22> union_variant_14;
         std::optional<Varint> ident() const;
         bool ident(Varint&& v);
         bool ident(const Varint& v);
         std::optional<std::uint64_t> int_value() const;
         bool int_value(std::uint64_t&& v);
         bool int_value(const std::uint64_t& v);
-        std::optional<StringRef> name() const;
-        bool name(StringRef&& v);
-        bool name(const StringRef& v);
+        std::optional<Varint> name() const;
+        bool name(Varint&& v);
+        bool name(const Varint& v);
+        std::optional<Storages> storage() const;
+        bool storage(Storages&& v);
+        bool storage(const Storages& v);
+        std::optional<Varint> str_ref() const;
+        bool str_ref(Varint&& v);
+        bool str_ref(const Varint& v);
+        std::optional<Varint> string() const;
+        bool string(Varint&& v);
+        bool string(const Varint& v);
         bool encode(::futils::binary::writer& w) const;
         bool decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
@@ -198,7 +629,7 @@ namespace rebgn {
         bool encode(::futils::binary::writer& w) const;
         bool decode(::futils::binary::reader& r);
     };
-    inline std::optional<Varint> Storage::ident() const {
+    inline std::optional<Varint> Storage::ref() const {
         if (StorageType::INT == (*this).type) {
             return std::nullopt;
         }
@@ -208,15 +639,36 @@ namespace rebgn {
         if (StorageType::FLOAT == (*this).type) {
             return std::nullopt;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             if (!std::holds_alternative<union_struct_7>(union_variant_3)) {
                 return std::nullopt;
             }
-            return std::get<4>((*this).union_variant_3).ident;
+            return std::get<4>((*this).union_variant_3).ref;
+        }
+        if (StorageType::BYTE_VECTOR == (*this).type) {
+            return std::nullopt;
+        }
+        if (StorageType::ENUM == (*this).type) {
+            if (!std::holds_alternative<union_struct_9>(union_variant_3)) {
+                return std::nullopt;
+            }
+            return std::get<6>((*this).union_variant_3).ref;
+        }
+        if (StorageType::ARRAY == (*this).type) {
+            return std::nullopt;
+        }
+        if (StorageType::VECTOR == (*this).type) {
+            return std::nullopt;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                return std::nullopt;
+            }
+            return std::get<9>((*this).union_variant_3).ref;
         }
         return std::nullopt;
     }
-    inline bool Storage::ident(const Varint& v) {
+    inline bool Storage::ref(const Varint& v) {
         if (StorageType::INT == (*this).type) {
             return false;
         }
@@ -226,16 +678,39 @@ namespace rebgn {
         if (StorageType::FLOAT == (*this).type) {
             return false;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             if (!std::holds_alternative<union_struct_7>(union_variant_3)) {
                 union_variant_3 = union_struct_7();
             }
-            std::get<4>((*this).union_variant_3).ident = v;
+            std::get<4>((*this).union_variant_3).ref = v;
+            return true;
+        }
+        if (StorageType::BYTE_VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::ENUM == (*this).type) {
+            if (!std::holds_alternative<union_struct_9>(union_variant_3)) {
+                union_variant_3 = union_struct_9();
+            }
+            std::get<6>((*this).union_variant_3).ref = v;
+            return true;
+        }
+        if (StorageType::ARRAY == (*this).type) {
+            return false;
+        }
+        if (StorageType::VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                union_variant_3 = union_struct_12();
+            }
+            std::get<9>((*this).union_variant_3).ref = v;
             return true;
         }
         return false;
     }
-    inline bool Storage::ident(Varint&& v) {
+    inline bool Storage::ref(Varint&& v) {
         if (StorageType::INT == (*this).type) {
             return false;
         }
@@ -245,11 +720,34 @@ namespace rebgn {
         if (StorageType::FLOAT == (*this).type) {
             return false;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             if (!std::holds_alternative<union_struct_7>(union_variant_3)) {
                 union_variant_3 = union_struct_7();
             }
-            std::get<4>((*this).union_variant_3).ident = std::move(v);
+            std::get<4>((*this).union_variant_3).ref = std::move(v);
+            return true;
+        }
+        if (StorageType::BYTE_VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::ENUM == (*this).type) {
+            if (!std::holds_alternative<union_struct_9>(union_variant_3)) {
+                union_variant_3 = union_struct_9();
+            }
+            std::get<6>((*this).union_variant_3).ref = std::move(v);
+            return true;
+        }
+        if (StorageType::ARRAY == (*this).type) {
+            return false;
+        }
+        if (StorageType::VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                union_variant_3 = union_struct_12();
+            }
+            std::get<9>((*this).union_variant_3).ref = std::move(v);
             return true;
         }
         return false;
@@ -273,7 +771,7 @@ namespace rebgn {
             }
             return std::get<3>((*this).union_variant_3).size;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             return std::nullopt;
         }
         if (StorageType::BYTE_VECTOR == (*this).type) {
@@ -287,6 +785,15 @@ namespace rebgn {
                 return std::nullopt;
             }
             return std::get<7>((*this).union_variant_3).size;
+        }
+        if (StorageType::VECTOR == (*this).type) {
+            return std::nullopt;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                return std::nullopt;
+            }
+            return std::get<9>((*this).union_variant_3).size;
         }
         return std::nullopt;
     }
@@ -312,7 +819,7 @@ namespace rebgn {
             std::get<3>((*this).union_variant_3).size = v;
             return true;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             return false;
         }
         if (StorageType::BYTE_VECTOR == (*this).type) {
@@ -326,6 +833,16 @@ namespace rebgn {
                 union_variant_3 = union_struct_10();
             }
             std::get<7>((*this).union_variant_3).size = v;
+            return true;
+        }
+        if (StorageType::VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                union_variant_3 = union_struct_12();
+            }
+            std::get<9>((*this).union_variant_3).size = v;
             return true;
         }
         return false;
@@ -352,7 +869,7 @@ namespace rebgn {
             std::get<3>((*this).union_variant_3).size = std::move(v);
             return true;
         }
-        if (StorageType::STRUCT == (*this).type) {
+        if (StorageType::STRUCT_REF == (*this).type) {
             return false;
         }
         if (StorageType::BYTE_VECTOR == (*this).type) {
@@ -368,6 +885,16 @@ namespace rebgn {
             std::get<7>((*this).union_variant_3).size = std::move(v);
             return true;
         }
+        if (StorageType::VECTOR == (*this).type) {
+            return false;
+        }
+        if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                union_variant_3 = union_struct_12();
+            }
+            std::get<9>((*this).union_variant_3).size = std::move(v);
+            return true;
+        }
         return false;
     }
     inline std::optional<Varint> Code::ident() const {
@@ -377,17 +904,32 @@ namespace rebgn {
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
             return std::nullopt;
         }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return std::nullopt;
+        }
         if (AbstractOp::DEFINE_FORMAT == (*this).op) {
-            if (!std::holds_alternative<union_struct_16>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
                 return std::nullopt;
             }
-            return std::get<3>((*this).union_variant_13).ident;
+            return std::get<4>((*this).union_variant_14).ident;
         }
         if (AbstractOp::DEFINE_FIELD == (*this).op) {
-            if (!std::holds_alternative<union_struct_17>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
                 return std::nullopt;
             }
-            return std::get<4>((*this).union_variant_13).ident;
+            return std::get<5>((*this).union_variant_14).ident;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            if (!std::holds_alternative<union_struct_20>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<6>((*this).union_variant_14).ident;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            if (!std::holds_alternative<union_struct_21>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<7>((*this).union_variant_14).ident;
         }
         return std::nullopt;
     }
@@ -398,18 +940,35 @@ namespace rebgn {
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
             return false;
         }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
         if (AbstractOp::DEFINE_FORMAT == (*this).op) {
-            if (!std::holds_alternative<union_struct_16>(union_variant_13)) {
-                union_variant_13 = union_struct_16();
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                union_variant_14 = union_struct_18();
             }
-            std::get<3>((*this).union_variant_13).ident = v;
+            std::get<4>((*this).union_variant_14).ident = v;
             return true;
         }
         if (AbstractOp::DEFINE_FIELD == (*this).op) {
-            if (!std::holds_alternative<union_struct_17>(union_variant_13)) {
-                union_variant_13 = union_struct_17();
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                union_variant_14 = union_struct_19();
             }
-            std::get<4>((*this).union_variant_13).ident = v;
+            std::get<5>((*this).union_variant_14).ident = v;
+            return true;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            if (!std::holds_alternative<union_struct_20>(union_variant_14)) {
+                union_variant_14 = union_struct_20();
+            }
+            std::get<6>((*this).union_variant_14).ident = v;
+            return true;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            if (!std::holds_alternative<union_struct_21>(union_variant_14)) {
+                union_variant_14 = union_struct_21();
+            }
+            std::get<7>((*this).union_variant_14).ident = v;
             return true;
         }
         return false;
@@ -421,18 +980,35 @@ namespace rebgn {
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
             return false;
         }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
         if (AbstractOp::DEFINE_FORMAT == (*this).op) {
-            if (!std::holds_alternative<union_struct_16>(union_variant_13)) {
-                union_variant_13 = union_struct_16();
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                union_variant_14 = union_struct_18();
             }
-            std::get<3>((*this).union_variant_13).ident = std::move(v);
+            std::get<4>((*this).union_variant_14).ident = std::move(v);
             return true;
         }
         if (AbstractOp::DEFINE_FIELD == (*this).op) {
-            if (!std::holds_alternative<union_struct_17>(union_variant_13)) {
-                union_variant_13 = union_struct_17();
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                union_variant_14 = union_struct_19();
             }
-            std::get<4>((*this).union_variant_13).ident = std::move(v);
+            std::get<5>((*this).union_variant_14).ident = std::move(v);
+            return true;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            if (!std::holds_alternative<union_struct_20>(union_variant_14)) {
+                union_variant_14 = union_struct_20();
+            }
+            std::get<6>((*this).union_variant_14).ident = std::move(v);
+            return true;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            if (!std::holds_alternative<union_struct_21>(union_variant_14)) {
+                union_variant_14 = union_struct_21();
+            }
+            std::get<7>((*this).union_variant_14).ident = std::move(v);
             return true;
         }
         return false;
@@ -442,10 +1018,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
-            if (!std::holds_alternative<union_struct_15>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_16>(union_variant_14)) {
                 return std::nullopt;
             }
-            return std::get<2>((*this).union_variant_13).int_value;
+            return std::get<2>((*this).union_variant_14).int_value;
         }
         return std::nullopt;
     }
@@ -454,10 +1030,10 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
-            if (!std::holds_alternative<union_struct_15>(union_variant_13)) {
-                union_variant_13 = union_struct_15();
+            if (!std::holds_alternative<union_struct_16>(union_variant_14)) {
+                union_variant_14 = union_struct_16();
             }
-            std::get<2>((*this).union_variant_13).int_value = v;
+            std::get<2>((*this).union_variant_14).int_value = v;
             return true;
         }
         return false;
@@ -467,73 +1043,288 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::IMMEDIATE_INT == (*this).op) {
-            if (!std::holds_alternative<union_struct_15>(union_variant_13)) {
-                union_variant_13 = union_struct_15();
+            if (!std::holds_alternative<union_struct_16>(union_variant_14)) {
+                union_variant_14 = union_struct_16();
             }
-            std::get<2>((*this).union_variant_13).int_value = std::move(v);
+            std::get<2>((*this).union_variant_14).int_value = std::move(v);
             return true;
         }
         return false;
     }
-    inline std::optional<StringRef> Code::name() const {
+    inline std::optional<Varint> Code::name() const {
         if (AbstractOp::DEFINE_METADATA == (*this).op) {
-            if (!std::holds_alternative<union_struct_14>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
                 return std::nullopt;
             }
-            return std::get<1>((*this).union_variant_13).name;
+            return std::get<1>((*this).union_variant_14).name;
         }
         return std::nullopt;
     }
-    inline bool Code::name(const StringRef& v) {
+    inline bool Code::name(const Varint& v) {
         if (AbstractOp::DEFINE_METADATA == (*this).op) {
-            if (!std::holds_alternative<union_struct_14>(union_variant_13)) {
-                union_variant_13 = union_struct_14();
+            if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
+                union_variant_14 = union_struct_15();
             }
-            std::get<1>((*this).union_variant_13).name = v;
+            std::get<1>((*this).union_variant_14).name = v;
             return true;
         }
         return false;
     }
-    inline bool Code::name(StringRef&& v) {
+    inline bool Code::name(Varint&& v) {
         if (AbstractOp::DEFINE_METADATA == (*this).op) {
-            if (!std::holds_alternative<union_struct_14>(union_variant_13)) {
-                union_variant_13 = union_struct_14();
+            if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
+                union_variant_14 = union_struct_15();
             }
-            std::get<1>((*this).union_variant_13).name = std::move(v);
+            std::get<1>((*this).union_variant_14).name = std::move(v);
+            return true;
+        }
+        return false;
+    }
+    inline std::optional<Storages> Code::storage() const {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            if (!std::holds_alternative<union_struct_22>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<8>((*this).union_variant_14).storage;
+        }
+        return std::nullopt;
+    }
+    inline bool Code::storage(const Storages& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            if (!std::holds_alternative<union_struct_22>(union_variant_14)) {
+                union_variant_14 = union_struct_22();
+            }
+            std::get<8>((*this).union_variant_14).storage = v;
+            return true;
+        }
+        return false;
+    }
+    inline bool Code::storage(Storages&& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            if (!std::holds_alternative<union_struct_22>(union_variant_14)) {
+                union_variant_14 = union_struct_22();
+            }
+            std::get<8>((*this).union_variant_14).storage = std::move(v);
+            return true;
+        }
+        return false;
+    }
+    inline std::optional<Varint> Code::str_ref() const {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<4>((*this).union_variant_14).str_ref;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<5>((*this).union_variant_14).str_ref;
+        }
+        return std::nullopt;
+    }
+    inline bool Code::str_ref(const Varint& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                union_variant_14 = union_struct_18();
+            }
+            std::get<4>((*this).union_variant_14).str_ref = v;
+            return true;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                union_variant_14 = union_struct_19();
+            }
+            std::get<5>((*this).union_variant_14).str_ref = v;
+            return true;
+        }
+        return false;
+    }
+    inline bool Code::str_ref(Varint&& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                union_variant_14 = union_struct_18();
+            }
+            std::get<4>((*this).union_variant_14).str_ref = std::move(v);
+            return true;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                union_variant_14 = union_struct_19();
+            }
+            std::get<5>((*this).union_variant_14).str_ref = std::move(v);
+            return true;
+        }
+        return false;
+    }
+    inline std::optional<Varint> Code::string() const {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            if (!std::holds_alternative<union_struct_17>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<3>((*this).union_variant_14).string;
+        }
+        return std::nullopt;
+    }
+    inline bool Code::string(const Varint& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            if (!std::holds_alternative<union_struct_17>(union_variant_14)) {
+                union_variant_14 = union_struct_17();
+            }
+            std::get<3>((*this).union_variant_14).string = v;
+            return true;
+        }
+        return false;
+    }
+    inline bool Code::string(Varint&& v) {
+        if (AbstractOp::DEFINE_METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            if (!std::holds_alternative<union_struct_17>(union_variant_14)) {
+                union_variant_14 = union_struct_17();
+            }
+            std::get<3>((*this).union_variant_14).string = std::move(v);
             return true;
         }
         return false;
     }
     inline bool Varint::encode(::futils::binary::writer& w) const {
         if ((*this).prefix() == 0) {
-            std::uint8_t tmp18 = 0;
-            tmp18 = (*this).value();
-            tmp18 |= std::uint8_t(0) << 6;
-            if (!::futils::binary::write_num(w, tmp18, true)) {
+            std::uint8_t tmp23 = 0;
+            tmp23 = (*this).value();
+            tmp23 |= std::uint8_t(0) << 6;
+            if (!::futils::binary::write_num(w, tmp23, true)) {
                 return false;
             }
         }
         else if ((*this).prefix() == 1) {
-            std::uint16_t tmp18 = 0;
-            tmp18 = (*this).value();
-            tmp18 |= std::uint16_t(1) << 14;
-            if (!::futils::binary::write_num(w, tmp18, true)) {
+            std::uint16_t tmp23 = 0;
+            tmp23 = (*this).value();
+            tmp23 |= std::uint16_t(1) << 14;
+            if (!::futils::binary::write_num(w, tmp23, true)) {
                 return false;
             }
         }
         else if ((*this).prefix() == 2) {
-            std::uint32_t tmp18 = 0;
-            tmp18 = (*this).value();
-            tmp18 |= std::uint32_t(2) << 30;
-            if (!::futils::binary::write_num(w, tmp18, true)) {
+            std::uint32_t tmp23 = 0;
+            tmp23 = (*this).value();
+            tmp23 |= std::uint32_t(2) << 30;
+            if (!::futils::binary::write_num(w, tmp23, true)) {
                 return false;
             }
         }
         else if ((*this).prefix() == 3) {
-            std::uint64_t tmp18 = 0;
-            tmp18 = (*this).value();
-            tmp18 |= std::uint64_t(3) << 62;
-            if (!::futils::binary::write_num(w, tmp18, true)) {
+            std::uint64_t tmp23 = 0;
+            tmp23 = (*this).value();
+            tmp23 |= std::uint64_t(3) << 62;
+            if (!::futils::binary::write_num(w, tmp23, true)) {
                 return false;
             }
         }
@@ -543,39 +1334,39 @@ namespace rebgn {
         if (!r.load_stream(1)) {
             return false;
         }
-        std::uint8_t tmp19 = (r.top() >> 6) & 0x3;
-        (*this).prefix(tmp19);
+        std::uint8_t tmp24 = (r.top() >> 6) & 0x3;
+        (*this).prefix(tmp24);
         if ((*this).prefix() == 0) {
-            std::uint8_t tmp20 = 0;
-            if (!::futils::binary::read_num(r, tmp20, true)) {
+            std::uint8_t tmp25 = 0;
+            if (!::futils::binary::read_num(r, tmp25, true)) {
                 return false;
             }
-            tmp20 &= ~(std::uint8_t(0x3) << 6);
-            (*this).value(tmp20);
+            tmp25 &= ~(std::uint8_t(0x3) << 6);
+            (*this).value(tmp25);
         }
         else if ((*this).prefix() == 1) {
-            std::uint16_t tmp21 = 0;
-            if (!::futils::binary::read_num(r, tmp21, true)) {
+            std::uint16_t tmp26 = 0;
+            if (!::futils::binary::read_num(r, tmp26, true)) {
                 return false;
             }
-            tmp21 &= ~(std::uint16_t(0x3) << 14);
-            (*this).value(tmp21);
+            tmp26 &= ~(std::uint16_t(0x3) << 14);
+            (*this).value(tmp26);
         }
         else if ((*this).prefix() == 2) {
-            std::uint32_t tmp22 = 0;
-            if (!::futils::binary::read_num(r, tmp22, true)) {
+            std::uint32_t tmp27 = 0;
+            if (!::futils::binary::read_num(r, tmp27, true)) {
                 return false;
             }
-            tmp22 &= ~(std::uint32_t(0x3) << 30);
-            (*this).value(tmp22);
+            tmp27 &= ~(std::uint32_t(0x3) << 30);
+            (*this).value(tmp27);
         }
         else if ((*this).prefix() == 3) {
-            std::uint64_t tmp23 = 0;
-            if (!::futils::binary::read_num(r, tmp23, true)) {
+            std::uint64_t tmp28 = 0;
+            if (!::futils::binary::read_num(r, tmp28, true)) {
                 return false;
             }
-            tmp23 &= ~(std::uint64_t(0x3) << 62);
-            (*this).value(tmp23);
+            tmp28 &= ~(std::uint64_t(0x3) << 62);
+            (*this).value(tmp28);
         }
         return true;
     }
@@ -583,8 +1374,8 @@ namespace rebgn {
         if (!(*this).length.encode(w)) {
             return false;
         }
-        auto tmp_24_ = (*this).length.value();
-        if (tmp_24_ != (*this).data.size()) {
+        auto tmp_29_ = (*this).length.value();
+        if (tmp_29_ != (*this).data.size()) {
             return false;
         }
         if (!w.write((*this).data)) {
@@ -596,15 +1387,15 @@ namespace rebgn {
         if (!(*this).length.decode(r)) {
             return false;
         }
-        auto tmp_25_ = (*this).length.value();
-        if (!r.read((*this).data, tmp_25_)) {
+        auto tmp_30_ = (*this).length.value();
+        if (!r.read((*this).data, tmp_30_)) {
             return false;
         }
         return true;
     }
     inline bool Storage::encode(::futils::binary::writer& w) const {
-        auto tmp_26_ = static_cast<std::uint8_t>((*this).type);
-        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_26_), true)) {
+        auto tmp_31_ = static_cast<std::uint8_t>((*this).type);
+        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_31_), true)) {
             return false;
         }
         if (StorageType::INT == (*this).type) {
@@ -631,17 +1422,23 @@ namespace rebgn {
                 return false;
             }
         }
-        else if (StorageType::STRUCT == (*this).type) {
+        else if (StorageType::STRUCT_REF == (*this).type) {
             if (!std::holds_alternative<union_struct_7>(union_variant_3)) {
                 return false;
             }
-            if (!std::get<4>((*this).union_variant_3).ident.encode(w)) {
+            if (!std::get<4>((*this).union_variant_3).ref.encode(w)) {
                 return false;
             }
         }
         else if (StorageType::BYTE_VECTOR == (*this).type) {
         }
         else if (StorageType::ENUM == (*this).type) {
+            if (!std::holds_alternative<union_struct_9>(union_variant_3)) {
+                return false;
+            }
+            if (!std::get<6>((*this).union_variant_3).ref.encode(w)) {
+                return false;
+            }
         }
         else if (StorageType::ARRAY == (*this).type) {
             if (!std::holds_alternative<union_struct_10>(union_variant_3)) {
@@ -653,14 +1450,25 @@ namespace rebgn {
         }
         else if (StorageType::VECTOR == (*this).type) {
         }
+        else if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                return false;
+            }
+            if (!std::get<9>((*this).union_variant_3).ref.encode(w)) {
+                return false;
+            }
+            if (!std::get<9>((*this).union_variant_3).size.encode(w)) {
+                return false;
+            }
+        }
         return true;
     }
     inline bool Storage::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_27_ = 0;
-        if (!::futils::binary::read_num(r, tmp_27_, true)) {
+        std::uint8_t tmp_32_ = 0;
+        if (!::futils::binary::read_num(r, tmp_32_, true)) {
             return false;
         }
-        (*this).type = static_cast<StorageType>(tmp_27_);
+        (*this).type = static_cast<StorageType>(tmp_32_);
         if (StorageType::INT == (*this).type) {
             if (!std::holds_alternative<union_struct_4>(union_variant_3)) {
                 union_variant_3 = union_struct_4();
@@ -685,11 +1493,11 @@ namespace rebgn {
                 return false;
             }
         }
-        else if (StorageType::STRUCT == (*this).type) {
+        else if (StorageType::STRUCT_REF == (*this).type) {
             if (!std::holds_alternative<union_struct_7>(union_variant_3)) {
                 union_variant_3 = union_struct_7();
             }
-            if (!std::get<4>((*this).union_variant_3).ident.decode(r)) {
+            if (!std::get<4>((*this).union_variant_3).ref.decode(r)) {
                 return false;
             }
         }
@@ -701,6 +1509,9 @@ namespace rebgn {
         else if (StorageType::ENUM == (*this).type) {
             if (!std::holds_alternative<union_struct_9>(union_variant_3)) {
                 union_variant_3 = union_struct_9();
+            }
+            if (!std::get<6>((*this).union_variant_3).ref.decode(r)) {
+                return false;
             }
         }
         else if (StorageType::ARRAY == (*this).type) {
@@ -716,18 +1527,29 @@ namespace rebgn {
                 union_variant_3 = union_struct_11();
             }
         }
+        else if (StorageType::VARIANT == (*this).type) {
+            if (!std::holds_alternative<union_struct_12>(union_variant_3)) {
+                union_variant_3 = union_struct_12();
+            }
+            if (!std::get<9>((*this).union_variant_3).ref.decode(r)) {
+                return false;
+            }
+            if (!std::get<9>((*this).union_variant_3).size.decode(r)) {
+                return false;
+            }
+        }
         return true;
     }
     inline bool Refs::encode(::futils::binary::writer& w) const {
         if (!(*this).refs_length.encode(w)) {
             return false;
         }
-        auto tmp_28_ = (*this).refs_length.value();
-        if (tmp_28_ != (*this).refs.size()) {
+        auto tmp_33_ = (*this).refs_length.value();
+        if (tmp_33_ != (*this).refs.size()) {
             return false;
         }
-        for (auto& tmp_29_ : (*this).refs) {
-            if (!tmp_29_.encode(w)) {
+        for (auto& tmp_34_ : (*this).refs) {
+            if (!tmp_34_.encode(w)) {
                 return false;
             }
         }
@@ -737,14 +1559,14 @@ namespace rebgn {
         if (!(*this).refs_length.decode(r)) {
             return false;
         }
-        auto tmp_30_ = (*this).refs_length.value();
+        auto tmp_35_ = (*this).refs_length.value();
         (*this).refs.clear();
-        for (size_t tmp_32_ = 0; tmp_32_ < tmp_30_; ++tmp_32_) {
-            Varint tmp_31_;
-            if (!tmp_31_.decode(r)) {
+        for (size_t tmp_37_ = 0; tmp_37_ < tmp_35_; ++tmp_37_) {
+            Varint tmp_36_;
+            if (!tmp_36_.decode(r)) {
                 return false;
             }
-            (*this).refs.push_back(std::move(tmp_31_));
+            (*this).refs.push_back(std::move(tmp_36_));
         }
         return true;
     }
@@ -770,12 +1592,12 @@ namespace rebgn {
         if (!(*this).length.encode(w)) {
             return false;
         }
-        auto tmp_33_ = (*this).length.value();
-        if (tmp_33_ != (*this).storages.size()) {
+        auto tmp_38_ = (*this).length.value();
+        if (tmp_38_ != (*this).storages.size()) {
             return false;
         }
-        for (auto& tmp_34_ : (*this).storages) {
-            if (!tmp_34_.encode(w)) {
+        for (auto& tmp_39_ : (*this).storages) {
+            if (!tmp_39_.encode(w)) {
                 return false;
             }
         }
@@ -785,91 +1607,167 @@ namespace rebgn {
         if (!(*this).length.decode(r)) {
             return false;
         }
-        auto tmp_35_ = (*this).length.value();
+        auto tmp_40_ = (*this).length.value();
         (*this).storages.clear();
-        for (size_t tmp_37_ = 0; tmp_37_ < tmp_35_; ++tmp_37_) {
-            Storage tmp_36_;
-            if (!tmp_36_.decode(r)) {
+        for (size_t tmp_42_ = 0; tmp_42_ < tmp_40_; ++tmp_42_) {
+            Storage tmp_41_;
+            if (!tmp_41_.decode(r)) {
                 return false;
             }
-            (*this).storages.push_back(std::move(tmp_36_));
+            (*this).storages.push_back(std::move(tmp_41_));
         }
         return true;
     }
     inline bool Code::encode(::futils::binary::writer& w) const {
-        auto tmp_38_ = static_cast<std::uint8_t>((*this).op);
-        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_38_), true)) {
+        auto tmp_43_ = static_cast<std::uint8_t>((*this).op);
+        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_43_), true)) {
             return false;
         }
         if (AbstractOp::DEFINE_METADATA == (*this).op) {
-            if (!std::holds_alternative<union_struct_14>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
                 return false;
             }
-            if (!std::get<1>((*this).union_variant_13).name.encode(w)) {
+            if (!std::get<1>((*this).union_variant_14).name.encode(w)) {
                 return false;
             }
         }
         else if (AbstractOp::IMMEDIATE_INT == (*this).op) {
-            if (!std::holds_alternative<union_struct_15>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_16>(union_variant_14)) {
                 return false;
             }
-            if (!::futils::binary::write_num(w, static_cast<std::uint64_t>(std::get<2>((*this).union_variant_13).int_value), true)) {
+            if (!::futils::binary::write_num(w, static_cast<std::uint64_t>(std::get<2>((*this).union_variant_14).int_value), true)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            if (!std::holds_alternative<union_struct_17>(union_variant_14)) {
+                return false;
+            }
+            if (!std::get<3>((*this).union_variant_14).string.encode(w)) {
                 return false;
             }
         }
         else if (AbstractOp::DEFINE_FORMAT == (*this).op) {
-            if (!std::holds_alternative<union_struct_16>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
                 return false;
             }
-            if (!std::get<3>((*this).union_variant_13).ident.encode(w)) {
+            if (!std::get<4>((*this).union_variant_14).ident.encode(w)) {
+                return false;
+            }
+            if (!std::get<4>((*this).union_variant_14).str_ref.encode(w)) {
                 return false;
             }
         }
         else if (AbstractOp::DEFINE_FIELD == (*this).op) {
-            if (!std::holds_alternative<union_struct_17>(union_variant_13)) {
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
                 return false;
             }
-            if (!std::get<4>((*this).union_variant_13).ident.encode(w)) {
+            if (!std::get<5>((*this).union_variant_14).ident.encode(w)) {
+                return false;
+            }
+            if (!std::get<5>((*this).union_variant_14).str_ref.encode(w)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::DEFINE_UNION == (*this).op) {
+            if (!std::holds_alternative<union_struct_20>(union_variant_14)) {
+                return false;
+            }
+            if (!std::get<6>((*this).union_variant_14).ident.encode(w)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            if (!std::holds_alternative<union_struct_21>(union_variant_14)) {
+                return false;
+            }
+            if (!std::get<7>((*this).union_variant_14).ident.encode(w)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            if (!std::holds_alternative<union_struct_22>(union_variant_14)) {
+                return false;
+            }
+            if (!std::get<8>((*this).union_variant_14).storage.encode(w)) {
                 return false;
             }
         }
         return true;
     }
     inline bool Code::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_39_ = 0;
-        if (!::futils::binary::read_num(r, tmp_39_, true)) {
+        std::uint8_t tmp_44_ = 0;
+        if (!::futils::binary::read_num(r, tmp_44_, true)) {
             return false;
         }
-        (*this).op = static_cast<AbstractOp>(tmp_39_);
+        (*this).op = static_cast<AbstractOp>(tmp_44_);
         if (AbstractOp::DEFINE_METADATA == (*this).op) {
-            if (!std::holds_alternative<union_struct_14>(union_variant_13)) {
-                union_variant_13 = union_struct_14();
+            if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
+                union_variant_14 = union_struct_15();
             }
-            if (!std::get<1>((*this).union_variant_13).name.decode(r)) {
+            if (!std::get<1>((*this).union_variant_14).name.decode(r)) {
                 return false;
             }
         }
         else if (AbstractOp::IMMEDIATE_INT == (*this).op) {
-            if (!std::holds_alternative<union_struct_15>(union_variant_13)) {
-                union_variant_13 = union_struct_15();
+            if (!std::holds_alternative<union_struct_16>(union_variant_14)) {
+                union_variant_14 = union_struct_16();
             }
-            if (!::futils::binary::read_num(r, std::get<2>((*this).union_variant_13).int_value, true)) {
+            if (!::futils::binary::read_num(r, std::get<2>((*this).union_variant_14).int_value, true)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            if (!std::holds_alternative<union_struct_17>(union_variant_14)) {
+                union_variant_14 = union_struct_17();
+            }
+            if (!std::get<3>((*this).union_variant_14).string.decode(r)) {
                 return false;
             }
         }
         else if (AbstractOp::DEFINE_FORMAT == (*this).op) {
-            if (!std::holds_alternative<union_struct_16>(union_variant_13)) {
-                union_variant_13 = union_struct_16();
+            if (!std::holds_alternative<union_struct_18>(union_variant_14)) {
+                union_variant_14 = union_struct_18();
             }
-            if (!std::get<3>((*this).union_variant_13).ident.decode(r)) {
+            if (!std::get<4>((*this).union_variant_14).ident.decode(r)) {
+                return false;
+            }
+            if (!std::get<4>((*this).union_variant_14).str_ref.decode(r)) {
                 return false;
             }
         }
         else if (AbstractOp::DEFINE_FIELD == (*this).op) {
-            if (!std::holds_alternative<union_struct_17>(union_variant_13)) {
-                union_variant_13 = union_struct_17();
+            if (!std::holds_alternative<union_struct_19>(union_variant_14)) {
+                union_variant_14 = union_struct_19();
             }
-            if (!std::get<4>((*this).union_variant_13).ident.decode(r)) {
+            if (!std::get<5>((*this).union_variant_14).ident.decode(r)) {
+                return false;
+            }
+            if (!std::get<5>((*this).union_variant_14).str_ref.decode(r)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::DEFINE_UNION == (*this).op) {
+            if (!std::holds_alternative<union_struct_20>(union_variant_14)) {
+                union_variant_14 = union_struct_20();
+            }
+            if (!std::get<6>((*this).union_variant_14).ident.decode(r)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            if (!std::holds_alternative<union_struct_21>(union_variant_14)) {
+                union_variant_14 = union_struct_21();
+            }
+            if (!std::get<7>((*this).union_variant_14).ident.decode(r)) {
+                return false;
+            }
+        }
+        else if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            if (!std::holds_alternative<union_struct_22>(union_variant_14)) {
+                union_variant_14 = union_struct_22();
+            }
+            if (!std::get<8>((*this).union_variant_14).storage.decode(r)) {
                 return false;
             }
         }
@@ -885,12 +1783,12 @@ namespace rebgn {
         if (!(*this).code_length.encode(w)) {
             return false;
         }
-        auto tmp_40_ = (*this).code_length.value();
-        if (tmp_40_ != (*this).code.size()) {
+        auto tmp_45_ = (*this).code_length.value();
+        if (tmp_45_ != (*this).code.size()) {
             return false;
         }
-        for (auto& tmp_41_ : (*this).code) {
-            if (!tmp_41_.encode(w)) {
+        for (auto& tmp_46_ : (*this).code) {
+            if (!tmp_46_.encode(w)) {
                 return false;
             }
         }
@@ -906,14 +1804,14 @@ namespace rebgn {
         if (!(*this).code_length.decode(r)) {
             return false;
         }
-        auto tmp_42_ = (*this).code_length.value();
+        auto tmp_47_ = (*this).code_length.value();
         (*this).code.clear();
-        for (size_t tmp_44_ = 0; tmp_44_ < tmp_42_; ++tmp_44_) {
-            Code tmp_43_;
-            if (!tmp_43_.decode(r)) {
+        for (size_t tmp_49_ = 0; tmp_49_ < tmp_47_; ++tmp_49_) {
+            Code tmp_48_;
+            if (!tmp_48_.decode(r)) {
                 return false;
             }
-            (*this).code.push_back(std::move(tmp_43_));
+            (*this).code.push_back(std::move(tmp_48_));
         }
         return true;
     }

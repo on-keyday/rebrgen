@@ -23,6 +23,7 @@ enum AbstractOp:
     SPECIFY_BIT_ORDER
     SPECIFY_ALIGNMENT
     SPECIFY_LENGTH
+    SPECIFY_STORAGE_TYPE
     EXPLICIT_ERROR
     MAP_TYPE
 
@@ -30,7 +31,7 @@ enum AbstractOp:
     END_FORMAT
 
     DEFINE_FIELD
-    STORAGE_TYPE
+    
     END_FIELD
     
     DEFINE_FUNCTION
@@ -44,6 +45,9 @@ enum AbstractOp:
     
     DEFINE_UNION
     END_UNION
+
+    DEFINE_UNION_MEMBER
+    END_UNION_MEMBER
 
     
     ENCODE_INT
@@ -111,30 +115,37 @@ enum StorageType:
     INT   
     UINT 
     FLOAT 
-    STRUCT 
+    STRUCT_REF
     BYTE_VECTOR # special case of vector
 
     # qualifiers
     ENUM
     ARRAY
     VECTOR
+    
+    # for union
+    VARIANT
 
 
+# TODO: be recursive
 format Storage:
     type :StorageType
     match type:
         StorageType.INT => size :Varint
         StorageType.UINT => size :Varint
         StorageType.FLOAT => size :Varint
-        StorageType.STRUCT => ident :Varint
+        StorageType.STRUCT_REF => ref :Varint
         StorageType.BYTE_VECTOR => ..
         StorageType.ENUM:
-            .. # todo: will be recursive
+            ref :Varint
         StorageType.ARRAY:
             size :Varint
             ..
         StorageType.VECTOR:
             ..
+        StorageType.VARIANT:
+            ref :Varint 
+            size :Varint
 
 format Storages:
     length :Varint
@@ -143,10 +154,18 @@ format Storages:
 format Code:
     op :AbstractOp
     match op:
-        AbstractOp.DEFINE_METADATA => name :StringRef
+        AbstractOp.DEFINE_METADATA => name :Varint
         AbstractOp.IMMEDIATE_INT => int_value :u64
-        AbstractOp.DEFINE_FORMAT => ident :Varint
-        AbstractOp.DEFINE_FIELD => ident :Varint
+        AbstractOp.IMMEDIATE_STRING => string :Varint
+        AbstractOp.DEFINE_FORMAT:
+            ident :Varint
+            str_ref :Varint
+        AbstractOp.DEFINE_FIELD:
+            ident :Varint
+            str_ref :Varint
+        AbstractOp.DEFINE_UNION => ident :Varint
+        AbstractOp.DEFINE_UNION_MEMBER => ident :Varint
+        AbstractOp.SPECIFY_STORAGE_TYPE => storage :Storages
 
 format Refs:
     refs_length :Varint

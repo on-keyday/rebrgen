@@ -6,16 +6,33 @@
 #include <error/error.h>
 #include <core/ast/ast.h>
 #include <core/ast/tool/ident.h>
+#include "common.hpp"
 namespace rebgn {
-    namespace ast = brgen::ast;
-    using Error = futils::error::Error<>;
-
-    template <typename T>
-    using expected = futils::helper::either::expected<T, futils::error::Error<>>;
 
     using ObjectID = std::uint64_t;
 
     constexpr ObjectID null_id = 0;
+
+    constexpr expected<Varint> varint(std::uint64_t n) {
+        Varint v;
+        if (n < 0x80) {
+            v.prefix(0);
+            v.value(n);
+        }
+        if (n < 0x4000) {
+            v.prefix(1);
+            v.value(n);
+        }
+        if (n < 0x200000) {
+            v.prefix(2);
+            v.value(n);
+        }
+        if (n < 0x10000000) {
+            v.prefix(3);
+            v.value(n);
+        }
+        return unexpect_error("Invalid varint value: {}", n);
+    }
 
     struct Module {
         std::unordered_map<std::string, std::uint64_t> string_table;
@@ -23,22 +40,25 @@ namespace rebgn {
         std::vector<Code> code;
         std::uint64_t object_id = 1;
 
-        std::uint64_t lookup_ident(std::shared_ptr<ast::Ident> ident) {
+        expected<Varint> lookup_ident(std::shared_ptr<ast::Ident> ident) {
             if (!ident) {
-                return null_id;
+                return expected<Varint>(null_id);
             }
             auto [base, _] = *ast::tool::lookup_base(ident);
             auto it = ident_table.find(base);
             if (it == ident_table.end()) {
                 auto id = new_id();
-                ident_table[base] = id;
+                if (!id) {
+                    return id;
+                }
+                ident_table[base] = id->value();
                 return id;
             }
-            return it->second;
+            return varint(it->second);
         }
 
-        std::uint64_t new_id() {
-            return object_id++;
+        expected<Varint> new_id() {
+            return varint(object_id++);
         }
 
         void op(AbstractOp op) {

@@ -5,7 +5,7 @@ project(rebrgen)
 
 set(CMAKE_CXX_STANDARD 23)
 
-include_directories("brgen/src/include")
+include_directories("brgen/src")
 include_directories("$ENV{FUTILS_DIR}/src/include")
 link_directories("$ENV{FUTILS_DIR}/lib")
 

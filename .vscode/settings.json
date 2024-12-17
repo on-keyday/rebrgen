@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "cstdint": "cpp"
+    },
+    "editor.formatOnSave": true,
+    "C_Cpp.clang_format_style": "file",
+    "brgen-lsp.src2json": "C:/workspace/shbrgen/brgen/tool/src2json.exe"
+}

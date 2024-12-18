@@ -28,4 +28,6 @@ namespace rebgn {
         return futils::helper::either::unexpected(std::forward<decltype(err)>(err));
     }
 
+    constexpr auto none = Error();
+
 }  // namespace rebgn

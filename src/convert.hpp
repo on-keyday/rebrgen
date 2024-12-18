@@ -40,10 +40,24 @@ namespace rebgn {
     struct Module {
         std::unordered_map<std::string, std::uint64_t> string_table;
         std::unordered_map<std::shared_ptr<ast::Ident>, std::uint64_t> ident_table;
+        std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
         std::vector<Code> code;
         std::uint64_t object_id = 1;
 
         std::uint64_t prev_expr_id = null_id;
+
+        expected<Varint> lookup_string(const std::string& str) {
+            auto str_ref = string_table.find(str);
+            if (str_ref == string_table.end()) {
+                auto ident = new_id();
+                if (!ident) {
+                    return ident;
+                }
+                string_table.emplace(str, ident->value());
+                return ident;
+            }
+            return varint(str_ref->second);
+        }
 
         expected<Varint> lookup_ident(std::shared_ptr<ast::Ident> ident) {
             if (!ident) {
@@ -76,10 +90,16 @@ namespace rebgn {
             Code c;
             c.op = op;
             set(c);
+            auto ident = c.ident();
             code.push_back(c);
+            if (ident) {
+                ident_index_table[ident->value()] = code.size() - 1;
+            }
         }
     };
 
     expected<Module> convert(std::shared_ptr<brgen::ast::Node>& node);
+
+    Error save(Module& m, futils::binary::writer& w);
 
 }  // namespace rebgn

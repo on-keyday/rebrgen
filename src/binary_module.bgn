@@ -11,34 +11,70 @@ format Varint:
         3 => value :u62
 
 
+# from ast_enum.bgn
 enum BinaryOp:
     :u8
-    ADD
-    SUB
-    MUL
-    DIV
-    MOD
-    BAND
-    BOR
-    BXOR
-    NOT
-    SHL
-    SHR
+    mul = "*"
+    div = "/"
+    mod = "%"
+    left_arithmetic_shift = "<<<"
+    right_arithmetic_shift = ">>>"
+    left_logical_shift = "<<"
+    right_logical_shift = ">>"
+    bit_and = "&"
+    add = "+"
+    sub = "-"
+    bit_or = "|"
+    bit_xor = "^"
+    equal = "=="
+    not_equal = "!="
+    less = "<"
+    less_or_eq = "<="
+    grater = ">"
+    grater_or_eq = ">="
+
+    logical_and = "&&"
+
+    logical_or = "||"
+
+    cond_op1 = "?"
+    cond_op2 = ":"
+
+    range_exclusive = ".."
+    range_inclusive = "..="
+
+    assign = "="
+    define_assign = ":="
+    const_assign = "::="
+    add_assign = "+="
+    sub_assign = "-="
+    mul_assign = "*="
+    div_assign = "/="
+    mod_assign = "%="
+    left_logical_shift_assign = "<<="
+    right_logical_shift_assign = ">>="
+    left_arithmetic_shift_assign = "<<<="
+    right_arithmetic_shift_assign = ">>>="
+    bit_and_assign = "&="
+    bit_or_assign = "|="
+    bit_xor_assign = "^="
+
+    comma = ","
+    in_assign = "in"
 
 enum AbstractOp:
     :u8
     NOP
 
     
-    DEFINE_METADATA
-    END_METADATA
+    METADATA
     IMPORT
     SPECIFY_ENDIAN
     SPECIFY_BIT_ORDER
     SPECIFY_ALIGNMENT
     SPECIFY_LENGTH
     SPECIFY_STORAGE_TYPE
-    EXPLICIT_ERROR
+    SPECIFY_FIXED_VALUE
     MAP_TYPE
 
     DEFINE_FORMAT
@@ -61,7 +97,10 @@ enum AbstractOp:
 
     DEFINE_UNION_MEMBER
     END_UNION_MEMBER
+    
+    DEFINE_ENCODER
 
+    DEFINE_DECODER
     
     ENCODE_INT
     DECODE_INT
@@ -70,7 +109,10 @@ enum AbstractOp:
     CALL_ENCODE
     CALL_DECODE
 
-    LOOP
+    LOOP_INFINITE
+    LOOP_CONDITION
+    CONTINUE
+    BREAK
     END_LOOP
 
     IF
@@ -83,9 +125,13 @@ enum AbstractOp:
     END_MATCH
 
     DEFINE_VARIABLE
-    END_VARIABLE
+    DEFINE_CONSTANT
     
     BINARY
+    ASSIGN
+    SHORT_CIRCUIT 
+    ASSERT
+    EXPLICIT_ERROR
 
     ACCESS
     ENUM_MEMBER
@@ -100,8 +146,11 @@ enum AbstractOp:
 
     IMMEDIATE_BOOL
     IMMEDIATE_INT
+    IMMEDIATE_INT64
     IMMEDIATE_STRING
     IDENT_REF
+
+ 
 
 format String:
     length :Varint
@@ -110,6 +159,11 @@ format String:
 format StringRef:
     code :Varint
     string :String
+
+format IdentIndex:
+    ident :Varint
+    index :Varint
+
 
 enum StorageType:
     :u8
@@ -142,7 +196,6 @@ format Storage:
             ref :Varint
         StorageType.ARRAY:
             size :Varint
-            ..
         StorageType.VECTOR:
             ref :Varint
         StorageType.VARIANT:
@@ -153,22 +206,45 @@ format Storages:
     length :Varint
     storages :[length.value]Storage
 
+format Metadata:
+    name :Varint
+    len_exprs :Varint
+    expr_refs :[len_exprs.value]Varint
+
 format Code:
     op :AbstractOp
     match op:
-        AbstractOp.DEFINE_METADATA => ident :Varint
+        AbstractOp.METADATA => metadata :Metadata
         AbstractOp.IMMEDIATE_INT:
             ident :Varint
-            int_value :u64
+            int_value :Varint
+        AbstractOp.SPECIFY_FIXED_VALUE:
+            ref :Varint
+        AbstractOp.IMMEDIATE_INT64:
+            ident :Varint
+            int_value64 :u64
         AbstractOp.IMMEDIATE_STRING:
             ident :Varint
         AbstractOp.IDENT_REF:
-            ident :Varint
+            ref :Varint
         AbstractOp.DEFINE_FORMAT:
             ident :Varint
         AbstractOp.DEFINE_FIELD:
             ident :Varint
+        AbstractOp.DEFINE_ENUM:
+            ident :Varint
+        AbstractOp.DEFINE_ENUM_MEMBER:
+            ident :Varint
+        AbstractOp.DEFINE_ENCODER:
+            left_ref :Varint # ref to format
+            right_ref :Varint # ref to encoder
+        AbstractOp.DEFINE_DECODER:
+            left_ref :Varint # ref to format
+            right_ref :Varint # ref to decoder
         AbstractOp.DEFINE_UNION => ident :Varint
+        AbstractOp.DEFINE_VARIABLE:
+            ident :Varint
+            ref :Varint
         AbstractOp.DEFINE_UNION_MEMBER => ident :Varint
         AbstractOp.SPECIFY_STORAGE_TYPE => storage :Storages
         AbstractOp.BINARY:
@@ -176,14 +252,49 @@ format Code:
             bop :BinaryOp
             left_ref :Varint
             right_ref :Varint
+        AbstractOp.ACCESS:
+            ident :Varint
+            left_ref :Varint
+            right_ref :Varint
+        AbstractOp.INDEX:
+            ident :Varint
+            left_ref :Varint
+            right_ref :Varint
+        AbstractOp.ASSIGN:
+            left_ref :Varint
+            right_ref :Varint
+        AbstractOp.SHORT_CIRCUIT:
+            ref :Varint
+        AbstractOp.ENCODE_INT:
+            ref :Varint
+        AbstractOp.DECODE_INT:
+            ref :Varint
+        AbstractOp.ENCODE_FLOAT:
+            ref :Varint
+        AbstractOp.DECODE_FLOAT:
+            ref :Varint
+        AbstractOp.CALL_ENCODE:
+            ref :Varint
+        AbstractOp.CALL_DECODE:
+            ref :Varint
+        AbstractOp.LOOP_INFINITE:
+            ref :Varint
+        AbstractOp.INC:
+            ref :Varint
 
 
-format Refs:
+format StringRefs:
     refs_length :Varint
-    refs :[refs_length.value]Varint
+    refs :[refs_length.value]StringRef
+
+format IdentIndexs:
+    refs_length :Varint
+    refs :[refs_length.value]IdentIndex
 
 format BinaryModule:
-    strings :Refs
-    identifiers :Refs
+    magic: "RBGM"
+    strings :StringRefs
+    identifiers :StringRefs
+    ident_indexes :IdentIndexs
     code_length :Varint
     code :[code_length.value]Code

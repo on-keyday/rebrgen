@@ -39,6 +39,26 @@ namespace rebgn {
         return ident;
     }
 
+    expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident;
+        }
+        m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
+            c.ident(*ident);
+            c.ref(init_ref);
+        });
+        return ident;
+    }
+
+    expected<Varint> define_counter(Module& m, std::uint64_t init) {
+        auto init_ref = immediate(m, init);
+        if (!init_ref) {
+            return init_ref;
+        }
+        return define_tmp_var(m, *init_ref, ast::ConstantLevel::variable);
+    }
+
     template <>
     Error define<ast::IntLiteral>(Module& m, std::shared_ptr<ast::IntLiteral>& node) {
         auto n = node->parse_as<std::uint64_t>();
@@ -275,6 +295,35 @@ namespace rebgn {
         return none;
     }
 
+    Error counter_loop(Module& m, Varint length, auto&& block) {
+        auto counter = define_counter(m, 0);
+        if (!counter) {
+            return counter.error();
+        }
+        auto cmp = m.new_id();
+        if (!cmp) {
+            return cmp.error();
+        }
+        m.op(AbstractOp::BINARY, [&](Code& c) {
+            c.ident(*cmp);
+            c.bop(BinaryOp::less);
+            c.left_ref(*counter);
+            c.right_ref(length);
+        });
+        m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+            c.ref(*cmp);
+        });
+        auto err = block(*counter);
+        if (err) {
+            return err;
+        }
+        m.op(AbstractOp::INC, [&](Code& c) {
+            c.ref(*counter);
+        });
+        m.op(AbstractOp::END_LOOP);
+        return none;
+    }
+
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
@@ -284,6 +333,152 @@ namespace rebgn {
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
             m.op(AbstractOp::ENCODE_FLOAT, [&](Code& c) {
+                c.ref(base_ref);
+            });
+            return none;
+        }
+        if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
+            auto str_ref = m.lookup_string(str_ty->strong_ref->value);
+            if (!str_ref) {
+                return str_ref.error();
+            }
+            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
+                c.ident(*str_ref);
+            });
+            auto max_len = immediate(m, *str_ty->bit_size / 8);
+            if (!max_len) {
+                return max_len.error();
+            }
+            counter_loop(m, *max_len, [&](Varint counter) {
+                auto index = m.new_id();
+                if (!index) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::INDEX, [&](Code& c) {
+                    c.ident(*index);
+                    c.left_ref(*str_ref);
+                    c.right_ref(counter);
+                });
+                m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
+                    c.ref(*index);
+                });
+            });
+        }
+        if (auto arr = ast::as<ast::ArrayType>(typ)) {
+            auto len = arr->length_value;
+            if (len) {
+                for (size_t i = 0; i < *len; i++) {
+                    auto index = m.new_id();
+                    if (!index) {
+                        return error("Failed to generate new id");
+                    }
+                    auto i_ = immediate(m, i);
+                    if (!i_) {
+                        return i_.error();
+                    }
+                    m.op(AbstractOp::INDEX, [&](Code& c) {
+                        c.ident(*index);
+                        c.left_ref(base_ref);
+                        c.right_ref(*i_);
+                    });
+                    auto err = encode_type(m, arr->element_type, *index);
+                    if (err) {
+                        return err;
+                    }
+                }
+                return none;
+            }
+            // len = <len>
+            // i = 0
+            // cmp = i < len
+            // loop cmp:
+            //   index = base_ref[i]
+            //   encode_type(index)
+            //   i++
+            auto err = convert_node_encode(m, arr->length);
+            if (err) {
+                return err;
+            }
+            auto len_init = varint(m.prev_expr_id);
+            if (!len_init) {
+                return len_init.error();
+            }
+            auto len_ident = define_tmp_var(m, *len_init, ast::ConstantLevel::immutable_variable);
+            if (!len_ident) {
+                return len_ident.error();
+            }
+            counter_loop(m, *len_ident, [&](Varint counter) {
+                auto index = m.new_id();
+                if (!index) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::INDEX, [&](Code& c) {
+                    c.ident(*index);
+                    c.left_ref(base_ref);
+                    c.right_ref(counter);
+                });
+                auto err = encode_type(m, arr->element_type, *index);
+                if (err) {
+                    return err;
+                }
+            });
+            return none;
+        }
+        if (auto s = ast::as<ast::StructType>(typ)) {
+            auto member = s->base.lock();
+            if (auto me = ast::as<ast::Member>(member)) {
+                auto ident = m.lookup_ident(me->ident);
+                if (!ident) {
+                    return ident.error();
+                }
+                m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
+                    c.left_ref(*ident);
+                    c.right_ref(base_ref);
+                });
+                return none;
+            }
+            return error("unknown struct type");
+        }
+        if (auto e = ast::as<ast::EnumType>(typ)) {
+            auto base_enum = e->base.lock();
+            if (!base_enum) {
+                return error("invalid enum type(maybe bug)");
+            }
+            auto base_type = base_enum->base_type;
+            if (!base_type) {
+                return error("abstract enum {} in encode", base_enum->ident->ident);
+            }
+            auto ident = m.lookup_ident(base_enum->ident);
+            if (!ident) {
+                return ident.error();
+            }
+            auto casted = m.new_id();
+            if (!casted) {
+                return casted.error();
+            }
+            m.op(AbstractOp::ENUM_TO_INT_CAST, [&](Code& c) {
+                c.ident(*casted);
+                c.left_ref(*ident);
+                c.right_ref(base_ref);
+            });
+            auto err = encode_type(m, base_type, *casted);
+            if (err) {
+                return err;
+            }
+            return none;
+        }
+        return error("unsupported type: {}", node_type_to_string(typ->node_type));
+    }
+
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
+        if (auto int_ty = ast::as<ast::IntType>(typ)) {
+            m.op(AbstractOp::DECODE_INT, [&](Code& c) {
+                c.ref(base_ref);
+            });
+            return none;
+        }
+        if (auto float_ty = ast::as<ast::FloatType>(typ)) {
+            m.op(AbstractOp::DECODE_FLOAT, [&](Code& c) {
                 c.ref(base_ref);
             });
             return none;
@@ -310,14 +505,10 @@ namespace rebgn {
             if (!counter) {
                 return error("Failed to generate new id");
             }
-            auto zero = immediate(m, 0);
-            if (!zero) {
-                return zero.error();
+            auto counter = define_counter(m, 0);
+            if (!counter) {
+                return counter.error();
             }
-            m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-                c.ident(*counter);
-                c.ref(*zero);
-            });
             auto max_len = immediate(m, *str_ty->bit_size / 8);
             if (!max_len) {
                 return max_len.error();
@@ -383,35 +574,26 @@ namespace rebgn {
             //   index = base_ref[i]
             //   encode_type(index)
             //   i++
-            auto len_ident = m.new_id();
-            if (!len_ident) {
-                return error("Failed to generate new id");
-            }
             auto err = convert_node_encode(m, arr->length);
             if (err) {
                 return err;
             }
             auto id = varint(m.prev_expr_id);
-            m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-                c.ident(*len_ident);
-                c.ref(*id);
-            });
+            if (!id) {
+                return id.error();
+            }
+            auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
+            if (!len_ident) {
+                return len_ident.error();
+            }
             auto cmp = m.new_id();
             if (!cmp) {
-                return error("Failed to generate new id");
+                return cmp.error();
             }
-            auto i_ = m.new_id();
+            auto i_ = define_counter(m, 0);
             if (!i_) {
-                return error("Failed to generate new id");
+                return i_.error();
             }
-            auto zero = immediate(m, 0);
-            if (!zero) {
-                return zero.error();
-            }
-            m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-                c.ident(*i_);
-                c.ref(*zero);
-            });
             m.op(AbstractOp::BINARY, [&](Code& c) {
                 c.ident(*cmp);
                 c.bop(BinaryOp::less);
@@ -430,11 +612,60 @@ namespace rebgn {
                 c.left_ref(base_ref);
                 c.right_ref(*len_ident);
             });
-            auto err = encode_type(m, arr->element_type, *index);
+            err = encode_type(m, arr->element_type, *index);
             if (err) {
                 return err;
             }
+            m.op(AbstractOp::INC, [&](Code& c) {
+                c.ref(*i_);
+            });
+            m.op(AbstractOp::END_LOOP);
+            return none;
         }
+        if (auto s = ast::as<ast::StructType>(typ)) {
+            auto member = s->base.lock();
+            if (auto me = ast::as<ast::Member>(member)) {
+                auto ident = m.lookup_ident(me->ident);
+                if (!ident) {
+                    return ident.error();
+                }
+                m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
+                    c.left_ref(*ident);
+                    c.right_ref(base_ref);
+                });
+                return none;
+            }
+            return error("unknown struct type");
+        }
+        if (auto e = ast::as<ast::EnumType>(typ)) {
+            auto base_enum = e->base.lock();
+            if (!base_enum) {
+                return error("invalid enum type(maybe bug)");
+            }
+            auto base_type = base_enum->base_type;
+            if (!base_type) {
+                return error("abstract enum {} in encode", base_enum->ident->ident);
+            }
+            auto ident = m.lookup_ident(base_enum->ident);
+            if (!ident) {
+                return ident.error();
+            }
+            auto casted = m.new_id();
+            if (!casted) {
+                return casted.error();
+            }
+            m.op(AbstractOp::ENUM_TO_INT_CAST, [&](Code& c) {
+                c.ident(*casted);
+                c.left_ref(*ident);
+                c.right_ref(base_ref);
+            });
+            auto err = encode_type(m, base_type, *casted);
+            if (err) {
+                return err;
+            }
+            return none;
+        }
+        return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
 
     template <>
@@ -480,6 +711,16 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_FORMAT, [&](Code& c) {
             c.ident(*ident);
         });
+        if (node->body->struct_type->type_map) {
+            Storages s;
+            auto err = define_storage(m, s, node->body->struct_type->type_map->type_literal);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(std::move(s));
+            });
+        }
         for (auto& f : node->body->struct_type->fields) {
             auto err = convert_node_definition(m, f);
             if (err) {

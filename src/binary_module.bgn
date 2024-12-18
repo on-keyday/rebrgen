@@ -108,6 +108,8 @@ enum AbstractOp:
     DECODE_FLOAT
     CALL_ENCODE
     CALL_DECODE
+    ENUM_TO_INT_CAST
+    INT_TO_ENUM_CAST
 
     LOOP_INFINITE
     LOOP_CONDITION
@@ -274,13 +276,23 @@ format Code:
         AbstractOp.DECODE_FLOAT:
             ref :Varint
         AbstractOp.CALL_ENCODE:
-            ref :Varint
+            left_ref :Varint # ref to encoder
+            right_ref :Varint # ref to object
         AbstractOp.CALL_DECODE:
-            ref :Varint
+            left_ref :Varint # ref to decoder
+            right_ref :Varint # ref to object
         AbstractOp.LOOP_INFINITE:
             ref :Varint
         AbstractOp.INC:
             ref :Varint
+        AbstractOp.ENUM_TO_INT_CAST:
+            ident :Varint
+            left_ref :Varint # ref to enum
+            right_ref :Varint # ref to object
+        AbstractOp.INT_TO_ENUM_CAST:
+            ident :Varint
+            left_ref :Varint # ref to enum
+            right_ref :Varint # ref to object
 
 
 format StringRefs:

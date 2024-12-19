@@ -8,15 +8,16 @@ set(CMAKE_CXX_STANDARD 23)
 include_directories("brgen/src")
 include_directories("$ENV{FUTILS_DIR}/src/include")
 link_directories("$ENV{FUTILS_DIR}/lib")
+include_directories("src")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
-add_executable(rebrgen 
-    "src/main.cpp" 
-    "src/convert.cpp" 
-    "src/encode.cpp"
-    "src/load_json.cpp" 
-    "src/save_module.cpp"
+add_executable(bmgen
+    "src/bm/main.cpp" 
+    "src/bm/convert.cpp" 
+    "src/bm/encode.cpp"
+    "src/bm/load_json.cpp" 
+    "src/bm/save_module.cpp"
 )
 
 target_link_libraries(rebrgen futils)

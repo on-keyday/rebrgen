@@ -11,7 +11,7 @@ namespace rebgn {
                 return idv.error();
             }
             sr.code = idv.value();
-            auto length = varint(str.length());
+            auto length = varint(str.size());
             if (!length) {
                 return length.error();
             }

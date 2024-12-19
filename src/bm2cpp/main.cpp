@@ -20,7 +20,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
 auto& cout = futils::wrap::cout_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
-    cout << "Implement command...\n";
     rebgn::BinaryModule bm;
     futils::file::View view;
     if (auto res = view.open(flags.input); !res) {
@@ -37,8 +36,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cout << err.error<std::string>() << '\n';
         return 1;
     }
-    futils::binary::writer w{};
-    bm2cpp::to_cpp();
+    futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
+    futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+    bm2cpp::to_cpp(w, bm);
     return 0;
 }
 

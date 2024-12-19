@@ -25,8 +25,18 @@ namespace bm2cpp {
             ctx.ident_table[ir.code.value()] = ir.string.data;
         }
         std::vector<futils::helper::DynDefer> indents;
-        for (auto& code : bm.code) {
+        for (size_t i = 0; i < bm.code.size(); i++) {
+            auto& code = bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::DEFINE_FORMAT: {
+                    auto& ident = ctx.ident_table[code.ident().value().value()];
+                    ctx.cw.writeln("struct ", ident, " {");
+                    break;
+                }
+                case rebgn::AbstractOp::END_FORMAT: {
+                    ctx.cw.writeln("};");
+                    break;
+                }
                 default:
                     ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
                     break;

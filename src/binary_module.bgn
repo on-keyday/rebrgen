@@ -152,6 +152,8 @@ enum AbstractOp:
     IMMEDIATE_STRING
     IDENT_REF
 
+    NEW_OBJECT
+
  
 
 format String:
@@ -285,6 +287,8 @@ format Code:
             ref :Varint
         AbstractOp.INC:
             ref :Varint
+        AbstractOp.DEC:
+            ref :Varint
         AbstractOp.ENUM_TO_INT_CAST:
             ident :Varint
             left_ref :Varint # ref to enum
@@ -293,6 +297,16 @@ format Code:
             ident :Varint
             left_ref :Varint # ref to enum
             right_ref :Varint # ref to object
+        AbstractOp.NEW_OBJECT:
+            ident :Varint
+            storage :Storages
+        AbstractOp.ASSERT:
+            ref :Varint
+        AbstractOp.IF:
+            ident :Varint
+            ref :Varint
+        AbstractOp.ELIF:
+            ref :Varint
 
 
 format StringRefs:

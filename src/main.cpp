@@ -42,6 +42,8 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::END_ENUM_MEMBER:
             case rebgn::AbstractOp::END_UNION:
             case rebgn::AbstractOp::END_UNION_MEMBER:
+            case rebgn::AbstractOp::END_FUNCTION:
+            case rebgn::AbstractOp::END_LOOP:
                 nest.resize(nest.size() - 2);
                 break;
             default:
@@ -54,6 +56,9 @@ void print_code(rebgn::Module& m) {
         }
         if (auto ref = c.ref()) {
             cout << " " << ref->value();
+        }
+        if (auto bop = c.bop()) {
+            cout << " " << to_string(*bop);
         }
         if (auto left_ref = c.left_ref()) {
             cout << " " << left_ref->value();
@@ -86,6 +91,9 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER:
             case rebgn::AbstractOp::DEFINE_UNION:
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER:
+            case rebgn::AbstractOp::DEFINE_FUNCTION:
+            case rebgn::AbstractOp::LOOP_CONDITION:
+            case rebgn::AbstractOp::LOOP_INFINITE:
                 nest += "  ";
                 break;
             default:

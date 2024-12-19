@@ -1,22 +1,9 @@
 /*license*/
-#include "convert.hpp"
+#include "internal.hpp"
 #include <core/ast/traverse.h>
 #include <format>
 
 namespace rebgn {
-
-    Error convert_node_definition(Module& m, const std::shared_ptr<ast::Node>& n);
-    Error convert_node_encode(Module& m, const std::shared_ptr<ast::Node>& n);
-    Error convert_node_decode(Module& m, const std::shared_ptr<ast::Node>& n);
-
-    template <class T>
-    Error define(Module& m, std::shared_ptr<T>& node) = delete;
-
-    template <class T>
-    Error encode(Module& m, std::shared_ptr<T>& node) = delete;
-
-    template <class T>
-    Error decode(Module& m, std::shared_ptr<T>& node) = delete;
 
     expected<Varint> immediate(Module& m, std::uint64_t n) {
         auto ident = m.new_id();
@@ -295,388 +282,6 @@ namespace rebgn {
         return none;
     }
 
-    Error counter_loop(Module& m, Varint length, auto&& block) {
-        auto counter = define_counter(m, 0);
-        if (!counter) {
-            return counter.error();
-        }
-        auto cmp = m.new_id();
-        if (!cmp) {
-            return cmp.error();
-        }
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*cmp);
-            c.bop(BinaryOp::less);
-            c.left_ref(*counter);
-            c.right_ref(length);
-        });
-        m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-            c.ref(*cmp);
-        });
-        auto err = block(*counter);
-        if (err) {
-            return err;
-        }
-        m.op(AbstractOp::INC, [&](Code& c) {
-            c.ref(*counter);
-        });
-        m.op(AbstractOp::END_LOOP);
-        return none;
-    }
-
-    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
-        if (auto int_ty = ast::as<ast::IntType>(typ)) {
-            m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                c.ref(base_ref);
-            });
-            return none;
-        }
-        if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            m.op(AbstractOp::ENCODE_FLOAT, [&](Code& c) {
-                c.ref(base_ref);
-            });
-            return none;
-        }
-        if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value);
-            if (!str_ref) {
-                return str_ref.error();
-            }
-            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                c.ident(*str_ref);
-            });
-            auto max_len = immediate(m, *str_ty->bit_size / 8);
-            if (!max_len) {
-                return max_len.error();
-            }
-            counter_loop(m, *max_len, [&](Varint counter) {
-                auto index = m.new_id();
-                if (!index) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(*str_ref);
-                    c.right_ref(counter);
-                });
-                m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                    c.ref(*index);
-                });
-            });
-        }
-        if (auto arr = ast::as<ast::ArrayType>(typ)) {
-            auto len = arr->length_value;
-            if (len) {
-                for (size_t i = 0; i < *len; i++) {
-                    auto index = m.new_id();
-                    if (!index) {
-                        return error("Failed to generate new id");
-                    }
-                    auto i_ = immediate(m, i);
-                    if (!i_) {
-                        return i_.error();
-                    }
-                    m.op(AbstractOp::INDEX, [&](Code& c) {
-                        c.ident(*index);
-                        c.left_ref(base_ref);
-                        c.right_ref(*i_);
-                    });
-                    auto err = encode_type(m, arr->element_type, *index);
-                    if (err) {
-                        return err;
-                    }
-                }
-                return none;
-            }
-            // len = <len>
-            // i = 0
-            // cmp = i < len
-            // loop cmp:
-            //   index = base_ref[i]
-            //   encode_type(index)
-            //   i++
-            auto err = convert_node_encode(m, arr->length);
-            if (err) {
-                return err;
-            }
-            auto len_init = varint(m.prev_expr_id);
-            if (!len_init) {
-                return len_init.error();
-            }
-            auto len_ident = define_tmp_var(m, *len_init, ast::ConstantLevel::immutable_variable);
-            if (!len_ident) {
-                return len_ident.error();
-            }
-            counter_loop(m, *len_ident, [&](Varint counter) {
-                auto index = m.new_id();
-                if (!index) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(base_ref);
-                    c.right_ref(counter);
-                });
-                auto err = encode_type(m, arr->element_type, *index);
-                if (err) {
-                    return err;
-                }
-            });
-            return none;
-        }
-        if (auto s = ast::as<ast::StructType>(typ)) {
-            auto member = s->base.lock();
-            if (auto me = ast::as<ast::Member>(member)) {
-                auto ident = m.lookup_ident(me->ident);
-                if (!ident) {
-                    return ident.error();
-                }
-                m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
-                    c.left_ref(*ident);
-                    c.right_ref(base_ref);
-                });
-                return none;
-            }
-            return error("unknown struct type");
-        }
-        if (auto e = ast::as<ast::EnumType>(typ)) {
-            auto base_enum = e->base.lock();
-            if (!base_enum) {
-                return error("invalid enum type(maybe bug)");
-            }
-            auto base_type = base_enum->base_type;
-            if (!base_type) {
-                return error("abstract enum {} in encode", base_enum->ident->ident);
-            }
-            auto ident = m.lookup_ident(base_enum->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            auto casted = m.new_id();
-            if (!casted) {
-                return casted.error();
-            }
-            m.op(AbstractOp::ENUM_TO_INT_CAST, [&](Code& c) {
-                c.ident(*casted);
-                c.left_ref(*ident);
-                c.right_ref(base_ref);
-            });
-            auto err = encode_type(m, base_type, *casted);
-            if (err) {
-                return err;
-            }
-            return none;
-        }
-        return error("unsupported type: {}", node_type_to_string(typ->node_type));
-    }
-
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
-        if (auto int_ty = ast::as<ast::IntType>(typ)) {
-            m.op(AbstractOp::DECODE_INT, [&](Code& c) {
-                c.ref(base_ref);
-            });
-            return none;
-        }
-        if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            m.op(AbstractOp::DECODE_FLOAT, [&](Code& c) {
-                c.ref(base_ref);
-            });
-            return none;
-        }
-        if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value);
-            if (!str_ref) {
-                return str_ref.error();
-            }
-            // str_ref = <string>
-            // counter_init = 0
-            // counter_ident = counter_init
-            // max_len = <max_len>
-            // cmp = counter_ident < max_len
-            // loop cmp:
-            //   index = str_ref[counter_ident]
-            //   encode_int(index)
-            //   counter_ident++
-            // end_loop
-            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                c.ident(*str_ref);
-            });
-            auto counter = m.new_id();
-            if (!counter) {
-                return error("Failed to generate new id");
-            }
-            auto counter = define_counter(m, 0);
-            if (!counter) {
-                return counter.error();
-            }
-            auto max_len = immediate(m, *str_ty->bit_size / 8);
-            if (!max_len) {
-                return max_len.error();
-            }
-            auto cmp = m.new_id();
-            if (!cmp) {
-                return error("Failed to generate new id");
-            }
-            m.op(AbstractOp::BINARY, [&](Code& c) {
-                c.ident(*cmp);
-                c.bop(BinaryOp::less);
-                c.left_ref(*counter);
-                c.right_ref(*max_len);
-            });
-            m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-                c.ref(*cmp);
-            });
-            auto index = m.new_id();
-            if (!index) {
-                return error("Failed to generate new id");
-            }
-            m.op(AbstractOp::INDEX, [&](Code& c) {
-                c.ident(*index);
-                c.left_ref(*str_ref);
-                c.right_ref(*counter);
-            });
-            m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                c.ref(*index);
-            });
-            m.op(AbstractOp::INC, [&](Code& c) {
-                c.ref(*counter);
-            });
-            m.op(AbstractOp::END_LOOP);
-        }
-        if (auto arr = ast::as<ast::ArrayType>(typ)) {
-            auto len = arr->length_value;
-            if (len) {
-                for (size_t i = 0; i < *len; i++) {
-                    auto index = m.new_id();
-                    if (!index) {
-                        return error("Failed to generate new id");
-                    }
-                    auto i_ = immediate(m, i);
-                    if (!i_) {
-                        return i_.error();
-                    }
-                    m.op(AbstractOp::INDEX, [&](Code& c) {
-                        c.ident(*index);
-                        c.left_ref(base_ref);
-                        c.right_ref(*i_);
-                    });
-                    auto err = encode_type(m, arr->element_type, *index);
-                    if (err) {
-                        return err;
-                    }
-                }
-                return none;
-            }
-            // len = <len>
-            // i = 0
-            // cmp = i < len
-            // loop cmp:
-            //   index = base_ref[i]
-            //   encode_type(index)
-            //   i++
-            auto err = convert_node_encode(m, arr->length);
-            if (err) {
-                return err;
-            }
-            auto id = varint(m.prev_expr_id);
-            if (!id) {
-                return id.error();
-            }
-            auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
-            if (!len_ident) {
-                return len_ident.error();
-            }
-            auto cmp = m.new_id();
-            if (!cmp) {
-                return cmp.error();
-            }
-            auto i_ = define_counter(m, 0);
-            if (!i_) {
-                return i_.error();
-            }
-            m.op(AbstractOp::BINARY, [&](Code& c) {
-                c.ident(*cmp);
-                c.bop(BinaryOp::less);
-                c.left_ref(*i_);
-                c.right_ref(*len_ident);
-            });
-            m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-                c.ref(*cmp);
-            });
-            auto index = m.new_id();
-            if (!index) {
-                return error("Failed to generate new id");
-            }
-            m.op(AbstractOp::INDEX, [&](Code& c) {
-                c.ident(*index);
-                c.left_ref(base_ref);
-                c.right_ref(*len_ident);
-            });
-            err = encode_type(m, arr->element_type, *index);
-            if (err) {
-                return err;
-            }
-            m.op(AbstractOp::INC, [&](Code& c) {
-                c.ref(*i_);
-            });
-            m.op(AbstractOp::END_LOOP);
-            return none;
-        }
-        if (auto s = ast::as<ast::StructType>(typ)) {
-            auto member = s->base.lock();
-            if (auto me = ast::as<ast::Member>(member)) {
-                auto ident = m.lookup_ident(me->ident);
-                if (!ident) {
-                    return ident.error();
-                }
-                m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
-                    c.left_ref(*ident);
-                    c.right_ref(base_ref);
-                });
-                return none;
-            }
-            return error("unknown struct type");
-        }
-        if (auto e = ast::as<ast::EnumType>(typ)) {
-            auto base_enum = e->base.lock();
-            if (!base_enum) {
-                return error("invalid enum type(maybe bug)");
-            }
-            auto base_type = base_enum->base_type;
-            if (!base_type) {
-                return error("abstract enum {} in encode", base_enum->ident->ident);
-            }
-            auto ident = m.lookup_ident(base_enum->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            auto casted = m.new_id();
-            if (!casted) {
-                return casted.error();
-            }
-            m.op(AbstractOp::ENUM_TO_INT_CAST, [&](Code& c) {
-                c.ident(*casted);
-                c.left_ref(*ident);
-                c.right_ref(base_ref);
-            });
-            auto err = encode_type(m, base_type, *casted);
-            if (err) {
-                return err;
-            }
-            return none;
-        }
-        return error("unsupported type: {}", node_type_to_string(typ->node_type));
-    }
-
-    template <>
-    Error encode<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
-        auto ident = m.lookup_ident(node->ident);
-        if (!ident) {
-            return ident.error();
-        }
-        encode_type(m, node->field_type, *ident);
-    }
-
     template <>
     Error define<ast::Function>(Module& m, std::shared_ptr<ast::Function>& node) {
         auto ident = m.lookup_ident(node->ident);
@@ -732,84 +337,6 @@ namespace rebgn {
     }
 
     template <>
-    Error encode<ast::Format>(Module& m, std::shared_ptr<ast::Format>& node) {
-        auto fmt_ident = m.lookup_ident(node->ident);
-        if (!fmt_ident) {
-            return fmt_ident.error();
-        }
-        auto fn = node->encode_fn.lock();
-        if (fn) {
-            auto ident = m.lookup_ident(fn->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
-                c.left_ref(*fmt_ident);
-                c.right_ref(*ident);
-            });
-            return none;
-        }
-        auto new_id = m.new_id();
-        if (!new_id) {
-            return new_id.error();
-        }
-        m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-            c.ident(*new_id);
-        });
-        for (auto& elem : node->body->elements) {
-            auto err = convert_node_encode(m, elem);
-            if (err) {
-                return err;
-            }
-        }
-        m.op(AbstractOp::END_FUNCTION);
-        m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
-            c.left_ref(*fmt_ident);
-            c.right_ref(*new_id);
-        });
-        return none;
-    }
-
-    template <>
-    Error decode<ast::Format>(Module& m, std::shared_ptr<ast::Format>& node) {
-        auto fmt_ident = m.lookup_ident(node->ident);
-        if (!fmt_ident) {
-            return fmt_ident.error();
-        }
-        auto fn = node->decode_fn.lock();
-        if (fn) {
-            auto ident = m.lookup_ident(fn->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {
-                c.left_ref(*fmt_ident);
-                c.right_ref(*ident);
-            });
-            return none;
-        }
-        auto new_id = m.new_id();
-        if (!new_id) {
-            return new_id.error();
-        }
-        m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-            c.ident(*new_id);
-        });
-        for (auto& elem : node->body->elements) {
-            auto err = convert_node_encode(m, elem);
-            if (err) {
-                return err;
-            }
-        }
-        m.op(AbstractOp::END_FUNCTION);
-        m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {
-            c.left_ref(*fmt_ident);
-            c.right_ref(*new_id);
-        });
-        return none;
-    }
-
-    template <>
     Error define<ast::Enum>(Module& m, std::shared_ptr<ast::Enum>& node) {
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
@@ -841,6 +368,11 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Paren>(Module& m, std::shared_ptr<ast::Paren>& node) {
+        return convert_node_definition(m, node->expr);
+    }
+
+    template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
         auto ident = m.new_id();
         if (!ident) {
@@ -869,16 +401,6 @@ namespace rebgn {
             c.right_ref(*varint(m.prev_expr_id));
         });
         return none;
-    }
-
-    template <>
-    Error encode<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
-        return define<ast::Binary>(m, node);
-    }
-
-    template <>
-    Error decode<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
-        return define<ast::Binary>(m, node);
     }
 
     template <>
@@ -924,41 +446,9 @@ namespace rebgn {
         return none;
     }
 
-    template <>
-    Error encode<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
-        for (auto& n : node->elements) {
-            auto err = convert_node_encode(m, n);
-            if (err) {
-                return err;
-            }
-        }
-        return none;
-    }
-
-    template <>
-    Error decode<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
-        for (auto& n : node->elements) {
-            auto err = convert_node_decode(m, n);
-            if (err) {
-                return err;
-            }
-        }
-        return none;
-    }
-
     template <class T>
     concept has_define = requires(Module& m, std::shared_ptr<T>& n) {
         define<T>(m, n);
-    };
-
-    template <class T>
-    concept has_encode = requires(Module& m, std::shared_ptr<T>& n) {
-        encode<T>(m, n);
-    };
-
-    template <class T>
-    concept has_decode = requires(Module& m, std::shared_ptr<T>& n) {
-        decode<T>(m, n);
     };
 
     Error convert_node_definition(Module& m, const std::shared_ptr<ast::Node>& n) {
@@ -967,28 +457,6 @@ namespace rebgn {
             using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
             if constexpr (has_define<T>) {
                 err = define<T>(m, node);
-            }
-        });
-        return err;
-    }
-
-    Error convert_node_encode(Module& m, const std::shared_ptr<ast::Node>& n) {
-        Error err;
-        ast::visit(n, [&](auto&& node) {
-            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
-            if constexpr (has_encode<T>) {
-                err = encode<T>(m, node);
-            }
-        });
-        return err;
-    }
-
-    Error convert_node_decode(Module& m, const std::shared_ptr<ast::Node>& n) {
-        Error err;
-        ast::visit(n, [&](auto&& node) {
-            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
-            if constexpr (has_decode<T>) {
-                err = decode<T>(m, node);
             }
         });
         return err;

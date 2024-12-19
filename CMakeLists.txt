@@ -11,7 +11,13 @@ link_directories("$ENV{FUTILS_DIR}/lib")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
-add_executable(rebrgen "src/main.cpp" "src/convert.cpp" "src/load_json.cpp" "src/save_module.cpp")
+add_executable(rebrgen 
+    "src/main.cpp" 
+    "src/convert.cpp" 
+    "src/encode.cpp"
+    "src/load_json.cpp" 
+    "src/save_module.cpp"
+)
 
 target_link_libraries(rebrgen futils)
 

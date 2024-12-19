@@ -29,7 +29,7 @@ namespace rebgn {
             if (!max_len) {
                 return max_len.error();
             }
-            counter_loop(m, *max_len, [&](Varint counter) {
+            return counter_loop(m, *max_len, [&](Varint counter) {
                 auto index = m.new_id();
                 if (!index) {
                     return error("Failed to generate new id");
@@ -73,7 +73,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto len_init = varint(m.prev_expr_id);
+            auto len_init = m.get_prev_expr();
             if (!len_init) {
                 return len_init.error();
             }
@@ -81,7 +81,7 @@ namespace rebgn {
             if (!len_) {
                 return len_.error();
             }
-            counter_loop(m, *len_, [&](Varint counter) {
+            return counter_loop(m, *len_, [&](Varint counter) {
                 auto index = m.new_id();
                 if (!index) {
                     return error("Failed to generate new id");
@@ -97,7 +97,6 @@ namespace rebgn {
                 }
                 return none;
             });
-            return none;
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
@@ -170,16 +169,6 @@ namespace rebgn {
             if (!str_ref) {
                 return str_ref.error();
             }
-            // str_ref = <string>
-            // counter_init = 0
-            // counter_ident = counter_init
-            // max_len = <max_len>
-            // cmp = counter_ident < max_len
-            // loop cmp:
-            //   index = str_ref[counter_ident]
-            //   encode_int(index)
-            //   counter_ident++
-            // end_loop
             m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
                 c.ident(*str_ref);
             });
@@ -187,7 +176,7 @@ namespace rebgn {
             if (!max_len) {
                 return max_len.error();
             }
-            counter_loop(m, *max_len, [&](Varint counter) {
+            return counter_loop(m, *max_len, [&](Varint counter) {
                 auto tmp = m.new_id();
                 if (!tmp) {
                     return error("Failed to generate new id");
@@ -228,7 +217,6 @@ namespace rebgn {
                 });
                 return none;
             });
-            return none;
         }
         if (auto arr = ast::as<ast::ArrayType>(typ)) {
             auto len = arr->length_value;
@@ -265,7 +253,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto id = varint(m.prev_expr_id);
+            auto id = m.get_prev_expr();
             if (!id) {
                 return id.error();
             }
@@ -273,7 +261,7 @@ namespace rebgn {
             if (!len_ident) {
                 return len_ident.error();
             }
-            counter_loop(m, *len_ident, [&](Varint counter) {
+            return counter_loop(m, *len_ident, [&](Varint counter) {
                 auto index = m.new_id();
                 if (!index) {
                     return error("Failed to generate new id");
@@ -289,7 +277,6 @@ namespace rebgn {
                 }
                 return none;
             });
-            return none;
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
@@ -444,7 +431,7 @@ namespace rebgn {
             c.ident(*new_id);
         });
         for (auto& elem : node->body->elements) {
-            auto err = convert_node_encode(m, elem);
+            auto err = convert_node_decode(m, elem);
             if (err) {
                 return err;
             }
@@ -489,27 +476,66 @@ namespace rebgn {
         return convert_node_definition(m, node);
     }
 
+    template <>
+    Error encode<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error encode<ast::Paren>(Module& m, std::shared_ptr<ast::Paren>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::Paren>(Module& m, std::shared_ptr<ast::Paren>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error encode<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
+        return convert_node_definition(m, node);
+    }
+
     Error convert_match(Module& m, std::shared_ptr<ast::Match>& node, auto&& eval) {
         if (node->cond) {
             auto err = eval(m, node->cond);
             if (err) {
                 return err;
             }
+            auto cond = m.get_prev_expr();
+            if (!cond) {
+                return cond.error();
+            }
             m.op(AbstractOp::MATCH, [&](Code& c) {
-                c.ref(*varint(m.prev_expr_id));
+                c.ref(*cond);
             });
             for (auto& c : node->branch) {
-                auto err = eval(m, c->cond->expr);
-                if (err) {
-                    return err;
+                if (ast::is_any_range(c->cond->expr)) {
+                    m.op(AbstractOp::DEFAULT);
                 }
-                auto cond = varint(m.prev_expr_id);
-                if (!cond) {
-                    return cond.error();
+                else {
+                    auto err = eval(m, c->cond->expr);
+                    if (err) {
+                        return err;
+                    }
+                    auto cond = m.get_prev_expr();
+                    if (!cond) {
+                        return cond.error();
+                    }
+                    m.op(AbstractOp::CASE, [&](Code& c) {
+                        c.ref(*cond);
+                    });
                 }
-                m.op(AbstractOp::CASE, [&](Code& c) {
-                    c.ref(*cond);
-                });
                 if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                     auto err = eval(scoped->statement);
                     if (err) {
@@ -537,29 +563,39 @@ namespace rebgn {
         // translate into if-else
         std::shared_ptr<ast::Node> last = nullptr;
         for (auto& c : node->branch) {
-            if (ast::tool::is_s)
-                auto err = eval(m, c->cond->expr);
-            if (err) {
-                return err;
-            }
-            auto cond = varint(m.prev_expr_id);
-            if (!cond) {
-                return cond.error();
-            }
-            if (!last) {
-                auto if_ = m.new_id();
-                if (!if_) {
-                    return error("Failed to generate new id");
+            if (ast::is_any_range(c->cond->expr)) {
+                // if first branch, so we don't need to use if-elses
+                if (last) {
+                    m.op(AbstractOp::ELSE);
+                    last = c;
                 }
-                m.op(AbstractOp::IF, [&](Code& c) {
-                    c.ident(*if_);
-                    c.ref(*cond);
-                });
             }
             else {
-                m.op(AbstractOp::ELIF, [&](Code& c) {
-                    c.ref(*cond);
-                });
+                auto err = eval(m, c->cond->expr);
+                if (err) {
+                    return err;
+                }
+                auto cond = m.get_prev_expr();
+                if (!cond) {
+                    return cond.error();
+                }
+                if (!last) {
+                    auto if_ = m.new_id();
+                    if (!if_) {
+                        return error("Failed to generate new id");
+                    }
+                    m.op(AbstractOp::IF, [&](Code& c) {
+                        c.ident(*if_);
+                        c.ref(*cond);
+                    });
+                    last = c;
+                }
+                else {
+                    m.op(AbstractOp::ELIF, [&](Code& c) {
+                        c.ref(*cond);
+                    });
+                    last = c;
+                }
             }
             if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                 auto err = eval(scoped->statement);
@@ -579,6 +615,10 @@ namespace rebgn {
                 return error("Invalid match branch");
             }
         }
+        if (last) {
+            m.op(AbstractOp::END_IF);
+        }
+        return none;
     }
 
     Error convert_if(Module& m, std::shared_ptr<ast::If>& node, auto&& eval) {
@@ -586,7 +626,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        auto cond = varint(m.prev_expr_id);
+        auto cond = m.get_prev_expr();
         if (!cond) {
             return cond.error();
         }
@@ -612,7 +652,7 @@ namespace rebgn {
                     if (err) {
                         return err;
                     }
-                    auto cond = varint(m.prev_expr_id);
+                    auto cond = m.get_prev_expr();
                     if (!cond) {
                         return cond.error();
                     }
@@ -643,6 +683,7 @@ namespace rebgn {
             }
         }
         m.op(AbstractOp::END_IF);
+        return none;
     }
 
     template <>
@@ -671,7 +712,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto cond = varint(m.prev_expr_id);
+            auto cond = m.get_prev_expr();
             if (!cond) {
                 return cond.error();
             }
@@ -695,6 +736,7 @@ namespace rebgn {
             }
         }
         m.op(AbstractOp::END_LOOP);
+        return none;
     }
 
     template <>

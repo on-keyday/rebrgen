@@ -39,12 +39,29 @@ namespace rebgn {
 
     struct Module {
         std::unordered_map<std::string, std::uint64_t> string_table;
+        std::unordered_map<std::uint64_t, std::string> string_table_rev;
         std::unordered_map<std::shared_ptr<ast::Ident>, std::uint64_t> ident_table;
+        std::unordered_map<std::uint64_t, std::shared_ptr<ast::Ident>> ident_table_rev;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
         std::vector<Code> code;
         std::uint64_t object_id = 1;
 
+       private:
         std::uint64_t prev_expr_id = null_id;
+
+       public:
+        expected<Varint> get_prev_expr() {
+            if (prev_expr_id == null_id) {
+                return unexpect_error("No previous expression");
+            }
+            auto expr = varint(prev_expr_id);
+            prev_expr_id = null_id;
+            return expr;
+        }
+
+        void set_prev_expr(std::uint64_t id) {
+            prev_expr_id = id;
+        }
 
         expected<Varint> lookup_string(const std::string& str) {
             auto str_ref = string_table.find(str);
@@ -54,6 +71,7 @@ namespace rebgn {
                     return ident;
                 }
                 string_table.emplace(str, ident->value());
+                string_table_rev.emplace(ident->value(), str);
                 return ident;
             }
             return varint(str_ref->second);
@@ -71,6 +89,7 @@ namespace rebgn {
                     return id;
                 }
                 ident_table[base] = id->value();
+                ident_table_rev[id->value()] = base;
                 return id;
             }
             return varint(it->second);
@@ -83,7 +102,7 @@ namespace rebgn {
         void op(AbstractOp op) {
             Code c;
             c.op = op;
-            code.push_back(c);
+            code.push_back(std::move(c));
         }
 
         void op(AbstractOp op, auto&& set) {
@@ -91,7 +110,7 @@ namespace rebgn {
             c.op = op;
             set(c);
             auto ident = c.ident();
-            code.push_back(c);
+            code.push_back(std::move(c));
             if (ident) {
                 ident_index_table[ident->value()] = code.size() - 1;
             }

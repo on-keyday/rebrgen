@@ -49,22 +49,51 @@ void print_code(rebgn::Module& m) {
             default:
                 break;
         }
-
+        auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
+            bool found_ident = false;
+            if (use_index) {
+                if (auto found = m.ident_index_table.find(ref.value()); found != m.ident_index_table.end()) {
+                    std::string_view s = to_string(m.code[found->second].op);
+                    if (s.starts_with("DEFINE_")) {
+                        s = s.substr(7);
+                    }
+                    cout << " " << s;
+                    found_ident = true;
+                }
+            }
+            if (auto found = m.ident_table_rev.find(ref.value()); found != m.ident_table_rev.end()) {
+                cout << " " << found->second->ident;
+                found_ident = true;
+            }
+            if (auto found = m.string_table_rev.find(ref.value()); found != m.string_table_rev.end()) {
+                cout << " " << found->second;
+                found_ident = true;
+            }
+            if (found_ident) {
+                cout << "(" << ref.value() << ")";
+            }
+            else {
+                cout << " " << ref.value();
+            }
+        };
         cout << nest << to_string(c.op);
         if (auto ident = c.ident()) {
-            cout << " " << ident->value();
+            print_ref(*ident, false);
         }
         if (auto ref = c.ref()) {
-            cout << " " << ref->value();
+            print_ref(*ref);
+        }
+        if (auto uop = c.uop()) {
+            cout << " " << to_string(*uop);
+        }
+        if (auto left_ref = c.left_ref()) {
+            print_ref(*left_ref);
         }
         if (auto bop = c.bop()) {
             cout << " " << to_string(*bop);
         }
-        if (auto left_ref = c.left_ref()) {
-            cout << " " << left_ref->value();
-        }
         if (auto right_ref = c.right_ref()) {
-            cout << " " << right_ref->value();
+            print_ref(*right_ref);
         }
         if (auto int_value = c.int_value()) {
             cout << " " << int_value->value();
@@ -79,8 +108,15 @@ void print_code(rebgn::Module& m) {
                     cout << " " << size->value();
                 }
                 if (auto ref = st.ref()) {
-                    cout << " " << ref->value();
+                    print_ref(*ref);
                 }
+            }
+        }
+        if (auto m = c.metadata()) {
+            print_ref(m->name);
+            for (auto& v : m->expr_refs) {
+                cout << " ";
+                print_ref(v);
             }
         }
         cout << '\n';

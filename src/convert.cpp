@@ -56,7 +56,7 @@ namespace rebgn {
         if (!id) {
             return id.error();
         }
-        m.prev_expr_id = id->value();
+        m.set_prev_expr(id->value());
         return none;
     }
 
@@ -69,7 +69,7 @@ namespace rebgn {
         m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
             c.ident(*str_ref);
         });
-        m.prev_expr_id = str_ref->value();
+        m.set_prev_expr(str_ref->value());
         return none;
     }
 
@@ -82,7 +82,7 @@ namespace rebgn {
         m.op(AbstractOp::IDENT_REF, [&](Code& c) {
             c.ref(*ident);
         });
-        m.prev_expr_id = ident->value();
+        m.set_prev_expr(ident->value());
         return none;
     }
 
@@ -92,7 +92,10 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        auto base = m.prev_expr_id;
+        auto base = m.get_prev_expr();
+        if (!base) {
+            return error("Invalid member access");
+        }
         auto ident = m.lookup_ident(node->member);
         if (!ident) {
             return ident.error();
@@ -103,10 +106,10 @@ namespace rebgn {
         }
         m.op(AbstractOp::ACCESS, [&](Code& c) {
             c.ident(*new_id);
-            c.left_ref(*varint(base));
+            c.left_ref(*base);
             c.right_ref(*ident);
         });
-        m.prev_expr_id = new_id->value();
+        m.set_prev_expr(new_id->value());
         return none;
     }
 
@@ -245,9 +248,12 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-                auto length_ref = m.prev_expr_id;
+                auto length_ref = m.get_prev_expr();
+                if (!length_ref) {
+                    return error("Invalid array length");
+                }
                 push(StorageType::VECTOR, [&](Storage& c) {
-                    c.ref(*varint(length_ref));
+                    c.ref(*length_ref);
                 });
             }
             auto err = define_storage(m, s, a->element_type);
@@ -357,9 +363,13 @@ namespace rebgn {
             if (err) {
                 return err;
             }
+            auto ref = m.get_prev_expr();
+            if (!ref) {
+                return error("Invalid enum member value");
+            }
             m.op(AbstractOp::ASSIGN, [&](Code& c) {
                 c.left_ref(*ident);
-                c.right_ref(*varint(m.prev_expr_id));
+                c.right_ref(*ref);
             });
             m.op(AbstractOp::END_ENUM_MEMBER);
         }
@@ -373,6 +383,29 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident.error();
+        }
+        auto err = convert_node_definition(m, node->expr);
+        if (err) {
+            return err;
+        }
+        auto target = m.get_prev_expr();
+        if (!target) {
+            return error("Invalid unary expression");
+        }
+        auto uop = UnaryOp(node->op);
+        m.op(AbstractOp::UNARY, [&](Code& c) {
+            c.ident(*ident);
+            c.uop(uop);
+            c.ref(*target);
+        });
+        return none;
+    }
+
+    template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
         auto ident = m.new_id();
         if (!ident) {
@@ -382,7 +415,10 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        auto left_ref = m.prev_expr_id;
+        auto left_ref = m.get_prev_expr();
+        if (!left_ref) {
+            return error("Invalid binary expression");
+        }
         if (node->op == ast::BinaryOp::logical_and ||
             node->op == ast::BinaryOp::logical_or) {
             m.op(AbstractOp::SHORT_CIRCUIT, [&](Code& c) {
@@ -393,12 +429,16 @@ namespace rebgn {
         if (err2) {
             return err2;
         }
+        auto right_ref = m.get_prev_expr();
+        if (!right_ref) {
+            return error("Invalid binary expression");
+        }
         auto bop = BinaryOp(node->op);
         m.op(AbstractOp::BINARY, [&](Code& c) {
             c.ident(*ident);
             c.bop(bop);
-            c.left_ref(*varint(left_ref));
-            c.right_ref(*varint(m.prev_expr_id));
+            c.left_ref(*left_ref);
+            c.right_ref(*right_ref);
         });
         return none;
     }
@@ -415,7 +455,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto val = varint(m.prev_expr_id);
+            auto val = m.get_prev_expr();
             if (!val) {
                 return val.error();
             }

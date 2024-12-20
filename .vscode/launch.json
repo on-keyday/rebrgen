@@ -5,7 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
+            "name": "Debug bmgen",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/bmgen",
+            "args": [
+                "-i","C:/workspace/shbrgen/brgen/ignore/sample.json",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
+            "name": "Debug bm2cpp",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceRoot}/tool/bm2cpp",

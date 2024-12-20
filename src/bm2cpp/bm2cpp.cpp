@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "bm2cpp.hpp"
 #include <code/code_writer.h>
 #include <unordered_map>

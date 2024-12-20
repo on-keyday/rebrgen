@@ -149,6 +149,11 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cout << m.error().error<std::string>() << '\n';
         return 1;
     }
+    auto err = rebgn::optimize(*m);
+    if (err) {
+        cout << err.error<std::string>() << '\n';
+        return 1;
+    }
     print_code(*m);
     if (flags.output.size()) {
         auto file = futils::file::File::create(flags.output);

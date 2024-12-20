@@ -121,4 +121,6 @@ namespace rebgn {
 
     Error save(Module& m, futils::binary::writer& w);
 
+    Error optimize(Module& m);
+
 }  // namespace rebgn

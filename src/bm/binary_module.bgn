@@ -84,24 +84,31 @@ enum AbstractOp:
 
     DEFINE_FORMAT
     END_FORMAT
+    DECLARE_FORMAT
 
     DEFINE_FIELD
     END_FIELD
+    DECLARE_FIELD
     
     DEFINE_FUNCTION
     END_FUNCTION
+    DECLARE_FUNCTION
     
     DEFINE_ENUM
     END_ENUM
+    DECLARE_ENUM
     
     DEFINE_ENUM_MEMBER
     END_ENUM_MEMBER
+    DECLARE_ENUM_MEMBER
     
     DEFINE_UNION
     END_UNION
+    DECLARE_UNION
 
     DEFINE_UNION_MEMBER
     END_UNION_MEMBER
+    DECLARE_UNION_MEMBER
     
     DEFINE_ENCODER
 
@@ -324,6 +331,21 @@ format Code:
             ref :Varint
         AbstractOp.ELIF:
             ref :Varint
+        AbstractOp.DECLARE_FORMAT:
+            ref :Varint
+        AbstractOp.DECLARE_FIELD:
+            ref :Varint
+        AbstractOp.DECLARE_ENUM:
+            ref :Varint
+        AbstractOp.DECLARE_ENUM_MEMBER:
+            ref :Varint
+        AbstractOp.DECLARE_FUNCTION:
+            ref :Varint
+        AbstractOp.DECLARE_UNION:
+            ref :Varint
+        AbstractOp.DECLARE_UNION_MEMBER:
+            ref :Varint
+            
 
 
 format StringRefs:

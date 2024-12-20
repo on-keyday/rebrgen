@@ -18,6 +18,7 @@ add_executable(bmgen
     "src/bm/encode.cpp"
     "src/bm/load_json.cpp" 
     "src/bm/save_module.cpp"
+    "src/bm/optimize.cpp"
 )
 
 add_executable(bm2cpp

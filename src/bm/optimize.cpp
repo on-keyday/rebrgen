@@ -51,6 +51,7 @@ namespace rebgn {
                     return err;
                 }
                 current.nested.push_back(std::move(r));
+                i = end - 1;
                 return none;
             };
             switch (c.op) {
@@ -136,36 +137,22 @@ namespace rebgn {
         for (size_t i = r.range.start; i < r.range.end; i++) {
             if (outer_range < r.nested.size() &&
                 r.nested[outer_range].range.start == i) {
-                auto& r2 = r.nested[outer_range];
-                size_t inner_nested = 0;
-                for (size_t j = r2.range.start; j < r2.range.end; j++) {
-                    if (inner_nested < r2.nested.size() &&
-                        r2.nested[inner_nested].range.start == j) {
-                        auto decl = define_to_declare(m.code[j].op);
-                        if (!decl) {
-                            return decl.error();
-                        }
-                        Code declare;
-                        declare.op = decl.value();
-                        declare.ref(m.code[j].ident().value());
-                        flat.push_back(std::move(declare));
-                        outer_nested.push_back(std::move(m.code[j]));
-                        std::vector<Code> tmp;
-                        auto err = flatten_ranges(m, r2.nested[inner_nested], outer_nested, tmp);
-                        if (err) {
-                            return err;
-                        }
-                        auto last = r2.nested[inner_nested].range.end - 1;
-                        outer_nested.push_back(std::move(m.code[last]));
-                        outer_nested.insert(outer_nested.end(), tmp.begin(), tmp.end());
-                        j = last;
-                        inner_nested++;
-                    }
-                    else {
-                        flat.push_back(std::move(m.code[j]));
-                    }
+                auto decl = define_to_declare(m.code[i].op);
+                if (!decl) {
+                    return decl.error();
                 }
-                i = r2.range.end;
+                Code declare;
+                declare.op = decl.value();
+                declare.ref(m.code[i].ident().value());
+                flat.push_back(std::move(declare));
+                std::vector<Code> tmp;
+                auto err = flatten_ranges(m, r.nested[outer_range], tmp, outer_nested);
+                if (err) {
+                    return err;
+                }
+                auto last = r.nested[outer_range].range.end - 1;
+                outer_nested.insert(outer_nested.end(), tmp.begin(), tmp.end());
+                i = last;
                 outer_range++;
             }
             else {

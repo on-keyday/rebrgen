@@ -44,6 +44,8 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::END_UNION_MEMBER:
             case rebgn::AbstractOp::END_FUNCTION:
             case rebgn::AbstractOp::END_LOOP:
+            case rebgn::AbstractOp::END_CASE:
+            case rebgn::AbstractOp::END_MATCH:
                 nest.resize(nest.size() - 2);
                 break;
             default:
@@ -130,6 +132,9 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::DEFINE_FUNCTION:
             case rebgn::AbstractOp::LOOP_CONDITION:
             case rebgn::AbstractOp::LOOP_INFINITE:
+            case rebgn::AbstractOp::MATCH:
+            case rebgn::AbstractOp::CASE:
+            case rebgn::AbstractOp::DEFAULT_CASE:
                 nest += "  ";
                 break;
             default:

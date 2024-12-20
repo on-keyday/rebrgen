@@ -509,7 +509,7 @@ namespace rebgn {
             });
             for (auto& c : node->branch) {
                 if (ast::is_any_range(c->cond->expr)) {
-                    m.op(AbstractOp::DEFAULT);
+                    m.op(AbstractOp::DEFAULT_CASE);
                 }
                 else {
                     auto cond = get_expr(m, c->cond->expr);
@@ -521,7 +521,7 @@ namespace rebgn {
                     });
                 }
                 if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
-                    auto err = eval(scoped->statement);
+                    auto err = eval(m, scoped->statement);
                     if (err) {
                         return err;
                     }
@@ -537,6 +537,7 @@ namespace rebgn {
                 else {
                     return error("Invalid match branch");
                 }
+                m.op(AbstractOp::END_CASE);
             }
             m.op(AbstractOp::END_MATCH);
             return none;
@@ -578,7 +579,7 @@ namespace rebgn {
                 }
             }
             if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
-                auto err = eval(scoped->statement);
+                auto err = eval(m, scoped->statement);
                 if (err) {
                     return err;
                 }
@@ -599,6 +600,20 @@ namespace rebgn {
             m.op(AbstractOp::END_IF);
         }
         return none;
+    }
+
+    template <>
+    Error encode<ast::Match>(Module& m, std::shared_ptr<ast::Match>& node) {
+        return convert_match(m, node, [](Module& m, auto& n) {
+            return convert_node_encode(m, n);
+        });
+    }
+
+    template <>
+    Error decode<ast::Match>(Module& m, std::shared_ptr<ast::Match>& node) {
+        return convert_match(m, node, [](Module& m, auto& n) {
+            return convert_node_decode(m, n);
+        });
     }
 
     Error convert_if(Module& m, std::shared_ptr<ast::If>& node, auto&& eval) {

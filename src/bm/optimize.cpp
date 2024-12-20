@@ -176,8 +176,99 @@ namespace rebgn {
         return none;
     }
 
+    Error bind_encoder_and_decoder(Module& m) {
+        std::vector<Code> rebound;
+        std::map<std::uint64_t, std::uint64_t> should_bind_encoder;
+        std::map<std::uint64_t, std::uint64_t> should_bind_decoder;
+        std::map<std::uint64_t, std::uint64_t> fmt_to_encoder;
+        std::map<std::uint64_t, std::uint64_t> fmt_to_decoder;
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
+                auto fmt_begin = c.left_ref().value().value();
+                auto found = m.ident_index_table.find(fmt_begin);
+                if (found == m.ident_index_table.end()) {
+                    return error("Invalid format ident: {}", fmt_begin);
+                }
+                bool has_declare_in_fmt = false;
+                for (auto fmt = found->second; fmt < m.code.size(); fmt++) {
+                    if (m.code[fmt].op == AbstractOp::END_FORMAT) {
+                        break;
+                    }
+                    if (m.code[fmt].op == AbstractOp::DECLARE_FUNCTION &&
+                        m.code[fmt].ref().value().value() == c.right_ref().value().value()) {
+                        has_declare_in_fmt = true;
+                        break;
+                    }
+                }
+                if (c.op == AbstractOp::DEFINE_ENCODER) {
+                    if (!has_declare_in_fmt) {
+                        should_bind_encoder[c.right_ref().value().value()] = c.left_ref().value().value();
+                    }
+                    fmt_to_encoder[c.left_ref().value().value()] = c.right_ref().value().value();
+                }
+                else {
+                    if (!has_declare_in_fmt) {
+                        should_bind_decoder[c.right_ref().value().value()] = c.left_ref().value().value();
+                    }
+                    fmt_to_decoder[c.left_ref().value().value()] = c.right_ref().value().value();
+                }
+            }
+        }
+
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::DEFINE_FORMAT) {
+                auto ident = c.ident().value().value();
+                rebound.push_back(std::move(c));
+                auto found_encoder = fmt_to_encoder.find(ident);
+                auto found_decoder = fmt_to_decoder.find(ident);
+                if (found_encoder != fmt_to_encoder.end()) {
+                    Code bind;
+                    bind.op = AbstractOp::DECLARE_FUNCTION;
+                    bind.ref(*varint(found_encoder->second));
+                    rebound.push_back(std::move(bind));
+                    bind.op = AbstractOp::DEFINE_ENCODER;
+                    bind.left_ref(*varint(ident));
+                    bind.right_ref(*varint(found_encoder->second));
+                    rebound.push_back(std::move(bind));
+                }
+                if (found_decoder != fmt_to_decoder.end()) {
+                    Code bind;
+                    bind.op = AbstractOp::DECLARE_FUNCTION;
+                    bind.ref(*varint(found_decoder->second));
+                    rebound.push_back(std::move(bind));
+                    bind.op = AbstractOp::DEFINE_DECODER;
+                    bind.left_ref(*varint(ident));
+                    bind.right_ref(*varint(found_decoder->second));
+                    rebound.push_back(std::move(bind));
+                }
+            }
+            else if (c.op == AbstractOp::DECLARE_FUNCTION) {
+                if (auto found = should_bind_encoder.find(c.ref().value().value()); found != should_bind_encoder.end()) {
+                    continue;  // skip; declaration is moved into DEFINE_FORMAT
+                }
+                if (auto found = should_bind_decoder.find(c.ref().value().value()); found != should_bind_decoder.end()) {
+                    continue;  // skip; declaration is moved into DEFINE_FORMAT
+                }
+                rebound.push_back(std::move(c));
+            }
+            else if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
+                // skip
+            }
+            else {
+                rebound.push_back(std::move(c));
+            }
+        }
+        m.code = std::move(rebound);
+        return none;
+    }
+
     Error optimize(Module& m) {
         auto err = flatten(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
+        err = bind_encoder_and_decoder(m);
         if (err) {
             return err;
         }

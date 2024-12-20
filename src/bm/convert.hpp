@@ -38,11 +38,11 @@ namespace rebgn {
     }
 
     struct Module {
-        std::unordered_map<std::string, std::uint64_t> string_table;
-        std::unordered_map<std::uint64_t, std::string> string_table_rev;
-        std::unordered_map<std::shared_ptr<ast::Ident>, std::uint64_t> ident_table;
-        std::unordered_map<std::uint64_t, std::shared_ptr<ast::Ident>> ident_table_rev;
-        std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
+        std::unordered_map<std::string, ObjectID> string_table;
+        std::unordered_map<ObjectID, std::string> string_table_rev;
+        std::unordered_map<std::shared_ptr<ast::Ident>, ObjectID> ident_table;
+        std::unordered_map<ObjectID, std::shared_ptr<ast::Ident>> ident_table_rev;
+        std::unordered_map<ObjectID, std::uint64_t> ident_index_table;
         std::vector<Code> code;
         std::uint64_t object_id = 1;
 

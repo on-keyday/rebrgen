@@ -137,7 +137,8 @@ enum AbstractOp:
 
     MATCH
     CASE
-    DEFAULT
+    END_CASE
+    DEFAULT_CASE
     END_MATCH
 
     DEFINE_VARIABLE
@@ -354,7 +355,9 @@ format Code:
         AbstractOp.CONDITIONAL_FIELD:
             left_ref :Varint # ref to expr
             right_ref :Varint # ref to field
-    
+        AbstractOp.CASE:
+            ref :Varint
+ 
 
 
 format StringRefs:

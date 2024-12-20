@@ -46,6 +46,9 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::END_LOOP:
             case rebgn::AbstractOp::END_CASE:
             case rebgn::AbstractOp::END_MATCH:
+            case rebgn::AbstractOp::ELSE:
+            case rebgn::AbstractOp::ELIF:
+            case rebgn::AbstractOp::END_IF:
                 nest.resize(nest.size() - 2);
                 break;
             default:
@@ -79,14 +82,14 @@ void print_code(rebgn::Module& m) {
             }
         };
         cout << nest << to_string(c.op);
+        if (auto uop = c.uop()) {
+            cout << " " << to_string(*uop);
+        }
         if (auto ident = c.ident()) {
             print_ref(*ident, false);
         }
         if (auto ref = c.ref()) {
             print_ref(*ref);
-        }
-        if (auto uop = c.uop()) {
-            cout << " " << to_string(*uop);
         }
         if (auto left_ref = c.left_ref()) {
             print_ref(*left_ref);
@@ -135,6 +138,9 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::MATCH:
             case rebgn::AbstractOp::CASE:
             case rebgn::AbstractOp::DEFAULT_CASE:
+            case rebgn::AbstractOp::ELSE:
+            case rebgn::AbstractOp::ELIF:
+            case rebgn::AbstractOp::IF:
                 nest += "  ";
                 break;
             default:

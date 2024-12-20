@@ -162,7 +162,8 @@ enum AbstractOp:
     CALL
     RET
 
-    IMMEDIATE_BOOL
+    IMMEDIATE_TRUE
+    IMMEDIATE_FALSE
     IMMEDIATE_INT
     IMMEDIATE_INT64
     IMMEDIATE_STRING
@@ -245,6 +246,10 @@ format Code:
             ident :Varint
             int_value64 :u64
         AbstractOp.IMMEDIATE_STRING:
+            ident :Varint
+        AbstractOp.IMMEDIATE_TRUE:
+            ident :Varint
+        AbstractOp.IMMEDIATE_FALSE:
             ident :Varint
         AbstractOp.IMMEDIATE_TYPE:
             ident :Varint

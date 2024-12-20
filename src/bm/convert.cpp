@@ -14,6 +14,24 @@ namespace rebgn {
         return m.get_prev_expr();
     }
 
+    expected<Varint> immediate_bool(Module& m, bool b) {
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident;
+        }
+        if (b) {
+            m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
+                c.ident(*ident);
+            });
+        }
+        else {
+            m.op(AbstractOp::IMMEDIATE_FALSE, [&](Code& c) {
+                c.ident(*ident);
+            });
+        }
+        return ident;
+    }
+
     expected<Varint> immediate(Module& m, std::uint64_t n) {
         auto ident = m.new_id();
         if (!ident) {
@@ -66,6 +84,16 @@ namespace rebgn {
             return id.error();
         }
         m.set_prev_expr(id->value());
+        return none;
+    }
+
+    template <>
+    Error define<ast::BoolLiteral>(Module& m, std::shared_ptr<ast::BoolLiteral>& node) {
+        auto ref = immediate_bool(m, node->value);
+        if (!ref) {
+            return ref.error();
+        }
+        m.set_prev_expr(ref->value());
         return none;
     }
 
@@ -285,7 +313,7 @@ namespace rebgn {
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
 
-    Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty) {
+    Error handle_union_type(Module& m, const std::shared_ptr<ast::UnionType>& ty, auto&& block) {
         std::optional<Varint> base_cond;
         if (auto cond = ty->cond.lock()) {
             auto cond_ = get_expr(m, cond);
@@ -294,17 +322,147 @@ namespace rebgn {
             }
             base_cond = cond_.value();
         }
+        std::optional<Varint> prev_cond;
         for (auto& c : ty->candidates) {
             auto cond = c->cond.lock();
             auto field = c->field.lock();
             if (cond) {
-                auto err = convert_node_definition(m, cond);
-                if (err) {
-                    return err;
+                auto cond_ = get_expr(m, cond);
+                if (!cond_) {
+                    return error("Invalid union field condition");
+                }
+                if (base_cond) {
+                    auto new_id = m.new_id();
+                    if (!new_id) {
+                        return new_id.error();
+                    }
+                    m.op(AbstractOp::BINARY, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.bop(BinaryOp::equal);
+                        c.left_ref(*base_cond);
+                        c.right_ref(*cond_);
+                    });
+                    cond_ = new_id;
+                }
+                if (prev_cond) {
+                    auto new_id_1 = m.new_id();
+                    if (!new_id_1) {
+                        return new_id_1.error();
+                    }
+                    m.op(AbstractOp::UNARY, [&](Code& c) {
+                        c.ident(*new_id_1);
+                        c.uop(UnaryOp::not_);
+                        c.ref(*prev_cond);
+                    });
+                    auto new_id_2 = m.new_id();
+                    if (!new_id_2) {
+                        return new_id_2.error();
+                    }
+                    m.op(AbstractOp::BINARY, [&](Code& c) {
+                        c.ident(*new_id_2);
+                        c.bop(BinaryOp::logical_and);
+                        c.left_ref(*new_id_1);
+                        c.right_ref(*cond_);
+                    });
+                    cond_ = new_id_2;
+                }
+                if (field) {
+                    auto err = block(cond_.value(), field);
+                    if (err) {
+                        return err;
+                    }
+                }
+                prev_cond = cond_.value();
+            }
+            else {
+                auto new_id = m.new_id();
+                if (!new_id) {
+                    return new_id.error();
+                }
+                if (prev_cond) {
+                    m.op(AbstractOp::UNARY, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.uop(UnaryOp::not_);
+                        c.ref(*prev_cond);
+                    });
+                }
+                else {
+                    m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
+                        c.ident(*new_id);
+                    });
+                }
+                if (field) {
+                    auto err = block(*new_id, field);
+                    if (err) {
+                        return err;
+                    }
                 }
             }
         }
         return none;
+    }
+
+    template <>
+    Error define<ast::Available>(Module& m, std::shared_ptr<ast::Available>& node) {
+        Varint new_id;
+        if (auto union_ty = ast::as<ast::UnionType>(node->target->expr_type)) {
+            std::optional<Varint> prev_cond;
+            auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint cond, auto&& field) {
+                if (prev_cond) {
+                    auto new_id = m.new_id();
+                    if (!new_id) {
+                        return new_id.error();
+                    }
+                    m.op(AbstractOp::BINARY, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.bop(BinaryOp::logical_or);
+                        c.left_ref(*prev_cond);
+                        c.right_ref(cond);
+                    });
+                    prev_cond = *new_id;
+                }
+                else {
+                    prev_cond = cond;
+                }
+                return none;
+            });
+            if (err) {
+                return err;
+            }
+            if (!prev_cond) {
+                auto imm = immediate_bool(m, false);
+                if (!imm) {
+                    return imm.error();
+                }
+                new_id = *imm;
+            }
+            else {
+                new_id = prev_cond.value();
+            }
+        }
+        else {
+            auto imm = immediate_bool(m, ast::as<ast::Ident>(node->target) || ast::as<ast::MemberAccess>(node->target));
+            if (!imm) {
+                return imm.error();
+            }
+            new_id = *imm;
+        }
+        m.set_prev_expr(new_id.value());
+        return none;
+    }
+
+    Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty) {
+        return handle_union_type(m, ty, [&](Varint cond, auto&& field) {
+            auto ident = m.lookup_ident(field->ident);
+            if (!ident) {
+                return ident.error();
+            }
+            m.op(AbstractOp::CONDITIONAL_FIELD, [&](Code& c) {
+                c.left_ref(cond);
+                c.right_ref(*ident);
+            });
+            return none;
+        });
     }
 
     template <>
@@ -460,7 +618,74 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Cond>(Module& m, std::shared_ptr<ast::Cond>& node) {
+        Storages s;
+        auto err = define_storage(m, s, node->expr_type);
+        if (err) {
+            return err;
+        }
+        auto new_id = m.new_id();
+        if (!new_id) {
+            return new_id.error();
+        }
+        m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+            c.ident(*new_id);
+            c.storage(std::move(s));
+        });
+        auto cond = get_expr(m, node->cond);
+        if (!cond) {
+            return error("Invalid conditional expression");
+        }
+        auto if_ = m.new_id();
+        if (!if_) {
+            return error("Failed to generate new id");
+        }
+        m.op(AbstractOp::IF, [&](Code& c) {
+            c.ident(*if_);
+            c.ref(*cond);
+        });
+        auto then = get_expr(m, node->then);
+        if (!then) {
+            return error("Invalid then expression");
+        }
+        m.op(AbstractOp::ASSIGN, [&](Code& c) {
+            c.left_ref(*new_id);
+            c.right_ref(*then);
+        });
+        m.op(AbstractOp::ELSE);
+        auto els = get_expr(m, node->els);
+        if (!els) {
+            return error("Invalid else expression");
+        }
+        m.op(AbstractOp::ASSIGN, [&](Code& c) {
+            c.left_ref(*new_id);
+            c.right_ref(*els);
+        });
+        m.op(AbstractOp::END_IF);
+        m.set_prev_expr(new_id->value());
+        return none;
+    }
+
+    template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
+        if (node->op == ast::BinaryOp::define_assign ||
+            node->op == ast::BinaryOp::const_assign) {
+            auto ident = ast::cast_to<ast::Ident>(node->left);
+            auto ident_ = m.lookup_ident(ident);
+            if (!ident_) {
+                return ident_.error();
+            }
+            auto right_ref = get_expr(m, node->right);
+            if (!right_ref) {
+                return error("Invalid binary expression");
+            }
+            m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
+                c.ident(*ident_);
+                c.ref(*right_ref);
+            });
+            m.set_prev_expr(ident_->value());
+            return none;
+        }
         auto ident = m.new_id();
         if (!ident) {
             return ident.error();
@@ -486,6 +711,7 @@ namespace rebgn {
             c.left_ref(*left_ref);
             c.right_ref(*right_ref);
         });
+        m.set_prev_expr(ident->value());
         return none;
     }
 

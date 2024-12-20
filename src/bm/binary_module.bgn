@@ -89,6 +89,7 @@ enum AbstractOp:
     DEFINE_FIELD
     END_FIELD
     DECLARE_FIELD
+    CONDITIONAL_FIELD
     
     DEFINE_FUNCTION
     END_FUNCTION
@@ -164,6 +165,7 @@ enum AbstractOp:
     IMMEDIATE_INT
     IMMEDIATE_INT64
     IMMEDIATE_STRING
+    IMMEDIATE_TYPE
     IDENT_REF
 
     NEW_OBJECT
@@ -243,6 +245,9 @@ format Code:
             int_value64 :u64
         AbstractOp.IMMEDIATE_STRING:
             ident :Varint
+        AbstractOp.IMMEDIATE_TYPE:
+            ident :Varint
+            storage :Storages
         AbstractOp.IDENT_REF:
             ref :Varint
         AbstractOp.DEFINE_FORMAT:
@@ -261,7 +266,8 @@ format Code:
         AbstractOp.DEFINE_DECODER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to decoder
-        AbstractOp.DEFINE_UNION => ident :Varint
+        AbstractOp.DEFINE_UNION:
+            ident :Varint
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
             ref :Varint
@@ -345,7 +351,10 @@ format Code:
             ref :Varint
         AbstractOp.DECLARE_UNION_MEMBER:
             ref :Varint
-            
+        AbstractOp.CONDITIONAL_FIELD:
+            left_ref :Varint # ref to expr
+            right_ref :Varint # ref to field
+    
 
 
 format StringRefs:

@@ -69,11 +69,7 @@ namespace rebgn {
                 }
                 return none;
             }
-            auto err = convert_node_encode(m, arr->length);
-            if (err) {
-                return err;
-            }
-            auto len_init = m.get_prev_expr();
+            auto len_init = get_expr(m, arr->length);
             if (!len_init) {
                 return len_init.error();
             }
@@ -249,11 +245,7 @@ namespace rebgn {
             //   index = base_ref[i]
             //   encode_type(index)
             //   i++
-            auto err = convert_node_encode(m, arr->length);
-            if (err) {
-                return err;
-            }
-            auto id = m.get_prev_expr();
+            auto id = get_expr(m, arr->length);
             if (!id) {
                 return id.error();
             }
@@ -508,11 +500,7 @@ namespace rebgn {
 
     Error convert_match(Module& m, std::shared_ptr<ast::Match>& node, auto&& eval) {
         if (node->cond) {
-            auto err = eval(m, node->cond);
-            if (err) {
-                return err;
-            }
-            auto cond = m.get_prev_expr();
+            auto cond = get_expr(m, node->cond);
             if (!cond) {
                 return cond.error();
             }
@@ -524,11 +512,7 @@ namespace rebgn {
                     m.op(AbstractOp::DEFAULT);
                 }
                 else {
-                    auto err = eval(m, c->cond->expr);
-                    if (err) {
-                        return err;
-                    }
-                    auto cond = m.get_prev_expr();
+                    auto cond = get_expr(m, c->cond->expr);
                     if (!cond) {
                         return cond.error();
                     }
@@ -571,11 +555,7 @@ namespace rebgn {
                 }
             }
             else {
-                auto err = eval(m, c->cond->expr);
-                if (err) {
-                    return err;
-                }
-                auto cond = m.get_prev_expr();
+                auto cond = get_expr(m, c->cond->expr);
                 if (!cond) {
                     return cond.error();
                 }
@@ -622,11 +602,7 @@ namespace rebgn {
     }
 
     Error convert_if(Module& m, std::shared_ptr<ast::If>& node, auto&& eval) {
-        auto err = eval(m, node->cond->expr);
-        if (err) {
-            return err;
-        }
-        auto cond = m.get_prev_expr();
+        auto cond = get_expr(m, node->cond->expr);
         if (!cond) {
             return cond.error();
         }
@@ -648,11 +624,7 @@ namespace rebgn {
             std::shared_ptr<ast::If> els = node;
             while (els) {
                 if (auto e = ast::as<ast::If>(els->els)) {
-                    auto err = eval(m, e->cond->expr);
-                    if (err) {
-                        return err;
-                    }
-                    auto cond = m.get_prev_expr();
+                    auto cond = get_expr(m, e->cond->expr);
                     if (!cond) {
                         return cond.error();
                     }
@@ -708,11 +680,7 @@ namespace rebgn {
             }
         }
         if (node->cond) {
-            auto err = eval(m, node->cond);
-            if (err) {
-                return err;
-            }
-            auto cond = m.get_prev_expr();
+            auto cond = get_expr(m, node->cond);
             if (!cond) {
                 return cond.error();
             }

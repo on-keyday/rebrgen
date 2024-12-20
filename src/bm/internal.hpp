@@ -20,6 +20,7 @@ namespace rebgn {
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ);
+    expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
 
     Error counter_loop(Module& m, Varint length, auto&& block) {
         auto counter = define_counter(m, 0);

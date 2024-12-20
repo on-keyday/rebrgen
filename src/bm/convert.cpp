@@ -5,6 +5,15 @@
 
 namespace rebgn {
 
+    expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n) {
+        m.set_prev_expr(null_id);
+        auto err = convert_node_definition(m, n);
+        if (err) {
+            return unexpect_error(std::move(err));
+        }
+        return m.get_prev_expr();
+    }
+
     expected<Varint> immediate(Module& m, std::uint64_t n) {
         auto ident = m.new_id();
         if (!ident) {
@@ -74,6 +83,25 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::TypeLiteral>(Module& m, std::shared_ptr<ast::TypeLiteral>& node) {
+        Storages s;
+        auto err = define_storage(m, s, node->type_literal);
+        if (err) {
+            return err;
+        }
+        auto new_id = m.new_id();
+        if (!new_id) {
+            return new_id.error();
+        }
+        m.op(AbstractOp::IMMEDIATE_TYPE, [&](Code& c) {
+            c.ident(*new_id);
+            c.storage(std::move(s));
+        });
+        m.set_prev_expr(new_id->value());
+        return none;
+    }
+
+    template <>
     Error define<ast::Ident>(Module& m, std::shared_ptr<ast::Ident>& node) {
         auto ident = m.lookup_ident(node);
         if (!ident) {
@@ -88,13 +116,9 @@ namespace rebgn {
 
     template <>
     Error define<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
-        auto err = convert_node_definition(m, node->target);
-        if (err) {
-            return err;
-        }
-        auto base = m.get_prev_expr();
+        auto base = get_expr(m, node->target);
         if (!base) {
-            return error("Invalid member access");
+            return base.error();
         }
         auto ident = m.lookup_ident(node->member);
         if (!ident) {
@@ -244,13 +268,9 @@ namespace rebgn {
                 });
             }
             else {
-                auto err = convert_node_definition(m, a->length);
-                if (err) {
-                    return err;
-                }
-                auto length_ref = m.get_prev_expr();
+                auto length_ref = get_expr(m, a->length);
                 if (!length_ref) {
-                    return error("Invalid array length");
+                    return length_ref.error();
                 }
                 push(StorageType::VECTOR, [&](Storage& c) {
                     c.ref(*length_ref);
@@ -263,6 +283,28 @@ namespace rebgn {
             return none;
         }
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
+    }
+
+    Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty) {
+        std::optional<Varint> base_cond;
+        if (auto cond = ty->cond.lock()) {
+            auto cond_ = get_expr(m, cond);
+            if (!cond_) {
+                return error("Invalid union field condition");
+            }
+            base_cond = cond_.value();
+        }
+        for (auto& c : ty->candidates) {
+            auto cond = c->cond.lock();
+            auto field = c->field.lock();
+            if (cond) {
+                auto err = convert_node_definition(m, cond);
+                if (err) {
+                    return err;
+                }
+            }
+        }
+        return none;
     }
 
     template <>
@@ -283,6 +325,12 @@ namespace rebgn {
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.storage(std::move(s));
             });
+        }
+        else {
+            auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type));
+            if (err) {
+                return err;
+            }
         }
         m.op(AbstractOp::END_FIELD);
         return none;
@@ -351,6 +399,16 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_ENUM, [&](Code& c) {
             c.ident(*ident);
         });
+        if (node->base_type) {
+            Storages s;
+            auto err = define_storage(m, s, node->base_type);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(std::move(s));
+            });
+        }
         for (auto& me : node->members) {
             auto ident = m.lookup_ident(me->ident);
             if (!ident) {
@@ -363,7 +421,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto ref = m.get_prev_expr();
+            auto ref = get_expr(m, me->value);
             if (!ref) {
                 return error("Invalid enum member value");
             }
@@ -388,11 +446,7 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        auto err = convert_node_definition(m, node->expr);
-        if (err) {
-            return err;
-        }
-        auto target = m.get_prev_expr();
+        auto target = get_expr(m, node->expr);
         if (!target) {
             return error("Invalid unary expression");
         }
@@ -411,11 +465,7 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        auto err = convert_node_definition(m, node->left);
-        if (err) {
-            return err;
-        }
-        auto left_ref = m.get_prev_expr();
+        auto left_ref = get_expr(m, node->left);
         if (!left_ref) {
             return error("Invalid binary expression");
         }
@@ -425,11 +475,7 @@ namespace rebgn {
                 c.ref(*ident);
             });
         }
-        auto err2 = convert_node_definition(m, node->right);
-        if (err2) {
-            return err2;
-        }
-        auto right_ref = m.get_prev_expr();
+        auto right_ref = get_expr(m, node->right);
         if (!right_ref) {
             return error("Invalid binary expression");
         }
@@ -444,6 +490,11 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Identity>(Module& m, std::shared_ptr<ast::Identity>& node) {
+        return convert_node_definition(m, node->expr);
+    }
+
+    template <>
     Error define<ast::Metadata>(Module& m, std::shared_ptr<ast::Metadata>& node) {
         auto node_name = m.lookup_string(node->name);
         if (!node_name) {
@@ -451,11 +502,7 @@ namespace rebgn {
         }
         std::vector<Varint> values;
         for (auto& value : node->values) {
-            auto err = convert_node_definition(m, value);
-            if (err) {
-                return err;
-            }
-            auto val = m.get_prev_expr();
+            auto val = get_expr(m, value);
             if (!val) {
                 return val.error();
             }

@@ -67,6 +67,12 @@ enum UnaryOp:
     not_ = "!"
     minus_sign = "-"
 
+enum Endian:
+    :u8
+    unspec
+    big
+    little
+
 enum AbstractOp:
     :u8
     NOP
@@ -306,8 +312,10 @@ format Code:
             ref :Varint
         AbstractOp.ENCODE_INT:
             ref :Varint
+            endian :Endian
         AbstractOp.DECODE_INT:
             ref :Varint
+            endian :Endian
         AbstractOp.BIT_CAST:
             ident: Varint
             storage :Storages

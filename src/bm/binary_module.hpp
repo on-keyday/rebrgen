@@ -300,6 +300,38 @@ namespace rebgn {
         }
         return std::nullopt;
     }
+    enum class Endian : std::uint8_t {
+        unspec = 0,
+        big = 1,
+        little = 2,
+    };
+    constexpr const char* to_string(Endian e) {
+        switch (e) {
+            case Endian::unspec:
+                return "unspec";
+            case Endian::big:
+                return "big";
+            case Endian::little:
+                return "little";
+        }
+        return "";
+    }
+
+    constexpr std::optional<Endian> Endian_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "unspec") {
+            return Endian::unspec;
+        }
+        if (str == "big") {
+            return Endian::big;
+        }
+        if (str == "little") {
+            return Endian::little;
+        }
+        return std::nullopt;
+    }
     enum class AbstractOp : std::uint8_t {
         NOP = 0,
         METADATA = 1,
@@ -1065,9 +1097,11 @@ namespace rebgn {
         };
         struct union_struct_42 {
             Varint ref;
+            Endian endian{};
         };
         struct union_struct_43 {
             Varint ref;
+            Endian endian{};
         };
         struct union_struct_44 {
             Varint ident;
@@ -1147,6 +1181,9 @@ namespace rebgn {
         std::optional<BinaryOp> bop() const;
         bool bop(BinaryOp&& v);
         bool bop(const BinaryOp& v);
+        std::optional<Endian> endian() const;
+        bool endian(Endian&& v);
+        bool endian(const Endian& v);
         std::optional<Varint> ident() const;
         bool ident(Varint&& v);
         bool ident(const Varint& v);
@@ -1673,6 +1710,298 @@ namespace rebgn {
                 union_variant_14 = union_struct_35();
             }
             std::get<21>((*this).union_variant_14).bop = std::move(v);
+            return true;
+        }
+        return false;
+    }
+    inline std::optional<Endian> Code::endian() const {
+        if (AbstractOp::METADATA == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SHORT_CIRCUIT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_42>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<28>((*this).union_variant_14).endian;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_43>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<29>((*this).union_variant_14).endian;
+        }
+        return std::nullopt;
+    }
+    inline bool Code::endian(const Endian& v) {
+        if (AbstractOp::METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SHORT_CIRCUIT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_42>(union_variant_14)) {
+                union_variant_14 = union_struct_42();
+            }
+            std::get<28>((*this).union_variant_14).endian = v;
+            return true;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_43>(union_variant_14)) {
+                union_variant_14 = union_struct_43();
+            }
+            std::get<29>((*this).union_variant_14).endian = v;
+            return true;
+        }
+        return false;
+    }
+    inline bool Code::endian(Endian&& v) {
+        if (AbstractOp::METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SHORT_CIRCUIT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_42>(union_variant_14)) {
+                union_variant_14 = union_struct_42();
+            }
+            std::get<28>((*this).union_variant_14).endian = std::move(v);
+            return true;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            if (!std::holds_alternative<union_struct_43>(union_variant_14)) {
+                union_variant_14 = union_struct_43();
+            }
+            std::get<29>((*this).union_variant_14).endian = std::move(v);
             return true;
         }
         return false;
@@ -5583,6 +5912,10 @@ namespace rebgn {
             if (auto err = std::get<28>((*this).union_variant_14).ref.encode(w)) {
                 return err;
             }
+            auto tmp_98_ = static_cast<std::uint8_t>(std::get<28>((*this).union_variant_14).endian);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_98_), true)) {
+                return ::futils::error::Error<>("encode: Code::endian: write std::uint8_t failed", ::futils::error::Category::lib);
+            }
         }
         else if (AbstractOp::DECODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_43>(union_variant_14)) {
@@ -5590,6 +5923,10 @@ namespace rebgn {
             }
             if (auto err = std::get<29>((*this).union_variant_14).ref.encode(w)) {
                 return err;
+            }
+            auto tmp_99_ = static_cast<std::uint8_t>(std::get<29>((*this).union_variant_14).endian);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_99_), true)) {
+                return ::futils::error::Error<>("encode: Code::endian: write std::uint8_t failed", ::futils::error::Category::lib);
             }
         }
         else if (AbstractOp::BIT_CAST == (*this).op) {
@@ -5796,11 +6133,11 @@ namespace rebgn {
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Code::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_98_ = 0;
-        if (!::futils::binary::read_num(r, tmp_98_, true)) {
+        std::uint8_t tmp_100_ = 0;
+        if (!::futils::binary::read_num(r, tmp_100_, true)) {
             return ::futils::error::Error<>("decode: Code::op: read int failed", ::futils::error::Category::lib);
         }
-        (*this).op = static_cast<AbstractOp>(tmp_98_);
+        (*this).op = static_cast<AbstractOp>(tmp_100_);
         if (AbstractOp::METADATA == (*this).op) {
             if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
                 union_variant_14 = union_struct_15();
@@ -5986,11 +6323,11 @@ namespace rebgn {
             if (auto err = std::get<21>((*this).union_variant_14).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_99_ = 0;
-            if (!::futils::binary::read_num(r, tmp_99_, true)) {
+            std::uint8_t tmp_101_ = 0;
+            if (!::futils::binary::read_num(r, tmp_101_, true)) {
                 return ::futils::error::Error<>("decode: Code::bop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<21>((*this).union_variant_14).bop = static_cast<BinaryOp>(tmp_99_);
+            std::get<21>((*this).union_variant_14).bop = static_cast<BinaryOp>(tmp_101_);
             if (auto err = std::get<21>((*this).union_variant_14).left_ref.decode(r)) {
                 return err;
             }
@@ -6005,11 +6342,11 @@ namespace rebgn {
             if (auto err = std::get<22>((*this).union_variant_14).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_100_ = 0;
-            if (!::futils::binary::read_num(r, tmp_100_, true)) {
+            std::uint8_t tmp_102_ = 0;
+            if (!::futils::binary::read_num(r, tmp_102_, true)) {
                 return ::futils::error::Error<>("decode: Code::uop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<22>((*this).union_variant_14).uop = static_cast<UnaryOp>(tmp_100_);
+            std::get<22>((*this).union_variant_14).uop = static_cast<UnaryOp>(tmp_102_);
             if (auto err = std::get<22>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
@@ -6076,6 +6413,11 @@ namespace rebgn {
             if (auto err = std::get<28>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
+            std::uint8_t tmp_103_ = 0;
+            if (!::futils::binary::read_num(r, tmp_103_, true)) {
+                return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
+            }
+            std::get<28>((*this).union_variant_14).endian = static_cast<Endian>(tmp_103_);
         }
         else if (AbstractOp::DECODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_43>(union_variant_14)) {
@@ -6084,6 +6426,11 @@ namespace rebgn {
             if (auto err = std::get<29>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
+            std::uint8_t tmp_104_ = 0;
+            if (!::futils::binary::read_num(r, tmp_104_, true)) {
+                return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
+            }
+            std::get<29>((*this).union_variant_14).endian = static_cast<Endian>(tmp_104_);
         }
         else if (AbstractOp::BIT_CAST == (*this).op) {
             if (!std::holds_alternative<union_struct_44>(union_variant_14)) {
@@ -6304,23 +6651,23 @@ namespace rebgn {
         if (auto err = (*this).code_length.encode(w)) {
             return err;
         }
-        auto tmp_101_ = (*this).code_length.value();
-        if (tmp_101_ != (*this).code.size()) {
-            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_101_!=(*this).code.size()", ::futils::error::Category::lib);
+        auto tmp_105_ = (*this).code_length.value();
+        if (tmp_105_ != (*this).code.size()) {
+            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_105_!=(*this).code.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_102_ : (*this).code) {
-            if (auto err = tmp_102_.encode(w)) {
+        for (auto& tmp_106_ : (*this).code) {
+            if (auto err = tmp_106_.encode(w)) {
                 return err;
             }
         }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> BinaryModule::decode(::futils::binary::reader& r) {
-        ::futils::view::rvec tmp_103_ = {};
-        if (!r.read_direct(tmp_103_, 4)) {
+        ::futils::view::rvec tmp_107_ = {};
+        if (!r.read_direct(tmp_107_, 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed", ::futils::error::Category::lib);
         }
-        if (tmp_103_ != ::futils::view::rvec("RBGM", 4)) {
+        if (tmp_107_ != ::futils::view::rvec("RBGM", 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed; not match to \"RBGM\"", ::futils::error::Category::lib);
         }
         if (auto err = (*this).strings.decode(r)) {
@@ -6335,14 +6682,14 @@ namespace rebgn {
         if (auto err = (*this).code_length.decode(r)) {
             return err;
         }
-        auto tmp_104_ = (*this).code_length.value();
+        auto tmp_108_ = (*this).code_length.value();
         (*this).code.clear();
-        for (size_t tmp_106_ = 0; tmp_106_ < tmp_104_; ++tmp_106_) {
-            Code tmp_105_;
-            if (auto err = tmp_105_.decode(r)) {
+        for (size_t tmp_110_ = 0; tmp_110_ < tmp_108_; ++tmp_110_) {
+            Code tmp_109_;
+            if (auto err = tmp_109_.decode(r)) {
                 return err;
             }
-            (*this).code.push_back(std::move(tmp_105_));
+            (*this).code.push_back(std::move(tmp_109_));
         }
         return ::futils::error::Error<>();
     }

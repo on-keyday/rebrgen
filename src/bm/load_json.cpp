@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include <file/file_view.h>
 #include <core/ast/file.h>
 #include <core/ast/json.h>

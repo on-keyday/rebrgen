@@ -88,6 +88,50 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::IOOperation>(Module& m, std::shared_ptr<ast::IOOperation>& node) {
+        switch (node->method) {
+            case ast::IOMethod::input_get: {
+                Storages s;
+                auto err = define_storage(m, s, node->expr_type);
+                if (err) {
+                    return err;
+                }
+                auto id = m.new_id();
+                if (!id) {
+                    return id.error();
+                }
+                m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                    c.ident(*id);
+                    c.storage(std::move(s));
+                });
+                err = decode_type(m, node->expr_type, *id);
+                if (err) {
+                    return err;
+                }
+                m.set_prev_expr(id->value());
+                return none;
+            }
+            case ast::IOMethod::output_put: {
+                if (!node->arguments.size()) {
+                    return error("Invalid output_put: no arguments");
+                }
+                auto arg = get_expr(m, node->arguments[0]);
+                if (!arg) {
+                    return arg.error();
+                }
+                auto err = encode_type(m, node->expr_type, *arg);
+                if (err) {
+                    return err;
+                }
+                return none;
+            }
+            default: {
+                return error("Unsupported IO operation: {}", to_string(node->method));
+            }
+        }
+    }
+
+    template <>
     Error define<ast::BoolLiteral>(Module& m, std::shared_ptr<ast::BoolLiteral>& node) {
         auto ref = immediate_bool(m, node->value);
         if (!ref) {

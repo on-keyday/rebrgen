@@ -12,10 +12,23 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            m.op(AbstractOp::ENCODE_FLOAT, [&](Code& c) {
+            Storages to;
+            auto err = define_storage(m, to, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
+            if (err) {
+                return err;
+            }
+            auto new_id = m.new_id();
+            if (!new_id) {
+                return error("Failed to generate new id");
+            }
+            m.op(AbstractOp::BIT_CAST, [&](Code& c) {
+                c.ident(*new_id);
                 c.ref(base_ref);
+                c.storage(std::move(to));
             });
-            return none;
+            m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
+                c.ref(*new_id);
+            });
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
             auto str_ref = m.lookup_string(str_ty->strong_ref->value);
@@ -155,8 +168,38 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            m.op(AbstractOp::DECODE_FLOAT, [&](Code& c) {
-                c.ref(base_ref);
+            auto new_id = m.new_id();
+            if (!new_id) {
+                return error("Failed to generate new id");
+            }
+            Storages from, to;
+            auto err = define_storage(m, from, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
+            if (err) {
+                return err;
+            }
+            err = define_storage(m, to, typ);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                c.ident(*new_id);
+                c.storage(std::move(from));
+            });
+            m.op(AbstractOp::DECODE_INT, [&](Code& c) {
+                c.ref(*new_id);
+            });
+            auto next_id = m.new_id();
+            if (!next_id) {
+                return error("Failed to generate new id");
+            }
+            m.op(AbstractOp::BIT_CAST, [&](Code& c) {
+                c.ident(*next_id);
+                c.storage(std::move(to));
+                c.ref(*new_id);
+            });
+            m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                c.left_ref(base_ref);
+                c.right_ref(*next_id);
             });
             return none;
         }

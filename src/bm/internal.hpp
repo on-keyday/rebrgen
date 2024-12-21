@@ -22,6 +22,9 @@ namespace rebgn {
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
 
+    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref);
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref);
+
     Error counter_loop(Module& m, Varint length, auto&& block) {
         auto counter = define_counter(m, 0);
         if (!counter) {

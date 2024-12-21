@@ -117,12 +117,11 @@ enum AbstractOp:
     
     ENCODE_INT
     DECODE_INT
-    ENCODE_FLOAT
-    DECODE_FLOAT
     CALL_ENCODE
     CALL_DECODE
     ENUM_TO_INT_CAST
     INT_TO_ENUM_CAST
+    BIT_CAST
 
     LOOP_INFINITE
     LOOP_CONDITION
@@ -309,10 +308,10 @@ format Code:
             ref :Varint
         AbstractOp.DECODE_INT:
             ref :Varint
-        AbstractOp.ENCODE_FLOAT:
-            ref :Varint
-        AbstractOp.DECODE_FLOAT:
-            ref :Varint
+        AbstractOp.BIT_CAST:
+            ident: Varint
+            storage :Storages
+            ref :Varint # ref to object
         AbstractOp.CALL_ENCODE:
             left_ref :Varint # ref to encoder
             right_ref :Varint # ref to object

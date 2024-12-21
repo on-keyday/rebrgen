@@ -27,6 +27,13 @@ namespace bm2cpp {
         for (size_t i = 0; i < bm.code.size(); i++) {
             auto& code = bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::DECLARE_FORMAT: {
+                    auto& ident = ctx.ident_table[code.ref().value().value()];
+                    ctx.cw.writeln("struct ", ident, ";");
+                    break;
+                }
+                case rebgn::AbstractOp::DECLARE_ENUM: {
+                }
                 case rebgn::AbstractOp::DEFINE_FORMAT: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
                     ctx.cw.writeln("struct ", ident, " {");

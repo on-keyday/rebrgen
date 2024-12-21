@@ -88,6 +88,34 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Import>(Module& m, std::shared_ptr<ast::Import>& node) {
+        auto prog_id = m.new_id();
+        if (!prog_id) {
+            return prog_id.error();
+        }
+        m.op(AbstractOp::DEFINE_PROGRAM, [&](Code& c) {
+            c.ident(*prog_id);
+        });
+        for (auto& n : node->import_desc->elements) {
+            auto err = convert_node_definition(m, n);
+            if (err) {
+                return err;
+            }
+        }
+        m.op(AbstractOp::END_PROGRAM);
+        auto import_id = m.new_id();
+        if (!import_id) {
+            return import_id.error();
+        }
+        m.op(AbstractOp::IMPORT, [&](Code& c) {
+            c.ident(*import_id);
+            c.ref(*prog_id);
+        });
+        m.set_prev_expr(import_id->value());
+        return none;
+    }
+
+    template <>
     Error define<ast::IOOperation>(Module& m, std::shared_ptr<ast::IOOperation>& node) {
         switch (node->method) {
             case ast::IOMethod::input_get: {
@@ -738,12 +766,6 @@ namespace rebgn {
         if (!left_ref) {
             return error("Invalid binary expression");
         }
-        if (node->op == ast::BinaryOp::logical_and ||
-            node->op == ast::BinaryOp::logical_or) {
-            m.op(AbstractOp::SHORT_CIRCUIT, [&](Code& c) {
-                c.ref(*ident);
-            });
-        }
         auto right_ref = get_expr(m, node->right);
         if (!right_ref) {
             return error("Invalid binary expression");
@@ -794,12 +816,20 @@ namespace rebgn {
 
     template <>
     Error define<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
+        auto pid = m.new_id();
+        if (!pid) {
+            return pid.error();
+        }
+        m.op(AbstractOp::DEFINE_PROGRAM, [&](Code& c) {
+            c.ident(*pid);
+        });
         for (auto& n : node->elements) {
             auto err = convert_node_definition(m, n);
             if (err) {
                 return err;
             }
         }
+        m.op(AbstractOp::END_PROGRAM);
         return none;
     }
 

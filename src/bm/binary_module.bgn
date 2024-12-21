@@ -88,6 +88,10 @@ enum AbstractOp:
     SPECIFY_FIXED_VALUE
     MAP_TYPE
 
+    DEFINE_PROGRAM
+    END_PROGRAM
+    DECLARE_PROGRAM
+
     DEFINE_FORMAT
     END_FORMAT
     DECLARE_FORMAT
@@ -205,9 +209,12 @@ enum StorageType:
     ENUM
     ARRAY
     VECTOR
-    
+    # for recursive type
+    PTR
     # for union
     VARIANT
+
+
 
 
 # TODO: be recursive
@@ -228,6 +235,7 @@ format Storage:
         StorageType.VARIANT:
             ref :Varint 
             size :Varint
+        StorageType.PTR => ..
 
 format Storages:
     length :Varint
@@ -241,7 +249,13 @@ format Metadata:
 format Code:
     op :AbstractOp
     match op:
-        AbstractOp.METADATA => metadata :Metadata
+        AbstractOp.METADATA:
+            metadata :Metadata
+        AbstractOp.DEFINE_PROGRAM:
+            ident :Varint
+        AbstractOp.IMPORT:
+            ident :Varint
+            ref :Varint # ref to program
         AbstractOp.IMMEDIATE_INT:
             ident :Varint
             int_value :Varint
@@ -308,8 +322,6 @@ format Code:
         AbstractOp.ASSIGN:
             left_ref :Varint
             right_ref :Varint
-        AbstractOp.SHORT_CIRCUIT:
-            ref :Varint
         AbstractOp.ENCODE_INT:
             ref :Varint
             endian :Endian
@@ -368,6 +380,8 @@ format Code:
             left_ref :Varint # ref to expr
             right_ref :Varint # ref to field
         AbstractOp.CASE:
+            ref :Varint
+        AbstractOp.DECLARE_PROGRAM:
             ref :Varint
  
 

@@ -1,5 +1,6 @@
 /*license*/
 #include "convert.hpp"
+#include <core/ast/tool/sort.h>
 
 namespace rebgn {
     void rebind_ident_index(Module& mod) {
@@ -104,6 +105,13 @@ namespace rebgn {
                     }
                     break;
                 }
+                case AbstractOp::DEFINE_PROGRAM: {
+                    auto err = do_extract(AbstractOp::DEFINE_PROGRAM, AbstractOp::END_PROGRAM);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
@@ -127,6 +135,8 @@ namespace rebgn {
                 return AbstractOp::DECLARE_ENUM_MEMBER;
             case AbstractOp::DEFINE_UNION_MEMBER:
                 return AbstractOp::DECLARE_UNION_MEMBER;
+            case AbstractOp::DEFINE_PROGRAM:
+                return AbstractOp::DECLARE_PROGRAM;
             default:
                 return unexpect_error("Invalid op: {}", to_string(op));
         }
@@ -262,7 +272,12 @@ namespace rebgn {
         return none;
     }
 
-    Error optimize(Module& m) {
+    Error sort_formats(Module& m, const std::shared_ptr<ast::Program>& node) {
+        ast::tool::FormatSorter sorter;
+        auto sorted_formats = sorter.topological_sort(node);
+    }
+
+    Error optimize(Module& m, const std::shared_ptr<ast::Program>& node) {
         auto err = flatten(m);
         if (err) {
             return err;

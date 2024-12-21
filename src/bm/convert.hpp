@@ -121,6 +121,6 @@ namespace rebgn {
 
     Error save(Module& m, futils::binary::writer& w);
 
-    Error optimize(Module& m);
+    Error optimize(Module& m, const std::shared_ptr<ast::Program>& node);
 
 }  // namespace rebgn

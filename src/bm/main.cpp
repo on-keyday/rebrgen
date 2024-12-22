@@ -49,6 +49,7 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::ELSE:
             case rebgn::AbstractOp::ELIF:
             case rebgn::AbstractOp::END_IF:
+            case rebgn::AbstractOp::END_PROGRAM:
                 nest.resize(nest.size() - 2);
                 break;
             default:
@@ -141,6 +142,7 @@ void print_code(rebgn::Module& m) {
             case rebgn::AbstractOp::ELSE:
             case rebgn::AbstractOp::ELIF:
             case rebgn::AbstractOp::IF:
+            case rebgn::AbstractOp::DEFINE_PROGRAM:
                 nest += "  ";
                 break;
             default:
@@ -160,7 +162,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cout << m.error().error<std::string>() << '\n';
         return 1;
     }
-    auto err = rebgn::optimize(*m);
+    auto err = rebgn::optimize(*m, *res);
     if (err) {
         cout << err.error<std::string>() << '\n';
         return 1;

@@ -229,8 +229,12 @@ namespace rebgn {
                     c.ident(*tmp);
                     c.storage(std::move(s));
                 });
+                auto tmp_var = define_tmp_var(m, *tmp, ast::ConstantLevel::variable);
+                if (!tmp_var) {
+                    return tmp_var.error();
+                }
                 m.op(AbstractOp::DECODE_INT, [&](Code& c) {
-                    c.ref(*tmp);
+                    c.ref(*tmp_var);
                 });
                 auto index = m.new_id();
                 if (!index) {
@@ -247,9 +251,9 @@ namespace rebgn {
                 }
                 m.op(AbstractOp::BINARY, [&](Code& c) {
                     c.ident(*cmp);
-                    c.bop(BinaryOp::less);
-                    c.left_ref(counter);
-                    c.right_ref(*max_len);
+                    c.bop(BinaryOp::equal);
+                    c.left_ref(*index);
+                    c.right_ref(*tmp_var);
                 });
                 m.op(AbstractOp::ASSERT, [&](Code& c) {
                     c.ref(*cmp);
@@ -354,7 +358,11 @@ namespace rebgn {
                 c.ident(*storage);
                 c.storage(std::move(s));
             });
-            err = decode_type(m, base_type, *storage);
+            auto tmp_var = define_tmp_var(m, *storage, ast::ConstantLevel::variable);
+            if (!tmp_var) {
+                return tmp_var.error();
+            }
+            err = decode_type(m, base_type, *tmp_var);
             if (err) {
                 return err;
             }
@@ -365,7 +373,7 @@ namespace rebgn {
             m.op(AbstractOp::INT_TO_ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.left_ref(*ident);
-                c.right_ref(*storage);
+                c.right_ref(*tmp_var);
             });
             m.op(AbstractOp::ASSIGN, [&](Code& c) {
                 c.left_ref(base_ref);

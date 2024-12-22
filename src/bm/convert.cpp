@@ -132,11 +132,15 @@ namespace rebgn {
                     c.ident(*id);
                     c.storage(std::move(s));
                 });
-                err = decode_type(m, node->expr_type, *id);
+                auto tmp_var = define_tmp_var(m, *id, ast::ConstantLevel::variable);
+                if (!tmp_var) {
+                    return tmp_var.error();
+                }
+                err = decode_type(m, node->expr_type, *tmp_var);
                 if (err) {
                     return err;
                 }
-                m.set_prev_expr(id->value());
+                m.set_prev_expr(tmp_var->value());
                 return none;
             }
             case ast::IOMethod::output_put: {
@@ -704,6 +708,10 @@ namespace rebgn {
             c.ident(*new_id);
             c.storage(std::move(s));
         });
+        auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+        if (!tmp_var) {
+            return tmp_var.error();
+        }
         auto cond = get_expr(m, node->cond);
         if (!cond) {
             return error("Invalid conditional expression");
@@ -721,7 +729,7 @@ namespace rebgn {
             return error("Invalid then expression");
         }
         m.op(AbstractOp::ASSIGN, [&](Code& c) {
-            c.left_ref(*new_id);
+            c.left_ref(*tmp_var);
             c.right_ref(*then);
         });
         m.op(AbstractOp::ELSE);
@@ -730,11 +738,11 @@ namespace rebgn {
             return error("Invalid else expression");
         }
         m.op(AbstractOp::ASSIGN, [&](Code& c) {
-            c.left_ref(*new_id);
+            c.left_ref(*tmp_var);
             c.right_ref(*els);
         });
         m.op(AbstractOp::END_IF);
-        m.set_prev_expr(new_id->value());
+        m.set_prev_expr(tmp_var->value());
         return none;
     }
 

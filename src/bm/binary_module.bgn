@@ -161,7 +161,6 @@ enum AbstractOp:
     EXPLICIT_ERROR
 
     ACCESS
-    ENUM_MEMBER
 
     INDEX
     APPEND
@@ -180,6 +179,9 @@ enum AbstractOp:
     IDENT_REF
 
     NEW_OBJECT
+
+    DEFINE_BIT_FIELD
+    END_BIT_FIELD
 
  
 
@@ -383,6 +385,8 @@ format Code:
             ref :Varint
         AbstractOp.DECLARE_PROGRAM:
             ref :Varint
+        AbstractOp.DEFINE_BIT_FIELD:
+            ident :Varint
  
 
 
@@ -394,10 +398,19 @@ format IdentIndexs:
     refs_length :Varint
     refs :[refs_length.value]IdentIndex
 
+format Range:
+    start :Varint
+    end :Varint
+
+format Ranges:
+    length :Varint
+    ranges :[length.value]Range
+
 format BinaryModule:
     magic: "RBGM"
     strings :StringRefs
     identifiers :StringRefs
     ident_indexes :IdentIndexs
+    programs :Ranges
     code_length :Varint
     code :[code_length.value]Code

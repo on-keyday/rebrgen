@@ -61,6 +61,12 @@ namespace rebgn {
             return length.error();
         }
         bm.ident_indexes.refs_length = length.value();
+        auto programs_length = varint(m.ranges.size());
+        if (!programs_length) {
+            return programs_length.error();
+        }
+        bm.programs.length = programs_length.value();
+        bm.programs.ranges = std::move(m.ranges);
         auto code_length = varint(m.code.size());
         if (!code_length) {
             return code_length.error();

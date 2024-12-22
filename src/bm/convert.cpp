@@ -651,10 +651,6 @@ namespace rebgn {
             m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
                 c.ident(*ident);
             });
-            auto err = convert_node_definition(m, me->value);
-            if (err) {
-                return err;
-            }
             auto ref = get_expr(m, me->value);
             if (!ref) {
                 return error("Invalid enum member value");

@@ -12,19 +12,17 @@ namespace rebgn {
         }
     }
 
-    struct Range {
+    struct RangeN {
         std::uint64_t start;
         std::uint64_t end;
     };
 
-    using Ranges = std::vector<Range>;
-
     struct NestedRanges {
-        Range range;
+        RangeN range;
         std::vector<NestedRanges> nested;
     };
 
-    Error extract_ranges(Module& mod, Range range, NestedRanges& current) {
+    Error extract_ranges(Module& mod, RangeN range, NestedRanges& current) {
         for (auto i = range.start; i < range.end; i++) {
             auto& c = mod.code[i];
             auto do_extract = [&](AbstractOp begin_op, AbstractOp end_op) {
@@ -283,7 +281,7 @@ namespace rebgn {
             }
             sorted[ident->value()] = f;
         }
-        std::vector<Range> programs;
+        std::vector<RangeN> programs;
         for (size_t i = 0; i < m.code.size(); i++) {
             if (m.code[i].op == AbstractOp::DEFINE_PROGRAM) {
                 auto start = i;
@@ -296,7 +294,7 @@ namespace rebgn {
             }
         }
         struct RangeOrder {
-            Range range;
+            RangeN range;
             size_t order;
         };
         std::vector<RangeOrder> programs_order;
@@ -348,9 +346,17 @@ namespace rebgn {
         std::vector<Code> reordered;
         // first, append programs
         for (auto& p : programs_order) {
+            auto start = reordered.size();
             for (size_t i = p.range.start; i < p.range.end; i++) {
                 reordered.push_back(std::move(m.code[i]));
             }
+            auto end = reordered.size();
+            auto startV = varint(start);
+            auto endV = varint(end);
+            if (!startV || !endV) {
+                return error("Failed to convert varint");
+            }
+            m.ranges.push_back({*startV, *endV});
         }
         // then, append the rest
         for (size_t i = 0; i < m.code.size(); i++) {
@@ -370,6 +376,8 @@ namespace rebgn {
         m.code = std::move(reordered);
         return none;
     }
+
+    Error insert_ptr() {}
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);

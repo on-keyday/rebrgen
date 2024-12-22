@@ -13,6 +13,7 @@ namespace bm2cpp {
         std::unordered_map<std::uint64_t, std::string> string_table;
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
+        std::string ptr_type;
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
@@ -70,6 +71,15 @@ namespace bm2cpp {
                 return ident;
             }
             case rebgn::StorageType::RECURSIVE_STRUCT_REF: {
+                auto ref = storage.ref().value().value();
+                auto& ident = ctx.ident_table[ref];
+                if (ctx.ptr_type == "*") {
+                    return std::format("{}*", ident);
+                }
+                if (ctx.ptr_type.size()) {
+                    return std::format("{}<{}>", ctx.ptr_type, ident);
+                }
+                return std::format("std::unique_ptr<{}>", ident);
             }
             case rebgn::StorageType::ENUM: {
                 auto ref = storage.ref().value().value();
@@ -125,7 +135,23 @@ namespace bm2cpp {
                 break;
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto& ident = ctx.ident_table[code.ident().value().value()];
-                res.push_back(ident);
+                auto idx = ctx.ident_index_table[code.ident().value().value()];
+                bool should_deref = false;
+                for (size_t i = idx; ctx.bm.code[i].op != rebgn::AbstractOp::END_FIELD; i++) {
+                    if (ctx.bm.code[i].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
+                        auto st = *ctx.bm.code[i].storage();
+                        if (st.storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                            should_deref = true;
+                        }
+                        break;
+                    }
+                }
+                if (should_deref) {
+                    res.push_back(std::format("*{};", ident));
+                }
+                else {
+                    res.push_back(std::format("{};", ident));
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {

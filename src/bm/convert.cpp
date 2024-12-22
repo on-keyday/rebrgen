@@ -622,6 +622,7 @@ namespace rebgn {
                 c.storage(std::move(s));
             });
         }
+        std::map<std::shared_ptr<ast::Field>, Varint> field_map;
         for (auto& f : node->body->struct_type->fields) {
             auto err = convert_node_definition(m, f);
             if (err) {

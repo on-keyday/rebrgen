@@ -182,6 +182,11 @@ enum AbstractOp:
 
     DEFINE_BIT_FIELD
     END_BIT_FIELD
+    DECLARE_BIT_FIELD
+
+    DEFINE_PACKED_OPERATION
+    END_PACKED_OPERATION
+    DECLARE_PACKED_OPERATION
 
  
 
@@ -391,8 +396,10 @@ format Code:
         AbstractOp.APPEND:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to object
+        AbstractOp.DEFINE_PACKED_OPERATION:
+            ident :Varint
  
-
+    
 
 format StringRefs:
     refs_length :Varint

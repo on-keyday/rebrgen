@@ -2,7 +2,7 @@
 #include "internal.hpp"
 #include <core/ast/traverse.h>
 #include <format>
-
+#include <set>
 namespace rebgn {
 
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n) {
@@ -622,11 +622,34 @@ namespace rebgn {
                 c.storage(std::move(s));
             });
         }
-        std::map<std::shared_ptr<ast::Field>, Varint> field_map;
+        std::vector<std::shared_ptr<ast::Field>> bit_fields;
+        std::set<std::shared_ptr<ast::Field>> bit_field_begin, bit_field_end;
         for (auto& f : node->body->struct_type->fields) {
+            if (auto field = ast::as<ast::Field>(f)) {
+                if (field->bit_alignment != field->eventual_bit_alignment) {
+                    bit_fields.push_back(ast::cast_to<ast::Field>(f));
+                    continue;
+                }
+                if (bit_fields.size()) {
+                    bit_field_begin.insert(ast::cast_to<ast::Field>(bit_fields.front()));
+                    bit_field_end.insert(ast::cast_to<ast::Field>(ast::cast_to<ast::Field>(f)));
+                    bit_fields.clear();
+                }
+            }
+        }
+        for (auto& f : node->body->struct_type->fields) {
+            if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
+                auto ident = m.lookup_ident(f->ident);
+                m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
+                    c.ident(*ident);
+                });
+            }
             auto err = convert_node_definition(m, f);
             if (err) {
                 return err;
+            }
+            if (bit_field_end.contains(ast::cast_to<ast::Field>(f))) {
+                m.op(AbstractOp::END_BIT_FIELD);
             }
         }
         m.op(AbstractOp::END_FORMAT);

@@ -6,8 +6,14 @@
 namespace rebgn {
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
+            auto bit_size = varint(*int_ty->bit_size);
+            if (!bit_size) {
+                return bit_size.error();
+            }
             m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                 c.ref(base_ref);
+                c.endian(Endian(int_ty->endian));
+                c.bit_size(*bit_size);
             });
             return none;
         }
@@ -26,9 +32,16 @@ namespace rebgn {
                 c.ref(base_ref);
                 c.storage(std::move(to));
             });
+            auto bit_size = varint(*float_ty->bit_size);
+            if (!bit_size) {
+                return bit_size.error();
+            }
             m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                 c.ref(*new_id);
+                c.endian(Endian(float_ty->endian));
+                c.bit_size(*bit_size);
             });
+            return none;
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
             auto str_ref = m.lookup_string(str_ty->strong_ref->value);
@@ -235,6 +248,8 @@ namespace rebgn {
                 }
                 m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                     c.ref(*tmp_var);
+                    c.endian(Endian::unspec);
+                    c.bit_size(*varint(8));
                 });
                 auto index = m.new_id();
                 if (!index) {

@@ -393,6 +393,24 @@ namespace rebgn {
         return none;
     }
 
+    Error search_encode(Module& m, std::vector<size_t>& index_of_operation_and_loop, Varint fn) {
+        auto& start = m.ident_index_table[fn.value()];
+        for (size_t i = start; m.code[i].op != AbstractOp::END_FUNCTION; i++) {
+            if (m.code[i].op == AbstractOp::ENCODE_INT) {
+                index_of_operation_and_loop.push_back(i);
+            }
+        }
+    }
+
+    Error insert_packed_operation(Module& m) {
+        for (size_t i = 0; i < m.code.size(); i++) {
+            auto& c = m.code[i];
+            if (c.op == AbstractOp::DEFINE_ENCODER) {
+                auto fn = c.right_ref().value().value();
+            }
+        }
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {

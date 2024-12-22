@@ -188,6 +188,8 @@ enum AbstractOp:
     END_PACKED_OPERATION
     DECLARE_PACKED_OPERATION
 
+    SWITCH_UNION
+
  
 
 format String:
@@ -333,9 +335,11 @@ format Code:
         AbstractOp.ENCODE_INT:
             ref :Varint
             endian :Endian
+            bit_size :Varint
         AbstractOp.DECODE_INT:
             ref :Varint
             endian :Endian
+            bit_size :Varint
         AbstractOp.BIT_CAST:
             ident: Varint
             storage :Storages
@@ -398,8 +402,11 @@ format Code:
             right_ref :Varint # ref to object
         AbstractOp.DEFINE_PACKED_OPERATION:
             ident :Varint
+        AbstractOp.SWITCH_UNION:
+            left_ref :Varint # ref to union
+            right_ref :Varint # ref to member
  
-    
+
 
 format StringRefs:
     refs_length :Varint

@@ -301,19 +301,35 @@ namespace rebgn {
                 return len_ident.error();
             }
             return counter_loop(m, *len_ident, [&](Varint counter) {
-                auto index = m.new_id();
-                if (!index) {
-                    return error("Failed to generate new id");
+                auto new_obj = m.new_id();
+                if (!new_obj) {
+                    return new_obj.error();
                 }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(base_ref);
-                    c.right_ref(counter);
-                });
-                auto err = decode_type(m, arr->element_type, *index);
+                Storages s;
+                auto err = define_storage(m, s, arr->element_type, false);
                 if (err) {
                     return err;
                 }
+                m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                    c.ident(*new_obj);
+                    c.storage(std::move(s));
+                });
+                auto tmp_var = define_tmp_var(m, *new_obj, ast::ConstantLevel::variable);
+                if (!tmp_var) {
+                    return tmp_var.error();
+                }
+                err = decode_type(m, arr->element_type, *tmp_var);
+                if (err) {
+                    return err;
+                }
+                auto append = m.new_id();
+                if (!append) {
+                    return append.error();
+                }
+                m.op(AbstractOp::APPEND, [&](Code& c) {
+                    c.left_ref(base_ref);
+                    c.right_ref(*tmp_var);
+                });
                 return none;
             });
         }
@@ -350,7 +366,7 @@ namespace rebgn {
                 return storage.error();
             }
             Storages s;
-            auto err = define_storage(m, s, base_type);
+            auto err = define_storage(m, s, base_type, false);
             if (err) {
                 return err;
             }

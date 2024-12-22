@@ -19,7 +19,7 @@ namespace rebgn {
     expected<Varint> immediate(Module& m, std::uint64_t n);
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
-    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ);
+    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref);

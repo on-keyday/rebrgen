@@ -69,6 +69,8 @@ namespace bm2cpp {
                 auto& ident = ctx.ident_table[ref];
                 return ident;
             }
+            case rebgn::StorageType::RECURSIVE_STRUCT_REF: {
+            }
             case rebgn::StorageType::ENUM: {
                 auto ref = storage.ref().value().value();
                 auto& ident = ctx.ident_table[ref];
@@ -90,6 +92,24 @@ namespace bm2cpp {
                 res.insert(res.end(), right.begin(), right.end() - 1);
                 res.push_back(std::format("{} = {};", left.back(), right.back()));
                 break;
+            }
+            case rebgn::AbstractOp::IMMEDIATE_TYPE: {
+                res.push_back(type_to_string(ctx, *code.storage()));
+                break;
+            }
+            case rebgn::AbstractOp::ACCESS: {
+                auto& left_ident = ctx.ident_index_table[code.left_ref().value().value()];
+                auto left = eval_eval(ctx.bm.code[left_ident], ctx);
+                auto& right_ident = ctx.ident_index_table[code.right_ref().value().value()];
+                auto right = eval_eval(ctx.bm.code[right_ident], ctx);
+                if (ctx.bm.code[left_ident].op == rebgn::AbstractOp::IMMEDIATE_TYPE) {
+                    res.push_back(std::format("{}::{}", left.back(), right.back()));
+                }
+                else {
+                    res.insert(res.end(), left.begin(), left.end() - 1);
+                    res.insert(res.end(), right.begin(), right.end() - 1);
+                    res.push_back(std::format("{}.{}", left.back(), right.back()));
+                }
             }
             case rebgn::AbstractOp::IMMEDIATE_INT64:
                 res.push_back(std::format("{}", code.int_value64().value()));
@@ -147,7 +167,7 @@ namespace bm2cpp {
         }
 
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
-            for (size_t i = bm.programs.ranges[j].start.value(); i < bm.programs.ranges[j].end.value(); i++) {
+            for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
                 auto& code = bm.code[i];
                 switch (code.op) {
                     case rebgn::AbstractOp::DECLARE_FORMAT: {

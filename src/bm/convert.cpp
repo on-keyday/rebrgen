@@ -241,7 +241,7 @@ namespace rebgn {
         return none;
     }
 
-    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ) {
+    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive) {
         auto push = [&](StorageType t, auto&& set) {
             Storage c;
             c.type = t;
@@ -296,7 +296,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return define_storage(m, s, base_type);
+            return define_storage(m, s, base_type, should_detect_recursive);
         }
         if (auto i = ast::as<ast::StructType>(typ)) {
             auto l = i->base.lock();
@@ -305,9 +305,16 @@ namespace rebgn {
                 if (!ident) {
                     return ident.error();
                 }
-                push(StorageType::STRUCT_REF, [&](Storage& c) {
-                    c.ref(*ident);
-                });
+                if (auto fmt = ast::as<ast::Format>(member); should_detect_recursive && fmt && fmt->body->struct_type->recursive) {
+                    push(StorageType::RECURSIVE_STRUCT_REF, [&](Storage& c) {
+                        c.ref(*ident);
+                    });
+                }
+                else {
+                    push(StorageType::STRUCT_REF, [&](Storage& c) {
+                        c.ref(*ident);
+                    });
+                }
                 return none;
             }
             return error("unknown struct type");
@@ -328,7 +335,7 @@ namespace rebgn {
             if (!base_type) {
                 return none;  // this is abstract enum
             }
-            return define_storage(m, s, base_type);
+            return define_storage(m, s, base_type, should_detect_recursive);
         }
         if (auto su = ast::as<ast::StructUnionType>(typ)) {
             auto ident = m.new_id();
@@ -379,8 +386,9 @@ namespace rebgn {
                 push(StorageType::VECTOR, [&](Storage& c) {
                     c.ref(*length_ref);
                 });
+                should_detect_recursive = false;
             }
-            auto err = define_storage(m, s, a->element_type);
+            auto err = define_storage(m, s, a->element_type, should_detect_recursive);
             if (err) {
                 return err;
             }
@@ -552,7 +560,7 @@ namespace rebgn {
         });
         if (!ast::as<ast::UnionType>(node->field_type)) {
             Storages s;
-            auto err = define_storage(m, s, node->field_type);
+            auto err = define_storage(m, s, node->field_type, true);
             if (err) {
                 return err;
             }
@@ -606,7 +614,7 @@ namespace rebgn {
         });
         if (node->body->struct_type->type_map) {
             Storages s;
-            auto err = define_storage(m, s, node->body->struct_type->type_map->type_literal);
+            auto err = define_storage(m, s, node->body->struct_type->type_map->type_literal, true);
             if (err) {
                 return err;
             }

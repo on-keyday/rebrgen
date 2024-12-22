@@ -117,6 +117,22 @@ namespace rebgn {
         return none;
     }
 
+    bool is_declare(AbstractOp op) {
+        switch (op) {
+            case AbstractOp::DECLARE_FUNCTION:
+            case AbstractOp::DECLARE_ENUM:
+            case AbstractOp::DECLARE_FORMAT:
+            case AbstractOp::DECLARE_UNION:
+            case AbstractOp::DECLARE_FIELD:
+            case AbstractOp::DECLARE_ENUM_MEMBER:
+            case AbstractOp::DECLARE_UNION_MEMBER:
+            case AbstractOp::DECLARE_PROGRAM:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     expected<AbstractOp> define_to_declare(AbstractOp op) {
         switch (op) {
             case AbstractOp::DEFINE_FUNCTION:
@@ -376,8 +392,6 @@ namespace rebgn {
         m.code = std::move(reordered);
         return none;
     }
-
-    Error insert_ptr() {}
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);

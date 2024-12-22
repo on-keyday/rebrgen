@@ -405,7 +405,8 @@ format Code:
         AbstractOp.SWITCH_UNION:
             left_ref :Varint # ref to union
             right_ref :Varint # ref to member
- 
+        AbstractOp.RET:
+            ref :Varint # maybe null
 
 
 format StringRefs:

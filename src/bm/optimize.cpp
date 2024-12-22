@@ -393,13 +393,33 @@ namespace rebgn {
         return none;
     }
 
-    Error search_encode(Module& m, std::vector<size_t>& index_of_operation_and_loop, Varint fn) {
+    Error search_encode_decode(Module& m, std::vector<size_t>& index_of_operation_and_loop, Varint fn) {
         auto& start = m.ident_index_table[fn.value()];
         for (size_t i = start; m.code[i].op != AbstractOp::END_FUNCTION; i++) {
-            if (m.code[i].op == AbstractOp::ENCODE_INT) {
+            if (m.code[i].op == AbstractOp::ENCODE_INT || m.code[i].op == AbstractOp::DECODE_INT) {
+                index_of_operation_and_loop.push_back(i);
+            }
+            if (m.code[i].op == AbstractOp::IF || m.code[i].op == AbstractOp::ELIF ||
+                m.code[i].op == AbstractOp::ELSE || m.code[i].op == AbstractOp::END_IF) {
+                index_of_operation_and_loop.push_back(i);
+            }
+            if (m.code[i].op == AbstractOp::MATCH || m.code[i].op == AbstractOp::CASE ||
+                m.code[i].op == AbstractOp::DEFAULT_CASE ||
+                m.code[i].op == AbstractOp::END_CASE ||
+                m.code[i].op == AbstractOp::END_MATCH) {
+                index_of_operation_and_loop.push_back(i);
+            }
+            if (m.code[i].op == AbstractOp::LOOP_INFINITE || m.code[i].op == AbstractOp::LOOP_CONDITION ||
+                m.code[i].op == AbstractOp::END_LOOP ||
+                m.code[i].op == AbstractOp::BREAK || m.code[i].op == AbstractOp::CONTINUE ||
+                m.code[i].op == AbstractOp::RET) {
+                index_of_operation_and_loop.push_back(i);
+            }
+            if (m.code[i].op == AbstractOp::CALL_ENCODE || m.code[i].op == AbstractOp::CALL_DECODE) {
                 index_of_operation_and_loop.push_back(i);
             }
         }
+        return none;
     }
 
     Error insert_packed_operation(Module& m) {

@@ -116,6 +116,37 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Break>(Module& m, std::shared_ptr<ast::Break>& node) {
+        m.op(AbstractOp::BREAK);
+        return none;
+    }
+
+    template <>
+    Error define<ast::Continue>(Module& m, std::shared_ptr<ast::Continue>& node) {
+        m.op(AbstractOp::CONTINUE);
+        return none;
+    }
+
+    template <>
+    Error define<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
+        if (node->expr) {
+            auto val = get_expr(m, node->expr);
+            if (!val) {
+                return val.error();
+            }
+            m.op(AbstractOp::RET, [&](Code& c) {
+                c.ref(*val);
+            });
+        }
+        else {
+            m.op(AbstractOp::RET, [](Code& c) {
+                c.ref(*varint(null_id));
+            });
+        }
+        return none;
+    }
+
+    template <>
     Error define<ast::IOOperation>(Module& m, std::shared_ptr<ast::IOOperation>& node) {
         switch (node->method) {
             case ast::IOMethod::input_get: {

@@ -818,6 +818,40 @@ namespace rebgn {
         });
     }
 
+    template <>
+    Error encode<ast::Break>(Module& m, std::shared_ptr<ast::Break>& node) {
+        m.op(AbstractOp::BREAK);
+        return none;
+    }
+
+    template <>
+    Error decode<ast::Break>(Module& m, std::shared_ptr<ast::Break>& node) {
+        m.op(AbstractOp::BREAK);
+        return none;
+    }
+
+    template <>
+    Error encode<ast::Continue>(Module& m, std::shared_ptr<ast::Continue>& node) {
+        m.op(AbstractOp::CONTINUE);
+        return none;
+    }
+
+    template <>
+    Error decode<ast::Continue>(Module& m, std::shared_ptr<ast::Continue>& node) {
+        m.op(AbstractOp::CONTINUE);
+        return none;
+    }
+
+    template <>
+    Error encode<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
+        return convert_node_definition(m, node);
+    }
+
     template <class T>
     concept has_encode = requires(Module& m, std::shared_ptr<T>& n) {
         encode<T>(m, n);

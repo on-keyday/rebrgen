@@ -1283,7 +1283,10 @@ namespace rebgn {
             Varint left_ref;
             Varint right_ref;
         };
-        std::variant<std::monostate, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71> union_variant_15;
+        struct union_struct_72 {
+            Varint ref;
+        };
+        std::variant<std::monostate, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72> union_variant_15;
         std::optional<Varint> bit_size() const;
         bool bit_size(Varint&& v);
         bool bit_size(const Varint& v);
@@ -4318,6 +4321,24 @@ namespace rebgn {
             }
             return std::get<52>((*this).union_variant_15).ref;
         }
+        if (AbstractOp::DEFINE_BIT_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::APPEND == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PACKED_OPERATION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            if (!std::holds_alternative<union_struct_72>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<57>((*this).union_variant_15).ref;
+        }
         return std::nullopt;
     }
     inline bool Code::ref(const Varint& v) {
@@ -4573,6 +4594,25 @@ namespace rebgn {
             std::get<52>((*this).union_variant_15).ref = v;
             return true;
         }
+        if (AbstractOp::DEFINE_BIT_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::APPEND == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PACKED_OPERATION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            if (!std::holds_alternative<union_struct_72>(union_variant_15)) {
+                union_variant_15 = union_struct_72();
+            }
+            std::get<57>((*this).union_variant_15).ref = v;
+            return true;
+        }
         return false;
     }
     inline bool Code::ref(Varint&& v) {
@@ -4826,6 +4866,25 @@ namespace rebgn {
                 union_variant_15 = union_struct_67();
             }
             std::get<52>((*this).union_variant_15).ref = std::move(v);
+            return true;
+        }
+        if (AbstractOp::DEFINE_BIT_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::APPEND == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PACKED_OPERATION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            if (!std::holds_alternative<union_struct_72>(union_variant_15)) {
+                union_variant_15 = union_struct_72();
+            }
+            std::get<57>((*this).union_variant_15).ref = std::move(v);
             return true;
         }
         return false;
@@ -6128,34 +6187,34 @@ namespace rebgn {
     }
     inline ::futils::error::Error<> Varint::encode(::futils::binary::writer& w) const {
         if ((*this).prefix() == 0) {
-            std::uint8_t tmp72 = 0;
-            tmp72 = (*this).value();
-            tmp72 |= std::uint8_t(0) << 6;
-            if (!::futils::binary::write_num(w, tmp72, true)) {
+            std::uint8_t tmp73 = 0;
+            tmp73 = (*this).value();
+            tmp73 |= std::uint8_t(0) << 6;
+            if (!::futils::binary::write_num(w, tmp73, true)) {
                 return ::futils::error::Error<>("encode: Varint::value: write bit field failed", ::futils::error::Category::lib);
             }
         }
         else if ((*this).prefix() == 1) {
-            std::uint16_t tmp72 = 0;
-            tmp72 = (*this).value();
-            tmp72 |= std::uint16_t(1) << 14;
-            if (!::futils::binary::write_num(w, tmp72, true)) {
+            std::uint16_t tmp73 = 0;
+            tmp73 = (*this).value();
+            tmp73 |= std::uint16_t(1) << 14;
+            if (!::futils::binary::write_num(w, tmp73, true)) {
                 return ::futils::error::Error<>("encode: Varint::value: write bit field failed", ::futils::error::Category::lib);
             }
         }
         else if ((*this).prefix() == 2) {
-            std::uint32_t tmp72 = 0;
-            tmp72 = (*this).value();
-            tmp72 |= std::uint32_t(2) << 30;
-            if (!::futils::binary::write_num(w, tmp72, true)) {
+            std::uint32_t tmp73 = 0;
+            tmp73 = (*this).value();
+            tmp73 |= std::uint32_t(2) << 30;
+            if (!::futils::binary::write_num(w, tmp73, true)) {
                 return ::futils::error::Error<>("encode: Varint::value: write bit field failed", ::futils::error::Category::lib);
             }
         }
         else if ((*this).prefix() == 3) {
-            std::uint64_t tmp72 = 0;
-            tmp72 = (*this).value();
-            tmp72 |= std::uint64_t(3) << 62;
-            if (!::futils::binary::write_num(w, tmp72, true)) {
+            std::uint64_t tmp73 = 0;
+            tmp73 = (*this).value();
+            tmp73 |= std::uint64_t(3) << 62;
+            if (!::futils::binary::write_num(w, tmp73, true)) {
                 return ::futils::error::Error<>("encode: Varint::value: write bit field failed", ::futils::error::Category::lib);
             }
         }
@@ -6165,39 +6224,39 @@ namespace rebgn {
         if (!r.load_stream(1)) {
             return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
         }
-        std::uint8_t tmp73 = (r.top() >> 6) & 0x3;
-        (*this).prefix(tmp73);
+        std::uint8_t tmp74 = (r.top() >> 6) & 0x3;
+        (*this).prefix(tmp74);
         if ((*this).prefix() == 0) {
-            std::uint8_t tmp74 = 0;
-            if (!::futils::binary::read_num(r, tmp74, true)) {
-                return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
-            }
-            tmp74 &= ~(std::uint8_t(0x3) << 6);
-            (*this).value(tmp74);
-        }
-        else if ((*this).prefix() == 1) {
-            std::uint16_t tmp75 = 0;
+            std::uint8_t tmp75 = 0;
             if (!::futils::binary::read_num(r, tmp75, true)) {
                 return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
             }
-            tmp75 &= ~(std::uint16_t(0x3) << 14);
+            tmp75 &= ~(std::uint8_t(0x3) << 6);
             (*this).value(tmp75);
         }
-        else if ((*this).prefix() == 2) {
-            std::uint32_t tmp76 = 0;
+        else if ((*this).prefix() == 1) {
+            std::uint16_t tmp76 = 0;
             if (!::futils::binary::read_num(r, tmp76, true)) {
                 return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
             }
-            tmp76 &= ~(std::uint32_t(0x3) << 30);
+            tmp76 &= ~(std::uint16_t(0x3) << 14);
             (*this).value(tmp76);
         }
-        else if ((*this).prefix() == 3) {
-            std::uint64_t tmp77 = 0;
+        else if ((*this).prefix() == 2) {
+            std::uint32_t tmp77 = 0;
             if (!::futils::binary::read_num(r, tmp77, true)) {
                 return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
             }
-            tmp77 &= ~(std::uint64_t(0x3) << 62);
+            tmp77 &= ~(std::uint32_t(0x3) << 30);
             (*this).value(tmp77);
+        }
+        else if ((*this).prefix() == 3) {
+            std::uint64_t tmp78 = 0;
+            if (!::futils::binary::read_num(r, tmp78, true)) {
+                return ::futils::error::Error<>("decode: Varint::value: read bit field failed", ::futils::error::Category::lib);
+            }
+            tmp78 &= ~(std::uint64_t(0x3) << 62);
+            (*this).value(tmp78);
         }
         return ::futils::error::Error<>();
     }
@@ -6205,9 +6264,9 @@ namespace rebgn {
         if (auto err = (*this).length.encode(w)) {
             return err;
         }
-        auto tmp_78_ = (*this).length.value();
-        if (tmp_78_ != (*this).data.size()) {
-            return ::futils::error::Error<>("encode: String::data: dynamic length is not compatible with its length; tmp_78_!=(*this).data.size()", ::futils::error::Category::lib);
+        auto tmp_79_ = (*this).length.value();
+        if (tmp_79_ != (*this).data.size()) {
+            return ::futils::error::Error<>("encode: String::data: dynamic length is not compatible with its length; tmp_79_!=(*this).data.size()", ::futils::error::Category::lib);
         }
         if (!w.write((*this).data)) {
             return ::futils::error::Error<>("encode: String::data: write array failed", ::futils::error::Category::lib);
@@ -6218,8 +6277,8 @@ namespace rebgn {
         if (auto err = (*this).length.decode(r)) {
             return err;
         }
-        auto tmp_79_ = (*this).length.value();
-        if (!r.read((*this).data, tmp_79_)) {
+        auto tmp_80_ = (*this).length.value();
+        if (!r.read((*this).data, tmp_80_)) {
             return ::futils::error::Error<>("decode: String::data: read byte array failed", ::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -6243,8 +6302,8 @@ namespace rebgn {
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Storage::encode(::futils::binary::writer& w) const {
-        auto tmp_80_ = static_cast<std::uint8_t>((*this).type);
-        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_80_), true)) {
+        auto tmp_81_ = static_cast<std::uint8_t>((*this).type);
+        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_81_), true)) {
             return ::futils::error::Error<>("encode: Storage::type: write std::uint8_t failed", ::futils::error::Category::lib);
         }
         if (StorageType::INT == (*this).type) {
@@ -6327,11 +6386,11 @@ namespace rebgn {
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Storage::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_81_ = 0;
-        if (!::futils::binary::read_num(r, tmp_81_, true)) {
+        std::uint8_t tmp_82_ = 0;
+        if (!::futils::binary::read_num(r, tmp_82_, true)) {
             return ::futils::error::Error<>("decode: Storage::type: read int failed", ::futils::error::Category::lib);
         }
-        (*this).type = static_cast<StorageType>(tmp_81_);
+        (*this).type = static_cast<StorageType>(tmp_82_);
         if (StorageType::INT == (*this).type) {
             if (!std::holds_alternative<union_struct_4>(union_variant_3)) {
                 union_variant_3 = union_struct_4();
@@ -6421,12 +6480,12 @@ namespace rebgn {
         if (auto err = (*this).len_exprs.encode(w)) {
             return err;
         }
-        auto tmp_82_ = (*this).len_exprs.value();
-        if (tmp_82_ != (*this).expr_refs.size()) {
-            return ::futils::error::Error<>("encode: Metadata::expr_refs: dynamic length is not compatible with its length; tmp_82_!=(*this).expr_refs.size()", ::futils::error::Category::lib);
+        auto tmp_83_ = (*this).len_exprs.value();
+        if (tmp_83_ != (*this).expr_refs.size()) {
+            return ::futils::error::Error<>("encode: Metadata::expr_refs: dynamic length is not compatible with its length; tmp_83_!=(*this).expr_refs.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_83_ : (*this).expr_refs) {
-            if (auto err = tmp_83_.encode(w)) {
+        for (auto& tmp_84_ : (*this).expr_refs) {
+            if (auto err = tmp_84_.encode(w)) {
                 return err;
             }
         }
@@ -6439,14 +6498,14 @@ namespace rebgn {
         if (auto err = (*this).len_exprs.decode(r)) {
             return err;
         }
-        auto tmp_84_ = (*this).len_exprs.value();
+        auto tmp_85_ = (*this).len_exprs.value();
         (*this).expr_refs.clear();
-        for (size_t tmp_86_ = 0; tmp_86_ < tmp_84_; ++tmp_86_) {
-            Varint tmp_85_;
-            if (auto err = tmp_85_.decode(r)) {
+        for (size_t tmp_87_ = 0; tmp_87_ < tmp_85_; ++tmp_87_) {
+            Varint tmp_86_;
+            if (auto err = tmp_86_.decode(r)) {
                 return err;
             }
-            (*this).expr_refs.push_back(std::move(tmp_85_));
+            (*this).expr_refs.push_back(std::move(tmp_86_));
         }
         return ::futils::error::Error<>();
     }
@@ -6490,12 +6549,12 @@ namespace rebgn {
         if (auto err = (*this).length.encode(w)) {
             return err;
         }
-        auto tmp_87_ = (*this).length.value();
-        if (tmp_87_ != (*this).storages.size()) {
-            return ::futils::error::Error<>("encode: Storages::storages: dynamic length is not compatible with its length; tmp_87_!=(*this).storages.size()", ::futils::error::Category::lib);
+        auto tmp_88_ = (*this).length.value();
+        if (tmp_88_ != (*this).storages.size()) {
+            return ::futils::error::Error<>("encode: Storages::storages: dynamic length is not compatible with its length; tmp_88_!=(*this).storages.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_88_ : (*this).storages) {
-            if (auto err = tmp_88_.encode(w)) {
+        for (auto& tmp_89_ : (*this).storages) {
+            if (auto err = tmp_89_.encode(w)) {
                 return err;
             }
         }
@@ -6505,14 +6564,14 @@ namespace rebgn {
         if (auto err = (*this).length.decode(r)) {
             return err;
         }
-        auto tmp_89_ = (*this).length.value();
+        auto tmp_90_ = (*this).length.value();
         (*this).storages.clear();
-        for (size_t tmp_91_ = 0; tmp_91_ < tmp_89_; ++tmp_91_) {
-            Storage tmp_90_;
-            if (auto err = tmp_90_.decode(r)) {
+        for (size_t tmp_92_ = 0; tmp_92_ < tmp_90_; ++tmp_92_) {
+            Storage tmp_91_;
+            if (auto err = tmp_91_.decode(r)) {
                 return err;
             }
-            (*this).storages.push_back(std::move(tmp_90_));
+            (*this).storages.push_back(std::move(tmp_91_));
         }
         return ::futils::error::Error<>();
     }
@@ -6520,12 +6579,12 @@ namespace rebgn {
         if (auto err = (*this).refs_length.encode(w)) {
             return err;
         }
-        auto tmp_92_ = (*this).refs_length.value();
-        if (tmp_92_ != (*this).refs.size()) {
-            return ::futils::error::Error<>("encode: StringRefs::refs: dynamic length is not compatible with its length; tmp_92_!=(*this).refs.size()", ::futils::error::Category::lib);
+        auto tmp_93_ = (*this).refs_length.value();
+        if (tmp_93_ != (*this).refs.size()) {
+            return ::futils::error::Error<>("encode: StringRefs::refs: dynamic length is not compatible with its length; tmp_93_!=(*this).refs.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_93_ : (*this).refs) {
-            if (auto err = tmp_93_.encode(w)) {
+        for (auto& tmp_94_ : (*this).refs) {
+            if (auto err = tmp_94_.encode(w)) {
                 return err;
             }
         }
@@ -6535,14 +6594,14 @@ namespace rebgn {
         if (auto err = (*this).refs_length.decode(r)) {
             return err;
         }
-        auto tmp_94_ = (*this).refs_length.value();
+        auto tmp_95_ = (*this).refs_length.value();
         (*this).refs.clear();
-        for (size_t tmp_96_ = 0; tmp_96_ < tmp_94_; ++tmp_96_) {
-            StringRef tmp_95_;
-            if (auto err = tmp_95_.decode(r)) {
+        for (size_t tmp_97_ = 0; tmp_97_ < tmp_95_; ++tmp_97_) {
+            StringRef tmp_96_;
+            if (auto err = tmp_96_.decode(r)) {
                 return err;
             }
-            (*this).refs.push_back(std::move(tmp_95_));
+            (*this).refs.push_back(std::move(tmp_96_));
         }
         return ::futils::error::Error<>();
     }
@@ -6550,12 +6609,12 @@ namespace rebgn {
         if (auto err = (*this).refs_length.encode(w)) {
             return err;
         }
-        auto tmp_97_ = (*this).refs_length.value();
-        if (tmp_97_ != (*this).refs.size()) {
-            return ::futils::error::Error<>("encode: IdentIndexs::refs: dynamic length is not compatible with its length; tmp_97_!=(*this).refs.size()", ::futils::error::Category::lib);
+        auto tmp_98_ = (*this).refs_length.value();
+        if (tmp_98_ != (*this).refs.size()) {
+            return ::futils::error::Error<>("encode: IdentIndexs::refs: dynamic length is not compatible with its length; tmp_98_!=(*this).refs.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_98_ : (*this).refs) {
-            if (auto err = tmp_98_.encode(w)) {
+        for (auto& tmp_99_ : (*this).refs) {
+            if (auto err = tmp_99_.encode(w)) {
                 return err;
             }
         }
@@ -6565,14 +6624,14 @@ namespace rebgn {
         if (auto err = (*this).refs_length.decode(r)) {
             return err;
         }
-        auto tmp_99_ = (*this).refs_length.value();
+        auto tmp_100_ = (*this).refs_length.value();
         (*this).refs.clear();
-        for (size_t tmp_101_ = 0; tmp_101_ < tmp_99_; ++tmp_101_) {
-            IdentIndex tmp_100_;
-            if (auto err = tmp_100_.decode(r)) {
+        for (size_t tmp_102_ = 0; tmp_102_ < tmp_100_; ++tmp_102_) {
+            IdentIndex tmp_101_;
+            if (auto err = tmp_101_.decode(r)) {
                 return err;
             }
-            (*this).refs.push_back(std::move(tmp_100_));
+            (*this).refs.push_back(std::move(tmp_101_));
         }
         return ::futils::error::Error<>();
     }
@@ -6580,12 +6639,12 @@ namespace rebgn {
         if (auto err = (*this).length.encode(w)) {
             return err;
         }
-        auto tmp_102_ = (*this).length.value();
-        if (tmp_102_ != (*this).ranges.size()) {
-            return ::futils::error::Error<>("encode: Ranges::ranges: dynamic length is not compatible with its length; tmp_102_!=(*this).ranges.size()", ::futils::error::Category::lib);
+        auto tmp_103_ = (*this).length.value();
+        if (tmp_103_ != (*this).ranges.size()) {
+            return ::futils::error::Error<>("encode: Ranges::ranges: dynamic length is not compatible with its length; tmp_103_!=(*this).ranges.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_103_ : (*this).ranges) {
-            if (auto err = tmp_103_.encode(w)) {
+        for (auto& tmp_104_ : (*this).ranges) {
+            if (auto err = tmp_104_.encode(w)) {
                 return err;
             }
         }
@@ -6595,20 +6654,20 @@ namespace rebgn {
         if (auto err = (*this).length.decode(r)) {
             return err;
         }
-        auto tmp_104_ = (*this).length.value();
+        auto tmp_105_ = (*this).length.value();
         (*this).ranges.clear();
-        for (size_t tmp_106_ = 0; tmp_106_ < tmp_104_; ++tmp_106_) {
-            Range tmp_105_;
-            if (auto err = tmp_105_.decode(r)) {
+        for (size_t tmp_107_ = 0; tmp_107_ < tmp_105_; ++tmp_107_) {
+            Range tmp_106_;
+            if (auto err = tmp_106_.decode(r)) {
                 return err;
             }
-            (*this).ranges.push_back(std::move(tmp_105_));
+            (*this).ranges.push_back(std::move(tmp_106_));
         }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Code::encode(::futils::binary::writer& w) const {
-        auto tmp_107_ = static_cast<std::uint8_t>((*this).op);
-        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_107_), true)) {
+        auto tmp_108_ = static_cast<std::uint8_t>((*this).op);
+        if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_108_), true)) {
             return ::futils::error::Error<>("encode: Code::op: write std::uint8_t failed", ::futils::error::Category::lib);
         }
         if (AbstractOp::METADATA == (*this).op) {
@@ -6815,8 +6874,8 @@ namespace rebgn {
             if (auto err = std::get<23>((*this).union_variant_15).ident.encode(w)) {
                 return err;
             }
-            auto tmp_108_ = static_cast<std::uint8_t>(std::get<23>((*this).union_variant_15).bop);
-            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_108_), true)) {
+            auto tmp_109_ = static_cast<std::uint8_t>(std::get<23>((*this).union_variant_15).bop);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_109_), true)) {
                 return ::futils::error::Error<>("encode: Code::bop: write std::uint8_t failed", ::futils::error::Category::lib);
             }
             if (auto err = std::get<23>((*this).union_variant_15).left_ref.encode(w)) {
@@ -6833,8 +6892,8 @@ namespace rebgn {
             if (auto err = std::get<24>((*this).union_variant_15).ident.encode(w)) {
                 return err;
             }
-            auto tmp_109_ = static_cast<std::uint8_t>(std::get<24>((*this).union_variant_15).uop);
-            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_109_), true)) {
+            auto tmp_110_ = static_cast<std::uint8_t>(std::get<24>((*this).union_variant_15).uop);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_110_), true)) {
                 return ::futils::error::Error<>("encode: Code::uop: write std::uint8_t failed", ::futils::error::Category::lib);
             }
             if (auto err = std::get<24>((*this).union_variant_15).ref.encode(w)) {
@@ -6895,8 +6954,8 @@ namespace rebgn {
             if (auto err = std::get<29>((*this).union_variant_15).ref.encode(w)) {
                 return err;
             }
-            auto tmp_110_ = static_cast<std::uint8_t>(std::get<29>((*this).union_variant_15).endian);
-            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_110_), true)) {
+            auto tmp_111_ = static_cast<std::uint8_t>(std::get<29>((*this).union_variant_15).endian);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_111_), true)) {
                 return ::futils::error::Error<>("encode: Code::endian: write std::uint8_t failed", ::futils::error::Category::lib);
             }
             if (auto err = std::get<29>((*this).union_variant_15).bit_size.encode(w)) {
@@ -6910,8 +6969,8 @@ namespace rebgn {
             if (auto err = std::get<30>((*this).union_variant_15).ref.encode(w)) {
                 return err;
             }
-            auto tmp_111_ = static_cast<std::uint8_t>(std::get<30>((*this).union_variant_15).endian);
-            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_111_), true)) {
+            auto tmp_112_ = static_cast<std::uint8_t>(std::get<30>((*this).union_variant_15).endian);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_112_), true)) {
                 return ::futils::error::Error<>("encode: Code::endian: write std::uint8_t failed", ::futils::error::Category::lib);
             }
             if (auto err = std::get<30>((*this).union_variant_15).bit_size.encode(w)) {
@@ -7165,14 +7224,22 @@ namespace rebgn {
                 return err;
             }
         }
+        else if (AbstractOp::RET == (*this).op) {
+            if (!std::holds_alternative<union_struct_72>(union_variant_15)) {
+                return ::futils::error::Error<>("encode: Code: union_variant_15 variant alternative union_struct_72 is not set", ::futils::error::Category::lib);
+            }
+            if (auto err = std::get<57>((*this).union_variant_15).ref.encode(w)) {
+                return err;
+            }
+        }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Code::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_112_ = 0;
-        if (!::futils::binary::read_num(r, tmp_112_, true)) {
+        std::uint8_t tmp_113_ = 0;
+        if (!::futils::binary::read_num(r, tmp_113_, true)) {
             return ::futils::error::Error<>("decode: Code::op: read int failed", ::futils::error::Category::lib);
         }
-        (*this).op = static_cast<AbstractOp>(tmp_112_);
+        (*this).op = static_cast<AbstractOp>(tmp_113_);
         if (AbstractOp::METADATA == (*this).op) {
             if (!std::holds_alternative<union_struct_16>(union_variant_15)) {
                 union_variant_15 = union_struct_16();
@@ -7377,11 +7444,11 @@ namespace rebgn {
             if (auto err = std::get<23>((*this).union_variant_15).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_113_ = 0;
-            if (!::futils::binary::read_num(r, tmp_113_, true)) {
+            std::uint8_t tmp_114_ = 0;
+            if (!::futils::binary::read_num(r, tmp_114_, true)) {
                 return ::futils::error::Error<>("decode: Code::bop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<23>((*this).union_variant_15).bop = static_cast<BinaryOp>(tmp_113_);
+            std::get<23>((*this).union_variant_15).bop = static_cast<BinaryOp>(tmp_114_);
             if (auto err = std::get<23>((*this).union_variant_15).left_ref.decode(r)) {
                 return err;
             }
@@ -7396,11 +7463,11 @@ namespace rebgn {
             if (auto err = std::get<24>((*this).union_variant_15).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_114_ = 0;
-            if (!::futils::binary::read_num(r, tmp_114_, true)) {
+            std::uint8_t tmp_115_ = 0;
+            if (!::futils::binary::read_num(r, tmp_115_, true)) {
                 return ::futils::error::Error<>("decode: Code::uop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<24>((*this).union_variant_15).uop = static_cast<UnaryOp>(tmp_114_);
+            std::get<24>((*this).union_variant_15).uop = static_cast<UnaryOp>(tmp_115_);
             if (auto err = std::get<24>((*this).union_variant_15).ref.decode(r)) {
                 return err;
             }
@@ -7459,11 +7526,11 @@ namespace rebgn {
             if (auto err = std::get<29>((*this).union_variant_15).ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_115_ = 0;
-            if (!::futils::binary::read_num(r, tmp_115_, true)) {
+            std::uint8_t tmp_116_ = 0;
+            if (!::futils::binary::read_num(r, tmp_116_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<29>((*this).union_variant_15).endian = static_cast<Endian>(tmp_115_);
+            std::get<29>((*this).union_variant_15).endian = static_cast<Endian>(tmp_116_);
             if (auto err = std::get<29>((*this).union_variant_15).bit_size.decode(r)) {
                 return err;
             }
@@ -7475,11 +7542,11 @@ namespace rebgn {
             if (auto err = std::get<30>((*this).union_variant_15).ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_116_ = 0;
-            if (!::futils::binary::read_num(r, tmp_116_, true)) {
+            std::uint8_t tmp_117_ = 0;
+            if (!::futils::binary::read_num(r, tmp_117_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<30>((*this).union_variant_15).endian = static_cast<Endian>(tmp_116_);
+            std::get<30>((*this).union_variant_15).endian = static_cast<Endian>(tmp_117_);
             if (auto err = std::get<30>((*this).union_variant_15).bit_size.decode(r)) {
                 return err;
             }
@@ -7731,6 +7798,14 @@ namespace rebgn {
                 return err;
             }
         }
+        else if (AbstractOp::RET == (*this).op) {
+            if (!std::holds_alternative<union_struct_72>(union_variant_15)) {
+                union_variant_15 = union_struct_72();
+            }
+            if (auto err = std::get<57>((*this).union_variant_15).ref.decode(r)) {
+                return err;
+            }
+        }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> BinaryModule::encode(::futils::binary::writer& w) const {
@@ -7752,23 +7827,23 @@ namespace rebgn {
         if (auto err = (*this).code_length.encode(w)) {
             return err;
         }
-        auto tmp_117_ = (*this).code_length.value();
-        if (tmp_117_ != (*this).code.size()) {
-            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_117_!=(*this).code.size()", ::futils::error::Category::lib);
+        auto tmp_118_ = (*this).code_length.value();
+        if (tmp_118_ != (*this).code.size()) {
+            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_118_!=(*this).code.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_118_ : (*this).code) {
-            if (auto err = tmp_118_.encode(w)) {
+        for (auto& tmp_119_ : (*this).code) {
+            if (auto err = tmp_119_.encode(w)) {
                 return err;
             }
         }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> BinaryModule::decode(::futils::binary::reader& r) {
-        ::futils::view::rvec tmp_119_ = {};
-        if (!r.read_direct(tmp_119_, 4)) {
+        ::futils::view::rvec tmp_120_ = {};
+        if (!r.read_direct(tmp_120_, 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed", ::futils::error::Category::lib);
         }
-        if (tmp_119_ != ::futils::view::rvec("RBGM", 4)) {
+        if (tmp_120_ != ::futils::view::rvec("RBGM", 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed; not match to \"RBGM\"", ::futils::error::Category::lib);
         }
         if (auto err = (*this).strings.decode(r)) {
@@ -7786,14 +7861,14 @@ namespace rebgn {
         if (auto err = (*this).code_length.decode(r)) {
             return err;
         }
-        auto tmp_120_ = (*this).code_length.value();
+        auto tmp_121_ = (*this).code_length.value();
         (*this).code.clear();
-        for (size_t tmp_122_ = 0; tmp_122_ < tmp_120_; ++tmp_122_) {
-            Code tmp_121_;
-            if (auto err = tmp_121_.decode(r)) {
+        for (size_t tmp_123_ = 0; tmp_123_ < tmp_121_; ++tmp_123_) {
+            Code tmp_122_;
+            if (auto err = tmp_122_.decode(r)) {
                 return err;
             }
-            (*this).code.push_back(std::move(tmp_121_));
+            (*this).code.push_back(std::move(tmp_122_));
         }
         return ::futils::error::Error<>();
     }

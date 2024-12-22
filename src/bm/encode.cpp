@@ -306,7 +306,7 @@ namespace rebgn {
                     return new_obj.error();
                 }
                 Storages s;
-                auto err = define_storage(m, s, arr->element_type, false);
+                auto err = define_storage(m, s, arr->element_type);
                 if (err) {
                     return err;
                 }
@@ -366,7 +366,7 @@ namespace rebgn {
                 return storage.error();
             }
             Storages s;
-            auto err = define_storage(m, s, base_type, false);
+            auto err = define_storage(m, s, base_type);
             if (err) {
                 return err;
             }

@@ -1,4 +1,5 @@
-# 
+# recursive test 
+#script\gen_sample C:\workspace\shbrgen\rebrgen\src\test\recursive.bgn
 
 enum StorageType:
     :u8
@@ -41,7 +42,8 @@ format Storage:
             ref :Varint
         StorageType.RECURSIVE_STRUCT_REF:
             ref :Varint
-        StorageType.BYTE_VECTOR => ..
+        StorageType.BYTE_VECTOR:
+            ..
         StorageType.ENUM:
             ref :Varint
             base :Storage
@@ -55,3 +57,6 @@ format Storage:
             ref :Varint 
             size :Varint
             variants :[size.value]Storage
+
+format X:
+    x :X

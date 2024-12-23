@@ -13,17 +13,12 @@ namespace rebgn {
         }
     }
 
-    struct RangeN {
-        std::uint64_t start;
-        std::uint64_t end;
-    };
-
     struct NestedRanges {
-        RangeN range;
+        Range range;
         std::vector<NestedRanges> nested;
     };
 
-    Error extract_ranges(Module& mod, RangeN range, NestedRanges& current) {
+    Error extract_ranges(Module& mod, Range range, NestedRanges& current) {
         for (auto i = range.start; i < range.end; i++) {
             auto& c = mod.code[i];
             auto do_extract = [&](AbstractOp begin_op, AbstractOp end_op) {
@@ -76,6 +71,13 @@ namespace rebgn {
                     }
                     break;
                 }
+                case AbstractOp::DEFINE_STATE: {
+                    auto err = do_extract(AbstractOp::DEFINE_STATE, AbstractOp::END_STATE);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
                 case AbstractOp::DEFINE_FIELD: {
                     auto err = do_extract(AbstractOp::DEFINE_FIELD, AbstractOp::END_FIELD);
                     if (err) {
@@ -116,22 +118,6 @@ namespace rebgn {
             }
         }
         return none;
-    }
-
-    bool is_declare(AbstractOp op) {
-        switch (op) {
-            case AbstractOp::DECLARE_FUNCTION:
-            case AbstractOp::DECLARE_ENUM:
-            case AbstractOp::DECLARE_FORMAT:
-            case AbstractOp::DECLARE_UNION:
-            case AbstractOp::DECLARE_FIELD:
-            case AbstractOp::DECLARE_ENUM_MEMBER:
-            case AbstractOp::DECLARE_UNION_MEMBER:
-            case AbstractOp::DECLARE_PROGRAM:
-                return true;
-            default:
-                return false;
-        }
     }
 
     expected<AbstractOp> define_to_declare(AbstractOp op) {
@@ -298,7 +284,7 @@ namespace rebgn {
             }
             sorted[ident->value()] = f;
         }
-        std::vector<RangeN> programs;
+        std::vector<Range> programs;
         for (size_t i = 0; i < m.code.size(); i++) {
             if (m.code[i].op == AbstractOp::DEFINE_PROGRAM) {
                 auto start = i;
@@ -311,7 +297,7 @@ namespace rebgn {
             }
         }
         struct RangeOrder {
-            RangeN range;
+            Range range;
             size_t order;
         };
         std::vector<RangeOrder> programs_order;
@@ -373,7 +359,7 @@ namespace rebgn {
             if (!startV || !endV) {
                 return error("Failed to convert varint");
             }
-            m.ranges.push_back({*startV, *endV});
+            m.programs.push_back({*startV, *endV});
         }
         // then, append the rest
         for (size_t i = 0; i < m.code.size(); i++) {
@@ -671,7 +657,7 @@ namespace rebgn {
         return root;
     }
 
-    Error insert_packed_operation(Module& m) {
+    Error generate_cfg(Module& m) {
         for (size_t i = 0; i < m.code.size(); i++) {
             auto& c = m.code[i];
             if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
@@ -687,6 +673,53 @@ namespace rebgn {
                 }
                 m.cfgs.push_back(cfg.value());
             }
+        }
+        return none;
+    }
+
+    Error add_ident_ranges(Module& m) {
+        for (size_t i = 0; i < m.code.size(); i++) {
+            AbstractOp end_op;
+            switch (m.code[i].op) {
+                case AbstractOp::DEFINE_FUNCTION:
+                    end_op = AbstractOp::END_FUNCTION;
+                    break;
+                case AbstractOp::DEFINE_ENUM:
+                    end_op = AbstractOp::END_ENUM;
+                    break;
+                case AbstractOp::DEFINE_FORMAT:
+                    end_op = AbstractOp::END_FORMAT;
+                    break;
+                case AbstractOp::DEFINE_STATE:
+                    end_op = AbstractOp::END_STATE;
+                    break;
+                case AbstractOp::DEFINE_FIELD:
+                    end_op = AbstractOp::END_FIELD;
+                    break;
+                case AbstractOp::DEFINE_ENUM_MEMBER:
+                    end_op = AbstractOp::END_ENUM_MEMBER;
+                    break;
+                case AbstractOp::DEFINE_UNION:
+                    end_op = AbstractOp::END_UNION;
+                    break;
+                case AbstractOp::DEFINE_UNION_MEMBER:
+                    end_op = AbstractOp::END_UNION_MEMBER;
+                    break;
+                case AbstractOp::DEFINE_PROGRAM:
+                    end_op = AbstractOp::END_PROGRAM;
+                    break;
+                default:
+                    continue;
+            }
+            auto ident = m.code[i].ident().value();
+            auto start = i;
+            for (i = i + 1; i < m.code.size(); i++) {
+                if (m.code[i].op == end_op) {
+                    break;
+                }
+            }
+            IdentRange range = {.ident = ident, .range = {.start = *varint(start), .end = *varint(i + 1)}};
+            m.ident_to_ranges.push_back(std::move(range));
         }
         return none;
     }
@@ -707,11 +740,15 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
-        err = insert_packed_operation(m);
+        err = generate_cfg(m);
         if (err) {
             return err;
         }
         rebind_ident_index(m);
+        err = add_ident_ranges(m);
+        if (err) {
+            return err;
+        }
         return none;
     }
 }  // namespace rebgn

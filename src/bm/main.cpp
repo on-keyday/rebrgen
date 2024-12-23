@@ -53,6 +53,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::ELIF:
                 case rebgn::AbstractOp::END_IF:
                 case rebgn::AbstractOp::END_PROGRAM:
+                case rebgn::AbstractOp::END_STATE:
                     nest.resize(nest.size() - 2);
                     break;
                 default:
@@ -147,6 +148,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::ELIF:
                 case rebgn::AbstractOp::IF:
                 case rebgn::AbstractOp::DEFINE_PROGRAM:
+                case rebgn::AbstractOp::DEFINE_STATE:
                     nest += "  ";
                     break;
                 default:

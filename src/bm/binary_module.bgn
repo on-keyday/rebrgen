@@ -120,6 +120,18 @@ enum AbstractOp:
     DEFINE_UNION_MEMBER
     END_UNION_MEMBER
     DECLARE_UNION_MEMBER
+
+    DEFINE_STATE
+    END_STATE
+    DECLARE_STATE
+
+    DEFINE_BIT_FIELD
+    END_BIT_FIELD
+    DECLARE_BIT_FIELD
+
+    DEFINE_PACKED_OPERATION
+    END_PACKED_OPERATION
+    DECLARE_PACKED_OPERATION
     
     DEFINE_ENCODER
 
@@ -181,15 +193,11 @@ enum AbstractOp:
 
     NEW_OBJECT
 
-    DEFINE_BIT_FIELD
-    END_BIT_FIELD
-    DECLARE_BIT_FIELD
 
-    DEFINE_PACKED_OPERATION
-    END_PACKED_OPERATION
-    DECLARE_PACKED_OPERATION
 
     SWITCH_UNION
+
+
 
  
 
@@ -215,15 +223,16 @@ enum StorageType:
     STRUCT_REF
     RECURSIVE_STRUCT_REF
     BYTE_VECTOR # special case of vector
+    BOOL
 
     # qualifiers
     ENUM
     ARRAY
     VECTOR
-    # for recursive type
-    PTR
     # for union
     VARIANT
+
+
 
 
 
@@ -423,18 +432,31 @@ format IdentIndexs:
     refs :[refs_length.value]IdentIndex
 
 format Range:
+    start :u64
+    end :u64
+
+format RangePacked:
     start :Varint
     end :Varint
 
 format Ranges:
     length :Varint
-    ranges :[length.value]Range
+    ranges :[length.value]RangePacked
+
+format IdentRange:
+    ident :Varint
+    range :RangePacked
+
+format IdentRanges:
+    length :Varint
+    ranges :[length.value]IdentRange
 
 format BinaryModule:
     magic: "RBGM"
     strings :StringRefs
     identifiers :StringRefs
     ident_indexes :IdentIndexs
-    programs :Ranges
+    programs :Ranges # root ranges
+    ident_ranges :IdentRanges
     code_length :Varint
     code :[code_length.value]Code

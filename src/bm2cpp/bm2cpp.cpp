@@ -3,6 +3,7 @@
 #include <code/code_writer.h>
 #include <unordered_map>
 #include <format>
+#include <bm/helper.hpp>
 
 namespace bm2cpp {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -13,6 +14,7 @@ namespace bm2cpp {
         std::unordered_map<std::uint64_t, std::string> string_table;
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
+        std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
         std::string ptr_type;
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
@@ -180,6 +182,36 @@ namespace bm2cpp {
         return res;
     }
 
+    void inner_block(Context& ctx, rebgn::Range range) {
+        auto indent = ctx.cw.indent_scope();
+        std::vector<futils::helper::DynDefer> defer;
+        for (size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            if (rebgn::is_declare(code.op)) {
+                auto range = ctx.ident_range_table[code.ref().value().value()];
+                inner_block(ctx, range);
+                continue;
+            }
+            switch (code.op) {
+                case rebgn::AbstractOp::DEFINE_FORMAT: {
+                    auto& ident = ctx.ident_table[code.ident().value().value()];
+                    auto fmt_def = ctx.ident_index_table[code.ident().value().value()];
+                    ctx.cw.writeln("struct ", ident, " {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::END_FORMAT: {
+                    defer.pop_back();
+                    ctx.cw.writeln("};");
+                    break;
+                }
+                default:
+                    ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    break;
+            }
+        }
+    }
+
     void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
         Context ctx(w, bm);
         for (auto& sr : bm.strings.refs) {
@@ -190,6 +222,9 @@ namespace bm2cpp {
         }
         for (auto& id : bm.ident_indexes.refs) {
             ctx.ident_index_table[id.ident.value()] = id.index.value();
+        }
+        for (auto& id : bm.ident_ranges.ranges) {
+            ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
         }
 
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
@@ -238,6 +273,11 @@ namespace bm2cpp {
                         ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
                         break;
                 }
+            }
+        }
+        for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
+            for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
+                inner_block(ctx, {.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
             }
         }
     }

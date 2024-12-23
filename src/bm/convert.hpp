@@ -53,7 +53,8 @@ namespace rebgn {
         std::unordered_map<std::shared_ptr<ast::Ident>, ObjectID> ident_table;
         std::unordered_map<ObjectID, std::shared_ptr<ast::Ident>> ident_table_rev;
         std::unordered_map<ObjectID, std::uint64_t> ident_index_table;
-        std::vector<Range> ranges;
+        std::vector<RangePacked> programs;
+        std::vector<IdentRange> ident_to_ranges;
         std::vector<Code> code;
         std::uint64_t object_id = 1;
         std::vector<std::shared_ptr<CFG>> cfgs;

@@ -635,6 +635,25 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::State>(Module& m, std::shared_ptr<ast::State>& node) {
+        auto ident = m.lookup_ident(node->ident);
+        if (!ident) {
+            return ident.error();
+        }
+        m.op(AbstractOp::DEFINE_STATE, [&](Code& c) {
+            c.ident(*ident);
+        });
+        for (auto& f : node->body->struct_type->fields) {
+            auto err = convert_node_definition(m, f);
+            if (err) {
+                return err;
+            }
+        }
+        m.op(AbstractOp::END_STATE);
+        return none;
+    }
+
+    template <>
     Error define<ast::Format>(Module& m, std::shared_ptr<ast::Format>& node) {
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {

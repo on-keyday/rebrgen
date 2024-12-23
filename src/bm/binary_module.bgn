@@ -100,6 +100,10 @@ enum AbstractOp:
     END_FIELD
     DECLARE_FIELD
     CONDITIONAL_FIELD
+
+    DEFINE_PARAMETER
+    END_PARAMETER
+    DECLARE_PARAMETER
     
     DEFINE_FUNCTION
     END_FUNCTION
@@ -321,6 +325,9 @@ format Code:
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
             ref :Varint # ref to initial expr
+        AbstractOp.DEFINE_PARAMETER:
+            ident: Varint
+            belong :Varint # belong to function
         AbstractOp.DEFINE_UNION_MEMBER:
             ident :Varint
             belong :Varint # belong to union

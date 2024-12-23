@@ -662,10 +662,23 @@ namespace rebgn {
             c.belong(parent);
         });
         for (auto& p : node->parameters) {
-            auto err = convert_node_definition(m, p);
+            auto param_ident = m.lookup_ident(p->ident);
+            if (!param_ident) {
+                return param_ident.error();
+            }
+            Storages s;
+            auto err = define_storage(m, s, p->field_type);
             if (err) {
                 return err;
             }
+            m.op(AbstractOp::DEFINE_PARAMETER, [&](Code& c) {
+                c.ident(*ident);
+                c.belong(*param_ident);
+            });
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(std::move(s));
+            });
+            m.op(AbstractOp::END_PARAMETER);
         }
         for (auto& f : node->body->elements) {
             auto err = convert_node_definition(m, f);

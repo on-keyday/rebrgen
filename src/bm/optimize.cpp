@@ -51,6 +51,13 @@ namespace rebgn {
                 return none;
             };
             switch (c.op) {
+                case AbstractOp::DEFINE_PARAMETER: {
+                    auto err = do_extract(AbstractOp::DEFINE_PARAMETER, AbstractOp::END_PARAMETER);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
                 case AbstractOp::DEFINE_FUNCTION: {
                     auto err = do_extract(AbstractOp::DEFINE_FUNCTION, AbstractOp::END_FUNCTION);
                     if (err) {

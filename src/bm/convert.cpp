@@ -272,6 +272,37 @@ namespace rebgn {
         return none;
     }
 
+    expected<Varint> define_union(Module& m, Varint field_id, const std::shared_ptr<ast::StructUnionType>& su) {
+        auto union_ident = m.new_id();
+        if (!union_ident) {
+            return union_ident;
+        }
+        m.op(AbstractOp::DEFINE_UNION, [&](Code& c) {
+            c.ident(*union_ident);
+            c.ref(field_id);
+        });
+        for (auto& st : su->structs) {
+            auto ident = m.new_id();
+            if (!ident) {
+                return ident;
+            }
+            m.op(AbstractOp::DEFINE_UNION_MEMBER, [&](Code& c) {
+                c.ident(*ident);
+                c.ref(*union_ident);
+            });
+            m.map_struct(st, ident->value());
+            for (auto& f : st->fields) {
+                auto err = convert_node_definition(m, f);
+                if (err) {
+                    return unexpect_error(std::move(err));
+                }
+            }
+            m.op(AbstractOp::END_UNION_MEMBER);
+        }
+        m.op(AbstractOp::END_UNION);
+        return union_ident;
+    }
+
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive) {
         auto push = [&](StorageType t, auto&& set) {
             Storage c;
@@ -369,17 +400,19 @@ namespace rebgn {
             return define_storage(m, s, base_type, should_detect_recursive);
         }
         if (auto su = ast::as<ast::StructUnionType>(typ)) {
-            auto ident = m.new_id();
-            if (!ident) {
-                return ident.error();
+            /*
+            auto union_ident = m.new_id();
+            if (!union_ident) {
+                return union_ident.error();
             }
             m.op(AbstractOp::DEFINE_UNION, [&](Code& c) {
-                c.ident(*ident);
+                c.ident(*union_ident);
+                c.ref();
             });
             auto size = su->structs.size();
             push(StorageType::VARIANT, [&](Storage& c) {
                 c.size(*varint(size));
-                c.ref(*ident);
+                c.ref(*union_ident);
             });
             for (auto& st : su->structs) {
                 auto ident = m.new_id();
@@ -388,7 +421,9 @@ namespace rebgn {
                 }
                 m.op(AbstractOp::DEFINE_UNION_MEMBER, [&](Code& c) {
                     c.ident(*ident);
+                    c.ref(*union_ident);
                 });
+                m.map_struct(st, ident->value());
                 for (auto& f : st->fields) {
                     auto err = convert_node_definition(m, f);
                     if (err) {
@@ -401,6 +436,21 @@ namespace rebgn {
                 m.op(AbstractOp::END_UNION_MEMBER);
             }
             m.op(AbstractOp::END_UNION);
+            */
+            auto size = su->structs.size();
+            push(StorageType::VARIANT, [&](Storage& c) {
+                c.size(*varint(size));
+                // c.ref(*union_ident); MUST FILL BY CALLER
+            });
+            for (auto& st : su->structs) {
+                auto ident = m.lookup_struct(st);
+                if (ident.value() == null_id) {
+                    return error("Invalid struct ident(maybe bug)");
+                }
+                push(StorageType::STRUCT_REF, [&](Storage& c) {
+                    c.ref(ident);
+                });
+            }
             return none;
         }
         if (auto a = ast::as<ast::ArrayType>(typ)) {
@@ -586,10 +636,28 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
+        // maybe null
+        auto parent = m.lookup_struct(node->belong_struct.lock());
         m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
             c.ident(*ident);
+            c.ref(parent);
         });
-        if (!ast::as<ast::UnionType>(node->field_type)) {
+        if (auto union_struct = ast::as<ast::StructUnionType>(node->field_type)) {
+            auto union_ident_ref = define_union(m, *ident, ast::cast_to<ast::StructUnionType>(node->field_type));
+            if (!union_ident_ref) {
+                return union_ident_ref.error();
+            }
+            Storages s;
+            auto err = define_storage(m, s, node->field_type, true);
+            if (err) {
+                return err;
+            }
+            if (s.storages.size() == 0 || s.storages[0].type != StorageType::VARIANT) {
+                return error("Invalid union type(maybe bug)");
+            }
+            s.storages[0].ref(*union_ident_ref);  // fill union ident
+        }
+        else if (!ast::as<ast::UnionType>(node->field_type)) {
             Storages s;
             auto err = define_storage(m, s, node->field_type, true);
             if (err) {
@@ -615,8 +683,17 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
+        Varint parent;
+        if (auto p = node->belong.lock()) {
+            auto parent_ = m.lookup_ident(p->ident);
+            if (!parent_) {
+                return parent_.error();
+            }
+            parent = *parent_;
+        }
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*ident);
+            c.ref(parent);
         });
         for (auto& p : node->parameters) {
             auto err = convert_node_definition(m, p);
@@ -662,6 +739,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_FORMAT, [&](Code& c) {
             c.ident(*ident);
         });
+        m.map_struct(node->body->struct_type, ident->value());
         if (node->body->struct_type->type_map) {
             Storages s;
             auto err = define_storage(m, s, node->body->struct_type->type_map->type_literal, true);

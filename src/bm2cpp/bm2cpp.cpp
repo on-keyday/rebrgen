@@ -183,7 +183,6 @@ namespace bm2cpp {
     }
 
     void inner_block(Context& ctx, rebgn::Range range) {
-        auto indent = ctx.cw.indent_scope();
         std::vector<futils::helper::DynDefer> defer;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];

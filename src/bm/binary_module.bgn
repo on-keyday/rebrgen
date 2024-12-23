@@ -297,14 +297,18 @@ format Code:
             ref :Varint
         AbstractOp.DEFINE_FORMAT:
             ident :Varint
+        AbstractOp.DEFINE_STATE:
+            ident :Varint
         AbstractOp.DEFINE_FIELD:
             ident :Varint
+            belong :Varint # belong to format or state or union or null
         AbstractOp.DEFINE_ENUM:
             ident :Varint
         AbstractOp.DEFINE_ENUM_MEMBER:
             ident :Varint
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
+            belong :Varint # belong to format or null
         AbstractOp.DEFINE_ENCODER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to encoder
@@ -313,11 +317,13 @@ format Code:
             right_ref :Varint # ref to decoder
         AbstractOp.DEFINE_UNION:
             ident :Varint
+            belong :Varint # ref to field
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
-            ref :Varint
+            ref :Varint # ref to initial expr
         AbstractOp.DEFINE_UNION_MEMBER:
             ident :Varint
+            belong :Varint # belong to union
         AbstractOp.SPECIFY_STORAGE_TYPE:
             storage :Storages
         AbstractOp.BINARY:
@@ -413,8 +419,7 @@ format Code:
         AbstractOp.DEFINE_PACKED_OPERATION:
             ident :Varint
         AbstractOp.SWITCH_UNION:
-            left_ref :Varint # ref to union
-            right_ref :Varint # ref to member
+            ref :Varint # ref to union_member
         AbstractOp.RET:
             ref :Varint # maybe null
         AbstractOp.MATCH:

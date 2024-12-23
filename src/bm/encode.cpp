@@ -584,6 +584,16 @@ namespace rebgn {
         return convert_node_definition(m, node);
     }
 
+    void add_switch_union(Module& m, std::shared_ptr<ast::StructType>& node) {
+        auto ident = m.lookup_struct(node);
+        if (ident.value() == 0) {
+            return;
+        }
+        m.op(AbstractOp::SWITCH_UNION, [&](Code& c) {
+            c.ref(ident);
+        });
+    }
+
     Error convert_match(Module& m, std::shared_ptr<ast::Match>& node, auto&& eval) {
         if (node->cond) {
             auto cond = get_expr(m, node->cond);
@@ -614,12 +624,14 @@ namespace rebgn {
                     });
                 }
                 if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
+                    add_switch_union(m, scoped->struct_type);
                     auto err = eval(m, scoped->statement);
                     if (err) {
                         return err;
                     }
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
+                    add_switch_union(m, block->struct_type);
                     for (auto& n : block->elements) {
                         auto err = eval(m, n);
                         if (err) {
@@ -672,12 +684,14 @@ namespace rebgn {
                 }
             }
             if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
+                add_switch_union(m, scoped->struct_type);
                 auto err = eval(m, scoped->statement);
                 if (err) {
                     return err;
                 }
             }
             else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
+                add_switch_union(m, block->struct_type);
                 for (auto& n : block->elements) {
                     auto err = eval(m, n);
                     if (err) {
@@ -722,6 +736,7 @@ namespace rebgn {
             c.ident(*if_);
             c.ref(*cond);
         });
+        add_switch_union(m, node->then->struct_type);
         for (auto& n : node->then->elements) {
             auto err = eval(m, n);
             if (err) {
@@ -739,6 +754,7 @@ namespace rebgn {
                     m.op(AbstractOp::ELIF, [&](Code& c) {
                         c.ref(*cond);
                     });
+                    add_switch_union(m, e->then->struct_type);
                     for (auto& n : e->then->elements) {
                         auto err = eval(m, n);
                         if (err) {
@@ -749,6 +765,7 @@ namespace rebgn {
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(els->els)) {
                     m.op(AbstractOp::ELSE);
+                    add_switch_union(m, block->struct_type);
                     for (auto& n : block->elements) {
                         auto err = eval(m, n);
                         if (err) {

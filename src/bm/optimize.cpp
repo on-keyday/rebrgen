@@ -2,6 +2,7 @@
 #include "convert.hpp"
 #include <core/ast/tool/sort.h>
 #include <view/span.h>
+#include "helper.hpp"
 
 namespace rebgn {
     void rebind_ident_index(Module& mod) {
@@ -234,22 +235,23 @@ namespace rebgn {
                 auto found_decoder = fmt_to_decoder.find(ident);
                 if (found_encoder != fmt_to_encoder.end()) {
                     Code bind;
-                    bind.op = AbstractOp::DECLARE_FUNCTION;
-                    bind.ref(*varint(found_encoder->second));
-                    rebound.push_back(std::move(bind));
+
                     bind.op = AbstractOp::DEFINE_ENCODER;
                     bind.left_ref(*varint(ident));
                     bind.right_ref(*varint(found_encoder->second));
                     rebound.push_back(std::move(bind));
+                    bind.op = AbstractOp::DECLARE_FUNCTION;
+                    bind.ref(*varint(found_encoder->second));
+                    rebound.push_back(std::move(bind));
                 }
                 if (found_decoder != fmt_to_decoder.end()) {
                     Code bind;
-                    bind.op = AbstractOp::DECLARE_FUNCTION;
-                    bind.ref(*varint(found_decoder->second));
-                    rebound.push_back(std::move(bind));
                     bind.op = AbstractOp::DEFINE_DECODER;
                     bind.left_ref(*varint(ident));
                     bind.right_ref(*varint(found_decoder->second));
+                    rebound.push_back(std::move(bind));
+                    bind.op = AbstractOp::DECLARE_FUNCTION;
+                    bind.ref(*varint(found_decoder->second));
                     rebound.push_back(std::move(bind));
                 }
             }

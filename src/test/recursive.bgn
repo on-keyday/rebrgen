@@ -60,3 +60,6 @@ format Storage:
 
 format X:
     x :X
+
+state M:
+    s :bool

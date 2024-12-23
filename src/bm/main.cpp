@@ -54,6 +54,8 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_IF:
                 case rebgn::AbstractOp::END_PROGRAM:
                 case rebgn::AbstractOp::END_STATE:
+                case rebgn::AbstractOp::END_BIT_FIELD:
+                case rebgn::AbstractOp::END_PACKED_OPERATION:
                     nest.resize(nest.size() - 2);
                     break;
                 default:
@@ -89,6 +91,9 @@ namespace rebgn {
             cout << nest << to_string(c.op);
             if (auto uop = c.uop()) {
                 cout << " " << to_string(*uop);
+            }
+            if (auto belong = c.belong()) {
+                print_ref(*belong);
             }
             if (auto ident = c.ident()) {
                 print_ref(*ident, false);
@@ -149,6 +154,8 @@ namespace rebgn {
                 case rebgn::AbstractOp::IF:
                 case rebgn::AbstractOp::DEFINE_PROGRAM:
                 case rebgn::AbstractOp::DEFINE_STATE:
+                case rebgn::AbstractOp::DEFINE_BIT_FIELD:
+                case rebgn::AbstractOp::DEFINE_PACKED_OPERATION:
                     nest += "  ";
                     break;
                 default:

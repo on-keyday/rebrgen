@@ -279,7 +279,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::DEFINE_UNION, [&](Code& c) {
             c.ident(*union_ident);
-            c.ref(field_id);
+            c.belong(field_id);
         });
         for (auto& st : su->structs) {
             auto ident = m.new_id();
@@ -288,7 +288,7 @@ namespace rebgn {
             }
             m.op(AbstractOp::DEFINE_UNION_MEMBER, [&](Code& c) {
                 c.ident(*ident);
-                c.ref(*union_ident);
+                c.belong(*union_ident);
             });
             m.map_struct(st, ident->value());
             for (auto& f : st->fields) {
@@ -324,6 +324,9 @@ namespace rebgn {
             });
             return none;
         };
+        if (auto i = ast::as<ast::BoolType>(typ)) {
+            push(StorageType::BOOL, [](Storage& c) {});
+        }
         if (auto i = ast::as<ast::IntType>(typ)) {
             return typ_with_size(i->is_signed ? StorageType::INT : StorageType::UINT, i);
         }
@@ -400,43 +403,6 @@ namespace rebgn {
             return define_storage(m, s, base_type, should_detect_recursive);
         }
         if (auto su = ast::as<ast::StructUnionType>(typ)) {
-            /*
-            auto union_ident = m.new_id();
-            if (!union_ident) {
-                return union_ident.error();
-            }
-            m.op(AbstractOp::DEFINE_UNION, [&](Code& c) {
-                c.ident(*union_ident);
-                c.ref();
-            });
-            auto size = su->structs.size();
-            push(StorageType::VARIANT, [&](Storage& c) {
-                c.size(*varint(size));
-                c.ref(*union_ident);
-            });
-            for (auto& st : su->structs) {
-                auto ident = m.new_id();
-                if (!ident) {
-                    return ident.error();
-                }
-                m.op(AbstractOp::DEFINE_UNION_MEMBER, [&](Code& c) {
-                    c.ident(*ident);
-                    c.ref(*union_ident);
-                });
-                m.map_struct(st, ident->value());
-                for (auto& f : st->fields) {
-                    auto err = convert_node_definition(m, f);
-                    if (err) {
-                        return err;
-                    }
-                }
-                push(StorageType::STRUCT_REF, [&](Storage& c) {
-                    c.ref(*ident);
-                });
-                m.op(AbstractOp::END_UNION_MEMBER);
-            }
-            m.op(AbstractOp::END_UNION);
-            */
             auto size = su->structs.size();
             push(StorageType::VARIANT, [&](Storage& c) {
                 c.size(*varint(size));
@@ -640,7 +606,7 @@ namespace rebgn {
         auto parent = m.lookup_struct(node->belong_struct.lock());
         m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
             c.ident(*ident);
-            c.ref(parent);
+            c.belong(parent);
         });
         if (auto union_struct = ast::as<ast::StructUnionType>(node->field_type)) {
             auto union_ident_ref = define_union(m, *ident, ast::cast_to<ast::StructUnionType>(node->field_type));
@@ -693,7 +659,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*ident);
-            c.ref(parent);
+            c.belong(parent);
         });
         for (auto& p : node->parameters) {
             auto err = convert_node_definition(m, p);

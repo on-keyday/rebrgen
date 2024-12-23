@@ -468,6 +468,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*new_id);
+            c.belong(*fmt_ident);
         });
         for (auto& elem : node->body->elements) {
             auto err = convert_node_encode(m, elem);
@@ -507,6 +508,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*new_id);
+            c.belong(fmt_ident.value());
         });
         for (auto& elem : node->body->elements) {
             auto err = convert_node_decode(m, elem);

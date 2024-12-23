@@ -2,3 +2,4 @@ built
 tool
 *.bin
 save.txt
+*.dot

@@ -177,6 +177,8 @@ namespace rebgn {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(base_ref);
+                c.endian(Endian(int_ty->endian));
+                c.bit_size(*varint(*int_ty->bit_size));
             });
             return none;
         }
@@ -200,6 +202,8 @@ namespace rebgn {
             });
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(*new_id);
+                c.endian(Endian::unspec);
+                c.bit_size(*varint(*float_ty->bit_size));
             });
             auto next_id = m.new_id();
             if (!next_id) {
@@ -586,9 +590,16 @@ namespace rebgn {
             if (!cond) {
                 return cond.error();
             }
-            m.op(AbstractOp::MATCH, [&](Code& c) {
-                c.ref(*cond);
-            });
+            if (node->struct_union_type->exhaustive) {
+                m.op(AbstractOp::EXHAUSTIVE_MATCH, [&](Code& c) {
+                    c.ref(*cond);
+                });
+            }
+            else {
+                m.op(AbstractOp::MATCH, [&](Code& c) {
+                    c.ref(*cond);
+                });
+            }
             for (auto& c : node->branch) {
                 if (ast::is_any_range(c->cond->expr)) {
                     m.op(AbstractOp::DEFAULT_CASE);

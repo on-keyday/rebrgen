@@ -37,6 +37,16 @@ namespace rebgn {
         return v;
     }
 
+    // Control Flow Graph
+    // basic_block: list of Module.code index
+    // next: list of next CFG
+    // prev: list of previous CFG
+    struct CFG {
+        std::vector<size_t> basic_block;
+        std::vector<std::shared_ptr<CFG>> next;
+        std::vector<std::weak_ptr<CFG>> prev;
+    };
+
     struct Module {
         std::unordered_map<std::string, ObjectID> string_table;
         std::unordered_map<ObjectID, std::string> string_table_rev;
@@ -46,6 +56,7 @@ namespace rebgn {
         std::vector<Range> ranges;
         std::vector<Code> code;
         std::uint64_t object_id = 1;
+        std::vector<std::shared_ptr<CFG>> cfgs;
 
        private:
         std::uint64_t prev_expr_id = null_id;
@@ -124,4 +135,5 @@ namespace rebgn {
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node);
 
+    void write_cfg(futils::binary::writer& w, Module& m);
 }  // namespace rebgn

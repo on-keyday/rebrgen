@@ -145,6 +145,7 @@ enum AbstractOp:
     END_IF
 
     MATCH
+    EXHAUSTIVE_MATCH
     CASE
     END_CASE
     DEFAULT_CASE
@@ -407,6 +408,10 @@ format Code:
             right_ref :Varint # ref to member
         AbstractOp.RET:
             ref :Varint # maybe null
+        AbstractOp.MATCH:
+            ref :Varint # ref to expr
+        AbstractOp.EXHAUSTIVE_MATCH:
+            ref :Varint # ref to expr
 
 
 format StringRefs:

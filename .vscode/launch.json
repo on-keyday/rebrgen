@@ -11,6 +11,8 @@
             "program": "${workspaceRoot}/tool/bmgen",
             "args": [
                 "-i","C:/workspace/shbrgen/brgen/ignore/sample.json",
+                "-o","save.bin",
+                "-c","cfg.dot"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

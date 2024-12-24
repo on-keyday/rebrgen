@@ -92,6 +92,18 @@ namespace bm2cpp {
         return "void";
     }
 
+    std::optional<size_t> find_op(Context& ctx, rebgn::Range& range, rebgn::AbstractOp op, size_t from = 0) {
+        if (from == 0) {
+            from = range.start;
+        }
+        for (size_t i = from; i < range.end; i++) {
+            if (ctx.bm.code[i].op == op) {
+                return i;
+            }
+        }
+        return std::nullopt;
+    }
+
     std::vector<std::string> eval_eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
@@ -137,15 +149,13 @@ namespace bm2cpp {
                 break;
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto& ident = ctx.ident_table[code.ident().value().value()];
-                auto idx = ctx.ident_index_table[code.ident().value().value()];
+                auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
-                for (size_t i = idx; ctx.bm.code[i].op != rebgn::AbstractOp::END_FIELD; i++) {
-                    if (ctx.bm.code[i].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
-                        auto st = *ctx.bm.code[i].storage();
-                        if (st.storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
-                            should_deref = true;
-                        }
-                        break;
+                auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                if (found) {
+                    auto st = *ctx.bm.code[*found].storage();
+                    if (st.storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                        should_deref = true;
                     }
                 }
                 if (should_deref) {
@@ -182,11 +192,54 @@ namespace bm2cpp {
         return res;
     }
 
+    void add_function_parameters(Context& ctx, rebgn::Range range) {
+        size_t params = 0;
+        for (size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            if (code.op == rebgn::AbstractOp::ENCODER_PARAMETER) {
+                ctx.cw.write("::futils::binary::writer& w");
+                params++;
+            }
+            if (code.op == rebgn::AbstractOp::DECODER_PARAMETER) {
+                ctx.cw.write("::futils::binary::reader& r");
+                params++;
+            }
+            if (code.op == rebgn::AbstractOp::STATE_VARIABLE_PARAMETER) {
+                auto field_range = ctx.ident_range_table[code.ref().value().value()];
+                auto specify = find_op(ctx, field_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                if (!specify) {
+                    continue;
+                }
+                auto storage = *ctx.bm.code[*specify].storage();
+                auto type = type_to_string(ctx, storage);
+                auto& ident = ctx.ident_table[code.ref().value().value()];
+                if (params > 0) {
+                    ctx.cw.write(", ");
+                }
+                ctx.cw.write(type, "& ", ident);
+            }
+            if (code.op == rebgn::AbstractOp::DECLARE_PARAMETER) {
+                auto param_range = ctx.ident_range_table[code.ref().value().value()];
+                auto specify = find_op(ctx, param_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                if (!specify) {
+                    continue;
+                }
+                auto storage = *ctx.bm.code[*specify].storage();
+                auto type = type_to_string(ctx, storage);
+                auto& ident = ctx.ident_table[code.ref().value().value()];
+                if (params > 0) {
+                    ctx.cw.write(", ");
+                }
+                ctx.cw.write(type, " ", ident);
+            }
+        }
+    }
+
     void inner_block(Context& ctx, rebgn::Range range) {
         std::vector<futils::helper::DynDefer> defer;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
-            if (rebgn::is_declare(code.op)) {
+            if (rebgn::is_declare(code.op) && code.op != rebgn::AbstractOp::DECLARE_FUNCTION) {
                 auto range = ctx.ident_range_table[code.ref().value().value()];
                 inner_block(ctx, range);
                 continue;
@@ -198,28 +251,21 @@ namespace bm2cpp {
                     defer.push_back(ctx.cw.indent_scope_ex());
                     break;
                 }
-                case rebgn::AbstractOp::DEFINE_FUNCTION: {
+                case rebgn::AbstractOp::DECLARE_FUNCTION: {
+                    auto& ident = ctx.ident_table[code.ref().value().value()];
                     auto fn_range = ctx.ident_range_table[code.ref().value().value()];
-                    size_t params = 0;
-                    for (size_t p = fn_range.start; p < fn_range.end; p++) {
-                        auto& pcode = ctx.bm.code[p];
-                        if (pcode.op == rebgn::AbstractOp::ENCODER_PARAMETER) {
-                        }
-                        if (pcode.op == rebgn::AbstractOp::DECLARE_PARAMETER) {
-                            auto param_range = ctx.ident_range_table[pcode.ref().value().value()];
-                            for (size_t j = param_range.start; j < param_range.end; j++) {
-                                if (ctx.bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
-                                    auto storage = *ctx.bm.code[j].storage();
-                                    auto type = type_to_string(ctx, storage);
-                                    auto& ident = ctx.ident_table[ctx.bm.code[j].ref().value().value()];
-                                    if (params > 0) {
-                                        ctx.cw.write(", ");
-                                    }
-                                    ctx.cw.write(type, " ", ident);
-                                }
-                            }
-                        }
+                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    if (!ret) {
+                        ctx.cw.writeln("void ", ident, "(");
                     }
+                    else {
+                        auto storage = *ctx.bm.code[*ret].storage();
+                        auto type = type_to_string(ctx, storage);
+                        ctx.cw.write(type, " ", ident, "(");
+                    }
+                    add_function_parameters(ctx, fn_range);
+                    ctx.cw.writeln(");");
+                    break;
                 }
                 case rebgn::AbstractOp::END_FORMAT: {
                     defer.pop_back();

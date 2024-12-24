@@ -275,6 +275,10 @@ format Metadata:
     len_exprs :Varint
     expr_refs :[len_exprs.value]Varint
 
+format Param:
+    len_exprs :Varint
+    expr_refs :[len_exprs.value]Varint
+
 format Code:
     op :AbstractOp
     match op:
@@ -446,6 +450,12 @@ format Code:
             right_ref :Varint # ref to decoder function
         AbstractOp.STATE_VARIABLE_PARAMETER:
             ref :Varint # ref to state
+        AbstractOp.EXPLICIT_ERROR:
+            param :Param
+        AbstractOp.CALL:
+            ident :Varint
+            ref :Varint # ref to function
+            param :Param
 
 
 format StringRefs:

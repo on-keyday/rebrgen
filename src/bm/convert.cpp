@@ -597,6 +597,73 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Assert>(Module& m, std::shared_ptr<ast::Assert>& node) {
+        auto cond = get_expr(m, node->cond);
+        if (!cond) {
+            return cond.error();
+        }
+        m.op(AbstractOp::ASSERT, [&](Code& c) {
+            c.ref(*cond);
+        });
+        return none;
+    }
+
+    template <>
+    Error define<ast::ExplicitError>(Module& m, std::shared_ptr<ast::ExplicitError>& node) {
+        Param param;
+        for (auto& c : node->base->arguments) {
+            auto err = get_expr(m, c);
+            if (!err) {
+                return err.error();
+            }
+            param.expr_refs.push_back(*err);
+        }
+        auto len = varint(param.expr_refs.size());
+        if (!len) {
+            return len.error();
+        }
+        param.len_exprs = *len;
+        m.op(AbstractOp::EXPLICIT_ERROR, [&](Code& c) {
+            c.param(std::move(param));
+        });
+        return none;
+    }
+
+    template <>
+    Error define<ast::Call>(Module& m, std::shared_ptr<ast::Call>& node) {
+        auto callee = get_expr(m, node->callee);
+        if (!callee) {
+            return callee.error();
+        }
+        std::vector<Varint> args;
+        for (auto& p : node->arguments) {
+            auto arg = get_expr(m, p);
+            if (!arg) {
+                return arg.error();
+            }
+            args.push_back(arg.value());
+        }
+        auto new_id = m.new_id();
+        if (!new_id) {
+            return new_id.error();
+        }
+        auto len = varint(args.size());
+        if (!len) {
+            return len.error();
+        }
+        Param param;
+        param.len_exprs = *len;
+        param.expr_refs = std::move(args);
+        m.op(AbstractOp::CALL, [&](Code& c) {
+            c.ident(*new_id);
+            c.ref(*callee);
+            c.param(std::move(param));
+        });
+        m.set_prev_expr(new_id->value());
+        return none;
+    }
+
+    template <>
     Error define<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
@@ -661,6 +728,16 @@ namespace rebgn {
             c.ident(*ident);
             c.belong(parent);
         });
+        if (node->return_type) {
+            Storages s;
+            auto err = define_storage(m, s, node->return_type);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(std::move(s));
+            });
+        }
         for (auto& p : node->parameters) {
             auto param_ident = m.lookup_ident(p->ident);
             if (!param_ident) {

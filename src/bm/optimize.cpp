@@ -812,8 +812,8 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
+        replace_call_encode_decode_ref(m);
         err = sort_formats(m, node);
         if (err) {
             return err;

@@ -1116,6 +1116,11 @@ namespace rebgn {
         return none;
     }
 
+    template <>
+    Error define<ast::ImplicitYield>(Module& m, std::shared_ptr<ast::ImplicitYield>& node) {
+        return convert_node_definition(m, node->expr);
+    }
+
     template <class T>
     concept has_define = requires(Module& m, std::shared_ptr<T>& n) {
         define<T>(m, n);

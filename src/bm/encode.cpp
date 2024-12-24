@@ -630,7 +630,7 @@ namespace rebgn {
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            yield_value = tmp_var->value();
+            yield_value = *tmp_var;
         }
         auto yield_value_preproc = [&]() {
             if (yield_value) {
@@ -648,10 +648,11 @@ namespace rebgn {
                     c.right_ref(*prev_expr);
                 });
             }
+            return none;
         };
         auto yield_value_finalproc = [&]() {
             if (yield_value) {
-                m.set_prev_expr(*yield_value);
+                m.set_prev_expr(yield_value->value());
             }
         };
         if (node->cond) {
@@ -689,7 +690,10 @@ namespace rebgn {
                     if (err) {
                         return err;
                     }
-                    yield_value_postproc();
+                    err = yield_value_postproc();
+                    if (err) {
+                        return err;
+                    }
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                     add_switch_union(m, block->struct_type);
@@ -700,13 +704,19 @@ namespace rebgn {
                             return err;
                         }
                     }
-                    yield_value_postproc();
+                    auto err = yield_value_postproc();
+                    if (err) {
+                        return err;
+                    }
                 }
                 else {
                     return error("Invalid match branch");
                 }
                 m.op(AbstractOp::END_CASE);
-                yield_value_postproc();
+                auto err = yield_value_postproc();
+                if (err) {
+                    return err;
+                }
             }
             m.op(AbstractOp::END_MATCH);
             yield_value_finalproc();
@@ -755,7 +765,10 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-                yield_value_postproc();
+                err = yield_value_postproc();
+                if (err) {
+                    return err;
+                }
             }
             else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                 add_switch_union(m, block->struct_type);
@@ -766,7 +779,10 @@ namespace rebgn {
                         return err;
                     }
                 }
-                yield_value_postproc();
+                auto err = yield_value_postproc();
+                if (err) {
+                    return err;
+                }
             }
             else {
                 return error("Invalid match branch");
@@ -813,7 +829,7 @@ namespace rebgn {
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            yield_value = tmp_var->value();
+            yield_value = *tmp_var;
         }
         auto yield_value_preproc = [&]() {
             if (yield_value) {
@@ -831,10 +847,11 @@ namespace rebgn {
                     c.right_ref(*prev_expr);
                 });
             }
+            return none;
         };
         auto yield_value_finalproc = [&]() {
             if (yield_value) {
-                m.set_prev_expr(*yield_value);
+                m.set_prev_expr(yield_value->value());
             }
         };
         auto cond = get_expr(m, node->cond->expr);
@@ -877,7 +894,10 @@ namespace rebgn {
                             return err;
                         }
                     }
-                    yield_value_postproc();
+                    auto err = yield_value_postproc();
+                    if (err) {
+                        return err;
+                    }
                     els = ast::cast_to<ast::If>(e->els);
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(els->els)) {
@@ -890,7 +910,10 @@ namespace rebgn {
                             return err;
                         }
                     }
-                    yield_value_postproc();
+                    auto err = yield_value_postproc();
+                    if (err) {
+                        return err;
+                    }
                     break;
                 }
                 else {
@@ -1018,6 +1041,16 @@ namespace rebgn {
     template <>
     Error decode<ast::ExplicitError>(Module& m, std::shared_ptr<ast::ExplicitError>& node) {
         return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error encode<ast::ImplicitYield>(Module& m, std::shared_ptr<ast::ImplicitYield>& node) {
+        return convert_node_definition(m, node->expr);
+    }
+
+    template <>
+    Error decode<ast::ImplicitYield>(Module& m, std::shared_ptr<ast::ImplicitYield>& node) {
+        return convert_node_definition(m, node->expr);
     }
 
     template <>

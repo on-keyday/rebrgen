@@ -334,7 +334,7 @@ namespace bm2cpp {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-                    auto& ident = ctx.ident_table[code.ident().value().value()];
+                    ctx.cw.writeln("");
                     break;
                 }
                 case rebgn::AbstractOp::END_BIT_FIELD: {
@@ -377,6 +377,9 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
                     bit_field(ctx, ctx.ident_range_table[code.ref().value().value()]);
+                    break;
+                }
+                case rebgn::AbstractOp::DECLARE_PROPERTY: {
                     break;
                 }
                 case rebgn::AbstractOp::DECLARE_FIELD: {

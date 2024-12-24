@@ -69,3 +69,9 @@ fn define() -> X:
     x :X
     x.x = x
     return x
+
+fn get(x :u1) -> u2:
+    return if x == 0:
+        0
+    else:
+        1

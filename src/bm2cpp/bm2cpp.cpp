@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <format>
 #include <bm/helper.hpp>
+#include <algorithm>
 
 namespace bm2cpp {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -102,6 +103,17 @@ namespace bm2cpp {
                 variant += ">";
                 return variant;
             }
+            case rebgn::StorageType::ARRAY: {
+                auto size = storage.size().value().value();
+                auto inner = type_to_string(ctx, s, index + 1);
+                return std::format("std::array<{}, {}>", inner, size);
+            }
+            case rebgn::StorageType::VECTOR: {
+                auto inner = type_to_string(ctx, s, index + 1);
+                return std::format("std::vector<{}>", inner);
+            }
+            case rebgn::StorageType::BOOL:
+                return "bool";
         }
         return "void";
     }
@@ -136,20 +148,20 @@ namespace bm2cpp {
             return std::format("std::get<{}>({})", get_index, base);
         }
         if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FIELD) {
-            return std::format("this->union_{}", ctx.bm.code[belong].ident().value().value());
+            return std::format("this->field_{}", ctx.bm.code[belong].ident().value().value());
         }
         return "/* Unimplemented union ident */";
     }
 
-    std::vector<std::string> eval_eval(const rebgn::Code& code, Context& ctx) {
+    std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
             case rebgn::AbstractOp::ASSIGN: {
                 auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
-                auto left = eval_eval(ctx.bm.code[left_index], ctx);
+                auto left = eval(ctx.bm.code[left_index], ctx);
                 res.insert(res.end(), left.begin(), left.end() - 1);
                 auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
-                auto right = eval_eval(ctx.bm.code[right_index], ctx);
+                auto right = eval(ctx.bm.code[right_index], ctx);
                 res.insert(res.end(), right.begin(), right.end() - 1);
                 res.push_back(std::format("{} = {};", left.back(), right.back()));
                 break;
@@ -160,9 +172,9 @@ namespace bm2cpp {
             }
             case rebgn::AbstractOp::ACCESS: {
                 auto& left_ident = ctx.ident_index_table[code.left_ref().value().value()];
-                auto left = eval_eval(ctx.bm.code[left_ident], ctx);
+                auto left = eval(ctx.bm.code[left_ident], ctx);
                 auto& right_ident = ctx.ident_index_table[code.right_ref().value().value()];
-                auto right = eval_eval(ctx.bm.code[right_ident], ctx);
+                auto right = eval(ctx.bm.code[right_ident], ctx);
                 if (ctx.bm.code[left_ident].op == rebgn::AbstractOp::IMMEDIATE_TYPE) {
                     res.push_back(std::format("{}::{}", left.back(), right.back()));
                 }
@@ -215,7 +227,7 @@ namespace bm2cpp {
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 auto& ref_index = ctx.ident_index_table[code.ref().value().value()];
-                res = eval_eval(ctx.bm.code[ref_index], ctx);
+                res = eval(ctx.bm.code[ref_index], ctx);
                 auto& taken = res.back();
                 if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
                     taken = std::format("auto {} = {};", found->second, taken);
@@ -231,6 +243,17 @@ namespace bm2cpp {
                 res.push_back(std::format("/* Unimplemented op: {} */", to_string(code.op)));
                 break;
         }
+        std::vector<size_t> index;
+        for (size_t i = 0; i < res.size(); i++) {
+            index.push_back(i);
+        }
+        std::ranges::sort(index, [&](size_t a, size_t b) {
+            return res[a] < res[b];
+        });
+        std::ranges::unique(index, [&](size_t a, size_t b) {
+            return res[a] == res[b];
+        });
+
         return res;
     }
 
@@ -291,9 +314,8 @@ namespace bm2cpp {
             }
             switch (code.op) {
                 case rebgn::AbstractOp::DEFINE_UNION:
-                case rebgn::AbstractOp::DEFINE_ENUM:
                 case rebgn::AbstractOp::END_UNION:
-                case rebgn::AbstractOp::END_ENUM: {
+                case rebgn::AbstractOp::DECLARE_ENUM: {
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
@@ -306,7 +328,31 @@ namespace bm2cpp {
                     ctx.cw.writeln("};");
                     break;
                 }
-                case rebgn::AbstractOp::DEFINE_FORMAT: {
+                case rebgn::AbstractOp::DECLARE_FIELD: {
+                    auto belong = ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]].belong().value().value();
+                    if (belong == 0) {
+                        break;  // skip global field
+                    }
+                    std::string ident;
+                    if (auto found = ctx.ident_table.find(code.ref().value().value()); found != ctx.ident_table.end()) {
+                        ident = found->second;
+                    }
+                    else {
+                        ident = std::format("field_{}", code.ref().value().value());
+                    }
+                    auto range = ctx.ident_range_table[code.ref().value().value()];
+                    auto specify = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    if (!specify) {
+                        ctx.cw.writeln("/* Unimplemented field */");
+                        break;
+                    }
+                    auto storage = *ctx.bm.code[*specify].storage();
+                    auto type = type_to_string(ctx, storage);
+                    ctx.cw.writeln(type, " ", ident, "{};");
+                    break;
+                }
+                case rebgn::AbstractOp::DEFINE_FORMAT:
+                case rebgn::AbstractOp::DEFINE_STATE: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
                     ctx.cw.writeln("struct ", ident, " {");
                     defer.push_back(ctx.cw.indent_scope_ex());
@@ -328,7 +374,8 @@ namespace bm2cpp {
                     ctx.cw.writeln(");");
                     break;
                 }
-                case rebgn::AbstractOp::END_FORMAT: {
+                case rebgn::AbstractOp::END_FORMAT:
+                case rebgn::AbstractOp::END_STATE: {
                     defer.pop_back();
                     ctx.cw.writeln("};");
                     break;
@@ -336,6 +383,42 @@ namespace bm2cpp {
                 default:
                     ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
                     break;
+            }
+        }
+    }
+
+    void inner_function(Context& ctx, rebgn::Range range) {
+        std::vector<futils::helper::DynDefer> defer;
+        for (size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            switch (code.op) {
+                case rebgn::AbstractOp::DEFINE_FUNCTION: {
+                    auto fn_range = ctx.ident_range_table[code.ident().value().value()];
+                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    if (!ret) {
+                        ctx.cw.write("void ");
+                    }
+                    else {
+                        auto storage = *ctx.bm.code[*ret].storage();
+                        auto type = type_to_string(ctx, storage);
+                        ctx.cw.write(type, " ");
+                    }
+                    auto ident = ctx.ident_table[code.ident().value().value()];
+                    if (auto bl = code.belong().value().value(); bl) {
+                        auto parent_ident = ctx.ident_table[bl];
+                        ident = std::format("{}::{}", parent_ident, ident);
+                    }
+                    ctx.cw.write(ident, "(");
+                    add_function_parameters(ctx, fn_range);
+                    ctx.cw.writeln(") {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::END_FUNCTION: {
+                    defer.pop_back();
+                    ctx.cw.writeln("}");
+                    break;
+                }
             }
         }
     }
@@ -351,12 +434,32 @@ namespace bm2cpp {
         for (auto& id : bm.ident_indexes.refs) {
             ctx.ident_index_table[id.ident.value()] = id.index.value();
         }
-        bool has_union = false;
+
         for (auto& id : bm.ident_ranges.ranges) {
             ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
             auto& code = bm.code[id.range.start.value()];
+        }
+        bool has_union = false;
+        bool has_vector = false;
+        bool has_recursive = false;
+        for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
+            }
+            if (auto s = code.storage()) {
+                for (auto& storage : s->storages) {
+                    if (storage.type == rebgn::StorageType::VECTOR) {
+                        has_vector = true;
+                        break;
+                    }
+                    if (storage.type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                        has_recursive = true;
+                        break;
+                    }
+                }
+            }
+            if (has_vector && has_union && has_recursive) {
+                break;
             }
         }
         ctx.cw.writeln("// Code generated by bm2cpp of https://github.com/on-keyday/rebrgen");
@@ -364,6 +467,12 @@ namespace bm2cpp {
         ctx.cw.writeln("#include <cstdint>");
         if (has_union) {
             ctx.cw.writeln("#include <variant>");
+        }
+        if (has_vector) {
+            ctx.cw.writeln("#include <vector>");
+        }
+        if (has_recursive) {
+            ctx.cw.writeln("#include <memory>");
         }
         ctx.cw.writeln("#include <binary/number.h>");
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
@@ -390,7 +499,7 @@ namespace bm2cpp {
                                 auto def = ctx.ident_index_table[bm.code[j].ref().value().value()];
                                 for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM_MEMBER; j++) {
                                     if (bm.code[j].op == rebgn::AbstractOp::ASSIGN) {
-                                        auto ev = eval_eval(bm.code[j], ctx);
+                                        auto ev = eval(bm.code[j], ctx);
                                         ev.back().pop_back();  // remove ;
                                         ev.back().push_back(',');
                                         tmp.writeln(ev.back());
@@ -416,6 +525,13 @@ namespace bm2cpp {
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             inner_block(ctx, {.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
+        }
+        for (size_t j = 0; j < bm.ident_ranges.ranges.size(); j++) {
+            auto range = ctx.ident_range_table[bm.ident_ranges.ranges[j].ident.value()];
+            if (bm.code[range.start].op != rebgn::AbstractOp::DEFINE_FUNCTION) {
+                continue;
+            }
+            inner_function(ctx, range);
         }
     }
 }  // namespace bm2cpp

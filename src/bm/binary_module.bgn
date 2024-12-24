@@ -407,6 +407,8 @@ format Code:
             ref :Varint
         AbstractOp.DECLARE_FORMAT:
             ref :Varint
+        AbstractOp.DECLARE_STATE:
+            ref :Varint
         AbstractOp.DECLARE_FIELD:
             ref :Varint
         AbstractOp.DECLARE_PARAMETER:

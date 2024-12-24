@@ -326,6 +326,7 @@ namespace rebgn {
         };
         if (auto i = ast::as<ast::BoolType>(typ)) {
             push(StorageType::BOOL, [](Storage& c) {});
+            return none;
         }
         if (auto i = ast::as<ast::IntType>(typ)) {
             return typ_with_size(i->is_signed ? StorageType::INT : StorageType::UINT, i);
@@ -785,6 +786,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_STATE, [&](Code& c) {
             c.ident(*ident);
         });
+        m.map_struct(node->body->struct_type, ident->value());
         for (auto& f : node->body->struct_type->fields) {
             auto err = convert_node_definition(m, f);
             if (err) {

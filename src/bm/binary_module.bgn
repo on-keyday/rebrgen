@@ -75,7 +75,6 @@ enum Endian:
 
 enum AbstractOp:
     :u8
-    NOP
 
     
     METADATA
@@ -409,6 +408,12 @@ format Code:
         AbstractOp.DECLARE_FORMAT:
             ref :Varint
         AbstractOp.DECLARE_FIELD:
+            ref :Varint
+        AbstractOp.DECLARE_PARAMETER:
+            ref :Varint
+        AbstractOp.DECLARE_BIT_FIELD:
+            ref :Varint
+        AbstractOp.DECLARE_PACKED_OPERATION:
             ref :Varint
         AbstractOp.DECLARE_ENUM:
             ref :Varint

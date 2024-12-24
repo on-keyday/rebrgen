@@ -671,10 +671,6 @@ namespace rebgn {
         }
         // maybe null
         auto parent = m.lookup_struct(node->belong_struct.lock());
-        m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
-            c.ident(*ident);
-            c.belong(parent);
-        });
         if (auto union_struct = ast::as<ast::StructUnionType>(node->field_type)) {
             auto union_ident_ref = define_union(m, *ident, ast::cast_to<ast::StructUnionType>(node->field_type));
             if (!union_ident_ref) {
@@ -689,21 +685,34 @@ namespace rebgn {
                 return error("Invalid union type(maybe bug)");
             }
             s.storages[0].ref(*union_ident_ref);  // fill union ident
-        }
-        else if (!ast::as<ast::UnionType>(node->field_type)) {
-            Storages s;
-            auto err = define_storage(m, s, node->field_type, true);
-            if (err) {
-                return err;
-            }
+            m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
+                c.ident(*ident);
+                c.belong(parent);
+            });
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.storage(std::move(s));
             });
         }
         else {
-            auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type));
-            if (err) {
-                return err;
+            m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
+                c.ident(*ident);
+                c.belong(parent);
+            });
+            if (!ast::as<ast::UnionType>(node->field_type)) {
+                Storages s;
+                auto err = define_storage(m, s, node->field_type, true);
+                if (err) {
+                    return err;
+                }
+                m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                    c.storage(std::move(s));
+                });
+            }
+            else {
+                auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type));
+                if (err) {
+                    return err;
+                }
             }
         }
         m.op(AbstractOp::END_FIELD);

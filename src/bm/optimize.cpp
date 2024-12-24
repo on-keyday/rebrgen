@@ -121,6 +121,20 @@ namespace rebgn {
                     }
                     break;
                 }
+                case AbstractOp::DEFINE_BIT_FIELD: {
+                    auto err = do_extract(AbstractOp::DEFINE_BIT_FIELD, AbstractOp::END_BIT_FIELD);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
+                case AbstractOp::DEFINE_PACKED_OPERATION: {
+                    auto err = do_extract(AbstractOp::DEFINE_PACKED_OPERATION, AbstractOp::END_PACKED_OPERATION);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
@@ -800,6 +814,15 @@ namespace rebgn {
                 }
             }
         }
+        // remove DEFINE_ENCODER and DEFINE_DECODER
+        std::vector<Code> rebound;
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
+                continue;
+            }
+            rebound.push_back(std::move(c));
+        }
+        m.code = std::move(rebound);
     }
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
@@ -814,6 +837,7 @@ namespace rebgn {
         }
         rebind_ident_index(m);
         replace_call_encode_decode_ref(m);
+        rebind_ident_index(m);
         err = sort_formats(m, node);
         if (err) {
             return err;

@@ -15,6 +15,9 @@ namespace rebgn {
 
     constexpr expected<Varint> varint(std::uint64_t n) {
         Varint v;
+        if (n == 0x40) {
+            ;
+        }
         if (n < 0x40) {
             v.prefix(0);
             v.value(n);
@@ -23,11 +26,11 @@ namespace rebgn {
             v.prefix(1);
             v.value(n);
         }
-        else if (n < 0x400000) {
+        else if (n < 0x40000000) {
             v.prefix(2);
             v.value(n);
         }
-        else if (n < 0x40000000) {
+        else if (n < 0x4000000000000000) {
             v.prefix(3);
             v.value(n);
         }
@@ -69,7 +72,7 @@ namespace rebgn {
             if (it == struct_table.end()) {
                 return Varint();
             }
-            return Varint(it->second);
+            return *varint(it->second);  // this was an error!!!!!!
         }
 
        private:

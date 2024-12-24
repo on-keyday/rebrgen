@@ -69,6 +69,10 @@ namespace bm2cpp {
             }
             case rebgn::StorageType::STRUCT_REF: {
                 auto ref = storage.ref().value().value();
+                auto idx = ctx.ident_index_table[ref];
+                if (ctx.bm.code[idx].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+                    return std::format("variant_{}", ref);
+                }
                 auto& ident = ctx.ident_table[ref];
                 return ident;
             }
@@ -88,6 +92,16 @@ namespace bm2cpp {
                 auto& ident = ctx.ident_table[ref];
                 return ident;
             }
+            case rebgn::StorageType::VARIANT: {
+                std::string variant = "std::variant<std::monostate";
+                for (index++; index < s.storages.size(); index++) {
+                    auto& storage = s.storages[index];
+                    auto inner = type_to_string(ctx, s, index);
+                    variant += ", " + inner;
+                }
+                variant += ">";
+                return variant;
+            }
         }
         return "void";
     }
@@ -102,6 +116,29 @@ namespace bm2cpp {
             }
         }
         return std::nullopt;
+    }
+
+    std::string retrieve_union_ident(Context& ctx, const rebgn::Code& code) {
+        auto belong = ctx.ident_index_table[code.belong().value().value()];
+        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+            auto union_range = ctx.ident_range_table[ctx.bm.code[belong].belong().value().value()];
+            size_t get_index = 0;
+            for (size_t i = union_range.start; i < union_range.end; i++) {
+                if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_UNION_MEMBER) {
+                    get_index++;
+                    if (ctx.bm.code[i].ident().value().value() == code.belong().value().value()) {
+                        break;
+                    }
+                }
+            }
+            auto& upper = ctx.bm.code[union_range.start];
+            auto base = retrieve_union_ident(ctx, upper);
+            return std::format("std::get<{}>({})", get_index, base);
+        }
+        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FIELD) {
+            return std::format("this->union_{}", ctx.bm.code[belong].ident().value().value());
+        }
+        return "/* Unimplemented union ident */";
     }
 
     std::vector<std::string> eval_eval(const rebgn::Code& code, Context& ctx) {
@@ -148,7 +185,7 @@ namespace bm2cpp {
                 res.push_back("false");
                 break;
             case rebgn::AbstractOp::DEFINE_FIELD: {
-                auto& ident = ctx.ident_table[code.ident().value().value()];
+                auto ident = ctx.ident_table[code.ident().value().value()];
                 auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
                 auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -158,11 +195,16 @@ namespace bm2cpp {
                         should_deref = true;
                     }
                 }
+                if (auto b = code.belong();
+                    b &&
+                    ctx.bm.code[ctx.ident_index_table[b->value()]].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+                    ident = retrieve_union_ident(ctx, code);
+                }
                 if (should_deref) {
-                    res.push_back(std::format("*{};", ident));
+                    res.push_back(std::format("(*{})", ident));
                 }
                 else {
-                    res.push_back(std::format("{};", ident));
+                    res.push_back(std::format("{}", ident));
                 }
                 break;
             }
@@ -239,12 +281,31 @@ namespace bm2cpp {
         std::vector<futils::helper::DynDefer> defer;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
-            if (rebgn::is_declare(code.op) && code.op != rebgn::AbstractOp::DECLARE_FUNCTION) {
+            if (code.op == rebgn::AbstractOp::DECLARE_FORMAT ||
+                code.op == rebgn::AbstractOp::DECLARE_UNION ||
+                code.op == rebgn::AbstractOp::DECLARE_UNION_MEMBER ||
+                code.op == rebgn::AbstractOp::DECLARE_STATE) {
                 auto range = ctx.ident_range_table[code.ref().value().value()];
                 inner_block(ctx, range);
                 continue;
             }
             switch (code.op) {
+                case rebgn::AbstractOp::DEFINE_UNION:
+                case rebgn::AbstractOp::DEFINE_ENUM:
+                case rebgn::AbstractOp::END_UNION:
+                case rebgn::AbstractOp::END_ENUM: {
+                    break;
+                }
+                case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
+                    ctx.cw.writeln(std::format("struct variant_{} {{", code.ident().value().value()));
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::END_UNION_MEMBER: {
+                    defer.pop_back();
+                    ctx.cw.writeln("};");
+                    break;
+                }
                 case rebgn::AbstractOp::DEFINE_FORMAT: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
                     ctx.cw.writeln("struct ", ident, " {");
@@ -256,7 +317,7 @@ namespace bm2cpp {
                     auto fn_range = ctx.ident_range_table[code.ref().value().value()];
                     auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
                     if (!ret) {
-                        ctx.cw.writeln("void ", ident, "(");
+                        ctx.cw.write("void ", ident, "(");
                     }
                     else {
                         auto storage = *ctx.bm.code[*ret].storage();
@@ -290,10 +351,21 @@ namespace bm2cpp {
         for (auto& id : bm.ident_indexes.refs) {
             ctx.ident_index_table[id.ident.value()] = id.index.value();
         }
+        bool has_union = false;
         for (auto& id : bm.ident_ranges.ranges) {
             ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
+            auto& code = bm.code[id.range.start.value()];
+            if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
+                has_union = true;
+            }
         }
-
+        ctx.cw.writeln("// Code generated by bm2cpp of https://github.com/on-keyday/rebrgen");
+        ctx.cw.writeln("#pragma once");
+        ctx.cw.writeln("#include <cstdint>");
+        if (has_union) {
+            ctx.cw.writeln("#include <variant>");
+        }
+        ctx.cw.writeln("#include <binary/number.h>");
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
                 auto& code = bm.code[i];
@@ -343,9 +415,7 @@ namespace bm2cpp {
             }
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
-            for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
-                inner_block(ctx, {.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
-            }
+            inner_block(ctx, {.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
         }
     }
 }  // namespace bm2cpp

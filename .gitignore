@@ -3,3 +3,4 @@ tool
 *.bin
 save.txt
 *.dot
+save.hpp

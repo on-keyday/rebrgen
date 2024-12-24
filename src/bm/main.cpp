@@ -22,6 +22,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     }
 };
 auto& cout = futils::wrap::cout_wrap();
+auto& cerr = futils::wrap::cerr_wrap();
 
 namespace rebgn {
     void print_code(rebgn::Module& m) {
@@ -170,24 +171,24 @@ namespace rebgn {
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     auto res = rebgn::load_json(flags.input);
     if (!res) {
-        cout << res.error().error<std::string>() << '\n';
+        cerr << res.error().error<std::string>() << '\n';
         return 1;
     }
     auto m = rebgn::convert(*res);
     if (!m) {
-        cout << m.error().error<std::string>() << '\n';
+        cerr << m.error().error<std::string>() << '\n';
         return 1;
     }
     auto err = rebgn::optimize(*m, *res);
     if (err) {
-        cout << err.error<std::string>() << '\n';
+        cerr << err.error<std::string>() << '\n';
         return 1;
     }
     rebgn::print_code(*m);
     if (flags.cfg_output.size()) {
         auto file = futils::file::File::create(flags.cfg_output);
         if (!file) {
-            cout << file.error().error<std::string>() << '\n';
+            cerr << file.error().error<std::string>() << '\n';
             return 1;
         }
         futils::file::FileStream<std::string> fs{*file};
@@ -197,7 +198,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.output.size()) {
         auto file = futils::file::File::create(flags.output);
         if (!file) {
-            cout << file.error().error<std::string>() << '\n';
+            cerr << file.error().error<std::string>() << '\n';
             return 1;
         }
         futils::file::FileStream<std::string> fs{*file};
@@ -205,9 +206,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         auto err = rebgn::save(*m, w);
         if (err) {
             if (fs.error.err_code != 0) {
-                cout << fs.error.error<std::string>() << '\n';
+                cerr << fs.error.error<std::string>() << '\n';
             }
-            cout << err.error<std::string>() << '\n';
+            cerr << err.error<std::string>() << '\n';
             return 1;
         }
     }
@@ -217,7 +218,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 int main(int argc, char** argv) {
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
-        argc, argv, flags, [](auto&& str, bool err) { cout << str; },
+        argc, argv, flags, [](auto&& str, bool err) { 
+            if(err) {
+                cerr << str;
+            }
+            else{
+            cout << str;
+         } },
         [](Flags& flags, futils::cmdline::option::Context& ctx) {
             return Main(flags, ctx);
         });

@@ -85,7 +85,6 @@ enum AbstractOp:
     SPECIFY_LENGTH
     SPECIFY_STORAGE_TYPE
     SPECIFY_FIXED_VALUE
-    MAP_TYPE
 
     DEFINE_PROGRAM
     END_PROGRAM
@@ -196,6 +195,7 @@ enum AbstractOp:
     IMMEDIATE_FALSE
     IMMEDIATE_INT
     IMMEDIATE_INT64
+    IMMEDIATE_CHAR
     IMMEDIATE_STRING
     IMMEDIATE_TYPE
     IDENT_REF
@@ -294,6 +294,9 @@ format Code:
         AbstractOp.IMPORT:
             ident :Varint
             ref :Varint # ref to program
+        AbstractOp.IMMEDIATE_CHAR:
+            ident :Varint
+            int_value :Varint  
         AbstractOp.IMMEDIATE_INT:
             ident :Varint
             int_value :Varint

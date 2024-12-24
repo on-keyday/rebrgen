@@ -32,6 +32,22 @@ namespace rebgn {
         return ident;
     }
 
+    expected<Varint> immediate_char(Module& m, std::uint64_t c) {
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident;
+        }
+        auto val = varint(c);
+        if (!val) {
+            return val;
+        }
+        m.op(AbstractOp::IMMEDIATE_CHAR, [&](Code& c) {
+            c.int_value(*val);
+            c.ident(*ident);
+        });
+        return ident;
+    }
+
     expected<Varint> immediate(Module& m, std::uint64_t n) {
         auto ident = m.new_id();
         if (!ident) {
@@ -126,6 +142,20 @@ namespace rebgn {
     Error define<ast::Continue>(Module& m, std::shared_ptr<ast::Continue>& node) {
         m.op(AbstractOp::CONTINUE);
         return none;
+    }
+
+    template <>
+    Error define<ast::Match>(Module& m, std::shared_ptr<ast::Match>& node) {
+        return convert_match(m, node, [](Module& m, auto& n) {
+            return convert_node_definition(m, n);
+        });
+    }
+
+    template <>
+    Error define<ast::If>(Module& m, std::shared_ptr<ast::If>& node) {
+        return convert_if(m, node, [](Module& m, auto& n) {
+            return convert_node_definition(m, n);
+        });
     }
 
     template <>
@@ -234,6 +264,16 @@ namespace rebgn {
     template <>
     Error define<ast::BoolLiteral>(Module& m, std::shared_ptr<ast::BoolLiteral>& node) {
         auto ref = immediate_bool(m, node->value);
+        if (!ref) {
+            return ref.error();
+        }
+        m.set_prev_expr(ref->value());
+        return none;
+    }
+
+    template <>
+    Error define<ast::CharLiteral>(Module& m, std::shared_ptr<ast::CharLiteral>& node) {
+        auto ref = immediate_char(m, node->code);
         if (!ref) {
             return ref.error();
         }
@@ -803,8 +843,8 @@ namespace rebgn {
                 return err;
             }
             m.op(AbstractOp::DEFINE_PARAMETER, [&](Code& c) {
-                c.ident(*ident);
-                c.belong(*param_ident);
+                c.ident(*param_ident);
+                c.belong(*ident);
             });
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.storage(std::move(s));

@@ -5,6 +5,7 @@
 #include <format>
 #include <bm/helper.hpp>
 #include <algorithm>
+#include <unicode/utf/convert.h>
 
 namespace bm2cpp {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -189,6 +190,12 @@ namespace bm2cpp {
             case rebgn::AbstractOp::IMMEDIATE_INT:
                 res.push_back(std::format("{}", code.int_value().value().value()));
                 break;
+            case rebgn::AbstractOp::IMMEDIATE_CHAR: {
+                std::string utf8;
+                futils::utf::from_utf32(std::uint32_t(code.int_value().value().value()), utf8);
+                res.push_back(std::format("{} /*{}*/", code.int_value().value().value(), utf8));
+                break;
+            }
             case rebgn::AbstractOp::IMMEDIATE_TRUE:
                 res.push_back("true");
                 break;
@@ -334,10 +341,13 @@ namespace bm2cpp {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-                    ctx.cw.writeln("");
+                    ctx.cw.writeln("::futils::binary::flags_t<");
                     break;
                 }
                 case rebgn::AbstractOp::END_BIT_FIELD: {
+                    ctx.cw.write("> ");
+                    auto name = ctx.bm.code[range.start].ident().value().value();
+                    ctx.cw.writeln(std::format("field_{};", name));
                     break;
                 }
                 default:

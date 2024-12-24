@@ -837,6 +837,89 @@ namespace rebgn {
         m.code = std::move(rebound);
     }
 
+    struct InfiniteError {
+        std::string message;
+
+        void error(auto&& pb) {
+            futils::strutil::append(pb, message);
+        }
+    };
+
+    expected<size_t> decide_maximum_bit_field_size(Module& m, std::set<ObjectID>& searched, AbstractOp end_op, size_t index) {
+        size_t bit_size = 0;
+        for (size_t i = index; m.code[i].op != end_op; i++) {
+            if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
+                auto storage = *m.code[i].storage();
+                size_t factor = 1;
+                for (size_t j = 0; j < storage.storages.size(); j++) {
+                    auto& s = storage.storages[j];
+                    if (s.type == StorageType::ARRAY) {
+                        factor *= s.size().value().value();
+                    }
+                    else if (s.type == StorageType::UINT || s.type == StorageType::INT) {
+                        factor *= s.size().value().value();
+                    }
+                    else if (s.type == StorageType::STRUCT_REF) {
+                        auto ref = s.ref().value().value();
+                        if (searched.find(ref) != searched.end()) {
+                            return unexpect_error(InfiniteError{"Infinite: STRUCT_REF"});
+                        }
+                        searched.insert(ref);
+                        auto idx = m.ident_index_table[ref];
+                        auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, idx);
+                        searched.erase(ref);
+                        if (!size) {
+                            return size.error();
+                        }
+                        factor *= size.value();
+                    }
+                    else if (s.type == StorageType::VARIANT) {
+                        size_t candidate = 0;
+                        for (j++; j < storage.storages.size(); j++) {
+                            if (storage.storages[j].type != StorageType::STRUCT_REF) {
+                                return unexpect_error("Invalid storage type: {}", to_string(storage.storages[j].type));
+                            }
+                            auto ref = storage.storages[j].ref().value().value();
+                            if (searched.find(ref) != searched.end()) {
+                                return unexpect_error(InfiniteError{"Infinite: VARIANT"});
+                            }
+                            searched.insert(ref);
+                            auto idx = m.ident_index_table[ref];
+                            auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, idx);
+                            searched.erase(ref);
+                            if (!size) {
+                                return size.error();
+                            }
+                            candidate = std::max(candidate, size.value());
+                        }
+                        factor *= candidate;
+                    }
+                    else {
+                        return unexpect_error(InfiniteError{std::format("Invalid storage type: {}", to_string(s.type))});
+                    }
+                }
+                bit_size += factor;
+            }
+            if (m.code[i].op == AbstractOp::DECLARE_FIELD) {
+                auto index = m.ident_index_table[m.code[i].ref().value().value()];
+                auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, index);
+                if (!size) {
+                    return size.error();
+                }
+                bit_size += size.value();
+            }
+            if (m.code[i].op == AbstractOp::DECLARE_BIT_FIELD) {
+                auto index = m.ident_index_table[m.code[i].ref().value().value()];
+                auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_BIT_FIELD, index);
+                if (!size) {
+                    return size.error();
+                }
+                bit_size += size.value();
+            }
+        }
+        return bit_size;
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {

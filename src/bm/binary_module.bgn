@@ -100,6 +100,10 @@ enum AbstractOp:
     DECLARE_FIELD
     CONDITIONAL_FIELD
 
+    DEFINE_PROPERTY
+    END_PROPERTY
+    DECLARE_PROPERTY
+
     DEFINE_PARAMETER
     END_PARAMETER
     DECLARE_PARAMETER
@@ -142,6 +146,9 @@ enum AbstractOp:
     
     ENCODE_INT
     DECODE_INT
+    BACKWARD
+    BYTE_OFFSET
+    BIT_OFFSET
     CALL_ENCODE
     CALL_DECODE
     STATIC_CAST
@@ -313,6 +320,9 @@ format Code:
         AbstractOp.DEFINE_FIELD:
             ident :Varint
             belong :Varint # belong to format or state or union or null
+        AbstractOp.DEFINE_PROPERTY:
+            ident :Varint
+            belong :Varint # belong to format or state or union or null
         AbstractOp.DEFINE_ENUM:
             ident :Varint
         AbstractOp.DEFINE_ENUM_MEMBER:
@@ -362,6 +372,8 @@ format Code:
         AbstractOp.ASSIGN:
             left_ref :Varint
             right_ref :Varint
+        AbstractOp.BACKWARD:
+            ref :Varint # bit count
         AbstractOp.ENCODE_INT:
             ref :Varint
             endian :Endian
@@ -405,6 +417,8 @@ format Code:
         AbstractOp.DECLARE_STATE:
             ref :Varint
         AbstractOp.DECLARE_FIELD:
+            ref :Varint
+        AbstractOp.DECLARE_PROPERTY:
             ref :Varint
         AbstractOp.DECLARE_PARAMETER:
             ref :Varint
@@ -459,6 +473,10 @@ format Code:
             ident :Varint
             ref :Varint # ref to function
             param :Param
+        AbstractOp.BIT_OFFSET:
+            ident :Varint
+        AbstractOp.BYTE_OFFSET:
+            ident :Varint
 
 
 format StringRefs:

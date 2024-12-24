@@ -135,6 +135,13 @@ namespace rebgn {
                     }
                     break;
                 }
+                case AbstractOp::DEFINE_PROPERTY: {
+                    auto err = do_extract(AbstractOp::DEFINE_PROPERTY, AbstractOp::END_PROPERTY);
+                    if (err) {
+                        return err;
+                    }
+                    break;
+                }
                 default:
                     break;
             }
@@ -168,6 +175,8 @@ namespace rebgn {
                 return AbstractOp::DECLARE_PACKED_OPERATION;
             case AbstractOp::DEFINE_PARAMETER:
                 return AbstractOp::DECLARE_PARAMETER;
+            case AbstractOp::DEFINE_PROPERTY:
+                return AbstractOp::DECLARE_PROPERTY;
             default:
                 return unexpect_error("Invalid op: {}", to_string(op));
         }
@@ -783,6 +792,9 @@ namespace rebgn {
                     break;
                 case AbstractOp::DEFINE_PACKED_OPERATION:
                     end_op = AbstractOp::END_PACKED_OPERATION;
+                    break;
+                case AbstractOp::DEFINE_PROPERTY:
+                    end_op = AbstractOp::END_PROPERTY;
                     break;
                 default:
                     continue;

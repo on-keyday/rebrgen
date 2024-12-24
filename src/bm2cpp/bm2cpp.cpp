@@ -138,7 +138,7 @@ namespace bm2cpp {
             for (size_t i = union_range.start; i < union_range.end; i++) {
                 if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_UNION_MEMBER) {
                     get_index++;
-                    if (ctx.bm.code[i].ident().value().value() == code.belong().value().value()) {
+                    if (ctx.bm.code[i].ref().value().value() == code.belong().value().value()) {
                         break;
                     }
                 }
@@ -181,6 +181,7 @@ namespace bm2cpp {
                     res.insert(res.end(), left.begin(), left.end() - 1);
                     res.push_back(std::format("{}.{}", left.back(), right_ident));
                 }
+                break;
             }
             case rebgn::AbstractOp::IMMEDIATE_INT64:
                 res.push_back(std::format("{}", code.int_value64().value()));
@@ -197,6 +198,15 @@ namespace bm2cpp {
             case rebgn::AbstractOp::IMMEDIATE_STRING: {
                 auto str = ctx.string_table[code.ident().value().value()];
                 res.push_back(std::format("{}", str));
+                break;
+            }
+            case rebgn::AbstractOp::STATIC_CAST: {
+                auto ref_index = ctx.ident_index_table[code.ref().value().value()];
+                auto ref = eval(ctx.bm.code[ref_index], ctx);
+                res.insert(res.end(), ref.begin(), ref.end() - 1);
+                auto typ = code.storage().value();
+                auto type = type_to_string(ctx, typ);
+                res.push_back(std::format("static_cast<{}>({})", type, ref.back()));
                 break;
             }
             case rebgn::AbstractOp::NEW_OBJECT: {
@@ -216,16 +226,19 @@ namespace bm2cpp {
                         should_deref = true;
                     }
                 }
-                if (auto b = code.belong();
-                    b &&
-                    ctx.bm.code[ctx.ident_index_table[b->value()]].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
-                    ident = retrieve_union_ident(ctx, code);
+                auto b = code.belong();
+                auto belong_op = ctx.bm.code[ctx.ident_index_table[b->value()]].op;
+                if (belong_op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+                    ident = retrieve_union_ident(ctx, code) + "." + ident;
+                }
+                else if (belong_op == rebgn::AbstractOp::DEFINE_FORMAT) {
+                    ident = "this->" + ident;
                 }
                 if (should_deref) {
-                    res.push_back(std::format("(*this->{})", ident));
+                    res.push_back(std::format("(*{})", ident));
                 }
                 else {
-                    res.push_back(std::format("this->{}", ident));
+                    res.push_back(std::format("{}", ident));
                 }
                 break;
             }
@@ -460,6 +473,11 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::ASSIGN: {
                     auto s = eval(code, ctx);
                     ctx.cw.writeln(s.back());
+                    break;
+                }
+                case rebgn::AbstractOp::DEFINE_VARIABLE: {
+                    auto s = eval(code, ctx);
+                    ctx.cw.writeln(s[s.size() - 2]);
                     break;
                 }
                 default:

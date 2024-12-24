@@ -150,6 +150,42 @@ namespace rebgn {
     template <>
     Error define<ast::IOOperation>(Module& m, std::shared_ptr<ast::IOOperation>& node) {
         switch (node->method) {
+            case ast::IOMethod::input_backward: {
+                if (node->arguments.size()) {
+                    auto arg = get_expr(m, node->arguments[0]);
+                    if (!arg) {
+                        return arg.error();
+                    }
+                    m.op(AbstractOp::BACKWARD, [&](Code& c) {
+                        c.ref(*arg);
+                    });
+                }
+                else {
+                    auto imm = immediate(m, 1);
+                    if (!imm) {
+                        return imm.error();
+                    }
+                    m.op(AbstractOp::BACKWARD, [&](Code& c) {
+                        c.ref(*imm);
+                    });
+                }
+                return none;
+            }
+            case ast::IOMethod::input_offset:
+            case ast::IOMethod::input_bit_offset: {
+                auto new_id = m.new_id();
+                if (!new_id) {
+                    return new_id.error();
+                }
+                m.op(node->method == ast::IOMethod::input_offset
+                         ? AbstractOp::BYTE_OFFSET
+                         : AbstractOp::BIT_OFFSET,
+                     [&](Code& c) {
+                         c.ident(*new_id);
+                     });
+                m.set_prev_expr(new_id->value());
+                return none;
+            }
             case ast::IOMethod::input_get: {
                 Storages s;
                 auto err = define_storage(m, s, node->expr_type);
@@ -694,13 +730,14 @@ namespace rebgn {
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.storage(std::move(s));
             });
+            m.op(AbstractOp::END_FIELD);
         }
         else {
-            m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
-                c.ident(*ident);
-                c.belong(parent);
-            });
             if (!ast::as<ast::UnionType>(node->field_type)) {
+                m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
+                    c.ident(*ident);
+                    c.belong(parent);
+                });
                 Storages s;
                 auto err = define_storage(m, s, node->field_type, true);
                 if (err) {
@@ -709,15 +746,21 @@ namespace rebgn {
                 m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                     c.storage(std::move(s));
                 });
+                m.op(AbstractOp::END_FIELD);
             }
             else {
+                m.op(AbstractOp::DEFINE_PROPERTY, [&](Code& c) {
+                    c.ident(*ident);
+                    c.belong(parent);
+                });
                 auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type));
                 if (err) {
                     return err;
                 }
+                m.op(AbstractOp::END_PROPERTY);
             }
         }
-        m.op(AbstractOp::END_FIELD);
+
         return none;
     }
 

@@ -201,6 +201,11 @@ enum AbstractOp:
 
     SWITCH_UNION
 
+    ENCODER_PARAMETER
+    DECODER_PARAMETER
+
+    STATE_VARIABLE_PARAMETER
+
 
 
  
@@ -433,6 +438,14 @@ format Code:
             ref :Varint # ref to expr
         AbstractOp.EXHAUSTIVE_MATCH:
             ref :Varint # ref to expr
+        AbstractOp.ENCODER_PARAMETER:
+            left_ref :Varint # ref to format
+            right_ref :Varint # ref to encoder function
+        AbstractOp.DECODER_PARAMETER:
+            left_ref :Varint # ref to format
+            right_ref :Varint # ref to decoder function
+        AbstractOp.STATE_VARIABLE_PARAMETER:
+            ref :Varint # ref to state
 
 
 format StringRefs:

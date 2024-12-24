@@ -122,18 +122,18 @@ namespace rebgn {
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
-            if (auto me = ast::as<ast::Member>(member)) {
+            if (auto me = ast::as<ast::Format>(member)) {  // only format can encode
                 auto ident = m.lookup_ident(me->ident);
                 if (!ident) {
                     return ident.error();
                 }
                 m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
-                    c.left_ref(*ident);
+                    c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
                     c.right_ref(base_ref);
                 });
                 return none;
             }
-            return error("unknown struct type");
+            return error("unknown struct type: {}", node_type_to_string(member->node_type));
         }
         if (auto e = ast::as<ast::EnumType>(typ)) {
             auto base_enum = e->base.lock();
@@ -354,18 +354,18 @@ namespace rebgn {
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
-            if (auto me = ast::as<ast::Member>(member)) {
+            if (auto me = ast::as<ast::Format>(member)) {  // only format can decode
                 auto ident = m.lookup_ident(me->ident);
                 if (!ident) {
                     return ident.error();
                 }
                 m.op(AbstractOp::CALL_DECODE, [&](Code& c) {
-                    c.left_ref(*ident);
+                    c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
                     c.right_ref(base_ref);
                 });
                 return none;
             }
-            return error("unknown struct type");
+            return error("unknown struct type: {}", node_type_to_string(member->node_type));
         }
         if (auto e = ast::as<ast::EnumType>(typ)) {
             auto base_enum = e->base.lock();
@@ -462,7 +462,9 @@ namespace rebgn {
             });
             return none;
         }
-        auto new_id = m.new_id();
+        auto temporary_ident = std::make_shared<ast::Ident>(node->loc, "encode");
+        temporary_ident->base = node;  // for lookup
+        auto new_id = m.lookup_ident(temporary_ident);
         if (!new_id) {
             return new_id.error();
         }
@@ -502,7 +504,9 @@ namespace rebgn {
             });
             return none;
         }
-        auto new_id = m.new_id();
+        auto temporary_ident = std::make_shared<ast::Ident>(node->loc, "decode");
+        temporary_ident->base = node;  // for lookup
+        auto new_id = m.lookup_ident(temporary_ident);
         if (!new_id) {
             return new_id.error();
         }

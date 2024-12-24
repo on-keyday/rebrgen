@@ -194,10 +194,32 @@ namespace bm2cpp {
             switch (code.op) {
                 case rebgn::AbstractOp::DEFINE_FORMAT: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
-                    auto fmt_def = ctx.ident_index_table[code.ident().value().value()];
                     ctx.cw.writeln("struct ", ident, " {");
                     defer.push_back(ctx.cw.indent_scope_ex());
                     break;
+                }
+                case rebgn::AbstractOp::DEFINE_FUNCTION: {
+                    auto fn_range = ctx.ident_range_table[code.ref().value().value()];
+                    size_t params = 0;
+                    for (size_t p = fn_range.start; p < fn_range.end; p++) {
+                        auto& pcode = ctx.bm.code[p];
+                        if (pcode.op == rebgn::AbstractOp::ENCODER_PARAMETER) {
+                        }
+                        if (pcode.op == rebgn::AbstractOp::DECLARE_PARAMETER) {
+                            auto param_range = ctx.ident_range_table[pcode.ref().value().value()];
+                            for (size_t j = param_range.start; j < param_range.end; j++) {
+                                if (ctx.bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
+                                    auto storage = *ctx.bm.code[j].storage();
+                                    auto type = type_to_string(ctx, storage);
+                                    auto& ident = ctx.ident_table[ctx.bm.code[j].ref().value().value()];
+                                    if (params > 0) {
+                                        ctx.cw.write(", ");
+                                    }
+                                    ctx.cw.write(type, " ", ident);
+                                }
+                            }
+                        }
+                    }
                 }
                 case rebgn::AbstractOp::END_FORMAT: {
                     defer.pop_back();

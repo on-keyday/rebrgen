@@ -146,6 +146,14 @@ namespace rebgn {
                 return AbstractOp::DECLARE_UNION_MEMBER;
             case AbstractOp::DEFINE_PROGRAM:
                 return AbstractOp::DECLARE_PROGRAM;
+            case AbstractOp::DEFINE_STATE:
+                return AbstractOp::DECLARE_STATE;
+            case AbstractOp::DEFINE_BIT_FIELD:
+                return AbstractOp::DECLARE_BIT_FIELD;
+            case AbstractOp::DEFINE_PACKED_OPERATION:
+                return AbstractOp::DECLARE_PACKED_OPERATION;
+            case AbstractOp::DEFINE_PARAMETER:
+                return AbstractOp::DECLARE_PARAMETER;
             default:
                 return unexpect_error("Invalid op: {}", to_string(op));
         }
@@ -273,6 +281,50 @@ namespace rebgn {
             }
             else if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
                 // skip
+            }
+            else if (c.op == AbstractOp::DEFINE_FUNCTION) {
+                rebound.push_back(std::move(c));
+                auto add_state_variables = [&](ObjectID fmt) {
+                    auto ident = m.ident_table_rev.find(fmt);
+                    if (ident == m.ident_table_rev.end()) {
+                        return error("Invalid format ident: {}", fmt);
+                    }
+                    auto base = ast::as<ast::Format>(ident->second->base.lock());
+                    if (!base) {
+                        return error("Invalid format ident: {}", fmt);
+                    }
+                    for (auto& s : base->state_variables) {
+                        auto lock = s.lock();
+                        if (!lock) {
+                            return error("Invalid state variable");
+                        }
+                        auto ident = m.lookup_ident(lock->ident);
+                        if (!ident) {
+                            return ident.error();
+                        }
+                        Code state;
+                        state.op = AbstractOp::STATE_VARIABLE_PARAMETER;
+                        state.ref(*ident);
+                        rebound.push_back(std::move(state));
+                    }
+                    return none;
+                };
+                if (auto found = should_bind_encoder.find(c.ident().value().value()); found != should_bind_encoder.end()) {
+                    Code param;
+                    param.op = AbstractOp::ENCODER_PARAMETER;
+                    param.left_ref(*varint(found->second));               // ref to format
+                    param.right_ref(*varint(c.ident().value().value()));  // ref to function
+                    rebound.push_back(std::move(param));
+                    add_state_variables(found->second);
+                }
+                if (auto found = should_bind_decoder.find(c.ident().value().value()); found != should_bind_decoder.end()) {
+                    Code param;
+                    param.op = AbstractOp::DECODER_PARAMETER;
+                    param.left_ref(*varint(found->second));               // ref to format
+                    param.right_ref(*varint(c.ident().value().value()));  // ref to function
+                    rebound.push_back(std::move(param));
+                    add_state_variables(found->second);
+                }
             }
             else {
                 rebound.push_back(std::move(c));
@@ -446,16 +498,8 @@ namespace rebgn {
                     w.write(std::format(" {}", m.code[i].bit_size().value().value()));
                 }
                 if (m.code[i].op == AbstractOp::CALL_ENCODE || m.code[i].op == AbstractOp::CALL_DECODE) {
-                    auto fmt = m.ident_index_table[m.code[i].left_ref().value().value()];
-                    for (size_t j = fmt; m.code[j].op != AbstractOp::END_FORMAT; j++) {
-                        if ((m.code[i].op == AbstractOp::CALL_ENCODE && m.code[j].op == AbstractOp::DEFINE_ENCODER) ||
-                            (m.code[i].op == AbstractOp::CALL_DECODE && m.code[j].op == AbstractOp::DEFINE_DECODER)) {
-                            auto ident = m.code[j].right_ref().value().value();
-                            auto& call = fn_to_cfg[ident];
-                            callee.push_back(call);
-                            break;
-                        }
-                    }
+                    auto& call = fn_to_cfg[m.code[i].left_ref().value().value()];
+                    callee.push_back(call);
                 }
                 w.write("\\n");
             }
@@ -717,6 +761,15 @@ namespace rebgn {
                 case AbstractOp::DEFINE_PROGRAM:
                     end_op = AbstractOp::END_PROGRAM;
                     break;
+                case AbstractOp::DEFINE_PARAMETER:
+                    end_op = AbstractOp::END_PARAMETER;
+                    break;
+                case AbstractOp::DEFINE_BIT_FIELD:
+                    end_op = AbstractOp::END_BIT_FIELD;
+                    break;
+                case AbstractOp::DEFINE_PACKED_OPERATION:
+                    end_op = AbstractOp::END_PACKED_OPERATION;
+                    break;
                 default:
                     continue;
             }
@@ -733,6 +786,22 @@ namespace rebgn {
         return none;
     }
 
+    void replace_call_encode_decode_ref(Module& m) {
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::CALL_ENCODE || c.op == AbstractOp::CALL_DECODE) {
+                auto fmt = m.ident_index_table[c.left_ref().value().value()];  // currently this refers to DEFINE_FORMAT
+                for (size_t j = fmt; m.code[j].op != AbstractOp::END_FORMAT; j++) {
+                    if ((c.op == AbstractOp::CALL_ENCODE && m.code[j].op == AbstractOp::DEFINE_ENCODER) ||
+                        (c.op == AbstractOp::CALL_DECODE && m.code[j].op == AbstractOp::DEFINE_DECODER)) {
+                        auto ident = m.code[j].right_ref().value();
+                        c.left_ref(ident);  // replace to DEFINE_FUNCTION. this DEFINE_FUNCTION holds belong which is original DEFINE_FORMAT
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {
@@ -743,6 +812,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
         err = sort_formats(m, node);
         if (err) {

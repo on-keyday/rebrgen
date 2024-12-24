@@ -250,11 +250,18 @@ namespace bm2cpp {
         std::ranges::sort(index, [&](size_t a, size_t b) {
             return res[a] < res[b];
         });
-        std::ranges::unique(index, [&](size_t a, size_t b) {
+        auto uniq = std::ranges::unique(index, [&](size_t a, size_t b) {
             return res[a] == res[b];
         });
-
-        return res;
+        index.erase(uniq.begin(), index.end());
+        std::vector<std::string> unique;
+        for (size_t i = 0; i < res.size(); i++) {
+            if (std::find(index.begin(), index.end(), i) == index.end()) {
+                continue;
+            }
+            unique.push_back(std::move(res[i]));
+        }
+        return unique;
     }
 
     void add_function_parameters(Context& ctx, rebgn::Range range) {
@@ -300,6 +307,24 @@ namespace bm2cpp {
         }
     }
 
+    void bit_field(Context& ctx, rebgn::Range range) {
+        for (size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            switch (code.op) {
+                case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+                    auto& ident = ctx.ident_table[code.ident().value().value()];
+                    break;
+                }
+                case rebgn::AbstractOp::END_BIT_FIELD: {
+                    break;
+                }
+                default:
+                    ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    break;
+            }
+        }
+    }
+
     void inner_block(Context& ctx, rebgn::Range range) {
         std::vector<futils::helper::DynDefer> defer;
         for (size_t i = range.start; i < range.end; i++) {
@@ -327,6 +352,8 @@ namespace bm2cpp {
                     defer.pop_back();
                     ctx.cw.writeln("};");
                     break;
+                }
+                case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
                 }
                 case rebgn::AbstractOp::DECLARE_FIELD: {
                     auto belong = ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]].belong().value().value();
@@ -479,7 +506,8 @@ namespace bm2cpp {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
                 auto& code = bm.code[i];
                 switch (code.op) {
-                    case rebgn::AbstractOp::DECLARE_FORMAT: {
+                    case rebgn::AbstractOp::DECLARE_FORMAT:
+                    case rebgn::AbstractOp::DECLARE_STATE: {
                         auto& ident = ctx.ident_table[code.ref().value().value()];
                         ctx.cw.writeln("struct ", ident, ";");
                         break;

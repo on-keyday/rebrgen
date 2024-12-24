@@ -436,6 +436,7 @@ format Code:
             ref :Varint
         AbstractOp.DEFINE_BIT_FIELD:
             ident :Varint
+            belong :Varint # belong to format or state or union or null
         AbstractOp.APPEND:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to object

@@ -63,3 +63,8 @@ format X:
 
 state M:
     s :bool
+
+fn define() -> X:
+    x :X
+    x.x = x
+    return x

@@ -832,12 +832,18 @@ namespace rebgn {
                 }
             }
         }
+        std::vector<Varint> bit_field_ids;
         for (auto& f : node->body->struct_type->fields) {
             if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
-                auto ident = m.lookup_ident(f->ident);
+                auto new_id = m.new_id();
+                if (!new_id) {
+                    return new_id.error();
+                }
                 m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
-                    c.ident(*ident);
+                    c.ident(*new_id);
+                    c.belong(ident.value());
                 });
+                m.map_struct(node->body->struct_type, new_id->value());  // temporary remap
             }
             auto err = convert_node_definition(m, f);
             if (err) {
@@ -845,6 +851,7 @@ namespace rebgn {
             }
             if (bit_field_end.contains(ast::cast_to<ast::Field>(f))) {
                 m.op(AbstractOp::END_BIT_FIELD);
+                m.map_struct(node->body->struct_type, ident->value());  // restore
             }
         }
         m.op(AbstractOp::END_FORMAT);

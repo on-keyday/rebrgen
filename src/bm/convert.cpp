@@ -96,6 +96,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_PROGRAM, [&](Code& c) {
             c.ident(*prog_id);
         });
+        m.map_struct(node->import_desc->struct_type, prog_id->value());
         for (auto& n : node->import_desc->elements) {
             auto err = convert_node_definition(m, n);
             if (err) {
@@ -1061,6 +1062,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_PROGRAM, [&](Code& c) {
             c.ident(*pid);
         });
+        m.map_struct(node->struct_type, pid->value());
         for (auto& n : node->elements) {
             auto err = convert_node_definition(m, n);
             if (err) {

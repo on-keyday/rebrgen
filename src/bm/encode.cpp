@@ -152,12 +152,17 @@ namespace rebgn {
             if (!casted) {
                 return casted.error();
             }
-            m.op(AbstractOp::ENUM_TO_INT_CAST, [&](Code& c) {
+            Storages to;
+            auto err = define_storage(m, to, base_type);
+            if (err) {
+                return err;
+            }
+            m.op(AbstractOp::STATIC_CAST, [&](Code& c) {
                 c.ident(*casted);
-                c.left_ref(*ident);
-                c.right_ref(base_ref);
+                c.storage(std::move(to));
+                c.ref(base_ref);
             });
-            auto err = encode_type(m, base_type, *casted);
+            err = encode_type(m, base_type, *casted);
             if (err) {
                 return err;
             }
@@ -405,10 +410,12 @@ namespace rebgn {
             if (!casted) {
                 return casted.error();
             }
-            m.op(AbstractOp::INT_TO_ENUM_CAST, [&](Code& c) {
+            Storages to;
+            err = define_storage(m, to, ast::cast_to<ast::EnumType>(typ));
+            m.op(AbstractOp::STATIC_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.left_ref(*ident);
-                c.right_ref(*tmp_var);
+                c.ref(*tmp_var);
             });
             m.op(AbstractOp::ASSIGN, [&](Code& c) {
                 c.left_ref(base_ref);

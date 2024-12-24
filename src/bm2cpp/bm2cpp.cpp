@@ -173,15 +173,13 @@ namespace bm2cpp {
             case rebgn::AbstractOp::ACCESS: {
                 auto& left_ident = ctx.ident_index_table[code.left_ref().value().value()];
                 auto left = eval(ctx.bm.code[left_ident], ctx);
-                auto& right_ident = ctx.ident_index_table[code.right_ref().value().value()];
-                auto right = eval(ctx.bm.code[right_ident], ctx);
+                auto& right_ident = ctx.ident_table[code.right_ref().value().value()];
                 if (ctx.bm.code[left_ident].op == rebgn::AbstractOp::IMMEDIATE_TYPE) {
-                    res.push_back(std::format("{}::{}", left.back(), right.back()));
+                    res.push_back(std::format("{}::{}", left.back(), right_ident));
                 }
                 else {
                     res.insert(res.end(), left.begin(), left.end() - 1);
-                    res.insert(res.end(), right.begin(), right.end() - 1);
-                    res.push_back(std::format("{}.{}", left.back(), right.back()));
+                    res.push_back(std::format("{}.{}", left.back(), right_ident));
                 }
             }
             case rebgn::AbstractOp::IMMEDIATE_INT64:
@@ -196,6 +194,17 @@ namespace bm2cpp {
             case rebgn::AbstractOp::IMMEDIATE_FALSE:
                 res.push_back("false");
                 break;
+            case rebgn::AbstractOp::IMMEDIATE_STRING: {
+                auto str = ctx.string_table[code.ident().value().value()];
+                res.push_back(std::format("{}", str));
+                break;
+            }
+            case rebgn::AbstractOp::NEW_OBJECT: {
+                auto storage = *code.storage();
+                auto type = type_to_string(ctx, storage);
+                res.push_back(std::format("{}{{}}", type));
+                break;
+            }
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto ident = ctx.ident_table[code.ident().value().value()];
                 auto range = ctx.ident_range_table[code.ident().value().value()];
@@ -213,10 +222,10 @@ namespace bm2cpp {
                     ident = retrieve_union_ident(ctx, code);
                 }
                 if (should_deref) {
-                    res.push_back(std::format("(*{})", ident));
+                    res.push_back(std::format("(*this->{})", ident));
                 }
                 else {
-                    res.push_back(std::format("{}", ident));
+                    res.push_back(std::format("this->{}", ident));
                 }
                 break;
             }
@@ -354,10 +363,12 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
+                    bit_field(ctx, ctx.ident_range_table[code.ref().value().value()]);
+                    break;
                 }
                 case rebgn::AbstractOp::DECLARE_FIELD: {
                     auto belong = ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]].belong().value().value();
-                    if (belong == 0) {
+                    if (belong == 0 || ctx.bm.code[ctx.ident_index_table[belong]].op == rebgn::AbstractOp::DEFINE_PROGRAM) {
                         break;  // skip global field
                     }
                     std::string ident;
@@ -446,6 +457,14 @@ namespace bm2cpp {
                     ctx.cw.writeln("}");
                     break;
                 }
+                case rebgn::AbstractOp::ASSIGN: {
+                    auto s = eval(code, ctx);
+                    ctx.cw.writeln(s.back());
+                    break;
+                }
+                default:
+                    ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    break;
             }
         }
     }
@@ -502,10 +521,25 @@ namespace bm2cpp {
             ctx.cw.writeln("#include <memory>");
         }
         ctx.cw.writeln("#include <binary/number.h>");
+        std::vector<futils::helper::DynDefer> defer;
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
                 auto& code = bm.code[i];
                 switch (code.op) {
+                    case rebgn::AbstractOp::METADATA: {
+                        auto meta = code.metadata();
+                        auto str = ctx.string_table[meta->name.value()];
+                        if (str == "config.cpp.namespace" && meta->expr_refs.size() == 1) {
+                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                                auto copy = found->second;
+                                copy.erase(copy.begin());
+                                copy.pop_back();
+                                ctx.cw.writeln("namespace ", copy, " {");
+                                defer.push_back(ctx.cw.indent_scope_ex());
+                            }
+                        }
+                        break;
+                    }
                     case rebgn::AbstractOp::DECLARE_FORMAT:
                     case rebgn::AbstractOp::DECLARE_STATE: {
                         auto& ident = ctx.ident_table[code.ref().value().value()];
@@ -560,6 +594,10 @@ namespace bm2cpp {
                 continue;
             }
             inner_function(ctx, range);
+        }
+        for (auto& def : defer) {
+            def.execute();
+            ctx.cw.writeln("}");
         }
     }
 }  // namespace bm2cpp

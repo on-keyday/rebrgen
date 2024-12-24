@@ -1,5 +1,6 @@
 # recursive test 
 #script\gen_sample C:\workspace\shbrgen\rebrgen\src\test\recursive.bgn
+config.cpp.namespace = "recursive"
 
 enum StorageType:
     :u8

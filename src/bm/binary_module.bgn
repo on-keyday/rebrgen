@@ -144,8 +144,7 @@ enum AbstractOp:
     DECODE_INT
     CALL_ENCODE
     CALL_DECODE
-    ENUM_TO_INT_CAST
-    INT_TO_ENUM_CAST
+    STATIC_CAST
     BIT_CAST
 
     LOOP_INFINITE
@@ -387,14 +386,10 @@ format Code:
             ref :Varint
         AbstractOp.DEC:
             ref :Varint
-        AbstractOp.ENUM_TO_INT_CAST:
+        AbstractOp.STATIC_CAST:
             ident :Varint
-            left_ref :Varint # ref to enum
-            right_ref :Varint # ref to object
-        AbstractOp.INT_TO_ENUM_CAST:
-            ident :Varint
-            left_ref :Varint # ref to enum
-            right_ref :Varint # ref to object
+            storage :Storages
+            ref :Varint # ref to object
         AbstractOp.NEW_OBJECT:
             ident :Varint
             storage :Storages

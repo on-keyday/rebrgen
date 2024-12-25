@@ -616,7 +616,7 @@ namespace rebgn {
         Varint new_id;
         if (auto union_ty = ast::as<ast::UnionType>(node->target->expr_type)) {
             std::optional<Varint> prev_cond;
-            auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint cond, auto&& field) {
+            auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint cond, std::shared_ptr<ast::Field>& field) {
                 if (prev_cond) {
                     auto new_id = m.new_id();
                     if (!new_id) {

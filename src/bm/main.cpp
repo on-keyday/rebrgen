@@ -58,6 +58,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_BIT_FIELD:
                 case rebgn::AbstractOp::END_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_PARAMETER:
+                case rebgn::AbstractOp::END_PROPERTY:
                     nest.resize(nest.size() - 2);
                     break;
                 default:
@@ -159,6 +160,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD:
                 case rebgn::AbstractOp::DEFINE_PACKED_OPERATION:
                 case rebgn::AbstractOp::DEFINE_PARAMETER:
+                case rebgn::AbstractOp::DEFINE_PROPERTY:
                     nest += "  ";
                     break;
                 default:

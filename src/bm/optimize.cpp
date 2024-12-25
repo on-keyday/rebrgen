@@ -866,7 +866,7 @@ namespace rebgn {
                         }
                         searched.insert(ref);
                         auto idx = m.ident_index_table[ref];
-                        auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, idx);
+                        auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FORMAT, idx);
                         searched.erase(ref);
                         if (!size) {
                             return size.error();
@@ -885,7 +885,7 @@ namespace rebgn {
                             }
                             searched.insert(ref);
                             auto idx = m.ident_index_table[ref];
-                            auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, idx);
+                            auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_UNION_MEMBER, idx);
                             searched.erase(ref);
                             if (!size) {
                                 return size.error();
@@ -920,8 +920,53 @@ namespace rebgn {
         return bit_size;
     }
 
+    Error decide_bit_field_size(Module& m) {
+        std::set<ObjectID> searched;
+        std::unordered_map<ObjectID, size_t> bit_fields;
+        for (size_t i = 0; i < m.code.size(); i++) {
+            if (m.code[i].op == AbstractOp::DEFINE_BIT_FIELD) {
+                auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_BIT_FIELD, i);
+                if (!size) {
+                    if (!size.error().as<InfiniteError>()) {
+                        return size.error();
+                    }
+                    continue;
+                }
+                bit_fields[m.code[i].ident().value().value()] = size.value();
+            }
+        }
+        std::vector<Code> rebound;
+        for (auto& c : m.code) {
+            rebound.push_back(std::move(c));
+            if (c.op == AbstractOp::DEFINE_BIT_FIELD) {
+                auto ident = c.ident().value().value();
+                auto found = bit_fields.find(ident);
+                if (found == bit_fields.end()) {
+                    continue;
+                }
+                Storages storage;
+                Storage s;
+                s.type = StorageType::UINT;
+                s.size(*varint(found->second));
+                storage.storages.push_back(std::move(s));
+                storage.length = *varint(1);
+                Code storage_code;
+                storage_code.op = AbstractOp::SPECIFY_STORAGE_TYPE;
+                storage_code.storage(std::move(storage));
+                rebound.push_back(std::move(storage_code));
+            }
+        }
+        m.code = std::move(rebound);
+        return none;
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
+        err = decide_bit_field_size(m);
         if (err) {
             return err;
         }

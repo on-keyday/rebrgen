@@ -73,6 +73,12 @@ enum Endian:
     big
     little
 
+enum BitOrder:
+    :u8
+    unspec
+    msb
+    lsb
+
 enum AbstractOp:
     :u8
 
@@ -212,8 +218,13 @@ enum AbstractOp:
     STATE_VARIABLE_PARAMETER
 
 
-
- 
+# context that is used on code generation
+state BMContext:
+    global_endian :Endian 
+    global_bit_order :BitOrder
+    has_dynamic_endian :bool
+    has_dynamic_bit_order :bool
+    inner_bit_operations :bool # inner BIT_FIELD or PACKED_OPERATION
 
 format String:
     length :Varint

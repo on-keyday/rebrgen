@@ -332,6 +332,38 @@ namespace rebgn {
         }
         return std::nullopt;
     }
+    enum class BitOrder : std::uint8_t {
+        unspec = 0,
+        msb = 1,
+        lsb = 2,
+    };
+    constexpr const char* to_string(BitOrder e) {
+        switch (e) {
+            case BitOrder::unspec:
+                return "unspec";
+            case BitOrder::msb:
+                return "msb";
+            case BitOrder::lsb:
+                return "lsb";
+        }
+        return "";
+    }
+
+    constexpr std::optional<BitOrder> BitOrder_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "unspec") {
+            return BitOrder::unspec;
+        }
+        if (str == "msb") {
+            return BitOrder::msb;
+        }
+        if (str == "lsb") {
+            return BitOrder::lsb;
+        }
+        return std::nullopt;
+    }
     enum class AbstractOp : std::uint8_t {
         METADATA = 0,
         IMPORT = 1,
@@ -964,6 +996,13 @@ namespace rebgn {
         }
         return std::nullopt;
     }
+    struct BMContext {
+        Endian global_endian{};
+        BitOrder global_bit_order{};
+        bool has_dynamic_endian = false;
+        bool has_dynamic_bit_order = false;
+        bool inner_bit_operations = false;
+    };
     enum class StorageType : std::uint8_t {
         INT = 0,
         UINT = 1,

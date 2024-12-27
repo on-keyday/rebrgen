@@ -15,9 +15,6 @@ namespace rebgn {
 
     constexpr expected<Varint> varint(std::uint64_t n) {
         Varint v;
-        if (n == 0x40) {
-            ;
-        }
         if (n < 0x40) {
             v.prefix(0);
             v.value(n);
@@ -46,6 +43,7 @@ namespace rebgn {
     // prev: list of previous CFG
     struct CFG {
         std::vector<size_t> basic_block;
+        size_t sum_bits = 0;
         std::vector<std::shared_ptr<CFG>> next;
         std::vector<std::weak_ptr<CFG>> prev;
     };

@@ -14,6 +14,13 @@ namespace rebgn {
         }
     }
 
+    Code make_code(AbstractOp op, auto&& set) {
+        Code c;
+        c.op = op;
+        set(c);
+        return c;
+    }
+
     struct NestedRanges {
         Range range;
         std::vector<NestedRanges> nested;
@@ -191,10 +198,9 @@ namespace rebgn {
                 if (!decl) {
                     return decl.error();
                 }
-                Code declare;
-                declare.op = decl.value();
-                declare.ref(m.code[i].ident().value());
-                flat.push_back(std::move(declare));
+                flat.push_back(make_code(decl.value(), [&](auto& c) {
+                    c.ref(m.code[i].ident().value());
+                }));
                 std::vector<Code> tmp;
                 auto err = flatten_ranges(m, r.nested[outer_range], tmp, outer_nested);
                 if (err) {
@@ -272,25 +278,22 @@ namespace rebgn {
                 auto found_encoder = fmt_to_encoder.find(ident);
                 auto found_decoder = fmt_to_decoder.find(ident);
                 if (found_encoder != fmt_to_encoder.end()) {
-                    Code bind;
-
-                    bind.op = AbstractOp::DEFINE_ENCODER;
-                    bind.left_ref(*varint(ident));
-                    bind.right_ref(*varint(found_encoder->second));
-                    rebound.push_back(std::move(bind));
-                    bind.op = AbstractOp::DECLARE_FUNCTION;
-                    bind.ref(*varint(found_encoder->second));
-                    rebound.push_back(std::move(bind));
+                    rebound.push_back(make_code(AbstractOp::DEFINE_ENCODER, [&](auto& c) {
+                        c.left_ref(*varint(ident));
+                        c.right_ref(*varint(found_encoder->second));
+                    }));
+                    rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
+                        c.ref(*varint(found_encoder->second));
+                    }));
                 }
                 if (found_decoder != fmt_to_decoder.end()) {
-                    Code bind;
-                    bind.op = AbstractOp::DEFINE_DECODER;
-                    bind.left_ref(*varint(ident));
-                    bind.right_ref(*varint(found_decoder->second));
-                    rebound.push_back(std::move(bind));
-                    bind.op = AbstractOp::DECLARE_FUNCTION;
-                    bind.ref(*varint(found_decoder->second));
-                    rebound.push_back(std::move(bind));
+                    rebound.push_back(make_code(AbstractOp::DEFINE_DECODER, [&](auto& c) {
+                        c.left_ref(*varint(ident));
+                        c.right_ref(*varint(found_decoder->second));
+                    }));
+                    rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
+                        c.ref(*varint(found_decoder->second));
+                    }));
                 }
             }
             else if (c.op == AbstractOp::DECLARE_FUNCTION) {
@@ -306,7 +309,6 @@ namespace rebgn {
                 // skip
             }
             else if (c.op == AbstractOp::DEFINE_FUNCTION) {
-                rebound.push_back(std::move(c));
                 auto add_state_variables = [&](ObjectID fmt) {
                     auto ident = m.ident_table_rev.find(fmt);
                     if (ident == m.ident_table_rev.end()) {
@@ -325,27 +327,26 @@ namespace rebgn {
                         if (!ident) {
                             return ident.error();
                         }
-                        Code state;
-                        state.op = AbstractOp::STATE_VARIABLE_PARAMETER;
-                        state.ref(*ident);
-                        rebound.push_back(std::move(state));
+                        rebound.push_back(make_code(AbstractOp::STATE_VARIABLE_PARAMETER, [&](auto& c) {
+                            c.ref(*ident);
+                        }));
                     }
                     return none;
                 };
-                if (auto found = should_bind_encoder.find(c.ident().value().value()); found != should_bind_encoder.end()) {
-                    Code param;
-                    param.op = AbstractOp::ENCODER_PARAMETER;
-                    param.left_ref(*varint(found->second));               // ref to format
-                    param.right_ref(*varint(c.ident().value().value()));  // ref to function
-                    rebound.push_back(std::move(param));
+                auto ident = c.ident().value();
+                rebound.push_back(std::move(c));
+                if (auto found = should_bind_encoder.find(ident.value()); found != should_bind_encoder.end()) {
+                    rebound.push_back(make_code(AbstractOp::ENCODER_PARAMETER, [&](auto& c) {
+                        c.left_ref(*varint(found->second));
+                        c.right_ref(ident);
+                    }));
                     add_state_variables(found->second);
                 }
-                if (auto found = should_bind_decoder.find(c.ident().value().value()); found != should_bind_decoder.end()) {
-                    Code param;
-                    param.op = AbstractOp::DECODER_PARAMETER;
-                    param.left_ref(*varint(found->second));               // ref to format
-                    param.right_ref(*varint(c.ident().value().value()));  // ref to function
-                    rebound.push_back(std::move(param));
+                if (auto found = should_bind_decoder.find(ident.value()); found != should_bind_decoder.end()) {
+                    rebound.push_back(make_code(AbstractOp::DECODER_PARAMETER, [&](auto& c) {
+                        c.left_ref(*varint(found->second));
+                        c.right_ref(ident);
+                    }));
                     add_state_variables(found->second);
                 }
             }
@@ -500,9 +501,6 @@ namespace rebgn {
         return none;
     }
 
-    void write_cfg_dot(futils::binary::writer& w, Module& m, std::shared_ptr<CFG>& cfg, std::uint64_t& id) {
-    }
-
     void write_cfg(futils::binary::writer& w, Module& m) {
         w.write("digraph G {\n");
         std::uint64_t id = 0;
@@ -515,6 +513,7 @@ namespace rebgn {
             node_id[cfg] = id++;
             w.write(std::format("  {} [label=\"", node_id[cfg]));
             std::vector<std::shared_ptr<CFG>> callee;
+            w.write(std::format("{} bit\\n", cfg->sum_bits));
             for (auto& i : cfg->basic_block) {
                 w.write(std::format("{}", to_string(m.code[i].op)));
                 if (m.code[i].op == AbstractOp::ENCODE_INT || m.code[i].op == AbstractOp::DECODE_INT) {
@@ -574,6 +573,9 @@ namespace rebgn {
                 }
                 case AbstractOp::ENCODE_INT:
                 case AbstractOp::DECODE_INT:
+                    current->sum_bits += m.code[index_of_operation_and_loop[i]].bit_size().value().value();
+                    current->basic_block.push_back(index_of_operation_and_loop[i]);
+                    break;
                 case AbstractOp::CALL_ENCODE:
                 case AbstractOp::CALL_DECODE:
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
@@ -827,6 +829,7 @@ namespace rebgn {
             }
         }
         // remove DEFINE_ENCODER and DEFINE_DECODER
+        /*
         std::vector<Code> rebound;
         for (auto& c : m.code) {
             if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
@@ -835,6 +838,7 @@ namespace rebgn {
             rebound.push_back(std::move(c));
         }
         m.code = std::move(rebound);
+        */
     }
 
     struct InfiniteError {
@@ -950,10 +954,9 @@ namespace rebgn {
                 s.size(*varint(found->second));
                 storage.storages.push_back(std::move(s));
                 storage.length = *varint(1);
-                Code storage_code;
-                storage_code.op = AbstractOp::SPECIFY_STORAGE_TYPE;
-                storage_code.storage(std::move(storage));
-                rebound.push_back(std::move(storage_code));
+                rebound.push_back(make_code(AbstractOp::SPECIFY_STORAGE_TYPE, [&](auto& c) {
+                    c.storage(std::move(storage));
+                }));
             }
         }
         m.code = std::move(rebound);
@@ -976,12 +979,12 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
-        replace_call_encode_decode_ref(m);
-        rebind_ident_index(m);
         err = sort_formats(m, node);
         if (err) {
             return err;
         }
+        rebind_ident_index(m);
+        replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
         err = generate_cfg(m);
         if (err) {

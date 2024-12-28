@@ -735,7 +735,7 @@ namespace rebgn {
         return root;
     }
 
-    Error generate_cfg(Module& m) {
+    Error generate_cfg1(Module& m) {
         for (size_t i = 0; i < m.code.size(); i++) {
             auto& c = m.code[i];
             if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
@@ -753,6 +753,22 @@ namespace rebgn {
             }
         }
         return none;
+    }
+
+    Error add_packed_operation_for_cfg(Module& m) {
+        std::unordered_map<size_t, std::shared_ptr<CFG>> index_to_cfg;
+        std::set<std::shared_ptr<CFG>> visited;
+        std::set<size_t> insert_define_packed_operation;
+        std::set<size_t> insert_end_packed_operation;
+        auto&& f = [&](auto&& f, std::shared_ptr<CFG>& cfg) -> Error {
+            if (visited.find(cfg) != visited.end()) {
+                return none;
+            }
+            visited.insert(cfg);
+                };
+        for (auto& cfg : m.cfgs) {
+            f(f, cfg);
+        }
     }
 
     Error add_ident_ranges(Module& m) {
@@ -975,7 +991,7 @@ namespace rebgn {
         rebind_ident_index(m);
         replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
-        err = generate_cfg(m);
+        err = generate_cfg1(m);
         if (err) {
             return err;
         }

@@ -532,9 +532,13 @@ namespace bm2cpp {
         bool has_union = false;
         bool has_vector = false;
         bool has_recursive = false;
+        bool has_bit_field = false;
         for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
+            }
+            if (code.op == rebgn::AbstractOp::DECLARE_BIT_FIELD) {
+                has_bit_field = true;
             }
             if (auto s = code.storage()) {
                 for (auto& storage : s->storages) {
@@ -563,6 +567,9 @@ namespace bm2cpp {
         }
         if (has_recursive) {
             ctx.cw.writeln("#include <memory>");
+        }
+        if (has_bit_field) {
+            ctx.cw.writeln("#include <binary/flags.h>");
         }
         ctx.cw.writeln("#include <binary/number.h>");
         std::vector<futils::helper::DynDefer> defer;

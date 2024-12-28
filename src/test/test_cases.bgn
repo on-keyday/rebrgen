@@ -1,5 +1,5 @@
 # recursive test 
-#script\gen_sample C:\workspace\shbrgen\rebrgen\src\test\recursive.bgn
+#script\gen_sample C:\workspace\shbrgen\rebrgen\src\test\test_cases.bgn
 config.cpp.namespace = "recursive"
 
 enum StorageType:
@@ -192,3 +192,8 @@ format LEB128:
 
   fn u64() -> u64:
     return value
+
+format Tricky:
+    x :u2
+    l ::= input.get()
+    y :[l]u8

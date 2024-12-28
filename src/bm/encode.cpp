@@ -73,27 +73,33 @@ namespace rebgn {
         }
         if (auto arr = ast::as<ast::ArrayType>(typ)) {
             auto len = arr->length_value;
+            auto elem_is_int = ast::as<ast::IntType>(arr->element_type);
             if (len) {
-                for (size_t i = 0; i < *len; i++) {
+                auto imm = immediate(m, *len);
+                if (!imm) {
+                    return imm.error();
+                }
+                if (elem_is_int) {
+                    m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
+                        c.left_ref(base_ref);
+                        c.right_ref(*imm);
+                        c.endian(Endian(elem_is_int->endian));
+                        c.bit_size(*varint(*elem_is_int->bit_size));
+                    });
+                    return none;
+                }
+                return counter_loop(m, *imm, [&](Varint i) {
                     auto index = m.new_id();
                     if (!index) {
                         return error("Failed to generate new id");
                     }
-                    auto i_ = immediate(m, i);
-                    if (!i_) {
-                        return i_.error();
-                    }
                     m.op(AbstractOp::INDEX, [&](Code& c) {
                         c.ident(*index);
                         c.left_ref(base_ref);
-                        c.right_ref(*i_);
+                        c.right_ref(i);
                     });
-                    auto err = encode_type(m, arr->element_type, *index, mapped_type);
-                    if (err) {
-                        return err;
-                    }
-                }
-                return none;
+                    return encode_type(m, arr->element_type, *index, mapped_type);
+                });
             }
             expected<Varint> len_;
             if (ast::is_any_range(arr->length)) {
@@ -115,6 +121,15 @@ namespace rebgn {
                 if (!len_) {
                     return len_.error();
                 }
+            }
+            if (elem_is_int) {
+                m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
+                    c.left_ref(base_ref);
+                    c.right_ref(*len_);
+                    c.endian(Endian(elem_is_int->endian));
+                    c.bit_size(*varint(*elem_is_int->bit_size));
+                });
+                return none;
             }
             return counter_loop(m, *len_, [&](Varint counter) {
                 auto index = m.new_id();
@@ -303,30 +318,36 @@ namespace rebgn {
             });
         }
         if (auto arr = ast::as<ast::ArrayType>(typ)) {
+            auto elem_is_int = ast::as<ast::IntType>(arr->element_type);
             auto len = arr->length_value;
             if (len) {
-                for (size_t i = 0; i < *len; i++) {
+                auto imm = immediate(m, *len);
+                if (!imm) {
+                    return imm.error();
+                }
+                if (elem_is_int) {
+                    m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
+                        c.left_ref(base_ref);
+                        c.right_ref(*imm);
+                        c.endian(Endian(elem_is_int->endian));
+                        c.bit_size(*varint(*elem_is_int->bit_size));
+                    });
+                    return none;
+                }
+                return counter_loop(m, *imm, [&](Varint i) {
                     auto index = m.new_id();
                     if (!index) {
                         return error("Failed to generate new id");
                     }
-                    auto i_ = immediate(m, i);
-                    if (!i_) {
-                        return i_.error();
-                    }
                     m.op(AbstractOp::INDEX, [&](Code& c) {
                         c.ident(*index);
                         c.left_ref(base_ref);
-                        c.right_ref(*i_);
+                        c.right_ref(i);
                     });
-                    auto err = decode_type(m, arr->element_type, *index, mapped_type, field);
-                    if (err) {
-                        return err;
-                    }
-                }
-                return none;
+                    return decode_type(m, arr->element_type, *index, mapped_type, field);
+                });
             }
-            auto undelying_decoder = [&](Varint counter) {
+            auto undelying_decoder = [&] {
                 auto new_obj = m.new_id();
                 if (!new_obj) {
                     return new_obj.error();
@@ -361,6 +382,14 @@ namespace rebgn {
             if (ast::is_any_range(arr->length)) {
                 if (field) {
                     if (field->eventual_follow == ast::Follow::end) {
+                        if (elem_is_int) {
+                            m.op(AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF, [&](Code& c) {
+                                c.ref(base_ref);
+                                c.endian(Endian(elem_is_int->endian));
+                                c.bit_size(*varint(*elem_is_int->bit_size));
+                            });
+                            return none;
+                        }
                         auto new_id = m.new_id();
                         if (!new_id) {
                             return error("Failed to generate new id");
@@ -368,19 +397,213 @@ namespace rebgn {
                         m.op(AbstractOp::CAN_READ, [&](Code& c) {
                             c.ident(*new_id);
                         });
-                        conditional_loop(m, *new_id, undelying_decoder);
+                        return conditional_loop(m, *new_id, undelying_decoder);
+                    }
+                    else if (field->eventual_follow == ast::Follow::fixed) {
+                        auto new_id = m.new_id();
+                        if (!new_id) {
+                            return new_id.error();
+                        }
+                        auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
+                        auto imm = immediate(m, tail);
+                        if (!imm) {
+                            return imm.error();
+                        }
+                        auto next_id = m.new_id();
+                        if (!next_id) {
+                            return next_id.error();
+                        }
+                        m.op(AbstractOp::REMAIN_BYTES, [&](Code& c) {
+                            c.ident(*next_id);
+                        });
+                        if (elem_is_int) {
+                            // remain_bytes = REMAIN_BYTES - tail
+                            // assert remain_bytes % elem_size == 0
+                            // decode_int_vector(read_bytes / elem_size)
+                            m.op(AbstractOp::BINARY, [&](Code& c) {
+                                c.ident(*new_id);
+                                c.bop(BinaryOp::sub);
+                                c.left_ref(*next_id);
+                                c.right_ref(*imm);
+                            });
+                            auto assert_expr = m.new_id();
+                            if (!assert_expr) {
+                                return assert_expr.error();
+                            }
+                            m.op(AbstractOp::BINARY, [&](Code& c) {
+                                c.ident(*assert_expr);
+                                c.bop(BinaryOp::mod);
+                                c.left_ref(*new_id);
+                                c.right_ref(*varint(*elem_is_int->bit_size / futils::bit_per_byte));
+                            });
+                            m.op(AbstractOp::ASSERT, [&](Code& c) {
+                                c.ref(*assert_expr);
+                            });
+                            m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
+                                c.left_ref(base_ref);
+                                c.right_ref(*new_id);
+                                c.endian(Endian(elem_is_int->endian));
+                                c.bit_size(*varint(*elem_is_int->bit_size));
+                            });
+                            return none;
+                        }
+                        m.op(AbstractOp::BINARY, [&](Code& c) {
+                            c.ident(*new_id);
+                            c.bop(BinaryOp::grater);
+                            c.left_ref(*next_id);
+                            c.right_ref(*imm);
+                        });
+                        return conditional_loop(m, *new_id, undelying_decoder);
+                    }
+                    else if (field->eventual_follow == ast::Follow::constant) {
+                        auto next = field->next.lock();
+                        if (!next) {
+                            return error("Invalid next field");
+                        }
+                        auto str = ast::cast_to<ast::StrLiteralType>(next->field_type);
+                        auto str_ref = m.lookup_string(str->strong_ref->value);
+                        if (!str_ref) {
+                            return str_ref.error();
+                        }
+                        m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
+                            c.ident(*str_ref);
+                        });
+                        auto imm = immediate(m, *str->bit_size / futils::bit_per_byte);
+                        if (!imm) {
+                            return imm.error();
+                        }
+                        auto new_id = m.new_id();
+                        if (!new_id) {
+                            return new_id.error();
+                        }
+                        Storages s;
+                        s.length.value(2);
+                        s.storages.push_back(Storage{.type = StorageType::ARRAY});
+                        s.storages.back().size(*varint(*str->bit_size / futils::bit_per_byte));
+                        s.storages.push_back(Storage{.type = StorageType::UINT});
+                        s.storages.back().size(*varint(8));
+                        m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                            c.ident(*new_id);
+                            c.storage(std::move(s));
+                        });
+                        auto temporary_read_holder = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+                        if (!temporary_read_holder) {
+                            return temporary_read_holder.error();
+                        }
+                        m.op(AbstractOp::LOOP_INFINITE);
+                        {
+                            m.op(AbstractOp::PEEK_INT_VECTOR, [&](Code& c) {
+                                c.left_ref(*temporary_read_holder);
+                                c.right_ref(*imm);
+                                c.endian(Endian::unspec);
+                                c.bit_size(*varint(8));
+                            });
+                            Storages isOkFlag;
+                            isOkFlag.length.value(1);
+                            isOkFlag.storages.push_back(Storage{.type = StorageType::BOOL});
+                            auto flagObj = m.new_id();
+                            if (!flagObj) {
+                                return error("Failed to generate new id");
+                            }
+                            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                                c.ident(*flagObj);
+                                c.storage(std::move(isOkFlag));
+                            });
+                            auto isOK = define_tmp_var(m, *flagObj, ast::ConstantLevel::variable);
+                            auto immTrue = immediate_bool(m, true);
+                            if (!immTrue) {
+                                return immTrue.error();
+                            }
+                            auto immFalse = immediate_bool(m, false);
+                            if (!immFalse) {
+                                return immFalse.error();
+                            }
+                            m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                                c.left_ref(*isOK);
+                                c.right_ref(*immTrue);
+                            });
+                            auto err = counter_loop(m, *imm, [&](Varint i) {
+                                auto index_str = m.new_id();
+                                if (!index_str) {
+                                    return error("Failed to generate new id");
+                                }
+                                m.op(AbstractOp::INDEX, [&](Code& c) {
+                                    c.ident(*index_str);
+                                    c.left_ref(*str_ref);
+                                    c.right_ref(i);
+                                });
+                                auto index_peek = m.new_id();
+                                if (!index_peek) {
+                                    return error("Failed to generate new id");
+                                }
+                                m.op(AbstractOp::INDEX, [&](Code& c) {
+                                    c.ident(*index_peek);
+                                    c.left_ref(*temporary_read_holder);
+                                    c.right_ref(i);
+                                });
+                                auto cmp = m.new_id();
+                                if (!cmp) {
+                                    return error("Failed to generate new id");
+                                }
+                                m.op(AbstractOp::BINARY, [&](Code& c) {
+                                    c.ident(*cmp);
+                                    c.bop(BinaryOp::not_equal);
+                                    c.left_ref(*index_str);
+                                    c.right_ref(*index_peek);
+                                });
+                                m.op(AbstractOp::IF, [&](Code& c) {
+                                    c.ref(*cmp);
+                                });
+                                m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                                    c.left_ref(*isOK);
+                                    c.right_ref(*immFalse);
+                                });
+                                m.op(AbstractOp::BREAK);
+                                m.op(AbstractOp::END_IF);
+                                return none;
+                            });
+                            if (err) {
+                                return err;
+                            }
+                            m.op(AbstractOp::IF, [&](Code& c) {
+                                c.ref(*isOK);
+                            });
+                            m.op(AbstractOp::BREAK);
+                            m.op(AbstractOp::END_IF);
+                            err = undelying_decoder();
+                            if (err) {
+                                return err;
+                            }
+                        }
+                        m.op(AbstractOp::END_LOOP);
+                    }
+                    else {
+                        return error("Invalid follow type");
                     }
                 }
             }
-            auto id = get_expr(m, arr->length);
-            if (!id) {
-                return id.error();
+            else {
+                auto id = get_expr(m, arr->length);
+                if (!id) {
+                    return id.error();
+                }
+                auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
+                if (!len_ident) {
+                    return len_ident.error();
+                }
+                if (elem_is_int) {
+                    m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
+                        c.left_ref(base_ref);
+                        c.right_ref(*len_ident);
+                        c.endian(Endian(elem_is_int->endian));
+                        c.bit_size(*varint(*elem_is_int->bit_size));
+                    });
+                    return none;
+                }
+                return counter_loop(m, *len_ident, [&](Varint) {
+                    return undelying_decoder();
+                });
             }
-            auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
-            if (!len_ident) {
-                return len_ident.error();
-            }
-            return counter_loop(m, *len_ident, undelying_decoder);
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
@@ -535,10 +758,10 @@ namespace rebgn {
         });
         m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
             c.storage(Storages{
+                .length = varint(1).value(),
                 .storages = {
                     Storage{.type = StorageType::CODER_RETURN},
                 },
-                .length = varint(1).value(),
             });
         });
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
@@ -585,10 +808,10 @@ namespace rebgn {
         });
         m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
             c.storage(Storages{
+                .length = varint(1).value(),
                 .storages = {
                     Storage{.type = StorageType::CODER_RETURN},
                 },
-                .length = varint(1).value(),
             });
         });
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {

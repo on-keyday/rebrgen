@@ -151,9 +151,14 @@ enum AbstractOp:
     
     ENCODE_INT
     DECODE_INT
+    ENCODE_INT_VECTOR
+    DECODE_INT_VECTOR
+    DECODE_INT_VECTOR_UNTIL_EOF
+    PEEK_INT_VECTOR
     BACKWARD
     BYTE_OFFSET
     BIT_OFFSET
+    REMAIN_BYTES
     CAN_READ
     CALL_ENCODE
     CALL_DECODE
@@ -224,6 +229,8 @@ enum AbstractOp:
 
     BEGIN_SUB_RANGE
     END_SUB_RANGE
+
+
 
 
 # context that is used on code generation
@@ -386,7 +393,7 @@ format Code:
             uop :UnaryOp
             ref :Varint
         AbstractOp.LOOP_CONDITION:
-            ref :Varint
+            ref :Varint # ref to expr
         AbstractOp.ACCESS:
             ident :Varint
             left_ref :Varint
@@ -404,6 +411,25 @@ format Code:
             ref :Varint
             endian :Endian
             bit_size :Varint
+        AbstractOp.ENCODE_INT_VECTOR:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to length
+            endian :Endian
+            bit_size :Varint
+        AbstractOp.DECODE_INT_VECTOR:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to length
+            endian :Endian
+            bit_size :Varint
+        AbstractOp.DECODE_INT_VECTOR_UNTIL_EOF:
+            ref :Varint # ref to vector
+            endian :Endian
+            bit_size :Varint
+        AbstractOp.PEEK_INT_VECTOR:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to length
+            endian :Endian
+            bit_size :Varint
         AbstractOp.DECODE_INT:
             ref :Varint
             endian :Endian
@@ -418,8 +444,6 @@ format Code:
         AbstractOp.CALL_DECODE:
             left_ref :Varint # ref to decoder
             right_ref :Varint # ref to object
-        AbstractOp.LOOP_INFINITE:
-            ref :Varint
         AbstractOp.INC:
             ref :Varint
         AbstractOp.DEC:
@@ -436,7 +460,6 @@ format Code:
         AbstractOp.ASSERT:
             ref :Varint
         AbstractOp.IF:
-            ident :Varint
             ref :Varint
         AbstractOp.ELIF:
             ref :Varint
@@ -511,6 +534,8 @@ format Code:
         AbstractOp.BEGIN_SUB_RANGE:
             ref :Varint # length of sub range
         AbstractOp.CAN_READ:
+            ident :Varint
+        AbstractOp.REMAIN_BYTES:
             ident :Varint
 
 

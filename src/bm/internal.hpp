@@ -17,6 +17,7 @@ namespace rebgn {
     Error decode(Module& m, std::shared_ptr<T>& node) = delete;
 
     expected<Varint> immediate(Module& m, std::uint64_t n);
+    expected<Varint> immediate_bool(Module& m, bool b);
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
@@ -132,12 +133,7 @@ namespace rebgn {
         if (!cond) {
             return cond.error();
         }
-        auto if_ = m.new_id();
-        if (!if_) {
-            return error("Failed to generate new id");
-        }
         m.op(AbstractOp::IF, [&](Code& c) {
-            c.ident(*if_);
             c.ref(*cond);
         });
         add_switch_union(m, node->then->struct_type);
@@ -331,12 +327,7 @@ namespace rebgn {
                     return cond.error();
                 }
                 if (!last) {
-                    auto if_ = m.new_id();
-                    if (!if_) {
-                        return error("Failed to generate new id");
-                    }
                     m.op(AbstractOp::IF, [&](Code& c) {
-                        c.ident(*if_);
                         c.ref(*cond);
                     });
                     last = c;

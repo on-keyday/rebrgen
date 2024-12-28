@@ -1049,12 +1049,7 @@ namespace rebgn {
         if (!cond) {
             return error("Invalid conditional expression");
         }
-        auto if_ = m.new_id();
-        if (!if_) {
-            return error("Failed to generate new id");
-        }
         m.op(AbstractOp::IF, [&](Code& c) {
-            c.ident(*if_);
             c.ref(*cond);
         });
         auto then = get_expr(m, node->then);

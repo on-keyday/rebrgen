@@ -828,17 +828,6 @@ namespace rebgn {
                 }
             }
         }
-        // remove DEFINE_ENCODER and DEFINE_DECODER
-        /*
-        std::vector<Code> rebound;
-        for (auto& c : m.code) {
-            if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
-                continue;
-            }
-            rebound.push_back(std::move(c));
-        }
-        m.code = std::move(rebound);
-        */
     }
 
     struct InfiniteError {

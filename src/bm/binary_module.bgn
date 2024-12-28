@@ -217,6 +217,8 @@ enum AbstractOp:
 
     STATE_VARIABLE_PARAMETER
 
+    EVAL_EXPR
+
 
 # context that is used on code generation
 state BMContext:
@@ -225,6 +227,7 @@ state BMContext:
     has_dynamic_endian :bool
     has_dynamic_bit_order :bool
     inner_bit_operations :bool # inner BIT_FIELD or PACKED_OPERATION
+    bit_offset :u64
 
 format String:
     length :Varint
@@ -411,6 +414,8 @@ format Code:
         AbstractOp.INC:
             ref :Varint
         AbstractOp.DEC:
+            ref :Varint
+        AbstractOp.EVAL_EXPR:
             ref :Varint
         AbstractOp.STATIC_CAST:
             ident :Varint

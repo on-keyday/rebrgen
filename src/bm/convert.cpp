@@ -113,11 +113,11 @@ namespace rebgn {
             c.ident(*prog_id);
         });
         m.map_struct(node->import_desc->struct_type, prog_id->value());
-        for (auto& n : node->import_desc->elements) {
-            auto err = convert_node_definition(m, n);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->import_desc->elements, [&](auto& n) {
+            return convert_node_definition(m, n);
+        });
+        if (err) {
+            return err;
         }
         m.op(AbstractOp::END_PROGRAM);
         auto import_id = m.new_id();
@@ -234,7 +234,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, node->expr_type, *tmp_var);
+                err = decode_type(m, node->expr_type, *tmp_var, nullptr);
                 if (err) {
                     return err;
                 }
@@ -249,7 +249,7 @@ namespace rebgn {
                 if (!arg) {
                     return arg.error();
                 }
-                auto err = encode_type(m, node->expr_type, *arg);
+                auto err = encode_type(m, node->expr_type, *arg, nullptr);
                 if (err) {
                     return err;
                 }
@@ -822,7 +822,7 @@ namespace rebgn {
             c.ident(*ident);
             c.belong(parent);
         });
-        if (node->return_type) {
+        if (node->return_type && !ast::as<ast::VoidType>(node->return_type)) {
             Storages s;
             auto err = define_storage(m, s, node->return_type);
             if (err) {
@@ -851,11 +851,11 @@ namespace rebgn {
             });
             m.op(AbstractOp::END_PARAMETER);
         }
-        for (auto& f : node->body->elements) {
-            auto err = convert_node_definition(m, f);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+            return convert_node_definition(m, n);
+        });
+        if (err) {
+            return err;
         }
         m.op(AbstractOp::END_FUNCTION);
         return none;
@@ -918,24 +918,28 @@ namespace rebgn {
         }
         std::vector<Varint> bit_field_ids;
         for (auto& f : node->body->struct_type->fields) {
-            if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
-                auto new_id = m.new_id();
-                if (!new_id) {
-                    return new_id.error();
+            if (ast::as<ast::Field>(f)) {
+                if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
+                    auto new_id = m.new_id();
+                    if (!new_id) {
+                        return new_id.error();
+                    }
+                    m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.belong(ident.value());
+                    });
+                    m.map_struct(node->body->struct_type, new_id->value());  // temporary remap
                 }
-                m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
-                    c.ident(*new_id);
-                    c.belong(ident.value());
-                });
-                m.map_struct(node->body->struct_type, new_id->value());  // temporary remap
             }
             auto err = convert_node_definition(m, f);
             if (err) {
                 return err;
             }
-            if (bit_field_end.contains(ast::cast_to<ast::Field>(f))) {
-                m.op(AbstractOp::END_BIT_FIELD);
-                m.map_struct(node->body->struct_type, ident->value());  // restore
+            if (ast::as<ast::Field>(f)) {
+                if (bit_field_end.contains(ast::cast_to<ast::Field>(f))) {
+                    m.op(AbstractOp::END_BIT_FIELD);
+                    m.map_struct(node->body->struct_type, ident->value());  // restore
+                }
             }
         }
         m.op(AbstractOp::END_FORMAT);
@@ -1146,11 +1150,11 @@ namespace rebgn {
             c.ident(*pid);
         });
         m.map_struct(node->struct_type, pid->value());
-        for (auto& n : node->elements) {
-            auto err = convert_node_definition(m, n);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->elements, [&](auto& n) {
+            return convert_node_definition(m, n);
+        });
+        if (err) {
+            return err;
         }
         m.op(AbstractOp::END_PROGRAM);
         return none;

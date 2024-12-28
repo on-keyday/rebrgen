@@ -22,8 +22,29 @@ namespace rebgn {
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
 
-    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref);
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref);
+    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type);
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type);
+    inline void maybe_insert_eval_expr(Module& m, const std::shared_ptr<ast::Node>& n) {
+        if (!ast::as<ast::Expr>(n)) {
+            return;
+        }
+        if (auto prev = m.get_prev_expr(); prev) {
+            m.op(AbstractOp::EVAL_EXPR, [&](Code& c) {
+                c.ref(*prev);
+            });
+        }
+    }
+    Error foreach_node(Module& m, ast::node_list& nodes, auto&& block) {
+        for (auto& n : nodes) {
+            m.set_prev_expr(null_id);
+            auto err = block(n);
+            if (err) {
+                return err;
+            }
+            maybe_insert_eval_expr(m, n);
+        }
+        return none;
+    }
 
     Error counter_loop(Module& m, Varint length, auto&& block) {
         auto counter = define_counter(m, 0);
@@ -78,11 +99,6 @@ namespace rebgn {
             }
             yield_value = *tmp_var;
         }
-        auto yield_value_preproc = [&]() {
-            if (yield_value) {
-                m.set_prev_expr(null_id);
-            }
-        };
         auto yield_value_postproc = [&]() {
             if (yield_value) {
                 auto prev_expr = m.get_prev_expr();
@@ -114,12 +130,15 @@ namespace rebgn {
             c.ref(*cond);
         });
         add_switch_union(m, node->then->struct_type);
-        for (auto& n : node->then->elements) {
-            yield_value_preproc();
+        auto err = foreach_node(m, node->then->elements, [&](auto& n) {
             auto err = eval(m, n);
             if (err) {
                 return err;
             }
+            return none;
+        });
+        if (err) {
+            return err;
         }
         yield_value_postproc();
         if (node->els) {
@@ -134,14 +153,17 @@ namespace rebgn {
                         c.ref(*cond);
                     });
                     add_switch_union(m, e->then->struct_type);
-                    for (auto& n : e->then->elements) {
-                        yield_value_preproc();
+                    auto err = foreach_node(m, e->then->elements, [&](auto& n) {
                         auto err = eval(m, n);
                         if (err) {
                             return err;
                         }
+                        return none;
+                    });
+                    if (err) {
+                        return err;
                     }
-                    auto err = yield_value_postproc();
+                    err = yield_value_postproc();
                     if (err) {
                         return err;
                     }
@@ -150,14 +172,17 @@ namespace rebgn {
                 else if (auto block = ast::as<ast::IndentBlock>(els->els)) {
                     m.op(AbstractOp::ELSE);
                     add_switch_union(m, block->struct_type);
-                    for (auto& n : block->elements) {
-                        yield_value_preproc();
+                    auto err = foreach_node(m, block->elements, [&](auto& n) {
                         auto err = eval(m, n);
                         if (err) {
                             return err;
                         }
+                        return none;
+                    });
+                    if (err) {
+                        return err;
                     }
-                    auto err = yield_value_postproc();
+                    err = yield_value_postproc();
                     if (err) {
                         return err;
                     }
@@ -195,11 +220,6 @@ namespace rebgn {
             }
             yield_value = *tmp_var;
         }
-        auto yield_value_preproc = [&]() {
-            if (yield_value) {
-                m.set_prev_expr(null_id);
-            }
-        };
         auto yield_value_postproc = [&]() {
             if (yield_value) {
                 auto prev_expr = m.get_prev_expr();
@@ -248,20 +268,24 @@ namespace rebgn {
                 }
                 if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                     add_switch_union(m, scoped->struct_type);
-                    yield_value_preproc();
+                    m.set_prev_expr(null_id);
                     auto err = eval(m, scoped->statement);
                     if (err) {
                         return err;
                     }
+                    maybe_insert_eval_expr(m, scoped->statement);
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                     add_switch_union(m, block->struct_type);
-                    for (auto& n : block->elements) {
-                        yield_value_preproc();
+                    auto err = foreach_node(m, block->elements, [&](auto& n) {
                         auto err = eval(m, n);
                         if (err) {
                             return err;
                         }
+                        return none;
+                    });
+                    if (err) {
+                        return err;
                     }
                 }
                 else {
@@ -315,20 +339,24 @@ namespace rebgn {
             }
             if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                 add_switch_union(m, scoped->struct_type);
-                yield_value_preproc();
+                m.set_prev_expr(null_id);
                 auto err = eval(m, scoped->statement);
                 if (err) {
                     return err;
                 }
+                maybe_insert_eval_expr(m, scoped->statement);
             }
             else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                 add_switch_union(m, block->struct_type);
-                for (auto& n : block->elements) {
-                    yield_value_preproc();
+                auto err = foreach_node(m, block->elements, [&](auto& n) {
                     auto err = eval(m, n);
                     if (err) {
                         return err;
                     }
+                    return none;
+                });
+                if (err) {
+                    return err;
                 }
             }
             else {

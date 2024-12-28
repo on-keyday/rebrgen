@@ -3,7 +3,8 @@
 #include "binary_module.hpp"
 
 namespace rebgn {
-    inline bool is_declare(AbstractOp op) {
+
+       inline bool is_declare(AbstractOp op) {
         switch (op) {
             case AbstractOp::DECLARE_FUNCTION:
             case AbstractOp::DECLARE_ENUM:

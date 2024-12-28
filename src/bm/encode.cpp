@@ -4,7 +4,7 @@
 #include <core/ast/tool/eval.h>
 
 namespace rebgn {
-    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
+    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             auto bit_size = varint(*int_ty->bit_size);
             if (!bit_size) {
@@ -88,7 +88,7 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(*i_);
                     });
-                    auto err = encode_type(m, arr->element_type, *index);
+                    auto err = encode_type(m, arr->element_type, *index, mapped_type);
                     if (err) {
                         return err;
                     }
@@ -113,7 +113,7 @@ namespace rebgn {
                     c.left_ref(base_ref);
                     c.right_ref(counter);
                 });
-                auto err = encode_type(m, arr->element_type, *index);
+                auto err = encode_type(m, arr->element_type, *index, mapped_type);
                 if (err) {
                     return err;
                 }
@@ -141,6 +141,10 @@ namespace rebgn {
                 return error("invalid enum type(maybe bug)");
             }
             auto base_type = base_enum->base_type;
+            if (mapped_type) {
+                base_type = mapped_type;
+                mapped_type = nullptr;
+            }
             if (!base_type) {
                 return error("abstract enum {} in encode", base_enum->ident->ident);
             }
@@ -162,7 +166,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(base_ref);
             });
-            err = encode_type(m, base_type, *casted);
+            err = encode_type(m, base_type, *casted, mapped_type);
             if (err) {
                 return err;
             }
@@ -173,12 +177,12 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return encode_type(m, base_type, base_ref);
+            return encode_type(m, base_type, base_ref, mapped_type);
         }
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
 
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref) {
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(base_ref);
@@ -302,7 +306,7 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(*i_);
                     });
-                    auto err = decode_type(m, arr->element_type, *index);
+                    auto err = decode_type(m, arr->element_type, *index, mapped_type);
                     if (err) {
                         return err;
                     }
@@ -342,7 +346,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, arr->element_type, *tmp_var);
+                err = decode_type(m, arr->element_type, *tmp_var, mapped_type);
                 if (err) {
                     return err;
                 }
@@ -378,8 +382,12 @@ namespace rebgn {
                 return error("invalid enum type(maybe bug)");
             }
             auto base_type = base_enum->base_type;
+            if (mapped_type) {
+                base_type = mapped_type;
+                mapped_type = nullptr;
+            }
             if (!base_type) {
-                return error("abstract enum {} in encode", base_enum->ident->ident);
+                return error("abstract enum {} in decode", base_enum->ident->ident);
             }
             auto ident = m.lookup_ident(base_enum->ident);
             if (!ident) {
@@ -402,7 +410,7 @@ namespace rebgn {
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            err = decode_type(m, base_type, *tmp_var);
+            err = decode_type(m, base_type, *tmp_var, mapped_type);
             if (err) {
                 return err;
             }
@@ -431,7 +439,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return decode_type(m, base_type, base_ref);
+            return decode_type(m, base_type, base_ref, mapped_type);
         }
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
@@ -442,7 +450,10 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        return encode_type(m, node->field_type, *ident);
+        if (node->arguments && node->arguments->type_map) {
+            return encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+        }
+        return encode_type(m, node->field_type, *ident, nullptr);
     }
 
     template <>
@@ -451,7 +462,10 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        return decode_type(m, node->field_type, *ident);
+        if (node->arguments && node->arguments->type_map) {
+            return decode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+        }
+        return decode_type(m, node->field_type, *ident, nullptr);
     }
 
     template <>
@@ -482,11 +496,11 @@ namespace rebgn {
             c.ident(*new_id);
             c.belong(*fmt_ident);
         });
-        for (auto& elem : node->body->elements) {
-            auto err = convert_node_encode(m, elem);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+            return convert_node_encode(m, n);
+        });
+        if (err) {
+            return err;
         }
         m.op(AbstractOp::END_FUNCTION);
         m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
@@ -524,11 +538,11 @@ namespace rebgn {
             c.ident(*new_id);
             c.belong(fmt_ident.value());
         });
-        for (auto& elem : node->body->elements) {
-            auto err = convert_node_decode(m, elem);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+            return convert_node_decode(m, n);
+        });
+        if (err) {
+            return err;
         }
         m.op(AbstractOp::END_FUNCTION);
         m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {
@@ -540,24 +554,16 @@ namespace rebgn {
 
     template <>
     Error encode<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
-        for (auto& n : node->elements) {
-            auto err = convert_node_encode(m, n);
-            if (err) {
-                return err;
-            }
-        }
-        return none;
+        return foreach_node(m, node->elements, [&](auto& n) {
+            return convert_node_encode(m, n);
+        });
     }
 
     template <>
     Error decode<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
-        for (auto& n : node->elements) {
-            auto err = convert_node_decode(m, n);
-            if (err) {
-                return err;
-            }
-        }
-        return none;
+        return foreach_node(m, node->elements, [&](auto& n) {
+            return convert_node_decode(m, n);
+        });
     }
 
     template <>
@@ -657,11 +663,11 @@ namespace rebgn {
         else {
             m.op(AbstractOp::LOOP_INFINITE);
         }
-        for (auto& n : node->body->elements) {
-            auto err = eval(m, n);
-            if (err) {
-                return err;
-            }
+        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+            return eval(m, n);
+        });
+        if (err) {
+            return err;
         }
         if (node->step) {
             auto err = eval(m, node->step);

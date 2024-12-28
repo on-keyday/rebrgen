@@ -822,14 +822,29 @@ namespace rebgn {
             c.ident(*ident);
             c.belong(parent);
         });
+        bool is_encoder_or_decoder = false;
+        if (auto fmt = ast::as<ast::Format>(node->belong.lock())) {
+            if (fmt->encode_fn.lock() == node || fmt->decode_fn.lock() == node) {
+                is_encoder_or_decoder = true;
+            }
+        }
         if (node->return_type && !ast::as<ast::VoidType>(node->return_type)) {
             Storages s;
+            if (is_encoder_or_decoder) {
+                s.storages.push_back(Storage{.type = StorageType::CODER_RETURN});
+                s.length.value(1);
+            }
             auto err = define_storage(m, s, node->return_type);
             if (err) {
                 return err;
             }
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.storage(std::move(s));
+            });
+        }
+        else if (is_encoder_or_decoder) {
+            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                c.storage(Storages{.storages = {Storage{.type = StorageType::CODER_RETURN}}, .length = varint(1).value()});
             });
         }
         for (auto& p : node->parameters) {

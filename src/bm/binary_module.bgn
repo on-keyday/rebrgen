@@ -260,6 +260,9 @@ enum StorageType:
     # for union
     VARIANT
 
+    # encoder/decoder return value
+    CODER_RETURN
+
 
 
 

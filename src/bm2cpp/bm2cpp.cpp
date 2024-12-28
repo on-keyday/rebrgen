@@ -18,6 +18,7 @@ namespace bm2cpp {
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
         std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
         std::string ptr_type;
+        rebgn::BMContext bm_ctx;
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
@@ -30,6 +31,9 @@ namespace bm2cpp {
         }
         auto& storage = s.storages[index];
         switch (storage.type) {
+            case rebgn::StorageType::CODER_RETURN: {
+                return "bool";
+            }
             case rebgn::StorageType::UINT: {
                 auto size = storage.size().value().value();
                 if (size <= 8) {
@@ -491,6 +495,15 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::DEFINE_VARIABLE: {
                     auto s = eval(code, ctx);
                     ctx.cw.writeln(s[s.size() - 2]);
+                    break;
+                }
+                case rebgn::AbstractOp::ENCODE_INT: {
+                    auto ref = code.ref().value().value();
+                    auto& ident = ctx.ident_index_table[ref];
+                    auto s = eval(ctx.bm.code[ident], ctx);
+                    auto endian = code.endian().value();
+                    auto is_big = endian == rebgn::Endian::little ? false : true;
+                    ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     break;
                 }
                 default:

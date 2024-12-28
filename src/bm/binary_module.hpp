@@ -1022,6 +1022,7 @@ namespace rebgn {
         ARRAY = 8,
         VECTOR = 9,
         VARIANT = 10,
+        CODER_RETURN = 11,
     };
     constexpr const char* to_string(StorageType e) {
         switch (e) {
@@ -1047,6 +1048,8 @@ namespace rebgn {
                 return "VECTOR";
             case StorageType::VARIANT:
                 return "VARIANT";
+            case StorageType::CODER_RETURN:
+                return "CODER_RETURN";
         }
         return "";
     }
@@ -1087,6 +1090,9 @@ namespace rebgn {
         }
         if (str == "VARIANT") {
             return StorageType::VARIANT;
+        }
+        if (str == "CODER_RETURN") {
+            return StorageType::CODER_RETURN;
         }
         return std::nullopt;
     }

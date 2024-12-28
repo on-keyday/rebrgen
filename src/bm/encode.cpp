@@ -496,6 +496,14 @@ namespace rebgn {
             c.ident(*new_id);
             c.belong(*fmt_ident);
         });
+        m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+            c.storage(Storages{
+                .storages = {
+                    Storage{.type = StorageType::CODER_RETURN},
+                },
+                .length = varint(1).value(),
+            });
+        });
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_encode(m, n);
         });
@@ -537,6 +545,14 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*new_id);
             c.belong(fmt_ident.value());
+        });
+        m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+            c.storage(Storages{
+                .storages = {
+                    Storage{.type = StorageType::CODER_RETURN},
+                },
+                .length = varint(1).value(),
+            });
         });
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_decode(m, n);

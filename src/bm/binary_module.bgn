@@ -154,6 +154,7 @@ enum AbstractOp:
     BACKWARD
     BYTE_OFFSET
     BIT_OFFSET
+    CAN_READ
     CALL_ENCODE
     CALL_DECODE
     STATIC_CAST
@@ -218,6 +219,11 @@ enum AbstractOp:
     STATE_VARIABLE_PARAMETER
 
     EVAL_EXPR
+
+    ARRAY_SIZE
+
+    BEGIN_SUB_RANGE
+    END_SUB_RANGE
 
 
 # context that is used on code generation
@@ -498,6 +504,13 @@ format Code:
         AbstractOp.BIT_OFFSET:
             ident :Varint
         AbstractOp.BYTE_OFFSET:
+            ident :Varint
+        AbstractOp.ARRAY_SIZE:
+            ident :Varint
+            ref :Varint
+        AbstractOp.BEGIN_SUB_RANGE:
+            ref :Varint # length of sub range
+        AbstractOp.CAN_READ:
             ident :Varint
 
 

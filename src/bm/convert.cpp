@@ -234,7 +234,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, node->expr_type, *tmp_var, nullptr);
+                err = decode_type(m, node->expr_type, *tmp_var, nullptr, nullptr);
                 if (err) {
                     return err;
                 }

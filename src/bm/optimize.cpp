@@ -765,7 +765,8 @@ namespace rebgn {
                 return none;
             }
             visited.insert(cfg);
-                };
+            cfg->sum_bits;
+        };
         for (auto& cfg : m.cfgs) {
             f(f, cfg);
         }

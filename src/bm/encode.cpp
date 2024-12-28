@@ -95,13 +95,26 @@ namespace rebgn {
                 }
                 return none;
             }
-            auto len_init = get_expr(m, arr->length);
-            if (!len_init) {
-                return len_init.error();
+            expected<Varint> len_;
+            if (ast::is_any_range(arr->length)) {
+                len_ = m.new_id();
+                if (!len_) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
+                    c.ident(*len_);
+                    c.ref(base_ref);
+                });
             }
-            auto len_ = define_tmp_var(m, *len_init, ast::ConstantLevel::immutable_variable);
-            if (!len_) {
-                return len_.error();
+            else {
+                auto len_init = get_expr(m, arr->length);
+                if (!len_init) {
+                    return len_init.error();
+                }
+                len_ = define_tmp_var(m, *len_init, ast::ConstantLevel::immutable_variable);
+                if (!len_) {
+                    return len_.error();
+                }
             }
             return counter_loop(m, *len_, [&](Varint counter) {
                 auto index = m.new_id();
@@ -182,7 +195,7 @@ namespace rebgn {
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
 
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type) {
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(base_ref);
@@ -306,29 +319,14 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(*i_);
                     });
-                    auto err = decode_type(m, arr->element_type, *index, mapped_type);
+                    auto err = decode_type(m, arr->element_type, *index, mapped_type, field);
                     if (err) {
                         return err;
                     }
                 }
                 return none;
             }
-            // len = <len>
-            // i = 0
-            // cmp = i < len
-            // loop cmp:
-            //   index = base_ref[i]
-            //   encode_type(index)
-            //   i++
-            auto id = get_expr(m, arr->length);
-            if (!id) {
-                return id.error();
-            }
-            auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
-            if (!len_ident) {
-                return len_ident.error();
-            }
-            return counter_loop(m, *len_ident, [&](Varint counter) {
+            auto undelying_decoder = [&](Varint counter) {
                 auto new_obj = m.new_id();
                 if (!new_obj) {
                     return new_obj.error();
@@ -346,7 +344,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, arr->element_type, *tmp_var, mapped_type);
+                err = decode_type(m, arr->element_type, *tmp_var, mapped_type, field);
                 if (err) {
                     return err;
                 }
@@ -359,7 +357,30 @@ namespace rebgn {
                     c.right_ref(*tmp_var);
                 });
                 return none;
-            });
+            };
+            if (ast::is_any_range(arr->length)) {
+                if (field) {
+                    if (field->eventual_follow == ast::Follow::end) {
+                        auto new_id = m.new_id();
+                        if (!new_id) {
+                            return error("Failed to generate new id");
+                        }
+                        m.op(AbstractOp::CAN_READ, [&](Code& c) {
+                            c.ident(*new_id);
+                        });
+                        conditional_loop(m, *new_id, undelying_decoder);
+                    }
+                }
+            }
+            auto id = get_expr(m, arr->length);
+            if (!id) {
+                return id.error();
+            }
+            auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
+            if (!len_ident) {
+                return len_ident.error();
+            }
+            return counter_loop(m, *len_ident, undelying_decoder);
         }
         if (auto s = ast::as<ast::StructType>(typ)) {
             auto member = s->base.lock();
@@ -410,7 +431,7 @@ namespace rebgn {
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            err = decode_type(m, base_type, *tmp_var, mapped_type);
+            err = decode_type(m, base_type, *tmp_var, mapped_type, field);
             if (err) {
                 return err;
             }
@@ -439,7 +460,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return decode_type(m, base_type, base_ref, mapped_type);
+            return decode_type(m, base_type, base_ref, mapped_type, field);
         }
         return error("unsupported type: {}", node_type_to_string(typ->node_type));
     }
@@ -462,10 +483,26 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        if (node->arguments && node->arguments->type_map) {
-            return decode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+        if (node->arguments && node->arguments->sub_byte_length) {
+            auto len = get_expr(m, node->arguments->sub_byte_length);
+            if (!len) {
+                return len.error();
+            }
+            m.op(AbstractOp::BEGIN_SUB_RANGE, [&](Code& c) {
+                c.ref(*len);
+            });
         }
-        return decode_type(m, node->field_type, *ident, nullptr);
+        Error err;
+        if (node->arguments && node->arguments->type_map) {
+            err = decode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get());
+        }
+        else {
+            err = decode_type(m, node->field_type, *ident, nullptr, node.get());
+        }
+        if (node->arguments && node->arguments->sub_byte_length) {
+            m.op(AbstractOp::END_SUB_RANGE);
+        }
+        return err;
     }
 
     template <>

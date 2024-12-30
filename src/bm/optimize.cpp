@@ -766,10 +766,15 @@ namespace rebgn {
             }
             visited.insert(cfg);
             cfg->sum_bits;
+            return none;
         };
         for (auto& cfg : m.cfgs) {
-            f(f, cfg);
+            auto err = f(f, cfg);
+            if (err) {
+                return err;
+            }
         }
+        return none;
     }
 
     Error add_ident_ranges(Module& m) {

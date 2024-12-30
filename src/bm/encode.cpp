@@ -207,7 +207,7 @@ namespace rebgn {
             }
             return encode_type(m, base_type, base_ref, mapped_type);
         }
-        return error("unsupported type: {}", node_type_to_string(typ->node_type));
+        return error("unsupported type on encode type: {}", node_type_to_string(typ->node_type));
     }
 
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field) {
@@ -576,10 +576,14 @@ namespace rebgn {
                             }
                         }
                         m.op(AbstractOp::END_LOOP);
+                        return none;
                     }
                     else {
                         return error("Invalid follow type");
                     }
+                }
+                else {
+                    return error("Invalid field");
                 }
             }
             else {
@@ -685,7 +689,7 @@ namespace rebgn {
             }
             return decode_type(m, base_type, base_ref, mapped_type, field);
         }
-        return error("unsupported type: {}", node_type_to_string(typ->node_type));
+        return error("unsupported type on decode type: {}", node_type_to_string(typ->node_type));
     }
 
     template <>

@@ -79,6 +79,10 @@ namespace bm2cpp {
             case rebgn::StorageType::STRUCT_REF: {
                 auto ref = storage.ref().value().value();
                 auto idx = ctx.ident_index_table[ref];
+                auto size = storage.size().value().value();
+                if (size && bit_size) {
+                    *bit_size = size - 1;
+                }
                 if (ctx.bm.code[idx].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
                     return std::format("variant_{}", ref);
                 }
@@ -102,11 +106,15 @@ namespace bm2cpp {
                 return ident;
             }
             case rebgn::StorageType::VARIANT: {
+                size_t bit_size_candidate = 0;
                 std::string variant = "std::variant<std::monostate";
                 for (index++; index < s.storages.size(); index++) {
                     auto& storage = s.storages[index];
-                    auto inner = type_to_string(ctx, s, bit_size, index);
+                    auto inner = type_to_string(ctx, s, &bit_size_candidate, index);
                     variant += ", " + inner;
+                    if (bit_size) {
+                        *bit_size = std::max(*bit_size, bit_size_candidate);
+                    }
                 }
                 variant += ">";
                 return variant;
@@ -554,6 +562,7 @@ namespace bm2cpp {
         bool has_vector = false;
         bool has_recursive = false;
         bool has_bit_field = false;
+        bool has_array = false;
         for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
@@ -567,13 +576,17 @@ namespace bm2cpp {
                         has_vector = true;
                         break;
                     }
+                    if (storage.type == rebgn::StorageType::ARRAY) {
+                        has_array = true;
+                        break;
+                    }
                     if (storage.type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
                         has_recursive = true;
                         break;
                     }
                 }
             }
-            if (has_vector && has_union && has_recursive) {
+            if (has_vector && has_union && has_recursive && has_array) {
                 break;
             }
         }
@@ -588,6 +601,9 @@ namespace bm2cpp {
         }
         if (has_recursive) {
             ctx.cw.writeln("#include <memory>");
+        }
+        if (has_array) {
+            ctx.cw.writeln("#include <array>");
         }
         if (has_bit_field) {
             ctx.cw.writeln("#include <binary/flags.h>");

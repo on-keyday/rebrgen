@@ -152,9 +152,6 @@ namespace rebgn {
     }
 
     template <>
-    Error define<ast::Range>(Module& m, std::shared_ptr<ast::Range>& node) {}
-
-    template <>
     Error define<ast::If>(Module& m, std::shared_ptr<ast::If>& node) {
         return convert_if(m, node, [](Module& m, auto& n) {
             return convert_node_definition(m, n);
@@ -457,8 +454,17 @@ namespace rebgn {
                     });
                 }
                 else {
+                    Varint bit_size_plus_1;
+                    if (auto fmt = ast::as<ast::Format>(member); fmt && fmt->body->struct_type->bit_size) {
+                        auto s = varint(*fmt->body->struct_type->bit_size + 1);
+                        if (!s) {
+                            return s.error();
+                        }
+                        bit_size_plus_1 = s.value();
+                    }
                     push(StorageType::STRUCT_REF, [&](Storage& c) {
                         c.ref(*ident);
+                        c.size(bit_size_plus_1);
                     });
                 }
                 return none;
@@ -494,8 +500,16 @@ namespace rebgn {
                 if (ident.value() == null_id) {
                     return error("Invalid struct ident(maybe bug)");
                 }
+                Varint bit_size_plus_1;
+                if (st->bit_size) {
+                    auto s = varint(*st->bit_size + 1);
+                    if (!s) {
+                        return s.error();
+                    }
+                }
                 push(StorageType::STRUCT_REF, [&](Storage& c) {
                     c.ref(ident);
+                    c.size(bit_size_plus_1);
                 });
             }
             return none;
@@ -516,7 +530,7 @@ namespace rebgn {
             }
             return none;
         }
-        return error("unsupported type: {}", node_type_to_string(typ->node_type));
+        return error("unsupported type on define storage: {}", node_type_to_string(typ->node_type));
     }
 
     Error handle_union_type(Module& m, const std::shared_ptr<ast::UnionType>& ty, auto&& block) {
@@ -532,7 +546,7 @@ namespace rebgn {
         for (auto& c : ty->candidates) {
             auto cond = c->cond.lock();
             auto field = c->field.lock();
-            if (cond) {
+            if (cond && !ast::is_any_range(cond)) {
                 auto cond_ = get_expr(m, cond);
                 if (!cond_) {
                     return error("Invalid union field condition");
@@ -841,7 +855,10 @@ namespace rebgn {
         }
         else if (is_encoder_or_decoder) {
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(Storages{.storages = {Storage{.type = StorageType::CODER_RETURN}}, .length = varint(1).value()});
+                c.storage(Storages{
+                    .length = varint(1).value(),
+                    .storages = {Storage{.type = StorageType::CODER_RETURN}},
+                });
             });
         }
         for (auto& p : node->parameters) {
@@ -1068,6 +1085,37 @@ namespace rebgn {
         });
         m.op(AbstractOp::END_IF);
         m.set_prev_expr(tmp_var->value());
+        return none;
+    }
+
+    template <>
+    Error define<ast::Cast>(Module& m, std::shared_ptr<ast::Cast>& node) {
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident.error();
+        }
+        std::vector<Varint> args;
+        for (auto& p : node->arguments) {
+            auto arg = get_expr(m, p);
+            if (!arg) {
+                return arg.error();
+            }
+            args.push_back(arg.value());
+        }
+        Storages s;
+        auto err = define_storage(m, s, node->expr_type);
+        if (err) {
+            return err;
+        }
+        Param param;
+        param.len_exprs = varint(args.size()).value();
+        param.expr_refs = std::move(args);
+        m.op(AbstractOp::CALL_CAST, [&](Code& c) {
+            c.ident(*ident);
+            c.storage(std::move(s));
+            c.param(std::move(param));
+        });
+        m.set_prev_expr(ident->value());
         return none;
     }
 

@@ -164,6 +164,7 @@ enum AbstractOp:
     CALL_DECODE
     STATIC_CAST
     BIT_CAST
+    CALL_CAST
 
     LOOP_INFINITE
     LOOP_CONDITION
@@ -290,8 +291,11 @@ format Storage:
         StorageType.INT => size :Varint
         StorageType.UINT => size :Varint
         StorageType.FLOAT => size :Varint
-        StorageType.STRUCT_REF => ref :Varint
-        StorageType.RECURSIVE_STRUCT_REF => ref :Varint
+        StorageType.STRUCT_REF:
+            size :Varint # size of struct + 1, 0 means null
+            ref :Varint
+        StorageType.RECURSIVE_STRUCT_REF:
+            ref :Varint
         StorageType.BYTE_VECTOR => ..
         StorageType.ENUM:
             ref :Varint
@@ -438,6 +442,10 @@ format Code:
             ident: Varint
             storage :Storages
             ref :Varint # ref to object
+        AbstractOp.CALL_CAST:
+            ident: Varint
+            storage :Storages
+            param :Param
         AbstractOp.CALL_ENCODE:
             left_ref :Varint # ref to encoder
             right_ref :Varint # ref to object
@@ -533,11 +541,7 @@ format Code:
             ref :Varint
         AbstractOp.BEGIN_ENCODE_SUB_RANGE:
             ref :Varint # length of sub range
-        AbstractOp.END_ENCODE_SUB_RANGE:
-            ref :Varint # length of sub range
         AbstractOp.BEGIN_DECODE_SUB_RANGE:
-            ref :Varint # length of sub range
-        AbstractOp.END_DECODE_SUB_RANGE:    
             ref :Varint # length of sub range
         AbstractOp.CAN_READ:
             ident :Varint

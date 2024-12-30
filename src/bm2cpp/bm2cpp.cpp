@@ -434,8 +434,16 @@ namespace bm2cpp {
                     defer.push_back(futils::helper::defer_ex([&] {
                         ctx.cw.writeln(">");
                         auto name = ctx.bm.code[range.start].ident().value().value();
-                        ctx.cw.writeln(std::format("field_{};", name));
+                        auto field_name = std::format("field_{}", name);
+                        ctx.cw.writeln(field_name, ";");
                         ctx.bm_ctx.inner_bit_operations = false;
+                        size_t counter = 0;
+                        for (size_t i = range.start; i < range.end; i++) {
+                            if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_FIELD) {
+                                auto ident = ctx.ident_table[ctx.bm.code[i].ref().value().value()];
+                                ctx.cw.writeln(std::format("bits_flag_alias_method({},{},{});", field_name, counter, ident));
+                            }
+                        }
                     }));
                     ctx.bm_ctx.inner_bit_operations = true;
                     break;
@@ -520,6 +528,27 @@ namespace bm2cpp {
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::IF: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("if(", evaluated.back(), ") {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::ELIF: {
+                    defer.pop_back();
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("} else if(", evaluated.back(), ") {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::ELSE: {
+                    defer.pop_back();
+                    ctx.cw.writeln("} else {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
                 case rebgn::AbstractOp::ASSERT: {
                     auto ref = code.ref().value().value();
                     auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
@@ -548,7 +577,8 @@ namespace bm2cpp {
                     defer.push_back(ctx.cw.indent_scope_ex());
                     break;
                 }
-                case rebgn::AbstractOp::END_FUNCTION: {
+                case rebgn::AbstractOp::END_FUNCTION:
+                case rebgn::AbstractOp::END_IF: {
                     defer.pop_back();
                     ctx.cw.writeln("}");
                     break;

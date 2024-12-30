@@ -227,8 +227,10 @@ enum AbstractOp:
 
     ARRAY_SIZE
 
-    BEGIN_SUB_RANGE
-    END_SUB_RANGE
+    BEGIN_ENCODE_SUB_RANGE
+    END_ENCODE_SUB_RANGE
+    BEGIN_DECODE_SUB_RANGE
+    END_DECODE_SUB_RANGE
 
 
 
@@ -531,7 +533,13 @@ format Code:
         AbstractOp.ARRAY_SIZE:
             ident :Varint
             ref :Varint
-        AbstractOp.BEGIN_SUB_RANGE:
+        AbstractOp.BEGIN_ENCODE_SUB_RANGE:
+            ref :Varint # length of sub range
+        AbstractOp.END_ENCODE_SUB_RANGE:
+            ref :Varint # length of sub range
+        AbstractOp.BEGIN_DECODE_SUB_RANGE:
+            ref :Varint # length of sub range
+        AbstractOp.END_DECODE_SUB_RANGE:    
             ref :Varint # length of sub range
         AbstractOp.CAN_READ:
             ident :Varint

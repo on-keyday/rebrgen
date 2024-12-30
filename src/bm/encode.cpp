@@ -694,10 +694,29 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        if (node->arguments && node->arguments->type_map) {
-            return encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+        if (node->arguments && node->arguments->sub_byte_length) {
+            auto len = get_expr(m, node->arguments->sub_byte_length);
+            if (!len) {
+                return len.error();
+            }
+            m.op(AbstractOp::BEGIN_ENCODE_SUB_RANGE, [&](Code& c) {
+                c.ref(*len);
+            });
         }
-        return encode_type(m, node->field_type, *ident, nullptr);
+        Error err;
+        if (node->arguments && node->arguments->type_map) {
+            err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+        }
+        else {
+            err = encode_type(m, node->field_type, *ident, nullptr);
+        }
+        if (err) {
+            return err;
+        }
+        if (node->arguments && node->arguments->sub_byte_length) {
+            m.op(AbstractOp::END_ENCODE_SUB_RANGE);
+        }
+        return none;
     }
 
     template <>
@@ -711,7 +730,7 @@ namespace rebgn {
             if (!len) {
                 return len.error();
             }
-            m.op(AbstractOp::BEGIN_SUB_RANGE, [&](Code& c) {
+            m.op(AbstractOp::BEGIN_DECODE_SUB_RANGE, [&](Code& c) {
                 c.ref(*len);
             });
         }
@@ -723,7 +742,7 @@ namespace rebgn {
             err = decode_type(m, node->field_type, *ident, nullptr, node.get());
         }
         if (node->arguments && node->arguments->sub_byte_length) {
-            m.op(AbstractOp::END_SUB_RANGE);
+            m.op(AbstractOp::END_DECODE_SUB_RANGE);
         }
         return err;
     }

@@ -506,6 +506,7 @@ namespace rebgn {
                     if (!s) {
                         return s.error();
                     }
+                    bit_size_plus_1 = s.value();
                 }
                 push(StorageType::STRUCT_REF, [&](Storage& c) {
                     c.ref(ident);

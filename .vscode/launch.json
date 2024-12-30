@@ -10,9 +10,9 @@
             "request": "launch",
             "program": "${workspaceRoot}/tool/bmgen",
             "args": [
-                "-i","C:/workspace/shbrgen/brgen/ignore/sample.json",
-                "-o","save.bin",
-                "-c","cfg.dot"
+                "-i","${workspaceRoot}/save/sample.json",
+                "-o","${workspaceRoot}/save/save.bin",
+                "-c","${workspaceRoot}/save/save.dot"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -27,7 +27,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/tool/bm2cpp",
             "args": [
-                "-i","${workspaceRoot}/save.bin",
+                "-i","${workspaceRoot}/save/save.bin",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

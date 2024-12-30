@@ -1,5 +1,5 @@
 /*license*/
-#include "bm2cpp.hpp"
+#include "bm2rust.hpp"
 #include <code/code_writer.h>
 #include <unordered_map>
 #include <format>

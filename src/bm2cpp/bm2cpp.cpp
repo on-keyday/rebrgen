@@ -25,7 +25,7 @@ namespace bm2cpp {
         }
     };
 
-    std::string type_to_string(Context& ctx, const rebgn::Storages& s, size_t index = 0) {
+    std::string type_to_string(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
         if (s.storages.size() <= index) {
             return "void";
         }
@@ -36,6 +36,9 @@ namespace bm2cpp {
             }
             case rebgn::StorageType::UINT: {
                 auto size = storage.size().value().value();
+                if (bit_size) {
+                    *bit_size = size;
+                }
                 if (size <= 8) {
                     return "std::uint8_t";
                 }
@@ -102,7 +105,7 @@ namespace bm2cpp {
                 std::string variant = "std::variant<std::monostate";
                 for (index++; index < s.storages.size(); index++) {
                     auto& storage = s.storages[index];
-                    auto inner = type_to_string(ctx, s, index);
+                    auto inner = type_to_string(ctx, s, bit_size, index);
                     variant += ", " + inner;
                 }
                 variant += ">";
@@ -110,11 +113,11 @@ namespace bm2cpp {
             }
             case rebgn::StorageType::ARRAY: {
                 auto size = storage.size().value().value();
-                auto inner = type_to_string(ctx, s, index + 1);
+                auto inner = type_to_string(ctx, s, bit_size, index + 1);
                 return std::format("std::array<{}, {}>", inner, size);
             }
             case rebgn::StorageType::VECTOR: {
-                auto inner = type_to_string(ctx, s, index + 1);
+                auto inner = type_to_string(ctx, s, bit_size, index + 1);
                 return std::format("std::vector<{}>", inner);
             }
             case rebgn::StorageType::BOOL:
@@ -342,35 +345,22 @@ namespace bm2cpp {
         }
     }
 
-    void bit_field(Context& ctx, rebgn::Range range) {
-        for (size_t i = range.start; i < range.end; i++) {
-            auto& code = ctx.bm.code[i];
-            switch (code.op) {
-                case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-                    ctx.cw.writeln("::futils::binary::flags_t<");
-                    break;
-                }
-                case rebgn::AbstractOp::END_BIT_FIELD: {
-                    ctx.cw.write("> ");
-                    auto name = ctx.bm.code[range.start].ident().value().value();
-                    ctx.cw.writeln(std::format("field_{};", name));
-                    break;
-                }
-                default:
-                    ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
-                    break;
-            }
-        }
-    }
-
     void inner_block(Context& ctx, rebgn::Range range) {
         std::vector<futils::helper::DynDefer> defer;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             if (code.op == rebgn::AbstractOp::DECLARE_FORMAT ||
                 code.op == rebgn::AbstractOp::DECLARE_UNION ||
-                code.op == rebgn::AbstractOp::DECLARE_UNION_MEMBER ||
-                code.op == rebgn::AbstractOp::DECLARE_STATE) {
+                code.op == rebgn::AbstractOp::DECLARE_STATE ||
+                code.op == rebgn::AbstractOp::DECLARE_BIT_FIELD) {
+                auto range = ctx.ident_range_table[code.ref().value().value()];
+                inner_block(ctx, range);
+                continue;
+            }
+            if (code.op == rebgn::AbstractOp::DECLARE_UNION_MEMBER) {
+                if (ctx.bm_ctx.inner_bit_operations) {
+                    continue;
+                }
                 auto range = ctx.ident_range_table[code.ref().value().value()];
                 inner_block(ctx, range);
                 continue;
@@ -382,20 +372,43 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
+                    if (ctx.bm_ctx.inner_bit_operations) {
+                        break;
+                    }
                     ctx.cw.writeln(std::format("struct variant_{} {{", code.ident().value().value()));
                     defer.push_back(ctx.cw.indent_scope_ex());
                     break;
                 }
                 case rebgn::AbstractOp::END_UNION_MEMBER: {
+                    if (ctx.bm_ctx.inner_bit_operations) {
+                        break;
+                    }
                     defer.pop_back();
                     ctx.cw.writeln("};");
                     break;
                 }
-                case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
-                    bit_field(ctx, ctx.ident_range_table[code.ref().value().value()]);
+                case rebgn::AbstractOp::DECLARE_PROPERTY: {
                     break;
                 }
-                case rebgn::AbstractOp::DECLARE_PROPERTY: {
+                case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+                    ctx.cw.writeln("::futils::binary::flags_t<");
+                    defer.push_back(futils::helper::defer_ex([&] {
+                        ctx.cw.writeln(">");
+                        auto name = ctx.bm.code[range.start].ident().value().value();
+                        ctx.cw.writeln(std::format("field_{};", name));
+                        ctx.bm_ctx.inner_bit_operations = false;
+                    }));
+                    ctx.bm_ctx.inner_bit_operations = true;
+                    break;
+                }
+                case rebgn::AbstractOp::END_BIT_FIELD: {
+                    defer.pop_back();
+                    break;
+                }
+                case rebgn::AbstractOp::SPECIFY_STORAGE_TYPE: {
+                    auto storage = *code.storage();
+                    auto type = type_to_string(ctx, storage);
+                    ctx.cw.writeln(type);
                     break;
                 }
                 case rebgn::AbstractOp::DECLARE_FIELD: {
@@ -417,8 +430,14 @@ namespace bm2cpp {
                         break;
                     }
                     auto storage = *ctx.bm.code[*specify].storage();
-                    auto type = type_to_string(ctx, storage);
-                    ctx.cw.writeln(type, " ", ident, "{};");
+                    size_t bit_size = 0;
+                    auto type = type_to_string(ctx, storage, &bit_size);
+                    if (ctx.bm_ctx.inner_bit_operations) {
+                        ctx.cw.writeln(std::format(",{} /*{}*/", bit_size, ident));
+                    }
+                    else {
+                        ctx.cw.writeln(type, " ", ident, "{};");
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_FORMAT:

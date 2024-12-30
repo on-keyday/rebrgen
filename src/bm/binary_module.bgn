@@ -297,8 +297,6 @@ format Storage:
             ref :Varint
         StorageType.ARRAY:
             size :Varint
-        StorageType.VECTOR:
-            ref :Varint
         StorageType.VARIANT:
             ref :Varint 
             size :Varint

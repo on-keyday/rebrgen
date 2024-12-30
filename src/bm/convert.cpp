@@ -152,6 +152,9 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Range>(Module& m, std::shared_ptr<ast::Range>& node) {}
+
+    template <>
     Error define<ast::If>(Module& m, std::shared_ptr<ast::If>& node) {
         return convert_if(m, node, [](Module& m, auto& n) {
             return convert_node_definition(m, n);
@@ -504,13 +507,7 @@ namespace rebgn {
                 });
             }
             else {
-                auto length_ref = get_expr(m, a->length);
-                if (!length_ref) {
-                    return length_ref.error();
-                }
-                push(StorageType::VECTOR, [&](Storage& c) {
-                    c.ref(*length_ref);
-                });
+                push(StorageType::VECTOR, [&](Storage& c) {});
                 should_detect_recursive = false;
             }
             auto err = define_storage(m, s, a->element_type, should_detect_recursive);

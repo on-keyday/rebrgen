@@ -26,9 +26,15 @@ add_executable(bm2cpp
     "src/bm2cpp/bm2cpp.cpp"
 )
 
+add_executable(bm2rust
+    "src/bm2rust/main.cpp"
+    "src/bm2rust/bm2rust.cpp"
+)   
+
 target_link_libraries(bmgen futils)
 target_link_libraries(bm2cpp futils)
+target_link_libraries(bm2rust futils)
 
-install(TARGETS bmgen bm2cpp DESTINATION tool)
+install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)
 # copy libfutils.dll to tool directory
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)

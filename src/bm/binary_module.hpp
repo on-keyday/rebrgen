@@ -56,6 +56,7 @@ namespace rebgn {
         bit_xor_assign = 38,
         comma = 39,
         in_assign = 40,
+        append_assign = 41,
     };
     constexpr const char* to_string(BinaryOp e) {
         switch (e) {
@@ -141,6 +142,8 @@ namespace rebgn {
                 return ",";
             case BinaryOp::in_assign:
                 return "in";
+            case BinaryOp::append_assign:
+                return "append";
         }
         return "";
     }
@@ -272,18 +275,24 @@ namespace rebgn {
         if (str == "in") {
             return BinaryOp::in_assign;
         }
+        if (str == "append") {
+            return BinaryOp::append_assign;
+        }
         return std::nullopt;
     }
     enum class UnaryOp : std::uint8_t {
-        not_ = 0,
+        logical_not = 0,
         minus_sign = 1,
+        bit_not = 2,
     };
     constexpr const char* to_string(UnaryOp e) {
         switch (e) {
-            case UnaryOp::not_:
+            case UnaryOp::logical_not:
                 return "!";
             case UnaryOp::minus_sign:
                 return "-";
+            case UnaryOp::bit_not:
+                return "~";
         }
         return "";
     }
@@ -293,10 +302,13 @@ namespace rebgn {
             return std::nullopt;
         }
         if (str == "!") {
-            return UnaryOp::not_;
+            return UnaryOp::logical_not;
         }
         if (str == "-") {
             return UnaryOp::minus_sign;
+        }
+        if (str == "~") {
+            return UnaryOp::bit_not;
         }
         return std::nullopt;
     }

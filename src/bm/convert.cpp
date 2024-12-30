@@ -572,7 +572,7 @@ namespace rebgn {
                     }
                     m.op(AbstractOp::UNARY, [&](Code& c) {
                         c.ident(*new_id_1);
-                        c.uop(UnaryOp::not_);
+                        c.uop(UnaryOp::logical_not);
                         c.ref(*prev_cond);
                     });
                     auto new_id_2 = m.new_id();
@@ -603,7 +603,7 @@ namespace rebgn {
                 if (prev_cond) {
                     m.op(AbstractOp::UNARY, [&](Code& c) {
                         c.ident(*new_id);
-                        c.uop(UnaryOp::not_);
+                        c.uop(UnaryOp::logical_not);
                         c.ref(*prev_cond);
                     });
                 }
@@ -1033,6 +1033,11 @@ namespace rebgn {
             return error("Invalid unary expression");
         }
         auto uop = UnaryOp(node->op);
+        if (uop == UnaryOp::logical_not) {
+            if (!ast::as<ast::BoolType>(node->expr->expr_type)) {
+                uop = UnaryOp::bit_not;
+            }
+        }
         m.op(AbstractOp::UNARY, [&](Code& c) {
             c.ident(*ident);
             c.uop(uop);
@@ -1140,10 +1145,6 @@ namespace rebgn {
             m.set_prev_expr(ident_->value());
             return none;
         }
-        auto ident = m.new_id();
-        if (!ident) {
-            return ident.error();
-        }
         auto left_ref = get_expr(m, node->left);
         if (!left_ref) {
             return error("Invalid binary expression");
@@ -1152,14 +1153,97 @@ namespace rebgn {
         if (!right_ref) {
             return error("Invalid binary expression");
         }
+        if (node->op == ast::BinaryOp::comma) {  // comma operator
+            m.set_prev_expr(right_ref->value());
+            return none;
+        }
+        if (node->op == ast::BinaryOp::assign) {
+            m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                c.left_ref(*left_ref);
+                c.right_ref(*right_ref);
+            });
+            return none;
+        }
+        if (node->op == ast::BinaryOp::append_assign) {
+            m.op(AbstractOp::APPEND, [&](Code& c) {
+                c.left_ref(*left_ref);
+                c.right_ref(*right_ref);
+            });
+            return none;
+        }
+        auto ident = m.new_id();
+        if (!ident) {
+            return ident.error();
+        }
         auto bop = BinaryOp(node->op);
+        bool should_assign = false;
+        switch (bop) {
+            case BinaryOp::div_assign:
+                bop = BinaryOp::div;
+                should_assign = true;
+                break;
+            case BinaryOp::mul_assign:
+                bop = BinaryOp::mul;
+                should_assign = true;
+                break;
+            case BinaryOp::mod_assign:
+                bop = BinaryOp::mod;
+                should_assign = true;
+                break;
+            case BinaryOp::add_assign:
+                bop = BinaryOp::add;
+                should_assign = true;
+                break;
+            case BinaryOp::sub_assign:
+                bop = BinaryOp::sub;
+                should_assign = true;
+                break;
+            case BinaryOp::left_logical_shift_assign:
+                bop = BinaryOp::left_logical_shift;
+                should_assign = true;
+                break;
+            case BinaryOp::right_logical_shift_assign:
+                bop = BinaryOp::right_logical_shift;
+                should_assign = true;
+                break;
+            case BinaryOp::right_arithmetic_shift_assign:
+                bop = BinaryOp::right_arithmetic_shift;
+                should_assign = true;
+                break;
+            case BinaryOp::left_arithmetic_shift_assign:  // TODO(on-keyday): is this needed?
+                bop = BinaryOp::left_arithmetic_shift;
+                should_assign = true;
+                break;
+            case BinaryOp::bit_and_assign:
+                bop = BinaryOp::bit_and;
+                should_assign = true;
+                break;
+            case BinaryOp::bit_or_assign:
+                bop = BinaryOp::bit_or;
+                should_assign = true;
+                break;
+            case BinaryOp::bit_xor_assign:
+                bop = BinaryOp::bit_xor;
+                should_assign = true;
+                break;
+            default:
+                break;
+        }
         m.op(AbstractOp::BINARY, [&](Code& c) {
             c.ident(*ident);
             c.bop(bop);
             c.left_ref(*left_ref);
             c.right_ref(*right_ref);
         });
-        m.set_prev_expr(ident->value());
+        if (should_assign) {
+            m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                c.left_ref(*left_ref);
+                c.right_ref(*ident);
+            });
+        }
+        else {
+            m.set_prev_expr(ident->value());
+        }
         return none;
     }
 

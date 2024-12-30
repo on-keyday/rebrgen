@@ -174,6 +174,26 @@ namespace bm2cpp {
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
+            case rebgn::AbstractOp::INDEX: {
+                auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
+                auto left = eval(ctx.bm.code[left_index], ctx);
+                res.insert(res.end(), left.begin(), left.end() - 1);
+                auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
+                auto right = eval(ctx.bm.code[right_index], ctx);
+                res.insert(res.end(), right.begin(), right.end() - 1);
+                res.push_back(std::format("({})[{}]", left.back(), right.back()));
+                break;
+            }
+            case rebgn::AbstractOp::APPEND: {
+                auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
+                auto left = eval(ctx.bm.code[left_index], ctx);
+                res.insert(res.end(), left.begin(), left.end() - 1);
+                auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
+                auto right = eval(ctx.bm.code[right_index], ctx);
+                res.insert(res.end(), right.begin(), right.end() - 1);
+                res.push_back(std::format("{}.push_back({});", left.back(), right.back()));
+                break;
+            }
             case rebgn::AbstractOp::ASSIGN: {
                 auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
                 auto left = eval(ctx.bm.code[left_index], ctx);
@@ -222,6 +242,17 @@ namespace bm2cpp {
             case rebgn::AbstractOp::IMMEDIATE_STRING: {
                 auto str = ctx.string_table[code.ident().value().value()];
                 res.push_back(std::format("{}", str));
+                break;
+            }
+            case rebgn::AbstractOp::BINARY: {
+                auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
+                auto left = eval(ctx.bm.code[left_index], ctx);
+                res.insert(res.end(), left.begin(), left.end() - 1);
+                auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
+                auto right = eval(ctx.bm.code[right_index], ctx);
+                res.insert(res.end(), right.begin(), right.end() - 1);
+                auto bop = to_string(code.bop().value());
+                res.push_back(std::format("({} {} {})", left.back(), bop, right.back()));
                 break;
             }
             case rebgn::AbstractOp::STATIC_CAST: {
@@ -489,6 +520,12 @@ namespace bm2cpp {
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::ASSERT: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("if(!", evaluated.back(), ") { return false; }");
+                    break;
+                }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
                     auto fn_range = ctx.ident_range_table[code.ident().value().value()];
                     auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -517,6 +554,11 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::ASSIGN: {
+                    auto s = eval(code, ctx);
+                    ctx.cw.writeln(s.back());
+                    break;
+                }
+                case rebgn::AbstractOp::APPEND: {
                     auto s = eval(code, ctx);
                     ctx.cw.writeln(s.back());
                     break;

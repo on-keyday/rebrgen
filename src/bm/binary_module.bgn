@@ -61,11 +61,13 @@ enum BinaryOp:
 
     comma = ","
     in_assign = "in"
+    append_assign = "append"
 
 enum UnaryOp:
     :u8
-    not_ = "!"
+    logical_not = "!"
     minus_sign = "-"
+    bit_not = "~" # this is for clarification; not in brgen ast node
 
 enum Endian:
     :u8

@@ -427,6 +427,9 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::DECLARE_PROPERTY: {
+                    auto range = ctx.ident_range_table[code.ref().value().value()];
+                    auto got_common = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
@@ -441,7 +444,11 @@ namespace bm2cpp {
                         for (size_t i = range.start; i < range.end; i++) {
                             if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_FIELD) {
                                 auto ident = ctx.ident_table[ctx.bm.code[i].ref().value().value()];
+                                if (ident == "") {
+                                    ident = std::format("field_{}", ctx.bm.code[i].ref().value().value());
+                                }
                                 ctx.cw.writeln(std::format("bits_flag_alias_method({},{},{});", field_name, counter, ident));
+                                counter++;
                             }
                         }
                     }));

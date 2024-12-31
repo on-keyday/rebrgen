@@ -672,18 +672,52 @@ namespace rebgn {
         return none;
     }
 
-    Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty) {
-        return handle_union_type(m, ty, [&](Varint cond, auto&& field) {
+    Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty, Varint belong) {
+        Param param;
+        auto err = handle_union_type(m, ty, [&](Varint cond, auto&& field) {
             auto ident = m.lookup_ident(field->ident);
             if (!ident) {
                 return ident.error();
             }
+            auto cond_field_id = m.new_id();
+            if (!cond_field_id) {
+                return cond_field_id.error();
+            }
             m.op(AbstractOp::CONDITIONAL_FIELD, [&](Code& c) {
+                c.ident(*cond_field_id);
                 c.left_ref(cond);
                 c.right_ref(*ident);
+                c.belong(belong);
             });
+            param.expr_refs.push_back(*cond_field_id);
             return none;
         });
+        if (err) {
+            return err;
+        }
+        if (ty->common_type) {
+            Storages s;
+            auto err = define_storage(m, s, ty->common_type, true);
+            if (err) {
+                return err;
+            }
+            auto len = varint(param.expr_refs.size());
+            if (!len) {
+                return len.error();
+            }
+            param.len_exprs = *len;
+            auto ident = m.new_id();
+            if (!ident) {
+                return ident.error();
+            }
+            m.op(AbstractOp::MERGED_CONDITIONAL_FIELD, [&](Code& c) {  // all common type
+                c.ident(*ident);
+                c.storage(std::move(s));
+                c.param(std::move(param));
+                c.belong(belong);
+            });
+        }
+        return none;
     }
 
     template <>
@@ -805,7 +839,7 @@ namespace rebgn {
                     c.ident(*ident);
                     c.belong(parent);
                 });
-                auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type));
+                auto err = define_union_field(m, ast::cast_to<ast::UnionType>(node->field_type), *ident);
                 if (err) {
                     return err;
                 }

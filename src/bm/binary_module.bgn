@@ -106,6 +106,7 @@ enum AbstractOp:
     END_FIELD
     DECLARE_FIELD
     CONDITIONAL_FIELD
+    MERGED_CONDITIONAL_FIELD
 
     DEFINE_PROPERTY
     END_PROPERTY
@@ -499,8 +500,15 @@ format Code:
         AbstractOp.DECLARE_UNION_MEMBER:
             ref :Varint
         AbstractOp.CONDITIONAL_FIELD:
+            ident :Varint
             left_ref :Varint # ref to expr
             right_ref :Varint # ref to field
+            belong :Varint # belong to union field
+        AbstractOp.MERGED_CONDITIONAL_FIELD:
+            ident :Varint
+            storage :Storages
+            param :Param # ref to conditional fields
+            belong :Varint # belong to union field
         AbstractOp.CASE:
             ref :Varint
         AbstractOp.DECLARE_PROGRAM:

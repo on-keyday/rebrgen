@@ -284,7 +284,11 @@ enum StorageType:
     CODER_RETURN
 
 
-
+enum MergeMode:
+    :u8
+    COMMON_TYPE
+    STRICT_TYPE
+    STRICT_COMMON_TYPE
 
 
 
@@ -509,6 +513,7 @@ format Code:
             storage :Storages
             param :Param # ref to conditional fields
             belong :Varint # belong to union field
+            merge_mode :MergeMode
         AbstractOp.CASE:
             ref :Varint
         AbstractOp.DECLARE_PROGRAM:

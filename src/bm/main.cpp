@@ -119,6 +119,9 @@ namespace rebgn {
             if (auto int_value64 = c.int_value64()) {
                 cout << " " << *int_value64;
             }
+            if (auto m = c.merge_mode()) {
+                cout << " " << to_string(*m);
+            }
             if (auto s = c.storage()) {
                 for (auto& st : s->storages) {
                     cout << " " << to_string(st.type);
@@ -136,6 +139,20 @@ namespace rebgn {
                     cout << " ";
                     print_ref(v);
                 }
+            }
+            if (auto param = c.param()) {
+                cout << " (";
+                bool first = true;
+                for (auto& p : param->expr_refs) {
+                    if (first) {
+                        first = false;
+                    }
+                    else {
+                        cout << ",";
+                    }
+                    print_ref(p);
+                }
+                cout << " )";
             }
             cout << '\n';
             switch (c.op) {

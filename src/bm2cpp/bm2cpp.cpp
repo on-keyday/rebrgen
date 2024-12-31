@@ -6,6 +6,7 @@
 #include <bm/helper.hpp>
 #include <algorithm>
 #include <unicode/utf/convert.h>
+#include <span>
 
 namespace bm2cpp {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -19,6 +20,7 @@ namespace bm2cpp {
         std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
         std::string ptr_type;
         rebgn::BMContext bm_ctx;
+        std::vector<futils::helper::DynDefer> on_functions;
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
@@ -427,9 +429,48 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::DECLARE_PROPERTY: {
+                    auto belong = ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]].belong().value().value();
+                    if (belong == 0 || ctx.bm.code[ctx.ident_index_table[belong]].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+                        break;  // skip global property
+                    }
+                    auto belong_ident = ctx.ident_table[belong];
                     auto range = ctx.ident_range_table[code.ref().value().value()];
-                    auto got_common = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-
+                    auto ident = ctx.ident_table[code.ref().value().value()];
+                    for (size_t i = range.start; i < range.end; i++) {
+                        auto& prop = ctx.bm.code[i];
+                        if (prop.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                            auto type = type_to_string(ctx, *prop.storage());
+                            auto mode = prop.merge_mode().value();
+                            if (mode == rebgn::MergeMode::COMMON_TYPE) {
+                                auto param = prop.param().value();
+                                ctx.cw.writeln("std::optional<", type, "> ", ident, "();");
+                                ctx.cw.writeln("bool ", ident, "(const ", type, "&);");
+                                ctx.cw.writeln("bool ", ident, "(", type, "&&);");
+                                ctx.on_functions.push_back(futils::helper::defer_ex([&ctx, ident, type, param, belong_ident]() {
+                                    ctx.cw.writeln("std::optional<", type, "> ", belong_ident, "::", ident, "() {");
+                                    auto scope = ctx.cw.indent_scope();
+                                    for (auto& c : param.expr_refs) {
+                                        auto& code = ctx.bm.code[ctx.ident_index_table[c.value()]];
+                                        auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[code.left_ref().value().value()]], ctx);
+                                        for (auto& e : std::span(evaluated).subspan(0, evaluated.size() - 1)) {
+                                            ctx.cw.writeln(e);
+                                        }
+                                        ctx.cw.writeln("if(", evaluated.back(), ") {");
+                                        auto nested = ctx.cw.indent_scope();
+                                        auto field = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
+                                        ctx.cw.writeln("return ", field.back(), ";");
+                                        nested.execute();
+                                        ctx.cw.writeln("}");
+                                    }
+                                    ctx.cw.writeln("return std::nullopt;");
+                                    scope.execute();
+                                    ctx.cw.writeln("}");
+                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(", type, "&) {return false;}");
+                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, ident, "(", type, "&&) {return false;}");
+                                }));
+                            }
+                        }
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
@@ -642,12 +683,17 @@ namespace bm2cpp {
         bool has_recursive = false;
         bool has_bit_field = false;
         bool has_array = false;
+        bool has_optional = false;
         for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
             }
             if (code.op == rebgn::AbstractOp::DECLARE_BIT_FIELD) {
                 has_bit_field = true;
+            }
+            if (code.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD &&
+                code.merge_mode().value() == rebgn::MergeMode::COMMON_TYPE) {
+                has_optional = true;
             }
             if (auto s = code.storage()) {
                 for (auto& storage : s->storages) {
@@ -683,6 +729,9 @@ namespace bm2cpp {
         }
         if (has_array) {
             ctx.cw.writeln("#include <array>");
+        }
+        if (has_optional) {
+            ctx.cw.writeln("#include <optional>");
         }
         if (has_bit_field) {
             ctx.cw.writeln("#include <binary/flags.h>");

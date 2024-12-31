@@ -1192,6 +1192,38 @@ namespace rebgn {
         }
         return std::nullopt;
     }
+    enum class MergeMode : std::uint8_t {
+        COMMON_TYPE = 0,
+        STRICT_TYPE = 1,
+        STRICT_COMMON_TYPE = 2,
+    };
+    constexpr const char* to_string(MergeMode e) {
+        switch (e) {
+            case MergeMode::COMMON_TYPE:
+                return "COMMON_TYPE";
+            case MergeMode::STRICT_TYPE:
+                return "STRICT_TYPE";
+            case MergeMode::STRICT_COMMON_TYPE:
+                return "STRICT_COMMON_TYPE";
+        }
+        return "";
+    }
+
+    constexpr std::optional<MergeMode> MergeMode_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "COMMON_TYPE") {
+            return MergeMode::COMMON_TYPE;
+        }
+        if (str == "STRICT_TYPE") {
+            return MergeMode::STRICT_TYPE;
+        }
+        if (str == "STRICT_COMMON_TYPE") {
+            return MergeMode::STRICT_COMMON_TYPE;
+        }
+        return std::nullopt;
+    }
     struct Varint;
     struct Range;
     struct String;
@@ -1588,6 +1620,7 @@ namespace rebgn {
             Storages storage;
             Param param;
             Varint belong;
+            MergeMode merge_mode{};
         };
         struct union_struct_80 {
             Varint ref;
@@ -1684,6 +1717,9 @@ namespace rebgn {
         std::optional<Varint> left_ref() const;
         bool left_ref(Varint&& v);
         bool left_ref(const Varint& v);
+        std::optional<MergeMode> merge_mode() const;
+        bool merge_mode(MergeMode&& v);
+        bool merge_mode(const MergeMode& v);
         std::optional<Metadata> metadata() const;
         bool metadata(Metadata&& v);
         bool metadata(const Metadata& v);
@@ -6058,6 +6094,611 @@ namespace rebgn {
                 union_variant_14 = union_struct_90();
             }
             std::get<76>((*this).union_variant_14).left_ref = std::move(v);
+            return true;
+        }
+        return false;
+    }
+    inline std::optional<MergeMode> Code::merge_mode() const {
+        if (AbstractOp::METADATA == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROGRAM == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMPORT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_CHAR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_STATE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BACKWARD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ENCODE_INT_VECTOR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BIT_CAST == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CALL_CAST == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CALL_ENCODE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CALL_DECODE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::INC == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEC == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::EVAL_EXPR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::STATIC_CAST == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::NEW_OBJECT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ASSERT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IF == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ELIF == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_FORMAT == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_STATE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_PROPERTY == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_BIT_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_PACKED_OPERATION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_ENUM == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_ENUM_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_FUNCTION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_UNION_MEMBER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CONDITIONAL_FIELD == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::MERGED_CONDITIONAL_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_79>(union_variant_14)) {
+                return std::nullopt;
+            }
+            return std::get<65>((*this).union_variant_14).merge_mode;
+        }
+        return std::nullopt;
+    }
+    inline bool Code::merge_mode(const MergeMode& v) {
+        if (AbstractOp::METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROGRAM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMPORT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_CHAR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_STATE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BACKWARD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BIT_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_ENCODE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_DECODE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INC == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEC == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EVAL_EXPR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATIC_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::NEW_OBJECT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSERT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ELIF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_STATE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PROPERTY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_BIT_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PACKED_OPERATION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CONDITIONAL_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::MERGED_CONDITIONAL_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_79>(union_variant_14)) {
+                union_variant_14 = union_struct_79();
+            }
+            std::get<65>((*this).union_variant_14).merge_mode = v;
+            return true;
+        }
+        return false;
+    }
+    inline bool Code::merge_mode(MergeMode&& v) {
+        if (AbstractOp::METADATA == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROGRAM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMPORT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_CHAR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_FIXED_VALUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_INT64 == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IDENT_REF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_STATE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SPECIFY_STORAGE_TYPE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BINARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::UNARY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::LOOP_CONDITION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ACCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INDEX == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSIGN == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BACKWARD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODE_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODE_INT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BIT_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_ENCODE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL_DECODE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INC == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEC == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EVAL_EXPR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATIC_CAST == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::NEW_OBJECT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ASSERT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ELIF == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FORMAT == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_STATE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PROPERTY == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_BIT_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_PACKED_OPERATION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_ENUM == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_ENUM_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_UNION_MEMBER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CONDITIONAL_FIELD == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::MERGED_CONDITIONAL_FIELD == (*this).op) {
+            if (!std::holds_alternative<union_struct_79>(union_variant_14)) {
+                union_variant_14 = union_struct_79();
+            }
+            std::get<65>((*this).union_variant_14).merge_mode = std::move(v);
             return true;
         }
         return false;
@@ -11132,6 +11773,10 @@ namespace rebgn {
             if (auto err = std::get<65>((*this).union_variant_14).belong.encode(w)) {
                 return err;
             }
+            auto tmp_155_ = static_cast<std::uint8_t>(std::get<65>((*this).union_variant_14).merge_mode);
+            if (!::futils::binary::write_num(w, static_cast<std::uint8_t>(tmp_155_), true)) {
+                return ::futils::error::Error<>("encode: Code::merge_mode: write std::uint8_t failed", ::futils::error::Category::lib);
+            }
         }
         else if (AbstractOp::CASE == (*this).op) {
             if (!std::holds_alternative<union_struct_80>(union_variant_14)) {
@@ -11325,11 +11970,11 @@ namespace rebgn {
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> Code::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_155_ = 0;
-        if (!::futils::binary::read_num(r, tmp_155_, true)) {
+        std::uint8_t tmp_156_ = 0;
+        if (!::futils::binary::read_num(r, tmp_156_, true)) {
             return ::futils::error::Error<>("decode: Code::op: read int failed", ::futils::error::Category::lib);
         }
-        (*this).op = static_cast<AbstractOp>(tmp_155_);
+        (*this).op = static_cast<AbstractOp>(tmp_156_);
         if (AbstractOp::METADATA == (*this).op) {
             if (!std::holds_alternative<union_struct_15>(union_variant_14)) {
                 union_variant_14 = union_struct_15();
@@ -11587,11 +12232,11 @@ namespace rebgn {
             if (auto err = std::get<27>((*this).union_variant_14).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_156_ = 0;
-            if (!::futils::binary::read_num(r, tmp_156_, true)) {
+            std::uint8_t tmp_157_ = 0;
+            if (!::futils::binary::read_num(r, tmp_157_, true)) {
                 return ::futils::error::Error<>("decode: Code::bop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<27>((*this).union_variant_14).bop = static_cast<BinaryOp>(tmp_156_);
+            std::get<27>((*this).union_variant_14).bop = static_cast<BinaryOp>(tmp_157_);
             if (auto err = std::get<27>((*this).union_variant_14).left_ref.decode(r)) {
                 return err;
             }
@@ -11606,11 +12251,11 @@ namespace rebgn {
             if (auto err = std::get<28>((*this).union_variant_14).ident.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_157_ = 0;
-            if (!::futils::binary::read_num(r, tmp_157_, true)) {
+            std::uint8_t tmp_158_ = 0;
+            if (!::futils::binary::read_num(r, tmp_158_, true)) {
                 return ::futils::error::Error<>("decode: Code::uop: read int failed", ::futils::error::Category::lib);
             }
-            std::get<28>((*this).union_variant_14).uop = static_cast<UnaryOp>(tmp_157_);
+            std::get<28>((*this).union_variant_14).uop = static_cast<UnaryOp>(tmp_158_);
             if (auto err = std::get<28>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
@@ -11677,11 +12322,11 @@ namespace rebgn {
             if (auto err = std::get<34>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_158_ = 0;
-            if (!::futils::binary::read_num(r, tmp_158_, true)) {
+            std::uint8_t tmp_159_ = 0;
+            if (!::futils::binary::read_num(r, tmp_159_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<34>((*this).union_variant_14).endian = static_cast<Endian>(tmp_158_);
+            std::get<34>((*this).union_variant_14).endian = static_cast<Endian>(tmp_159_);
             if (auto err = std::get<34>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -11696,11 +12341,11 @@ namespace rebgn {
             if (auto err = std::get<35>((*this).union_variant_14).right_ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_159_ = 0;
-            if (!::futils::binary::read_num(r, tmp_159_, true)) {
+            std::uint8_t tmp_160_ = 0;
+            if (!::futils::binary::read_num(r, tmp_160_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<35>((*this).union_variant_14).endian = static_cast<Endian>(tmp_159_);
+            std::get<35>((*this).union_variant_14).endian = static_cast<Endian>(tmp_160_);
             if (auto err = std::get<35>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -11715,11 +12360,11 @@ namespace rebgn {
             if (auto err = std::get<36>((*this).union_variant_14).right_ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_160_ = 0;
-            if (!::futils::binary::read_num(r, tmp_160_, true)) {
+            std::uint8_t tmp_161_ = 0;
+            if (!::futils::binary::read_num(r, tmp_161_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<36>((*this).union_variant_14).endian = static_cast<Endian>(tmp_160_);
+            std::get<36>((*this).union_variant_14).endian = static_cast<Endian>(tmp_161_);
             if (auto err = std::get<36>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -11731,11 +12376,11 @@ namespace rebgn {
             if (auto err = std::get<37>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_161_ = 0;
-            if (!::futils::binary::read_num(r, tmp_161_, true)) {
+            std::uint8_t tmp_162_ = 0;
+            if (!::futils::binary::read_num(r, tmp_162_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<37>((*this).union_variant_14).endian = static_cast<Endian>(tmp_161_);
+            std::get<37>((*this).union_variant_14).endian = static_cast<Endian>(tmp_162_);
             if (auto err = std::get<37>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -11750,11 +12395,11 @@ namespace rebgn {
             if (auto err = std::get<38>((*this).union_variant_14).right_ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_162_ = 0;
-            if (!::futils::binary::read_num(r, tmp_162_, true)) {
+            std::uint8_t tmp_163_ = 0;
+            if (!::futils::binary::read_num(r, tmp_163_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<38>((*this).union_variant_14).endian = static_cast<Endian>(tmp_162_);
+            std::get<38>((*this).union_variant_14).endian = static_cast<Endian>(tmp_163_);
             if (auto err = std::get<38>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -11766,11 +12411,11 @@ namespace rebgn {
             if (auto err = std::get<39>((*this).union_variant_14).ref.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_163_ = 0;
-            if (!::futils::binary::read_num(r, tmp_163_, true)) {
+            std::uint8_t tmp_164_ = 0;
+            if (!::futils::binary::read_num(r, tmp_164_, true)) {
                 return ::futils::error::Error<>("decode: Code::endian: read int failed", ::futils::error::Category::lib);
             }
-            std::get<39>((*this).union_variant_14).endian = static_cast<Endian>(tmp_163_);
+            std::get<39>((*this).union_variant_14).endian = static_cast<Endian>(tmp_164_);
             if (auto err = std::get<39>((*this).union_variant_14).bit_size.decode(r)) {
                 return err;
             }
@@ -12027,6 +12672,11 @@ namespace rebgn {
             if (auto err = std::get<65>((*this).union_variant_14).belong.decode(r)) {
                 return err;
             }
+            std::uint8_t tmp_165_ = 0;
+            if (!::futils::binary::read_num(r, tmp_165_, true)) {
+                return ::futils::error::Error<>("decode: Code::merge_mode: read int failed", ::futils::error::Category::lib);
+            }
+            std::get<65>((*this).union_variant_14).merge_mode = static_cast<MergeMode>(tmp_165_);
         }
         else if (AbstractOp::CASE == (*this).op) {
             if (!std::holds_alternative<union_struct_80>(union_variant_14)) {
@@ -12241,23 +12891,23 @@ namespace rebgn {
         if (auto err = (*this).code_length.encode(w)) {
             return err;
         }
-        auto tmp_164_ = (*this).code_length.value();
-        if (tmp_164_ != (*this).code.size()) {
-            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_164_!=(*this).code.size()", ::futils::error::Category::lib);
+        auto tmp_166_ = (*this).code_length.value();
+        if (tmp_166_ != (*this).code.size()) {
+            return ::futils::error::Error<>("encode: BinaryModule::code: dynamic length is not compatible with its length; tmp_166_!=(*this).code.size()", ::futils::error::Category::lib);
         }
-        for (auto& tmp_165_ : (*this).code) {
-            if (auto err = tmp_165_.encode(w)) {
+        for (auto& tmp_167_ : (*this).code) {
+            if (auto err = tmp_167_.encode(w)) {
                 return err;
             }
         }
         return ::futils::error::Error<>();
     }
     inline ::futils::error::Error<> BinaryModule::decode(::futils::binary::reader& r) {
-        ::futils::view::rvec tmp_166_ = {};
-        if (!r.read_direct(tmp_166_, 4)) {
+        ::futils::view::rvec tmp_168_ = {};
+        if (!r.read_direct(tmp_168_, 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed", ::futils::error::Category::lib);
         }
-        if (tmp_166_ != ::futils::view::rvec("RBGM", 4)) {
+        if (tmp_168_ != ::futils::view::rvec("RBGM", 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed; not match to \"RBGM\"", ::futils::error::Category::lib);
         }
         if (auto err = (*this).strings.decode(r)) {
@@ -12278,14 +12928,14 @@ namespace rebgn {
         if (auto err = (*this).code_length.decode(r)) {
             return err;
         }
-        auto tmp_167_ = (*this).code_length.value();
+        auto tmp_169_ = (*this).code_length.value();
         (*this).code.clear();
-        for (size_t tmp_169_ = 0; tmp_169_ < tmp_167_; ++tmp_169_) {
-            Code tmp_168_;
-            if (auto err = tmp_168_.decode(r)) {
+        for (size_t tmp_171_ = 0; tmp_171_ < tmp_169_; ++tmp_171_) {
+            Code tmp_170_;
+            if (auto err = tmp_170_.decode(r)) {
                 return err;
             }
-            (*this).code.push_back(std::move(tmp_168_));
+            (*this).code.push_back(std::move(tmp_170_));
         }
         return ::futils::error::Error<>();
     }

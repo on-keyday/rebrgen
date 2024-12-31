@@ -715,6 +715,7 @@ namespace rebgn {
                 c.storage(std::move(s));
                 c.param(std::move(param));
                 c.belong(belong);
+                c.merge_mode(MergeMode::COMMON_TYPE);
             });
         }
         return none;

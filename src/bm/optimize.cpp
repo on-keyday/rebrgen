@@ -995,7 +995,6 @@ namespace rebgn {
         std::unordered_map<ObjectID, std::vector<std::string>> conditional_fields_key_order;
         // key is MERGED_CONDITIONAL_FIELD ident
         std::unordered_map<ObjectID, std::pair<std::string, std::vector<Varint>>> merged_conditional_fields;
-        std::vector<ObjectID> merged_conditional_fields_order;
         // DEFINE_PROPERTY ident to MERGED_CONDITIONAL_FIELD ident
         std::unordered_map<ObjectID, std::vector<ObjectID>> properties_to_merged;
         std::set<ObjectID> exists;
@@ -1012,26 +1011,41 @@ namespace rebgn {
                             auto storage = m.code[i].storage().value();
                             auto key = storage_key(storage);
                             type_to_storage[key] = std::move(storage);
-                            auto& map = conditional_fields[c.ident().value().value()];
+                            auto& map = conditional_fields[c.belong().value().value()];
                             if (map.find(key) == map.end()) {
-                                conditional_fields_key_order[c.ident().value().value()].push_back(key);
+                                conditional_fields_key_order[c.belong().value().value()].push_back(key);
                             }
                             map[key].push_back(c.ident().value());
                             break;
                         }
                     }
                 }
-                if (m.code[field].op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
-                    auto storage = m.code[field].storage().value();
-                    auto key = storage_key(storage);
-                    auto refs = m.code[field].param().value().expr_refs;
-                    merged_conditional_fields[c.ident().value().value()] = {key, m.code[field].param().value().expr_refs};
-                    exists.insert(c.ident().value().value());
-                }
+            }
+            if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto storage = c.storage().value();
+                auto key = storage_key(storage);
+                auto refs = c.param().value().expr_refs;
+                merged_conditional_fields[c.ident().value().value()] = {key, c.param().value().expr_refs};
+                exists.insert(c.ident().value().value());
             }
         }
         for (auto& cfield : conditional_fields) {
             for (auto& [key, value] : cfield.second) {
+                bool exist = false;
+                for (auto& e : exists) {
+                    auto& merged = merged_conditional_fields[e];
+                    if (merged.first == key && std::ranges::equal(merged.second, value, [](auto& a, auto& b) {
+                            return a.value() == b.value();
+                        })) {
+                        auto idx = m.ident_index_table[e];
+                        m.code[idx].merge_mode(MergeMode::STRICT_COMMON_TYPE);
+                        exist = true;
+                        break;
+                    }
+                }
+                if (exist) {
+                    continue;
+                }
                 auto new_id = m.new_id();
                 if (!new_id) {
                     return new_id.error();
@@ -1085,6 +1099,7 @@ namespace rebgn {
                             c.storage(type_to_storage[merged.first]);
                             c.param(std::move(param));
                             c.belong(*target);
+                            c.merge_mode(MergeMode::STRICT_TYPE);
                         }));
                     }
                 }

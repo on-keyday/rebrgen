@@ -159,6 +159,13 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Loop>(Module& m, std::shared_ptr<ast::Loop>& node) {
+        return convert_loop(m, node, [](Module& m, auto& n) {
+            return convert_node_definition(m, n);
+        });
+    }
+
+    template <>
     Error define<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
         if (node->expr) {
             auto val = get_expr(m, node->expr);
@@ -249,7 +256,7 @@ namespace rebgn {
                 if (!arg) {
                     return arg.error();
                 }
-                auto err = encode_type(m, node->expr_type, *arg, nullptr);
+                auto err = encode_type(m, node->arguments[0]->expr_type, *arg, nullptr);
                 if (err) {
                     return err;
                 }
@@ -327,10 +334,48 @@ namespace rebgn {
     }
 
     template <>
+    Error define<ast::Index>(Module& m, std::shared_ptr<ast::Index>& node) {
+        auto base = get_expr(m, node->expr);
+        if (!base) {
+            return error("Invalid index target: {}", base.error().error());
+        }
+        auto index = get_expr(m, node->index);
+        if (!index) {
+            return error("Invalid index value: {}", index.error().error());
+        }
+        auto new_id = m.new_id();
+        if (!new_id) {
+            return new_id.error();
+        }
+        m.op(AbstractOp::INDEX, [&](Code& c) {
+            c.ident(*new_id);
+            c.left_ref(*base);
+            c.right_ref(*index);
+        });
+        m.set_prev_expr(new_id->value());
+        return none;
+    }
+
+    template <>
     Error define<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
         auto base = get_expr(m, node->target);
         if (!base) {
-            return base.error();
+            return error("Invalid member access target: {}", base.error().error());
+        }
+        if (node->member->usage == ast::IdentUsage::reference_builtin_fn) {
+            if (node->member->ident == "length") {
+                auto new_id = m.new_id();
+                if (!new_id) {
+                    return new_id.error();
+                }
+                m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
+                    c.ident(*new_id);
+                    c.ref(*base);
+                });
+                m.set_prev_expr(new_id->value());
+                return none;
+            }
+            return error("Unsupported builtin function: {}", node->member->ident);
         }
         auto ident = m.lookup_ident(node->member);
         if (!ident) {
@@ -1171,18 +1216,36 @@ namespace rebgn {
             }
             auto right_ref = get_expr(m, node->right);
             if (!right_ref) {
-                return error("Invalid binary expression");
+                return error("Invalid binary expression: {}", right_ref.error().error());
             }
             m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
                 c.ident(*ident_);
                 c.ref(*right_ref);
             });
-            m.set_prev_expr(ident_->value());
+            return none;
+        }
+        if (node->op == ast::BinaryOp::append_assign) {
+            auto idx = ast::cast_to<ast::Index>(node->left);
+            if (!idx) {
+                return error("Invalid append assign expression");
+            }
+            auto left_ref = get_expr(m, idx->expr);
+            if (!left_ref) {
+                return error("Invalid binary expression");
+            }
+            auto right_ref = get_expr(m, node->right);
+            if (!right_ref) {
+                return error("Invalid binary expression");
+            }
+            m.op(AbstractOp::APPEND, [&](Code& c) {
+                c.left_ref(*left_ref);
+                c.right_ref(*right_ref);
+            });
             return none;
         }
         auto left_ref = get_expr(m, node->left);
         if (!left_ref) {
-            return error("Invalid binary expression");
+            return error("Invalid binary expression: {}", left_ref.error().error());
         }
         auto right_ref = get_expr(m, node->right);
         if (!right_ref) {
@@ -1199,13 +1262,7 @@ namespace rebgn {
             });
             return none;
         }
-        if (node->op == ast::BinaryOp::append_assign) {
-            m.op(AbstractOp::APPEND, [&](Code& c) {
-                c.left_ref(*left_ref);
-                c.right_ref(*right_ref);
-            });
-            return none;
-        }
+
         auto ident = m.new_id();
         if (!ident) {
             return ident.error();

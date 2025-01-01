@@ -272,6 +272,11 @@ namespace bm2cpp {
                 res.push_back(std::format("{}{{}}", type));
                 break;
             }
+            case rebgn::AbstractOp::DEFINE_PARAMETER: {
+                auto ident = ctx.ident_table[code.ident().value().value()];
+                res.push_back(std::move(ident));
+                break;
+            }
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto ident = ctx.ident_table[code.ident().value().value()];
                 auto range = ctx.ident_range_table[code.ident().value().value()];
@@ -595,6 +600,37 @@ namespace bm2cpp {
                     defer.pop_back();
                     ctx.cw.writeln("} else {");
                     defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::MATCH:
+                case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("switch(", evaluated.back(), ") {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::CASE: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("case ", evaluated.back(), ": {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::END_CASE: {
+                    ctx.cw.writeln("break;");
+                    defer.pop_back();
+                    ctx.cw.writeln("}");
+                    break;
+                }
+                case rebgn::AbstractOp::DEFAULT_CASE: {
+                    ctx.cw.writeln("default: {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::END_MATCH: {
+                    defer.pop_back();
+                    ctx.cw.writeln("}");
                     break;
                 }
                 case rebgn::AbstractOp::ASSERT: {

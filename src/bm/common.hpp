@@ -7,10 +7,10 @@ namespace brgen::ast {}
 
 namespace rebgn {
     namespace ast = brgen::ast;
-    using Error = futils::error::Error<>;
+    using Error = futils::error::Error<std::allocator<char>, std::string>;
 
     template <typename T>
-    using expected = futils::helper::either::expected<T, futils::error::Error<>>;
+    using expected = futils::helper::either::expected<T, Error>;
 
     template <typename... Args>
     Error error(std::format_string<Args...> fmt, Args&&... args) {

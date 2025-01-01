@@ -222,6 +222,7 @@ enum AbstractOp:
 
 
     SWITCH_UNION
+    CHECK_UNION
 
     ENCODER_PARAMETER
     DECODER_PARAMETER
@@ -527,6 +528,8 @@ format Code:
         AbstractOp.DEFINE_PACKED_OPERATION:
             ident :Varint
         AbstractOp.SWITCH_UNION:
+            ref :Varint # ref to union_member
+        AbstractOp.CHECK_UNION:
             ref :Varint # ref to union_member
         AbstractOp.RET:
             ref :Varint # maybe null

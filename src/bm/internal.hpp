@@ -375,4 +375,39 @@ namespace rebgn {
         yield_value_finalproc();
         return none;
     }
+
+    Error convert_loop(Module& m, std::shared_ptr<ast::Loop>& node, auto&& eval) {
+        if (node->init) {
+            auto err = eval(m, node->init);
+            if (err) {
+                return err;
+            }
+        }
+        if (node->cond) {
+            auto cond = get_expr(m, node->cond);
+            if (!cond) {
+                return cond.error();
+            }
+            m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+                c.ref(*cond);
+            });
+        }
+        else {
+            m.op(AbstractOp::LOOP_INFINITE);
+        }
+        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+            return eval(m, n);
+        });
+        if (err) {
+            return err;
+        }
+        if (node->step) {
+            auto err = eval(m, node->step);
+            if (err) {
+                return err;
+            }
+        }
+        m.op(AbstractOp::END_LOOP);
+        return none;
+    }
 }  // namespace rebgn

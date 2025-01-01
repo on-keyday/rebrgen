@@ -188,12 +188,13 @@ namespace rebgn {
     Error define<ast::IOOperation>(Module& m, std::shared_ptr<ast::IOOperation>& node) {
         switch (node->method) {
             case ast::IOMethod::input_backward: {
+                auto op = m.on_encode_fn ? AbstractOp::BACKWARD_OUTPUT : AbstractOp::BACKWARD_INPUT;
                 if (node->arguments.size()) {
                     auto arg = get_expr(m, node->arguments[0]);
                     if (!arg) {
                         return arg.error();
                     }
-                    m.op(AbstractOp::BACKWARD, [&](Code& c) {
+                    m.op(op, [&](Code& c) {
                         c.ref(*arg);
                     });
                 }
@@ -202,7 +203,7 @@ namespace rebgn {
                     if (!imm) {
                         return imm.error();
                     }
-                    m.op(AbstractOp::BACKWARD, [&](Code& c) {
+                    m.op(op, [&](Code& c) {
                         c.ref(*imm);
                     });
                 }
@@ -931,11 +932,21 @@ namespace rebgn {
             c.ident(*ident);
             c.belong(parent);
         });
-        bool is_encoder_or_decoder = false;
+        bool is_encoder = false, is_decoder = false;
         if (auto fmt = ast::as<ast::Format>(node->belong.lock())) {
-            if (fmt->encode_fn.lock() == node || fmt->decode_fn.lock() == node) {
-                is_encoder_or_decoder = true;
+            if (fmt->encode_fn.lock() == node) {
+                is_encoder = true;
             }
+            if (fmt->decode_fn.lock() == node) {
+                is_decoder = true;
+            }
+        }
+        bool is_encoder_or_decoder = is_encoder || is_decoder;
+        if (is_encoder) {
+            m.on_encode_fn = true;
+        }
+        if (is_decoder) {
+            m.on_encode_fn = false;
         }
         if (node->return_type && !ast::as<ast::VoidType>(node->return_type)) {
             Storages s;

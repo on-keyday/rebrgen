@@ -728,6 +728,17 @@ namespace bm2cpp {
                     ctx.cw.writeln(s[s.size() - 2]);
                     break;
                 }
+                case rebgn::AbstractOp::BACKWARD_INPUT:
+                case rebgn::AbstractOp::BACKWARD_OUTPUT: {
+                    auto target = code.op == rebgn::AbstractOp::BACKWARD_INPUT ? "r" : "w";
+                    auto ref = code.ref().value().value();
+                    auto count = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    auto tmp = std::format("tmp{}", ref);
+                    ctx.cw.writeln("auto ", tmp, " = ", target, ".offset();");
+                    ctx.cw.writeln(target, ".reset(", tmp, " - ", count.back(), ");");
+                    ctx.cw.writeln("if(", target, ".offset() != (", tmp, " - ", count.back(), ")) { return false; }");
+                    break;
+                }
                 case rebgn::AbstractOp::ENCODE_INT: {
                     auto ref = code.ref().value().value();
                     auto& ident = ctx.ident_index_table[ref];
@@ -735,6 +746,18 @@ namespace bm2cpp {
                     auto endian = code.endian().value();
                     auto is_big = endian == rebgn::Endian::little ? false : true;
                     ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
+                    break;
+                }
+                case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref_to_vec = code.left_ref().value().value();
+                    auto ref_to_len = code.right_ref().value().value();
+                    auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
+                    auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
+                    if (bit_size == 8) {
+                        ctx.cw.writeln(std::format("if({}.size() != {}) {{ return false; }}", vec.back(), len.back()));
+                        ctx.cw.writeln(std::format("if(!w.write({})) {{ return false; }}", vec.back()));
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::RET: {

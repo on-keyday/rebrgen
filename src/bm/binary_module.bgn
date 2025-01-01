@@ -158,7 +158,8 @@ enum AbstractOp:
     DECODE_INT_VECTOR
     DECODE_INT_VECTOR_UNTIL_EOF
     PEEK_INT_VECTOR
-    BACKWARD
+    BACKWARD_INPUT
+    BACKWARD_OUTPUT
     BYTE_OFFSET
     BIT_OFFSET
     REMAIN_BYTES
@@ -424,7 +425,9 @@ format Code:
         AbstractOp.ASSIGN:
             left_ref :Varint
             right_ref :Varint
-        AbstractOp.BACKWARD:
+        AbstractOp.BACKWARD_INPUT:
+            ref :Varint # bit count
+        AbstractOp.BACKWARD_OUTPUT:
             ref :Varint # bit count
         AbstractOp.ENCODE_INT:
             ref :Varint

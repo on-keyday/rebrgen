@@ -238,6 +238,8 @@ enum AbstractOp:
     BEGIN_DECODE_SUB_RANGE
     END_DECODE_SUB_RANGE
 
+    FIELD_AVAILABLE
+
 
 
 
@@ -396,6 +398,10 @@ format Code:
             belong :Varint # belong to union
         AbstractOp.SPECIFY_STORAGE_TYPE:
             storage :Storages
+        AbstractOp.FIELD_AVAILABLE:
+            ident :Varint
+            left_ref :Varint # ref to base expr (field or member access)
+            right_ref :Varint # ref to condition (this need special handling when code generation)
         AbstractOp.BINARY:
             ident :Varint
             bop :BinaryOp

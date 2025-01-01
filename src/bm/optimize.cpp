@@ -236,6 +236,8 @@ namespace rebgn {
         std::vector<Code> rebound;
         std::map<std::uint64_t, std::uint64_t> should_bind_encoder;
         std::map<std::uint64_t, std::uint64_t> should_bind_decoder;
+        std::map<std::uint64_t, std::uint64_t> encoder_to_fmt;
+        std::map<std::uint64_t, std::uint64_t> decoder_to_fmt;
         std::map<std::uint64_t, std::uint64_t> fmt_to_encoder;
         std::map<std::uint64_t, std::uint64_t> fmt_to_decoder;
         for (auto& c : m.code) {
@@ -261,12 +263,14 @@ namespace rebgn {
                         should_bind_encoder[c.right_ref().value().value()] = c.left_ref().value().value();
                     }
                     fmt_to_encoder[c.left_ref().value().value()] = c.right_ref().value().value();
+                    decoder_to_fmt[c.right_ref().value().value()] = c.left_ref().value().value();
                 }
                 else {
                     if (!has_declare_in_fmt) {
                         should_bind_decoder[c.right_ref().value().value()] = c.left_ref().value().value();
                     }
                     fmt_to_decoder[c.left_ref().value().value()] = c.right_ref().value().value();
+                    decoder_to_fmt[c.right_ref().value().value()] = c.left_ref().value().value();
                 }
             }
         }
@@ -335,14 +339,14 @@ namespace rebgn {
                 };
                 auto ident = c.ident().value();
                 rebound.push_back(std::move(c));
-                if (auto found = should_bind_encoder.find(ident.value()); found != should_bind_encoder.end()) {
+                if (auto found = encoder_to_fmt.find(ident.value()); found != encoder_to_fmt.end()) {
                     rebound.push_back(make_code(AbstractOp::ENCODER_PARAMETER, [&](auto& c) {
                         c.left_ref(*varint(found->second));
                         c.right_ref(ident);
                     }));
                     add_state_variables(found->second);
                 }
-                if (auto found = should_bind_decoder.find(ident.value()); found != should_bind_decoder.end()) {
+                if (auto found = decoder_to_fmt.find(ident.value()); found != decoder_to_fmt.end()) {
                     rebound.push_back(make_code(AbstractOp::DECODER_PARAMETER, [&](auto& c) {
                         c.left_ref(*varint(found->second));
                         c.right_ref(ident);

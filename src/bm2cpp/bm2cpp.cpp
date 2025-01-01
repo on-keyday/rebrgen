@@ -176,6 +176,22 @@ namespace bm2cpp {
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
+            case rebgn::AbstractOp::CALL_CAST: {
+                auto type_str = type_to_string(ctx, *code.storage());
+                auto param = code.param().value();
+                std::string arg_call;
+                for (size_t i = 0; i < param.expr_refs.size(); i++) {
+                    auto index = ctx.ident_index_table[param.expr_refs[i].value()];
+                    auto expr = eval(ctx.bm.code[index], ctx);
+                    res.insert(res.end(), expr.begin(), expr.end() - 1);
+                    if (i) {
+                        arg_call += ", ";
+                    }
+                    arg_call += expr.back();
+                }
+                res.push_back(std::format("({}({}))", type_str, arg_call));
+                break;
+            }
             case rebgn::AbstractOp::INDEX: {
                 auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
                 auto left = eval(ctx.bm.code[left_index], ctx);
@@ -323,6 +339,7 @@ namespace bm2cpp {
                 }
                 break;
             }
+
             default:
                 res.push_back(std::format("/* Unimplemented op: {} */", to_string(code.op)));
                 break;
@@ -689,6 +706,18 @@ namespace bm2cpp {
                     auto endian = code.endian().value();
                     auto is_big = endian == rebgn::Endian::little ? false : true;
                     ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
+                    break;
+                }
+                case rebgn::AbstractOp::RET: {
+                    auto ref = code.ref().value().value();
+                    if (ref == 0) {
+                        ctx.cw.writeln("return;");
+                    }
+                    else {
+                        auto& ident = ctx.ident_index_table[ref];
+                        auto s = eval(ctx.bm.code[ident], ctx);
+                        ctx.cw.writeln("return ", s.back(), ";");
+                    }
                     break;
                 }
                 default:

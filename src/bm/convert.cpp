@@ -713,7 +713,20 @@ namespace rebgn {
             }
             new_id = *imm;
         }
-        m.set_prev_expr(new_id.value());
+        auto base_expr = get_expr(m, node->target);
+        if (!base_expr) {
+            return base_expr.error();
+        }
+        auto id = m.new_id();
+        if (!id) {
+            return id.error();
+        }
+        m.op(AbstractOp::FIELD_AVAILABLE, [&](Code& c) {
+            c.ident(*id);
+            c.left_ref(*base_expr);
+            c.right_ref(new_id);
+        });
+        m.set_prev_expr(id->value());
         return none;
     }
 

@@ -1,10 +1,11 @@
 /*license*/
 #pragma once
 #include "binary_module.hpp"
+#include <format>
 
 namespace rebgn {
 
-       inline bool is_declare(AbstractOp op) {
+    inline bool is_declare(AbstractOp op) {
         switch (op) {
             case AbstractOp::DECLARE_FUNCTION:
             case AbstractOp::DECLARE_ENUM:
@@ -22,5 +23,19 @@ namespace rebgn {
             default:
                 return false;
         }
+    }
+
+    inline std::string storage_key(const Storages& s) {
+        std::string key;
+        for (auto& storage : s.storages) {
+            key += to_string(storage.type);
+            if (auto ref = storage.ref()) {
+                key += std::format("r{}", ref.value().value());
+            }
+            if (auto size = storage.size()) {
+                key += std::format("s{}", size.value().value());
+            }
+        }
+        return key;
     }
 }  // namespace rebgn

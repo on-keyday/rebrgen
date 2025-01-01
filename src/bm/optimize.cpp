@@ -974,20 +974,6 @@ namespace rebgn {
         return none;
     }
 
-    std::string storage_key(const Storages& s) {
-        std::string key;
-        for (auto& storage : s.storages) {
-            key += to_string(storage.type);
-            if (auto ref = storage.ref()) {
-                key += std::format("r{}", ref.value().value());
-            }
-            if (auto size = storage.size()) {
-                key += std::format("s{}", size.value().value());
-            }
-        }
-        return key;
-    }
-
     struct MergeCtx {
         std::unordered_map<std::string, Storages> type_to_storage;
 

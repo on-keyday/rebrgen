@@ -293,3 +293,14 @@ format DomainName:
             if labels[i].length == 0 || available(labels[i].pointer):
                 i == labels.length - 1
             output.put(labels[i])
+
+format NestedUnion:
+    x :u8
+    if x == 0:
+        y :u8
+        if y == 0:
+            z :u32
+        else:
+            w :u16
+    else:
+        z :u16

@@ -263,7 +263,7 @@ namespace rebgn {
                         should_bind_encoder[c.right_ref().value().value()] = c.left_ref().value().value();
                     }
                     fmt_to_encoder[c.left_ref().value().value()] = c.right_ref().value().value();
-                    decoder_to_fmt[c.right_ref().value().value()] = c.left_ref().value().value();
+                    encoder_to_fmt[c.right_ref().value().value()] = c.left_ref().value().value();
                 }
                 else {
                     if (!has_declare_in_fmt) {

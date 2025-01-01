@@ -713,9 +713,13 @@ namespace rebgn {
             }
             new_id = *imm;
         }
-        auto base_expr = get_expr(m, node->target);
-        if (!base_expr) {
-            return base_expr.error();
+        Varint base_expr;
+        if (auto memb = ast::as<ast::MemberAccess>(node->target)) {
+            auto expr = get_expr(m, memb->target);
+            if (!expr) {
+                return expr.error();
+            }
+            base_expr = expr.value();
         }
         auto id = m.new_id();
         if (!id) {
@@ -723,7 +727,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::FIELD_AVAILABLE, [&](Code& c) {
             c.ident(*id);
-            c.left_ref(*base_expr);
+            c.left_ref(base_expr);
             c.right_ref(new_id);
         });
         m.set_prev_expr(id->value());

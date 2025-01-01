@@ -61,6 +61,8 @@ namespace rebgn {
         std::uint64_t object_id = 1;
         std::vector<std::shared_ptr<CFG>> cfgs;
 
+        bool on_encode_fn = false;
+
         void map_struct(std::shared_ptr<ast::StructType> s, ObjectID id) {
             struct_table[s] = id;
         }

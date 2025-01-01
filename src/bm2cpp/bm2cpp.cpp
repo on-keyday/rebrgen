@@ -22,6 +22,15 @@ namespace bm2cpp {
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
 
+        std::vector<std::string> this_as;
+
+        std::string this_() {
+            if (this_as.empty()) {
+                return "this->";
+            }
+            return this_as.back() + ".";
+        }
+
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
         }
@@ -168,7 +177,7 @@ namespace bm2cpp {
             return std::format("std::get<{}>({})", get_index, base);
         }
         if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FIELD) {
-            return std::format("this->field_{}", ctx.bm.code[belong].ident().value().value());
+            return std::format("{}field_{}", ctx.this_(), ctx.bm.code[belong].ident().value().value());
         }
         return "/* Unimplemented union ident */";
     }
@@ -295,6 +304,9 @@ namespace bm2cpp {
             }
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto ident = ctx.ident_table[code.ident().value().value()];
+                if (ident == "") {
+                    ident = std::format("field_{}", code.ident().value().value());
+                }
                 auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
                 auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -310,7 +322,7 @@ namespace bm2cpp {
                     ident = retrieve_union_ident(ctx, code) + "." + ident;
                 }
                 else if (belong_op == rebgn::AbstractOp::DEFINE_FORMAT) {
-                    ident = "this->" + ident;
+                    ident = ctx.this_() + ident;
                 }
                 if (should_deref) {
                     res.push_back(std::format("(*{})", ident));
@@ -339,7 +351,24 @@ namespace bm2cpp {
                 }
                 break;
             }
-
+            case rebgn::AbstractOp::FIELD_AVAILABLE: {
+                auto this_as = code.left_ref().value().value();
+                if (this_as == 0) {
+                    auto cond_expr = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
+                    res.insert(res.end(), cond_expr.begin(), cond_expr.end() - 1);
+                    res.push_back(std::format("{}", cond_expr.back()));
+                }
+                else {
+                    auto base_expr = eval(ctx.bm.code[ctx.ident_index_table[this_as]], ctx);
+                    res.insert(res.end(), base_expr.begin(), base_expr.end() - 1);
+                    ctx.this_as.push_back(base_expr.back());
+                    auto cond_expr = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
+                    res.insert(res.end(), cond_expr.begin(), cond_expr.end() - 1);
+                    ctx.this_as.pop_back();
+                    res.push_back(cond_expr.back());
+                }
+                break;
+            }
             default:
                 res.push_back(std::format("/* Unimplemented op: {} */", to_string(code.op)));
                 break;
@@ -718,6 +747,28 @@ namespace bm2cpp {
                         auto s = eval(ctx.bm.code[ident], ctx);
                         ctx.cw.writeln("return ", s.back(), ";");
                     }
+                    break;
+                }
+                case rebgn::AbstractOp::CHECK_UNION:
+                case rebgn::AbstractOp::SWITCH_UNION: {
+                    auto ref = code.ref().value().value();  // ref to UNION_MEMBER
+                    auto union_name = ctx.bm.code[ctx.ident_index_table[ref]].ident().value().value();
+                    auto variant_name = std::format("variant_{}", union_name);
+                    // ref to DEFINE_UNION
+                    auto union_belong = ctx.bm.code[ctx.ident_index_table[ref]].belong().value().value();
+                    // ref to FIELD
+                    auto field_ref = ctx.bm.code[ctx.ident_index_table[union_belong]].belong().value().value();
+                    auto val = eval(ctx.bm.code[ctx.ident_index_table[field_ref]], ctx);
+                    ctx.cw.writeln(std::format("if(!std::holds_alternative<{}>({})) {{", variant_name, val.back()));
+                    auto scope = ctx.cw.indent_scope();
+                    if (code.op == rebgn::AbstractOp::CHECK_UNION) {
+                        ctx.cw.writeln("return false;");
+                    }
+                    else {
+                        ctx.cw.writeln(std::format("{} = {}{{}};", val.back(), variant_name));
+                    }
+                    scope.execute();
+                    ctx.cw.writeln("}");
                     break;
                 }
                 default:

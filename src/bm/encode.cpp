@@ -787,6 +787,7 @@ namespace rebgn {
                 },
             });
         });
+        m.on_encode_fn = true;
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_encode(m, n);
         });
@@ -837,6 +838,7 @@ namespace rebgn {
                 },
             });
         });
+        m.on_encode_fn = false;
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_decode(m, n);
         });
@@ -865,54 +867,31 @@ namespace rebgn {
         });
     }
 
-    template <>
-    Error encode<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::Paren>(Module& m, std::shared_ptr<ast::Paren>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Paren>(Module& m, std::shared_ptr<ast::Paren>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::MemberAccess>(Module& m, std::shared_ptr<ast::MemberAccess>& node) {
-        return convert_node_definition(m, node);
-    }
-
     void add_switch_union(Module& m, std::shared_ptr<ast::StructType>& node) {
         auto ident = m.lookup_struct(node);
         if (ident.value() == 0) {
             return;
         }
-        m.op(AbstractOp::SWITCH_UNION, [&](Code& c) {
-            c.ref(ident);
-        });
+        bool has_field = false;
+        for (auto& field : node->fields) {
+            if (ast::as<ast::Field>(field)) {
+                has_field = true;
+                break;
+            }
+        }
+        if (!has_field) {
+            return;  // omit check for empty struct
+        }
+        if (m.on_encode_fn) {
+            m.op(AbstractOp::CHECK_UNION, [&](Code& c) {
+                c.ref(ident);
+            });
+        }
+        else {
+            m.op(AbstractOp::SWITCH_UNION, [&](Code& c) {
+                c.ref(ident);
+            });
+        }
     }
 
     template <>
@@ -981,56 +960,6 @@ namespace rebgn {
         return none;
     }
 
-    template <>
-    Error encode<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::Call>(Module& m, std::shared_ptr<ast::Call>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Call>(Module& m, std::shared_ptr<ast::Call>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::ExplicitError>(Module& m, std::shared_ptr<ast::ExplicitError>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::ExplicitError>(Module& m, std::shared_ptr<ast::ExplicitError>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error encode<ast::ImplicitYield>(Module& m, std::shared_ptr<ast::ImplicitYield>& node) {
-        return convert_node_definition(m, node->expr);
-    }
-
-    template <>
-    Error decode<ast::ImplicitYield>(Module& m, std::shared_ptr<ast::ImplicitYield>& node) {
-        return convert_node_definition(m, node->expr);
-    }
-
-    template <>
-    Error encode<ast::Assert>(Module& m, std::shared_ptr<ast::Assert>& node) {
-        return convert_node_definition(m, node);
-    }
-
-    template <>
-    Error decode<ast::Assert>(Module& m, std::shared_ptr<ast::Assert>& node) {
-        return convert_node_definition(m, node);
-    }
-
     template <class T>
     concept has_encode = requires(Module& m, std::shared_ptr<T>& n) {
         encode<T>(m, n);
@@ -1048,6 +977,9 @@ namespace rebgn {
             if constexpr (has_encode<T>) {
                 err = encode<T>(m, node);
             }
+            else if (std::is_base_of_v<ast::Expr, T>) {
+                err = convert_node_definition(m, node);
+            }
         });
         return err;
     }
@@ -1058,6 +990,9 @@ namespace rebgn {
             using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
             if constexpr (has_decode<T>) {
                 err = decode<T>(m, node);
+            }
+            else if (std::is_base_of_v<ast::Expr, T>) {
+                err = convert_node_definition(m, node);
             }
         });
         return err;

@@ -1010,7 +1010,7 @@ namespace rebgn {
             if (c.op == AbstractOp::CONDITIONAL_FIELD) {
                 auto parent = c.belong().value().value();
                 auto child = c.right_ref().value().value();
-
+                auto target = c.ident().value();
                 auto idx = m.ident_index_table[child];
                 if (m.code[idx].op == AbstractOp::DEFINE_FIELD) {
                     for (size_t i = idx + 1; i < m.code.size(); i++) {
@@ -1022,7 +1022,6 @@ namespace rebgn {
                             auto key = storage_key(storage);
                             ctx.type_to_storage[key] = std::move(storage);
                             auto& map = conditional_fields[parent];
-                            auto target = c.ident().value();
                             map[key].push_back(target);
                             break;
                         }
@@ -1038,7 +1037,7 @@ namespace rebgn {
                         auto& m = ctx.merged_conditional_fields[mc];
                         auto& map = conditional_fields[parent];
                         auto& key = m.first;
-                        map[key].push_back(*varint(mc));
+                        map[key].push_back(target);
                     }
                 }
             }
@@ -1079,67 +1078,6 @@ namespace rebgn {
     }
 
     Error merge_conditional_field(Module& m) {
-        /**
-        std::unordered_map<std::string, Storages> type_to_storage;
-        // key is DEFINE_PROPERTY ident
-        std::unordered_map<ObjectID, std::unordered_map<std::string, std::vector<Varint>>> conditional_fields;
-        std::unordered_map<ObjectID, std::vector<std::string>> conditional_fields_key_order;
-        // key is MERGED_CONDITIONAL_FIELD ident
-        std::unordered_map<ObjectID, std::pair<std::string, std::vector<Varint>>> merged_conditional_fields;
-        // DEFINE_PROPERTY ident to MERGED_CONDITIONAL_FIELD ident
-        std::unordered_map<ObjectID, std::vector<ObjectID>> properties_to_merged;
-        std::set<ObjectID> exists;
-        for (auto& c : m.code) {
-            if (c.op == AbstractOp::CONDITIONAL_FIELD) {
-                auto field_ref = c.right_ref().value().value();
-                auto field = m.ident_index_table[field_ref];
-                if (m.code[field].op == AbstractOp::DEFINE_FIELD) {
-                    for (size_t i = field + 1; i < m.code.size(); i++) {
-                        if (m.code[i].op == AbstractOp::END_FIELD) {
-                            break;
-                        }
-                        if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
-                            auto storage = m.code[i].storage().value();
-                            auto key = storage_key(storage);
-                            type_to_storage[key] = std::move(storage);
-                            auto& map = conditional_fields[c.belong().value().value()];
-                            map[key].push_back(c.ident().value());
-                            break;
-                        }
-                    }
-                }
-            }
-            if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
-                exists.insert(c.ident().value().value());
-            }
-        }
-        for (auto& cfield : conditional_fields) {
-            for (auto& [key, value] : cfield.second) {
-                bool exist = false;
-                for (auto& e : exists) {
-                    auto& c = m.code[m.ident_index_table[e]];
-                    auto common_type_key = storage_key(c.storage().value());
-                    auto param = c.param().value().expr_refs;
-                    if (common_type_key == key && std::ranges::equal(param, value, [](auto& a, auto& b) {
-                            return a.value() == b.value();
-                        })) {
-                        c.merge_mode(MergeMode::STRICT_COMMON_TYPE);
-                        exist = true;
-                        break;
-                    }
-                }
-                if (exist) {
-                    continue;
-                }
-                auto new_id = m.new_id();
-                if (!new_id) {
-                    return new_id.error();
-                }
-                merged_conditional_fields[new_id->value()] = {key, std::move(value)};
-                properties_to_merged[cfield.first].push_back(new_id->value());
-            }
-        }
-        */
         MergeCtx ctx;
         for (size_t i = 0; i < m.code.size(); i++) {
             if (m.code[i].op == AbstractOp::DECLARE_PROPERTY) {
@@ -1184,25 +1122,7 @@ namespace rebgn {
             rebound.push_back(std::move(m.code[i]));
         }
         m.code = std::move(rebound);
-        for (auto& c : m.code) {  // correct MERGED_CONDITIONAL_FIELD with COMMON_TYPE
-            if (c.op == AbstractOp::CONDITIONAL_FIELD) {
-                auto ref = c.left_ref().value().value();
-                auto idx = m.ident_index_table[ref];
-                if (m.code[idx].op == AbstractOp::DEFINE_PROPERTY) {
-                    auto found = ctx.properties_to_merged.find(ref);
-                    if (found == ctx.properties_to_merged.end()) {
-                        continue;
-                    }
-                    for (auto& mc : found->second) {
-                        auto midx = m.ident_index_table[mc];
-                        if (m.code[midx].merge_mode() == MergeMode::STRICT_COMMON_TYPE ||
-                            m.code[midx].merge_mode() == MergeMode::COMMON_TYPE) {
-                            c.left_ref(*varint(mc));
-                        }
-                    }
-                }
-            }
-        }
+
         return none;
     }
 

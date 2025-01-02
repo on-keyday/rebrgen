@@ -135,13 +135,6 @@ namespace rebgn {
                     }
                     break;
                 }
-                case AbstractOp::DEFINE_PACKED_OPERATION: {
-                    auto err = do_extract(AbstractOp::DEFINE_PACKED_OPERATION, AbstractOp::END_PACKED_OPERATION);
-                    if (err) {
-                        return err;
-                    }
-                    break;
-                }
                 case AbstractOp::DEFINE_PROPERTY: {
                     auto err = do_extract(AbstractOp::DEFINE_PROPERTY, AbstractOp::END_PROPERTY);
                     if (err) {
@@ -178,8 +171,6 @@ namespace rebgn {
                 return AbstractOp::DECLARE_STATE;
             case AbstractOp::DEFINE_BIT_FIELD:
                 return AbstractOp::DECLARE_BIT_FIELD;
-            case AbstractOp::DEFINE_PACKED_OPERATION:
-                return AbstractOp::DECLARE_PACKED_OPERATION;
             case AbstractOp::DEFINE_PARAMETER:
                 return AbstractOp::DECLARE_PARAMETER;
             case AbstractOp::DEFINE_PROPERTY:
@@ -821,9 +812,6 @@ namespace rebgn {
                     break;
                 case AbstractOp::DEFINE_BIT_FIELD:
                     end_op = AbstractOp::END_BIT_FIELD;
-                    break;
-                case AbstractOp::DEFINE_PACKED_OPERATION:
-                    end_op = AbstractOp::END_PACKED_OPERATION;
                     break;
                 case AbstractOp::DEFINE_PROPERTY:
                     end_op = AbstractOp::END_PROPERTY;

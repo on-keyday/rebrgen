@@ -292,6 +292,14 @@ namespace bm2cpp {
                 res.push_back(std::format("({} {} {})", left.back(), bop, right.back()));
                 break;
             }
+            case rebgn::AbstractOp::UNARY: {
+                auto ref_index = ctx.ident_index_table[code.ref().value().value()];
+                auto ref = eval(ctx.bm.code[ref_index], ctx);
+                res.insert(res.end(), ref.begin(), ref.end() - 1);
+                auto uop = to_string(code.uop().value());
+                res.push_back(std::format("({}{})", uop, ref.back()));
+                break;
+            }
             case rebgn::AbstractOp::STATIC_CAST: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
@@ -660,6 +668,11 @@ namespace bm2cpp {
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
+                case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
+                    ctx.bm_ctx.inner_bit_operations = true;
+                    break;
+                }
                 case rebgn::AbstractOp::IF: {
                     auto ref = code.ref().value().value();
                     auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);

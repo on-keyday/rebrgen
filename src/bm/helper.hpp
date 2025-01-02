@@ -17,7 +17,6 @@ namespace rebgn {
             case AbstractOp::DECLARE_PROGRAM:
             case AbstractOp::DECLARE_STATE:
             case AbstractOp::DECLARE_BIT_FIELD:
-            case AbstractOp::DECLARE_PACKED_OPERATION:
             case AbstractOp::DECLARE_PARAMETER:
                 return true;
             default:

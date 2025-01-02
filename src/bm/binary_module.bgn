@@ -144,9 +144,10 @@ enum AbstractOp:
     END_BIT_FIELD
     DECLARE_BIT_FIELD
 
-    DEFINE_PACKED_OPERATION
-    END_PACKED_OPERATION
-    DECLARE_PACKED_OPERATION
+    BEGIN_ENCODE_PACKED_OPERATION
+    END_ENCODE_PACKED_OPERATION
+    BEGIN_DECODE_PACKED_OPERATION
+    END_DECODE_PACKED_OPERATION
     
     DEFINE_ENCODER
 
@@ -512,8 +513,6 @@ format Code:
             ref :Varint
         AbstractOp.DECLARE_BIT_FIELD:
             ref :Varint
-        AbstractOp.DECLARE_PACKED_OPERATION:
-            ref :Varint
         AbstractOp.DECLARE_ENUM:
             ref :Varint
         AbstractOp.DECLARE_ENUM_MEMBER:
@@ -545,8 +544,12 @@ format Code:
         AbstractOp.APPEND:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to object
-        AbstractOp.DEFINE_PACKED_OPERATION:
+        AbstractOp.BEGIN_ENCODE_PACKED_OPERATION:
             ident :Varint
+            ref :Varint # ref to bit field
+        AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
+            ident :Varint
+            ref :Varint # ref to bit field
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:

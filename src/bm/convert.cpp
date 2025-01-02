@@ -1039,8 +1039,9 @@ namespace rebgn {
                 c.storage(std::move(s));
             });
         }
-        std::vector<std::shared_ptr<ast::Field>> bit_fields;
-        std::unordered_set<std::shared_ptr<ast::Field>> bit_field_begin, bit_field_end;
+        std::vector<std::shared_ptr<ast::Node>> bit_fields;
+        std::unordered_map<std::shared_ptr<ast::Node>, Varint> bit_field_begin;
+        std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
         for (auto& f : node->body->struct_type->fields) {
             if (auto field = ast::as<ast::Field>(f)) {
                 if (field->bit_alignment != field->eventual_bit_alignment) {
@@ -1048,26 +1049,33 @@ namespace rebgn {
                     continue;
                 }
                 if (bit_fields.size()) {
-                    bit_field_begin.insert(ast::cast_to<ast::Field>(bit_fields.front()));
-                    bit_field_end.insert(ast::cast_to<ast::Field>(ast::cast_to<ast::Field>(f)));
+                    auto begin_field = std::move(ast::cast_to<ast::Field>(bit_fields.front()));
+                    auto end_field = std::move(ast::cast_to<ast::Field>(f));
+                    auto id = m.new_id(nullptr);
+                    if (!id) {
+                        return id.error();
+                    }
+                    if (auto b = ast::as<ast::StructUnionType>(begin_field->field_type)) {
+                        bit_field_begin.emplace(b->base.lock(), *id);  // if or match
+                    }
+                    if (auto b = ast::as<ast::StructUnionType>(end_field->field_type)) {
+                        bit_field_end.insert(b->base.lock());  // if or match
+                    }
+                    bit_field_begin.emplace(std::move(begin_field), *id);
+                    bit_field_end.insert(std::move(end_field));
                     bit_fields.clear();
                 }
             }
         }
         for (auto& f : node->body->struct_type->fields) {
             if (auto ft = ast::as<ast::Field>(f)) {
-                if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
-                    auto new_id = m.new_id(nullptr);
-                    if (!new_id) {
-                        return new_id.error();
-                    }
+                if (auto found = bit_field_begin.find(ast::cast_to<ast::Field>(f));
+                    found != bit_field_begin.end()) {
                     m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
-                        c.ident(*new_id);
+                        c.ident(found->second);
                         c.belong(ident.value());
                     });
-                    m.map_struct(node->body->struct_type, new_id->value());  // temporary remap
-                    if (ast::as<ast::StructUnionType>(ft->field_type)) {
-                                        }
+                    m.map_struct(node->body->struct_type, found->second.value());  // temporary remap
                 }
             }
             auto err = convert_node_definition(m, f);

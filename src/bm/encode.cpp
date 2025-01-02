@@ -789,18 +789,20 @@ namespace rebgn {
         });
         m.on_encode_fn = true;
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
-            if (m.bit_field_begin.contains(n)) {
+            if (auto found = m.bit_field_begin.find(n);
+                found != m.bit_field_begin.end()) {
                 auto new_id = m.new_id(nullptr);
                 if (!new_id) {
                     return error("Failed to generate new id");
                 }
-                m.op(AbstractOp::DEFINE_PACKED_OPERATION, [&](Code& c) {
+                m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
+                    c.ref(found->second);
                 });
             }
             auto err = convert_node_encode(m, n);
             if (m.bit_field_end.contains(n)) {
-                m.op(AbstractOp::END_PACKED_OPERATION);
+                m.op(AbstractOp::END_ENCODE_PACKED_OPERATION);
             }
             return err;
         });
@@ -853,7 +855,22 @@ namespace rebgn {
         });
         m.on_encode_fn = false;
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
-            return convert_node_decode(m, n);
+            if (auto found = m.bit_field_begin.find(n);
+                found != m.bit_field_begin.end()) {
+                auto new_id = m.new_id(nullptr);
+                if (!new_id) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::BEGIN_DECODE_PACKED_OPERATION, [&](Code& c) {
+                    c.ident(*new_id);
+                    c.ref(found->second);
+                });
+            }
+            auto err = convert_node_decode(m, n);
+            if (m.bit_field_end.contains(n)) {
+                m.op(AbstractOp::END_DECODE_PACKED_OPERATION);
+            }
+            return err;
         });
         if (err) {
             return err;

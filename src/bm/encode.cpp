@@ -67,6 +67,8 @@ namespace rebgn {
                 });
                 m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                     c.ref(*index);
+                    c.endian(Endian::unspec);
+                    c.bit_size(*varint(8));
                 });
                 return none;
             });

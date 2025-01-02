@@ -515,6 +515,18 @@ namespace rebgn {
             w.write(std::format("{} bit\\n", cfg->sum_bits));
             for (auto& i : cfg->basic_block) {
                 w.write(std::format("{}", to_string(m.code[i].op)));
+                if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
+                    if (auto found = m.ident_table_rev.find(m.code[i].ident().value().value());
+                        found != m.ident_table_rev.end()) {
+                        w.write(" ");
+                        if (auto bs = m.ident_table_rev.find(m.code[i].belong().value().value());
+                            bs != m.ident_table_rev.end()) {
+                            w.write(bs->second->ident);
+                            w.write(".");
+                        }
+                        w.write(found->second->ident);
+                    }
+                }
                 if (m.code[i].op == AbstractOp::ENCODE_INT || m.code[i].op == AbstractOp::DECODE_INT) {
                     w.write(std::format(" {}", m.code[i].bit_size().value().value()));
                 }
@@ -581,15 +593,19 @@ namespace rebgn {
                     break;
                 case AbstractOp::LOOP_INFINITE:
                 case AbstractOp::LOOP_CONDITION: {
-                    auto loop = std::make_shared<CFG>(CFG{});
-                    current->next.push_back(loop);
-                    loop->prev.push_back(current);
-                    current = loop;
+                    if (current->basic_block.size()) {
+                        auto loop = std::make_shared<CFG>(CFG{});
+                        current->next.push_back(loop);
+                        loop->prev.push_back(current);
+                        current = loop;
+                    }
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     auto end = std::make_shared<CFG>(CFG{});
-                    current->next.push_back(end);
-                    end->prev.push_back(current);
-                    loops.push_back({loop, end});
+                    if (m.code[index_of_operation_and_loop[i]].op == AbstractOp::LOOP_CONDITION) {
+                        current->next.push_back(end);
+                        end->prev.push_back(current);
+                    }
+                    loops.push_back({current, end});
                     auto block = std::make_shared<CFG>(CFG{});
                     current->next.push_back(block);
                     block->prev.push_back(current);
@@ -610,13 +626,15 @@ namespace rebgn {
                     break;
                 }
                 case AbstractOp::IF: {
-                    auto if_block = std::make_shared<CFG>(CFG{});
-                    current->next.push_back(if_block);
-                    if_block->prev.push_back(current);
-                    current = if_block;
+                    if (current->basic_block.size()) {
+                        auto if_block = std::make_shared<CFG>(CFG{});
+                        current->next.push_back(if_block);
+                        if_block->prev.push_back(current);
+                        current = if_block;
+                    }
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     auto end = std::make_shared<CFG>(CFG{});
-                    ifs.push_back({if_block, end});
+                    ifs.push_back({current, end});
                     auto then_block = std::make_shared<CFG>(CFG{});
                     current->next.push_back(then_block);
                     then_block->prev.push_back(current);
@@ -655,6 +673,8 @@ namespace rebgn {
                         if_block.block->next.push_back(next_block);
                         next_block->prev.push_back(if_block.block);
                     }
+                    current->next.push_back(next_block);
+                    next_block->prev.push_back(current);
                     current = next_block;
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     break;
@@ -711,22 +731,32 @@ namespace rebgn {
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     current->next.push_back(fn_end);
                     fn_end->prev.push_back(current);
+                    auto block = std::make_shared<CFG>(CFG{});  // no relation with current
+                    current = block;
                     break;
                 }
-                case AbstractOp::BREAK:
+                case AbstractOp::BREAK: {
                     if (!loops.size()) {
                         return unexpect_error("Invalid {}", to_string(m.code[index_of_operation_and_loop[i]].op));
                     }
-                    current->basic_block.push_back(index_of_operation_and_loop[i]);
+                    loops.back().end->prev.push_back(current);
                     current->next.push_back(loops.back().end);
+                    current->basic_block.push_back(index_of_operation_and_loop[i]);
+                    auto block = std::make_shared<CFG>(CFG{});  // no relation with current
+                    current = block;
                     break;
-                case AbstractOp::CONTINUE:
+                }
+                case AbstractOp::CONTINUE: {
                     if (!loops.size()) {
                         return unexpect_error("Invalid {}", to_string(m.code[index_of_operation_and_loop[i]].op));
                     }
+                    loops.back().block->next.push_back(loops.back().end);
+                    loops.back().end->prev.push_back(loops.back().block);
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
-                    current->next.push_back(loops.back().block);
+                    auto block = std::make_shared<CFG>(CFG{});  // no relation with current
+                    current = block;
                     break;
+                }
                 default:
                     break;
             }

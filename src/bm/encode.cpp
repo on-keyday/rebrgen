@@ -23,7 +23,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto new_id = m.new_id();
+            auto new_id = m.new_node_id(typ);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
@@ -44,7 +44,7 @@ namespace rebgn {
             return none;
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value);
+            auto str_ref = m.lookup_string(str_ty->strong_ref->value, &str_ty->strong_ref->loc);
             if (!str_ref) {
                 return str_ref.error();
             }
@@ -56,7 +56,7 @@ namespace rebgn {
                 return max_len.error();
             }
             return counter_loop(m, *max_len, [&](Varint counter) {
-                auto index = m.new_id();
+                auto index = m.new_id(nullptr);
                 if (!index) {
                     return error("Failed to generate new id");
                 }
@@ -89,7 +89,7 @@ namespace rebgn {
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
-                    auto index = m.new_id();
+                    auto index = m.new_id(nullptr);
                     if (!index) {
                         return error("Failed to generate new id");
                     }
@@ -103,7 +103,7 @@ namespace rebgn {
             }
             expected<Varint> len_;
             if (ast::is_any_range(arr->length)) {
-                len_ = m.new_id();
+                len_ = m.new_node_id(arr->length);
                 if (!len_) {
                     return error("Failed to generate new id");
                 }
@@ -132,7 +132,7 @@ namespace rebgn {
                 return none;
             }
             return counter_loop(m, *len_, [&](Varint counter) {
-                auto index = m.new_id();
+                auto index = m.new_id(nullptr);
                 if (!index) {
                     return error("Failed to generate new id");
                 }
@@ -180,7 +180,7 @@ namespace rebgn {
             if (!ident) {
                 return ident.error();
             }
-            auto casted = m.new_id();
+            auto casted = m.new_node_id(typ);
             if (!casted) {
                 return casted.error();
             }
@@ -220,7 +220,7 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            auto new_id = m.new_id();
+            auto new_id = m.new_node_id(typ);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
@@ -242,7 +242,7 @@ namespace rebgn {
                 c.endian(Endian::unspec);
                 c.bit_size(*varint(*float_ty->bit_size));
             });
-            auto next_id = m.new_id();
+            auto next_id = m.new_id(nullptr);
             if (!next_id) {
                 return error("Failed to generate new id");
             }
@@ -258,7 +258,7 @@ namespace rebgn {
             return none;
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value);
+            auto str_ref = m.lookup_string(str_ty->strong_ref->value, &str_ty->strong_ref->loc);
             if (!str_ref) {
                 return str_ref.error();
             }
@@ -270,7 +270,7 @@ namespace rebgn {
                 return max_len.error();
             }
             return counter_loop(m, *max_len, [&](Varint counter) {
-                auto tmp = m.new_id();
+                auto tmp = m.new_id(nullptr);
                 if (!tmp) {
                     return error("Failed to generate new id");
                 }
@@ -292,7 +292,7 @@ namespace rebgn {
                     c.endian(Endian::unspec);
                     c.bit_size(*varint(8));
                 });
-                auto index = m.new_id();
+                auto index = m.new_id(nullptr);
                 if (!index) {
                     return error("Failed to generate new id");
                 }
@@ -301,7 +301,7 @@ namespace rebgn {
                     c.left_ref(*str_ref);
                     c.right_ref(counter);
                 });
-                auto cmp = m.new_id();
+                auto cmp = m.new_id(nullptr);
                 if (!cmp) {
                     return error("Failed to generate new id");
                 }
@@ -335,7 +335,7 @@ namespace rebgn {
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
-                    auto index = m.new_id();
+                    auto index = m.new_id(nullptr);
                     if (!index) {
                         return error("Failed to generate new id");
                     }
@@ -348,7 +348,7 @@ namespace rebgn {
                 });
             }
             auto undelying_decoder = [&] {
-                auto new_obj = m.new_id();
+                auto new_obj = m.new_node_id(arr->element_type);
                 if (!new_obj) {
                     return new_obj.error();
                 }
@@ -369,10 +369,6 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-                auto append = m.new_id();
-                if (!append) {
-                    return append.error();
-                }
                 m.op(AbstractOp::APPEND, [&](Code& c) {
                     c.left_ref(base_ref);
                     c.right_ref(*tmp_var);
@@ -390,7 +386,7 @@ namespace rebgn {
                             });
                             return none;
                         }
-                        auto new_id = m.new_id();
+                        auto new_id = m.new_id(nullptr);
                         if (!new_id) {
                             return error("Failed to generate new id");
                         }
@@ -400,7 +396,7 @@ namespace rebgn {
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
                     else if (field->eventual_follow == ast::Follow::fixed) {
-                        auto new_id = m.new_id();
+                        auto new_id = m.new_id(nullptr);
                         if (!new_id) {
                             return new_id.error();
                         }
@@ -409,7 +405,7 @@ namespace rebgn {
                         if (!imm) {
                             return imm.error();
                         }
-                        auto next_id = m.new_id();
+                        auto next_id = m.new_id(nullptr);
                         if (!next_id) {
                             return next_id.error();
                         }
@@ -426,7 +422,7 @@ namespace rebgn {
                                 c.left_ref(*next_id);
                                 c.right_ref(*imm);
                             });
-                            auto assert_expr = m.new_id();
+                            auto assert_expr = m.new_id(nullptr);
                             if (!assert_expr) {
                                 return assert_expr.error();
                             }
@@ -461,7 +457,7 @@ namespace rebgn {
                             return error("Invalid next field");
                         }
                         auto str = ast::cast_to<ast::StrLiteralType>(next->field_type);
-                        auto str_ref = m.lookup_string(str->strong_ref->value);
+                        auto str_ref = m.lookup_string(str->strong_ref->value, &str->strong_ref->loc);
                         if (!str_ref) {
                             return str_ref.error();
                         }
@@ -472,7 +468,7 @@ namespace rebgn {
                         if (!imm) {
                             return imm.error();
                         }
-                        auto new_id = m.new_id();
+                        auto new_id = m.new_id(nullptr);
                         if (!new_id) {
                             return new_id.error();
                         }
@@ -501,7 +497,7 @@ namespace rebgn {
                             Storages isOkFlag;
                             isOkFlag.length.value(1);
                             isOkFlag.storages.push_back(Storage{.type = StorageType::BOOL});
-                            auto flagObj = m.new_id();
+                            auto flagObj = m.new_id(nullptr);
                             if (!flagObj) {
                                 return error("Failed to generate new id");
                             }
@@ -523,7 +519,7 @@ namespace rebgn {
                                 c.right_ref(*immTrue);
                             });
                             auto err = counter_loop(m, *imm, [&](Varint i) {
-                                auto index_str = m.new_id();
+                                auto index_str = m.new_id(nullptr);
                                 if (!index_str) {
                                     return error("Failed to generate new id");
                                 }
@@ -532,7 +528,7 @@ namespace rebgn {
                                     c.left_ref(*str_ref);
                                     c.right_ref(i);
                                 });
-                                auto index_peek = m.new_id();
+                                auto index_peek = m.new_id(nullptr);
                                 if (!index_peek) {
                                     return error("Failed to generate new id");
                                 }
@@ -541,7 +537,7 @@ namespace rebgn {
                                     c.left_ref(*temporary_read_holder);
                                     c.right_ref(i);
                                 });
-                                auto cmp = m.new_id();
+                                auto cmp = m.new_id(nullptr);
                                 if (!cmp) {
                                     return error("Failed to generate new id");
                                 }
@@ -604,6 +600,10 @@ namespace rebgn {
                     });
                     return none;
                 }
+                m.op(AbstractOp::RESERVE_SIZE, [&](Code& c) {
+                    c.left_ref(base_ref);
+                    c.right_ref(*len_ident);
+                });
                 return counter_loop(m, *len_ident, [&](Varint) {
                     return undelying_decoder();
                 });
@@ -641,7 +641,7 @@ namespace rebgn {
             if (!ident) {
                 return ident.error();
             }
-            auto storage = m.new_id();
+            auto storage = m.new_id(nullptr);
             if (!storage) {
                 return storage.error();
             }
@@ -662,7 +662,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto casted = m.new_id();
+            auto casted = m.new_id(nullptr);
             if (!casted) {
                 return casted.error();
             }
@@ -789,7 +789,20 @@ namespace rebgn {
         });
         m.on_encode_fn = true;
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
-            return convert_node_encode(m, n);
+            if (m.bit_field_begin.contains(n)) {
+                auto new_id = m.new_id(nullptr);
+                if (!new_id) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::DEFINE_PACKED_OPERATION, [&](Code& c) {
+                    c.ident(*new_id);
+                });
+            }
+            auto err = convert_node_encode(m, n);
+            if (m.bit_field_end.contains(n)) {
+                m.op(AbstractOp::END_PACKED_OPERATION);
+            }
+            return err;
         });
         if (err) {
             return err;

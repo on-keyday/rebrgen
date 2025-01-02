@@ -7,6 +7,7 @@
 #include <core/ast/ast.h>
 #include <core/ast/tool/ident.h>
 #include "common.hpp"
+#include <unordered_set>
 namespace rebgn {
 
     using ObjectID = std::uint64_t;
@@ -61,7 +62,10 @@ namespace rebgn {
         std::uint64_t object_id = 1;
         std::vector<std::shared_ptr<CFG>> cfgs;
 
+        // internal
         bool on_encode_fn = false;
+        std::unordered_set<std::shared_ptr<ast::Node>> bit_field_begin;
+        std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
 
         void map_struct(std::shared_ptr<ast::StructType> s, ObjectID id) {
             struct_table[s] = id;
@@ -92,10 +96,10 @@ namespace rebgn {
             prev_expr_id = id;
         }
 
-        expected<Varint> lookup_string(const std::string& str) {
+        expected<Varint> lookup_string(const std::string& str, brgen::lexer::Loc* loc) {
             auto str_ref = string_table.find(str);
             if (str_ref == string_table.end()) {
-                auto ident = new_id();
+                auto ident = new_id(loc);
                 if (!ident) {
                     return ident;
                 }
@@ -108,12 +112,12 @@ namespace rebgn {
 
         expected<Varint> lookup_ident(std::shared_ptr<ast::Ident> ident) {
             if (!ident) {
-                return new_id();  // ephemeral id
+                return new_id(nullptr);  // ephemeral id
             }
             auto [base, _] = *ast::tool::lookup_base(ident);
             auto it = ident_table.find(base);
             if (it == ident_table.end()) {
-                auto id = new_id();
+                auto id = new_node_id(base);
                 if (!id) {
                     return id;
                 }
@@ -124,7 +128,11 @@ namespace rebgn {
             return varint(it->second);
         }
 
-        expected<Varint> new_id() {
+        expected<Varint> new_node_id(const std::shared_ptr<ast::Node>& node) {
+            return new_id(&node->loc);
+        }
+
+        expected<Varint> new_id(brgen::lexer::Loc* loc) {
             return varint(object_id++);
         }
 

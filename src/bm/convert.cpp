@@ -14,8 +14,8 @@ namespace rebgn {
         return m.get_prev_expr();
     }
 
-    expected<Varint> immediate_bool(Module& m, bool b) {
-        auto ident = m.new_id();
+    expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc) {
+        auto ident = m.new_id(loc);
         if (!ident) {
             return ident;
         }
@@ -32,8 +32,8 @@ namespace rebgn {
         return ident;
     }
 
-    expected<Varint> immediate_char(Module& m, std::uint64_t c) {
-        auto ident = m.new_id();
+    expected<Varint> immediate_char(Module& m, std::uint64_t c, brgen::lexer::Loc* loc) {
+        auto ident = m.new_id(loc);
         if (!ident) {
             return ident;
         }
@@ -48,8 +48,8 @@ namespace rebgn {
         return ident;
     }
 
-    expected<Varint> immediate(Module& m, std::uint64_t n) {
-        auto ident = m.new_id();
+    expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc) {
+        auto ident = m.new_id(loc);
         if (!ident) {
             return ident;
         }
@@ -70,7 +70,7 @@ namespace rebgn {
     }
 
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
-        auto ident = m.new_id();
+        auto ident = m.new_id(nullptr);
         if (!ident) {
             return ident;
         }
@@ -105,7 +105,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Import>(Module& m, std::shared_ptr<ast::Import>& node) {
-        auto prog_id = m.new_id();
+        auto prog_id = m.new_node_id(node->import_desc);
         if (!prog_id) {
             return prog_id.error();
         }
@@ -120,7 +120,7 @@ namespace rebgn {
             return err;
         }
         m.op(AbstractOp::END_PROGRAM);
-        auto import_id = m.new_id();
+        auto import_id = m.new_node_id(node);
         if (!import_id) {
             return import_id.error();
         }
@@ -211,7 +211,7 @@ namespace rebgn {
             }
             case ast::IOMethod::input_offset:
             case ast::IOMethod::input_bit_offset: {
-                auto new_id = m.new_id();
+                auto new_id = m.new_node_id(node);
                 if (!new_id) {
                     return new_id.error();
                 }
@@ -230,7 +230,7 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-                auto id = m.new_id();
+                auto id = m.new_node_id(node);
                 if (!id) {
                     return id.error();
                 }
@@ -271,7 +271,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::BoolLiteral>(Module& m, std::shared_ptr<ast::BoolLiteral>& node) {
-        auto ref = immediate_bool(m, node->value);
+        auto ref = immediate_bool(m, node->value, &node->loc);
         if (!ref) {
             return ref.error();
         }
@@ -281,7 +281,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::CharLiteral>(Module& m, std::shared_ptr<ast::CharLiteral>& node) {
-        auto ref = immediate_char(m, node->code);
+        auto ref = immediate_char(m, node->code, &node->loc);
         if (!ref) {
             return ref.error();
         }
@@ -291,7 +291,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::StrLiteral>(Module& m, std::shared_ptr<ast::StrLiteral>& node) {
-        auto str_ref = m.lookup_string(node->value);
+        auto str_ref = m.lookup_string(node->value, &node->loc);
         if (!str_ref) {
             return str_ref.error();
         }
@@ -309,7 +309,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        auto new_id = m.new_id();
+        auto new_id = m.new_node_id(node->type_literal);
         if (!new_id) {
             return new_id.error();
         }
@@ -344,7 +344,7 @@ namespace rebgn {
         if (!index) {
             return error("Invalid index value: {}", index.error().error());
         }
-        auto new_id = m.new_id();
+        auto new_id = m.new_node_id(node);
         if (!new_id) {
             return new_id.error();
         }
@@ -365,7 +365,7 @@ namespace rebgn {
         }
         if (node->member->usage == ast::IdentUsage::reference_builtin_fn) {
             if (node->member->ident == "length") {
-                auto new_id = m.new_id();
+                auto new_id = m.new_node_id(node->member);
                 if (!new_id) {
                     return new_id.error();
                 }
@@ -382,7 +382,7 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        auto new_id = m.new_id();
+        auto new_id = m.new_node_id(node);
         if (!new_id) {
             return new_id.error();
         }
@@ -396,7 +396,7 @@ namespace rebgn {
     }
 
     expected<Varint> define_union(Module& m, Varint field_id, const std::shared_ptr<ast::StructUnionType>& su) {
-        auto union_ident = m.new_id();
+        auto union_ident = m.new_node_id(su);
         if (!union_ident) {
             return union_ident;
         }
@@ -405,7 +405,7 @@ namespace rebgn {
             c.belong(field_id);
         });
         for (auto& st : su->structs) {
-            auto ident = m.new_id();
+            auto ident = m.new_node_id(st);
             if (!ident) {
                 return ident;
             }
@@ -468,7 +468,7 @@ namespace rebgn {
             push(StorageType::UINT, [&](Storage& c) {
                 c.size(*varint(8));
             });
-            auto ref = m.lookup_string(f->strong_ref->value);
+            auto ref = m.lookup_string(f->strong_ref->value, &f->strong_ref->loc);
             if (!ref) {
                 return ref.error();
             }
@@ -599,7 +599,7 @@ namespace rebgn {
                     return error("Invalid union field condition");
                 }
                 if (base_cond) {
-                    auto new_id = m.new_id();
+                    auto new_id = m.new_id(nullptr);
                     if (!new_id) {
                         return new_id.error();
                     }
@@ -612,7 +612,7 @@ namespace rebgn {
                     cond_ = new_id;
                 }
                 if (prev_cond) {
-                    auto new_id_1 = m.new_id();
+                    auto new_id_1 = m.new_id(nullptr);
                     if (!new_id_1) {
                         return new_id_1.error();
                     }
@@ -621,7 +621,7 @@ namespace rebgn {
                         c.uop(UnaryOp::logical_not);
                         c.ref(*prev_cond);
                     });
-                    auto new_id_2 = m.new_id();
+                    auto new_id_2 = m.new_id(nullptr);
                     if (!new_id_2) {
                         return new_id_2.error();
                     }
@@ -642,7 +642,7 @@ namespace rebgn {
                 prev_cond = cond_.value();
             }
             else {
-                auto new_id = m.new_id();
+                auto new_id = m.new_id(nullptr);
                 if (!new_id) {
                     return new_id.error();
                 }
@@ -676,7 +676,7 @@ namespace rebgn {
             std::optional<Varint> prev_cond;
             auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint cond, std::shared_ptr<ast::Field>& field) {
                 if (prev_cond) {
-                    auto new_id = m.new_id();
+                    auto new_id = m.new_id(nullptr);
                     if (!new_id) {
                         return new_id.error();
                     }
@@ -722,7 +722,7 @@ namespace rebgn {
             }
             base_expr = expr.value();
         }
-        auto id = m.new_id();
+        auto id = m.new_node_id(node);
         if (!id) {
             return id.error();
         }
@@ -742,7 +742,7 @@ namespace rebgn {
             if (!ident) {
                 return ident.error();
             }
-            auto cond_field_id = m.new_id();
+            auto cond_field_id = m.new_id(nullptr);
             if (!cond_field_id) {
                 return cond_field_id.error();
             }
@@ -769,7 +769,7 @@ namespace rebgn {
                 return len.error();
             }
             param.len_exprs = *len;
-            auto ident = m.new_id();
+            auto ident = m.new_id(nullptr);
             if (!ident) {
                 return ident.error();
             }
@@ -831,7 +831,7 @@ namespace rebgn {
             }
             args.push_back(arg.value());
         }
-        auto new_id = m.new_id();
+        auto new_id = m.new_node_id(node);
         if (!new_id) {
             return new_id.error();
         }
@@ -1040,7 +1040,7 @@ namespace rebgn {
             });
         }
         std::vector<std::shared_ptr<ast::Field>> bit_fields;
-        std::set<std::shared_ptr<ast::Field>> bit_field_begin, bit_field_end;
+        std::unordered_set<std::shared_ptr<ast::Field>> bit_field_begin, bit_field_end;
         for (auto& f : node->body->struct_type->fields) {
             if (auto field = ast::as<ast::Field>(f)) {
                 if (field->bit_alignment != field->eventual_bit_alignment) {
@@ -1054,11 +1054,10 @@ namespace rebgn {
                 }
             }
         }
-        std::vector<Varint> bit_field_ids;
         for (auto& f : node->body->struct_type->fields) {
-            if (ast::as<ast::Field>(f)) {
+            if (auto ft = ast::as<ast::Field>(f)) {
                 if (bit_field_begin.contains(ast::cast_to<ast::Field>(f))) {
-                    auto new_id = m.new_id();
+                    auto new_id = m.new_id(nullptr);
                     if (!new_id) {
                         return new_id.error();
                     }
@@ -1067,6 +1066,8 @@ namespace rebgn {
                         c.belong(ident.value());
                     });
                     m.map_struct(node->body->struct_type, new_id->value());  // temporary remap
+                    if (ast::as<ast::StructUnionType>(ft->field_type)) {
+                                        }
                 }
             }
             auto err = convert_node_definition(m, f);
@@ -1081,6 +1082,8 @@ namespace rebgn {
             }
         }
         m.op(AbstractOp::END_FORMAT);
+        m.bit_field_begin.insert(bit_field_begin.begin(), bit_field_begin.end());
+        m.bit_field_end.insert(bit_field_end.begin(), bit_field_end.end());
         return none;
     }
 
@@ -1132,7 +1135,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Unary>(Module& m, std::shared_ptr<ast::Unary>& node) {
-        auto ident = m.new_id();
+        auto ident = m.new_node_id(node);
         if (!ident) {
             return ident.error();
         }
@@ -1161,7 +1164,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        auto new_id = m.new_id();
+        auto new_id = m.new_node_id(node);
         if (!new_id) {
             return new_id.error();
         }
@@ -1204,7 +1207,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Cast>(Module& m, std::shared_ptr<ast::Cast>& node) {
-        auto ident = m.new_id();
+        auto ident = m.new_node_id(node);
         if (!ident) {
             return ident.error();
         }
@@ -1291,7 +1294,7 @@ namespace rebgn {
             return none;
         }
 
-        auto ident = m.new_id();
+        auto ident = m.new_node_id(node);
         if (!ident) {
             return ident.error();
         }
@@ -1374,7 +1377,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Metadata>(Module& m, std::shared_ptr<ast::Metadata>& node) {
-        auto node_name = m.lookup_string(node->name);
+        auto node_name = m.lookup_string(node->name, &node->loc);
         if (!node_name) {
             return node_name.error();
         }
@@ -1402,7 +1405,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Program>(Module& m, std::shared_ptr<ast::Program>& node) {
-        auto pid = m.new_id();
+        auto pid = m.new_node_id(node);
         if (!pid) {
             return pid.error();
         }

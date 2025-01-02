@@ -235,6 +235,7 @@ enum AbstractOp:
     EVAL_EXPR
 
     ARRAY_SIZE
+    RESERVE_SIZE
 
     BEGIN_ENCODE_SUB_RANGE
     END_ENCODE_SUB_RANGE
@@ -576,7 +577,10 @@ format Code:
             ident :Varint
         AbstractOp.ARRAY_SIZE:
             ident :Varint
-            ref :Varint
+            ref :Varint # ref to array
+        AbstractOp.RESERVE_SIZE:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to size
         AbstractOp.BEGIN_ENCODE_SUB_RANGE:
             ref :Varint # length of sub range
         AbstractOp.BEGIN_DECODE_SUB_RANGE:
@@ -615,6 +619,20 @@ format IdentRanges:
     length :Varint
     ranges :[length.value]IdentRange
 
+format Loc:
+    ident :Varint # ref to generated code
+    file_id :Varint # files index + 1
+    line :Varint # line number
+    column :Varint # column number
+    start :Varint # start index of source code
+    end :Varint # end index of source code
+
+format DebugInfo:
+    len_files :Varint
+    files :[len_files.value]String
+    len_locs :Varint
+    locs :[len_locs.value]Loc
+
 format BinaryModule:
     magic: "RBGM"
     max_id :Varint
@@ -623,5 +641,9 @@ format BinaryModule:
     ident_indexes :IdentIndexs
     programs :Ranges # root ranges
     ident_ranges :IdentRanges
+    has_debug_info :u1
+    reserved :u7
+    if has_debug_info == 1:
+        debug_info :DebugInfo
     code_length :Varint
     code :[code_length.value]Code

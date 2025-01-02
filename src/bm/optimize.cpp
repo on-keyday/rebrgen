@@ -1060,7 +1060,7 @@ namespace rebgn {
                 if (exist) {
                     continue;
                 }
-                auto new_id = m.new_id();
+                auto new_id = m.new_id(nullptr);
                 if (!new_id) {
                     return new_id.error();
                 }

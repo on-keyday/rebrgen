@@ -16,8 +16,8 @@ namespace rebgn {
     template <class T>
     Error decode(Module& m, std::shared_ptr<T>& node) = delete;
 
-    expected<Varint> immediate(Module& m, std::uint64_t n);
-    expected<Varint> immediate_bool(Module& m, bool b);
+    expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
+    expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
@@ -63,7 +63,7 @@ namespace rebgn {
         if (!counter) {
             return counter.error();
         }
-        auto cmp = m.new_id();
+        auto cmp = m.new_id(nullptr);
         if (!cmp) {
             return cmp.error();
         }
@@ -97,7 +97,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto new_id = m.new_id();
+            auto new_id = m.new_node_id(node->expr_type);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
@@ -213,7 +213,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto new_id = m.new_id();
+            auto new_id = m.new_node_id(node->expr_type);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
@@ -436,7 +436,7 @@ namespace rebgn {
                         return tmp_var.error();
                     }
                     if (end.value() != 0) {
-                        auto id = m.new_id();
+                        auto id = m.new_node_id(node);
                         m.op(AbstractOp::BINARY, [&](Code& c) {
                             c.ident(*id);
                             c.left_ref(*tmp_var);
@@ -462,7 +462,7 @@ namespace rebgn {
                     m.op(AbstractOp::END_LOOP);
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
-                    auto size_id = m.new_id();
+                    auto size_id = m.new_id(nullptr);
                     if (!size_id) {
                         return size_id.error();
                     }
@@ -471,7 +471,7 @@ namespace rebgn {
                         c.ref(*target);
                     });
                     return counter_loop(m, *size_id, [&](Varint counter) {
-                        auto idx = m.new_id();
+                        auto idx = m.new_id(nullptr);
                         if (!idx) {
                             return idx.error();
                         }
@@ -496,7 +496,7 @@ namespace rebgn {
                     });
                 }
                 else if (auto lit = ast::as<ast::StrLiteral>(bop->right->expr_type)) {
-                    auto str_id = m.lookup_string(lit->value);
+                    auto str_id = m.lookup_string(lit->value, &lit->loc);
                     if (!str_id) {
                         return str_id.error();
                     }
@@ -505,7 +505,7 @@ namespace rebgn {
                         return len.error();
                     }
                     return counter_loop(m, *len, [&](Varint counter) {
-                        auto id = m.new_id();
+                        auto id = m.new_id(nullptr);
                         if (!id) {
                             return id.error();
                         }

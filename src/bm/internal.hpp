@@ -378,6 +378,156 @@ namespace rebgn {
 
     Error convert_loop(Module& m, std::shared_ptr<ast::Loop>& node, auto&& eval) {
         if (node->init) {
+            if (auto bop = ast::as<ast::Binary>(node->init);
+                bop && bop->op == ast::BinaryOp::in_assign) {  // `for x in y`
+                auto ident = ast::as<ast::Ident>(bop->left);
+                if (!ident) {
+                    return error("Invalid loop init target :{}", node_type_to_string(bop->left->node_type));
+                }
+                auto target = get_expr(m, bop->right);
+                if (!target) {
+                    return error("Invalid loop init: {}", target.error().error());
+                }
+                if (ast::as<ast::IntType>(bop->right->expr_type)) {
+                    return counter_loop(m, target.value(), [&](Varint counter) {
+                        auto id = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));
+                        if (!id) {
+                            return id.error();
+                        }
+                        m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
+                            c.ident(*id);
+                            c.ref(counter);
+                        });
+                        auto err = eval(m, node->body);
+                        if (err) {
+                            return err;
+                        }
+                        return none;
+                    });
+                }
+                else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
+                    auto l = range->range.lock();
+                    Varint start, end;
+                    if (l->start) {
+                        auto s = get_expr(m, l->start);
+                        if (!s) {
+                            return s.error();
+                        }
+                    }
+                    else {
+                        auto s = immediate(m, 0);
+                        if (!s) {
+                            return s.error();
+                        }
+                    }
+                    if (l->end) {
+                        auto e = get_expr(m, l->end);
+                        if (!e) {
+                            return e.error();
+                        }
+                    } /*otherwise, its inf*/
+                    auto tmp_var = define_tmp_var(m, start, ast::ConstantLevel::variable);
+                    if (!tmp_var) {
+                        return tmp_var.error();
+                    }
+                    if (end.value() != 0) {
+                        auto id = m.new_id();
+                        m.op(AbstractOp::BINARY, [&](Code& c) {
+                            c.ident(*id);
+                            c.left_ref(*tmp_var);
+                            c.bop(l->op == ast::BinaryOp::range_inclusive
+                                      ? BinaryOp::less_or_eq
+                                      : BinaryOp::less);
+                            c.right_ref(end);
+                        });
+                        m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+                            c.ref(*tmp_var);
+                        });
+                    }
+                    else {
+                        m.op(AbstractOp::LOOP_INFINITE);
+                    }
+                    auto err = eval(m, node->body);
+                    if (err) {
+                        return err;
+                    }
+                    m.op(AbstractOp::INC, [&](Code& c) {
+                        c.ref(*tmp_var);
+                    });
+                    m.op(AbstractOp::END_LOOP);
+                }
+                else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
+                    auto size_id = m.new_id();
+                    if (!size_id) {
+                        return size_id.error();
+                    }
+                    m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
+                        c.ident(*size_id);
+                        c.ref(*target);
+                    });
+                    return counter_loop(m, *size_id, [&](Varint counter) {
+                        auto idx = m.new_id();
+                        if (!idx) {
+                            return idx.error();
+                        }
+                        m.op(AbstractOp::INDEX, [&](Code& c) {
+                            c.ident(*idx);
+                            c.left_ref(*target);
+                            c.right_ref(counter);
+                        });
+                        auto ident = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));
+                        if (!ident) {
+                            return ident.error();
+                        }
+                        m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
+                            c.ident(*ident);
+                            c.ref(*idx);
+                        });
+                        auto err = eval(m, node->body);
+                        if (err) {
+                            return err;
+                        }
+                        return none;
+                    });
+                }
+                else if (auto lit = ast::as<ast::StrLiteral>(bop->right->expr_type)) {
+                    auto str_id = m.lookup_string(lit->value);
+                    if (!str_id) {
+                        return str_id.error();
+                    }
+                    auto len = varint(lit->length);
+                    if (!len) {
+                        return len.error();
+                    }
+                    return counter_loop(m, *len, [&](Varint counter) {
+                        auto id = m.new_id();
+                        if (!id) {
+                            return id.error();
+                        }
+                        m.op(AbstractOp::INDEX, [&](Code& c) {
+                            c.ident(*id);
+                            c.left_ref(*target);
+                            c.right_ref(counter);
+                        });
+                        auto ident = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));
+                        if (!ident) {
+                            return ident.error();
+                        }
+                        m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
+                            c.ident(*ident);
+                            c.ref(*id);
+                        });
+                        auto err = eval(m, node->body);
+                        if (err) {
+                            return err;
+                        }
+                        return none;
+                    });
+                }
+                else {
+                    return error("Invalid loop init type : {}", node_type_to_string(bop->right->expr_type->node_type));
+                }
+            }
             auto err = eval(m, node->init);
             if (err) {
                 return err;

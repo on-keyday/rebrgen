@@ -137,6 +137,9 @@ namespace bm2cpp {
             }
             case rebgn::StorageType::VECTOR: {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                if (inner == "std::uint8_t") {
+                    return "::futils::view::rvec";
+                }
                 return std::format("std::vector<{}>", inner);
             }
             case rebgn::StorageType::BOOL:
@@ -708,7 +711,8 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::END_FUNCTION:
-                case rebgn::AbstractOp::END_IF: {
+                case rebgn::AbstractOp::END_IF:
+                case rebgn::AbstractOp::END_LOOP: {
                     defer.pop_back();
                     ctx.cw.writeln("}");
                     break;
@@ -754,9 +758,47 @@ namespace bm2cpp {
                     auto ref_to_len = code.right_ref().value().value();
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
+                    ctx.cw.writeln(std::format("if({}.size() != {}) {{ return false; }}", vec.back(), len.back()));
                     if (bit_size == 8) {
-                        ctx.cw.writeln(std::format("if({}.size() != {}) {{ return false; }}", vec.back(), len.back()));
                         ctx.cw.writeln(std::format("if(!w.write({})) {{ return false; }}", vec.back()));
+                    }
+                    else {
+                        auto tmp = std::format("i_{}", ref_to_vec);
+                        ctx.cw.writeln("for(auto& ", tmp, " : ", vec.back(), ") {");
+                        auto scope = ctx.cw.indent_scope();
+                        ctx.cw.writeln(std::format("if(!::futils::binary::write_num(w,{},{})) {{ return false; }}", tmp, bit_size));
+                        scope.execute();
+                        ctx.cw.writeln("}");
+                    }
+                    break;
+                }
+                case rebgn::AbstractOp::DECODE_INT_VECTOR:
+                case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref_to_vec = code.left_ref().value().value();
+                    auto ref_to_len = code.right_ref().value().value();
+                    auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
+                    auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
+                    if (bit_size == 8) {
+                        ctx.cw.writeln(std::format("if(!r.read({},{})) {{ return false; }}", vec.back(), len.back()));
+                    }
+                    else {
+                        auto endian = code.endian().value();
+                        auto is_big = endian == rebgn::Endian::little ? false : true;
+                        auto tmp_i = std::format("i_{}", ref_to_vec);
+                        ctx.cw.writeln("for(size_t ", tmp_i, " = 0; ", tmp_i, " < ", len.back(), "; ", tmp_i, "++) {");
+                        auto scope = ctx.cw.indent_scope();
+                        if (code.op == rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED) {
+                            ctx.cw.writeln(std::format("if(!::futils::binary::read_num(r,{}[{}],{})) {{ return false; }}", vec.back(), tmp_i, is_big));
+                        }
+                        else {
+                            auto tmp = std::format("tmp_hold_{}", ref_to_vec);
+                            ctx.cw.writeln(std::format("std::uint{}_t {};", bit_size, tmp));
+                            ctx.cw.writeln(std::format("if(!::futils::binary::read_num(r,{},{})) {{ return false; }}", tmp, is_big));
+                            ctx.cw.writeln(std::format("{}.push_back({});", vec.back(), tmp));
+                        }
+                        scope.execute();
+                        ctx.cw.writeln("}");
                     }
                     break;
                 }
@@ -770,6 +812,18 @@ namespace bm2cpp {
                         auto s = eval(ctx.bm.code[ident], ctx);
                         ctx.cw.writeln("return ", s.back(), ";");
                     }
+                    break;
+                }
+                case rebgn::AbstractOp::LOOP_INFINITE: {
+                    ctx.cw.writeln("for(;;) {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
+                    break;
+                }
+                case rebgn::AbstractOp::LOOP_CONDITION: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("while(", evaluated.back(), ") {");
+                    defer.push_back(ctx.cw.indent_scope_ex());
                     break;
                 }
                 case rebgn::AbstractOp::CHECK_UNION:

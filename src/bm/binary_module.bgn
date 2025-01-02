@@ -157,6 +157,7 @@ enum AbstractOp:
     ENCODE_INT_VECTOR
     DECODE_INT_VECTOR
     DECODE_INT_VECTOR_UNTIL_EOF
+    DECODE_INT_VECTOR_FIXED
     PEEK_INT_VECTOR
     BACKWARD_INPUT
     BACKWARD_OUTPUT
@@ -189,6 +190,7 @@ enum AbstractOp:
     END_MATCH
 
     DEFINE_VARIABLE
+    DEFINE_VARIABLE_REF
     DEFINE_CONSTANT
     
     BINARY
@@ -274,7 +276,6 @@ enum StorageType:
     FLOAT 
     STRUCT_REF
     RECURSIVE_STRUCT_REF
-    BYTE_VECTOR # special case of vector
     BOOL
 
     # qualifiers
@@ -308,7 +309,6 @@ format Storage:
             ref :Varint
         StorageType.RECURSIVE_STRUCT_REF:
             ref :Varint
-        StorageType.BYTE_VECTOR => ..
         StorageType.ENUM:
             ref :Varint
         StorageType.ARRAY:
@@ -330,6 +330,8 @@ format Param:
     len_exprs :Varint
     expr_refs :[len_exprs.value]Varint
 
+# ident is unique identifier
+# ref, left_ref, right_ref is reference to other object identifier
 format Code:
     op :AbstractOp
     match op:
@@ -391,6 +393,9 @@ format Code:
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
             ref :Varint # ref to initial expr
+        AbstractOp.DEFINE_VARIABLE_REF:
+            ident :Varint
+            ref :Varint # ref to variable
         AbstractOp.DEFINE_PARAMETER:
             ident: Varint
             belong :Varint # belong to function
@@ -439,6 +444,11 @@ format Code:
             endian :Endian
             bit_size :Varint
         AbstractOp.DECODE_INT_VECTOR:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to length
+            endian :Endian
+            bit_size :Varint
+        AbstractOp.DECODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
             endian :Endian

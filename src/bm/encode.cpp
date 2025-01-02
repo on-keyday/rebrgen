@@ -326,7 +326,7 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
-                    m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
+                    m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*imm);
                         c.endian(Endian(elem_is_int->endian));

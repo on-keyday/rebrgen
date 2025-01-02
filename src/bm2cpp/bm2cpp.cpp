@@ -188,6 +188,13 @@ namespace bm2cpp {
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
+            case rebgn::AbstractOp::ARRAY_SIZE: {
+                auto ref_index = ctx.ident_index_table[code.ref().value().value()];
+                auto ref = eval(ctx.bm.code[ref_index], ctx);
+                res.insert(res.end(), ref.begin(), ref.end() - 1);
+                res.push_back(std::format("{}.size()", ref.back()));
+                break;
+            }
             case rebgn::AbstractOp::CALL_CAST: {
                 auto type_str = type_to_string(ctx, *code.storage());
                 auto param = code.param().value();
@@ -395,6 +402,29 @@ namespace bm2cpp {
             unique.push_back(std::move(res[i]));
         }
         return unique;
+    }
+
+    void code_call_parameter(Context& ctx, rebgn::Range range) {
+        size_t params = 0;
+        for (size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            if (code.op == rebgn::AbstractOp::ENCODER_PARAMETER) {
+                ctx.cw.write("w");
+                params++;
+            }
+            if (code.op == rebgn::AbstractOp::DECODER_PARAMETER) {
+                ctx.cw.write("r");
+                params++;
+            }
+            if (code.op == rebgn::AbstractOp::STATE_VARIABLE_PARAMETER) {
+                auto& ident = ctx.ident_table[code.ref().value().value()];
+                if (params > 0) {
+                    ctx.cw.write(", ");
+                }
+                ctx.cw.write(ident);
+                params++;
+            }
+        }
     }
 
     void add_function_parameters(Context& ctx, rebgn::Range range) {
@@ -725,6 +755,31 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::APPEND: {
                     auto s = eval(code, ctx);
                     ctx.cw.writeln(s.back());
+                    break;
+                }
+                case rebgn::AbstractOp::INC: {
+                    auto ref = code.ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    ctx.cw.writeln("++", evaluated.back(), ";");
+                    break;
+                }
+                case rebgn::AbstractOp::CALL_ENCODE:
+                case rebgn::AbstractOp::CALL_DECODE: {
+                    auto ref = code.right_ref().value().value();
+                    auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                    auto name = ctx.ident_table[code.left_ref().value().value()];
+                    ctx.cw.write("if(!", evaluated.back(), ".", name, "(");
+                    auto range = ctx.ident_range_table[code.left_ref().value().value()];
+                    code_call_parameter(ctx, range);
+                    ctx.cw.writeln(")) { return false; }");
+                    break;
+                }
+                case rebgn::AbstractOp::BREAK: {
+                    ctx.cw.writeln("break;");
+                    break;
+                }
+                case rebgn::AbstractOp::CONTINUE: {
+                    ctx.cw.writeln("continue;");
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_VARIABLE: {

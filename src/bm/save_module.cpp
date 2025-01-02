@@ -4,6 +4,11 @@
 namespace rebgn {
     Error save(Module& m, futils::binary::writer& w) {
         BinaryModule bm;
+        auto id = varint(m.object_id - 1);
+        if (!id) {
+            return id.error();
+        }
+        bm.max_id = id.value();
         auto add_refs = [&](StringRefs& refs, std::uint64_t id, std::string_view str) {
             StringRef sr;
             auto idv = varint(id);

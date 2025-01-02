@@ -377,6 +377,11 @@ namespace rebgn {
     }
 
     Error convert_loop(Module& m, std::shared_ptr<ast::Loop>& node, auto&& eval) {
+        auto inner_block = [&] {
+            return foreach_node(m, node->body->elements, [&](auto& n) {
+                return eval(m, n);
+            });
+        };
         if (node->init) {
             if (auto bop = ast::as<ast::Binary>(node->init);
                 bop && bop->op == ast::BinaryOp::in_assign) {  // `for x in y`
@@ -398,7 +403,7 @@ namespace rebgn {
                             c.ident(*id);
                             c.ref(counter);
                         });
-                        auto err = eval(m, node->body);
+                        auto err = inner_block();
                         if (err) {
                             return err;
                         }
@@ -447,7 +452,7 @@ namespace rebgn {
                     else {
                         m.op(AbstractOp::LOOP_INFINITE);
                     }
-                    auto err = eval(m, node->body);
+                    auto err = inner_block();
                     if (err) {
                         return err;
                     }
@@ -483,7 +488,7 @@ namespace rebgn {
                             c.ident(*ident);
                             c.ref(*idx);
                         });
-                        auto err = eval(m, node->body);
+                        auto err = inner_block();
                         if (err) {
                             return err;
                         }
@@ -517,7 +522,7 @@ namespace rebgn {
                             c.ident(*ident);
                             c.ref(*id);
                         });
-                        auto err = eval(m, node->body);
+                        auto err = inner_block();
                         if (err) {
                             return err;
                         }
@@ -545,9 +550,7 @@ namespace rebgn {
         else {
             m.op(AbstractOp::LOOP_INFINITE);
         }
-        auto err = foreach_node(m, node->body->elements, [&](auto& n) {
-            return eval(m, n);
-        });
+        auto err = inner_block();
         if (err) {
             return err;
         }

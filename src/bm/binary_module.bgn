@@ -617,6 +617,7 @@ format IdentRanges:
 
 format BinaryModule:
     magic: "RBGM"
+    max_id :Varint
     strings :StringRefs
     identifiers :StringRefs
     ident_indexes :IdentIndexs

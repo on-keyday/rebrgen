@@ -286,18 +286,22 @@ namespace rebgn {
                         c.left_ref(*varint(ident));
                         c.right_ref(*varint(found_encoder->second));
                     }));
-                    rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
-                        c.ref(*varint(found_encoder->second));
-                    }));
+                    if (should_bind_encoder.find(found_encoder->second) != should_bind_encoder.end()) {
+                        rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
+                            c.ref(*varint(found_encoder->second));
+                        }));
+                    }
                 }
                 if (found_decoder != fmt_to_decoder.end()) {
                     rebound.push_back(make_code(AbstractOp::DEFINE_DECODER, [&](auto& c) {
                         c.left_ref(*varint(ident));
                         c.right_ref(*varint(found_decoder->second));
                     }));
-                    rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
-                        c.ref(*varint(found_decoder->second));
-                    }));
+                    if (should_bind_decoder.find(found_decoder->second) != should_bind_decoder.end()) {
+                        rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
+                            c.ref(*varint(found_decoder->second));
+                        }));
+                    }
                 }
             }
             else if (c.op == AbstractOp::DECLARE_FUNCTION) {

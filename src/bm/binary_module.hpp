@@ -1787,6 +1787,7 @@ namespace rebgn {
     };
     struct BinaryModule {
         //"RBGM" (4 bytes)
+        Varint max_id;
         StringRefs strings;
         StringRefs identifiers;
         IdentIndexs ident_indexes;
@@ -13572,6 +13573,9 @@ namespace rebgn {
         if (!w.write(::futils::view::rvec("RBGM", 4))) {
             return ::futils::error::Error<>("encode: BinaryModule::magic: write string failed; \"RBGM\"", ::futils::error::Category::lib);
         }
+        if (auto err = (*this).max_id.encode(w)) {
+            return err;
+        }
         if (auto err = (*this).strings.encode(w)) {
             return err;
         }
@@ -13608,6 +13612,9 @@ namespace rebgn {
         }
         if (tmp_174_ != ::futils::view::rvec("RBGM", 4)) {
             return ::futils::error::Error<>("decode: BinaryModule::magic: read string failed; not match to \"RBGM\"", ::futils::error::Category::lib);
+        }
+        if (auto err = (*this).max_id.decode(r)) {
+            return err;
         }
         if (auto err = (*this).strings.decode(r)) {
             return err;

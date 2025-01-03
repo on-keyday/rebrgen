@@ -1142,11 +1142,11 @@ namespace rebgn {
 
         return none;
     }
-
+    /*
     Error insert_init_recursive_struct(Module& m) {
         std::vector<Code> rebound;
         std::map<size_t, ObjectID> struct_refs;
-        std::set<ObjectID> recursive_fields;
+        // std::set<ObjectID> recursive_fields;
         bool inner_func = false;
         for (size_t i = 0; i < m.code.size(); i++) {
             auto& c = m.code[i];
@@ -1165,10 +1165,12 @@ namespace rebgn {
                     auto idx = found->second;
                     if (m.code[idx].op == AbstractOp::DEFINE_FIELD) {
                         auto ident = m.code[idx].ident()->value();
+                        /*
                         if (recursive_fields.contains(ident)) {
                             return;
                         }
                         recursive_fields.insert(ident);
+                        *
                         for (auto j = idx + 1; j < m.code.size(); j++) {
                             if (m.code[j].op == AbstractOp::END_FIELD) {
                                 break;
@@ -1206,6 +1208,7 @@ namespace rebgn {
         m.code = std::move(rebound);
         return none;
     }
+    */
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
@@ -1235,11 +1238,13 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
+        /**
         err = insert_init_recursive_struct(m);
         if (err) {
             return err;
         }
         rebind_ident_index(m);
+        */
         err = generate_cfg1(m);
         if (err) {
             return err;

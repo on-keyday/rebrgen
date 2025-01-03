@@ -4,7 +4,7 @@
 #include <core/ast/tool/eval.h>
 
 namespace rebgn {
-    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type) {
+    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             auto bit_size = varint(*int_ty->bit_size);
             if (!bit_size) {
@@ -100,7 +100,7 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(i);
                     });
-                    return encode_type(m, arr->element_type, *index, mapped_type);
+                    return encode_type(m, arr->element_type, *index, mapped_type, should_init_recursive);
                 });
             }
             expected<Varint> len_;
@@ -143,7 +143,7 @@ namespace rebgn {
                     c.left_ref(base_ref);
                     c.right_ref(counter);
                 });
-                auto err = encode_type(m, arr->element_type, *index, mapped_type);
+                auto err = encode_type(m, arr->element_type, *index, mapped_type, false);
                 if (err) {
                     return err;
                 }
@@ -164,6 +164,11 @@ namespace rebgn {
                         return s.error();
                     }
                     bit_size_plus_1 = s.value();
+                }
+                if (should_init_recursive) {
+                    m.op(AbstractOp::CHECK_RECURSIVE_STRUCT, [&](Code& c) {
+                        c.ref(base_ref);
+                    });
                 }
                 m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
                     c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
@@ -205,7 +210,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(base_ref);
             });
-            err = encode_type(m, base_type, *casted, mapped_type);
+            err = encode_type(m, base_type, *casted, mapped_type, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -216,7 +221,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return encode_type(m, base_type, base_ref, mapped_type);
+            return encode_type(m, base_type, base_ref, mapped_type, should_init_recursive);
         }
         return error("unsupported type on encode type: {}", node_type_to_string(typ->node_type));
     }
@@ -355,7 +360,7 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(i);
                     });
-                    return decode_type(m, arr->element_type, *index, mapped_type, field);
+                    return decode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
                 });
             }
             auto undelying_decoder = [&] {
@@ -376,7 +381,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, arr->element_type, *tmp_var, mapped_type, field);
+                err = decode_type(m, arr->element_type, *tmp_var, mapped_type, field, false);
                 if (err) {
                     return err;
                 }
@@ -635,6 +640,11 @@ namespace rebgn {
                     }
                     bit_size_plus_1 = s.value();
                 }
+                if (should_init_recursive) {
+                    m.op(AbstractOp::INIT_RECURSIVE_STRUCT, [&](Code& c) {
+                        c.ref(base_ref);
+                    });
+                }
                 m.op(AbstractOp::CALL_DECODE, [&](Code& c) {
                     c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
                     c.right_ref(base_ref);
@@ -678,7 +688,7 @@ namespace rebgn {
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            err = decode_type(m, base_type, *tmp_var, mapped_type, field);
+            err = decode_type(m, base_type, *tmp_var, mapped_type, field, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -707,7 +717,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return decode_type(m, base_type, base_ref, mapped_type, field);
+            return decode_type(m, base_type, base_ref, mapped_type, field, should_init_recursive);
         }
         return error("unsupported type on decode type: {}", node_type_to_string(typ->node_type));
     }
@@ -729,10 +739,10 @@ namespace rebgn {
         }
         Error err;
         if (node->arguments && node->arguments->type_map) {
-            err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal);
+            err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, true);
         }
         else {
-            err = encode_type(m, node->field_type, *ident, nullptr);
+            err = encode_type(m, node->field_type, *ident, nullptr, true);
         }
         if (err) {
             return err;
@@ -760,10 +770,10 @@ namespace rebgn {
         }
         Error err;
         if (node->arguments && node->arguments->type_map) {
-            err = decode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get());
+            err = decode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get(), true);
         }
         else {
-            err = decode_type(m, node->field_type, *ident, nullptr, node.get());
+            err = decode_type(m, node->field_type, *ident, nullptr, node.get(), true);
         }
         if (node->arguments && node->arguments->sub_byte_length) {
             m.op(AbstractOp::END_DECODE_SUB_RANGE);

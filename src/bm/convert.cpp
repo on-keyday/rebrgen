@@ -242,7 +242,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, node->expr_type, *tmp_var, nullptr, nullptr);
+                err = decode_type(m, node->expr_type, *tmp_var, nullptr, nullptr, false);
                 if (err) {
                     return err;
                 }
@@ -257,7 +257,7 @@ namespace rebgn {
                 if (!arg) {
                     return arg.error();
                 }
-                auto err = encode_type(m, node->arguments[0]->expr_type, *arg, nullptr);
+                auto err = encode_type(m, node->arguments[0]->expr_type, *arg, nullptr, false);
                 if (err) {
                     return err;
                 }

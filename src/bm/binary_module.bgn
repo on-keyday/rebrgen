@@ -223,6 +223,7 @@ enum AbstractOp:
 
     NEW_OBJECT
     INIT_RECURSIVE_STRUCT
+    CHECK_RECURSIVE_STRUCT
 
 
     SWITCH_UNION
@@ -498,7 +499,11 @@ format Code:
             ident :Varint
             storage :Storages
         AbstractOp.INIT_RECURSIVE_STRUCT:
-            ref :Varint
+            left_ref :Varint # ref to recursive struct(format)
+            right_ref :Varint # ref to object
+        AbstractOp.CHECK_RECURSIVE_STRUCT:
+            left_ref :Varint # ref to recursive struct(format)
+            right_ref :Varint # ref to object
         AbstractOp.ASSERT:
             ref :Varint
         AbstractOp.IF:

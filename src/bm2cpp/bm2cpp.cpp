@@ -26,9 +26,9 @@ namespace bm2cpp {
 
         std::string this_() {
             if (this_as.empty()) {
-                return "this->";
+                return "(*this)";
             }
-            return this_as.back() + ".";
+            return this_as.back();
         }
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
@@ -163,37 +163,36 @@ namespace bm2cpp {
     }
 
     std::string retrieve_ident(Context& ctx, const rebgn::Code& code) {
-        auto belong = ctx.ident_index_table[code.belong().value().value()];
-        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
-            auto union_range = ctx.ident_range_table[ctx.bm.code[belong].belong().value().value()];
-            size_t get_index = 0;
-            for (size_t i = union_range.start; i < union_range.end; i++) {
-                if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_UNION_MEMBER) {
-                    get_index++;
-                    if (ctx.bm.code[i].ref().value().value() == code.belong().value().value()) {
-                        break;
-                    }
-                }
-            }
-            auto& upper = ctx.bm.code[union_range.start];
+        if (code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+            auto ident = code.ident().value().value();
+            auto& upper = ctx.bm.code[ctx.ident_index_table[code.belong().value().value()]];
             auto base = retrieve_ident(ctx, upper);
-            return std::format("std::get<{}>({}).", get_index, base);
+            return std::format("std::get<variant_{}>({})", ident, base);
         }
-        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FIELD) {
-            auto base = retrieve_ident(ctx, ctx.bm.code[belong]);
-            if (auto found = ctx.ident_table.find(code.belong().value().value()); found != ctx.ident_table.end()) {
-                return std::format("{}{}.", base, found->second);
+        if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
+            auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
+            auto& belong = ctx.bm.code[belong_idx];
+            return retrieve_ident(ctx, belong);
+        }
+        if (code.op == rebgn::AbstractOp::DEFINE_FIELD) {
+            auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
+            auto base = retrieve_ident(ctx, ctx.bm.code[belong_idx]);
+            if (base.size()) {
+                base += ".";
             }
-            return std::format("{}field_{}.", base, ctx.bm.code[belong].ident().value().value());
+            if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
+                return std::format("{}{}", base, found->second);
+            }
+            return std::format("{}field_{}", base, code.ident().value().value());
         }
-        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FORMAT) {
+        if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
             return ctx.this_();
         }
-        if (ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_VARIABLE ||
-            ctx.bm.code[belong].op == rebgn::AbstractOp::DEFINE_FIELD) {
+        if (code.op == rebgn::AbstractOp::DEFINE_VARIABLE ||
+            code.op == rebgn::AbstractOp::DEFINE_PARAMETER) {
             return "";
         }
-        return "/* Unimplemented union ident */";
+        return std::format("/* Unimplemented: {}*/", to_string(code.op));
     }
 
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
@@ -332,10 +331,6 @@ namespace bm2cpp {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FIELD: {
-                auto ident = ctx.ident_table[code.ident().value().value()];
-                if (ident == "") {
-                    ident = std::format("field_{}", code.ident().value().value());
-                }
                 auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
                 auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -345,17 +340,7 @@ namespace bm2cpp {
                         should_deref = true;
                     }
                 }
-                auto b = code.belong();
-                auto belong_op = ctx.bm.code[ctx.ident_index_table[b->value()]].op;
-                if (belong_op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
-                    ident = retrieve_ident(ctx, code) + "." + ident;
-                }
-                else if (belong_op == rebgn::AbstractOp::DEFINE_FORMAT) {
-                    ident = ctx.this_() + ident;
-                }
-                else if (belong_op == rebgn::AbstractOp::DEFINE_BIT_FIELD) {
-                    ident = ctx.this_() + ident + "()";
-                }
+                auto ident = retrieve_ident(ctx, code);
                 if (should_deref) {
                     res.push_back(std::format("(*{})", ident));
                 }

@@ -222,7 +222,7 @@ enum AbstractOp:
     IDENT_REF
 
     NEW_OBJECT
-
+    INIT_RECURSIVE_STRUCT
 
 
     SWITCH_UNION
@@ -479,9 +479,11 @@ format Code:
         AbstractOp.CALL_ENCODE:
             left_ref :Varint # ref to encoder
             right_ref :Varint # ref to object
+            bit_size_plus :Varint  # bit size plus 1 (0 means null)
         AbstractOp.CALL_DECODE:
             left_ref :Varint # ref to decoder
             right_ref :Varint # ref to object
+            bit_size_plus :Varint  # bit size plus 1 (0 means null)
         AbstractOp.INC:
             ref :Varint
         AbstractOp.DEC:
@@ -495,6 +497,8 @@ format Code:
         AbstractOp.NEW_OBJECT:
             ident :Varint
             storage :Storages
+        AbstractOp.INIT_RECURSIVE_STRUCT:
+            ref :Varint
         AbstractOp.ASSERT:
             ref :Varint
         AbstractOp.IF:

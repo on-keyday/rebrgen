@@ -588,9 +588,14 @@ namespace rebgn {
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     break;
                 case AbstractOp::CALL_ENCODE:
-                case AbstractOp::CALL_DECODE:
+                case AbstractOp::CALL_DECODE: {
+                    auto plus = m.code[index_of_operation_and_loop[i]].bit_size_plus().value().value();
+                    if (plus) {
+                        current->sum_bits += plus - 1;
+                    }
                     current->basic_block.push_back(index_of_operation_and_loop[i]);
                     break;
+                }
                 case AbstractOp::LOOP_INFINITE:
                 case AbstractOp::LOOP_CONDITION: {
                     if (current->basic_block.size()) {
@@ -1138,6 +1143,70 @@ namespace rebgn {
         return none;
     }
 
+    Error insert_init_recursive_struct(Module& m) {
+        std::vector<Code> rebound;
+        std::map<size_t, ObjectID> struct_refs;
+        std::set<ObjectID> recursive_fields;
+        bool inner_func = false;
+        for (size_t i = 0; i < m.code.size(); i++) {
+            auto& c = m.code[i];
+            if (c.op == AbstractOp::DEFINE_FUNCTION) {
+                inner_func = true;
+            }
+            if (c.op == AbstractOp::END_FUNCTION) {
+                inner_func = false;
+            }
+            if (!inner_func) {
+                continue;
+            }
+            auto mark_ref = [&](Varint ref) {
+                auto found = m.ident_index_table.find(ref.value());
+                if (found != m.ident_index_table.end()) {
+                    auto idx = found->second;
+                    if (m.code[idx].op == AbstractOp::DEFINE_FIELD) {
+                        auto ident = m.code[idx].ident()->value();
+                        if (recursive_fields.contains(ident)) {
+                            return;
+                        }
+                        recursive_fields.insert(ident);
+                        for (auto j = idx + 1; j < m.code.size(); j++) {
+                            if (m.code[j].op == AbstractOp::END_FIELD) {
+                                break;
+                            }
+                            if (m.code[j].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
+                                auto storage = m.code[j].storage().value();
+                                if (storage.storages.size() == 1 && storage.storages[0].type == StorageType::RECURSIVE_STRUCT_REF) {
+                                    struct_refs[i] = ident;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            };
+            if (auto ref = c.ref()) {
+                mark_ref(ref.value());
+            }
+            if (auto left_ref = c.left_ref()) {
+                mark_ref(left_ref.value());
+            }
+            if (auto right_ref = c.right_ref()) {
+                mark_ref(right_ref.value());
+            }
+        }
+        for (size_t i = 0; i < m.code.size(); i++) {
+            if (struct_refs.find(i) != struct_refs.end()) {
+                auto ident = struct_refs[i];
+                rebound.push_back(make_code(AbstractOp::INIT_RECURSIVE_STRUCT, [&](auto& c) {
+                    c.ref(*varint(ident));
+                }));
+            }
+            rebound.push_back(std::move(m.code[i]));
+        }
+        m.code = std::move(rebound);
+        return none;
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {
@@ -1162,6 +1231,11 @@ namespace rebgn {
         replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
         err = merge_conditional_field(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
+        err = insert_init_recursive_struct(m);
         if (err) {
             return err;
         }

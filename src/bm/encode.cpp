@@ -157,9 +157,18 @@ namespace rebgn {
                 if (!ident) {
                     return ident.error();
                 }
+                Varint bit_size_plus_1;
+                if (me->body->struct_type->bit_size) {
+                    auto s = varint(*me->body->struct_type->bit_size + 1);
+                    if (!s) {
+                        return s.error();
+                    }
+                    bit_size_plus_1 = s.value();
+                }
                 m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
                     c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
                     c.right_ref(base_ref);
+                    c.bit_size_plus(bit_size_plus_1);
                 });
                 return none;
             }
@@ -212,7 +221,7 @@ namespace rebgn {
         return error("unsupported type on encode type: {}", node_type_to_string(typ->node_type));
     }
 
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field) {
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(base_ref);
@@ -618,9 +627,18 @@ namespace rebgn {
                 if (!ident) {
                     return ident.error();
                 }
+                Varint bit_size_plus_1;
+                if (me->body->struct_type->bit_size) {
+                    auto s = varint(*me->body->struct_type->bit_size + 1);
+                    if (!s) {
+                        return s.error();
+                    }
+                    bit_size_plus_1 = s.value();
+                }
                 m.op(AbstractOp::CALL_DECODE, [&](Code& c) {
                     c.left_ref(*ident);  // this is temporary and will rewrite to DEFINE_FUNCTION later
                     c.right_ref(base_ref);
+                    c.bit_size_plus(bit_size_plus_1);
                 });
                 return none;
             }

@@ -24,7 +24,7 @@ namespace rebgn {
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type);
-    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field);
+    Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
     inline void maybe_insert_eval_expr(Module& m, const std::shared_ptr<ast::Node>& n) {
         if (!ast::as<ast::Expr>(n)) {
             return;

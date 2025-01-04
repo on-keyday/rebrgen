@@ -221,6 +221,15 @@ namespace bm2cpp {
             bit_field = BitField::first;
             return base;
         }
+        if (code.op == rebgn::AbstractOp::DEFINE_PROPERTY) {
+            auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
+            auto base = retrieve_ident_internal(ctx, ctx.bm.code[belong_idx], bit_field);
+            if (auto found = ctx.ident_table.find(code.ident().value().value());
+                found != ctx.ident_table.end() && found->second.size()) {
+                return std::format("(*{}.{}())", base, found->second);
+            }
+            return std::format("(*{}.field_{}())", base, code.ident().value().value());
+        }
         if (code.op == rebgn::AbstractOp::DEFINE_FIELD) {
             auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
             auto base = retrieve_ident_internal(ctx, ctx.bm.code[belong_idx], bit_field);
@@ -402,7 +411,8 @@ namespace bm2cpp {
                 res.push_back(std::move(ident));
                 break;
             }
-            case rebgn::AbstractOp::DEFINE_FIELD: {
+            case rebgn::AbstractOp::DEFINE_FIELD:
+            case rebgn::AbstractOp::DEFINE_PROPERTY: {
                 auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
                 auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -604,32 +614,46 @@ namespace bm2cpp {
                         if (prop.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD) {
                             auto type = type_to_string(ctx, *prop.storage());
                             auto mode = prop.merge_mode().value();
-                            if (mode == rebgn::MergeMode::COMMON_TYPE) {
+                            if (mode == rebgn::MergeMode::COMMON_TYPE ||
+                                mode == rebgn::MergeMode::STRICT_COMMON_TYPE) {
                                 auto param = prop.param().value();
+                                auto ret_type = mode == rebgn::MergeMode::COMMON_TYPE ? "std::optional<" + type + ">" : type + "*";
                                 ctx.cw.writeln("std::optional<", type, "> ", ident, "();");
                                 ctx.cw.writeln("bool ", ident, "(const ", type, "&);");
                                 ctx.cw.writeln("bool ", ident, "(", type, "&&);");
                                 ctx.on_functions.push_back(futils::helper::defer_ex([&ctx, ident, type, param, belong_ident]() {
                                     ctx.cw.writeln("std::optional<", type, "> ", belong_ident, "::", ident, "() {");
                                     auto scope = ctx.cw.indent_scope();
-                                    for (auto& c : param.expr_refs) {
-                                        auto& code = ctx.bm.code[ctx.ident_index_table[c.value()]];
-                                        auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[code.left_ref().value().value()]], ctx);
-                                        for (auto& e : std::span(evaluated).subspan(0, evaluated.size() - 1)) {
-                                            ctx.cw.writeln(e);
+                                    auto do_for_each_param = [&](auto&& action) {
+                                        for (auto& c : param.expr_refs) {
+                                            auto& code = ctx.bm.code[ctx.ident_index_table[c.value()]];
+                                            auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[code.left_ref().value().value()]], ctx);
+                                            for (auto& e : std::span(evaluated).subspan(0, evaluated.size() - 1)) {
+                                                ctx.cw.writeln(e);
+                                            }
+                                            ctx.cw.writeln("if(", evaluated.back(), ") {");
+                                            auto nested = ctx.cw.indent_scope();
+                                            action(code);
+                                            nested.execute();
+                                            ctx.cw.writeln("}");
                                         }
-                                        ctx.cw.writeln("if(", evaluated.back(), ") {");
-                                        auto nested = ctx.cw.indent_scope();
+                                    };
+
+                                    do_for_each_param([&](const rebgn::Code& code) {
                                         auto field = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
                                         ctx.cw.writeln("return ", field.back(), ";");
-                                        nested.execute();
-                                        ctx.cw.writeln("}");
-                                    }
+                                    });
                                     ctx.cw.writeln("return std::nullopt;");
                                     scope.execute();
                                     ctx.cw.writeln("}");
-                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(", type, "&) {return false;}");
-                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, ident, "(", type, "&&) {return false;}");
+                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(const ", type, "&) {");
+                                    do_for_each_param([&](const rebgn::Code& code) {
+                                        auto field = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
+                                        auto belong_union = find_belong_op(ctx, code, rebgn::AbstractOp::DEFINE_UNION_MEMBER);
+                                        auto union_type = retrieve_union_type(ctx, ctx.bm.code[ctx.ident_index_table[belong_union.value()]]);
+                                        ctx.cw.writeln("if (std::holds_alternative<", union_type, ">(this->", field.back(), ")) {");
+                                    });
+                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(", type, "&&) {return false;}");
                                 }));
                             }
                         }
@@ -830,14 +854,14 @@ namespace bm2cpp {
                                 auto tmp_array = std::format("tmp_array{}", ident);
                                 ctx.cw.writeln("unsigned char ", tmp_array, "[sizeof(", tmp, ")]{};");
                                 auto byte_counter = std::format("byte_counter{}", ident);
-                                ctx.cw.writeln("size_t ", byte_counter, " = ", bit_counter, " / 8;");
+                                ctx.cw.writeln("size_t ", byte_counter, " = (", bit_counter, " + 7) / 8;");
                                 auto step = std::format("step{}", ident);
                                 ctx.cw.writeln("for (size_t ", step, " = 0; ", step, " < ", byte_counter, "; ", step, "++) {");
                                 auto space = ctx.cw.indent_scope();
                                 ctx.cw.writeln(tmp_array, "[", step, "] = (", tmp, " >> (", byte_counter, " - ", step, " - 1) * 8) & 0xff;");
                                 space.execute();
                                 ctx.cw.writeln("}");
-                                ctx.cw.writeln("if(!w.write(", tmp_array, ", ", byte_counter, ")) { return false; }");
+                                ctx.cw.writeln("if(!w.write(::futils::view::rvec(", tmp_array, ", ", byte_counter, "))) { return false; }");
                             }
                         }));
                     }

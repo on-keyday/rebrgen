@@ -919,6 +919,9 @@ namespace rebgn {
                         }
                         factor *= size.value();
                     }
+                    else if (s.type == StorageType::ENUM) {
+                        // skip
+                    }
                     else if (s.type == StorageType::VARIANT) {
                         size_t candidate = 0;
                         for (j++; j < storage.storages.size(); j++) {
@@ -1141,6 +1144,41 @@ namespace rebgn {
         m.code = std::move(rebound);
 
         return none;
+    }
+
+    Error derive_function_from_merged_fields(Module& m) {
+        std::vector<Code> funcs;
+        auto op = [&](AbstractOp o, auto&& set) {
+            funcs.push_back(make_code(o, set));
+        };
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto mode = c.merge_mode().value();
+                auto type = c.storage().value();
+                auto ident = c.ident().value();
+                auto param = c.param().value();
+                // getter function
+                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+                    n.ident(ident);
+                    n.belong(c.belong().value());
+                });
+                type.length = *varint(type.storages.size() + 1);
+                if (mode == MergeMode::COMMON_TYPE) {
+                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::OPTIONAL});
+                }
+                else {
+                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
+                }
+                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+                    n.storage(type);
+                });
+                for (auto& p : param.expr_refs) {
+                    op(AbstractOp::DECLARE_PARAMETER, [&](Code& n) {
+                        n.ref(p);
+                    });
+                }
+            }
+        }
     }
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {

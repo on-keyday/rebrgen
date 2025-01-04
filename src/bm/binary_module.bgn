@@ -234,6 +234,8 @@ enum AbstractOp:
 
     STATE_VARIABLE_PARAMETER
 
+    PROPERTY_INPUT_PARAMETER
+
     EVAL_EXPR
 
     ARRAY_SIZE
@@ -290,6 +292,10 @@ enum StorageType:
 
     # encoder/decoder return value
     CODER_RETURN
+
+    # property
+    OPTIONAL
+    PTR
 
 
 enum MergeMode:
@@ -581,6 +587,10 @@ format Code:
         AbstractOp.DECODER_PARAMETER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to decoder function
+        AbstractOp.PROPERTY_INPUT_PARAMETER:
+            left_ref :Varint # ref to merged conditional field
+            right_ref :Varint # ref to function
+            storage :Storages
         AbstractOp.STATE_VARIABLE_PARAMETER:
             ref :Varint # ref to state
         AbstractOp.EXPLICIT_ERROR:

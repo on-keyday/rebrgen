@@ -125,6 +125,9 @@ namespace rebgn {
             if (auto m = c.merge_mode()) {
                 cout << " " << to_string(*m);
             }
+            if (auto m = c.packed_op_type()) {
+                cout << " " << to_string(*m);
+            }
             if (auto bit_size = c.bit_size()) {
                 cout << " " << bit_size->value() << "bit";
             }

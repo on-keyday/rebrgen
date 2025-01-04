@@ -827,9 +827,11 @@ namespace rebgn {
                 if (!new_id) {
                     return error("Failed to generate new id");
                 }
+                auto typ = m.bit_field_variability[n];
                 m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
                     c.ref(found->second);
+                    c.packed_op_type(typ);
                 });
             }
             auto err = convert_node_encode(m, n);
@@ -893,9 +895,11 @@ namespace rebgn {
                 if (!new_id) {
                     return error("Failed to generate new id");
                 }
+                auto typ = m.bit_field_variability[n];
                 m.op(AbstractOp::BEGIN_DECODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
                     c.ref(found->second);
+                    c.packed_op_type(typ);
                 });
             }
             auto err = convert_node_decode(m, n);

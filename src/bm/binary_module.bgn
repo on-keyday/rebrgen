@@ -299,6 +299,10 @@ enum MergeMode:
     STRICT_COMMON_TYPE
 
 
+enum PackedOpType:
+    :u8
+    FIXED
+    VARIABLE
 
 # TODO: be recursive
 format Storage:
@@ -556,9 +560,11 @@ format Code:
         AbstractOp.BEGIN_ENCODE_PACKED_OPERATION:
             ident :Varint
             ref :Varint # ref to bit field
+            packed_op_type :PackedOpType
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
             ref :Varint # ref to bit field
+            packed_op_type :PackedOpType
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:

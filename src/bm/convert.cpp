@@ -587,7 +587,11 @@ namespace rebgn {
             if (!cond_) {
                 return error("Invalid union field condition");
             }
-            base_cond = cond_.value();
+            auto tmp_var = define_tmp_var(m, cond_.value(), ast::ConstantLevel::variable);
+            if (!tmp_var) {
+                return tmp_var.error();
+            }
+            base_cond = tmp_var.value();
         }
         std::optional<Varint> prev_cond;
         for (auto& c : ty->candidates) {
@@ -1039,7 +1043,7 @@ namespace rebgn {
                 c.storage(std::move(s));
             });
         }
-        std::vector<std::shared_ptr<ast::Node>> bit_fields;
+        std::vector<std::shared_ptr<ast::Field>> bit_fields;
         std::unordered_map<std::shared_ptr<ast::Node>, Varint> bit_field_begin;
         std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
         for (auto& f : node->body->struct_type->fields) {
@@ -1049,8 +1053,16 @@ namespace rebgn {
                     continue;
                 }
                 if (bit_fields.size()) {
-                    auto begin_field = std::move(ast::cast_to<ast::Field>(bit_fields.front()));
-                    auto end_field = std::move(ast::cast_to<ast::Field>(f));
+                    bit_fields.push_back(ast::cast_to<ast::Field>(f));
+                    PackedOpType type = PackedOpType::FIXED;
+                    for (auto& bf : bit_fields) {
+                        if (!bf->field_type->bit_size) {
+                            type = PackedOpType::VARIABLE;
+                            break;
+                        }
+                    }
+                    auto begin_field = std::move(bit_fields.front());
+                    auto end_field = std::move(bit_fields.back());
                     auto id = m.new_id(nullptr);
                     if (!id) {
                         return id.error();
@@ -1061,6 +1073,7 @@ namespace rebgn {
                     if (auto b = ast::as<ast::StructUnionType>(end_field->field_type)) {
                         bit_field_end.insert(b->base.lock());  // if or match
                     }
+                    m.bit_field_variability.emplace(begin_field, type);
                     bit_field_begin.emplace(std::move(begin_field), *id);
                     bit_field_end.insert(std::move(end_field));
                     bit_fields.clear();

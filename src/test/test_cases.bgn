@@ -304,3 +304,36 @@ format NestedUnion:
             w :u16
     else:
         z :u16
+
+enum OpCode:
+    :u4
+    ContinuationFrame = 0x0
+    TextFrame = 0x1
+    BinaryFrame = 0x2
+    ConnectionClose = 0x8
+    Ping = 0x9
+    Pong = 0xA
+
+format Frame:
+    FIN :u1
+    RSV1 :u1
+    RSV2 :u1
+    RSV3 :u1
+    Opcode :OpCode
+    Mask :u1
+    PayloadLength :u7
+    match PayloadLength:
+        126 => ExtendedPayloadLength :u16
+        127 => ExtendedPayloadLength :u64
+    
+    if Mask == 1:
+        MaskingKey :[4]u8
+
+    len ::= available(ExtendedPayloadLength) ?  # if ExtendedPayloadLength (u16 or u64) is available
+            ExtendedPayloadLength :  # use ExtendedPayloadLength
+            PayloadLength  # otherwise use PayloadLength
+    Payload :[len]u8(input.xor = MaskingKey)
+    
+
+
+

@@ -65,6 +65,7 @@ namespace rebgn {
         // internal
         bool on_encode_fn = false;
         std::unordered_map<std::shared_ptr<ast::Node>, Varint> bit_field_begin;
+        std::unordered_map<std::shared_ptr<ast::Node>, PackedOpType> bit_field_variability;
         std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
 
         void map_struct(std::shared_ptr<ast::StructType> s, ObjectID id) {

@@ -165,9 +165,10 @@ namespace rebgn {
                     }
                     bit_size_plus_1 = s.value();
                 }
-                if (should_init_recursive) {
+                if (should_init_recursive && me->body->struct_type->recursive) {
                     m.op(AbstractOp::CHECK_RECURSIVE_STRUCT, [&](Code& c) {
-                        c.ref(base_ref);
+                        c.left_ref(*ident);
+                        c.right_ref(base_ref);
                     });
                 }
                 m.op(AbstractOp::CALL_ENCODE, [&](Code& c) {
@@ -640,9 +641,10 @@ namespace rebgn {
                     }
                     bit_size_plus_1 = s.value();
                 }
-                if (should_init_recursive) {
+                if (should_init_recursive && me->body->struct_type->recursive) {
                     m.op(AbstractOp::INIT_RECURSIVE_STRUCT, [&](Code& c) {
-                        c.ref(base_ref);
+                        c.left_ref(*ident);
+                        c.right_ref(base_ref);
                     });
                 }
                 m.op(AbstractOp::CALL_DECODE, [&](Code& c) {

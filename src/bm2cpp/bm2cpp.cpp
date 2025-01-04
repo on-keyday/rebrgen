@@ -23,6 +23,7 @@ namespace bm2cpp {
         std::vector<futils::helper::DynDefer> on_functions;
 
         std::vector<std::string> this_as;
+        std::vector<std::uint64_t> bit_field_ident;
 
         std::string this_() {
             if (this_as.empty()) {
@@ -162,37 +163,93 @@ namespace bm2cpp {
         return std::nullopt;
     }
 
-    std::string retrieve_ident(Context& ctx, const rebgn::Code& code) {
+    std::optional<size_t> find_belong_op(Context& ctx, const rebgn::Code& code, rebgn::AbstractOp op) {
+        if (code.op == op) {
+            return code.ident().value().value();
+        }
+        if (auto belong = code.belong(); belong) {
+            auto idx = ctx.ident_index_table[belong.value().value()];
+            return find_belong_op(ctx, ctx.bm.code[idx], op);
+        }
+        return std::nullopt;
+    }
+
+    enum class BitField {
+        none,
+        first,
+        second,
+    };
+
+    std::string retrieve_union_type(Context& ctx, const rebgn::Code& code) {
         if (code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
             auto ident = code.ident().value().value();
             auto& upper = ctx.bm.code[ctx.ident_index_table[code.belong().value().value()]];
-            auto base = retrieve_ident(ctx, upper);
-            return std::format("std::get<variant_{}>({})", ident, base);
+            auto base = retrieve_union_type(ctx, upper);
+            return std::format("{}::variant_{}", base, ident);
+        }
+        if (code.op == rebgn::AbstractOp::DEFINE_UNION ||
+            code.op == rebgn::AbstractOp::DEFINE_FIELD) {
+            auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
+            auto& belong = ctx.bm.code[belong_idx];
+            return retrieve_union_type(ctx, belong);
+        }
+        if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
+            auto ident = code.ident().value().value();
+            return ctx.ident_table[ident];
+        }
+        return "";
+    }
+
+    std::string retrieve_ident_internal(Context& ctx, const rebgn::Code& code, BitField& bit_field) {
+        if (code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
+            auto ident = code.ident().value().value();
+            auto& upper = ctx.bm.code[ctx.ident_index_table[code.belong().value().value()]];
+            auto base = retrieve_ident_internal(ctx, upper, bit_field);
+            if (bit_field != BitField::none) {
+                return base;
+            }
+            auto type = retrieve_union_type(ctx, code);
+            return std::format("std::get<{}>({})", type, base);
         }
         if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
             auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
             auto& belong = ctx.bm.code[belong_idx];
-            return retrieve_ident(ctx, belong);
+            return retrieve_ident_internal(ctx, belong, bit_field);
+        }
+        if (code.op == rebgn::AbstractOp::DEFINE_BIT_FIELD) {
+            auto base = retrieve_ident_internal(ctx, ctx.bm.code[ctx.ident_index_table[code.belong().value().value()]], bit_field);
+            bit_field = BitField::first;
+            return base;
         }
         if (code.op == rebgn::AbstractOp::DEFINE_FIELD) {
             auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
-            auto base = retrieve_ident(ctx, ctx.bm.code[belong_idx]);
+            auto base = retrieve_ident_internal(ctx, ctx.bm.code[belong_idx], bit_field);
+            std::string paren;
+            if (bit_field == BitField::second) {
+                return base;
+            }
+            else if (bit_field == BitField::first) {
+                bit_field = BitField::second;
+                paren = "()";
+            }
             if (base.size()) {
                 base += ".";
             }
-            if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
-                return std::format("{}{}", base, found->second);
+            if (auto found = ctx.ident_table.find(code.ident().value().value());
+                found != ctx.ident_table.end() && found->second.size()) {
+                return std::format("{}{}{}", base, found->second, paren);
             }
-            return std::format("{}field_{}", base, code.ident().value().value());
+            return std::format("{}field_{}{}", base, code.ident().value().value(), paren);
         }
         if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
             return ctx.this_();
         }
-        if (code.op == rebgn::AbstractOp::DEFINE_VARIABLE ||
-            code.op == rebgn::AbstractOp::DEFINE_PARAMETER) {
-            return "";
-        }
-        return std::format("/* Unimplemented: {}*/", to_string(code.op));
+        return "";
+    }
+
+    std::string retrieve_ident(Context& ctx, const rebgn::Code& code) {
+        BitField bit_field = BitField::none;
+        return retrieve_ident_internal(ctx, code, bit_field);
     }
 
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
@@ -264,7 +321,12 @@ namespace bm2cpp {
                 }
                 else {
                     res.insert(res.end(), left.begin(), left.end() - 1);
-                    res.push_back(std::format("{}.{}", left.back(), right_ident));
+                    if (find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], rebgn::AbstractOp::DEFINE_PROPERTY)) {
+                        res.push_back(std::format("{}.{}()", left.back(), right_ident));
+                    }
+                    else {
+                        res.push_back(std::format("{}.{}", left.back(), right_ident));
+                    }
                 }
                 break;
             }
@@ -667,9 +729,35 @@ namespace bm2cpp {
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
-                case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
+                case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
+                    ctx.bm_ctx.inner_bit_operations = true;
+                    auto bit_field = ctx.ident_range_table[code.ref().value().value()];
+                    auto typ = find_op(ctx, bit_field, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    if (!typ) {
+                        ctx.cw.writeln("/* Unimplemented bit field */");
+                        break;
+                    }
+                    auto type = type_to_string(ctx, *ctx.bm.code[*typ].storage());
+                    auto ident = code.ident().value().value();
+                    auto tmp = std::format("tmp{}", ident);
+                    auto bit_counter = std::format("bit_counter{}", ident);
+                    ctx.cw.writeln(type, " ", tmp, "{}; /* bit field */");
+                    ctx.cw.writeln("size_t ", bit_counter, " = 0;");
+                    ctx.bit_field_ident.push_back(code.ident()->value());
+                    defer.push_back(futils::helper::defer_ex([&ctx, tmp, bit_counter]() {
+                        bool is_big_endian = true;  // currently only big endian is supported
+                        ctx.cw.writeln("if(!::futils::binary::write_num(w, ", tmp, ", ", is_big_endian ? "true" : "false", ")) { return false; }");
+                    }));
+                    break;
+                }
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = true;
+                    break;
+                }
+                case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
+                    ctx.bm_ctx.inner_bit_operations = false;
+                    ctx.bit_field_ident.pop_back();
+                    defer.pop_back();
                     break;
                 }
                 case rebgn::AbstractOp::IF: {
@@ -811,12 +899,24 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT: {
-                    auto ref = code.ref().value().value();
-                    auto& ident = ctx.ident_index_table[ref];
-                    auto s = eval(ctx.bm.code[ident], ctx);
-                    auto endian = code.endian().value();
-                    auto is_big = endian == rebgn::Endian::little ? false : true;
-                    ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
+                    if (ctx.bm_ctx.inner_bit_operations) {
+                        auto prev = ctx.bit_field_ident.back();
+                        auto bit_counter = std::format("bit_counter{}", prev);
+                        auto tmp = std::format("tmp{}", prev);
+                        auto ref = code.ref().value().value();
+                        auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
+                        auto bit_count = code.bit_size().value().value();
+                        ctx.cw.writeln(std::format("{} <<= {};", tmp, bit_count));
+                        ctx.cw.writeln(std::format("{} |= {} & {};", tmp, evaluated.back(), (std::uint64_t(1) << bit_count) - 1));
+                    }
+                    else {
+                        auto ref = code.ref().value().value();
+                        auto& ident = ctx.ident_index_table[ref];
+                        auto s = eval(ctx.bm.code[ident], ctx);
+                        auto endian = code.endian().value();
+                        auto is_big = endian == rebgn::Endian::little ? false : true;
+                        ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
@@ -895,6 +995,9 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::CHECK_UNION:
                 case rebgn::AbstractOp::SWITCH_UNION: {
+                    if (ctx.bm_ctx.inner_bit_operations) {
+                        break;
+                    }
                     auto ref = code.ref().value().value();  // ref to UNION_MEMBER
                     auto union_name = ctx.bm.code[ctx.ident_index_table[ref]].ident().value().value();
                     auto variant_name = std::format("variant_{}", union_name);

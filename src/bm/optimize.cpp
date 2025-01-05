@@ -1370,8 +1370,16 @@ namespace rebgn {
                 auto originalType = type;
                 auto param = c.param().value();
                 auto do_foreach = [&](auto&& action) {
+                    std::optional<ObjectID> prev_cond;
                     for (auto& c : param.expr_refs) {
                         auto& code = m.code[m.ident_index_table[c.value()]];
+                        auto& expr = m.code[m.ident_index_table[code.left_ref()->value()]];
+                        if (expr.op == AbstractOp::NOT_PREV_THEN) {
+                            if (prev_cond) {
+                                while (prev_cond != expr.left_ref()->value()) {
+                                }
+                            }
+                        }
                         op(AbstractOp::IF, [&](Code& m) {
                             m.ref(*code.left_ref());
                         });

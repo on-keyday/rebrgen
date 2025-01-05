@@ -613,23 +613,13 @@ namespace rebgn {
                     cond_ = new_id;
                 }
                 if (prev_cond) {
-                    auto new_id_1 = m.new_id(nullptr);
-                    if (!new_id_1) {
-                        return new_id_1.error();
-                    }
-                    m.op(AbstractOp::UNARY, [&](Code& c) {
-                        c.ident(*new_id_1);
-                        c.uop(UnaryOp::logical_not);
-                        c.ref(*prev_cond);
-                    });
                     auto new_id_2 = m.new_id(nullptr);
                     if (!new_id_2) {
                         return new_id_2.error();
                     }
-                    m.op(AbstractOp::BINARY, [&](Code& c) {
+                    m.op(AbstractOp::NOT_PREV_THEN, [&](Code& c) {
                         c.ident(*new_id_2);
-                        c.bop(BinaryOp::logical_and);
-                        c.left_ref(*new_id_1);
+                        c.left_ref(*prev_cond);
                         c.right_ref(*cond_);
                     });
                     cond_ = new_id_2;
@@ -648,10 +638,14 @@ namespace rebgn {
                     return new_id.error();
                 }
                 if (prev_cond) {
-                    m.op(AbstractOp::UNARY, [&](Code& c) {
+                    auto imm_true = immediate_bool(m, true);
+                    if (!imm_true) {
+                        return imm_true.error();
+                    }
+                    m.op(AbstractOp::NOT_PREV_THEN, [&](Code& c) {
                         c.ident(*new_id);
-                        c.uop(UnaryOp::logical_not);
-                        c.ref(*prev_cond);
+                        c.left_ref(*prev_cond);
+                        c.right_ref(*imm_true);
                     });
                 }
                 else {

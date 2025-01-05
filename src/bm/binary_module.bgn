@@ -106,11 +106,15 @@ enum AbstractOp:
     END_FIELD
     DECLARE_FIELD
     CONDITIONAL_FIELD
+    CONDITIONAL_PROPERTY
     MERGED_CONDITIONAL_FIELD
 
     DEFINE_PROPERTY
     END_PROPERTY
     DECLARE_PROPERTY
+
+    DEFINE_PROPERTY_SETTER
+    DEFINE_PROPERTY_GETTER
 
     DEFINE_PARAMETER
     END_PARAMETER
@@ -202,7 +206,7 @@ enum AbstractOp:
     BINARY
     UNARY
     ASSIGN
-    SHORT_CIRCUIT 
+    PROPERTY_ASSIGN
     ASSERT
     EXPLICIT_ERROR
 
@@ -224,7 +228,6 @@ enum AbstractOp:
     IMMEDIATE_CHAR
     IMMEDIATE_STRING
     IMMEDIATE_TYPE
-    IDENT_REF
 
     NEW_OBJECT
     INIT_RECURSIVE_STRUCT
@@ -380,8 +383,6 @@ format Code:
         AbstractOp.IMMEDIATE_TYPE:
             ident :Varint
             storage :Storages
-        AbstractOp.IDENT_REF:
-            ref :Varint
         AbstractOp.DEFINE_FORMAT:
             ident :Varint
         AbstractOp.DEFINE_STATE:
@@ -446,8 +447,11 @@ format Code:
             left_ref :Varint
             right_ref :Varint
         AbstractOp.ASSIGN:
-            left_ref :Varint
-            right_ref :Varint
+            left_ref :Varint # ref to variable
+            right_ref :Varint # ref to expr
+        AbstractOp.PROPERTY_ASSIGN:
+            left_ref :Varint # ref to property setter
+            right_ref :Varint # ref to expr
         AbstractOp.ADDRESS_OF:
             ident :Varint
             ref :Varint
@@ -563,6 +567,11 @@ format Code:
             left_ref :Varint # ref to expr
             right_ref :Varint # ref to field
             belong :Varint # belong to union field
+        AbstractOp.CONDITIONAL_PROPERTY:
+            ident :Varint
+            left_ref :Varint # ref to expr
+            right_ref :Varint # ref to merged conditional field
+            belong :Varint # belong to union field
         AbstractOp.MERGED_CONDITIONAL_FIELD:
             ident :Varint
             storage :Storages
@@ -604,9 +613,16 @@ format Code:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to decoder function
         AbstractOp.PROPERTY_INPUT_PARAMETER:
+            ident :Varint
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function
             storage :Storages
+        AbstractOp.DEFINE_PROPERTY_SETTER:
+            left_ref :Varint # ref to merged conditional field
+            right_ref :Varint # ref to function
+        AbstractOp.DEFINE_PROPERTY_GETTER:
+            left_ref :Varint # ref to merged conditional field
+            right_ref :Varint # ref to function
         AbstractOp.STATE_VARIABLE_PARAMETER:
             ref :Varint # ref to state
         AbstractOp.EXPLICIT_ERROR:

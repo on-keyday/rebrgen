@@ -46,6 +46,14 @@ namespace bm2cpp {
             case rebgn::StorageType::CODER_RETURN: {
                 return "bool";
             }
+            case rebgn::StorageType::PTR: {
+                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                return inner + "*";
+            }
+            case rebgn::StorageType::OPTIONAL: {
+                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                return "std::optional<" + inner + ">";
+            }
             case rebgn::StorageType::UINT: {
                 auto size = storage.size().value().value();
                 if (bit_size) {
@@ -516,7 +524,7 @@ namespace bm2cpp {
         }
     }
 
-    void add_function_parameters(Context& ctx, rebgn::Range range) {
+    void add_function_parameters(Context& ctx, rebgn::Range range, bool move_semantic = false) {
         size_t params = 0;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
@@ -527,6 +535,19 @@ namespace bm2cpp {
             if (code.op == rebgn::AbstractOp::DECODER_PARAMETER) {
                 ctx.cw.write("::futils::binary::reader& r");
                 params++;
+            }
+            if (code.op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
+                auto param_name = std::format("param{}", code.ident().value().value());
+                auto type = type_to_string(ctx, *code.storage());
+                if (params > 0) {
+                    ctx.cw.write(", ");
+                }
+                if (move_semantic) {
+                    ctx.cw.write(type, "&& ", param_name);
+                }
+                else {
+                    ctx.cw.write("const ", type, "& ", param_name);
+                }
             }
             if (code.op == rebgn::AbstractOp::STATE_VARIABLE_PARAMETER) {
                 auto field_range = ctx.ident_range_table[code.ref().value().value()];
@@ -609,6 +630,8 @@ namespace bm2cpp {
                     auto belong_ident = ctx.ident_table[belong];
                     auto range = ctx.ident_range_table[code.ref().value().value()];
                     auto ident = ctx.ident_table[code.ref().value().value()];
+                    auto getters = find_op(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_GETTER);
+                    auto setters = find_op(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_SETTER);
                     for (size_t i = range.start; i < range.end; i++) {
                         auto& prop = ctx.bm.code[i];
                         if (prop.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD) {

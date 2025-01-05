@@ -1014,6 +1014,8 @@ namespace rebgn {
         std::unordered_map<ObjectID, std::pair<std::string, std::vector<Varint>>> merged_conditional_fields;
         std::unordered_map<ObjectID, std::vector<ObjectID>> properties_to_merged;
 
+        std::unordered_map<ObjectID, std::vector<std::pair<ObjectID /*new id*/, ObjectID /*merged conditional field*/>>> conditional_properties;
+
         std::set<ObjectID> reached;
         std::set<ObjectID> exists;
     };
@@ -1054,16 +1056,37 @@ namespace rebgn {
                     }
                     auto& merged = ctx.properties_to_merged[child];
                     for (auto& mc : merged) {
-                        auto& m = ctx.merged_conditional_fields[mc];
+                        auto& mf = ctx.merged_conditional_fields[mc];
                         auto& map = conditional_fields[parent];
-                        auto& key = m.first;
-                        map[key].push_back(target);
+                        auto& key = mf.first;
+                        auto new_id = m.new_id(nullptr);
+                        if (!new_id) {
+                            return new_id.error();
+                        }
+                        ctx.conditional_properties[target.value()].push_back({new_id->value(), mc});
+                        map[key].push_back(*new_id);
                     }
                 }
             }
             else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
                 exists.insert(c.ident().value().value());
                 ctx.exists.insert(c.ident().value().value());
+                auto param = c.param().value();
+                auto key = storage_key(c.storage().value());
+                for (auto& p : param.expr_refs) {
+                    auto& code = m.code[m.ident_index_table[p.value()]];
+                    if (auto found = ctx.conditional_properties.find(code.ident()->value()); found != ctx.conditional_properties.end()) {
+                        for (auto& mf : found->second) {
+                            if (auto found2 = ctx.merged_conditional_fields.find(mf.second); found2 != ctx.merged_conditional_fields.end()) {
+                                if (found2->second.first == key) {
+                                    p = *varint(mf.first);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                c.param(std::move(param));
             }
         }
         for (auto& cfield : conditional_fields) {
@@ -1139,10 +1162,25 @@ namespace rebgn {
                 }
                 target.reset();
             }
+            else if (m.code[i].op == AbstractOp::CONDITIONAL_FIELD) {
+                if (auto found = ctx.conditional_properties.find(m.code[i].ident()->value());
+                    found != ctx.conditional_properties.end()) {
+                    auto left_ref = m.code[i].left_ref().value();  // condition expr
+                    auto belong = m.code[i].belong().value();
+                    for (auto& c : found->second) {
+                        rebound.push_back(make_code(AbstractOp::CONDITIONAL_PROPERTY, [&](auto& code) {
+                            code.ident(*varint(c.first));
+                            code.left_ref(left_ref);
+                            code.right_ref(*varint(c.second));
+                            code.belong(belong);
+                        }));
+                    }
+                    continue;  // remove original conditional field
+                }
+            }
             rebound.push_back(std::move(m.code[i]));
         }
         m.code = std::move(rebound);
-
         return none;
     }
 
@@ -1151,28 +1189,51 @@ namespace rebgn {
         auto op = [&](AbstractOp o, auto&& set) {
             funcs.push_back(make_code(o, set));
         };
+        std::map<ObjectID, std::pair<Varint, Varint>> merged_fields;
+        std::map<ObjectID, ObjectID> properties_to_merged;
         for (auto& c : m.code) {
             if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto belong = c.belong().value();
+                auto mode = c.merge_mode().value();
+                auto merged_ident = c.ident().value();
+                if (mode == MergeMode::COMMON_TYPE ||
+                    mode == MergeMode::STRICT_COMMON_TYPE) {
+                    properties_to_merged[belong.value()] = merged_ident.value();
+                }
+                auto getter_ident = m.new_id(nullptr);
+                if (!getter_ident) {
+                    return getter_ident.error();
+                }
+                merged_fields[merged_ident.value()].first = *getter_ident;
+                // setter function
+                auto setter_ident = m.new_id(nullptr);
+                if (!setter_ident) {
+                    return setter_ident.error();
+                }
+                merged_fields[merged_ident.value()].second = *setter_ident;
+            }
+        }
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::ASSIGN) {
+                auto left_ref = c.left_ref().value();
+                if (auto found = properties_to_merged.find(left_ref.value()); found != properties_to_merged.end()) {
+                    if (auto found2 = merged_fields.find(found->second); found2 != merged_fields.end()) {
+                        auto right_ref = c.right_ref().value();
+                        c.op = AbstractOp::PROPERTY_ASSIGN;
+                        c.left_ref(found2->second.second);
+                        c.right_ref(right_ref);
+                    }
+                }
+            }
+            else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto merged_ident = c.ident().value();
+                auto getter_setter = merged_fields[merged_ident.value()];
+                auto getter_ident = getter_setter.first;
+                auto setter_ident = getter_setter.second;
                 auto mode = c.merge_mode().value();
                 auto type = c.storage().value();
                 auto originalType = type;
-                auto ident = c.ident().value();
                 auto param = c.param().value();
-                // getter function
-                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
-                    n.ident(ident);
-                    n.belong(c.belong().value());
-                });
-                type.length = *varint(type.storages.size() + 1);
-                if (mode == MergeMode::COMMON_TYPE) {
-                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::OPTIONAL});
-                }
-                else {
-                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
-                }
-                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-                    n.storage(type);
-                });
                 auto do_foreach = [&](auto&& action) {
                     for (auto& c : param.expr_refs) {
                         auto& code = m.code[m.ident_index_table[c.value()]];
@@ -1185,35 +1246,171 @@ namespace rebgn {
                         }
                         op(AbstractOp::END_IF, [&](Code& m) {});
                     }
+                    return none;
                 };
+
+                // getter function
+                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+                    n.ident(getter_ident);
+                    n.belong(c.belong().value());
+                });
+
+                type.length = *varint(type.storages.size() + 1);
+                if (mode == MergeMode::COMMON_TYPE) {
+                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::OPTIONAL});
+                }
+                else {
+                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
+                }
+                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+                    n.storage(type);
+                });
                 auto err = do_foreach([&](const Code& code) {
                     auto expr_ref = code.right_ref().value();
                     auto ident = m.new_id(nullptr);
                     if (!ident) {
                         return ident.error();
                     }
-                    if (mode == MergeMode::COMMON_TYPE) {
-                        op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
-                            m.ident(*ident);
-                            m.ref(expr_ref);
-                            m.storage(originalType);
+                    if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
+                        auto found = merged_fields.find(expr_ref.value());
+                        if (found != merged_fields.end()) {
+                            return error("Invalid conditional property");
+                        }
+                        auto getter = found->second.first;
+                        op(AbstractOp::CALL, [&](Code& code) {
+                            code.ident(*ident);
+                            code.ref(getter);
                         });
                     }
                     else {
-                        op(AbstractOp::ADDRESS_OF, [&](Code& m) {
-                            m.ident(*ident);
-                            m.ref(expr_ref);
-                        });
+                        if (mode == MergeMode::COMMON_TYPE) {
+                            op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
+                                m.ident(*ident);
+                                m.ref(expr_ref);
+                                m.storage(originalType);
+                            });
+                        }
+                        else {
+                            op(AbstractOp::ADDRESS_OF, [&](Code& m) {
+                                m.ident(*ident);
+                                m.ref(expr_ref);
+                            });
+                        }
                     }
                     op(AbstractOp::RET, [&](Code& m) {
                         m.ref(*ident);
                     });
+                    return none;
                 });
                 if (err) {
                     return err;
                 }
+                auto empty_ident = m.new_id(nullptr);
+                if (!empty_ident) {
+                    return empty_ident.error();
+                }
+                if (mode == MergeMode::COMMON_TYPE) {
+                    op(AbstractOp::EMPTY_OPTIONAL, [&](Code& m) {
+                        m.ident(*empty_ident);
+                    });
+                }
+                else {
+                    op(AbstractOp::EMPTY_PTR, [&](Code& m) {
+                        m.ident(*empty_ident);
+                    });
+                }
+                op(AbstractOp::RET, [&](Code& m) {
+                    m.ref(*empty_ident);
+                });
+                op(AbstractOp::END_FUNCTION, [&](Code& m) {});
+
+                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+                    n.ident(setter_ident);
+                    n.belong(c.belong().value());
+                });
+                auto prop = m.new_id(nullptr);
+                if (!prop) {
+                    return prop.error();
+                }
+                op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& n) {
+                    n.ident(*prop);
+                    n.left_ref(merged_ident);
+                    n.right_ref(setter_ident);
+                    n.storage(originalType);
+                });
+                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+                    n.storage(Storages{
+                        .length = *varint(1),
+                        .storages = {Storage{.type = StorageType::BOOL}},
+                    });
+                });
+                auto bool_ident = m.new_id(nullptr);
+                if (!bool_ident) {
+                    return bool_ident.error();
+                }
+                op(AbstractOp::IMMEDIATE_TRUE, [&](Code& m) {
+                    m.ident(*bool_ident);
+                });
+                err = do_foreach([&](const Code& code) {
+                    auto expr_ref = code.right_ref().value();
+                    if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
+                        auto found = merged_fields.find(expr_ref.value());
+                        if (found != merged_fields.end()) {
+                            return error("Invalid conditional property");
+                        }
+                        auto setter = found->second.second;
+                        op(AbstractOp::PROPERTY_ASSIGN, [&](Code& code) {
+                            code.left_ref(setter);
+                            code.right_ref(*prop);
+                        });
+                    }
+                    else {
+                        op(AbstractOp::ASSIGN, [&](Code& m) {
+                            m.left_ref(expr_ref);
+                            m.right_ref(*prop);
+                        });
+                    }
+                    op(AbstractOp::RET, [&](Code& m) {
+                        m.ref(*bool_ident);
+                    });
+                    return none;
+                });
+                auto false_ident = m.new_id(nullptr);
+                if (!false_ident) {
+                    return false_ident.error();
+                }
+                op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
+                    m.ident(*false_ident);
+                });
+                op(AbstractOp::RET, [&](Code& m) {
+                    m.ref(*false_ident);
+                });
+                op(AbstractOp::END_FUNCTION, [&](Code& m) {});
             }
         }
+        std::vector<Code> rebound;
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto ident = c.ident().value();
+                auto found = merged_fields.find(ident.value());
+                if (found != merged_fields.end()) {
+                    rebound.push_back(std::move(c));
+                    rebound.push_back(make_code(AbstractOp::DEFINE_PROPERTY_GETTER, [&](auto& c) {
+                        c.left_ref(ident);
+                        c.right_ref(*varint(found->second.first));
+                    }));
+                    rebound.push_back(make_code(AbstractOp::DEFINE_PROPERTY_SETTER, [&](auto& c) {
+                        c.left_ref(ident);
+                        c.right_ref(*varint(found->second.second));
+                    }));
+                }
+                continue;
+            }
+            rebound.push_back(std::move(c));
+        }
+        m.code = std::move(rebound);
+        m.code.insert(m.code.end(), funcs.begin(), funcs.end());
+        return none;
     }
 
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
@@ -1240,6 +1437,11 @@ namespace rebgn {
         replace_call_encode_decode_ref(m);
         rebind_ident_index(m);
         err = merge_conditional_field(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
+        err = derive_function_from_merged_fields(m);
         if (err) {
             return err;
         }

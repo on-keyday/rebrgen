@@ -327,9 +327,6 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        m.op(AbstractOp::IDENT_REF, [&](Code& c) {
-            c.ref(*ident);
-        });
         m.set_prev_expr(ident->value());
         return none;
     }

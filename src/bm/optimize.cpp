@@ -1184,6 +1184,131 @@ namespace rebgn {
         return none;
     }
 
+    std::string property_name_suffix(Module& m, const Storages& s) {
+        std::string suffix;
+        for (auto& storage : s.storages) {
+            if (storage.type == StorageType::ARRAY) {
+                suffix += "array_";
+            }
+            else if (storage.type == StorageType::OPTIONAL) {
+                suffix += "optional_";
+            }
+            else if (storage.type == StorageType::PTR) {
+                suffix += "ptr_";
+            }
+            else if (storage.type == StorageType::STRUCT_REF) {
+                if (auto found = m.ident_table_rev.find(storage.ref().value().value());
+                    found != m.ident_table_rev.end()) {
+                    suffix += found->second->ident;
+                }
+                else {
+                    suffix += std::format("struct_{}", storage.ref().value().value());
+                }
+            }
+            else if (storage.type == StorageType::ENUM) {
+                if (auto found = m.ident_table_rev.find(storage.ref().value().value());
+                    found != m.ident_table_rev.end()) {
+                    suffix += found->second->ident;
+                    break;
+                }
+                else {
+                    suffix += std::format("enum_{}", storage.ref().value().value());
+                }
+            }
+            else if (storage.type == StorageType::VARIANT) {
+                suffix += "Variant";
+            }
+            else if (storage.type == StorageType::UINT) {
+                suffix += std::format("uint{}", storage.size().value().value());
+            }
+            else if (storage.type == StorageType::INT) {
+                suffix += std::format("int{}", storage.size().value().value());
+            }
+            else {
+                suffix += "unknown";
+            }
+        }
+        return suffix;
+    }
+
+    void retrieve_var(Module& m, const rebgn::Code& code, std::set<ObjectID>& variables) {
+        std::vector<std::string> res;
+        switch (code.op) {
+            case rebgn::AbstractOp::ARRAY_SIZE: {
+                retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::CALL_CAST: {
+                for (auto& p : code.param().value().expr_refs) {
+                    retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
+                }
+                break;
+            }
+            case rebgn::AbstractOp::INDEX: {
+                retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::APPEND: {
+                retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::ASSIGN: {
+                retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::ACCESS: {
+                retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::BINARY: {
+                retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::UNARY: {
+                retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::STATIC_CAST: {
+                retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_PARAMETER: {
+                variables.insert(code.ident().value().value());
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_FIELD:
+            case rebgn::AbstractOp::DEFINE_PROPERTY: {
+                variables.insert(code.ident().value().value());
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_VARIABLE: {
+                retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                variables.insert(code.ident().value().value());
+                break;
+            }
+            case rebgn::AbstractOp::FIELD_AVAILABLE: {
+                if (auto left_ref = code.left_ref(); left_ref->value() != 0) {
+                    retrieve_var(m, m.code[m.ident_index_table[left_ref.value().value()]], variables);
+                }
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
+            case rebgn::AbstractOp::CALL: {
+                retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                for (auto& p : code.param().value().expr_refs) {
+                    retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
     Error derive_function_from_merged_fields(Module& m) {
         std::vector<Code> funcs;
         auto op = [&](AbstractOp o, auto&& set) {
@@ -1196,17 +1321,26 @@ namespace rebgn {
                 auto belong = c.belong().value();
                 auto mode = c.merge_mode().value();
                 auto merged_ident = c.ident().value();
+                auto base = m.ident_table_rev[belong.value()];
+                std::string ident = base->ident;
                 if (mode == MergeMode::COMMON_TYPE ||
                     mode == MergeMode::STRICT_COMMON_TYPE) {
                     properties_to_merged[belong.value()] = merged_ident.value();
                 }
-                auto getter_ident = m.new_id(nullptr);
+                else {
+                    ident += "_" + property_name_suffix(m, c.storage().value());
+                }
+                auto temporary_getter_ident = std::make_shared<ast::Ident>(base->loc, ident);
+                temporary_getter_ident->base = base->base;
+                auto getter_ident = m.lookup_ident(temporary_getter_ident);
                 if (!getter_ident) {
                     return getter_ident.error();
                 }
                 merged_fields[merged_ident.value()].first = *getter_ident;
+                auto temporary_setter_ident = std::make_shared<ast::Ident>(base->loc, ident);
+                temporary_setter_ident->base = base->base;
                 // setter function
-                auto setter_ident = m.new_id(nullptr);
+                auto setter_ident = m.lookup_ident(temporary_setter_ident);
                 if (!setter_ident) {
                     return setter_ident.error();
                 }
@@ -1226,6 +1360,7 @@ namespace rebgn {
                 }
             }
             else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+                auto belong_of_belong = m.code[m.ident_index_table[c.belong().value().value()]].belong().value();
                 auto merged_ident = c.ident().value();
                 auto getter_setter = merged_fields[merged_ident.value()];
                 auto getter_ident = getter_setter.first;
@@ -1252,7 +1387,7 @@ namespace rebgn {
                 // getter function
                 op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
                     n.ident(getter_ident);
-                    n.belong(c.belong().value());
+                    n.belong(belong_of_belong);
                 });
 
                 type.length = *varint(type.storages.size() + 1);
@@ -1273,7 +1408,7 @@ namespace rebgn {
                     }
                     if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
                         auto found = merged_fields.find(expr_ref.value());
-                        if (found != merged_fields.end()) {
+                        if (found == merged_fields.end()) {
                             return error("Invalid conditional property");
                         }
                         auto getter = found->second.first;
@@ -1326,7 +1461,7 @@ namespace rebgn {
 
                 op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
                     n.ident(setter_ident);
-                    n.belong(c.belong().value());
+                    n.belong(belong_of_belong);
                 });
                 auto prop = m.new_id(nullptr);
                 if (!prop) {
@@ -1355,7 +1490,7 @@ namespace rebgn {
                     auto expr_ref = code.right_ref().value();
                     if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
                         auto found = merged_fields.find(expr_ref.value());
-                        if (found != merged_fields.end()) {
+                        if (found == merged_fields.end()) {
                             return error("Invalid conditional property");
                         }
                         auto setter = found->second.second;
@@ -1375,6 +1510,9 @@ namespace rebgn {
                     });
                     return none;
                 });
+                if (err) {
+                    return err;
+                }
                 auto false_ident = m.new_id(nullptr);
                 if (!false_ident) {
                     return false_ident.error();
@@ -1397,11 +1535,11 @@ namespace rebgn {
                     rebound.push_back(std::move(c));
                     rebound.push_back(make_code(AbstractOp::DEFINE_PROPERTY_GETTER, [&](auto& c) {
                         c.left_ref(ident);
-                        c.right_ref(*varint(found->second.first));
+                        c.right_ref(*varint(found->second.first.value()));
                     }));
                     rebound.push_back(make_code(AbstractOp::DEFINE_PROPERTY_SETTER, [&](auto& c) {
                         c.left_ref(ident);
-                        c.right_ref(*varint(found->second.second));
+                        c.right_ref(*varint(found->second.second.value()));
                     }));
                 }
                 continue;

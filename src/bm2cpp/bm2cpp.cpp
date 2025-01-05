@@ -32,6 +32,10 @@ namespace bm2cpp {
             return this_as.back();
         }
 
+        const rebgn::Code& ref(rebgn::Varint ident) {
+            return bm.code[ident_index_table[ident.value()]];
+        }
+
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
         }
@@ -159,7 +163,7 @@ namespace bm2cpp {
         }
     }
 
-    std::optional<size_t> find_op(Context& ctx, rebgn::Range& range, rebgn::AbstractOp op, size_t from = 0) {
+    std::optional<size_t> find_op(Context& ctx, rebgn::Range range, rebgn::AbstractOp op, size_t from = 0) {
         if (from == 0) {
             from = range.start;
         }
@@ -169,6 +173,16 @@ namespace bm2cpp {
             }
         }
         return std::nullopt;
+    }
+
+    std::vector<size_t> find_ops(Context& ctx, rebgn::Range range, rebgn::AbstractOp op) {
+        std::vector<size_t> res;
+        for (size_t i = range.start; i < range.end; i++) {
+            if (ctx.bm.code[i].op == op) {
+                res.push_back(i);
+            }
+        }
+        return res;
     }
 
     std::optional<size_t> find_belong_op(Context& ctx, const rebgn::Code& code, rebgn::AbstractOp op) {
@@ -630,8 +644,29 @@ namespace bm2cpp {
                     auto belong_ident = ctx.ident_table[belong];
                     auto range = ctx.ident_range_table[code.ref().value().value()];
                     auto ident = ctx.ident_table[code.ref().value().value()];
-                    auto getters = find_op(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_GETTER);
-                    auto setters = find_op(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_SETTER);
+                    auto getters = find_ops(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_GETTER);
+                    auto setters = find_ops(ctx, range, rebgn::AbstractOp::DEFINE_PROPERTY_SETTER);
+                    for (auto& getter : getters) {
+                        auto& m = ctx.bm.code[getter];
+                        auto& merged = ctx.bm.code[ctx.ident_index_table[m.left_ref().value().value()]];
+                        auto& func = ctx.bm.code[ctx.ident_index_table[m.right_ref().value().value()]];
+                        auto mode = merged.merge_mode().value();
+                        auto typ = find_op(ctx, ctx.ident_range_table[func.ident().value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                        auto result = type_to_string(ctx, *ctx.bm.code[*typ].storage());
+                        auto getter_ident = ctx.ident_table[func.ident().value().value()];
+                        ctx.cw.writeln(result, " ", getter_ident, "();");
+                    }
+                    for (auto& setter : setters) {
+                        auto& m = ctx.bm.code[setter];
+                        auto& merged = ctx.bm.code[ctx.ident_index_table[m.left_ref().value().value()]];
+                        auto& func = ctx.bm.code[ctx.ident_index_table[m.right_ref().value().value()]];
+                        auto mode = merged.merge_mode().value();
+                        auto setter_ident = ctx.ident_table[func.ident().value().value()];
+                        ctx.cw.write("bool ", setter_ident, "(");
+                        add_function_parameters(ctx, ctx.ident_range_table[func.ident().value().value()]);
+                        ctx.cw.writeln(");");
+                    }
+                    /*
                     for (size_t i = range.start; i < range.end; i++) {
                         auto& prop = ctx.bm.code[i];
                         if (prop.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD) {
@@ -681,6 +716,7 @@ namespace bm2cpp {
                             }
                         }
                     }
+                    */
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {

@@ -202,8 +202,10 @@ enum AbstractOp:
     DEFINE_VARIABLE
     DEFINE_VARIABLE_REF
     DEFINE_CONSTANT
+    DECLARE_VARIABLE
     
     BINARY
+    NOT_PREV_THEN
     UNARY
     ASSIGN
     PROPERTY_ASSIGN
@@ -255,6 +257,8 @@ enum AbstractOp:
     END_DECODE_SUB_RANGE
 
     FIELD_AVAILABLE
+
+    EXPR_WITH_VARIABLES # for property accessor conditions
 
 
 
@@ -432,6 +436,10 @@ format Code:
             bop :BinaryOp
             left_ref :Varint
             right_ref :Varint
+        AbstractOp.NOT_PREV_THEN:
+            ident :Varint
+            left_ref :Varint # ref to previous expr
+            right_ref :Varint # ref to then expr
         AbstractOp.UNARY:
             ident :Varint
             uop :UnaryOp
@@ -649,6 +657,9 @@ format Code:
             ident :Varint
         AbstractOp.REMAIN_BYTES:
             ident :Varint
+        AbstractOp.EXPR_WITH_VARIABLES:
+            ident :Varint
+            ref :Varint # ref to expr
 
 
 format StringRefs:

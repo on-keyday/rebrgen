@@ -1155,6 +1155,7 @@ namespace rebgn {
             if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
                 auto mode = c.merge_mode().value();
                 auto type = c.storage().value();
+                auto originalType = type;
                 auto ident = c.ident().value();
                 auto param = c.param().value();
                 // getter function
@@ -1172,10 +1173,44 @@ namespace rebgn {
                 op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
                     n.storage(type);
                 });
-                for (auto& p : param.expr_refs) {
-                    op(AbstractOp::DECLARE_PARAMETER, [&](Code& n) {
-                        n.ref(p);
+                auto do_foreach = [&](auto&& action) {
+                    for (auto& c : param.expr_refs) {
+                        auto& code = m.code[m.ident_index_table[c.value()]];
+                        op(AbstractOp::IF, [&](Code& m) {
+                            m.ref(*code.left_ref());
+                        });
+                        auto err = action(code);
+                        if (err) {
+                            return err;
+                        }
+                        op(AbstractOp::END_IF, [&](Code& m) {});
+                    }
+                };
+                auto err = do_foreach([&](const Code& code) {
+                    auto expr_ref = code.right_ref().value();
+                    auto ident = m.new_id(nullptr);
+                    if (!ident) {
+                        return ident.error();
+                    }
+                    if (mode == MergeMode::COMMON_TYPE) {
+                        op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
+                            m.ident(*ident);
+                            m.ref(expr_ref);
+                            m.storage(originalType);
+                        });
+                    }
+                    else {
+                        op(AbstractOp::ADDRESS_OF, [&](Code& m) {
+                            m.ident(*ident);
+                            m.ref(expr_ref);
+                        });
+                    }
+                    op(AbstractOp::RET, [&](Code& m) {
+                        m.ref(*ident);
                     });
+                });
+                if (err) {
+                    return err;
                 }
             }
         }

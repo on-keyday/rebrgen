@@ -172,6 +172,11 @@ enum AbstractOp:
     BIT_CAST
     CALL_CAST
 
+    ADDRESS_OF
+    OPTIONAL_OF
+    EMPTY_PTR
+    EMPTY_OPTIONAL
+
     LOOP_INFINITE
     LOOP_CONDITION
     CONTINUE
@@ -443,6 +448,17 @@ format Code:
         AbstractOp.ASSIGN:
             left_ref :Varint
             right_ref :Varint
+        AbstractOp.ADDRESS_OF:
+            ident :Varint
+            ref :Varint
+        AbstractOp.OPTIONAL_OF:
+            ident :Varint
+            ref :Varint
+            storage :Storages
+        AbstractOp.EMPTY_PTR:
+            ident :Varint
+        AbstractOp.EMPTY_OPTIONAL:
+            ident :Varint
         AbstractOp.BACKWARD_INPUT:
             ref :Varint # bit count
         AbstractOp.BACKWARD_OUTPUT:

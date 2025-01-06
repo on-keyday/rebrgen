@@ -595,8 +595,8 @@ namespace rebgn {
             auto cond = c->cond.lock();
             auto field = c->field.lock();
             if (cond && !ast::is_any_range(cond)) {
-                auto cond_ = get_expr(m, cond);
-                if (!cond_) {
+                auto origCond = get_expr(m, cond);
+                if (!origCond) {
                     return error("Invalid union field condition");
                 }
                 if (base_cond) {
@@ -608,10 +608,11 @@ namespace rebgn {
                         c.ident(*new_id);
                         c.bop(BinaryOp::equal);
                         c.left_ref(*base_cond);
-                        c.right_ref(*cond_);
+                        c.right_ref(*origCond);
                     });
-                    cond_ = new_id;
+                    origCond = new_id;
                 }
+                auto cond_ = origCond;
                 if (prev_cond) {
                     auto new_id_2 = m.new_id(nullptr);
                     if (!new_id_2) {
@@ -624,11 +625,9 @@ namespace rebgn {
                     });
                     cond_ = new_id_2;
                 }
-                if (field) {
-                    auto err = block(cond_.value(), field);
-                    if (err) {
-                        return err;
-                    }
+                auto err = block(cond_.value(), origCond.value(), field);
+                if (err) {
+                    return err;
                 }
                 prev_cond = cond_.value();
             }
@@ -652,9 +651,7 @@ namespace rebgn {
                     m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
                         c.ident(*new_id);
                     });
-                }
-                if (field) {
-                    auto err = block(*new_id, field);
+                    auto err = block(*new_id, *new_id, field);
                     if (err) {
                         return err;
                     }
@@ -667,48 +664,6 @@ namespace rebgn {
     template <>
     Error define<ast::Available>(Module& m, std::shared_ptr<ast::Available>& node) {
         Varint new_id;
-        if (auto union_ty = ast::as<ast::UnionType>(node->target->expr_type)) {
-            std::optional<Varint> prev_cond;
-            auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint cond, std::shared_ptr<ast::Field>& field) {
-                if (prev_cond) {
-                    auto new_id = m.new_id(nullptr);
-                    if (!new_id) {
-                        return new_id.error();
-                    }
-                    m.op(AbstractOp::BINARY, [&](Code& c) {
-                        c.ident(*new_id);
-                        c.bop(BinaryOp::logical_or);
-                        c.left_ref(*prev_cond);
-                        c.right_ref(cond);
-                    });
-                    prev_cond = *new_id;
-                }
-                else {
-                    prev_cond = cond;
-                }
-                return none;
-            });
-            if (err) {
-                return err;
-            }
-            if (!prev_cond) {
-                auto imm = immediate_bool(m, false);
-                if (!imm) {
-                    return imm.error();
-                }
-                new_id = *imm;
-            }
-            else {
-                new_id = prev_cond.value();
-            }
-        }
-        else {
-            auto imm = immediate_bool(m, ast::as<ast::Ident>(node->target) || ast::as<ast::MemberAccess>(node->target));
-            if (!imm) {
-                return imm.error();
-            }
-            new_id = *imm;
-        }
         Varint base_expr;
         if (auto memb = ast::as<ast::MemberAccess>(node->target)) {
             auto expr = get_expr(m, memb->target);
@@ -717,22 +672,64 @@ namespace rebgn {
             }
             base_expr = expr.value();
         }
-        auto id = m.new_node_id(node);
-        if (!id) {
-            return id.error();
+        if (auto union_ty = ast::as<ast::UnionType>(node->target->expr_type)) {
+            auto imm_false = immediate_bool(m, false);
+            if (!imm_false) {
+                return imm_false.error();
+            }
+            auto tmp_var = define_tmp_var(m, *imm_false, ast::ConstantLevel::variable);
+            auto imm_true = immediate_bool(m, true);
+            if (!imm_true) {
+                return imm_true.error();
+            }
+            bool prev = false;
+            auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint, Varint cond, std::shared_ptr<ast::Field>& field) {
+                auto id = m.new_node_id(node);
+                if (!id) {
+                    return id.error();
+                }
+                m.op(AbstractOp::FIELD_AVAILABLE, [&](Code& c) {
+                    c.ident(*id);
+                    c.left_ref(base_expr);
+                    c.right_ref(cond);
+                });
+                m.op(prev ? AbstractOp::ELIF : AbstractOp::IF, [&](Code& c) {
+                    c.ref(*id);
+                });
+                if (field) {
+                    m.op(AbstractOp::ASSIGN, [&](Code& c) {
+                        c.left_ref(*tmp_var);
+                        c.right_ref(*imm_true);
+                    });
+                }
+                prev = true;
+                return none;
+            });
+            if (prev) {
+                m.op(AbstractOp::END_IF);
+            }
+            if (err) {
+                return err;
+            }
+            new_id = *tmp_var;
         }
-        m.op(AbstractOp::FIELD_AVAILABLE, [&](Code& c) {
-            c.ident(*id);
-            c.left_ref(base_expr);
-            c.right_ref(new_id);
-        });
-        m.set_prev_expr(id->value());
+        else {
+            auto imm = immediate_bool(m, ast::as<ast::Ident>(node->target) || ast::as<ast::MemberAccess>(node->target));
+            if (!imm) {
+                return imm.error();
+            }
+            new_id = *imm;
+        }
+        m.set_prev_expr(new_id.value());
         return none;
     }
 
     Error define_union_field(Module& m, const std::shared_ptr<ast::UnionType>& ty, Varint belong) {
         Param param;
-        auto err = handle_union_type(m, ty, [&](Varint cond, auto&& field) {
+        auto err = handle_union_type(m, ty, [&](Varint cond, Varint, auto&& field) {
+            if (!field) {
+                return none;
+            }
             auto ident = m.lookup_ident(field->ident);
             if (!ident) {
                 return ident.error();
@@ -989,6 +986,9 @@ namespace rebgn {
         });
         if (err) {
             return err;
+        }
+        if (is_encoder_or_decoder) {
+            m.op(AbstractOp::RET_SUCCESS);
         }
         m.op(AbstractOp::END_FUNCTION);
         return none;

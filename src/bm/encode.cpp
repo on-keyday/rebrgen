@@ -843,6 +843,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
         m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
             c.left_ref(*fmt_ident);
@@ -911,6 +912,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
         m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {
             c.left_ref(*fmt_ident);

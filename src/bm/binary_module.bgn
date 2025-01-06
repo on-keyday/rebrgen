@@ -322,6 +322,11 @@ enum PackedOpType:
     FIXED
     VARIABLE
 
+enum UnionCheckAt:
+    :u8
+    PROPERTY_GETTER
+    ENCODER
+
 # TODO: be recursive
 format Storage:
     type :StorageType
@@ -354,6 +359,7 @@ format Metadata:
 format Param:
     len_exprs :Varint
     expr_refs :[len_exprs.value]Varint
+    
 
 # ident is unique identifier
 # ref, left_ref, right_ref is reference to other object identifier
@@ -418,6 +424,8 @@ format Code:
             ref :Varint # ref to initial expr
         AbstractOp.DEFINE_VARIABLE_REF:
             ident :Varint
+            ref :Varint # ref to variable
+        AbstractOp.DECLARE_VARIABLE:
             ref :Varint # ref to variable
         AbstractOp.DEFINE_PARAMETER:
             ident: Varint
@@ -608,6 +616,7 @@ format Code:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:
             ref :Varint # ref to union_member
+            check_at :UnionCheckAt
         AbstractOp.RET:
             ref :Varint # maybe null
         AbstractOp.MATCH:

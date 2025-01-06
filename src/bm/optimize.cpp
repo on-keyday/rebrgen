@@ -1231,15 +1231,23 @@ namespace rebgn {
         return suffix;
     }
 
-    void retrieve_var(Module& m, const rebgn::Code& code, std::set<ObjectID>& variables) {
-        std::vector<std::string> res;
+    struct RetrieveVarCtx {
+        std::set<ObjectID> variables;
+        std::vector<ObjectID> ordered_variables;
+    };
+
+    Error retrieve_var(Module& m, const rebgn::Code& code, RetrieveVarCtx& variables) {
         switch (code.op) {
+            case rebgn::AbstractOp::NOT_PREV_THEN: {
+                retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                break;
+            }
             case rebgn::AbstractOp::ARRAY_SIZE: {
                 retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
                 break;
             }
             case rebgn::AbstractOp::CALL_CAST: {
-                for (auto& p : code.param().value().expr_refs) {
+                for (auto&& p : code.param().value().expr_refs) {
                     retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
                 }
                 break;
@@ -1277,17 +1285,20 @@ namespace rebgn {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PARAMETER: {
-                variables.insert(code.ident().value().value());
+                // variables.insert(code.ident().value().value());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FIELD:
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
-                variables.insert(code.ident().value().value());
+                // variables.insert(code.ident().value().value());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
-                variables.insert(code.ident().value().value());
+                if (!variables.variables.contains(code.ident().value().value())) {
+                    variables.variables.insert(code.ident().value().value());
+                    variables.ordered_variables.push_back(code.ident().value().value());
+                }
                 break;
             }
             case rebgn::AbstractOp::FIELD_AVAILABLE: {
@@ -1305,8 +1316,9 @@ namespace rebgn {
                 break;
             }
             default:
-                break;
+                return error("Invalid op: {}", to_string(code.op));
         }
+        return none;
     }
 
     Error derive_function_from_merged_fields(Module& m) {
@@ -1369,25 +1381,81 @@ namespace rebgn {
                 auto type = c.storage().value();
                 auto originalType = type;
                 auto param = c.param().value();
-                auto do_foreach = [&](auto&& action) {
+                auto do_foreach = [&](auto&& action, auto&& ret_empty) {
+                    RetrieveVarCtx variables;
+                    for (auto& c : param.expr_refs) {
+                        auto& conditional_field = m.code[m.ident_index_table[c.value()]];
+                        auto err = retrieve_var(m, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
+                        if (err) {
+                            return err;
+                        }
+                    }
+                    for (auto& v : variables.ordered_variables) {
+                        m.op(AbstractOp::DECLARE_VARIABLE, [&](Code& m) {
+                            m.ref(*varint(v));
+                        });
+                    }
                     std::optional<ObjectID> prev_cond;
                     for (auto& c : param.expr_refs) {
+                        // get CONDITIONAL_FIELD or CONDITIONAL_PROPERTY
                         auto& code = m.code[m.ident_index_table[c.value()]];
-                        auto& expr = m.code[m.ident_index_table[code.left_ref()->value()]];
-                        if (expr.op == AbstractOp::NOT_PREV_THEN) {
-                            if (prev_cond) {
-                                while (prev_cond != expr.left_ref()->value()) {
+                        // get condition expr
+                        auto expr = &m.code[m.ident_index_table[code.left_ref()->value()]];
+                        auto expr_ref = expr->ident().value();
+                        if (expr->op == AbstractOp::NOT_PREV_THEN) {
+                            std::vector<ObjectID> conditions;
+                            auto orig = expr;
+                            while (!prev_cond || prev_cond != expr->left_ref()->value()) {
+                                auto prev_expr = &m.code[m.ident_index_table[expr->left_ref()->value()]];
+                                if (prev_expr->op == AbstractOp::NOT_PREV_THEN) {
+                                    conditions.push_back(prev_expr->right_ref()->value());
+                                }
+                                else {
+                                    conditions.push_back(prev_expr->ident()->value());
+                                    break;
+                                }
+                                expr = prev_expr;
+                            }
+                            ObjectID last = 0;
+                            for (auto& c : conditions) {
+                                if (last) {
+                                    auto and_ = m.new_id(nullptr);
+                                    if (!and_) {
+                                        return and_.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*and_);
+                                        m.left_ref(*varint(c));
+                                        m.right_ref(*varint(last));
+                                        m.bop(BinaryOp::logical_or);
+                                    });
+                                    last = and_->value();
+                                }
+                                else {
+                                    last = c;
                                 }
                             }
+                            if (last != 0) {
+                                op(AbstractOp::IF, [&](Code& m) {
+                                    m.ref(*varint(last));
+                                });
+                                auto err = ret_empty();
+                                if (err) {
+                                    return err;
+                                }
+                                op(AbstractOp::END_IF, [&](Code& m) {});
+                            }
+                            expr_ref = orig->right_ref().value();
                         }
                         op(AbstractOp::IF, [&](Code& m) {
-                            m.ref(*code.left_ref());
+                            m.ref(expr_ref);
                         });
                         auto err = action(code);
                         if (err) {
                             return err;
                         }
                         op(AbstractOp::END_IF, [&](Code& m) {});
+                        prev_cond = expr->ident()->value();
                     }
                     return none;
                 };
@@ -1408,6 +1476,26 @@ namespace rebgn {
                 op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
                     n.storage(type);
                 });
+                auto ret_empty = [&]() {
+                    auto empty_ident = m.new_id(nullptr);
+                    if (!empty_ident) {
+                        return empty_ident.error();
+                    }
+                    if (mode == MergeMode::COMMON_TYPE) {
+                        op(AbstractOp::EMPTY_OPTIONAL, [&](Code& m) {
+                            m.ident(*empty_ident);
+                        });
+                    }
+                    else {
+                        op(AbstractOp::EMPTY_PTR, [&](Code& m) {
+                            m.ident(*empty_ident);
+                        });
+                    }
+                    op(AbstractOp::RET, [&](Code& m) {
+                        m.ref(*empty_ident);
+                    });
+                    return none;
+                };
                 auto err = do_foreach([&](const Code& code) {
                     auto expr_ref = code.right_ref().value();
                     auto ident = m.new_id(nullptr);
@@ -1444,27 +1532,12 @@ namespace rebgn {
                         m.ref(*ident);
                     });
                     return none;
-                });
+                },
+                                      ret_empty);
                 if (err) {
                     return err;
                 }
-                auto empty_ident = m.new_id(nullptr);
-                if (!empty_ident) {
-                    return empty_ident.error();
-                }
-                if (mode == MergeMode::COMMON_TYPE) {
-                    op(AbstractOp::EMPTY_OPTIONAL, [&](Code& m) {
-                        m.ident(*empty_ident);
-                    });
-                }
-                else {
-                    op(AbstractOp::EMPTY_PTR, [&](Code& m) {
-                        m.ident(*empty_ident);
-                    });
-                }
-                op(AbstractOp::RET, [&](Code& m) {
-                    m.ref(*empty_ident);
-                });
+                ret_empty();
                 op(AbstractOp::END_FUNCTION, [&](Code& m) {});
 
                 op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
@@ -1494,6 +1567,19 @@ namespace rebgn {
                 op(AbstractOp::IMMEDIATE_TRUE, [&](Code& m) {
                     m.ident(*bool_ident);
                 });
+                auto ret_false = [&]() {
+                    auto false_ident = m.new_id(nullptr);
+                    if (!false_ident) {
+                        return false_ident.error();
+                    }
+                    op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
+                        m.ident(*false_ident);
+                    });
+                    op(AbstractOp::RET, [&](Code& m) {
+                        m.ref(*false_ident);
+                    });
+                    return none;
+                };
                 err = do_foreach([&](const Code& code) {
                     auto expr_ref = code.right_ref().value();
                     if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
@@ -1517,20 +1603,12 @@ namespace rebgn {
                         m.ref(*bool_ident);
                     });
                     return none;
-                });
+                },
+                                 ret_false);
                 if (err) {
                     return err;
                 }
-                auto false_ident = m.new_id(nullptr);
-                if (!false_ident) {
-                    return false_ident.error();
-                }
-                op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
-                    m.ident(*false_ident);
-                });
-                op(AbstractOp::RET, [&](Code& m) {
-                    m.ref(*false_ident);
-                });
+                ret_false();
                 op(AbstractOp::END_FUNCTION, [&](Code& m) {});
             }
         }

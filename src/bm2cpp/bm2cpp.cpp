@@ -1022,8 +1022,8 @@ namespace bm2cpp {
                     }
                     auto ident = ctx.ident_table[code.ident().value().value()];
                     if (auto bl = code.belong().value().value(); bl) {
-                        auto parent_ident = ctx.ident_table[bl];
-                        ident = std::format("{}::{}", parent_ident, ident);
+                        auto typ = retrieve_union_type(ctx, ctx.bm.code[ctx.ident_index_table[bl]]);
+                        ident = std::format("{}::{}", typ, ident);
                     }
                     ctx.cw.write(ident, "(");
                     add_function_parameters(ctx, fn_range);

@@ -18,6 +18,7 @@ namespace rebgn {
 
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
@@ -25,6 +26,8 @@ namespace rebgn {
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, bool should_init_recursive);
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
+    Error insert_phi(Module& m, PhiStack&& p);
+    Error do_assign(Module& m, Varint left, Varint right);
     inline void maybe_insert_eval_expr(Module& m, const std::shared_ptr<ast::Node>& n) {
         if (!ast::as<ast::Expr>(n)) {
             return;
@@ -117,10 +120,7 @@ namespace rebgn {
                 if (!prev_expr) {
                     return prev_expr.error();
                 }
-                m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                    c.left_ref(*yield_value);
-                    c.right_ref(*prev_expr);
-                });
+                return do_assign(m, *yield_value, *prev_expr);
             }
             return none;
         };
@@ -133,6 +133,7 @@ namespace rebgn {
         if (!cond) {
             return cond.error();
         }
+        m.init_phi_stack(cond->value());
         m.op(AbstractOp::IF, [&](Code& c) {
             c.ref(*cond);
         });
@@ -156,6 +157,7 @@ namespace rebgn {
                     if (!cond) {
                         return cond.error();
                     }
+                    m.next_phi_candidate(cond->value());
                     m.op(AbstractOp::ELIF, [&](Code& c) {
                         c.ref(*cond);
                     });
@@ -177,6 +179,7 @@ namespace rebgn {
                     els = ast::cast_to<ast::If>(els->els);
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(els->els)) {
+                    m.next_phi_candidate(null_id);
                     m.op(AbstractOp::ELSE);
                     add_switch_union(m, block->struct_type);
                     auto err = foreach_node(m, block->elements, [&](auto& n) {
@@ -201,6 +204,10 @@ namespace rebgn {
             }
         }
         m.op(AbstractOp::END_IF);
+        err = insert_phi(m, m.end_phi_stack());
+        if (err) {
+            return err;
+        }
         yield_value_finalproc();
         return none;
     }
@@ -233,10 +240,7 @@ namespace rebgn {
                 if (!prev_expr) {
                     return prev_expr.error();
                 }
-                m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                    c.left_ref(*yield_value);
-                    c.right_ref(*prev_expr);
-                });
+                return do_assign(m, *yield_value, *prev_expr);
             }
             return none;
         };
@@ -250,6 +254,7 @@ namespace rebgn {
             if (!cond) {
                 return cond.error();
             }
+            m.init_phi_stack(cond->value());
             if (node->struct_union_type->exhaustive) {
                 m.op(AbstractOp::EXHAUSTIVE_MATCH, [&](Code& c) {
                     c.ref(*cond);
@@ -262,6 +267,7 @@ namespace rebgn {
             }
             for (auto& c : node->branch) {
                 if (ast::is_any_range(c->cond->expr)) {
+                    m.next_phi_candidate(null_id);
                     m.op(AbstractOp::DEFAULT_CASE);
                 }
                 else {
@@ -269,6 +275,7 @@ namespace rebgn {
                     if (!cond) {
                         return cond.error();
                     }
+                    m.next_phi_candidate(cond->value());
                     m.op(AbstractOp::CASE, [&](Code& c) {
                         c.ref(*cond);
                     });
@@ -305,6 +312,10 @@ namespace rebgn {
                 m.op(AbstractOp::END_CASE);
             }
             m.op(AbstractOp::END_MATCH);
+            auto err = insert_phi(m, m.end_phi_stack());
+            if (err) {
+                return err;
+            }
             yield_value_finalproc();
             return none;
         }
@@ -317,6 +328,7 @@ namespace rebgn {
             if (ast::is_any_range(c->cond->expr)) {
                 // if first branch, so we don't need to use if-elses
                 if (last) {
+                    m.next_phi_candidate(null_id);
                     m.op(AbstractOp::ELSE);
                     last = c;
                 }
@@ -327,12 +339,14 @@ namespace rebgn {
                     return cond.error();
                 }
                 if (!last) {
+                    m.init_phi_stack(cond->value());
                     m.op(AbstractOp::IF, [&](Code& c) {
                         c.ref(*cond);
                     });
                     last = c;
                 }
                 else {
+                    m.next_phi_candidate(cond->value());
                     m.op(AbstractOp::ELIF, [&](Code& c) {
                         c.ref(*cond);
                     });
@@ -371,6 +385,10 @@ namespace rebgn {
         }
         if (last) {
             m.op(AbstractOp::END_IF);
+            auto err = insert_phi(m, m.end_phi_stack());
+            if (err) {
+                return err;
+            }
         }
         yield_value_finalproc();
         return none;
@@ -399,10 +417,10 @@ namespace rebgn {
                         if (!id) {
                             return id.error();
                         }
-                        m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-                            c.ident(*id);
-                            c.ref(counter);
-                        });
+                        auto res = define_var(m, id.value(), counter, ast::ConstantLevel::immutable_variable);
+                        if (!res) {
+                            return res.error();
+                        }
                         auto err = inner_block();
                         if (err) {
                             return err;

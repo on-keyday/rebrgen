@@ -49,9 +49,15 @@ namespace rebgn {
         std::vector<std::weak_ptr<CFG>> prev;
     };
 
+    struct PhiCandidate {
+        ObjectID condition;
+        std::unordered_map<ObjectID, ObjectID> candidate;
+    };
+
     struct PhiStack {
         std::unordered_map<ObjectID, ObjectID> start_state;
-        std::vector<std::unordered_map<ObjectID, ObjectID>> candidates;
+        ObjectID current_condition = null_id;
+        std::vector<PhiCandidate> candidates;
     };
 
     struct Module {
@@ -74,23 +80,32 @@ namespace rebgn {
         std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
 
         std::unordered_map<ObjectID, ObjectID> previous_assignments;
+
         std::vector<PhiStack> phi_stack;
 
-        void init_phi_stack() {
+        void init_phi_stack(ObjectID condition) {
             phi_stack.push_back(PhiStack{
                 .start_state = previous_assignments,
+                .current_condition = condition,
             });
         }
 
-        void next_phi_candidate() {
+        void next_phi_candidate(ObjectID condition) {
             assert(phi_stack.size());
-            phi_stack.back().candidates.push_back(std::move(previous_assignments));
+            phi_stack.back().candidates.push_back({
+                .condition = phi_stack.back().current_condition,
+                .candidate = std::move(previous_assignments),
+            });
             previous_assignments = phi_stack.back().start_state;
+            phi_stack.back().current_condition = condition;
         }
 
         PhiStack end_phi_stack() {
             assert(phi_stack.size());
-            phi_stack.back().candidates.push_back(std::move(previous_assignments));
+            phi_stack.back().candidates.push_back({
+                .condition = phi_stack.back().current_condition,
+                .candidate = std::move(previous_assignments),
+            });
             auto stack = std::move(phi_stack.back());
             phi_stack.pop_back();
             return stack;
@@ -104,7 +119,7 @@ namespace rebgn {
             if (auto found = previous_assignments.find(init); found != previous_assignments.end()) {
                 return found->second;
             }
-            return null_id;
+            return init;
         }
 
         void assign(ObjectID init, ObjectID assign) {

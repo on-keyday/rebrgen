@@ -358,6 +358,13 @@ format Param:
     len_exprs :Varint
     expr_refs :[len_exprs.value]Varint
     
+format PhiParam:
+    condition :Varint
+    assign :Varint
+
+format PhiParams:
+    length :Varint
+    params :[length.value]PhiParam
 
 # ident is unique identifier
 # ref, left_ref, right_ref is reference to other object identifier
@@ -468,7 +475,8 @@ format Code:
             right_ref :Varint # ref to expr
         AbstractOp.PHI:
             ident :Varint
-            param :Param # ref to previous definitions, assignments or phis
+            ref :Varint # ref to original variable
+            phi_params :PhiParams # ref to previous definitions, assignments or phis
         AbstractOp.PROPERTY_ASSIGN:
             left_ref :Varint # ref to property setter
             right_ref :Varint # ref to expr

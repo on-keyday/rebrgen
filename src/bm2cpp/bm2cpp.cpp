@@ -286,6 +286,12 @@ namespace bm2cpp {
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
+            case rebgn::AbstractOp::PHI: {
+                auto ref = code.ref().value().value();
+                auto idx = ctx.ident_index_table[ref];
+                res = eval(ctx.bm.code[idx], ctx);
+                break;
+            }
             case rebgn::AbstractOp::ARRAY_SIZE: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);

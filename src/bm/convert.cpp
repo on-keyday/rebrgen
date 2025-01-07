@@ -69,16 +69,21 @@ namespace rebgn {
         return ident;
     }
 
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, ast::ConstantLevel level) {
+        m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
+            c.ident(ident);
+            c.ref(init_ref);
+        });
+        m.previous_assignments[ident.value()] = ident.value();
+        return ident;
+    }
+
     expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
         auto ident = m.new_id(nullptr);
         if (!ident) {
             return ident;
         }
-        m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-            c.ident(*ident);
-            c.ref(init_ref);
-        });
-        return ident;
+        return define_var(m, *ident, init_ref, level);
     }
 
     expected<Varint> define_counter(Module& m, std::uint64_t init) {
@@ -107,9 +112,46 @@ namespace rebgn {
 
     Error insert_phi(Module& m, PhiStack&& p) {
         auto& start = p.start_state;
+        auto new_state = start;
         for (auto& s : start) {
+            PhiParams params;
+            bool has_diff = false;
+            for (auto& c : p.candidates) {
+                auto cand = c.candidate[s.first];
+                has_diff = has_diff || cand != s.second;
+                params.params.push_back(
+                    {
+                        .condition = *varint(c.condition),
+                        .assign = *varint(cand),
+                    });
+            }
+            if (!has_diff) {
+                continue;
+            }
+            if (p.candidates.back().condition != null_id) {
+                params.params.push_back(
+                    {
+                        .condition = *varint(null_id),
+                        .assign = *varint(s.second),
+                    });
+            }
+            auto len = varint(params.params.size());
+            if (!len) {
+                return len.error();
+            }
+            params.length = len.value();
+            auto new_id = m.new_id(nullptr);
+            if (!new_id) {
+                return new_id.error();
+            }
+            m.op(AbstractOp::PHI, [&](Code& c) {
+                c.ident(*new_id);
+                c.ref(*varint(s.first));
+                c.phi_params(std::move(params));
+            });
+            new_state[s.first] = new_id->value();
         }
-        m.previous_assignments = std::move(start);
+        m.previous_assignments = std::move(new_state);
         return none;
     }
 
@@ -270,7 +312,8 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-                m.set_prev_expr(tmp_var->value());
+                auto prev = m.prev_assign(tmp_var->value());
+                m.set_prev_expr(prev);
                 return none;
             }
             case ast::IOMethod::output_put: {
@@ -351,7 +394,12 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        m.set_prev_expr(ident->value());
+        if (auto prev_assign = m.prev_assign(ident->value())) {
+            m.set_prev_expr(prev_assign);
+        }
+        else {
+            m.set_prev_expr(ident->value());
+        }
         return none;
     }
 
@@ -721,6 +769,12 @@ namespace rebgn {
                     c.left_ref(base_expr);
                     c.right_ref(cond);
                 });
+                if (prev) {
+                    m.next_phi_candidate(id->value());
+                }
+                else {
+                    m.init_phi_stack(id->value());
+                }
                 m.op(prev ? AbstractOp::ELIF : AbstractOp::IF, [&](Code& c) {
                     c.ref(*id);
                 });
@@ -735,11 +789,16 @@ namespace rebgn {
             });
             if (prev) {
                 m.op(AbstractOp::END_IF);
+                auto err = insert_phi(m, m.end_phi_stack());
+                if (err) {
+                    return err;
+                }
             }
             if (err) {
                 return err;
             }
-            new_id = *tmp_var;
+            auto prev_assign = m.prev_assign(tmp_var->value());
+            new_id = *varint(prev_assign);
         }
         else {
             auto imm = immediate_bool(m, ast::as<ast::Ident>(node->target) || ast::as<ast::MemberAccess>(node->target));
@@ -1009,6 +1068,7 @@ namespace rebgn {
             });
             m.op(AbstractOp::END_PARAMETER);
         }
+        m.init_phi_stack(0);  // temporary
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_definition(m, n);
         });
@@ -1019,6 +1079,7 @@ namespace rebgn {
             m.op(AbstractOp::RET_SUCCESS);
         }
         m.op(AbstractOp::END_FUNCTION);
+        m.end_phi_stack();  // restore
         return none;
     }
 
@@ -1216,7 +1277,7 @@ namespace rebgn {
         if (!cond) {
             return error("Invalid conditional expression");
         }
-        m.init_phi_stack();
+        m.init_phi_stack(cond->value());
         m.op(AbstractOp::IF, [&](Code& c) {
             c.ref(*cond);
         });
@@ -1224,27 +1285,24 @@ namespace rebgn {
         if (!then) {
             return error("Invalid then expression");
         }
-        m.op(AbstractOp::ASSIGN, [&](Code& c) {
-            c.left_ref(*tmp_var);
-            c.right_ref(*then);
-        });
         err = do_assign(m, *tmp_var, *then);
-        m.next_phi_candidate();
+        m.next_phi_candidate(null_id);
         m.op(AbstractOp::ELSE);
         auto els = get_expr(m, node->els);
         if (!els) {
             return error("Invalid else expression");
         }
-        m.op(AbstractOp::ASSIGN, [&](Code& c) {
-            c.left_ref(*tmp_var);
-            c.right_ref(*els);
-        });
+        err = do_assign(m, *tmp_var, *els);
+        if (err) {
+            return err;
+        }
         m.op(AbstractOp::END_IF);
         err = insert_phi(m, m.end_phi_stack());
         if (err) {
             return err;
         }
-        m.set_prev_expr(tmp_var->value());
+        auto prev = m.prev_assign(tmp_var->value());
+        m.set_prev_expr(prev);
         return none;
     }
 
@@ -1292,11 +1350,19 @@ namespace rebgn {
             if (!right_ref) {
                 return error("Invalid binary expression: {}", right_ref.error().error());
             }
-            m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
-                c.ident(*ident_);
-                c.ref(*right_ref);
-            });
-            m.previous_assignments[ident_->value()] = ident_->value();
+            if (node->right->constant_level == ast::ConstantLevel::constant &&
+                node->op == ast::BinaryOp::const_assign) {
+                m.op(AbstractOp::DEFINE_CONSTANT, [&](Code& c) {
+                    c.ident(*ident_);
+                    c.ref(*right_ref);
+                });
+            }
+            else {
+                auto res = define_var(m, *ident_, *right_ref, node->right->constant_level);
+                if (!res) {
+                    return res.error();
+                }
+            }
             return none;
         }
         if (node->op == ast::BinaryOp::append_assign) {
@@ -1331,13 +1397,8 @@ namespace rebgn {
             return none;
         }
         if (node->op == ast::BinaryOp::assign) {
-            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                c.left_ref(*left_ref);
-                c.right_ref(*right_ref);
-            });
-            return none;
+            return do_assign(m, *left_ref, *right_ref);
         }
-
         auto ident = m.new_node_id(node);
         if (!ident) {
             return ident.error();
@@ -1403,10 +1464,10 @@ namespace rebgn {
             c.right_ref(*right_ref);
         });
         if (should_assign) {
-            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                c.left_ref(*left_ref);
-                c.right_ref(*ident);
-            });
+            auto err = do_assign(m, *left_ref, *ident);
+            if (err) {
+                return err;
+            }
         }
         else {
             m.set_prev_expr(ident->value());

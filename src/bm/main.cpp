@@ -127,6 +127,9 @@ namespace rebgn {
             if (auto m = c.packed_op_type()) {
                 cout << " " << to_string(*m);
             }
+            if (auto m = c.check_at()) {
+                cout << " " << to_string(*m);
+            }
             if (auto bit_size = c.bit_size()) {
                 cout << " " << bit_size->value() << "bit";
             }
@@ -167,6 +170,22 @@ namespace rebgn {
                         cout << ",";
                     }
                     print_ref(p);
+                }
+                cout << " )";
+            }
+            if (auto phi_param = c.phi_params()) {
+                cout << " (";
+                bool first = true;
+                for (auto& [k, v] : phi_param->params) {
+                    if (first) {
+                        first = false;
+                    }
+                    else {
+                        cout << ",";
+                    }
+                    print_ref(k);
+                    cout << ":";
+                    print_ref(v);
                 }
                 cout << " )";
             }

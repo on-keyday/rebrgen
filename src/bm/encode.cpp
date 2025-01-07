@@ -268,11 +268,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(*new_id);
             });
-            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                c.left_ref(base_ref);
-                c.right_ref(*next_id);
-            });
-            return none;
+            return do_assign(m, base_ref, *next_id);
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
             auto str_ref = m.lookup_string(str_ty->strong_ref->value, &str_ty->strong_ref->loc);
@@ -386,9 +382,10 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
+                auto prev_ = m.prev_assign(tmp_var->value());
                 m.op(AbstractOp::APPEND, [&](Code& c) {
                     c.left_ref(base_ref);
-                    c.right_ref(*tmp_var);
+                    c.right_ref(*varint(prev_));
                 });
                 return none;
             };
@@ -531,11 +528,11 @@ namespace rebgn {
                             if (!immFalse) {
                                 return immFalse.error();
                             }
-                            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                                c.left_ref(*isOK);
-                                c.right_ref(*immTrue);
-                            });
-                            auto err = counter_loop(m, *imm, [&](Varint i) {
+                            auto err = do_assign(m, *isOK, *immTrue);
+                            if (err) {
+                                return err;
+                            }
+                            err = counter_loop(m, *imm, [&](Varint i) {
                                 auto index_str = m.new_id(nullptr);
                                 if (!index_str) {
                                     return error("Failed to generate new id");
@@ -564,16 +561,14 @@ namespace rebgn {
                                     c.left_ref(*index_str);
                                     c.right_ref(*index_peek);
                                 });
+                                m.init_phi_stack(cmp->value());
                                 m.op(AbstractOp::IF, [&](Code& c) {
                                     c.ref(*cmp);
                                 });
-                                m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                                    c.left_ref(*isOK);
-                                    c.right_ref(*immFalse);
-                                });
+                                err = do_assign(m, *isOK, *immFalse);
                                 m.op(AbstractOp::BREAK);
                                 m.op(AbstractOp::END_IF);
-                                return none;
+                                return insert_phi(m, m.end_phi_stack());
                             });
                             if (err) {
                                 return err;
@@ -708,11 +703,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(*tmp_var);
             });
-            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                c.left_ref(base_ref);
-                c.right_ref(*casted);
-            });
-            return none;
+            return do_assign(m, base_ref, *casted);
         }
         if (auto i = ast::as<ast::IdentType>(typ)) {
             auto base_type = i->base.lock();
@@ -820,6 +811,7 @@ namespace rebgn {
             });
         });
         m.on_encode_fn = true;
+        m.init_phi_stack(0);  // make it temporary
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {
@@ -845,6 +837,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
+        m.end_phi_stack();  // remove temporary
         m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
             c.left_ref(*fmt_ident);
             c.right_ref(*new_id);
@@ -889,6 +882,7 @@ namespace rebgn {
             });
         });
         m.on_encode_fn = false;
+        m.init_phi_stack(0);  // make it temporary
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {
@@ -914,6 +908,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
+        m.end_phi_stack();  // remove temporary
         m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {
             c.left_ref(*fmt_ident);
             c.right_ref(*new_id);

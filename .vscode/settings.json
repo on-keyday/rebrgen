@@ -87,5 +87,8 @@
     },
     "editor.formatOnSave": true,
     "C_Cpp.clang_format_style": "file",
-    "brgen-lsp.src2json": "C:/workspace/shbrgen/brgen/tool/src2json.exe"
+    "brgen-lsp.src2json": "C:/workspace/shbrgen/brgen/tool/src2json.exe",
+    "rust-analyzer.linkedProjects": [
+        "C:\\workspace\\shbrgen\\rebrgen\\save\\save\\Cargo.toml"
+]
 }

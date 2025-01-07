@@ -1473,16 +1473,11 @@ namespace bm2cpp {
                                 base_type = type_to_string(ctx, *bm.code[j].storage());
                                 continue;
                             }
-                            if (bm.code[j].op == rebgn::AbstractOp::DECLARE_ENUM_MEMBER) {
-                                auto def = ctx.ident_index_table[bm.code[j].ref().value().value()];
-                                for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM_MEMBER; j++) {
-                                    if (bm.code[j].op == rebgn::AbstractOp::ASSIGN) {
-                                        auto ev = eval(bm.code[j], ctx);
-                                        ev.back().pop_back();  // remove ;
-                                        ev.back().push_back(',');
-                                        tmp.writeln(ev.back());
-                                    }
-                                }
+                            if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                                auto ident = ctx.ident_table[bm.code[j].ident().value().value()];
+                                auto init = ctx.ident_index_table[bm.code[j].ref().value().value()];
+                                auto ev = eval(bm.code[init], ctx);
+                                tmp.writeln(ident, " = ", ev.back(), ",");
                             }
                         }
                         if (base_type.size() > 0) {

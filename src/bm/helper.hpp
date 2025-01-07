@@ -12,7 +12,6 @@ namespace rebgn {
             case AbstractOp::DECLARE_FORMAT:
             case AbstractOp::DECLARE_UNION:
             case AbstractOp::DECLARE_FIELD:
-            case AbstractOp::DECLARE_ENUM_MEMBER:
             case AbstractOp::DECLARE_UNION_MEMBER:
             case AbstractOp::DECLARE_PROGRAM:
             case AbstractOp::DECLARE_STATE:

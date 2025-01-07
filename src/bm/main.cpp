@@ -43,7 +43,6 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_ENUM:
                 case rebgn::AbstractOp::END_FORMAT:
                 case rebgn::AbstractOp::END_FIELD:
-                case rebgn::AbstractOp::END_ENUM_MEMBER:
                 case rebgn::AbstractOp::END_UNION:
                 case rebgn::AbstractOp::END_UNION_MEMBER:
                 case rebgn::AbstractOp::END_FUNCTION:
@@ -176,7 +175,6 @@ namespace rebgn {
                 case rebgn::AbstractOp::DEFINE_ENUM:
                 case rebgn::AbstractOp::DEFINE_FORMAT:
                 case rebgn::AbstractOp::DEFINE_FIELD:
-                case rebgn::AbstractOp::DEFINE_ENUM_MEMBER:
                 case rebgn::AbstractOp::DEFINE_UNION:
                 case rebgn::AbstractOp::DEFINE_UNION_MEMBER:
                 case rebgn::AbstractOp::DEFINE_FUNCTION:

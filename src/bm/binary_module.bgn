@@ -129,8 +129,6 @@ enum AbstractOp:
     DECLARE_ENUM
     
     DEFINE_ENUM_MEMBER
-    END_ENUM_MEMBER
-    DECLARE_ENUM_MEMBER
     
     DEFINE_UNION
     END_UNION
@@ -407,6 +405,7 @@ format Code:
             ident :Varint
         AbstractOp.DEFINE_ENUM_MEMBER:
             ident :Varint
+            ref :Varint # ref to init expr
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
             belong :Varint # belong to format or null
@@ -574,8 +573,6 @@ format Code:
         AbstractOp.DECLARE_BIT_FIELD:
             ref :Varint
         AbstractOp.DECLARE_ENUM:
-            ref :Varint
-        AbstractOp.DECLARE_ENUM_MEMBER:
             ref :Varint
         AbstractOp.DECLARE_FUNCTION:
             ref :Varint

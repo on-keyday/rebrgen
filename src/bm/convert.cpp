@@ -89,6 +89,30 @@ namespace rebgn {
         return define_tmp_var(m, *init_ref, ast::ConstantLevel::variable);
     }
 
+    Error do_assign(Module& m, Varint left, Varint right) {
+        auto prev_assign = m.prev_assign(left.value());
+        auto new_id = m.new_id(nullptr);
+        if (!new_id) {
+            return new_id.error();
+        }
+        m.op(AbstractOp::ASSIGN, [&](Code& c) {
+            c.ident(*new_id);
+            c.ref(*varint(prev_assign));
+            c.left_ref(left);
+            c.right_ref(right);
+        });
+        m.assign(left.value(), new_id->value());
+        return none;
+    }
+
+    Error insert_phi(Module& m, PhiStack&& p) {
+        auto& start = p.start_state;
+        for (auto& s : start) {
+        }
+        m.previous_assignments = std::move(start);
+        return none;
+    }
+
     template <>
     Error define<ast::IntLiteral>(Module& m, std::shared_ptr<ast::IntLiteral>& node) {
         auto n = node->parse_as<std::uint64_t>();
@@ -701,10 +725,10 @@ namespace rebgn {
                     c.ref(*id);
                 });
                 if (field) {
-                    m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                        c.left_ref(*tmp_var);
-                        c.right_ref(*imm_true);
-                    });
+                    auto err = do_assign(m, *tmp_var, *imm_true);
+                    if (err) {
+                        return err;
+                    }
                 }
                 prev = true;
                 return none;
@@ -1127,18 +1151,14 @@ namespace rebgn {
             if (!ident) {
                 return ident.error();
             }
-            m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
-                c.ident(*ident);
-            });
             auto ref = get_expr(m, me->value);
             if (!ref) {
                 return error("Invalid enum member value");
             }
-            m.op(AbstractOp::ASSIGN, [&](Code& c) {
-                c.left_ref(*ident);
-                c.right_ref(*ref);
+            m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
+                c.ident(*ident);
+                c.ref(*ref);
             });
-            m.op(AbstractOp::END_ENUM_MEMBER);
         }
         m.op(AbstractOp::END_ENUM);
         return none;
@@ -1196,6 +1216,7 @@ namespace rebgn {
         if (!cond) {
             return error("Invalid conditional expression");
         }
+        m.init_phi_stack();
         m.op(AbstractOp::IF, [&](Code& c) {
             c.ref(*cond);
         });
@@ -1207,6 +1228,8 @@ namespace rebgn {
             c.left_ref(*tmp_var);
             c.right_ref(*then);
         });
+        err = do_assign(m, *tmp_var, *then);
+        m.next_phi_candidate();
         m.op(AbstractOp::ELSE);
         auto els = get_expr(m, node->els);
         if (!els) {
@@ -1217,6 +1240,10 @@ namespace rebgn {
             c.right_ref(*els);
         });
         m.op(AbstractOp::END_IF);
+        err = insert_phi(m, m.end_phi_stack());
+        if (err) {
+            return err;
+        }
         m.set_prev_expr(tmp_var->value());
         return none;
     }
@@ -1269,6 +1296,7 @@ namespace rebgn {
                 c.ident(*ident_);
                 c.ref(*right_ref);
             });
+            m.previous_assignments[ident_->value()] = ident_->value();
             return none;
         }
         if (node->op == ast::BinaryOp::append_assign) {

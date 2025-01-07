@@ -100,13 +100,6 @@ namespace rebgn {
                     }
                     break;
                 }
-                case AbstractOp::DEFINE_ENUM_MEMBER: {
-                    auto err = do_extract(AbstractOp::DEFINE_ENUM_MEMBER, AbstractOp::END_ENUM_MEMBER);
-                    if (err) {
-                        return err;
-                    }
-                    break;
-                }
                 case AbstractOp::DEFINE_UNION: {
                     auto err = do_extract(AbstractOp::DEFINE_UNION, AbstractOp::END_UNION);
                     if (err) {
@@ -161,8 +154,6 @@ namespace rebgn {
                 return AbstractOp::DECLARE_UNION;
             case AbstractOp::DEFINE_FIELD:
                 return AbstractOp::DECLARE_FIELD;
-            case AbstractOp::DEFINE_ENUM_MEMBER:
-                return AbstractOp::DECLARE_ENUM_MEMBER;
             case AbstractOp::DEFINE_UNION_MEMBER:
                 return AbstractOp::DECLARE_UNION_MEMBER;
             case AbstractOp::DEFINE_PROGRAM:
@@ -493,6 +484,7 @@ namespace rebgn {
                     index_of_operation_and_loop.push_back(i);
                     break;
                 default:
+                    index_of_operation_and_loop.push_back(i);  // for other operation
                     break;
             }
         }
@@ -763,6 +755,7 @@ namespace rebgn {
                     break;
                 }
                 default:
+                    current->basic_block.push_back(index_of_operation_and_loop[i]);
                     break;
             }
         }
@@ -829,9 +822,6 @@ namespace rebgn {
                     break;
                 case AbstractOp::DEFINE_FIELD:
                     end_op = AbstractOp::END_FIELD;
-                    break;
-                case AbstractOp::DEFINE_ENUM_MEMBER:
-                    end_op = AbstractOp::END_ENUM_MEMBER;
                     break;
                 case AbstractOp::DEFINE_UNION:
                     end_op = AbstractOp::END_UNION;

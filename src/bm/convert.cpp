@@ -646,6 +646,10 @@ namespace rebgn {
                         c.left_ref(*prev_cond);
                         c.right_ref(*imm_true);
                     });
+                    auto err = block(*new_id, *imm_true, field);
+                    if (err) {
+                        return err;
+                    }
                 }
                 else {
                     m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {

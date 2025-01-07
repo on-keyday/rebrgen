@@ -293,6 +293,20 @@ namespace bm2cpp {
                 res.push_back(std::format("{}.size()", ref.back()));
                 break;
             }
+            case rebgn::AbstractOp::OPTIONAL_OF: {
+                auto ref_index = ctx.ident_index_table[code.ref().value().value()];
+                auto ref = eval(ctx.bm.code[ref_index], ctx);
+                res.insert(res.end(), ref.begin(), ref.end() - 1);
+                res.push_back(ref.back());
+                break;
+            }
+            case rebgn::AbstractOp::ADDRESS_OF: {
+                auto ref_index = ctx.ident_index_table[code.ref().value().value()];
+                auto ref = eval(ctx.bm.code[ref_index], ctx);
+                res.insert(res.end(), ref.begin(), ref.end() - 1);
+                res.push_back(std::format("&{}", ref.back()));
+                break;
+            }
             case rebgn::AbstractOp::CAN_READ: {
                 res.push_back(std::format("!r.empty()"));
                 break;
@@ -456,6 +470,18 @@ namespace bm2cpp {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
                 auto& ident = ctx.ident_table[code.ident().value().value()];
                 res.push_back(ident);
+                break;
+            }
+            case rebgn::AbstractOp::DECLARE_VARIABLE: {
+                res = eval(ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]], ctx);
+                break;
+            }
+            case rebgn::AbstractOp::EMPTY_PTR: {
+                res.push_back("nullptr");
+                break;
+            }
+            case rebgn::AbstractOp::EMPTY_OPTIONAL: {
+                res.push_back("std::nullopt");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
@@ -1087,6 +1113,11 @@ namespace bm2cpp {
                     ctx.cw.writeln(s[s.size() - 2]);
                     break;
                 }
+                case rebgn::AbstractOp::DECLARE_VARIABLE: {
+                    auto s = eval(code, ctx);
+                    ctx.cw.writeln(s[s.size() - 2]);
+                    break;
+                }
                 case rebgn::AbstractOp::BACKWARD_INPUT:
                 case rebgn::AbstractOp::BACKWARD_OUTPUT: {
                     auto target = code.op == rebgn::AbstractOp::BACKWARD_INPUT ? "r" : "w";
@@ -1211,6 +1242,9 @@ namespace bm2cpp {
                         break;
                     }
                     auto ref = code.ref().value().value();  // ref to UNION_MEMBER
+                    if (find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                        break;
+                    }
                     auto variant_name = retrieve_union_type(ctx, ctx.bm.code[ctx.ident_index_table[ref]]);
                     // ref to DEFINE_UNION
                     auto union_belong = ctx.bm.code[ctx.ident_index_table[ref]].belong().value().value();
@@ -1236,13 +1270,105 @@ namespace bm2cpp {
         }
     }
 
+    std::string escape_cpp_keyword(const std::string& keyword) {
+        if (keyword == "alignas" ||
+            keyword == "alignof" ||
+            keyword == "and" ||
+            keyword == "and_eq" ||
+            keyword == "asm" ||
+            keyword == "auto" ||
+            keyword == "bitand" ||
+            keyword == "bitor" ||
+            keyword == "bool" ||
+            keyword == "break" ||
+            keyword == "case" ||
+            keyword == "catch" ||
+            keyword == "char" ||
+            keyword == "char16_t" ||
+            keyword == "char32_t" ||
+            keyword == "class" ||
+            keyword == "compl" ||
+            keyword == "const" ||
+            keyword == "const_cast" ||
+            keyword == "constexpr" ||
+            keyword == "continue" ||
+            keyword == "decltype" ||
+            keyword == "default" ||
+            keyword == "delete" ||
+            keyword == "do" ||
+            keyword == "double" ||
+            keyword == "dynamic_cast" ||
+            keyword == "else" ||
+            keyword == "enum" ||
+            keyword == "explicit" ||
+            keyword == "export" ||
+            keyword == "extern" ||
+            keyword == "false" ||
+            keyword == "final" ||
+            keyword == "float" ||
+            keyword == "for" ||
+            keyword == "friend" ||
+            keyword == "goto" ||
+            keyword == "if" ||
+            keyword == "inline" ||
+            keyword == "int" ||
+            keyword == "long" ||
+            keyword == "mutable" ||
+            keyword == "namespace" ||
+            keyword == "new" ||
+            keyword == "noexcept" ||
+            keyword == "not" ||
+            keyword == "not_eq" ||
+            keyword == "nullptr" ||
+            keyword == "operator" ||
+            keyword == "or" ||
+            keyword == "or_eq" ||
+            keyword == "private" ||
+            keyword == "protected" ||
+            keyword == "public" ||
+            keyword == "register" ||
+            keyword == "reinterpret_cast" ||
+            keyword == "requires" ||
+            keyword == "return" ||
+            keyword == "short" ||
+            keyword == "signed" ||
+            keyword == "sizeof" ||
+            keyword == "static" ||
+            keyword == "static_assert" ||
+            keyword == "static_cast" ||
+            keyword == "struct" ||
+            keyword == "switch" ||
+            keyword == "template" ||
+            keyword == "this" ||
+            keyword == "thread_local" ||
+            keyword == "throw" ||
+            keyword == "true" ||
+            keyword == "try" ||
+            keyword == "typedef" ||
+            keyword == "typeid" ||
+            keyword == "typename" ||
+            keyword == "union" ||
+            keyword == "unsigned" ||
+            keyword == "using" ||
+            keyword == "virtual" ||
+            keyword == "void" ||
+            keyword == "volatile" ||
+            keyword == "wchar_t" ||
+            keyword == "while" ||
+            keyword == "xor" ||
+            keyword == "xor_eq") {
+            return std::format("{}_", keyword);
+        }
+        return keyword;
+    }
+
     void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
         Context ctx(w, bm);
         for (auto& sr : bm.strings.refs) {
             ctx.string_table[sr.code.value()] = sr.string.data;
         }
         for (auto& ir : bm.identifiers.refs) {
-            ctx.ident_table[ir.code.value()] = ir.string.data;
+            ctx.ident_table[ir.code.value()] = escape_cpp_keyword(ir.string.data);
         }
         for (auto& id : bm.ident_indexes.refs) {
             ctx.ident_index_table[id.ident.value()] = id.index.value();

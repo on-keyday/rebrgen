@@ -1310,7 +1310,8 @@ namespace rebgn {
             }
             case rebgn::AbstractOp::CALL: {
                 retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
-                for (auto& p : code.param().value().expr_refs) {
+                auto params = code.param().value();
+                for (auto& p : params.expr_refs) {
                     retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
                 }
                 break;
@@ -1321,12 +1322,269 @@ namespace rebgn {
         return none;
     }
 
+    Error derive_function(Module& m, Code& base, std::vector<Code>& funcs, std::unordered_map<ObjectID, std::pair<Varint, Varint>>& merged_fields) {
+        auto op = [&](AbstractOp op, auto&& set) {
+            funcs.push_back(make_code(op, set));
+        };
+        auto belong_of_belong = m.code[m.ident_index_table[base.belong().value().value()]].belong().value();
+        auto merged_ident = base.ident().value();
+        auto getter_setter = merged_fields[merged_ident.value()];
+        auto getter_ident = getter_setter.first;
+        auto setter_ident = getter_setter.second;
+        auto mode = base.merge_mode().value();
+        auto type = base.storage().value();
+        auto originalType = type;
+        auto param = base.param().value();
+        auto do_foreach = [&](auto&& action, auto&& ret_empty) {
+            RetrieveVarCtx variables;
+            for (auto& c : param.expr_refs) {
+                auto& conditional_field = m.code[m.ident_index_table[c.value()]];
+                auto err = retrieve_var(m, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
+                if (err) {
+                    return err;
+                }
+            }
+            for (auto& v : variables.ordered_variables) {
+                op(AbstractOp::DECLARE_VARIABLE, [&](Code& m) {
+                    m.ref(*varint(v));
+                });
+            }
+            std::optional<ObjectID> prev_cond;
+            for (auto& c : param.expr_refs) {
+                // get CONDITIONAL_FIELD or CONDITIONAL_PROPERTY
+                auto& code = m.code[m.ident_index_table[c.value()]];
+                // get condition expr
+                auto expr = &m.code[m.ident_index_table[code.left_ref()->value()]];
+                auto expr_ref = expr->ident().value();
+                auto orig = expr;
+                if (expr->op == AbstractOp::NOT_PREV_THEN) {
+                    std::vector<ObjectID> conditions;
+
+                    while (!prev_cond || prev_cond != expr->left_ref()->value()) {
+                        auto prev_expr = &m.code[m.ident_index_table[expr->left_ref()->value()]];
+                        if (prev_expr->op == AbstractOp::NOT_PREV_THEN) {
+                            conditions.push_back(prev_expr->right_ref()->value());
+                        }
+                        else {
+                            conditions.push_back(prev_expr->ident()->value());
+                            break;
+                        }
+                        expr = prev_expr;
+                    }
+                    ObjectID last = 0;
+                    for (auto& c : conditions) {
+                        if (last) {
+                            auto and_ = m.new_id(nullptr);
+                            if (!and_) {
+                                return and_.error();
+                            }
+                            op(AbstractOp::BINARY, [&](Code& m) {
+                                m.ident(*and_);
+                                m.left_ref(*varint(c));
+                                m.right_ref(*varint(last));
+                                m.bop(BinaryOp::logical_or);
+                            });
+                            last = and_->value();
+                        }
+                        else {
+                            last = c;
+                        }
+                    }
+                    if (last != 0) {
+                        op(AbstractOp::IF, [&](Code& m) {
+                            m.ref(*varint(last));
+                        });
+                        auto err = ret_empty();
+                        if (err) {
+                            return err;
+                        }
+                        op(AbstractOp::END_IF, [&](Code& m) {});
+                    }
+                    expr_ref = orig->right_ref().value();
+                }
+                op(AbstractOp::IF, [&](Code& m) {
+                    m.ref(expr_ref);
+                });
+                auto err = action(code);
+                if (err) {
+                    return err;
+                }
+                op(AbstractOp::END_IF, [&](Code& m) {});
+                prev_cond = orig->ident()->value();
+            }
+            return none;
+        };
+
+        // getter function
+        op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+            n.ident(getter_ident);
+            n.belong(belong_of_belong);
+        });
+
+        type.length = *varint(type.storages.size() + 1);
+        if (mode == MergeMode::COMMON_TYPE) {
+            type.storages.insert(type.storages.begin(), Storage{.type = StorageType::OPTIONAL});
+        }
+        else {
+            type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
+        }
+        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+            n.storage(type);
+        });
+        auto ret_empty = [&]() {
+            auto empty_ident = m.new_id(nullptr);
+            if (!empty_ident) {
+                return empty_ident.error();
+            }
+            if (mode == MergeMode::COMMON_TYPE) {
+                op(AbstractOp::EMPTY_OPTIONAL, [&](Code& m) {
+                    m.ident(*empty_ident);
+                });
+            }
+            else {
+                op(AbstractOp::EMPTY_PTR, [&](Code& m) {
+                    m.ident(*empty_ident);
+                });
+            }
+            op(AbstractOp::RET, [&](Code& m) {
+                m.ref(*empty_ident);
+            });
+            return none;
+        };
+        auto err = do_foreach([&](const Code& code) {
+            auto expr_ref = code.right_ref().value();
+            auto ident = m.new_id(nullptr);
+            if (!ident) {
+                return ident.error();
+            }
+            if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
+                auto found = merged_fields.find(expr_ref.value());
+                if (found == merged_fields.end()) {
+                    return error("Invalid conditional property");
+                }
+                auto getter = found->second.first;
+                op(AbstractOp::CALL, [&](Code& code) {
+                    code.ident(*ident);
+                    code.ref(getter);
+                });
+            }
+            else {
+                auto& field = m.code[m.ident_index_table[expr_ref.value()]];
+                auto belong = field.belong().value();
+                op(AbstractOp::CHECK_UNION, [&](Code& m) {
+                    m.ref(belong);
+                    m.check_at(UnionCheckAt::PROPERTY_GETTER);
+                });
+                if (mode == MergeMode::COMMON_TYPE) {
+                    op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
+                        m.ident(*ident);
+                        m.ref(expr_ref);
+                        m.storage(originalType);
+                    });
+                }
+                else {
+                    op(AbstractOp::ADDRESS_OF, [&](Code& m) {
+                        m.ident(*ident);
+                        m.ref(expr_ref);
+                    });
+                }
+            }
+            op(AbstractOp::RET, [&](Code& m) {
+                m.ref(*ident);
+            });
+            return none;
+        },
+                              ret_empty);
+        if (err) {
+            return err;
+        }
+        ret_empty();
+        op(AbstractOp::END_FUNCTION, [&](Code& m) {});
+
+        op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+            n.ident(setter_ident);
+            n.belong(belong_of_belong);
+        });
+        auto prop = m.new_id(nullptr);
+        if (!prop) {
+            return prop.error();
+        }
+        op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& n) {
+            n.ident(*prop);
+            n.left_ref(merged_ident);
+            n.right_ref(setter_ident);
+            n.storage(originalType);
+        });
+        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+            n.storage(Storages{
+                .length = *varint(1),
+                .storages = {Storage{.type = StorageType::BOOL}},
+            });
+        });
+        auto bool_ident = m.new_id(nullptr);
+        if (!bool_ident) {
+            return bool_ident.error();
+        }
+        op(AbstractOp::IMMEDIATE_TRUE, [&](Code& m) {
+            m.ident(*bool_ident);
+        });
+        auto ret_false = [&]() {
+            auto false_ident = m.new_id(nullptr);
+            if (!false_ident) {
+                return false_ident.error();
+            }
+            op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
+                m.ident(*false_ident);
+            });
+            op(AbstractOp::RET, [&](Code& m) {
+                m.ref(*false_ident);
+            });
+            return none;
+        };
+        err = do_foreach([&](const Code& code) {
+            auto expr_ref = code.right_ref().value();
+            if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
+                auto found = merged_fields.find(expr_ref.value());
+                if (found == merged_fields.end()) {
+                    return error("Invalid conditional property");
+                }
+                auto setter = found->second.second;
+                op(AbstractOp::PROPERTY_ASSIGN, [&](Code& code) {
+                    code.left_ref(setter);
+                    code.right_ref(*prop);
+                });
+            }
+            else {
+                auto& field = m.code[m.ident_index_table[expr_ref.value()]];
+                auto belong = field.belong().value();
+                op(AbstractOp::SWITCH_UNION, [&](Code& m) {
+                    m.ref(belong);
+                });
+                op(AbstractOp::ASSIGN, [&](Code& m) {
+                    m.left_ref(expr_ref);
+                    m.right_ref(*prop);
+                });
+            }
+            op(AbstractOp::RET, [&](Code& m) {
+                m.ref(*bool_ident);
+            });
+            return none;
+        },
+                         ret_false);
+        if (err) {
+            return err;
+        }
+        ret_false();
+        op(AbstractOp::END_FUNCTION, [&](Code& m) {});
+        return none;
+    }
+
     Error derive_function_from_merged_fields(Module& m) {
         std::vector<Code> funcs;
         auto op = [&](AbstractOp o, auto&& set) {
             funcs.push_back(make_code(o, set));
         };
-        std::map<ObjectID, std::pair<Varint, Varint>> merged_fields;
+        std::unordered_map<ObjectID, std::pair<Varint, Varint>> merged_fields;
         std::map<ObjectID, ObjectID> properties_to_merged;
         for (auto& c : m.code) {
             if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
@@ -1372,244 +1630,10 @@ namespace rebgn {
                 }
             }
             else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
-                auto belong_of_belong = m.code[m.ident_index_table[c.belong().value().value()]].belong().value();
-                auto merged_ident = c.ident().value();
-                auto getter_setter = merged_fields[merged_ident.value()];
-                auto getter_ident = getter_setter.first;
-                auto setter_ident = getter_setter.second;
-                auto mode = c.merge_mode().value();
-                auto type = c.storage().value();
-                auto originalType = type;
-                auto param = c.param().value();
-                auto do_foreach = [&](auto&& action, auto&& ret_empty) {
-                    RetrieveVarCtx variables;
-                    for (auto& c : param.expr_refs) {
-                        auto& conditional_field = m.code[m.ident_index_table[c.value()]];
-                        auto err = retrieve_var(m, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
-                        if (err) {
-                            return err;
-                        }
-                    }
-                    for (auto& v : variables.ordered_variables) {
-                        m.op(AbstractOp::DECLARE_VARIABLE, [&](Code& m) {
-                            m.ref(*varint(v));
-                        });
-                    }
-                    std::optional<ObjectID> prev_cond;
-                    for (auto& c : param.expr_refs) {
-                        // get CONDITIONAL_FIELD or CONDITIONAL_PROPERTY
-                        auto& code = m.code[m.ident_index_table[c.value()]];
-                        // get condition expr
-                        auto expr = &m.code[m.ident_index_table[code.left_ref()->value()]];
-                        auto expr_ref = expr->ident().value();
-                        if (expr->op == AbstractOp::NOT_PREV_THEN) {
-                            std::vector<ObjectID> conditions;
-                            auto orig = expr;
-                            while (!prev_cond || prev_cond != expr->left_ref()->value()) {
-                                auto prev_expr = &m.code[m.ident_index_table[expr->left_ref()->value()]];
-                                if (prev_expr->op == AbstractOp::NOT_PREV_THEN) {
-                                    conditions.push_back(prev_expr->right_ref()->value());
-                                }
-                                else {
-                                    conditions.push_back(prev_expr->ident()->value());
-                                    break;
-                                }
-                                expr = prev_expr;
-                            }
-                            ObjectID last = 0;
-                            for (auto& c : conditions) {
-                                if (last) {
-                                    auto and_ = m.new_id(nullptr);
-                                    if (!and_) {
-                                        return and_.error();
-                                    }
-                                    op(AbstractOp::BINARY, [&](Code& m) {
-                                        m.ident(*and_);
-                                        m.left_ref(*varint(c));
-                                        m.right_ref(*varint(last));
-                                        m.bop(BinaryOp::logical_or);
-                                    });
-                                    last = and_->value();
-                                }
-                                else {
-                                    last = c;
-                                }
-                            }
-                            if (last != 0) {
-                                op(AbstractOp::IF, [&](Code& m) {
-                                    m.ref(*varint(last));
-                                });
-                                auto err = ret_empty();
-                                if (err) {
-                                    return err;
-                                }
-                                op(AbstractOp::END_IF, [&](Code& m) {});
-                            }
-                            expr_ref = orig->right_ref().value();
-                        }
-                        op(AbstractOp::IF, [&](Code& m) {
-                            m.ref(expr_ref);
-                        });
-                        auto err = action(code);
-                        if (err) {
-                            return err;
-                        }
-                        op(AbstractOp::END_IF, [&](Code& m) {});
-                        prev_cond = expr->ident()->value();
-                    }
-                    return none;
-                };
-
-                // getter function
-                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
-                    n.ident(getter_ident);
-                    n.belong(belong_of_belong);
-                });
-
-                type.length = *varint(type.storages.size() + 1);
-                if (mode == MergeMode::COMMON_TYPE) {
-                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::OPTIONAL});
-                }
-                else {
-                    type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
-                }
-                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-                    n.storage(type);
-                });
-                auto ret_empty = [&]() {
-                    auto empty_ident = m.new_id(nullptr);
-                    if (!empty_ident) {
-                        return empty_ident.error();
-                    }
-                    if (mode == MergeMode::COMMON_TYPE) {
-                        op(AbstractOp::EMPTY_OPTIONAL, [&](Code& m) {
-                            m.ident(*empty_ident);
-                        });
-                    }
-                    else {
-                        op(AbstractOp::EMPTY_PTR, [&](Code& m) {
-                            m.ident(*empty_ident);
-                        });
-                    }
-                    op(AbstractOp::RET, [&](Code& m) {
-                        m.ref(*empty_ident);
-                    });
-                    return none;
-                };
-                auto err = do_foreach([&](const Code& code) {
-                    auto expr_ref = code.right_ref().value();
-                    auto ident = m.new_id(nullptr);
-                    if (!ident) {
-                        return ident.error();
-                    }
-                    if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
-                        auto found = merged_fields.find(expr_ref.value());
-                        if (found == merged_fields.end()) {
-                            return error("Invalid conditional property");
-                        }
-                        auto getter = found->second.first;
-                        op(AbstractOp::CALL, [&](Code& code) {
-                            code.ident(*ident);
-                            code.ref(getter);
-                        });
-                    }
-                    else {
-                        if (mode == MergeMode::COMMON_TYPE) {
-                            op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
-                                m.ident(*ident);
-                                m.ref(expr_ref);
-                                m.storage(originalType);
-                            });
-                        }
-                        else {
-                            op(AbstractOp::ADDRESS_OF, [&](Code& m) {
-                                m.ident(*ident);
-                                m.ref(expr_ref);
-                            });
-                        }
-                    }
-                    op(AbstractOp::RET, [&](Code& m) {
-                        m.ref(*ident);
-                    });
-                    return none;
-                },
-                                      ret_empty);
+                auto err = derive_function(m, c, funcs, merged_fields);
                 if (err) {
                     return err;
                 }
-                ret_empty();
-                op(AbstractOp::END_FUNCTION, [&](Code& m) {});
-
-                op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
-                    n.ident(setter_ident);
-                    n.belong(belong_of_belong);
-                });
-                auto prop = m.new_id(nullptr);
-                if (!prop) {
-                    return prop.error();
-                }
-                op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& n) {
-                    n.ident(*prop);
-                    n.left_ref(merged_ident);
-                    n.right_ref(setter_ident);
-                    n.storage(originalType);
-                });
-                op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-                    n.storage(Storages{
-                        .length = *varint(1),
-                        .storages = {Storage{.type = StorageType::BOOL}},
-                    });
-                });
-                auto bool_ident = m.new_id(nullptr);
-                if (!bool_ident) {
-                    return bool_ident.error();
-                }
-                op(AbstractOp::IMMEDIATE_TRUE, [&](Code& m) {
-                    m.ident(*bool_ident);
-                });
-                auto ret_false = [&]() {
-                    auto false_ident = m.new_id(nullptr);
-                    if (!false_ident) {
-                        return false_ident.error();
-                    }
-                    op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
-                        m.ident(*false_ident);
-                    });
-                    op(AbstractOp::RET, [&](Code& m) {
-                        m.ref(*false_ident);
-                    });
-                    return none;
-                };
-                err = do_foreach([&](const Code& code) {
-                    auto expr_ref = code.right_ref().value();
-                    if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
-                        auto found = merged_fields.find(expr_ref.value());
-                        if (found == merged_fields.end()) {
-                            return error("Invalid conditional property");
-                        }
-                        auto setter = found->second.second;
-                        op(AbstractOp::PROPERTY_ASSIGN, [&](Code& code) {
-                            code.left_ref(setter);
-                            code.right_ref(*prop);
-                        });
-                    }
-                    else {
-                        op(AbstractOp::ASSIGN, [&](Code& m) {
-                            m.left_ref(expr_ref);
-                            m.right_ref(*prop);
-                        });
-                    }
-                    op(AbstractOp::RET, [&](Code& m) {
-                        m.ref(*bool_ident);
-                    });
-                    return none;
-                },
-                                 ret_false);
-                if (err) {
-                    return err;
-                }
-                ret_false();
-                op(AbstractOp::END_FUNCTION, [&](Code& m) {});
             }
         }
         std::vector<Code> rebound;

@@ -174,7 +174,7 @@ namespace rebgn {
                     if (err) {
                         return err;
                     }
-                    els = ast::cast_to<ast::If>(e->els);
+                    els = ast::cast_to<ast::If>(els->els);
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(els->els)) {
                     m.op(AbstractOp::ELSE);

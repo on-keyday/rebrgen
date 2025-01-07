@@ -68,6 +68,8 @@ namespace rebgn {
         std::unordered_map<std::shared_ptr<ast::Node>, PackedOpType> bit_field_variability;
         std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;
 
+        std::map<ObjectID, ObjectID> previous_assignments;
+
         void map_struct(std::shared_ptr<ast::StructType> s, ObjectID id) {
             struct_table[s] = id;
         }

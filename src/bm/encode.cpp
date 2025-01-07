@@ -953,6 +953,7 @@ namespace rebgn {
         if (m.on_encode_fn) {
             m.op(AbstractOp::CHECK_UNION, [&](Code& c) {
                 c.ref(ident);
+                c.check_at(UnionCheckAt::ENCODER);
             });
         }
         else {

@@ -66,7 +66,7 @@ state M:
     s :bool
 
 fn define() -> X:
-    x :X
+    x := X()
     x.x = x
     return x
 
@@ -314,7 +314,7 @@ enum OpCode:
     Ping = 0x9
     Pong = 0xA
 
-format Frame:
+format WsFrame:
     FIN :u1
     RSV1 :u1
     RSV2 :u1
@@ -337,3 +337,218 @@ format Frame:
 
 
 
+config.go.package = "ether"
+
+DHCP_MAGIC ::= 0x63825363
+
+DHCP_SERVER_PORT ::= 67
+DHCP_CLIENT_PORT ::= 68
+
+enum DHCP_OP:
+    :u8
+    REQUEST = 1
+    REPLY = 2
+
+format DHCPMessage:
+    op :DHCP_OP
+    htype :u8
+    hlen :u8
+    hops :u8
+    xid :u32
+    secs :u16
+    broadcast :u1
+    reserved :u15(0)
+    client_addr :[4]u8
+    your_addr :[4]u8
+    server_addr :[4]u8
+    gateway_addr :[4]u8
+    client_hardware_addr :[16]u8
+    sname :[64]u8
+    file :[128]u8
+    magic :u32(DHCP_MAGIC)
+    options :[..]Option
+
+enum DHCP_OPTION:
+    :u8
+    PAD = 0
+    SUBNET_MASK = 1
+    ROUTER = 3
+    DNS_SERVER = 6
+    HOST_NAME = 12
+    DOMAIN_NAME = 15
+    REQUESTED_IP = 50
+    LEASE_TIME = 51
+    MESSAGE_TYPE = 53
+    SERVER_ID = 54
+    PARAMETER_REQUEST_LIST = 55
+    RENEWAL_TIME = 58
+    REBINDING_TIME = 59
+    END = 255
+
+enum DHCP_TYPE:
+    :u8
+    DISCOVER = 1
+    OFFER = 2
+    REQUEST = 3
+    DECLINE = 4
+    ACK = 5
+    NAK = 6
+    RELEASE = 7
+    INFORM = 8
+
+format Option:
+    code :DHCP_OPTION
+    match code:
+        DHCP_OPTION.PAD => ..
+        DHCP_OPTION.END => ..
+        DHCP_OPTION.SUBNET_MASK:
+            len :u8(4)
+            addr :[len]u8
+        DHCP_OPTION.MESSAGE_TYPE:
+            len :u8(1)
+            type :DHCP_TYPE
+        DHCP_OPTION.REQUESTED_IP:
+            len :u8(4)
+            addr :[len]u8
+        DHCP_OPTION.SERVER_ID:
+            len :u8(4)
+            addr :[len]u8
+        DHCP_OPTION.PARAMETER_REQUEST_LIST:
+            len :u8
+            list :[len]DHCP_OPTION
+        DHCP_OPTION.ROUTER:
+            len :u8
+            addr :[len]u8
+        DHCP_OPTION.DNS_SERVER:
+            len :u8
+            addr :[len]u8
+        DHCP_OPTION.LEASE_TIME:
+            len :u8(4)
+            time :u32
+        DHCP_OPTION.DOMAIN_NAME:
+            len :u8
+            name :[len]u8    
+        ..:
+            len :u8
+            data :[len]u8
+
+enum DNSOpCode:
+    :u4
+    QUERY = 0
+    IQUERY = 1
+    STATUS = 2
+    NOTIFY = 4
+    UPDATE = 5
+
+enum DNSReturnCode:
+    :u4
+    NOERROR = 0
+    FORMERR = 1
+    SERVFAIL = 2
+    NXDOMAIN = 3
+    NOTIMP = 4
+    REFUSED = 5
+    YXDOMAIN = 6
+    YXRRSET = 7
+    NXRRSET = 8
+    NOTAUTH = 9
+    NOTZONE = 10
+
+format DNSHeader:
+    id :u16
+    response :u1
+    opcode :DNSOpCode
+    authoritative :u1
+    truncated :u1
+    recursion_desired :u1
+    recursion_available :u1
+    z :u3
+    return_code :DNSReturnCode
+    query_count :u16
+    answer_count :u16
+    authority_count :u16
+    additional_count :u16
+
+format DNSMessage:
+    header :DNSHeader
+    questions :[header.query_count]DNSQuestion
+    answers :[header.answer_count]DNSResourceRecord
+    authorities :[header.authority_count]DNSResourceRecord
+    additionals :[header.additional_count]DNSResourceRecord
+
+format DNSQuestion:
+    name :DomainName
+    type :u16
+    class :u16
+
+format DNSResourceRecord:
+    name :DomainName
+    type :u16
+    class :u16
+    ttl :u32
+    data_length :u16
+    data :[data_length]u8
+
+
+
+format UDPHeader:
+    config.rfc = "https://datatracker.ietf.org/doc/html/rfc768"
+    src_port :u16
+    dst_port :u16
+    length  :u16
+    checksum :u16
+
+format UDPDatagram:
+    header :UDPHeader
+    data :[header.length-8]u8
+
+
+
+config.go.package = "ether"
+
+enum EtherType:
+    :u16
+    ipv4 = 0x0800
+    arp = 0x0806
+    vlan = 0x8100
+    ipv6 = 0x86DD
+    service_vlen = 0x88A8
+    pppoe_discovery = 0x8863
+    pppoe_session = 0x8864
+
+format OUI:
+    high: u6
+    local :u1
+    multicast :u1
+    low :[2]u8
+
+format MacAddress:
+    oui :OUI
+    nic :[3]u8
+
+format EthernetFrame:
+    dstMac :[6]u8
+    srcMac :[6]u8
+    ether_type :u16
+    if ether_type == u16(EtherType.vlan):
+        vlan_tag :u16
+        ether_type2 :u16
+    elif ether_type == u16(EtherType.service_vlen):
+        service_vlan_tag :u16
+        dummy_ether_type :u16(u16(EtherType.vlan))
+        vlan_tag :u16
+        ether_type2 :u16
+    len ::= available(ether_type2) ? ether_type2 : ether_type
+    if len >= 0x600:
+        data :[..]u8
+    else:
+        # peek :u16(input.peek = true)
+        data :[len]u8
+
+format PPPoE:
+    version :u4(1)
+    type :u4(1)
+    code :u8
+    session_id :u16
+    len :u16
+    data :[len]u8

@@ -258,7 +258,7 @@ enum AbstractOp:
 
     FIELD_AVAILABLE
 
-    EXPR_WITH_VARIABLES # for property accessor conditions
+    PHI # for assignment analysis
 
 
 
@@ -463,8 +463,13 @@ format Code:
             left_ref :Varint
             right_ref :Varint
         AbstractOp.ASSIGN:
+            ident :Varint # for assignment analysis
+            ref :Varint # ref to previous definition, assignment or phi
             left_ref :Varint # ref to variable
             right_ref :Varint # ref to expr
+        AbstractOp.PHI:
+            ident :Varint
+            param :Param # ref to previous definitions, assignments or phis
         AbstractOp.PROPERTY_ASSIGN:
             left_ref :Varint # ref to property setter
             right_ref :Varint # ref to expr
@@ -666,9 +671,6 @@ format Code:
             ident :Varint
         AbstractOp.REMAIN_BYTES:
             ident :Varint
-        AbstractOp.EXPR_WITH_VARIABLES:
-            ident :Varint
-            ref :Varint # ref to expr
 
 
 format StringRefs:

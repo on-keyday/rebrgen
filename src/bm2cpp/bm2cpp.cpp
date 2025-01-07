@@ -122,7 +122,7 @@ namespace bm2cpp {
                 if (ctx.ptr_type.size()) {
                     return std::format("{}<{}>", ctx.ptr_type, ident);
                 }
-                return std::format("std::unique_ptr<{}>", ident);
+                return std::format("std::shared_ptr<{}>", ident);
             }
             case rebgn::StorageType::ENUM: {
                 auto ref = storage.ref().value().value();
@@ -278,6 +278,25 @@ namespace bm2cpp {
         return "";
     }
 
+    bool is_bit_field_property(Context& ctx, rebgn::Range range) {
+        if (auto op = find_op(ctx, range, rebgn::AbstractOp::PROPERTY_FUNCTION); op) {
+            // merged conditional field
+            auto& p = ctx.bm.code[ctx.ident_index_table[ctx.bm.code[*op].ref()->value()]];
+            if (p.merge_mode() == rebgn::MergeMode::STRICT_TYPE) {
+                auto param = p.param();
+                bool cont = false;
+                for (auto& pa : param->expr_refs) {
+                    auto& idx = ctx.bm.code[ctx.ident_index_table[pa.value()]];
+                    auto& ident = ctx.bm.code[ctx.ident_index_table[idx.right_ref()->value()]];
+                    if (find_belong_op(ctx, ident, rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     std::string retrieve_ident(Context& ctx, const rebgn::Code& code) {
         BitField bit_field = BitField::none;
         return retrieve_ident_internal(ctx, code, bit_field);
@@ -290,6 +309,11 @@ namespace bm2cpp {
                 auto ref = code.ref().value().value();
                 auto idx = ctx.ident_index_table[ref];
                 res = eval(ctx.bm.code[idx], ctx);
+                break;
+            }
+            case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
+                auto value = code.ident().value().value();
+                res.push_back(std::format("param{}", value));
                 break;
             }
             case rebgn::AbstractOp::ARRAY_SIZE: {
@@ -310,7 +334,12 @@ namespace bm2cpp {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);
-                res.push_back(std::format("&{}", ref.back()));
+                auto back = ref.back();
+                if (back.starts_with("(*") && !back.starts_with("(*this")) {
+                    back.erase(0, 2);
+                    back.pop_back();
+                }
+                res.push_back(std::format("&{}", back));
                 break;
             }
             case rebgn::AbstractOp::CAN_READ: {
@@ -360,13 +389,25 @@ namespace bm2cpp {
                 auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
                 auto right = eval(ctx.bm.code[right_index], ctx);
                 res.insert(res.end(), right.begin(), right.end() - 1);
-                if (left.back().ends_with(")")) {
+                if (left.back().starts_with("(*") && !left.back().starts_with("(*this")) {
+                    if (ctx.bm.code[right_index].op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
+                        auto back = left.back();
+                        back.erase(0, 2);
+                        back.pop_back();
+                        res.push_back(std::format("{} = {};", back, right.back()));
+                    }
+                    else {
+                        res.push_back(std::format("{} = {};", left.back(), right.back()));
+                    }
+                }
+                else if (left.back().ends_with(")")) {
                     left.back().pop_back();
                     res.push_back(std::format("{}{});", left.back(), right.back()));
                 }
                 else {
                     res.push_back(std::format("{} = {};", left.back(), right.back()));
                 }
+                res.push_back(left.back());
                 break;
             }
             case rebgn::AbstractOp::IMMEDIATE_TYPE: {
@@ -683,7 +724,11 @@ namespace bm2cpp {
                         auto& merged = ctx.bm.code[ctx.ident_index_table[m.left_ref().value().value()]];
                         auto& func = ctx.bm.code[ctx.ident_index_table[m.right_ref().value().value()]];
                         auto mode = merged.merge_mode().value();
-                        auto typ = find_op(ctx, ctx.ident_range_table[func.ident().value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                        auto range = ctx.ident_range_table[func.ident().value().value()];
+                        if (is_bit_field_property(ctx, range)) {
+                            continue;  // skip
+                        }
+                        auto typ = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
                         auto result = type_to_string(ctx, *ctx.bm.code[*typ].storage());
                         auto getter_ident = ctx.ident_table[func.ident().value().value()];
                         ctx.cw.writeln(result, " ", getter_ident, "();");
@@ -694,61 +739,14 @@ namespace bm2cpp {
                         auto& func = ctx.bm.code[ctx.ident_index_table[m.right_ref().value().value()]];
                         auto mode = merged.merge_mode().value();
                         auto setter_ident = ctx.ident_table[func.ident().value().value()];
+                        auto range = ctx.ident_range_table[func.ident().value().value()];
+                        if (is_bit_field_property(ctx, range)) {
+                            continue;  // skip
+                        }
                         ctx.cw.write("bool ", setter_ident, "(");
-                        add_function_parameters(ctx, ctx.ident_range_table[func.ident().value().value()]);
+                        add_function_parameters(ctx, range);
                         ctx.cw.writeln(");");
                     }
-                    /*
-                    for (size_t i = range.start; i < range.end; i++) {
-                        auto& prop = ctx.bm.code[i];
-                        if (prop.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD) {
-                            auto type = type_to_string(ctx, *prop.storage());
-                            auto mode = prop.merge_mode().value();
-                            if (mode == rebgn::MergeMode::COMMON_TYPE ||
-                                mode == rebgn::MergeMode::STRICT_COMMON_TYPE) {
-                                auto param = prop.param().value();
-                                auto ret_type = mode == rebgn::MergeMode::COMMON_TYPE ? "std::optional<" + type + ">" : type + "*";
-                                ctx.cw.writeln("std::optional<", type, "> ", ident, "();");
-                                ctx.cw.writeln("bool ", ident, "(const ", type, "&);");
-                                ctx.cw.writeln("bool ", ident, "(", type, "&&);");
-                                ctx.on_functions.push_back(futils::helper::defer_ex([&ctx, ident, type, param, belong_ident]() {
-                                    ctx.cw.writeln("std::optional<", type, "> ", belong_ident, "::", ident, "() {");
-                                    auto scope = ctx.cw.indent_scope();
-                                    auto do_for_each_param = [&](auto&& action) {
-                                        for (auto& c : param.expr_refs) {
-                                            auto& code = ctx.bm.code[ctx.ident_index_table[c.value()]];
-                                            auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[code.left_ref().value().value()]], ctx);
-                                            for (auto& e : std::span(evaluated).subspan(0, evaluated.size() - 1)) {
-                                                ctx.cw.writeln(e);
-                                            }
-                                            ctx.cw.writeln("if(", evaluated.back(), ") {");
-                                            auto nested = ctx.cw.indent_scope();
-                                            action(code);
-                                            nested.execute();
-                                            ctx.cw.writeln("}");
-                                        }
-                                    };
-
-                                    do_for_each_param([&](const rebgn::Code& code) {
-                                        auto field = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
-                                        ctx.cw.writeln("return ", field.back(), ";");
-                                    });
-                                    ctx.cw.writeln("return std::nullopt;");
-                                    scope.execute();
-                                    ctx.cw.writeln("}");
-                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(const ", type, "&) {");
-                                    do_for_each_param([&](const rebgn::Code& code) {
-                                        auto field = eval(ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], ctx);
-                                        auto belong_union = find_belong_op(ctx, code, rebgn::AbstractOp::DEFINE_UNION_MEMBER);
-                                        auto union_type = retrieve_union_type(ctx, ctx.bm.code[ctx.ident_index_table[belong_union.value()]]);
-                                        ctx.cw.writeln("if (std::holds_alternative<", union_type, ">(this->", field.back(), ")) {");
-                                    });
-                                    ctx.cw.writeln("bool ", belong_ident, "::", ident, "(", type, "&&) {return false;}");
-                                }));
-                            }
-                        }
-                    }
-                    */
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
@@ -1072,7 +1070,7 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::ASSIGN: {
                     auto s = eval(code, ctx);
-                    ctx.cw.writeln(s.back());
+                    ctx.cw.writeln(s[s.size() - 2]);
                     break;
                 }
                 case rebgn::AbstractOp::APPEND: {
@@ -1228,6 +1226,10 @@ namespace bm2cpp {
                         auto s = eval(ctx.bm.code[ident], ctx);
                         ctx.cw.writeln("return ", s.back(), ";");
                     }
+                    break;
+                }
+                case rebgn::AbstractOp::RET_SUCCESS: {
+                    ctx.cw.writeln("return true;");
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_INFINITE: {
@@ -1511,6 +1513,9 @@ namespace bm2cpp {
         for (size_t j = 0; j < bm.ident_ranges.ranges.size(); j++) {
             auto range = ctx.ident_range_table[bm.ident_ranges.ranges[j].ident.value()];
             if (bm.code[range.start].op != rebgn::AbstractOp::DEFINE_FUNCTION) {
+                continue;
+            }
+            if (is_bit_field_property(ctx, range)) {
                 continue;
             }
             inner_function(ctx, range);

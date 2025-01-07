@@ -258,6 +258,8 @@ enum AbstractOp:
 
     PHI # for assignment analysis
 
+    PROPERTY_FUNCTION # marker for property function
+
 
 
 
@@ -602,7 +604,7 @@ format Code:
             ident :Varint
             storage :Storages
             param :Param # ref to conditional fields
-            belong :Varint # belong to union field
+            belong :Varint # belong to property
             merge_mode :MergeMode
         AbstractOp.CASE:
             ref :Varint
@@ -644,6 +646,8 @@ format Code:
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function
             storage :Storages
+        AbstractOp.PROPERTY_FUNCTION:
+            ref :Varint # ref to merged conditional field
         AbstractOp.DEFINE_PROPERTY_SETTER:
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function

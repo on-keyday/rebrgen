@@ -1226,17 +1226,21 @@ namespace rebgn {
         std::vector<ObjectID> ordered_variables;
     };
 
-    Error retrieve_var(Module& m, const rebgn::Code& code, RetrieveVarCtx& variables) {
+    Error retrieve_var(Module& m, auto&& op, const rebgn::Code& code, RetrieveVarCtx& variables) {
         switch (code.op) {
             case rebgn::AbstractOp::NOT_PREV_THEN: {
-                return retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                if (err) {
+                    return err;
+                }
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::ARRAY_SIZE: {
-                return retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::CALL_CAST: {
                 for (auto&& p : code.param().value().expr_refs) {
-                    auto err = retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.value()]], variables);
                     if (err) {
                         return err;
                     }
@@ -1244,56 +1248,58 @@ namespace rebgn {
                 break;
             }
             case rebgn::AbstractOp::INDEX: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
-                return retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::APPEND: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
-                return retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::ASSIGN: {
                 auto ref = code.ref().value().value();
                 if (ref != 0) {
-                    auto err = retrieve_var(m, m.code[m.ident_index_table[ref]], variables);
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[ref]], variables);
                     if (err) {
                         return err;
                     }
                 }
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
-                if (err) {
-                    return err;
+                else {
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                    if (err) {
+                        return err;
+                    }
                 }
-                return retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::ACCESS: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
                 break;
             }
             case rebgn::AbstractOp::BINARY: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.left_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
-                err = retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                err = retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
                 break;
             }
             case rebgn::AbstractOp::UNARY: {
-                return retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::STATIC_CAST: {
-                return retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::DEFINE_PARAMETER: {
                 // variables.insert(code.ident().value().value());
@@ -1305,37 +1311,40 @@ namespace rebgn {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
                 if (!variables.variables.contains(code.ident().value().value())) {
                     variables.variables.insert(code.ident().value().value());
                     variables.ordered_variables.push_back(code.ident().value().value());
+                    op(AbstractOp::DECLARE_VARIABLE, [&](Code& m) {
+                        m.ref(code.ident().value());
+                    });
                 }
                 break;
             }
             case rebgn::AbstractOp::FIELD_AVAILABLE: {
                 if (auto left_ref = code.left_ref(); left_ref->value() != 0) {
-                    auto err = retrieve_var(m, m.code[m.ident_index_table[left_ref.value().value()]], variables);
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[left_ref.value().value()]], variables);
                     if (err) {
                         return err;
                     }
                 }
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
                 break;
             }
             case rebgn::AbstractOp::CALL: {
-                auto err = retrieve_var(m, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
                 auto params = code.param().value();
                 for (auto& p : params.expr_refs) {
-                    auto err = retrieve_var(m, m.code[m.ident_index_table[p.value()]], variables);
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.value()]], variables);
                     if (err) {
                         return err;
                     }
@@ -1343,19 +1352,60 @@ namespace rebgn {
                 break;
             }
             case rebgn::AbstractOp::PHI: {
+                if (variables.variables.contains(code.ident().value().value())) {
+                    return none;
+                }
+                variables.variables.insert(code.ident().value().value());
                 auto phis = code.phi_params().value();
                 auto ref = code.ref().value().value();
                 for (auto& p : phis.params) {
                     if (p.condition.value() != 0) {
-                        auto err = retrieve_var(m, m.code[m.ident_index_table[p.condition.value()]], variables);
+                        auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.condition.value()]], variables);
                         if (err) {
                             return err;
                         }
                     }
-                    auto err = retrieve_var(m, m.code[m.ident_index_table[p.assign.value()]], variables);
+                    auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.assign.value()]], variables);
                     if (err) {
                         return err;
                     }
+                }
+                bool first = true;
+                for (auto& p : phis.params) {
+                    auto tmp_id = m.new_id(nullptr);
+                    if (!tmp_id) {
+                        return tmp_id.error();
+                    }
+                    auto idx = m.ident_index_table[p.assign.value()];
+                    if (p.condition.value() == 0) {
+                        if (!first) {
+                            op(AbstractOp::ELSE, [&](Code& m) {});
+                        }
+                    }
+                    else {
+                        if (first) {
+                            op(AbstractOp::IF, [&](Code& m) {
+                                m.ref(*varint(p.condition.value()));
+                            });
+                            first = false;
+                        }
+                        else {
+                            op(AbstractOp::ELIF, [&](Code& m) {
+                                m.ref(*varint(p.condition.value()));
+                            });
+                        }
+                    }
+                    if (m.code[idx].op == AbstractOp::ASSIGN) {
+                        auto right_ref = m.code[idx].right_ref().value();
+                        op(AbstractOp::ASSIGN, [&](Code& m) {
+                            m.ident(*tmp_id);
+                            m.left_ref(*varint(ref));
+                            m.right_ref(right_ref);
+                        });
+                    }
+                }
+                if (!first) {
+                    op(AbstractOp::END_IF, [&](Code& m) {});
                 }
                 break;
             }
@@ -1391,15 +1441,10 @@ namespace rebgn {
             RetrieveVarCtx variables;
             for (auto& c : param.expr_refs) {
                 auto& conditional_field = m.code[m.ident_index_table[c.value()]];
-                auto err = retrieve_var(m, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
                 if (err) {
                     return err;
                 }
-            }
-            for (auto& v : variables.ordered_variables) {
-                op(AbstractOp::DECLARE_VARIABLE, [&](Code& m) {
-                    m.ref(*varint(v));
-                });
             }
             std::optional<ObjectID> prev_cond;
             for (auto& c : param.expr_refs) {
@@ -1482,6 +1527,9 @@ namespace rebgn {
         }
         op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
             n.storage(type);
+        });
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
+            n.ref(merged_ident);
         });
         auto ret_empty = [&]() {
             auto empty_ident = m.new_id(nullptr);
@@ -1572,6 +1620,9 @@ namespace rebgn {
                 .length = *varint(1),
                 .storages = {Storage{.type = StorageType::BOOL}},
             });
+        });
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
+            n.ref(merged_ident);
         });
         auto bool_ident = m.new_id(nullptr);
         if (!bool_ident) {

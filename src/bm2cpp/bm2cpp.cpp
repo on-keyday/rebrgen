@@ -1142,7 +1142,7 @@ namespace bm2cpp {
                         auto& ident = ctx.ident_index_table[ref];
                         auto s = eval(ctx.bm.code[ident], ctx);
                         auto endian = code.endian().value();
-                        auto is_big = endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
                         ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     }
                     break;
@@ -1156,7 +1156,7 @@ namespace bm2cpp {
                         auto& ident = ctx.ident_index_table[ref];
                         auto s = eval(ctx.bm.code[ident], ctx);
                         auto endian = code.endian().value();
-                        auto is_big = endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
                         ctx.cw.writeln("if(!::futils::binary::read_num(r,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     }
                     break;
@@ -1198,7 +1198,7 @@ namespace bm2cpp {
                     }
                     else {
                         auto endian = code.endian().value();
-                        auto is_big = endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
                         auto tmp_i = std::format("i_{}", ref_to_vec);
                         ctx.cw.writeln("for(size_t ", tmp_i, " = 0; ", tmp_i, " < ", len.back(), "; ", tmp_i, "++) {");
                         auto scope = ctx.cw.indent_scope();
@@ -1262,7 +1262,16 @@ namespace bm2cpp {
                     ctx.cw.writeln(std::format("if(!std::holds_alternative<{}>({})) {{", variant_name, val.back()));
                     auto scope = ctx.cw.indent_scope();
                     if (code.op == rebgn::AbstractOp::CHECK_UNION) {
-                        ctx.cw.writeln("return false;");
+                        auto check_at = code.check_at().value();
+                        if (check_at == rebgn::UnionCheckAt::ENCODER) {
+                            ctx.cw.writeln("return false;");
+                        }
+                        else if (check_at == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {
+                            ctx.cw.writeln("return std::nullopt;");
+                        }
+                        else {
+                            ctx.cw.writeln("return nullptr;");
+                        }
                     }
                     else {
                         ctx.cw.writeln(std::format("{} = {}{{}};", val.back(), variant_name));

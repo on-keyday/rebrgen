@@ -74,6 +74,7 @@ enum Endian:
     unspec
     big
     little
+    dynamic # this is for clarification; not in brgen ast node
 
 enum BitOrder:
     :u8
@@ -87,7 +88,7 @@ enum AbstractOp:
     
     METADATA
     IMPORT
-    SPECIFY_ENDIAN
+    DYNAMIC_ENDIAN
     SPECIFY_BIT_ORDER
     SPECIFY_ALIGNMENT
     SPECIFY_LENGTH
@@ -324,7 +325,8 @@ enum PackedOpType:
 
 enum UnionCheckAt:
     :u8
-    PROPERTY_GETTER
+    PROPERTY_GETTER_PTR
+    PROPERTY_GETTER_OPTIONAL
     ENCODER
 
 # TODO: be recursive
@@ -367,6 +369,10 @@ format PhiParam:
 format PhiParams:
     length :Varint
     params :[length.value]PhiParam
+
+format EndianExpr:
+    endian :Endian
+    dynamic_ref :Varint # ref to dynamic endian or null
 
 # ident is unique identifier
 # ref, left_ref, right_ref is reference to other object identifier
@@ -497,37 +503,40 @@ format Code:
             ref :Varint # bit count
         AbstractOp.BACKWARD_OUTPUT:
             ref :Varint # bit count
+        AbstractOp.DYNAMIC_ENDIAN:
+            ident :Varint
+            ref :Varint # ref to endian expr
         AbstractOp.ENCODE_INT:
             ref :Varint
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.ENCODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.DECODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.DECODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.DECODE_INT_VECTOR_UNTIL_EOF:
             ref :Varint # ref to vector
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.PEEK_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.DECODE_INT:
             ref :Varint
-            endian :Endian
+            endian :EndianExpr
             bit_size :Varint
         AbstractOp.BIT_CAST:
             ident: Varint

@@ -75,6 +75,51 @@ namespace rebgn {
 
         // internal
         bool on_encode_fn = false;
+        bool on_function = false;
+        Endian global_endian = Endian::big;  // default to big endian
+        Endian local_endian = Endian::unspec;
+        ObjectID current_dynamic_endian = null_id;
+
+        auto enter_function() {
+            on_function = true;
+            local_endian = global_endian;
+            current_dynamic_endian = null_id;
+            return futils::helper::defer([&] { on_function = false; });
+        }
+
+        expected<EndianExpr> get_endian(Endian base) {
+            EndianExpr e;
+            e.endian = base;
+            if (base != Endian::unspec) {
+                return e;
+            }
+            e.endian = global_endian;
+            if (on_function) {
+                e.endian = local_endian;
+            }
+            if (e.endian == Endian::dynamic) {
+                auto ref = varint(current_dynamic_endian);
+                if (!ref) {
+                    return unexpect_error(std::move(ref.error()));
+                }
+                e.dynamic_ref = ref.value();
+            }
+            return e;
+        }
+
+        bool set_endian(Endian e, ObjectID id = null_id) {
+            if (on_function) {
+                local_endian = e;
+                current_dynamic_endian = id;
+                return true;
+            }
+            if (e == Endian::dynamic) {
+                return false;
+            }
+            global_endian = e;
+            return true;
+        }
+
         std::unordered_map<std::shared_ptr<ast::Node>, Varint> bit_field_begin;
         std::unordered_map<std::shared_ptr<ast::Node>, PackedOpType> bit_field_variability;
         std::unordered_set<std::shared_ptr<ast::Node>> bit_field_end;

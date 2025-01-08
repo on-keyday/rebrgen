@@ -10,9 +10,13 @@ namespace rebgn {
             if (!bit_size) {
                 return bit_size.error();
             }
+            auto endian = m.get_endian(Endian(int_ty->endian));
+            if (!endian) {
+                return endian.error();
+            }
             m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                 c.ref(base_ref);
-                c.endian(Endian(int_ty->endian));
+                c.endian(*endian);
                 c.bit_size(*bit_size);
             });
             return none;
@@ -36,9 +40,13 @@ namespace rebgn {
             if (!bit_size) {
                 return bit_size.error();
             }
+            auto endian = m.get_endian(Endian(float_ty->endian));
+            if (!endian) {
+                return endian.error();
+            }
             m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                 c.ref(*new_id);
-                c.endian(Endian(float_ty->endian));
+                c.endian(*endian);
                 c.bit_size(*bit_size);
             });
             return none;
@@ -65,9 +73,13 @@ namespace rebgn {
                     c.left_ref(*str_ref);
                     c.right_ref(counter);
                 });
+                auto endian = m.get_endian(Endian::unspec);
+                if (!endian) {
+                    return endian.error();
+                }
                 m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
                     c.ref(*index);
-                    c.endian(Endian::unspec);
+                    c.endian(*endian);
                     c.bit_size(*varint(8));
                 });
                 return none;
@@ -82,10 +94,14 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
+                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    if (!endian) {
+                        return endian.error();
+                    }
                     m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*imm);
-                        c.endian(Endian(elem_is_int->endian));
+                        c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                     });
                     return none;
@@ -125,10 +141,14 @@ namespace rebgn {
                 }
             }
             if (elem_is_int) {
+                auto endian = m.get_endian(Endian(elem_is_int->endian));
+                if (!endian) {
+                    return endian.error();
+                }
                 m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
                     c.left_ref(base_ref);
                     c.right_ref(*len_);
-                    c.endian(Endian(elem_is_int->endian));
+                    c.endian(*endian);
                     c.bit_size(*varint(*elem_is_int->bit_size));
                 });
                 return none;
@@ -229,9 +249,13 @@ namespace rebgn {
 
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
+            auto endian = m.get_endian(Endian(int_ty->endian));
+            if (!endian) {
+                return endian.error();
+            }
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(base_ref);
-                c.endian(Endian(int_ty->endian));
+                c.endian(*endian);
                 c.bit_size(*varint(*int_ty->bit_size));
             });
             return none;
@@ -254,9 +278,13 @@ namespace rebgn {
                 c.ident(*new_id);
                 c.storage(std::move(from));
             });
+            auto endian = m.get_endian(Endian(float_ty->endian));
+            if (!endian) {
+                return endian.error();
+            }
             m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                 c.ref(*new_id);
-                c.endian(Endian::unspec);
+                c.endian(*endian);
                 c.bit_size(*varint(*float_ty->bit_size));
             });
             auto next_id = m.new_id(nullptr);
@@ -300,9 +328,13 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
+                auto endian = m.get_endian(Endian::unspec);
+                if (!endian) {
+                    return endian.error();
+                }
                 m.op(AbstractOp::DECODE_INT, [&](Code& c) {
                     c.ref(*tmp_var);
-                    c.endian(Endian::unspec);
+                    c.endian(*endian);
                     c.bit_size(*varint(8));
                 });
                 auto index = m.new_id(nullptr);
@@ -339,10 +371,14 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
+                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    if (!endian) {
+                        return endian.error();
+                    }
                     m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*imm);
-                        c.endian(Endian(elem_is_int->endian));
+                        c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                     });
                     return none;
@@ -393,9 +429,13 @@ namespace rebgn {
                 if (field) {
                     if (field->eventual_follow == ast::Follow::end) {
                         if (elem_is_int) {
+                            auto endian = m.get_endian(Endian(elem_is_int->endian));
+                            if (!endian) {
+                                return endian.error();
+                            }
                             m.op(AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF, [&](Code& c) {
                                 c.ref(base_ref);
-                                c.endian(Endian(elem_is_int->endian));
+                                c.endian(*endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
                             });
                             return none;
@@ -449,10 +489,14 @@ namespace rebgn {
                             m.op(AbstractOp::ASSERT, [&](Code& c) {
                                 c.ref(*assert_expr);
                             });
+                            auto endian = m.get_endian(Endian(elem_is_int->endian));
+                            if (!endian) {
+                                return endian.error();
+                            }
                             m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
                                 c.left_ref(base_ref);
                                 c.right_ref(*new_id);
-                                c.endian(Endian(elem_is_int->endian));
+                                c.endian(*endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
                             });
                             return none;
@@ -502,10 +546,14 @@ namespace rebgn {
                         }
                         m.op(AbstractOp::LOOP_INFINITE);
                         {
+                            auto endian = m.get_endian(Endian::unspec);
+                            if (!endian) {
+                                return endian.error();
+                            }
                             m.op(AbstractOp::PEEK_INT_VECTOR, [&](Code& c) {
                                 c.left_ref(*temporary_read_holder);
                                 c.right_ref(*imm);
-                                c.endian(Endian::unspec);
+                                c.endian(*endian);
                                 c.bit_size(*varint(8));
                             });
                             Storages isOkFlag;
@@ -604,10 +652,14 @@ namespace rebgn {
                     return len_ident.error();
                 }
                 if (elem_is_int) {
+                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    if (!endian) {
+                        return endian.error();
+                    }
                     m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*len_ident);
-                        c.endian(Endian(elem_is_int->endian));
+                        c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                     });
                     return none;
@@ -717,6 +769,9 @@ namespace rebgn {
 
     template <>
     Error encode<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
+        if (node->is_state_variable) {
+            return none;
+        }
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();
@@ -748,6 +803,9 @@ namespace rebgn {
 
     template <>
     Error decode<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
+        if (node->is_state_variable) {
+            return none;
+        }
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();
@@ -812,6 +870,7 @@ namespace rebgn {
         });
         m.on_encode_fn = true;
         m.init_phi_stack(0);  // make it temporary
+        auto f = m.enter_function();
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {
@@ -835,6 +894,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        f.execute();
         m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
         m.end_phi_stack();  // remove temporary
@@ -883,6 +943,7 @@ namespace rebgn {
         });
         m.on_encode_fn = false;
         m.init_phi_stack(0);  // make it temporary
+        auto f = m.enter_function();
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {
@@ -906,6 +967,7 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        f.execute();
         m.op(AbstractOp::RET_SUCCESS);
         m.op(AbstractOp::END_FUNCTION);
         m.end_phi_stack();  // remove temporary
@@ -998,6 +1060,16 @@ namespace rebgn {
         return convert_loop(m, node, [](Module& m, auto& n) {
             return convert_node_decode(m, n);
         });
+    }
+
+    template <>
+    Error encode<ast::SpecifyOrder>(Module& m, std::shared_ptr<ast::SpecifyOrder>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::SpecifyOrder>(Module& m, std::shared_ptr<ast::SpecifyOrder>& node) {
+        return convert_node_definition(m, node);
     }
 
     template <>

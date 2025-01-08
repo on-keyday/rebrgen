@@ -1573,7 +1573,9 @@ namespace rebgn {
                 auto belong = field.belong().value();
                 op(AbstractOp::CHECK_UNION, [&](Code& m) {
                     m.ref(belong);
-                    m.check_at(UnionCheckAt::PROPERTY_GETTER);
+                    m.check_at(mode == MergeMode::COMMON_TYPE
+                                   ? UnionCheckAt::PROPERTY_GETTER_OPTIONAL
+                                   : UnionCheckAt::PROPERTY_GETTER_PTR);
                 });
                 if (mode == MergeMode::COMMON_TYPE) {
                     op(AbstractOp::OPTIONAL_OF, [&](Code& m) {

@@ -330,6 +330,15 @@ namespace rebgn {
                 }
                 return none;
             }
+            case ast::IOMethod::config_endian_big:
+            case ast::IOMethod::config_endian_little: {
+                auto imm = immediate(m, node->method == ast::IOMethod::config_endian_big ? 0 : 1);
+                if (!imm) {
+                    return imm.error();
+                }
+                m.set_prev_expr(imm->value());
+                return none;
+            }
             default: {
                 return error("Unsupported IO operation: {}", to_string(node->method));
             }
@@ -1069,9 +1078,11 @@ namespace rebgn {
             m.op(AbstractOp::END_PARAMETER);
         }
         m.init_phi_stack(0);  // temporary
+        auto old = m.enter_function();
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_definition(m, n);
         });
+        old.execute();
         if (err) {
             return err;
         }
@@ -1283,14 +1294,14 @@ namespace rebgn {
         });
         auto then = get_expr(m, node->then);
         if (!then) {
-            return error("Invalid then expression");
+            return error("Invalid then expression: {}", then.error().error());
         }
         err = do_assign(m, *tmp_var, *then);
         m.next_phi_candidate(null_id);
         m.op(AbstractOp::ELSE);
         auto els = get_expr(m, node->els);
         if (!els) {
-            return error("Invalid else expression");
+            return error("Invalid else expression: {}", els.error().error());
         }
         err = do_assign(m, *tmp_var, *els);
         if (err) {
@@ -1478,6 +1489,39 @@ namespace rebgn {
     template <>
     Error define<ast::Identity>(Module& m, std::shared_ptr<ast::Identity>& node) {
         return convert_node_definition(m, node->expr);
+    }
+
+    template <>
+    Error define<ast::SpecifyOrder>(Module& m, std::shared_ptr<ast::SpecifyOrder>& node) {
+        if (node->order_type == ast::OrderType::byte) {
+            if (node->order_value) {
+                if (node->order_value == 0) {
+                    m.set_endian(Endian::big);
+                }
+                else if (node->order_value == 1) {
+                    m.set_endian(Endian::little);
+                }
+                else {
+                    return error("Invalid endian value");
+                }
+            }
+            else {
+                auto expr = get_expr(m, node->order);
+                if (!expr) {
+                    return expr.error();
+                }
+                auto new_id = m.new_node_id(node);
+                if (!new_id) {
+                    return new_id.error();
+                }
+                m.op(AbstractOp::DYNAMIC_ENDIAN, [&](Code& c) {
+                    c.ident(*new_id);
+                    c.ref(*expr);
+                });
+                m.set_endian(Endian::dynamic, new_id->value());
+            }
+        }
+        return none;
     }
 
     template <>

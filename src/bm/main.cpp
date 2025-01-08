@@ -152,6 +152,12 @@ namespace rebgn {
                     }
                 }
             }
+            if (auto e = c.endian()) {
+                cout << " " << to_string(e->endian);
+                if (e->dynamic_ref.value() != 0) {
+                    print_ref(e->dynamic_ref);
+                }
+            }
             if (auto m = c.metadata()) {
                 print_ref(m->name);
                 for (auto& v : m->expr_refs) {

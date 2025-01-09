@@ -61,6 +61,8 @@ namespace rebgn {
     };
 
     struct Module {
+        std::unordered_map<std::string, ObjectID> metadata_table;
+        std::unordered_map<ObjectID, std::string> metadata_table_rev;
         std::unordered_map<std::string, ObjectID> string_table;
         std::unordered_map<ObjectID, std::string> string_table_rev;
         std::unordered_map<std::shared_ptr<ast::Ident>, ObjectID> ident_table;
@@ -202,18 +204,32 @@ namespace rebgn {
             prev_expr_id = id;
         }
 
-        expected<Varint> lookup_string(const std::string& str, brgen::lexer::Loc* loc) {
+        expected<Varint> lookup_metadata(const std::string& str, brgen::lexer::Loc* loc) {
+            auto str_ref = metadata_table.find(str);
+            if (str_ref == metadata_table.end()) {
+                auto ident = new_id(loc);
+                if (!ident) {
+                    return unexpect_error(std::move(ident.error()));
+                }
+                metadata_table.emplace(str, ident->value());
+                metadata_table_rev.emplace(ident->value(), str);
+                return ident.value();
+            }
+            return varint(str_ref->second);
+        }
+
+        expected<std::pair<Varint, bool>> lookup_string(const std::string& str, brgen::lexer::Loc* loc) {
             auto str_ref = string_table.find(str);
             if (str_ref == string_table.end()) {
                 auto ident = new_id(loc);
                 if (!ident) {
-                    return ident;
+                    return unexpect_error(std::move(ident.error()));
                 }
                 string_table.emplace(str, ident->value());
                 string_table_rev.emplace(ident->value(), str);
-                return ident;
+                return std::pair{ident.value(), true};
             }
-            return varint(str_ref->second);
+            return varint(str_ref->second).transform([](auto&& v) { return std::pair{v, false}; });
         }
 
         expected<Varint> lookup_ident(std::shared_ptr<ast::Ident> ident) {

@@ -52,13 +52,7 @@ namespace rebgn {
             return none;
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value, &str_ty->strong_ref->loc);
-            if (!str_ref) {
-                return str_ref.error();
-            }
-            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                c.ident(*str_ref);
-            });
+            auto str_ref = static_str(m, str_ty->strong_ref);
             auto max_len = immediate(m, *str_ty->bit_size / 8);
             if (!max_len) {
                 return max_len.error();
@@ -296,16 +290,10 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(*new_id);
             });
-            return do_assign(m, base_ref, *next_id);
+            return do_assign(m, nullptr, nullptr, base_ref, *next_id);
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = m.lookup_string(str_ty->strong_ref->value, &str_ty->strong_ref->loc);
-            if (!str_ref) {
-                return str_ref.error();
-            }
-            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                c.ident(*str_ref);
-            });
+            auto str_ref = static_str(m, str_ty->strong_ref);
             auto max_len = immediate(m, *str_ty->bit_size / 8);
             if (!max_len) {
                 return max_len.error();
@@ -515,13 +503,7 @@ namespace rebgn {
                             return error("Invalid next field");
                         }
                         auto str = ast::cast_to<ast::StrLiteralType>(next->field_type);
-                        auto str_ref = m.lookup_string(str->strong_ref->value, &str->strong_ref->loc);
-                        if (!str_ref) {
-                            return str_ref.error();
-                        }
-                        m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                            c.ident(*str_ref);
-                        });
+                        auto str_ref = static_str(m, str->strong_ref);
                         auto imm = immediate(m, *str->bit_size / futils::bit_per_byte);
                         if (!imm) {
                             return imm.error();
@@ -576,7 +558,7 @@ namespace rebgn {
                             if (!immFalse) {
                                 return immFalse.error();
                             }
-                            auto err = do_assign(m, *isOK, *immTrue);
+                            auto err = do_assign(m, nullptr, nullptr, *isOK, *immTrue);
                             if (err) {
                                 return err;
                             }
@@ -613,7 +595,7 @@ namespace rebgn {
                                 m.op(AbstractOp::IF, [&](Code& c) {
                                     c.ref(*cmp);
                                 });
-                                err = do_assign(m, *isOK, *immFalse);
+                                err = do_assign(m, nullptr, nullptr, *isOK, *immFalse);
                                 m.op(AbstractOp::BREAK);
                                 m.op(AbstractOp::END_IF);
                                 return insert_phi(m, m.end_phi_stack());
@@ -755,7 +737,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(*tmp_var);
             });
-            return do_assign(m, base_ref, *casted);
+            return do_assign(m, nullptr, nullptr, base_ref, *casted);
         }
         if (auto i = ast::as<ast::IdentType>(typ)) {
             auto base_type = i->base.lock();

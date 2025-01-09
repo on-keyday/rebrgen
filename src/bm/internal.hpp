@@ -16,6 +16,7 @@ namespace rebgn {
     template <class T>
     Error decode(Module& m, std::shared_ptr<T>& node) = delete;
 
+    expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node);
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, ast::ConstantLevel level);
@@ -27,7 +28,32 @@ namespace rebgn {
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, bool should_init_recursive);
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
     Error insert_phi(Module& m, PhiStack&& p);
-    Error do_assign(Module& m, Varint left, Varint right);
+    Error do_assign(Module& m,
+                    const Storages* target_type,
+                    const Storages* source_type,
+                    Varint left, Varint right);
+    expected<std::optional<Varint>> add_assign_cast(Module& m, auto&& op, const Storages* dest, const Storages* src, Varint right) {
+        if (!dest || !src) {
+            return std::nullopt;
+        }
+        auto dst_key = storage_key(*dest);
+        auto src_key = storage_key(*src);
+        if (dst_key == src_key) {
+            return std::nullopt;
+        }
+        auto ident = m.new_id(nullptr);
+        if (!ident) {
+            return unexpect_error(std::move(ident.error()));
+        }
+        op(AbstractOp::ASSIGN_CAST, [&](Code& c) {
+            c.ident(*ident);
+            c.storage(*dest);
+            c.from(*src);
+            c.ref(right);
+        });
+        return *ident;
+    }
+    expected<std::optional<Storages>> may_get_type(Module& m, const std::shared_ptr<ast::Type>& typ);
     inline void maybe_insert_eval_expr(Module& m, const std::shared_ptr<ast::Node>& n) {
         if (!ast::as<ast::Expr>(n)) {
             return;
@@ -92,8 +118,38 @@ namespace rebgn {
 
     void add_switch_union(Module& m, std::shared_ptr<ast::StructType>& node);
 
+    inline auto make_yield_value_post_proc(Module& m, std::optional<Varint>& yield_value, std::optional<Storages>& yield_storage) {
+        return [&](std::shared_ptr<ast::Node>& last) {
+            if (yield_value) {
+                auto prev_expr = m.get_prev_expr();
+                if (!prev_expr) {
+                    return prev_expr.error();
+                }
+                auto imp = ast::as<ast::ImplicitYield>(last);
+                if (!imp) {
+                    return error("Implicit yield is expected but {}", node_type_to_string(last->node_type));
+                }
+                auto pre_type = may_get_type(m, imp->expr->expr_type);
+                if (!pre_type) {
+                    return pre_type.error();
+                }
+                return do_assign(m, &*yield_storage, *pre_type ? &**pre_type : nullptr, *yield_value, *prev_expr);
+            }
+            return none;
+        };
+    }
+
+    inline auto make_yield_value_final_proc(Module& m, std::optional<Varint>& yield_value) {
+        return [&]() {
+            if (yield_value) {
+                m.set_prev_expr(yield_value->value());
+            }
+        };
+    }
+
     Error convert_if(Module& m, std::shared_ptr<ast::If>& node, auto&& eval) {
         std::optional<Varint> yield_value;
+        std::optional<Storages> yield_storage;
         if (!ast::as<ast::VoidType>(node->expr_type)) {
             Storages s;
             auto err = define_storage(m, s, node->expr_type);
@@ -106,29 +162,17 @@ namespace rebgn {
             }
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
-                c.storage(std::move(s));
+                c.storage(s);
             });
             auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
             yield_value = *tmp_var;
+            yield_storage = std::move(s);
         }
-        auto yield_value_postproc = [&]() {
-            if (yield_value) {
-                auto prev_expr = m.get_prev_expr();
-                if (!prev_expr) {
-                    return prev_expr.error();
-                }
-                return do_assign(m, *yield_value, *prev_expr);
-            }
-            return none;
-        };
-        auto yield_value_finalproc = [&]() {
-            if (yield_value) {
-                m.set_prev_expr(yield_value->value());
-            }
-        };
+        auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
+        auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
         auto cond = get_expr(m, node->cond->expr);
         if (!cond) {
             return cond.error();
@@ -138,17 +182,22 @@ namespace rebgn {
             c.ref(*cond);
         });
         add_switch_union(m, node->then->struct_type);
+        std::shared_ptr<ast::Node> last = nullptr;
         auto err = foreach_node(m, node->then->elements, [&](auto& n) {
             auto err = eval(m, n);
             if (err) {
                 return err;
             }
+            last = n;
             return none;
         });
         if (err) {
             return err;
         }
-        yield_value_postproc();
+        err = yield_value_postproc(last);
+        if (err) {
+            return err;
+        }
         if (node->els) {
             std::shared_ptr<ast::If> els = node;
             while (els) {
@@ -162,17 +211,19 @@ namespace rebgn {
                         c.ref(*cond);
                     });
                     add_switch_union(m, e->then->struct_type);
+                    std::shared_ptr<ast::Node> last = nullptr;
                     auto err = foreach_node(m, e->then->elements, [&](auto& n) {
                         auto err = eval(m, n);
                         if (err) {
                             return err;
                         }
+                        last = n;
                         return none;
                     });
                     if (err) {
                         return err;
                     }
-                    err = yield_value_postproc();
+                    err = yield_value_postproc(last);
                     if (err) {
                         return err;
                     }
@@ -182,17 +233,19 @@ namespace rebgn {
                     m.next_phi_candidate(null_id);
                     m.op(AbstractOp::ELSE);
                     add_switch_union(m, block->struct_type);
+                    std::shared_ptr<ast::Node> last = nullptr;
                     auto err = foreach_node(m, block->elements, [&](auto& n) {
                         auto err = eval(m, n);
                         if (err) {
                             return err;
                         }
+                        last = n;
                         return none;
                     });
                     if (err) {
                         return err;
                     }
-                    err = yield_value_postproc();
+                    err = yield_value_postproc(last);
                     if (err) {
                         return err;
                     }
@@ -214,6 +267,7 @@ namespace rebgn {
 
     Error convert_match(Module& m, std::shared_ptr<ast::Match>& node, auto&& eval) {
         std::optional<Varint> yield_value;
+        std::optional<Storages> yield_storage;
         if (!ast::as<ast::VoidType>(node->expr_type)) {
             Storages s;
             auto err = define_storage(m, s, node->expr_type);
@@ -226,29 +280,17 @@ namespace rebgn {
             }
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
-                c.storage(std::move(s));
+                c.storage(s);
             });
             auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
             yield_value = *tmp_var;
+            yield_storage = std::move(s);
         }
-        auto yield_value_postproc = [&]() {
-            if (yield_value) {
-                auto prev_expr = m.get_prev_expr();
-                if (!prev_expr) {
-                    return prev_expr.error();
-                }
-                return do_assign(m, *yield_value, *prev_expr);
-            }
-            return none;
-        };
-        auto yield_value_finalproc = [&]() {
-            if (yield_value) {
-                m.set_prev_expr(yield_value->value());
-            }
-        };
+        auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
+        auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
         if (node->cond) {
             auto cond = get_expr(m, node->cond);
             if (!cond) {
@@ -280,6 +322,7 @@ namespace rebgn {
                         c.ref(*cond);
                     });
                 }
+                std::shared_ptr<ast::Node> last = nullptr;
                 if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                     add_switch_union(m, scoped->struct_type);
                     m.set_prev_expr(null_id);
@@ -288,6 +331,7 @@ namespace rebgn {
                         return err;
                     }
                     maybe_insert_eval_expr(m, scoped->statement);
+                    last = scoped->statement;
                 }
                 else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                     add_switch_union(m, block->struct_type);
@@ -296,6 +340,7 @@ namespace rebgn {
                         if (err) {
                             return err;
                         }
+                        last = n;
                         return none;
                     });
                     if (err) {
@@ -305,7 +350,7 @@ namespace rebgn {
                 else {
                     return error("Invalid match branch");
                 }
-                auto err = yield_value_postproc();
+                auto err = yield_value_postproc(last);
                 if (err) {
                     return err;
                 }
@@ -353,6 +398,7 @@ namespace rebgn {
                     last = c;
                 }
             }
+            std::shared_ptr<ast::Node> last_yield = nullptr;
             if (auto scoped = ast::as<ast::ScopedStatement>(c->then)) {
                 add_switch_union(m, scoped->struct_type);
                 m.set_prev_expr(null_id);
@@ -361,6 +407,7 @@ namespace rebgn {
                     return err;
                 }
                 maybe_insert_eval_expr(m, scoped->statement);
+                last_yield = scoped->statement;
             }
             else if (auto block = ast::as<ast::IndentBlock>(c->then)) {
                 add_switch_union(m, block->struct_type);
@@ -369,6 +416,7 @@ namespace rebgn {
                     if (err) {
                         return err;
                     }
+                    last_yield = n;
                     return none;
                 });
                 if (err) {
@@ -378,7 +426,7 @@ namespace rebgn {
             else {
                 return error("Invalid match branch");
             }
-            auto err = yield_value_postproc();
+            auto err = yield_value_postproc(last_yield);
             if (err) {
                 return err;
             }
@@ -513,8 +561,8 @@ namespace rebgn {
                         return none;
                     });
                 }
-                else if (auto lit = ast::as<ast::StrLiteral>(bop->right->expr_type)) {
-                    auto str_id = m.lookup_string(lit->value, &lit->loc);
+                else if (auto lit = ast::as<ast::StrLiteral>(bop->right)) {
+                    auto str_id = static_str(m, ast::cast_to<ast::StrLiteral>(bop->right));
                     if (!str_id) {
                         return str_id.error();
                     }
@@ -529,7 +577,7 @@ namespace rebgn {
                         }
                         m.op(AbstractOp::INDEX, [&](Code& c) {
                             c.ident(*id);
-                            c.left_ref(*target);
+                            c.left_ref(*str_id);
                             c.right_ref(counter);
                         });
                         auto ident = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));

@@ -171,9 +171,11 @@ enum AbstractOp:
     CAN_READ
     CALL_ENCODE
     CALL_DECODE
-    STATIC_CAST
-    BIT_CAST
-    CALL_CAST
+
+    STATIC_CAST # for enum
+    BIT_CAST # for float
+    CALL_CAST # for Cast ast node
+    ASSIGN_CAST # on assignment
 
     ADDRESS_OF
     OPTIONAL_OF
@@ -564,6 +566,11 @@ format Code:
             ident :Varint
             storage :Storages
             ref :Varint # ref to object
+        AbstractOp.ASSIGN_CAST:
+            ident :Varint
+            ref :Varint # ref to object
+            storage :Storages # to type
+            from :Storages # from type 
         AbstractOp.NEW_OBJECT:
             ident :Varint
             storage :Storages
@@ -736,6 +743,7 @@ format DebugInfo:
 format BinaryModule:
     magic: "RBGM"
     max_id :Varint
+    metadata :StringRefs
     strings :StringRefs
     identifiers :StringRefs
     ident_indexes :IdentIndexs

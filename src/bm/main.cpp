@@ -26,6 +26,9 @@ auto& cerr = futils::wrap::cerr_wrap();
 
 namespace rebgn {
     void print_code(rebgn::Module& m) {
+        for (auto& [metadata, id] : m.metadata_table) {
+            cout << "metadata " << metadata << " " << id << '\n';
+        }
         for (auto& [str, id] : m.string_table) {
             cout << "string " << str << " " << id << '\n';
         }
@@ -86,6 +89,10 @@ namespace rebgn {
                     cout << " " << found->second;
                     found_ident = true;
                 }
+                if (auto found = m.metadata_table_rev.find(ref.value()); found != m.metadata_table_rev.end()) {
+                    cout << " " << found->second;
+                    found_ident = true;
+                }
                 if (found_ident) {
                     cout << "(" << ref.value() << ")";
                 }
@@ -141,8 +148,8 @@ namespace rebgn {
                     cout << " " << bit_plus_one->value() - 1 << "bit";
                 }
             }
-            if (auto s = c.storage()) {
-                for (auto& st : s->storages) {
+            auto print_type = [&](rebgn::Storages& s) {
+                for (auto& st : s.storages) {
                     cout << " " << to_string(st.type);
                     if (auto size = st.size()) {
                         cout << " " << size->value();
@@ -151,6 +158,12 @@ namespace rebgn {
                         print_ref(*ref);
                     }
                 }
+            };
+            if (auto s = c.storage()) {
+                print_type(*s);
+            }
+            if (auto s = c.from()) {
+                print_type(*s);
             }
             if (auto e = c.endian()) {
                 cout << " " << to_string(e->endian);

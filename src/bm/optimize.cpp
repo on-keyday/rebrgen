@@ -3,6 +3,7 @@
 #include <core/ast/tool/sort.h>
 #include <view/span.h>
 #include "helper.hpp"
+#include "internal.hpp"
 
 namespace rebgn {
     void rebind_ident_index(Module& mod) {
@@ -1235,6 +1236,9 @@ namespace rebgn {
                 }
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
+            case rebgn::AbstractOp::ASSIGN_CAST: {
+                return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+            }
             case rebgn::AbstractOp::ARRAY_SIZE: {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
@@ -1669,10 +1673,31 @@ namespace rebgn {
                 if (!ident) {
                     return ident.error();
                 }
+                auto base = m.ident_table_rev.find(expr_ref.value());
+                if (base == m.ident_table_rev.end()) {
+                    return error("Invalid ident");
+                }
+                auto field_ptr = ast::as<ast::Field>(base->second->base.lock());
+                if (!field_ptr) {
+                    return error("Invalid field");
+                }
+                Storages storage;
+                auto err = define_storage(m, storage, field_ptr->field_type);
+                if (err) {
+                    return err;
+                }
+                auto right = *prop;
+                auto maybe_cast = add_assign_cast(m, op, &storage, &originalType, right);
+                if (!maybe_cast) {
+                    return maybe_cast.error();
+                }
+                if (*maybe_cast) {
+                    right = **maybe_cast;
+                }
                 op(AbstractOp::ASSIGN, [&](Code& m) {
                     m.ident(*ident);
                     m.left_ref(expr_ref);
-                    m.right_ref(*prop);
+                    m.right_ref(right);
                 });
             }
             op(AbstractOp::RET, [&](Code& m) {

@@ -3,6 +3,7 @@
 #include <core/ast/traverse.h>
 #include <format>
 #include <set>
+#include "helper.hpp"
 namespace rebgn {
 
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n) {
@@ -94,7 +95,17 @@ namespace rebgn {
         return define_tmp_var(m, *init_ref, ast::ConstantLevel::variable);
     }
 
-    Error do_assign(Module& m, Varint left, Varint right) {
+    Error do_assign(Module& m,
+                    const Storages* target_type,
+                    const Storages* from_type,
+                    Varint left, Varint right) {
+        auto res = add_assign_cast(m, [&](auto&&... args) { m.op(args...); }, target_type, from_type, right);
+        if (!res) {
+            return res.error();
+        }
+        if (*res) {
+            right = **res;
+        }
         auto prev_assign = m.prev_assign(left.value());
         auto new_id = m.new_id(nullptr);
         if (!new_id) {
@@ -365,15 +376,25 @@ namespace rebgn {
         return none;
     }
 
+    expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node) {
+        auto str_ref = m.lookup_string(node->value, &node->loc);
+        if (!str_ref) {
+            return str_ref.transform([](auto&& v) { return v.first; });
+        }
+        if (str_ref->second) {
+            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
+                c.ident(str_ref->first);
+            });
+        }
+        return str_ref->first;
+    }
+
     template <>
     Error define<ast::StrLiteral>(Module& m, std::shared_ptr<ast::StrLiteral>& node) {
-        auto str_ref = m.lookup_string(node->value, &node->loc);
+        auto str_ref = static_str(m, node);
         if (!str_ref) {
             return str_ref.error();
         }
-        m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-            c.ident(*str_ref);
-        });
         m.set_prev_expr(str_ref->value());
         return none;
     }
@@ -532,6 +553,9 @@ namespace rebgn {
         if (auto i = ast::as<ast::IntType>(typ)) {
             return typ_with_size(i->is_signed ? StorageType::INT : StorageType::UINT, i);
         }
+        if (auto i = ast::as<ast::IntLiteralType>(typ)) {
+            return typ_with_size(StorageType::UINT, i);
+        }
         if (auto f = ast::as<ast::FloatType>(typ)) {
             return typ_with_size(StorageType::FLOAT, f);
         }
@@ -546,13 +570,10 @@ namespace rebgn {
             push(StorageType::UINT, [&](Storage& c) {
                 c.size(*varint(8));
             });
-            auto ref = m.lookup_string(f->strong_ref->value, &f->strong_ref->loc);
+            auto ref = static_str(m, f->strong_ref);
             if (!ref) {
                 return ref.error();
             }
-            m.op(AbstractOp::IMMEDIATE_STRING, [&](Code& c) {
-                c.ident(*ref);
-            });
             m.op(AbstractOp::SPECIFY_FIXED_VALUE, [&](Code& c) {
                 c.ref(*ref);
             });
@@ -788,7 +809,7 @@ namespace rebgn {
                     c.ref(*id);
                 });
                 if (field) {
-                    auto err = do_assign(m, *tmp_var, *imm_true);
+                    auto err = do_assign(m, nullptr, nullptr, *tmp_var, *imm_true);
                     if (err) {
                         return err;
                     }
@@ -1278,7 +1299,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
             c.ident(*new_id);
-            c.storage(std::move(s));
+            c.storage(s);
         });
         auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
         if (!tmp_var) {
@@ -1296,14 +1317,25 @@ namespace rebgn {
         if (!then) {
             return error("Invalid then expression: {}", then.error().error());
         }
-        err = do_assign(m, *tmp_var, *then);
+        auto then_type = may_get_type(m, node->then->expr_type);
+        if (!then_type) {
+            return then_type.error();
+        }
+        err = do_assign(m, &s, *then_type ? &**then_type : nullptr, *tmp_var, *then);
+        if (err) {
+            return err;
+        }
         m.next_phi_candidate(null_id);
         m.op(AbstractOp::ELSE);
         auto els = get_expr(m, node->els);
         if (!els) {
             return error("Invalid else expression: {}", els.error().error());
         }
-        err = do_assign(m, *tmp_var, *els);
+        auto els_type = may_get_type(m, node->els->expr_type);
+        if (!els_type) {
+            return els_type.error();
+        }
+        err = do_assign(m, &s, *els_type ? &**els_type : nullptr, *tmp_var, *els);
         if (err) {
             return err;
         }
@@ -1346,6 +1378,27 @@ namespace rebgn {
         });
         m.set_prev_expr(ident->value());
         return none;
+    }
+
+    expected<std::optional<Storages>> may_get_type(Module& m, const std::shared_ptr<ast::Type>& typ) {
+        std::optional<Storages> s;
+        if (auto u = ast::as<ast::UnionType>(typ)) {
+            if (u->common_type) {
+                s = Storages();
+                auto err = define_storage(m, s.value(), u->common_type, true);
+                if (err) {
+                    return unexpect_error(std::move(err));
+                }
+            }
+        }
+        else {
+            s = Storages();
+            auto err = define_storage(m, s.value(), typ, true);
+            if (err) {
+                return unexpect_error(std::move(err));
+            }
+        }
+        return s;
     }
 
     template <>
@@ -1407,8 +1460,22 @@ namespace rebgn {
             m.set_prev_expr(right_ref->value());
             return none;
         }
+        auto handle_assign = [&](Varint right_ref) -> Error {
+            auto left_type = may_get_type(m, node->left->expr_type);
+            if (!left_type) {
+                return left_type.error();
+            }
+            auto right_type = may_get_type(m, node->right->expr_type);
+            if (!right_type) {
+                return right_type.error();
+            }
+            return do_assign(m,
+                             *left_type ? &**left_type : nullptr,
+                             *right_type ? &**right_type : nullptr,
+                             *left_ref, right_ref);
+        };
         if (node->op == ast::BinaryOp::assign) {
-            return do_assign(m, *left_ref, *right_ref);
+            return handle_assign(*right_ref);
         }
         auto ident = m.new_node_id(node);
         if (!ident) {
@@ -1475,7 +1542,7 @@ namespace rebgn {
             c.right_ref(*right_ref);
         });
         if (should_assign) {
-            auto err = do_assign(m, *left_ref, *ident);
+            auto err = handle_assign(*ident);
             if (err) {
                 return err;
             }
@@ -1526,7 +1593,7 @@ namespace rebgn {
 
     template <>
     Error define<ast::Metadata>(Module& m, std::shared_ptr<ast::Metadata>& node) {
-        auto node_name = m.lookup_string(node->name, &node->loc);
+        auto node_name = m.lookup_metadata(node->name, &node->loc);
         if (!node_name) {
             return node_name.error();
         }

@@ -9,6 +9,7 @@ namespace rebgn {
             return id.error();
         }
         bm.max_id = id.value();
+
         auto add_refs = [&](StringRefs& refs, std::uint64_t id, std::string_view str) {
             StringRef sr;
             auto idv = varint(id);
@@ -25,28 +26,42 @@ namespace rebgn {
             refs.refs.push_back(std::move(sr));
             return none;
         };
-        for (auto& [str, id] : m.string_table) {
-            auto err = add_refs(bm.strings, id, str);
-            if (err) {
-                return err;
+
+        auto process_table = [&](auto& table, StringRefs& refs) -> Error {
+            for (auto& [key, id] : table) {
+                auto err = add_refs(refs, id, key);
+                if (err) {
+                    return err;
+                }
             }
+            auto length = varint(refs.refs.size());
+            if (!length) {
+                return length.error();
+            }
+            refs.refs_length = length.value();
+            return none;
+        };
+
+        if (auto err = process_table(m.metadata_table, bm.metadata); err) {
+            return err;
         }
-        auto length = varint(bm.strings.refs.size());
-        if (!length) {
-            return length.error();
+
+        if (auto err = process_table(m.string_table, bm.strings); err) {
+            return err;
         }
-        bm.strings.refs_length = length.value();
+
         for (auto& [ident, id] : m.ident_table) {
             auto err = add_refs(bm.identifiers, id, ident->ident);
             if (err) {
                 return err;
             }
         }
-        length = varint(bm.identifiers.refs.size());
+        auto length = varint(bm.identifiers.refs.size());
         if (!length) {
             return length.error();
         }
         bm.identifiers.refs_length = length.value();
+
         for (auto& [ident, index] : m.ident_index_table) {
             auto id = varint(ident);
             if (!id) {
@@ -66,24 +81,32 @@ namespace rebgn {
             return length.error();
         }
         bm.ident_indexes.refs_length = length.value();
-        auto programs_length = varint(m.programs.size());
-        if (!programs_length) {
-            return programs_length.error();
+
+        auto process_ranges = [&](auto& ranges, auto& bm_ranges) -> Error {
+            auto length = varint(ranges.size());
+            if (!length) {
+                return length.error();
+            }
+            bm_ranges.length = length.value();
+            bm_ranges.ranges = std::move(ranges);
+            return none;
+        };
+
+        if (auto err = process_ranges(m.programs, bm.programs); err) {
+            return err;
         }
-        bm.programs.length = programs_length.value();
-        bm.programs.ranges = std::move(m.programs);
-        length = varint(m.ident_to_ranges.size());
-        if (!length) {
-            return length.error();
+
+        if (auto err = process_ranges(m.ident_to_ranges, bm.ident_ranges); err) {
+            return err;
         }
-        bm.ident_ranges.length = length.value();
-        bm.ident_ranges.ranges = std::move(m.ident_to_ranges);
+
         auto code_length = varint(m.code.size());
         if (!code_length) {
             return code_length.error();
         }
         bm.code_length = code_length.value();
         bm.code = m.code;
+
         return bm.encode(w);
     }
 }  // namespace rebgn

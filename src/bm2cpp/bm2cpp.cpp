@@ -14,6 +14,7 @@ namespace bm2cpp {
     struct Context {
         futils::code::CodeWriter<futils::binary::writer&> cw;
         const rebgn::BinaryModule& bm;
+        std::unordered_map<std::uint64_t, std::string> metadata_table;
         std::unordered_map<std::uint64_t, std::string> string_table;
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
@@ -345,6 +346,9 @@ namespace bm2cpp {
             case rebgn::AbstractOp::CAN_READ: {
                 res.push_back(std::format("!r.empty()"));
                 break;
+            }
+            case rebgn::AbstractOp::ASSIGN_CAST: {
+                return eval(ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]], ctx);
             }
             case rebgn::AbstractOp::CALL_CAST: {
                 auto type_str = type_to_string(ctx, *code.storage());
@@ -1381,6 +1385,9 @@ namespace bm2cpp {
 
     void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
         Context ctx(w, bm);
+        for (auto& m : bm.metadata.refs) {
+            ctx.metadata_table[m.code.value()] = m.string.data;
+        }
         for (auto& sr : bm.strings.refs) {
             ctx.string_table[sr.code.value()] = sr.string.data;
         }
@@ -1461,7 +1468,7 @@ namespace bm2cpp {
                 switch (code.op) {
                     case rebgn::AbstractOp::METADATA: {
                         auto meta = code.metadata();
-                        auto str = ctx.string_table[meta->name.value()];
+                        auto str = ctx.metadata_table[meta->name.value()];
                         if (str == "config.cpp.namespace" && meta->expr_refs.size() == 1) {
                             if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
                                 auto copy = found->second;

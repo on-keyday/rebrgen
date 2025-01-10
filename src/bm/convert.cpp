@@ -1118,7 +1118,9 @@ namespace rebgn {
             return err;
         }
         if (is_encoder_or_decoder) {
-            m.op(AbstractOp::RET_SUCCESS);
+            m.op(AbstractOp::RET_SUCCESS, [&](Code& c) {
+                c.belong(*ident);
+            });
         }
         m.op(AbstractOp::END_FUNCTION);
         m.end_phi_stack();  // restore

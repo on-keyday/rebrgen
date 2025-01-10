@@ -8,6 +8,7 @@
 #include <unicode/utf/convert.h>
 #include <span>
 #include <regex>
+#include <escape/escape.h>
 
 namespace bm2rust {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -426,7 +427,7 @@ namespace bm2rust {
                     res.push_back("Some(Box::new(" + ref.back() + "))");
                 }
                 else if (to_bit_size < from_bit_size) {
-                    res.push_back(std::format("{}.try_into().unwrap()", ref.back()));
+                    res.push_back(std::format("{}.try_into()?", ref.back()));
                 }
                 else {
                     res.push_back(std::format("{}.into()", ref.back()));
@@ -1234,7 +1235,9 @@ namespace bm2rust {
                 case rebgn::AbstractOp::ASSERT: {
                     auto ref = code.ref().value().value();
                     auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
-                    w.writeln("if(!", evaluated.back(), ") { return false; }");
+                    w.writeln("if(!", evaluated.back(), ") { ");
+                    w.writeln("return Err(Error::AssertError(\"", futils::escape::escape_str<std::string>(evaluated.back()), "\"));");
+                    w.writeln("}");
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
@@ -1393,7 +1396,11 @@ namespace bm2rust {
                     auto ref_to_len = code.right_ref().value().value();
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
-                    w.writeln(std::format("if({}.len() != {}) {{ return false; }}", vec.back(), len.back()));
+                    w.writeln(std::format("if({}.len() != {} as usize) {{", vec.back(), len.back()));
+                    auto scope = w.indent_scope();
+                    w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"", vec.back(), "\",", vec.back(), ".len(),", len.back(), " as usize));");
+                    scope.execute();
+                    w.writeln("}");
                     if (bit_size == 8) {
                         w.writeln("w.write_all(&", vec.back(), ")?;");
                     }
@@ -1432,12 +1439,12 @@ namespace bm2rust {
                         w.writeln("for ", tmp_i, " in 0..", len.back(), "{");
                         auto scope = w.indent_scope();
                         if (code.op == rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED) {
-                            w.writeln(std::format("if(!::futils::binary::read_num(r,{}[{}],{})) {{ return false; }}", vec.back(), tmp_i, is_big));
+                            deserialize(ctx, w, ref_to_vec, bit_size, std::format("{}[{}]", vec.back(), tmp_i), endian);
                         }
                         else {
                             auto tmp = std::format("tmp_hold_{}", ref_to_vec);
                             w.writeln(std::format("std::uint{}_t {};", bit_size, tmp));
-                            w.writeln(std::format("if(!::futils::binary::read_num(r,{},{})) {{ return false; }}", tmp, is_big));
+                            deserialize(ctx, w, ref_to_vec, bit_size, tmp, endian);
                             w.writeln(std::format("{}.push_back({});", vec.back(), tmp));
                         }
                         scope.execute();
@@ -1458,7 +1465,7 @@ namespace bm2rust {
                     break;
                 }
                 case rebgn::AbstractOp::RET_SUCCESS: {
-                    w.writeln("return true;");
+                    w.writeln("return Ok(());");
                     break;
                 }
                 case rebgn::AbstractOp::RET_PROPERTY_SETTER_OK: {
@@ -1466,7 +1473,9 @@ namespace bm2rust {
                     break;
                 }
                 case rebgn::AbstractOp::RET_PROPERTY_SETTER_FAIL: {
-                    w.writeln("return Err(", ctx.error_type, "::PropertySetterError());");
+                    auto belong = code.belong().value().value();
+                    auto belong_name = ctx.ident_table[belong];
+                    w.writeln("return Err(", ctx.error_type, "::PropertySetterError(\"", belong_name, "\"));");
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_INFINITE: {
@@ -1502,7 +1511,7 @@ namespace bm2rust {
                     if (code.op == rebgn::AbstractOp::CHECK_UNION) {
                         auto check_at = code.check_at().value();
                         if (check_at == rebgn::UnionCheckAt::ENCODER) {
-                            w.writeln("return false;");
+                            w.writeln("return Err(Error::InvalidUnionVariant(\"", belong_name, "::", variant_name, "\"));");
                         }
                         else {
                             w.writeln("return None;");
@@ -1573,6 +1582,10 @@ namespace bm2rust {
         w.writeln("PropertySetterError(&'static str),");
         w.writeln("IOError(std::io::Error),");
         w.writeln("Custom(String),");
+        w.writeln("TryFromIntError(std::num::TryFromIntError),");
+        w.writeln("ArrayLengthMismatch(&'static str,usize /*expected*/,usize /*actual*/),");
+        w.writeln("AssertError(&'static str),");
+        w.writeln("InvalidUnionVariant(&'static str),");
         scope.execute();
         w.writeln("}");
 
@@ -1584,6 +1597,26 @@ namespace bm2rust {
         scope3.execute();
         w.writeln("}");
         scope2.execute();
+        w.writeln("}");
+
+        w.writeln("impl From<std::num::TryFromIntError> for ", ident, " {");
+        auto scope4 = w.indent_scope();
+        w.writeln("fn from(e: std::num::TryFromIntError) -> Self {");
+        auto scope5 = w.indent_scope();
+        w.writeln(ident, "::TryFromIntError(e)");
+        scope5.execute();
+        w.writeln("}");
+        scope4.execute();
+        w.writeln("}");
+
+        w.writeln("impl From<std::convert::Infallible> for ", ident, " {");
+        auto scope6 = w.indent_scope();
+        w.writeln("fn from(_: std::convert::Infallible) -> Self {");
+        auto scope7 = w.indent_scope();
+        w.writeln("unreachable!()");
+        scope7.execute();
+        w.writeln("}");
+        scope6.execute();
         w.writeln("}");
     }
 

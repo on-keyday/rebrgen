@@ -91,7 +91,6 @@ enum AbstractOp:
     DYNAMIC_ENDIAN
     SPECIFY_BIT_ORDER
     SPECIFY_ALIGNMENT
-    SPECIFY_LENGTH
     SPECIFY_STORAGE_TYPE
     SPECIFY_FIXED_VALUE
 
@@ -422,7 +421,8 @@ format Code:
             ident :Varint
         AbstractOp.DEFINE_ENUM_MEMBER:
             ident :Varint
-            ref :Varint # ref to init expr
+            left_ref :Varint # ref to init expr
+            right_ref :Varint # ref to string representation or null
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
             belong :Varint # belong to format or null

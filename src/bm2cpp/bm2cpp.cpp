@@ -1499,7 +1499,7 @@ namespace bm2cpp {
                             }
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto ident = ctx.ident_table[bm.code[j].ident().value().value()];
-                                auto init = ctx.ident_index_table[bm.code[j].ref().value().value()];
+                                auto init = ctx.ident_index_table[bm.code[j].left_ref().value().value()];
                                 auto ev = eval(bm.code[init], ctx);
                                 tmp.writeln(ident, " = ", ev.back(), ",");
                             }

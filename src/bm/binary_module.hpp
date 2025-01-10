@@ -388,138 +388,137 @@ namespace rebgn {
         DYNAMIC_ENDIAN = 2,
         SPECIFY_BIT_ORDER = 3,
         SPECIFY_ALIGNMENT = 4,
-        SPECIFY_LENGTH = 5,
-        SPECIFY_STORAGE_TYPE = 6,
-        SPECIFY_FIXED_VALUE = 7,
-        DEFINE_PROGRAM = 8,
-        END_PROGRAM = 9,
-        DECLARE_PROGRAM = 10,
-        DEFINE_FORMAT = 11,
-        END_FORMAT = 12,
-        DECLARE_FORMAT = 13,
-        DEFINE_FIELD = 14,
-        END_FIELD = 15,
-        DECLARE_FIELD = 16,
-        CONDITIONAL_FIELD = 17,
-        CONDITIONAL_PROPERTY = 18,
-        MERGED_CONDITIONAL_FIELD = 19,
-        DEFINE_PROPERTY = 20,
-        END_PROPERTY = 21,
-        DECLARE_PROPERTY = 22,
-        DEFINE_PROPERTY_SETTER = 23,
-        DEFINE_PROPERTY_GETTER = 24,
-        DEFINE_PARAMETER = 25,
-        END_PARAMETER = 26,
-        DECLARE_PARAMETER = 27,
-        DEFINE_FUNCTION = 28,
-        END_FUNCTION = 29,
-        DECLARE_FUNCTION = 30,
-        DEFINE_ENUM = 31,
-        END_ENUM = 32,
-        DECLARE_ENUM = 33,
-        DEFINE_ENUM_MEMBER = 34,
-        DEFINE_UNION = 35,
-        END_UNION = 36,
-        DECLARE_UNION = 37,
-        DEFINE_UNION_MEMBER = 38,
-        END_UNION_MEMBER = 39,
-        DECLARE_UNION_MEMBER = 40,
-        DEFINE_STATE = 41,
-        END_STATE = 42,
-        DECLARE_STATE = 43,
-        DEFINE_BIT_FIELD = 44,
-        END_BIT_FIELD = 45,
-        DECLARE_BIT_FIELD = 46,
-        BEGIN_ENCODE_PACKED_OPERATION = 47,
-        END_ENCODE_PACKED_OPERATION = 48,
-        BEGIN_DECODE_PACKED_OPERATION = 49,
-        END_DECODE_PACKED_OPERATION = 50,
-        DEFINE_ENCODER = 51,
-        DEFINE_DECODER = 52,
-        ENCODE_INT = 53,
-        DECODE_INT = 54,
-        ENCODE_INT_VECTOR = 55,
-        DECODE_INT_VECTOR = 56,
-        DECODE_INT_VECTOR_UNTIL_EOF = 57,
-        DECODE_INT_VECTOR_FIXED = 58,
-        PEEK_INT_VECTOR = 59,
-        BACKWARD_INPUT = 60,
-        BACKWARD_OUTPUT = 61,
-        BYTE_OFFSET = 62,
-        BIT_OFFSET = 63,
-        REMAIN_BYTES = 64,
-        CAN_READ = 65,
-        CALL_ENCODE = 66,
-        CALL_DECODE = 67,
-        STATIC_CAST = 68,
-        BIT_CAST = 69,
-        CALL_CAST = 70,
-        ASSIGN_CAST = 71,
-        ADDRESS_OF = 72,
-        OPTIONAL_OF = 73,
-        EMPTY_PTR = 74,
-        EMPTY_OPTIONAL = 75,
-        LOOP_INFINITE = 76,
-        LOOP_CONDITION = 77,
-        CONTINUE = 78,
-        BREAK = 79,
-        END_LOOP = 80,
-        IF = 81,
-        ELIF = 82,
-        ELSE = 83,
-        END_IF = 84,
-        MATCH = 85,
-        EXHAUSTIVE_MATCH = 86,
-        CASE = 87,
-        END_CASE = 88,
-        DEFAULT_CASE = 89,
-        END_MATCH = 90,
-        DEFINE_VARIABLE = 91,
-        DEFINE_VARIABLE_REF = 92,
-        DEFINE_CONSTANT = 93,
-        DECLARE_VARIABLE = 94,
-        BINARY = 95,
-        NOT_PREV_THEN = 96,
-        UNARY = 97,
-        ASSIGN = 98,
-        PROPERTY_ASSIGN = 99,
-        ASSERT = 100,
-        EXPLICIT_ERROR = 101,
-        ACCESS = 102,
-        INDEX = 103,
-        APPEND = 104,
-        INC = 105,
-        DEC = 106,
-        NEG = 107,
-        CALL = 108,
-        RET = 109,
-        RET_SUCCESS = 110,
-        IMMEDIATE_TRUE = 111,
-        IMMEDIATE_FALSE = 112,
-        IMMEDIATE_INT = 113,
-        IMMEDIATE_INT64 = 114,
-        IMMEDIATE_CHAR = 115,
-        IMMEDIATE_STRING = 116,
-        IMMEDIATE_TYPE = 117,
-        NEW_OBJECT = 118,
-        INIT_RECURSIVE_STRUCT = 119,
-        CHECK_RECURSIVE_STRUCT = 120,
-        SWITCH_UNION = 121,
-        CHECK_UNION = 122,
-        ENCODER_PARAMETER = 123,
-        DECODER_PARAMETER = 124,
-        STATE_VARIABLE_PARAMETER = 125,
-        PROPERTY_INPUT_PARAMETER = 126,
-        EVAL_EXPR = 127,
-        ARRAY_SIZE = 128,
-        RESERVE_SIZE = 129,
-        BEGIN_ENCODE_SUB_RANGE = 130,
-        END_ENCODE_SUB_RANGE = 131,
-        BEGIN_DECODE_SUB_RANGE = 132,
-        END_DECODE_SUB_RANGE = 133,
-        FIELD_AVAILABLE = 134,
-        PHI = 135,
-        PROPERTY_FUNCTION = 136,
+        SPECIFY_STORAGE_TYPE = 5,
+        SPECIFY_FIXED_VALUE = 6,
+        DEFINE_PROGRAM = 7,
+        END_PROGRAM = 8,
+        DECLARE_PROGRAM = 9,
+        DEFINE_FORMAT = 10,
+        END_FORMAT = 11,
+        DECLARE_FORMAT = 12,
+        DEFINE_FIELD = 13,
+        END_FIELD = 14,
+        DECLARE_FIELD = 15,
+        CONDITIONAL_FIELD = 16,
+        CONDITIONAL_PROPERTY = 17,
+        MERGED_CONDITIONAL_FIELD = 18,
+        DEFINE_PROPERTY = 19,
+        END_PROPERTY = 20,
+        DECLARE_PROPERTY = 21,
+        DEFINE_PROPERTY_SETTER = 22,
+        DEFINE_PROPERTY_GETTER = 23,
+        DEFINE_PARAMETER = 24,
+        END_PARAMETER = 25,
+        DECLARE_PARAMETER = 26,
+        DEFINE_FUNCTION = 27,
+        END_FUNCTION = 28,
+        DECLARE_FUNCTION = 29,
+        DEFINE_ENUM = 30,
+        END_ENUM = 31,
+        DECLARE_ENUM = 32,
+        DEFINE_ENUM_MEMBER = 33,
+        DEFINE_UNION = 34,
+        END_UNION = 35,
+        DECLARE_UNION = 36,
+        DEFINE_UNION_MEMBER = 37,
+        END_UNION_MEMBER = 38,
+        DECLARE_UNION_MEMBER = 39,
+        DEFINE_STATE = 40,
+        END_STATE = 41,
+        DECLARE_STATE = 42,
+        DEFINE_BIT_FIELD = 43,
+        END_BIT_FIELD = 44,
+        DECLARE_BIT_FIELD = 45,
+        BEGIN_ENCODE_PACKED_OPERATION = 46,
+        END_ENCODE_PACKED_OPERATION = 47,
+        BEGIN_DECODE_PACKED_OPERATION = 48,
+        END_DECODE_PACKED_OPERATION = 49,
+        DEFINE_ENCODER = 50,
+        DEFINE_DECODER = 51,
+        ENCODE_INT = 52,
+        DECODE_INT = 53,
+        ENCODE_INT_VECTOR = 54,
+        DECODE_INT_VECTOR = 55,
+        DECODE_INT_VECTOR_UNTIL_EOF = 56,
+        DECODE_INT_VECTOR_FIXED = 57,
+        PEEK_INT_VECTOR = 58,
+        BACKWARD_INPUT = 59,
+        BACKWARD_OUTPUT = 60,
+        BYTE_OFFSET = 61,
+        BIT_OFFSET = 62,
+        REMAIN_BYTES = 63,
+        CAN_READ = 64,
+        CALL_ENCODE = 65,
+        CALL_DECODE = 66,
+        STATIC_CAST = 67,
+        BIT_CAST = 68,
+        CALL_CAST = 69,
+        ASSIGN_CAST = 70,
+        ADDRESS_OF = 71,
+        OPTIONAL_OF = 72,
+        EMPTY_PTR = 73,
+        EMPTY_OPTIONAL = 74,
+        LOOP_INFINITE = 75,
+        LOOP_CONDITION = 76,
+        CONTINUE = 77,
+        BREAK = 78,
+        END_LOOP = 79,
+        IF = 80,
+        ELIF = 81,
+        ELSE = 82,
+        END_IF = 83,
+        MATCH = 84,
+        EXHAUSTIVE_MATCH = 85,
+        CASE = 86,
+        END_CASE = 87,
+        DEFAULT_CASE = 88,
+        END_MATCH = 89,
+        DEFINE_VARIABLE = 90,
+        DEFINE_VARIABLE_REF = 91,
+        DEFINE_CONSTANT = 92,
+        DECLARE_VARIABLE = 93,
+        BINARY = 94,
+        NOT_PREV_THEN = 95,
+        UNARY = 96,
+        ASSIGN = 97,
+        PROPERTY_ASSIGN = 98,
+        ASSERT = 99,
+        EXPLICIT_ERROR = 100,
+        ACCESS = 101,
+        INDEX = 102,
+        APPEND = 103,
+        INC = 104,
+        DEC = 105,
+        NEG = 106,
+        CALL = 107,
+        RET = 108,
+        RET_SUCCESS = 109,
+        IMMEDIATE_TRUE = 110,
+        IMMEDIATE_FALSE = 111,
+        IMMEDIATE_INT = 112,
+        IMMEDIATE_INT64 = 113,
+        IMMEDIATE_CHAR = 114,
+        IMMEDIATE_STRING = 115,
+        IMMEDIATE_TYPE = 116,
+        NEW_OBJECT = 117,
+        INIT_RECURSIVE_STRUCT = 118,
+        CHECK_RECURSIVE_STRUCT = 119,
+        SWITCH_UNION = 120,
+        CHECK_UNION = 121,
+        ENCODER_PARAMETER = 122,
+        DECODER_PARAMETER = 123,
+        STATE_VARIABLE_PARAMETER = 124,
+        PROPERTY_INPUT_PARAMETER = 125,
+        EVAL_EXPR = 126,
+        ARRAY_SIZE = 127,
+        RESERVE_SIZE = 128,
+        BEGIN_ENCODE_SUB_RANGE = 129,
+        END_ENCODE_SUB_RANGE = 130,
+        BEGIN_DECODE_SUB_RANGE = 131,
+        END_DECODE_SUB_RANGE = 132,
+        FIELD_AVAILABLE = 133,
+        PHI = 134,
+        PROPERTY_FUNCTION = 135,
     };
     constexpr const char* to_string(AbstractOp e) {
         switch (e) {
@@ -533,8 +532,6 @@ namespace rebgn {
                 return "SPECIFY_BIT_ORDER";
             case AbstractOp::SPECIFY_ALIGNMENT:
                 return "SPECIFY_ALIGNMENT";
-            case AbstractOp::SPECIFY_LENGTH:
-                return "SPECIFY_LENGTH";
             case AbstractOp::SPECIFY_STORAGE_TYPE:
                 return "SPECIFY_STORAGE_TYPE";
             case AbstractOp::SPECIFY_FIXED_VALUE:
@@ -819,9 +816,6 @@ namespace rebgn {
         }
         if (str == "SPECIFY_ALIGNMENT") {
             return AbstractOp::SPECIFY_ALIGNMENT;
-        }
-        if (str == "SPECIFY_LENGTH") {
-            return AbstractOp::SPECIFY_LENGTH;
         }
         if (str == "SPECIFY_STORAGE_TYPE") {
             return AbstractOp::SPECIFY_STORAGE_TYPE;
@@ -1653,7 +1647,8 @@ namespace rebgn {
         };
         struct union_struct_30 {
             Varint ident;
-            Varint ref;
+            Varint left_ref;
+            Varint right_ref;
         };
         struct union_struct_31 {
             Varint ident;
@@ -8250,7 +8245,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                return std::nullopt;
+            }
+            return std::get<17>((*this).union_variant_13).left_ref;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return std::nullopt;
@@ -8640,7 +8638,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                union_variant_13 = union_struct_30();
+            }
+            std::get<17>((*this).union_variant_13).left_ref = v;
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -9056,7 +9058,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                union_variant_13 = union_struct_30();
+            }
+            std::get<17>((*this).union_variant_13).left_ref = std::move(v);
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -12322,10 +12328,7 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
-                return std::nullopt;
-            }
-            return std::get<17>((*this).union_variant_13).ref;
+            return std::nullopt;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return std::nullopt;
@@ -12798,11 +12801,7 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
-                union_variant_13 = union_struct_30();
-            }
-            std::get<17>((*this).union_variant_13).ref = v;
-            return true;
+            return false;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -13324,11 +13323,7 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
-                union_variant_13 = union_struct_30();
-            }
-            std::get<17>((*this).union_variant_13).ref = std::move(v);
-            return true;
+            return false;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -13842,7 +13837,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                return std::nullopt;
+            }
+            return std::get<17>((*this).union_variant_13).right_ref;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return std::nullopt;
@@ -14232,7 +14230,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                union_variant_13 = union_struct_30();
+            }
+            std::get<17>((*this).union_variant_13).right_ref = v;
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -14648,7 +14650,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_30>(union_variant_13)) {
+                union_variant_13 = union_struct_30();
+            }
+            std::get<17>((*this).union_variant_13).right_ref = std::move(v);
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION == (*this).op) {
             return false;
@@ -17183,7 +17189,10 @@ namespace rebgn {
             if (auto err = std::get<17>((*this).union_variant_13).ident.encode(w)) {
                 return err;
             }
-            if (auto err = std::get<17>((*this).union_variant_13).ref.encode(w)) {
+            if (auto err = std::get<17>((*this).union_variant_13).left_ref.encode(w)) {
+                return err;
+            }
+            if (auto err = std::get<17>((*this).union_variant_13).right_ref.encode(w)) {
                 return err;
             }
         }
@@ -18356,7 +18365,10 @@ namespace rebgn {
             if (auto err = std::get<17>((*this).union_variant_13).ident.decode(r)) {
                 return err;
             }
-            if (auto err = std::get<17>((*this).union_variant_13).ref.decode(r)) {
+            if (auto err = std::get<17>((*this).union_variant_13).left_ref.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<17>((*this).union_variant_13).right_ref.decode(r)) {
                 return err;
             }
         }

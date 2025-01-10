@@ -158,10 +158,6 @@ format SMPTE:
     ticks_per_frame : ub8
 
 
-format MapBitInt:
-    len_bit :u8
-    value :[len_bit]u1(config.type=u32)
-
 enum AbstractEnum:
     abs
     rel
@@ -193,10 +189,7 @@ format LEB128:
   fn u64() -> u64:
     return value
 
-format Tricky:
-    x :u2
-    l ::= input.get()
-    y :[l]u8
+
 
 format TCPHeader:
     srcPort :u16
@@ -284,8 +277,9 @@ format DomainName:
     fn decode():
         for:
            label ::= input.get(Label)
+           isEnd ::= label.length == 0 || available(label.pointer)
            labels[labels.length] = label
-           if label.length == 0 || available(label.pointer):
+           if isEnd:
               break
     
     fn encode():
@@ -294,16 +288,6 @@ format DomainName:
                 i == labels.length - 1
             output.put(labels[i])
 
-format NestedUnion:
-    x :u8
-    if x == 0:
-        y :u8
-        if y == 0:
-            z :u32
-        else:
-            w :u16
-    else:
-        z :u16
 
 enum OpCode:
     :u4

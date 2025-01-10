@@ -1248,9 +1248,18 @@ namespace rebgn {
             if (!ref) {
                 return error("Invalid enum member value");
             }
+            Varint str_ref;
+            if (me->str_literal) {
+                auto st = static_str(m, me->str_literal);
+                if (!st) {
+                    return st.error();
+                }
+                str_ref = *st;
+            }
             m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
                 c.ident(*ident);
-                c.ref(*ref);
+                c.left_ref(*ref);
+                c.right_ref(str_ref);
             });
         }
         m.op(AbstractOp::END_ENUM);

@@ -1552,6 +1552,7 @@ namespace rebgn {
             }
             op(AbstractOp::RET, [&](Code& m) {
                 m.ref(*empty_ident);
+                m.belong(getter_ident);
             });
             return none;
         };
@@ -1597,6 +1598,7 @@ namespace rebgn {
             }
             op(AbstractOp::RET, [&](Code& m) {
                 m.ref(*ident);
+                m.belong(getter_ident);
             });
             return none;
         },
@@ -1624,7 +1626,7 @@ namespace rebgn {
         op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
             n.storage(Storages{
                 .length = *varint(1),
-                .storages = {Storage{.type = StorageType::BOOL}},
+                .storages = {Storage{.type = StorageType::PROPERTY_SETTER_RETURN}},
             });
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
@@ -1634,19 +1636,9 @@ namespace rebgn {
         if (!bool_ident) {
             return bool_ident.error();
         }
-        op(AbstractOp::IMMEDIATE_TRUE, [&](Code& m) {
-            m.ident(*bool_ident);
-        });
         auto ret_false = [&]() {
-            auto false_ident = m.new_id(nullptr);
-            if (!false_ident) {
-                return false_ident.error();
-            }
-            op(AbstractOp::IMMEDIATE_FALSE, [&](Code& m) {
-                m.ident(*false_ident);
-            });
-            op(AbstractOp::RET, [&](Code& m) {
-                m.ref(*false_ident);
+            op(AbstractOp::RET_PROPERTY_SETTER_FAIL, [&](Code& m) {
+                m.belong(setter_ident);
             });
             return none;
         };
@@ -1700,8 +1692,8 @@ namespace rebgn {
                     m.right_ref(right);
                 });
             }
-            op(AbstractOp::RET, [&](Code& m) {
-                m.ref(*bool_ident);
+            op(AbstractOp::RET_PROPERTY_SETTER_OK, [&](Code& m) {
+                m.belong(setter_ident);
             });
             return none;
         },

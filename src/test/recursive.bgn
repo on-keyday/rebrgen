@@ -1,0 +1,7 @@
+format X:
+    x :X
+
+fn define() -> X:
+    x := X()
+    x.x = x
+    return x

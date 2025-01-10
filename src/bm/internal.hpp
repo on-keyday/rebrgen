@@ -31,15 +31,26 @@ namespace rebgn {
     Error do_assign(Module& m,
                     const Storages* target_type,
                     const Storages* source_type,
-                    Varint left, Varint right);
-    expected<std::optional<Varint>> add_assign_cast(Module& m, auto&& op, const Storages* dest, const Storages* src, Varint right) {
+                    Varint left, Varint right, bool should_recursive_struct_assign = false);
+    expected<std::optional<Varint>> add_assign_cast(Module& m, auto&& op, const Storages* dest, const Storages* src, Varint right,
+                                                    bool should_recursive_struct_assign = false) {
         if (!dest || !src) {
             return std::nullopt;
         }
         auto dst_key = storage_key(*dest);
         auto src_key = storage_key(*src);
+        auto src_copy = *src;
         if (dst_key == src_key) {
-            return std::nullopt;
+            if (!should_recursive_struct_assign || dst_key.find("RECURSIVE_STRUCT") == std::string::npos) {
+                return std::nullopt;
+            }
+            for (auto& src : src_copy.storages) {
+                if (src.type == StorageType::RECURSIVE_STRUCT_REF) {
+                    auto src_ref = src.ref().value();
+                    src.type = StorageType::STRUCT_REF;
+                    src.ref(src_ref);
+                }
+            }
         }
         auto ident = m.new_id(nullptr);
         if (!ident) {
@@ -48,7 +59,7 @@ namespace rebgn {
         op(AbstractOp::ASSIGN_CAST, [&](Code& c) {
             c.ident(*ident);
             c.storage(*dest);
-            c.from(*src);
+            c.from(std::move(src_copy));
             c.ref(right);
         });
         return *ident;

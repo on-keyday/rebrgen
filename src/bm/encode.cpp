@@ -877,7 +877,9 @@ namespace rebgn {
             return err;
         }
         f.execute();
-        m.op(AbstractOp::RET_SUCCESS);
+        m.op(AbstractOp::RET_SUCCESS, [&](Code& c) {
+            c.belong(*new_id);
+        });
         m.op(AbstractOp::END_FUNCTION);
         m.end_phi_stack();  // remove temporary
         m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
@@ -950,7 +952,9 @@ namespace rebgn {
             return err;
         }
         f.execute();
-        m.op(AbstractOp::RET_SUCCESS);
+        m.op(AbstractOp::RET_SUCCESS, [&](Code& c) {
+            c.belong(*new_id);
+        });
         m.op(AbstractOp::END_FUNCTION);
         m.end_phi_stack();  // remove temporary
         m.op(AbstractOp::DEFINE_DECODER, [&](Code& c) {

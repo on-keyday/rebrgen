@@ -222,6 +222,8 @@ enum AbstractOp:
     CALL
     RET
     RET_SUCCESS
+    RET_PROPERTY_SETTER_OK
+    RET_PROPERTY_SETTER_FAIL
 
     IMMEDIATE_TRUE
     IMMEDIATE_FALSE
@@ -306,6 +308,9 @@ enum StorageType:
 
     # encoder/decoder return value
     CODER_RETURN
+
+    # property setter return value
+    PROPERTY_SETTER_RETURN
 
     # property
     OPTIONAL
@@ -646,7 +651,14 @@ format Code:
             ref :Varint # ref to union_member
             check_at :UnionCheckAt
         AbstractOp.RET:
-            ref :Varint # maybe null
+            belong :Varint # belong to function
+            ref :Varint # ref to expr (maybe null)
+        AbstractOp.RET_SUCCESS:
+            belong :Varint # belong to function
+        AbstractOp.RET_PROPERTY_SETTER_OK:
+            belong :Varint # belong to property setter
+        AbstractOp.RET_PROPERTY_SETTER_FAIL:
+            belong :Varint # belong to property setter
         AbstractOp.MATCH:
             ref :Varint # ref to expr
         AbstractOp.EXHAUSTIVE_MATCH:

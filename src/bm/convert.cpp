@@ -98,8 +98,8 @@ namespace rebgn {
     Error do_assign(Module& m,
                     const Storages* target_type,
                     const Storages* from_type,
-                    Varint left, Varint right) {
-        auto res = add_assign_cast(m, [&](auto&&... args) { m.op(args...); }, target_type, from_type, right);
+                    Varint left, Varint right, bool should_recursive_struct_assign) {
+        auto res = add_assign_cast(m, [&](auto&&... args) { m.op(args...); }, target_type, from_type, right, should_recursive_struct_assign);
         if (!res) {
             return res.error();
         }
@@ -244,17 +244,27 @@ namespace rebgn {
 
     template <>
     Error define<ast::Return>(Module& m, std::shared_ptr<ast::Return>& node) {
+        auto func = node->related_function.lock();
+        if (!func) {
+            return error("return statement must be in a function");
+        }
+        auto ident = m.lookup_ident(func->ident);
+        if (!ident) {
+            return ident.error();
+        }
         if (node->expr) {
             auto val = get_expr(m, node->expr);
             if (!val) {
                 return val.error();
             }
             m.op(AbstractOp::RET, [&](Code& c) {
+                c.belong(*ident);
                 c.ref(*val);
             });
         }
         else {
-            m.op(AbstractOp::RET, [](Code& c) {
+            m.op(AbstractOp::RET, [&](Code& c) {
+                c.belong(*ident);
                 c.ref(*varint(null_id));
             });
         }
@@ -1410,6 +1420,26 @@ namespace rebgn {
         return s;
     }
 
+    bool should_be_recursive_struct_assign(const std::shared_ptr<ast::Node>& node) {
+        if (auto ident = ast::as<ast::Ident>(node)) {
+            auto [base, _] = *ast::tool::lookup_base(ast::cast_to<ast::Ident>(node));
+            if (auto field = ast::as<ast::Field>(base->base.lock())) {
+                // on dynamic array, we should not detect it as recursive struct assign
+                if (auto arr = ast::as<ast::ArrayType>(field->field_type); arr && !arr->length_value) {
+                    return false;
+                }
+                return true;  // fixed array of recursive struct or direct recursive struct
+            }
+        }
+        else if (auto ident = ast::as<ast::Index>(node)) {
+            return should_be_recursive_struct_assign(ident->expr);
+        }
+        else if (auto member = ast::as<ast::MemberAccess>(node)) {
+            return should_be_recursive_struct_assign(member->base.lock());
+        }
+        return false;
+    }
+
     template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
         if (node->op == ast::BinaryOp::define_assign ||
@@ -1481,7 +1511,8 @@ namespace rebgn {
             return do_assign(m,
                              *left_type ? &**left_type : nullptr,
                              *right_type ? &**right_type : nullptr,
-                             *left_ref, right_ref);
+                             *left_ref, right_ref,
+                             should_be_recursive_struct_assign(node->left));
         };
         if (node->op == ast::BinaryOp::assign) {
             return handle_assign(*right_ref);

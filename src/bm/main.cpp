@@ -13,12 +13,14 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view output;
     std::string_view cfg_output;
     std::vector<std::string_view> args;
+    bool print_parsed = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file", "FILE");
         ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
+        ctx.VarBool(&print_parsed, "p,print-instructions", "print converted instructions");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -259,7 +261,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cerr << err.error<std::string>() << '\n';
         return 1;
     }
-    rebgn::print_code(*m);
+    if (flags.print_parsed) {
+        rebgn::print_code(*m);
+    }
     if (flags.cfg_output.size()) {
         auto file = futils::file::File::create(flags.cfg_output);
         if (!file) {

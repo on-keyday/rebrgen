@@ -51,6 +51,9 @@ namespace bm2cpp {
             case rebgn::StorageType::CODER_RETURN: {
                 return "bool";
             }
+            case rebgn::StorageType::PROPERTY_SETTER_RETURN: {
+                return "bool";
+            }
             case rebgn::StorageType::PTR: {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
                 return inner + "*";
@@ -1232,8 +1235,13 @@ namespace bm2cpp {
                     }
                     break;
                 }
-                case rebgn::AbstractOp::RET_SUCCESS: {
+                case rebgn::AbstractOp::RET_SUCCESS:
+                case rebgn::AbstractOp::RET_PROPERTY_SETTER_OK: {
                     ctx.cw.writeln("return true;");
+                    break;
+                }
+                case rebgn::AbstractOp::RET_PROPERTY_SETTER_FAIL: {
+                    ctx.cw.writeln("return false;");
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_INFINITE: {

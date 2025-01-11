@@ -335,6 +335,13 @@ enum UnionCheckAt:
     PROPERTY_GETTER_OPTIONAL
     ENCODER
 
+format DecodeParamFlags:
+    has_seek :u1
+    has_peek :u1
+    has_eof :u1
+    has_remain_bytes :u1
+    reserved :u4
+
 # TODO: be recursive
 format Storage:
     type :StorageType
@@ -669,6 +676,7 @@ format Code:
         AbstractOp.DECODER_PARAMETER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to decoder function
+            decode_flags :DecodeParamFlags
         AbstractOp.PROPERTY_INPUT_PARAMETER:
             ident :Varint
             left_ref :Varint # ref to merged conditional field

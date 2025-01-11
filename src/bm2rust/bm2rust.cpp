@@ -261,6 +261,17 @@ namespace bm2rust {
         return "";
     }
 
+    bool property_has_common_type(Context& ctx, std::uint64_t ident) {
+        auto found_merged = find_ops(ctx, ctx.ident_range_table[ident], rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD);
+        for (auto& idx : found_merged) {
+            auto& p = ctx.bm.code[idx];
+            if (p.merge_mode() == rebgn::MergeMode::COMMON_TYPE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     std::string retrieve_ident_internal(Context& ctx, const rebgn::Code& code, BitField& bit_field) {
         if (code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER) {
             auto ident = code.ident().value().value();
@@ -288,15 +299,7 @@ namespace bm2rust {
             auto belong_idx = ctx.ident_index_table[code.belong().value().value()];
             auto base = retrieve_ident_internal(ctx, ctx.bm.code[belong_idx], bit_field);
             auto set = ctx.on_assign ? "set_" : "";
-            auto found_merged = find_ops(ctx, ctx.ident_range_table[code.ident()->value()], rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD);
-            bool is_common_type = false;
-            for (auto& idx : found_merged) {
-                auto& p = ctx.bm.code[idx];
-                if (p.merge_mode() == rebgn::MergeMode::COMMON_TYPE) {
-                    is_common_type = true;
-                    break;
-                }
-            }
+            bool is_common_type = property_has_common_type(ctx, code.ident().value().value());
             std::string ident;
             if (auto found = ctx.ident_table.find(code.ident().value().value());
                 found != ctx.ident_table.end() && found->second.size()) {
@@ -530,8 +533,13 @@ namespace bm2rust {
                 }
                 else {
                     res.insert(res.end(), left.begin(), left.end() - 1);
-                    if (find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], rebgn::AbstractOp::DEFINE_PROPERTY)) {
-                        res.push_back(std::format("{}.{}().unwrap()", left.back(), right_ident));
+                    if (auto prop = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], rebgn::AbstractOp::DEFINE_PROPERTY)) {
+                        if (property_has_common_type(ctx, *prop)) {
+                            res.push_back(std::format("{}.{}().unwrap()", left.back(), right_ident));
+                        }
+                        else {
+                            res.push_back(std::format("(*{}.{}().unwrap())", left.back(), right_ident));
+                        }
                     }
                     else {
                         res.push_back(std::format("{}.{}", left.back(), right_ident));

@@ -1788,6 +1788,84 @@ namespace rebgn {
         return none;
     }
 
+    void analyze_decoder_function(Module& m) {
+        std::optional<size_t> current_function_index;
+        std::optional<size_t> decoder_parameter_index;
+        size_t inner_subrange = 0;
+        std::unordered_map<ObjectID, ObjectID> function_to_decoder;
+        for (size_t i = 0; i < m.code.size(); i++) {
+            if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
+                current_function_index = i;
+            }
+            if (m.code[i].op == AbstractOp::DECODER_PARAMETER) {
+                decoder_parameter_index = i;
+            }
+            if (m.code[i].op == AbstractOp::END_FUNCTION) {
+                current_function_index.reset();
+                decoder_parameter_index.reset();
+            }
+            if (m.code[i].op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
+                inner_subrange++;
+            }
+            if (m.code[i].op == AbstractOp::END_DECODE_SUB_RANGE) {
+                inner_subrange--;
+            }
+            if (current_function_index && decoder_parameter_index && !inner_subrange) {
+                function_to_decoder[m.code[*current_function_index].ident().value().value()] = *decoder_parameter_index;
+                auto set_flag = [&](auto&& set) {
+                    auto flags = m.code[*decoder_parameter_index].decode_flags().value();
+                    set(flags);
+                    m.code[*decoder_parameter_index].decode_flags(flags);
+                };
+                if (m.code[i].op == AbstractOp::CAN_READ) {
+                    set_flag([](auto& flags) { flags.has_eof(true); });
+                }
+                if (m.code[i].op == AbstractOp::REMAIN_BYTES) {
+                    set_flag([](auto& flags) { flags.has_remain_bytes(true); });
+                }
+                if (m.code[i].op == AbstractOp::PEEK_INT_VECTOR) {
+                    set_flag([](auto& flags) { flags.has_peek(true); });
+                }
+                if (m.code[i].op == AbstractOp::BACKWARD_INPUT) {
+                    set_flag([](auto& flags) { flags.has_seek(true); });
+                }
+            }
+        }
+        for (size_t i = 0; i < m.code.size(); i++) {
+            if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
+                current_function_index = i;
+            }
+            if (m.code[i].op == AbstractOp::DECODER_PARAMETER) {
+                decoder_parameter_index = i;
+            }
+            if (m.code[i].op == AbstractOp::END_FUNCTION) {
+                current_function_index.reset();
+                decoder_parameter_index.reset();
+            }
+            if (m.code[i].op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
+                inner_subrange++;
+            }
+            if (m.code[i].op == AbstractOp::END_DECODE_SUB_RANGE) {
+                inner_subrange--;
+            }
+            if (current_function_index && decoder_parameter_index && !inner_subrange) {
+                if (m.code[i].op == AbstractOp::CALL_DECODE) {
+                    auto found = function_to_decoder.find(m.code[i].left_ref().value().value());
+                    if (found != function_to_decoder.end()) {
+                        // copy traits
+                        auto dst = m.code[*decoder_parameter_index].decode_flags().value();
+                        auto src = m.code[found->second].decode_flags().value();
+                        dst.has_eof(dst.has_eof() || src.has_eof());
+                        dst.has_remain_bytes(dst.has_remain_bytes() || src.has_remain_bytes());
+                        dst.has_peek(dst.has_peek() || src.has_peek());
+                        dst.has_seek(dst.has_seek() || src.has_seek());
+                        m.code[*decoder_parameter_index].decode_flags(dst);
+                    }
+                }
+            }
+        }
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {
@@ -1821,6 +1899,7 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
+        analyze_decoder_function(m);
         err = generate_cfg1(m);
         if (err) {
             return err;

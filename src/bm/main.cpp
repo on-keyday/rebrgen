@@ -210,6 +210,36 @@ namespace rebgn {
                 }
                 cout << " )";
             }
+            if (auto dec = c.decode_flags()) {
+                cout << " (";
+                size_t i = 0;
+                if (dec->has_eof()) {
+                    cout << "eof";
+                    i++;
+                }
+                if (dec->has_peek()) {
+                    if (i) {
+                        cout << ",";
+                    }
+                    cout << "error";
+                    i++;
+                }
+                if (dec->has_seek()) {
+                    if (i) {
+                        cout << ",";
+                    }
+                    cout << "seek";
+                    i++;
+                }
+                if (dec->has_remain_bytes()) {
+                    if (i) {
+                        cout << ",";
+                    }
+                    cout << "remain_bytes";
+                    i++;
+                }
+                cout << " )";
+            }
             cout << '\n';
             switch (c.op) {
                 case rebgn::AbstractOp::DEFINE_ENUM:

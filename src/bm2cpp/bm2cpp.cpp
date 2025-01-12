@@ -481,7 +481,7 @@ namespace bm2cpp {
                 res.push_back(std::format("({}{})", uop, ref.back()));
                 break;
             }
-            case rebgn::AbstractOp::STATIC_CAST: {
+            case rebgn::AbstractOp::ENUM_CAST: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);

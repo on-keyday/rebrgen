@@ -220,7 +220,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            m.op(AbstractOp::STATIC_CAST, [&](Code& c) {
+            m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.storage(std::move(to));
                 c.ref(base_ref);
@@ -732,7 +732,7 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            m.op(AbstractOp::STATIC_CAST, [&](Code& c) {
+            m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.storage(std::move(to));
                 c.ref(*tmp_var);

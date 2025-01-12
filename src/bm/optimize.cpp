@@ -1302,7 +1302,7 @@ namespace rebgn {
             case rebgn::AbstractOp::UNARY: {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
-            case rebgn::AbstractOp::STATIC_CAST: {
+            case rebgn::AbstractOp::ENUM_CAST: {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::DEFINE_PARAMETER: {
@@ -1788,34 +1788,58 @@ namespace rebgn {
         return none;
     }
 
-    void analyze_decoder_function(Module& m) {
-        std::optional<size_t> current_function_index;
+    struct FunctionStack {
+        size_t current_function_index = 0;
         std::optional<size_t> decoder_parameter_index;
+        std::optional<size_t> encoder_parameter_index;
         size_t inner_subrange = 0;
-        std::unordered_map<ObjectID, ObjectID> function_to_decoder;
-        for (size_t i = 0; i < m.code.size(); i++) {
+
+        bool is_decoder() const {
+            return decoder_parameter_index.has_value() && !inner_subrange;
+        }
+
+        bool is_encoder() const {
+            return encoder_parameter_index.has_value() && !inner_subrange;
+        }
+    };
+
+    void analyze_encoder_decoder_traits(Module& m) {
+        std::unordered_map<ObjectID, ObjectID> function_to_coder;
+        std::vector<FunctionStack> stack;
+        auto common_process = [&](size_t i) {
             if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
-                current_function_index = i;
+                stack.push_back(FunctionStack{.current_function_index = i, .inner_subrange = 0});
             }
             if (m.code[i].op == AbstractOp::DECODER_PARAMETER) {
-                decoder_parameter_index = i;
+                stack.back().decoder_parameter_index = i;
+            }
+            if (m.code[i].op == AbstractOp::ENCODER_PARAMETER) {
+                stack.back().encoder_parameter_index = i;
             }
             if (m.code[i].op == AbstractOp::END_FUNCTION) {
-                current_function_index.reset();
-                decoder_parameter_index.reset();
+                stack.pop_back();
             }
-            if (m.code[i].op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
-                inner_subrange++;
+            if (m.code[i].op == AbstractOp::BEGIN_DECODE_SUB_RANGE ||
+                m.code[i].op == AbstractOp::BEGIN_ENCODE_SUB_RANGE) {
+                stack.back().inner_subrange++;
             }
-            if (m.code[i].op == AbstractOp::END_DECODE_SUB_RANGE) {
-                inner_subrange--;
+            if (m.code[i].op == AbstractOp::END_DECODE_SUB_RANGE ||
+                m.code[i].op == AbstractOp::END_ENCODE_SUB_RANGE) {
+                stack.back().inner_subrange--;
             }
-            if (current_function_index && decoder_parameter_index && !inner_subrange) {
-                function_to_decoder[m.code[*current_function_index].ident().value().value()] = *decoder_parameter_index;
+        };
+        for (size_t i = 0; i < m.code.size(); i++) {
+            common_process(i);
+            if (stack.empty()) {
+                continue;
+            }
+            if (stack.back().is_decoder()) {
+                function_to_coder[m.code[stack.back().current_function_index].ident().value().value()] = *stack.back().decoder_parameter_index;
                 auto set_flag = [&](auto&& set) {
-                    auto flags = m.code[*decoder_parameter_index].decode_flags().value();
+                    auto idx = stack.back().decoder_parameter_index.value();
+                    auto flags = m.code[idx].decode_flags().value();
                     set(flags);
-                    m.code[*decoder_parameter_index].decode_flags(flags);
+                    m.code[idx].decode_flags(flags);
                 };
                 if (m.code[i].op == AbstractOp::CAN_READ) {
                     set_flag([](auto& flags) { flags.has_eof(true); });
@@ -1830,37 +1854,89 @@ namespace rebgn {
                     set_flag([](auto& flags) { flags.has_seek(true); });
                 }
             }
+            if (stack.back().is_encoder()) {
+                function_to_coder[m.code[stack.back().current_function_index].ident().value().value()] = *stack.back().encoder_parameter_index;
+                auto set_flag = [&](auto&& set) {
+                    auto idx = stack.back().encoder_parameter_index.value();
+                    auto flags = m.code[idx].encode_flags().value();
+                    set(flags);
+                    m.code[idx].encode_flags(flags);
+                };
+                if (m.code[i].op == AbstractOp::BACKWARD_OUTPUT) {
+                    set_flag([](auto& flags) { flags.has_seek(true); });
+                }
+            }
         }
+        std::set<ObjectID> reached;
+        bool has_diff = false;
+        auto recursive_process = [&](auto&& f, size_t start) -> void {
+            if (reached.contains(start)) {
+                return;
+            }
+            reached.insert(start);
+            for (size_t i = start; i < m.code.size(); i++) {
+                common_process(i);
+                if (m.code[i].op == AbstractOp::END_FUNCTION) {
+                    return;
+                }
+                if (stack.back().is_decoder()) {
+                    if (m.code[i].op == AbstractOp::CALL_DECODE) {
+                        auto found = function_to_coder.find(m.code[i].left_ref().value().value());
+                        if (found != function_to_coder.end()) {
+                            f(f, m.ident_index_table[found->first]);
+                            // copy traits
+                            auto idx = stack.back().decoder_parameter_index.value();
+                            auto dst = m.code[idx].decode_flags().value();
+                            auto src = m.code[found->second].decode_flags().value();
+                            auto prev_diff = has_diff;
+                            has_diff = has_diff ||
+                                       !dst.has_eof() && src.has_eof() ||
+                                       !dst.has_remain_bytes() && src.has_remain_bytes() ||
+                                       !dst.has_peek() && src.has_peek() ||
+                                       !dst.has_seek() && src.has_seek();
+                            if (prev_diff != has_diff) {
+                                ;
+                            }
+                            dst.has_eof(dst.has_eof() || src.has_eof());
+                            dst.has_remain_bytes(dst.has_remain_bytes() || src.has_remain_bytes());
+                            dst.has_peek(dst.has_peek() || src.has_peek());
+                            dst.has_seek(dst.has_seek() || src.has_seek());
+                            m.code[idx].decode_flags(dst);
+                        }
+                    }
+                }
+                if (stack.back().is_encoder()) {
+                    if (m.code[i].op == AbstractOp::CALL_ENCODE) {
+                        auto found = function_to_coder.find(m.code[i].left_ref().value().value());
+                        if (found != function_to_coder.end()) {
+                            f(f, m.ident_index_table[found->first]);
+                            // copy traits
+                            auto idx = stack.back().encoder_parameter_index.value();
+                            auto dst = m.code[idx].encode_flags().value();
+                            auto src = m.code[found->second].encode_flags().value();
+                            auto prev_diff = has_diff;
+                            has_diff = has_diff || !dst.has_seek() && src.has_seek();
+                            if (prev_diff != has_diff) {
+                                ;
+                            }
+                            dst.has_seek(dst.has_seek() || src.has_seek());
+                            m.code[idx].encode_flags(dst);
+                        }
+                    }
+                }
+            }
+        };
         for (size_t i = 0; i < m.code.size(); i++) {
             if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
-                current_function_index = i;
+                recursive_process(recursive_process, i);
             }
-            if (m.code[i].op == AbstractOp::DECODER_PARAMETER) {
-                decoder_parameter_index = i;
-            }
-            if (m.code[i].op == AbstractOp::END_FUNCTION) {
-                current_function_index.reset();
-                decoder_parameter_index.reset();
-            }
-            if (m.code[i].op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
-                inner_subrange++;
-            }
-            if (m.code[i].op == AbstractOp::END_DECODE_SUB_RANGE) {
-                inner_subrange--;
-            }
-            if (current_function_index && decoder_parameter_index && !inner_subrange) {
-                if (m.code[i].op == AbstractOp::CALL_DECODE) {
-                    auto found = function_to_decoder.find(m.code[i].left_ref().value().value());
-                    if (found != function_to_decoder.end()) {
-                        // copy traits
-                        auto dst = m.code[*decoder_parameter_index].decode_flags().value();
-                        auto src = m.code[found->second].decode_flags().value();
-                        dst.has_eof(dst.has_eof() || src.has_eof());
-                        dst.has_remain_bytes(dst.has_remain_bytes() || src.has_remain_bytes());
-                        dst.has_peek(dst.has_peek() || src.has_peek());
-                        dst.has_seek(dst.has_seek() || src.has_seek());
-                        m.code[*decoder_parameter_index].decode_flags(dst);
-                    }
+        }
+        while (has_diff) {  // TODO(on-keyday): optimize
+            has_diff = false;
+            reached.clear();
+            for (size_t i = 0; i < m.code.size(); i++) {
+                if (m.code[i].op == AbstractOp::DEFINE_FUNCTION) {
+                    recursive_process(recursive_process, i);
                 }
             }
         }
@@ -1899,7 +1975,7 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
-        analyze_decoder_function(m);
+        analyze_encoder_decoder_traits(m);
         err = generate_cfg1(m);
         if (err) {
             return err;

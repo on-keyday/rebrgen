@@ -171,7 +171,7 @@ enum AbstractOp:
     CALL_ENCODE
     CALL_DECODE
 
-    STATIC_CAST # for enum
+    ENUM_CAST # for enum
     BIT_CAST # for float
     CALL_CAST # for Cast ast node
     ASSIGN_CAST # on assignment
@@ -341,6 +341,10 @@ format DecodeParamFlags:
     has_eof :u1
     has_remain_bytes :u1
     reserved :u4
+
+format EncodeParamFlags:
+    has_seek :u1
+    reserved :u7
 
 # TODO: be recursive
 format Storage:
@@ -574,7 +578,7 @@ format Code:
             ref :Varint
         AbstractOp.EVAL_EXPR:
             ref :Varint
-        AbstractOp.STATIC_CAST:
+        AbstractOp.ENUM_CAST:
             ident :Varint
             storage :Storages
             ref :Varint # ref to object
@@ -673,6 +677,7 @@ format Code:
         AbstractOp.ENCODER_PARAMETER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to encoder function
+            encode_flags :EncodeParamFlags
         AbstractOp.DECODER_PARAMETER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to decoder function

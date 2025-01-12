@@ -450,7 +450,9 @@ namespace bm2rust {
             }
             case rebgn::AbstractOp::APPEND: {
                 auto left_index = ctx.ident_index_table[code.left_ref().value().value()];
+                ctx.on_assign = true;
                 auto left = eval(ctx.bm.code[left_index], ctx);
+                ctx.on_assign = false;
                 res.insert(res.end(), left.begin(), left.end() - 1);
                 auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
                 auto right = eval(ctx.bm.code[right_index], ctx);
@@ -589,13 +591,19 @@ namespace bm2rust {
                 res.push_back(std::format("({}{})", uop, ref.back()));
                 break;
             }
-            case rebgn::AbstractOp::STATIC_CAST: {
+            case rebgn::AbstractOp::ENUM_CAST: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);
                 auto typ = code.storage().value();
                 auto type = type_to_string(ctx, typ);
-                res.push_back(std::format("({} as {})", ref.back(), type));
+                if (typ.storages[0].type == rebgn::StorageType::ENUM) {
+                    auto srcType = type_to_string(ctx, typ, nullptr, 1);
+                    res.push_back(std::format("unsafe {{ std::mem::transmute::<{},{}>({}) }}", srcType, type, ref.back()));
+                }
+                else {
+                    res.push_back(std::format("({} as {})", ref.back(), type));
+                }
                 break;
             }
             case rebgn::AbstractOp::NEW_OBJECT: {
@@ -748,7 +756,10 @@ namespace bm2rust {
         property_setter,
     };
 
-    void add_function_parameters(Context& ctx, TmpCodeWriter& w, rebgn::Range range, NeedTrait& trait) {
+    void add_function_parameters(Context& ctx, TmpCodeWriter& w, rebgn::Range range, NeedTrait& trait,
+
+                                 rebgn::EncodeParamFlags& encode_flags,
+                                 rebgn::DecodeParamFlags& decode_flags) {
         size_t params = 0;
         auto is_decoder = find_op(ctx, range, rebgn::AbstractOp::DECODER_PARAMETER);
         auto is_input_parameter = find_op(ctx, range, rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER);
@@ -774,6 +785,7 @@ namespace bm2rust {
                 }
                 w.write("w :&mut W");
                 trait = NeedTrait::encoder;
+                encode_flags = code.encode_flags().value();
                 params++;
             }
             if (code.op == rebgn::AbstractOp::DECODER_PARAMETER) {
@@ -782,6 +794,7 @@ namespace bm2rust {
                 }
                 w.write("r :&mut R");
                 trait = NeedTrait::decoder;
+                decode_flags = code.decode_flags().value();
                 params++;
             }
             if (code.op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
@@ -1318,17 +1331,30 @@ namespace bm2rust {
                     }
                     TmpCodeWriter params;
                     NeedTrait trait = NeedTrait::none;
-                    add_function_parameters(ctx, params, fn_range, trait);
+                    rebgn::EncodeParamFlags encode_flags;
+                    rebgn::DecodeParamFlags decode_flags;
+                    add_function_parameters(ctx, params, fn_range, trait, encode_flags, decode_flags);
                     w.write("pub fn ");
                     if (trait == NeedTrait::property_setter) {
                         w.write("set_");
                     }
                     w.write(ident);
                     if (trait == NeedTrait::encoder) {
-                        w.write("<W: std::io::Write>");
+                        w.write("<W: std::io::Write");
+                        if (encode_flags.has_seek()) {
+                            w.write(" + std::io::Seek");
+                        }
+                        w.write(">");
                     }
                     else if (trait == NeedTrait::decoder) {
-                        w.write("<R: std::io::Read>");
+                        w.write("<R: std::io::Read");
+                        if (decode_flags.has_seek()) {
+                            w.write(" + std::io::Seek");
+                        }
+                        if (decode_flags.has_eof()) {
+                            w.write(" + std::io::BufRead");
+                        }
+                        w.write(">");
                     }
                     w.write("(");
                     w.write(params.out());
@@ -1421,9 +1447,13 @@ namespace bm2rust {
                     auto ref = code.ref().value().value();
                     auto count = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp = std::format("tmp{}", ref);
-                    w.writeln("let mut ", tmp, " = ", target, ".offset();");
-                    w.writeln(target, ".reset(", tmp, " - ", count.back(), ");");
-                    w.writeln("if(", target, ".offset() != (", tmp, " - ", count.back(), ")) { return false; }");
+                    w.writeln("let mut ", tmp, " = ", target, ".stream_position()?;");
+                    w.writeln(target, ".seek(std::io::SeekFrom::Start((", tmp, " - ", count.back(), ") as u64))?;");
+                    w.writeln("if(", target, ".stream_position()? != (", tmp, " - ", count.back(), ") as u64) {");
+                    auto scope = w.indent_scope();
+                    w.writeln("return Err(", ctx.error_type, "::BackwardError(", target, ".stream_position()? as usize, (", tmp, " - ", count.back(), ") as usize));");
+                    scope.execute();
+                    w.writeln("}");
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT: {
@@ -1593,7 +1623,7 @@ namespace bm2rust {
                     auto ref = code.ref().value().value();
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp_array = std::format("tmp_array{}", ref);
-                    w.writeln("let mut ", tmp_array, " :Vec<u8> = Vec::with_capacity(", len.back(), ");");
+                    w.writeln("let mut ", tmp_array, " :Vec<u8> = Vec::with_capacity(", len.back(), " as usize);");
                     ctx.current_w.push_back(std::move(tmp_array));
                     defer.push_back(futils::helper::defer_ex([&, ref = ref, len]() mutable {
                         auto tmp_array = std::move(ctx.current_w.back());
@@ -1611,7 +1641,7 @@ namespace bm2rust {
                     auto ref = code.ref().value().value();
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp_array = std::format("tmp_array{}", ref);
-                    w.writeln("let mut ", tmp_array, " :Vec<u8> = Vec::with_capacity(", len.back(), ");");
+                    w.writeln("let mut ", tmp_array, " :Vec<u8> = Vec::with_capacity(", len.back(), " as usize);");
                     w.writeln(tmp_array, ".resize(", len.back(), " as usize,0);");
                     w.writeln(ctx.r(), ".read_exact(&mut ", tmp_array, ")?;");
                     auto tmp_cursor = std::format("cursor{}", ref);
@@ -1698,6 +1728,7 @@ namespace bm2rust {
         w.writeln("ArrayLengthMismatch(&'static str,usize /*expected*/,usize /*actual*/),");
         w.writeln("AssertError(&'static str),");
         w.writeln("InvalidUnionVariant(&'static str),");
+        w.writeln("BackwardError(usize,usize),");
         scope.execute();
         w.writeln("}");
 
@@ -1714,6 +1745,7 @@ namespace bm2rust {
         w.writeln(ident, "::ArrayLengthMismatch(s,expected,actual) => write!(f, \"ArrayLengthMismatch: {} expected:{} actual:{}\", s,expected,actual),");
         w.writeln(ident, "::AssertError(s) => write!(f, \"AssertError: {}\", s),");
         w.writeln(ident, "::InvalidUnionVariant(s) => write!(f, \"InvalidUnionVariant: {}\", s),");
+        w.writeln(ident, "::BackwardError(expected,actual) => write!(f, \"BackwardError: expected:{} actual:{}\", expected,actual),");
         scope13.execute();
         w.writeln("}");
         scope12.execute();
@@ -1860,6 +1892,52 @@ namespace bm2rust {
                         auto d = ctx.cw.indent_scope();
                         ctx.cw.write_unformatted(tmp.out());
                         d.execute();
+                        ctx.cw.writeln("}");
+                        ctx.cw.writeln("impl std::fmt::Display for ", ident, " {");
+                        auto scope = ctx.cw.indent_scope();
+                        ctx.cw.writeln("fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {");
+                        auto scope1 = ctx.cw.indent_scope();
+                        ctx.cw.writeln("match self {");
+                        auto scope2 = ctx.cw.indent_scope();
+                        for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
+                            if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                                auto member = ctx.ident_table[bm.code[j].ident().value().value()];
+                                auto str_ref = bm.code[j].right_ref().value().value();
+                                if (str_ref != 0) {
+                                    auto str = ctx.string_table[str_ref];
+                                    ctx.cw.writeln(ident, "::", member, " => write!(f, \"{}\", ", str, "),");
+                                }
+                                else {
+                                    ctx.cw.writeln(ident, "::", member, " => write!(f, \"{}\", \"", member, "\"),");
+                                }
+                            }
+                        }
+                        ctx.cw.writeln("_ => write!(f, \"Unknown({})\",self as ", base_type.size() ? base_type : "usize", "),");
+                        scope2.execute();
+                        ctx.cw.writeln("}");
+                        scope1.execute();
+                        ctx.cw.writeln("}");
+                        scope.execute();
+                        ctx.cw.writeln("}");
+
+                        ctx.cw.writeln("impl ", ident, " {");
+                        auto scope3 = ctx.cw.indent_scope();
+                        ctx.cw.writeln("pub fn is_known(self) -> bool {");
+                        auto scope4 = ctx.cw.indent_scope();
+                        ctx.cw.writeln("match self {");
+                        auto scope5 = ctx.cw.indent_scope();
+                        for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
+                            if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                                auto member = ctx.ident_table[bm.code[j].ident().value().value()];
+                                ctx.cw.writeln(ident, "::", member, " => true,");
+                            }
+                        }
+                        ctx.cw.writeln("_ => std::hint::black_box(false),");
+                        scope5.execute();
+                        ctx.cw.writeln("}");
+                        scope4.execute();
+                        ctx.cw.writeln("}");
+                        scope3.execute();
                         ctx.cw.writeln("}");
                         break;
                     }

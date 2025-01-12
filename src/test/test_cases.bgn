@@ -142,12 +142,7 @@ fn mapToHiragana(code :u6) -> u16:
 
 
 
-enum AbstractEnum:
-    abs
-    rel
 
-format MapEnum:
-    x :AbstractEnum(config.type=u8)
 
 format LEB128:
   value :u64

@@ -409,7 +409,11 @@ namespace bm2rust {
                 break;
             }
             case rebgn::AbstractOp::CAN_READ: {
-                res.push_back(std::format("{}.has_data_left()?", ctx.r()));
+                auto r = ctx.r();
+                if (!ctx.current_r.empty()) {
+                    r = "&mut " + r;
+                }
+                res.push_back(std::format("std::io::BufRead::fill_buf({}).map(|b| !b.is_empty())?", r));
                 break;
             }
             case rebgn::AbstractOp::CALL_CAST: {
@@ -1016,10 +1020,14 @@ namespace bm2rust {
                                 auto scope2 = w2.indent_scope();
                                 consumed_size += field_size;
                                 auto mask = std::format("{}", (std::uint64_t(1) << field_size) - 1);
+                                if (enum_ident.size()) {
+                                    w2.write("unsafe { std::mem::transmute(");
+                                }
                                 w2.write("((self.", field_name, ">>", std::format("{}", bit_size - consumed_size), ") & ", mask, ") as ", str);
                                 if (enum_ident.size()) {
-                                    w2.writeln(" as ", enum_ident);
+                                    w2.write(") }");
                                 }
+                                w.writeln();
                                 scope2.execute();
                                 w2.writeln("}");
                                 w2.writeln("pub fn set_", ident, "(&mut self, value: ", enum_ident.size() ? enum_ident : str, ") -> bool {");
@@ -1862,11 +1870,11 @@ namespace bm2rust {
                     }
                     case rebgn::AbstractOp::DECLARE_ENUM: {
                         auto& ident = ctx.ident_table[code.ref().value().value()];
-
                         TmpCodeWriter tmp;
                         std::string base_type;
                         auto def = ctx.ident_index_table[code.ref().value().value()];
                         size_t count = 0;
+                        std::vector<std::string> evaluated;
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
                             if (bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
                                 base_type = type_to_string(ctx, *bm.code[j].storage());
@@ -1881,6 +1889,7 @@ namespace bm2rust {
                                 }
                                 count++;
                                 tmp.writeln(ident, " = ", ev.back(), ",");
+                                evaluated.push_back(std::move(ev.back()));
                             }
                         }
                         ctx.cw.writeln("#[derive(Debug,Default, Clone, Copy, PartialEq, Eq)]");
@@ -1897,22 +1906,25 @@ namespace bm2rust {
                         auto scope = ctx.cw.indent_scope();
                         ctx.cw.writeln("fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {");
                         auto scope1 = ctx.cw.indent_scope();
-                        ctx.cw.writeln("match self {");
+                        auto cast_to = base_type.size() ? base_type : "usize";
+                        ctx.cw.writeln("match *self as ", cast_to, " {");
                         auto scope2 = ctx.cw.indent_scope();
+                        count = 0;
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto member = ctx.ident_table[bm.code[j].ident().value().value()];
                                 auto str_ref = bm.code[j].right_ref().value().value();
                                 if (str_ref != 0) {
                                     auto str = ctx.string_table[str_ref];
-                                    ctx.cw.writeln(ident, "::", member, " => write!(f, \"{}\", ", str, "),");
+                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", ", str, "),");
                                 }
                                 else {
-                                    ctx.cw.writeln(ident, "::", member, " => write!(f, \"{}\", \"", member, "\"),");
+                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", \"", member, "\"),");
                                 }
+                                count++;
                             }
                         }
-                        ctx.cw.writeln("_ => write!(f, \"Unknown({})\",self as ", base_type.size() ? base_type : "usize", "),");
+                        ctx.cw.writeln("_ => write!(f, \"Unknown({})\",*self as ", cast_to, "),");
                         scope2.execute();
                         ctx.cw.writeln("}");
                         scope1.execute();
@@ -1922,17 +1934,19 @@ namespace bm2rust {
 
                         ctx.cw.writeln("impl ", ident, " {");
                         auto scope3 = ctx.cw.indent_scope();
-                        ctx.cw.writeln("pub fn is_known(self) -> bool {");
+                        ctx.cw.writeln("pub fn is_known(&self) -> bool {");
                         auto scope4 = ctx.cw.indent_scope();
-                        ctx.cw.writeln("match self {");
+                        ctx.cw.writeln("match *self as ", cast_to, " {");
                         auto scope5 = ctx.cw.indent_scope();
+                        count = 0;
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto member = ctx.ident_table[bm.code[j].ident().value().value()];
-                                ctx.cw.writeln(ident, "::", member, " => true,");
+                                ctx.cw.writeln(evaluated[count], " => true,");
+                                count++;
                             }
                         }
-                        ctx.cw.writeln("_ => std::hint::black_box(false),");
+                        ctx.cw.writeln("_ => false,");
                         scope5.execute();
                         ctx.cw.writeln("}");
                         scope4.execute();

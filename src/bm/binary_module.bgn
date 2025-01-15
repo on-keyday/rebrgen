@@ -391,6 +391,12 @@ format EndianExpr:
     endian :Endian
     dynamic_ref :Varint # ref to dynamic endian or null
 
+enum PropertyFunctionType:
+    :u8
+    UNION_GETTER
+    UNION_SETTER
+    VECTOR_SETTER # like [len]u8. set both vector itself and length
+
 # ident is unique identifier
 # ref, left_ref, right_ref is reference to other object identifier
 format Code:
@@ -689,6 +695,7 @@ format Code:
             storage :Storages
         AbstractOp.PROPERTY_FUNCTION:
             ref :Varint # ref to merged conditional field
+            func_type :PropertyFunctionType
         AbstractOp.DEFINE_PROPERTY_SETTER:
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function

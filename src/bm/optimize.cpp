@@ -1428,6 +1428,81 @@ namespace rebgn {
         return none;
     }
 
+    bool can_set_array_length(ast::Field* field_ptr) {
+        if (auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
+            array && array->length && !array->length_value) {
+            if (auto ident = ast::as<ast::Ident>(array->length)) {
+                auto [base, _] = *ast::tool::lookup_base(ast::cast_to<ast::Ident>(array->length));
+                if (auto f = ast::as<ast::Field>(base->base.lock())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    Error add_array_length_setter(Module& m, ast::Field* field_ptr, auto&& op) {
+        auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
+        if (!array) {
+            return error("Invalid field type");
+        }
+        auto id = m.lookup_ident(ast::cast_to<ast::Ident>(array->length));
+        if (!id) {
+            return id.error();
+        }
+        auto bit_size = f->field_type->bit_size;
+        if (auto u = ast::as<ast::UnionType>(f->field_type); u && u->common_type) {
+            bit_size = u->common_type->bit_size;
+        }
+        if (!bit_size) {
+            return error("Invalid bit size");
+        }
+        auto max_value = (std::uint64_t(1) << *bit_size) - 1;
+        auto value_id = m.new_id(nullptr);
+        if (*bit_size >= 63) {
+            op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
+                m.ident(*value_id);
+                m.int_value64(max_value);
+            });
+        }
+        else {
+            op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
+                m.ident(*value_id);
+                m.int_value(*varint(max_value));
+            });
+        }
+        auto length_id = m.new_id(nullptr);
+        if (!length_id) {
+            return length_id.error();
+        }
+        op(AbstractOp::ARRAY_SIZE, [&](Code& m) {
+            m.ident(*length_id);
+            m.ref(*id);
+        });
+        auto cmp_id = m.new_id(nullptr);
+        if (!cmp_id) {
+            return cmp_id.error();
+        }
+        op(AbstractOp::BINARY, [](Code& m) {
+            m.ident(*cmp_id);
+            m.left_ref(*length_id);
+            m.right_ref(*value_id);
+            m.bop(BinaryOp::less_or_eq);
+        });
+        op(AbstractOp::ASSERT, [&](Code& m) {
+            m.ref(*cmp_id);
+        });
+        auto dst = Storages{.length = *varint(1), .storages = {Storage{.type = StorageType::UINT}}};
+        auto src = dst;
+        dst.storages[0].size(*varint(*bit_size));
+        src.storages[0].size(*varint(*bit_size + 1));  // to force insert cast
+        add_assign_cast(m, op, &dst, &src, *length_id, false);
+        op(AbstractOp::ASSIGN, [&](Code& m) {
+            m.left_ref(*id);
+            m.right_ref(*length_id);
+        });
+    }
+
     Error derive_function(Module& m, Code& base, std::vector<Code>& funcs, std::unordered_map<ObjectID, std::pair<Varint, Varint>>& merged_fields) {
         auto op = [&](AbstractOp op, auto&& set) {
             funcs.push_back(make_code(op, set));
@@ -1677,6 +1752,12 @@ namespace rebgn {
                 auto err = define_storage(m, storage, field_ptr->field_type);
                 if (err) {
                     return err;
+                }
+                if (can_set_array_length(field_ptr)) {
+                    auto err = add_array_length_setter(m, field_ptr, op);
+                    if (err) {
+                        return err;
+                    }
                 }
                 auto right = *prop;
                 auto maybe_cast = add_assign_cast(m, op, &storage, &originalType, right);

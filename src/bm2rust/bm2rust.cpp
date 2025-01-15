@@ -1176,6 +1176,17 @@ namespace bm2rust {
         auto type = type_to_string(ctx, storage);
         if (evaluated.back().back() == ')') {
             evaluated.back().pop_back();  // must be end with )
+            if (auto in_union = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_UNION);
+                in_union && find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                auto belong = ctx.bm.code[ctx.ident_index_table[*in_union]].belong();
+                auto storage_type = find_op(ctx, ctx.ident_range_table[belong.value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                if (storage_type) {
+                    auto storage = *ctx.bm.code[*storage_type].storage();
+                    size_t bit_size = 0;
+                    type_to_string(ctx, storage, &bit_size);
+                    type = get_uint(bit_size);
+                }
+            }
             w.writeln(std::format("{}(({} >> {}) & {}) as {});", evaluated.back(), tmp, bit_counter, (std::uint64_t(1) << bit_size) - 1, type));
         }
         else {
@@ -1924,7 +1935,7 @@ namespace bm2rust {
                                 count++;
                             }
                         }
-                        ctx.cw.writeln("_ => write!(f, \"Unknown({})\",*self as ", cast_to, "),");
+                        ctx.cw.writeln("_ => write!(f, \"", ident, "({})\",*self as ", cast_to, "),");
                         scope2.execute();
                         ctx.cw.writeln("}");
                         scope1.execute();

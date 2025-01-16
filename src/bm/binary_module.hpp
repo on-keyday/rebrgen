@@ -1926,6 +1926,7 @@ namespace rebgn {
         };
         struct union_struct_79 {
             Varint ref;
+            Varint belong;
         };
         struct union_struct_80 {
             Varint ref;
@@ -2065,6 +2066,7 @@ namespace rebgn {
         };
         struct union_struct_116 {
             Param param;
+            Varint belong;
         };
         struct union_struct_117 {
             Varint ident;
@@ -2677,7 +2679,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::ASSERT == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_79>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<64>((*this).union_variant_15).belong;
         }
         if (AbstractOp::IF == (*this).op) {
             return std::nullopt;
@@ -2783,6 +2788,39 @@ namespace rebgn {
                 return std::nullopt;
             }
             return std::get<91>((*this).union_variant_15).belong;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            if (!std::holds_alternative<union_struct_116>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<101>((*this).union_variant_15).belong;
         }
         return std::nullopt;
     }
@@ -3001,7 +3039,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::ASSERT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_79>(union_variant_15)) {
+                union_variant_15 = union_struct_79();
+            }
+            std::get<64>((*this).union_variant_15).belong = v;
+            return true;
         }
         if (AbstractOp::IF == (*this).op) {
             return false;
@@ -3114,6 +3156,40 @@ namespace rebgn {
                 union_variant_15 = union_struct_106();
             }
             std::get<91>((*this).union_variant_15).belong = v;
+            return true;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            if (!std::holds_alternative<union_struct_116>(union_variant_15)) {
+                union_variant_15 = union_struct_116();
+            }
+            std::get<101>((*this).union_variant_15).belong = v;
             return true;
         }
         return false;
@@ -3333,7 +3409,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::ASSERT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_79>(union_variant_15)) {
+                union_variant_15 = union_struct_79();
+            }
+            std::get<64>((*this).union_variant_15).belong = std::move(v);
+            return true;
         }
         if (AbstractOp::IF == (*this).op) {
             return false;
@@ -3446,6 +3526,40 @@ namespace rebgn {
                 union_variant_15 = union_struct_106();
             }
             std::get<91>((*this).union_variant_15).belong = std::move(v);
+            return true;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            if (!std::holds_alternative<union_struct_116>(union_variant_15)) {
+                union_variant_15 = union_struct_116();
+            }
+            std::get<101>((*this).union_variant_15).belong = std::move(v);
             return true;
         }
         return false;
@@ -20806,6 +20920,9 @@ namespace rebgn {
             if (auto err = std::get<64>((*this).union_variant_15).ref.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<64>((*this).union_variant_15).belong.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::IF == (*this).op) {
             if (!std::holds_alternative<union_struct_80>(union_variant_15)) {
@@ -21189,6 +21306,9 @@ namespace rebgn {
                 return ::futils::error::Error<>("encode: Code: union_variant_15 variant alternative union_struct_116 is not set", ::futils::error::Category::lib);
             }
             if (auto err = std::get<101>((*this).union_variant_15).param.encode(w)) {
+                return err;
+            }
+            if (auto err = std::get<101>((*this).union_variant_15).belong.encode(w)) {
                 return err;
             }
         }
@@ -22021,6 +22141,9 @@ namespace rebgn {
             if (auto err = std::get<64>((*this).union_variant_15).ref.decode(r)) {
                 return err;
             }
+            if (auto err = std::get<64>((*this).union_variant_15).belong.decode(r)) {
+                return err;
+            }
         }
         else if (AbstractOp::IF == (*this).op) {
             if (!std::holds_alternative<union_struct_80>(union_variant_15)) {
@@ -22409,6 +22532,9 @@ namespace rebgn {
                 union_variant_15 = union_struct_116();
             }
             if (auto err = std::get<101>((*this).union_variant_15).param.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<101>((*this).union_variant_15).belong.decode(r)) {
                 return err;
             }
         }

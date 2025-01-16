@@ -209,6 +209,7 @@ enum AbstractOp:
     UNARY
     ASSIGN
     PROPERTY_ASSIGN
+
     ASSERT
     EXPLICIT_ERROR
 
@@ -603,7 +604,8 @@ format Code:
             left_ref :Varint # ref to recursive struct(format)
             right_ref :Varint # ref to object
         AbstractOp.ASSERT:
-            ref :Varint
+            ref :Varint # ref to condition expr
+            belong :Varint # belong to function
         AbstractOp.IF:
             ref :Varint
         AbstractOp.ELIF:
@@ -690,7 +692,7 @@ format Code:
             decode_flags :DecodeParamFlags
         AbstractOp.PROPERTY_INPUT_PARAMETER:
             ident :Varint
-            left_ref :Varint # ref to merged conditional field
+            left_ref :Varint # ref to merged conditional field(for union) or field (for dynamic array)
             right_ref :Varint # ref to function
             storage :Storages
         AbstractOp.PROPERTY_FUNCTION:
@@ -705,7 +707,8 @@ format Code:
         AbstractOp.STATE_VARIABLE_PARAMETER:
             ref :Varint # ref to state
         AbstractOp.EXPLICIT_ERROR:
-            param :Param
+            param :Param # ref to error messages
+            belong :Varint # belong to function
         AbstractOp.CALL:
             ident :Varint
             ref :Varint # ref to function

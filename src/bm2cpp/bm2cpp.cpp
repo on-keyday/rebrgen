@@ -1399,16 +1399,23 @@ namespace bm2cpp {
         for (auto& sr : bm.strings.refs) {
             ctx.string_table[sr.code.value()] = sr.string.data;
         }
-        for (auto& ir : bm.identifiers.refs) {
-            ctx.ident_table[ir.code.value()] = escape_cpp_keyword(ir.string.data);
-        }
         for (auto& id : bm.ident_indexes.refs) {
             ctx.ident_index_table[id.ident.value()] = id.index.value();
         }
-
         for (auto& id : bm.ident_ranges.ranges) {
             ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
             auto& code = bm.code[id.range.start.value()];
+        }
+        for (auto& ir : bm.identifiers.refs) {
+            if (auto range = ctx.ident_range_table.find(ir.code.value()); range != ctx.ident_range_table.end()) {
+                if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::PROPERTY_FUNCTION)) {
+                    if (ctx.bm.code[*f].func_type() == rebgn::PropertyFunctionType::VECTOR_SETTER) {
+                        ctx.ident_table[ir.code.value()] = std::format("set_{}", escape_cpp_keyword(ir.string.data));
+                        continue;
+                    }
+                }
+            }
+            ctx.ident_table[ir.code.value()] = escape_cpp_keyword(ir.string.data);
         }
         bool has_union = false;
         bool has_vector = false;

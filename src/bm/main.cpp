@@ -139,6 +139,9 @@ namespace rebgn {
             if (auto m = c.check_at()) {
                 cout << " " << to_string(*m);
             }
+            if (auto m = c.func_type()) {
+                cout << " " << to_string(*m);
+            }
             if (auto bit_size = c.bit_size()) {
                 cout << " " << bit_size->value() << "bit";
             }

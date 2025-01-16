@@ -77,16 +77,23 @@ namespace rebgn {
 
         // internal
         bool on_encode_fn = false;
-        bool on_function = false;
+        std::optional<Varint> on_function;
         Endian global_endian = Endian::big;  // default to big endian
         Endian local_endian = Endian::unspec;
         ObjectID current_dynamic_endian = null_id;
 
-        auto enter_function() {
-            on_function = true;
+        Varint get_function() const {
+            if (on_function) {
+                return *on_function;
+            }
+            return *varint(null_id);
+        }
+
+        auto enter_function(Varint id) {
+            on_function = id;
             local_endian = global_endian;
             current_dynamic_endian = null_id;
-            return futils::helper::defer([&] { on_function = false; });
+            return futils::helper::defer([&] { on_function = std::nullopt; });
         }
 
         expected<EndianExpr> get_endian(Endian base) {

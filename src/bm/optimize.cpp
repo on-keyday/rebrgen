@@ -1441,7 +1441,7 @@ namespace rebgn {
         return false;
     }
 
-    Error add_array_length_setter(Module& m, ast::Field* field_ptr, auto&& op) {
+    Error add_array_length_setter(Module& m, ast::Field* field_ptr, Varint array_ref, Varint function, auto&& op) {
         auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
         if (!array) {
             return error("Invalid field type");
@@ -1450,8 +1450,8 @@ namespace rebgn {
         if (!id) {
             return id.error();
         }
-        auto bit_size = f->field_type->bit_size;
-        if (auto u = ast::as<ast::UnionType>(f->field_type); u && u->common_type) {
+        auto bit_size = array->length->expr_type->bit_size;
+        if (auto u = ast::as<ast::UnionType>(array->length->expr_type); u && u->common_type) {
             bit_size = u->common_type->bit_size;
         }
         if (!bit_size) {
@@ -1477,13 +1477,13 @@ namespace rebgn {
         }
         op(AbstractOp::ARRAY_SIZE, [&](Code& m) {
             m.ident(*length_id);
-            m.ref(*id);
+            m.ref(array_ref);
         });
         auto cmp_id = m.new_id(nullptr);
         if (!cmp_id) {
             return cmp_id.error();
         }
-        op(AbstractOp::BINARY, [](Code& m) {
+        op(AbstractOp::BINARY, [&](Code& m) {
             m.ident(*cmp_id);
             m.left_ref(*length_id);
             m.right_ref(*value_id);
@@ -1491,6 +1491,7 @@ namespace rebgn {
         });
         op(AbstractOp::ASSERT, [&](Code& m) {
             m.ref(*cmp_id);
+            m.belong(function);
         });
         auto dst = Storages{.length = *varint(1), .storages = {Storage{.type = StorageType::UINT}}};
         auto src = dst;
@@ -1501,9 +1502,22 @@ namespace rebgn {
             m.left_ref(*id);
             m.right_ref(*length_id);
         });
+        return none;
     }
 
-    Error derive_function(Module& m, Code& base, std::vector<Code>& funcs, std::unordered_map<ObjectID, std::pair<Varint, Varint>>& merged_fields) {
+    expected<ast::Field*> get_field(Module& m, ObjectID id) {
+        auto base = m.ident_table_rev.find(id);
+        if (base == m.ident_table_rev.end()) {
+            return unexpect_error("Invalid ident");
+        }
+        auto field_ptr = ast::as<ast::Field>(base->second->base.lock());
+        if (!field_ptr) {
+            return unexpect_error("Invalid field");
+        }
+        return field_ptr;
+    }
+
+    Error derive_property_getter_setter(Module& m, Code& base, std::vector<Code>& funcs, std::unordered_map<ObjectID, std::pair<Varint, Varint>>& merged_fields) {
         auto op = [&](AbstractOp op, auto&& set) {
             funcs.push_back(make_code(op, set));
         };
@@ -1609,6 +1623,7 @@ namespace rebgn {
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
             n.ref(merged_ident);
+            n.func_type(PropertyFunctionType::UNION_GETTER);
         });
         auto ret_empty = [&]() {
             auto empty_ident = m.new_id(nullptr);
@@ -1706,6 +1721,7 @@ namespace rebgn {
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
             n.ref(merged_ident);
+            n.func_type(PropertyFunctionType::UNION_SETTER);
         });
         auto bool_ident = m.new_id(nullptr);
         if (!bool_ident) {
@@ -1740,21 +1756,17 @@ namespace rebgn {
                 if (!ident) {
                     return ident.error();
                 }
-                auto base = m.ident_table_rev.find(expr_ref.value());
-                if (base == m.ident_table_rev.end()) {
-                    return error("Invalid ident");
-                }
-                auto field_ptr = ast::as<ast::Field>(base->second->base.lock());
+                auto field_ptr = get_field(m, expr_ref.value());
                 if (!field_ptr) {
-                    return error("Invalid field");
+                    return field_ptr.error();
                 }
                 Storages storage;
-                auto err = define_storage(m, storage, field_ptr->field_type);
+                auto err = define_storage(m, storage, (*field_ptr)->field_type);
                 if (err) {
                     return err;
                 }
-                if (can_set_array_length(field_ptr)) {
-                    auto err = add_array_length_setter(m, field_ptr, op);
+                if (can_set_array_length(*field_ptr)) {
+                    auto err = add_array_length_setter(m, *field_ptr, expr_ref, setter_ident, op);
                     if (err) {
                         return err;
                     }
@@ -1787,15 +1799,103 @@ namespace rebgn {
         return none;
     }
 
-    Error derive_function_from_merged_fields(Module& m) {
+    Error derive_set_array_function(Module& m, Varint setter_ident, ObjectID ident, ast::Field* field_ptr, auto&& op) {
+        auto belong = m.code[m.ident_index_table[ident]].belong().value();
+        Storages originalType;
+        auto err = define_storage(m, originalType, field_ptr->field_type);
+        if (err) {
+            return err;
+        }
+        op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
+            n.ident(setter_ident);
+            n.belong(belong);
+        });
+        auto prop = m.new_id(nullptr);
+        if (!prop) {
+            return prop.error();
+        }
+        auto ident_ref = varint(ident);
+        if (!ident_ref) {
+            return ident_ref.error();
+        }
+        op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& n) {
+            n.ident(*prop);
+            n.left_ref(*ident_ref);
+            n.right_ref(setter_ident);
+            n.storage(originalType);
+        });
+        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+            n.storage(Storages{
+                .length = *varint(1),
+                .storages = {Storage{.type = StorageType::PROPERTY_SETTER_RETURN}},
+            });
+        });
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
+            n.ref(*varint(ident));
+            n.func_type(PropertyFunctionType::VECTOR_SETTER);
+        });
+        err = add_array_length_setter(m, field_ptr, *ident_ref, setter_ident, op);
+        if (err) {
+            return err;
+        }
+        op(AbstractOp::ASSIGN, [&](Code& m) {
+            m.left_ref(*ident_ref);
+            m.right_ref(*prop);
+        });
+        op(AbstractOp::RET_PROPERTY_SETTER_OK, [&](Code& m) {
+            m.belong(setter_ident);
+        });
+        op(AbstractOp::END_FUNCTION, [&](Code& m) {});
+        return none;
+    }
+
+    // derive union property getter and setter
+    // also derive dynamic array setter if simple array length
+    Error derive_property_functions(Module& m) {
         std::vector<Code> funcs;
         auto op = [&](AbstractOp o, auto&& set) {
             funcs.push_back(make_code(o, set));
         };
         std::unordered_map<ObjectID, std::pair<Varint, Varint>> merged_fields;
-        std::map<ObjectID, ObjectID> properties_to_merged;
+        std::unordered_map<ObjectID, ObjectID> properties_to_merged;
+        std::unordered_map<ObjectID, std::pair<ast::Field*, Varint>> set_array_length;
         for (auto& c : m.code) {
-            if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
+            if (c.op == AbstractOp::DEFINE_FIELD) {
+                auto belong = c.belong().value().value();
+                if (belong == 0) {
+                    continue;
+                }
+                auto belong_idx = m.ident_index_table.find(belong);
+                if (belong_idx == m.ident_index_table.end()) {
+                    return error("Invalid belong");
+                }
+                if (m.code[belong_idx->second].op != AbstractOp::DEFINE_FORMAT) {
+                    continue;
+                }
+                auto field_ptr = get_field(m, c.ident().value().value());
+                if (!field_ptr) {
+                    continue;  // best effort
+                }
+                if (can_set_array_length(*field_ptr)) {
+                    expected<Varint> func_ident;
+                    if (!(*field_ptr)->ident) {
+                        func_ident = m.new_id(&(*field_ptr)->loc);
+                        if (!func_ident) {
+                            return func_ident.error();
+                        }
+                    }
+                    else {
+                        auto temporary_setter_ident = std::make_shared<ast::Ident>((*field_ptr)->loc, (*field_ptr)->ident->ident);
+                        temporary_setter_ident->base = (*field_ptr)->ident->base;
+                        func_ident = m.lookup_ident(temporary_setter_ident);
+                        if (!func_ident) {
+                            return func_ident.error();
+                        }
+                    }
+                    set_array_length.emplace(c.ident()->value(), std::make_pair(*field_ptr, *func_ident));
+                }
+            }
+            else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
                 auto belong = c.belong().value();
                 auto mode = c.merge_mode().value();
                 auto merged_ident = c.ident().value();
@@ -1838,9 +1938,19 @@ namespace rebgn {
                 }
             }
             else if (c.op == AbstractOp::MERGED_CONDITIONAL_FIELD) {
-                auto err = derive_function(m, c, funcs, merged_fields);
+                auto err = derive_property_getter_setter(m, c, funcs, merged_fields);
                 if (err) {
                     return err;
+                }
+            }
+            else if (c.op == AbstractOp::DEFINE_FIELD) {
+                auto ident = c.ident().value();
+                if (auto found = set_array_length.find(ident.value());
+                    found != set_array_length.end()) {
+                    auto err = derive_set_array_function(m, found->second.second, ident.value(), found->second.first, op);
+                    if (err) {
+                        return err;
+                    }
                 }
             }
         }
@@ -1861,6 +1971,17 @@ namespace rebgn {
                     }));
                 }
                 continue;
+            }
+            else if (c.op == AbstractOp::DECLARE_FIELD) {
+                auto ident = c.ref().value();
+                if (auto found = set_array_length.find(ident.value());
+                    found != set_array_length.end()) {
+                    rebound.push_back(std::move(c));
+                    rebound.push_back(make_code(AbstractOp::DECLARE_FUNCTION, [&](auto& c) {
+                        c.ref(found->second.second);
+                    }));
+                    continue;
+                }
             }
             rebound.push_back(std::move(c));
         }
@@ -2051,7 +2172,7 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
-        err = derive_function_from_merged_fields(m);
+        err = derive_property_functions(m);
         if (err) {
             return err;
         }

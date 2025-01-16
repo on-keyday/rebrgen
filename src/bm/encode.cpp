@@ -346,6 +346,7 @@ namespace rebgn {
                 });
                 m.op(AbstractOp::ASSERT, [&](Code& c) {
                     c.ref(*cmp);
+                    c.belong(m.get_function());
                 });
                 return none;
             });
@@ -476,6 +477,7 @@ namespace rebgn {
                             });
                             m.op(AbstractOp::ASSERT, [&](Code& c) {
                                 c.ref(*assert_expr);
+                                c.belong(m.get_function());
                             });
                             auto endian = m.get_endian(Endian(elem_is_int->endian));
                             if (!endian) {
@@ -850,9 +852,8 @@ namespace rebgn {
                 },
             });
         });
-        m.on_encode_fn = true;
         m.init_phi_stack(0);  // make it temporary
-        auto f = m.enter_function();
+        auto f = m.enter_function(*new_id);
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {
@@ -927,7 +928,7 @@ namespace rebgn {
         });
         m.on_encode_fn = false;
         m.init_phi_stack(0);  // make it temporary
-        auto f = m.enter_function();
+        auto f = m.enter_function(*new_id);
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             if (auto found = m.bit_field_begin.find(n);
                 found != m.bit_field_begin.end()) {

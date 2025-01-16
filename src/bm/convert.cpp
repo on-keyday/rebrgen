@@ -911,6 +911,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::ASSERT, [&](Code& c) {
             c.ref(*cond);
+            c.belong(m.get_function());
         });
         return none;
     }
@@ -932,6 +933,7 @@ namespace rebgn {
         param.len_exprs = *len;
         m.op(AbstractOp::EXPLICIT_ERROR, [&](Code& c) {
             c.param(std::move(param));
+            c.belong(m.get_function());
         });
         return none;
     }
@@ -1109,7 +1111,7 @@ namespace rebgn {
             m.op(AbstractOp::END_PARAMETER);
         }
         m.init_phi_stack(0);  // temporary
-        auto old = m.enter_function();
+        auto old = m.enter_function(*ident);
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {
             return convert_node_definition(m, n);
         });

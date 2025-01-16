@@ -345,7 +345,7 @@ namespace rebgn {
                 if (!arg) {
                     return arg.error();
                 }
-                auto err = encode_type(m, node->arguments[0]->expr_type, *arg, nullptr, false);
+                auto err = encode_type(m, node->arguments[0]->expr_type, *arg, nullptr, nullptr, false);
                 if (err) {
                     return err;
                 }
@@ -974,6 +974,11 @@ namespace rebgn {
 
     template <>
     Error define<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
+        if (!node->ident) {
+            auto temporary_name = std::make_shared<ast::Ident>(node->loc, std::format("field{}", m.object_id));
+            temporary_name->base = node;
+            node->ident = temporary_name;
+        }
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();

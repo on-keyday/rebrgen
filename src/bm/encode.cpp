@@ -4,7 +4,14 @@
 #include <core/ast/tool/eval.h>
 
 namespace rebgn {
-    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, bool should_init_recursive) {
+    Varint get_field_ref(Module& m, ast::Field* field) {
+        if (!field) {
+            return *varint(null_id);
+        }
+        return *m.lookup_ident(field->ident);
+    }
+
+    Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             auto bit_size = varint(*int_ty->bit_size);
             if (!bit_size) {
@@ -18,6 +25,7 @@ namespace rebgn {
                 c.ref(base_ref);
                 c.endian(*endian);
                 c.bit_size(*bit_size);
+                c.belong(get_field_ref(m, field));
             });
             return none;
         }
@@ -48,6 +56,7 @@ namespace rebgn {
                 c.ref(*new_id);
                 c.endian(*endian);
                 c.bit_size(*bit_size);
+                c.belong(get_field_ref(m, field));
             });
             return none;
         }
@@ -75,6 +84,7 @@ namespace rebgn {
                     c.ref(*index);
                     c.endian(*endian);
                     c.bit_size(*varint(8));
+                    c.belong(get_field_ref(m, field));
                 });
                 return none;
             });
@@ -97,6 +107,7 @@ namespace rebgn {
                         c.right_ref(*imm);
                         c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
+                        c.belong(get_field_ref(m, field));
                     });
                     return none;
                 }
@@ -110,7 +121,7 @@ namespace rebgn {
                         c.left_ref(base_ref);
                         c.right_ref(i);
                     });
-                    return encode_type(m, arr->element_type, *index, mapped_type, should_init_recursive);
+                    return encode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
                 });
             }
             expected<Varint> len_;
@@ -144,6 +155,7 @@ namespace rebgn {
                     c.right_ref(*len_);
                     c.endian(*endian);
                     c.bit_size(*varint(*elem_is_int->bit_size));
+                    c.belong(get_field_ref(m, field));
                 });
                 return none;
             }
@@ -157,7 +169,7 @@ namespace rebgn {
                     c.left_ref(base_ref);
                     c.right_ref(counter);
                 });
-                auto err = encode_type(m, arr->element_type, *index, mapped_type, false);
+                auto err = encode_type(m, arr->element_type, *index, mapped_type, field, false);
                 if (err) {
                     return err;
                 }
@@ -225,7 +237,7 @@ namespace rebgn {
                 c.storage(std::move(to));
                 c.ref(base_ref);
             });
-            err = encode_type(m, base_type, *casted, mapped_type, should_init_recursive);
+            err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -236,7 +248,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return encode_type(m, base_type, base_ref, mapped_type, should_init_recursive);
+            return encode_type(m, base_type, base_ref, mapped_type, field, should_init_recursive);
         }
         return error("unsupported type on encode type: {}", node_type_to_string(typ->node_type));
     }
@@ -251,6 +263,7 @@ namespace rebgn {
                 c.ref(base_ref);
                 c.endian(*endian);
                 c.bit_size(*varint(*int_ty->bit_size));
+                c.belong(get_field_ref(m, field));
             });
             return none;
         }
@@ -280,6 +293,7 @@ namespace rebgn {
                 c.ref(*new_id);
                 c.endian(*endian);
                 c.bit_size(*varint(*float_ty->bit_size));
+                c.belong(get_field_ref(m, field));
             });
             auto next_id = m.new_id(nullptr);
             if (!next_id) {
@@ -324,6 +338,7 @@ namespace rebgn {
                     c.ref(*tmp_var);
                     c.endian(*endian);
                     c.bit_size(*varint(8));
+                    c.belong(get_field_ref(m, field));
                 });
                 auto index = m.new_id(nullptr);
                 if (!index) {
@@ -369,6 +384,7 @@ namespace rebgn {
                         c.right_ref(*imm);
                         c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
+                        c.belong(get_field_ref(m, field));
                     });
                     return none;
                 }
@@ -426,6 +442,7 @@ namespace rebgn {
                                 c.ref(base_ref);
                                 c.endian(*endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
+                                c.belong(get_field_ref(m, field));
                             });
                             return none;
                         }
@@ -488,6 +505,7 @@ namespace rebgn {
                                 c.right_ref(*new_id);
                                 c.endian(*endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
+                                c.belong(get_field_ref(m, field));
                             });
                             return none;
                         }
@@ -645,6 +663,7 @@ namespace rebgn {
                         c.right_ref(*len_ident);
                         c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
+                        c.belong(get_field_ref(m, field));
                     });
                     return none;
                 }
@@ -767,14 +786,15 @@ namespace rebgn {
             }
             m.op(AbstractOp::BEGIN_ENCODE_SUB_RANGE, [&](Code& c) {
                 c.ref(*len);
+                c.belong(*ident);
             });
         }
         Error err;
         if (node->arguments && node->arguments->type_map) {
-            err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, true);
+            err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get(), true);
         }
         else {
-            err = encode_type(m, node->field_type, *ident, nullptr, true);
+            err = encode_type(m, node->field_type, *ident, nullptr, node.get(), true);
         }
         if (err) {
             return err;
@@ -801,6 +821,7 @@ namespace rebgn {
             }
             m.op(AbstractOp::BEGIN_DECODE_SUB_RANGE, [&](Code& c) {
                 c.ref(*len);
+                c.belong(*ident);
             });
         }
         Error err;

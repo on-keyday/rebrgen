@@ -1658,10 +1658,10 @@ namespace bm2rust {
                 }
                 case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE: {
                     auto ref = code.ref().value().value();
+                    auto belong_name = ctx.ident_table[code.belong().value().value()];
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp_array = std::format("tmp_array{}", ref);
-                    w.writeln("let mut ", tmp_array, " :Vec<u8> = Vec::with_capacity(", len.back(), " as usize);");
-                    w.writeln(tmp_array, ".resize(", len.back(), " as usize,0);");
+                    w.writeln("let mut ", tmp_array, " :Vec<u8> = vec![0; ", len.back(), " as usize];");
                     w.writeln(ctx.r(), ".read_exact(&mut ", tmp_array, ")?;");
                     auto tmp_cursor = std::format("cursor{}", ref);
                     w.writeln("let mut ", tmp_cursor, " = std::io::Cursor::new(&", tmp_array, ");");
@@ -1671,7 +1671,7 @@ namespace bm2rust {
                         ctx.current_r.pop_back();
                         w.writeln("if ", tmp_cursor, ".position() != ", len.back(), " as u64 {");
                         auto scope = w.indent_scope();
-                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"", tmp_cursor, "\",", len.back(), " as usize,", tmp_cursor, ".position() as usize));");
+                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"", belong_name, "\",", len.back(), " as usize,", tmp_cursor, ".position() as usize));");
                         scope.execute();
                         w.writeln("}");
                     }));

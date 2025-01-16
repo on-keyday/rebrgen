@@ -1428,17 +1428,53 @@ namespace rebgn {
         return none;
     }
 
-    bool can_set_array_length(ast::Field* field_ptr) {
-        if (auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
-            array && array->length && !array->length_value) {
-            if (auto ident = ast::as<ast::Ident>(array->length)) {
-                auto [base, _] = *ast::tool::lookup_base(ast::cast_to<ast::Ident>(array->length));
-                if (auto f = ast::as<ast::Field>(base->base.lock())) {
-                    return true;
-                }
+    bool can_set_ident(const std::shared_ptr<ast::Node>& node) {
+        if (auto ident = ast::as<ast::Ident>(node); ident) {
+            auto [base, _] = *ast::tool::lookup_base(ast::cast_to<ast::Ident>(node));
+            if (auto f = ast::as<ast::Field>(base->base.lock())) {
+                return true;
             }
         }
+        else if (auto member = ast::as<ast::MemberAccess>(node); member) {
+            return can_set_ident(member->target);
+        }
         return false;
+    }
+
+    bool can_set_array_length(ast::Field* field_ptr) {
+        if (auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
+            array && array->length && !array->length_value && can_set_ident(array->length) &&
+            !ast::as<ast::UnionType>(array->length->expr_type)) { /*TODO(on-keyday): support union*/
+            return true;
+        }
+        return false;
+    }
+
+    expected<Varint> access_array_length(Module& m, const std::shared_ptr<ast::Node>& len, auto&& op) {
+        if (auto ident = ast::as<ast::Ident>(len); ident) {
+            return m.lookup_ident(ast::cast_to<ast::Ident>(len));
+        }
+        else if (auto member = ast::as<ast::MemberAccess>(len); member) {
+            auto target = access_array_length(m, member->target, op);
+            if (!target) {
+                return target;
+            }
+            auto member_id = m.lookup_ident(member->member);
+            if (!member_id) {
+                return member_id;
+            }
+            auto id = m.new_node_id(len);
+            if (!id) {
+                return id;
+            }
+            op(AbstractOp::ACCESS, [&](Code& m) {
+                m.ident(*id);
+                m.left_ref(*target);
+                m.right_ref(*member_id);
+            });
+            return *id;
+        }
+        return unexpect_error("Invalid node");
     }
 
     Error add_array_length_setter(Module& m, ast::Field* field_ptr, Varint array_ref, Varint function, auto&& op) {
@@ -1446,7 +1482,7 @@ namespace rebgn {
         if (!array) {
             return error("Invalid field type");
         }
-        auto id = m.lookup_ident(ast::cast_to<ast::Ident>(array->length));
+        auto id = access_array_length(m, array->length, op);
         if (!id) {
             return id.error();
         }

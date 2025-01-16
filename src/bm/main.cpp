@@ -32,7 +32,7 @@ namespace rebgn {
             cout << "metadata " << metadata << " " << id << '\n';
         }
         for (auto& [str, id] : m.string_table) {
-            cout << "string " << str << " " << id << '\n';
+            cout << "string \"" << futils::escape::escape_str<std::string>(str, futils::escape::EscapeFlag::hex) << "\" " << id << '\n';
         }
         for (auto& [id, num] : m.ident_table) {
             cout << "ident " << id->ident << " " << num;

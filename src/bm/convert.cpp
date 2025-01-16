@@ -1200,6 +1200,11 @@ namespace rebgn {
                     std::string ident_concat = "bit_field";
                     for (auto& bf : bit_fields) {
                         ident_concat += "_";
+                        if (!bf->ident) {
+                            bf->ident = std::make_shared<ast::Ident>(bf->loc, std::format("field{}", m.object_id));
+                            bf->ident->base = bf;
+                            m.lookup_ident(bf->ident);  // register
+                        }
                         ident_concat += bf->ident->ident;
                     }
                     auto temporary_name = std::make_shared<ast::Ident>(node->loc, ident_concat);

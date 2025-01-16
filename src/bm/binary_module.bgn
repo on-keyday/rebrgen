@@ -664,11 +664,11 @@ format Code:
             right_ref :Varint # ref to object
         AbstractOp.BEGIN_ENCODE_PACKED_OPERATION:
             ident :Varint
-            ref :Varint # ref to bit field
+            belong :Varint # ref to bit field
             packed_op_type :PackedOpType
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
-            ref :Varint # ref to bit field
+            belong :Varint # ref to bit field
             packed_op_type :PackedOpType
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
@@ -737,6 +737,7 @@ format Code:
             belong :Varint # related field
         AbstractOp.CAN_READ:
             ident :Varint
+            belong :Varint # related field
         AbstractOp.REMAIN_BYTES:
             ident :Varint
 

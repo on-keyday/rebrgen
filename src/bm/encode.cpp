@@ -452,6 +452,7 @@ namespace rebgn {
                         }
                         m.op(AbstractOp::CAN_READ, [&](Code& c) {
                             c.ident(*new_id);
+                            c.belong(get_field_ref(m, field));
                         });
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
@@ -885,7 +886,7 @@ namespace rebgn {
                 auto typ = m.bit_field_variability[n];
                 m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
-                    c.ref(found->second);
+                    c.belong(found->second);
                     c.packed_op_type(typ);
                 });
             }
@@ -960,7 +961,7 @@ namespace rebgn {
                 auto typ = m.bit_field_variability[n];
                 m.op(AbstractOp::BEGIN_DECODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
-                    c.ref(found->second);
+                    c.belong(found->second);
                     c.packed_op_type(typ);
                 });
             }

@@ -4,6 +4,7 @@
 #include <format>
 #include <set>
 #include "helper.hpp"
+#include <fnet/util/base64.h>
 namespace rebgn {
 
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n) {
@@ -387,7 +388,11 @@ namespace rebgn {
     }
 
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node) {
-        auto str_ref = m.lookup_string(node->value, &node->loc);
+        std::string candidate;
+        if (!futils::base64::decode(node->base64_value, candidate)) {
+            return unexpect_error("Invalid base64 string: {}", node->base64_value);
+        }
+        auto str_ref = m.lookup_string(candidate, &node->loc);
         if (!str_ref) {
             return str_ref.transform([](auto&& v) { return v.first; });
         }
@@ -1192,9 +1197,16 @@ namespace rebgn {
                             break;
                         }
                     }
+                    std::string ident_concat = "bit_field";
+                    for (auto& bf : bit_fields) {
+                        ident_concat += "_";
+                        ident_concat += bf->ident->ident;
+                    }
+                    auto temporary_name = std::make_shared<ast::Ident>(node->loc, ident_concat);
+                    temporary_name->base = node;
                     auto begin_field = std::move(bit_fields.front());
                     auto end_field = std::move(bit_fields.back());
-                    auto id = m.new_id(nullptr);
+                    auto id = m.lookup_ident(temporary_name);
                     if (!id) {
                         return id.error();
                     }

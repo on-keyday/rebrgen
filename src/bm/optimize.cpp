@@ -1497,10 +1497,16 @@ namespace rebgn {
         auto src = dst;
         dst.storages[0].size(*varint(*bit_size));
         src.storages[0].size(*varint(*bit_size + 1));  // to force insert cast
-        add_assign_cast(m, op, &dst, &src, *length_id, false);
+        auto cast = add_assign_cast(m, op, &dst, &src, *length_id, false);
+        if (!cast) {
+            return cast.error();
+        }
+        if (!*cast) {
+            return error("Failed to add cast");
+        }
         op(AbstractOp::ASSIGN, [&](Code& m) {
             m.left_ref(*id);
-            m.right_ref(*length_id);
+            m.right_ref(**cast);
         });
         return none;
     }

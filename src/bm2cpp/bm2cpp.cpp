@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <unicode/utf/convert.h>
 #include <span>
+#include <escape/escape.h>
 
 namespace bm2cpp {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -459,7 +460,11 @@ namespace bm2cpp {
                 break;
             case rebgn::AbstractOp::IMMEDIATE_STRING: {
                 auto str = ctx.string_table[code.ident().value().value()];
-                res.push_back(std::format("{}", str));
+                res.push_back(std::format("\"{}\"", futils::escape::escape_str<std::string>(
+                                                        str,
+                                                        futils::escape::EscapeFlag::hex,
+                                                        futils::escape::no_escape_set(),
+                                                        futils::escape::escape_all())));
                 break;
             }
             case rebgn::AbstractOp::BINARY: {
@@ -925,7 +930,7 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = true;
-                    auto bit_field = ctx.ident_range_table[code.ref().value().value()];
+                    auto bit_field = ctx.ident_range_table[code.belong().value().value()];
                     auto typ = find_op(ctx, bit_field, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
                     if (!typ) {
                         ctx.cw.writeln("/* Unimplemented bit field */");

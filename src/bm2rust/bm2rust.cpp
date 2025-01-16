@@ -64,19 +64,23 @@ namespace bm2rust {
         }
     };
 
-    std ::string get_uint(size_t bit_size) {
+    std::uint64_t get_uint_size(size_t bit_size) {
         if (bit_size <= 8) {
-            return "u8";
+            return 8;
         }
         else if (bit_size <= 16) {
-            return "u16";
+            return 16;
         }
         else if (bit_size <= 32) {
-            return "u32";
+            return 32;
         }
         else {
-            return "u64";
+            return 64;
         }
+    }
+
+    std ::string get_uint(size_t bit_size) {
+        return std::format("u{}", get_uint_size(bit_size));
     }
 
     constexpr auto rust_impl_Default_threshold = 32;
@@ -1209,7 +1213,17 @@ namespace bm2rust {
     }
 
     void serialize(Context& ctx, TmpCodeWriter& w, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
-        w.writeln("w.write_all(&", target, ".to_be_bytes()).map_err(|e| Error::IOError(\"", loc, "\",e))?;");
+        if (bit_size == 8 || bit_size == 16 || bit_size == 32 || bit_size == 64) {
+            w.writeln("w.write_all(&", target, ".to_be_bytes()).map_err(|e| Error::IOError(\"", loc, "\",e))?;");
+        }
+        else {
+            auto target_size = get_uint_size(bit_size) / 8;
+            auto byte_size = bit_size / 8;
+            auto tmp = std::format("tmp_se{}", bit_size);
+            w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
+            w.writeln(tmp, ".copy_from_slice(&", target, ".to_be_bytes()[", std::format("{}", target_size - byte_size), "..]);");
+            w.writeln("w.write_all(&", tmp, ").map_err(|e| Error::IOError(\"", loc, "\",e))?;");
+        }
     }
 
     void deserialize(Context& ctx, TmpCodeWriter& w, size_t id, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {

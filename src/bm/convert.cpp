@@ -1328,6 +1328,7 @@ namespace rebgn {
             c.uop(uop);
             c.ref(*target);
         });
+        m.set_prev_expr(ident->value());
         return none;
     }
 

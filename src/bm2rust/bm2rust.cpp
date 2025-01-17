@@ -610,15 +610,21 @@ namespace bm2rust {
                 break;
             }
             case rebgn::AbstractOp::CALL_CAST: {
-                auto type_str = type_to_string(ctx, *code.storage());
+                auto storage = *code.storage();
+                auto type_str = type_to_string(ctx, storage);
                 auto param = code.param().value();
                 if (param.expr_refs.size() == 0) {
                     res.push_back(std::format("({}::default())", type_str));
                     break;
                 }
                 else if (param.expr_refs.size() == 1) {
-                    auto eval_arg = eval(ctx.bm.code[ctx.ident_index_table[param.expr_refs[0].value()]], ctx);
-                    res.push_back(std::format("({} as {})", eval_arg.back(), type_str));
+                    auto eval_arg = eval(ctx.bm.code[ctx.ident_index_table[param.expr_refs[0].value()]], ctx).back();
+                    if (storage.storages[0].type == rebgn::StorageType::ENUM) {
+                        res.push_back(std::format("unsafe {{ std::mem::transmute::<_,{}>({}) }}", type_str, eval_arg));
+                    }
+                    else {
+                        res.push_back(std::format("({} as {})", eval_arg, type_str));
+                    }
                 }
                 else {
                     std::string arg_call;
@@ -809,6 +815,9 @@ namespace bm2rust {
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);
                 auto uop = to_string(code.uop().value());
+                if (code.uop().value() == rebgn::UnaryOp::bit_not) {
+                    uop = "!";  // rust does not have bit_not(~)
+                }
                 res.push_back(std::format("({}{})", uop, ref.back()));
                 break;
             }
@@ -1888,7 +1897,8 @@ namespace bm2rust {
             keyword == "while" ||
             keyword == "async" ||
             keyword == "await" ||
-            keyword == "dyn") {
+            keyword == "dyn" ||
+            keyword == "override") {
             return std::format("{}_", keyword);
         }
         return keyword;
@@ -2053,7 +2063,7 @@ namespace bm2rust {
                         if (base_type.size() > 0) {
                             ctx.cw.writeln("#[repr(", base_type, ")]");
                         }
-                        ctx.cw.write("enum ", ident);
+                        ctx.cw.write("pub enum ", ident);
                         ctx.cw.writeln(" {");
                         auto d = ctx.cw.indent_scope();
                         ctx.cw.write_unformatted(tmp.out());

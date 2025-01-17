@@ -771,6 +771,54 @@ namespace rebgn {
         return error("unsupported type on decode type: {}", node_type_to_string(typ->node_type));
     }
 
+    Error do_field_argument_assert(Module& m, Varint ident, std::shared_ptr<ast::Field>& node) {
+        if (node->arguments && node->arguments->arguments.size()) {
+            switch (node->arguments->argument_mapping) {
+                case ast::FieldArgumentMapping::direct: {
+                    std::optional<Varint> prev;
+                    for (auto& arg : node->arguments->arguments) {
+                        auto val = get_expr(m, arg);
+                        if (!val) {
+                            return val.error();
+                        }
+                        auto new_id = m.new_id(nullptr);
+                        if (!new_id) {
+                            return error("Failed to generate new id");
+                        }
+                        m.op(AbstractOp::BINARY, [&](Code& c) {
+                            c.ident(*new_id);
+                            c.bop(BinaryOp::equal);
+                            c.left_ref(ident);
+                            c.right_ref(*val);
+                        });
+                        if (prev) {
+                            auto or_id = m.new_id(nullptr);
+                            if (!or_id) {
+                                return error("Failed to generate new id");
+                            }
+                            m.op(AbstractOp::BINARY, [&](Code& c) {
+                                c.ident(*or_id);
+                                c.bop(BinaryOp::logical_or);
+                                c.left_ref(*new_id);
+                                c.right_ref(*prev);
+                            });
+                            prev = *or_id;
+                        }
+                        else {
+                            prev = *new_id;
+                        }
+                    }
+                    m.op(AbstractOp::ASSERT, [&](Code& c) {
+                        c.ref(*prev);
+                        c.belong(m.get_function());
+                    });
+                    break;
+                }
+            }
+        }
+        return none;
+    }
+
     template <>
     Error encode<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
         if (node->is_state_variable) {
@@ -779,6 +827,10 @@ namespace rebgn {
         auto ident = m.lookup_ident(node->ident);
         if (!ident) {
             return ident.error();
+        }
+        auto err = do_field_argument_assert(m, *ident, node);
+        if (err) {
+            return err;
         }
         if (node->arguments && node->arguments->sub_byte_length) {
             auto len = get_expr(m, node->arguments->sub_byte_length);
@@ -790,7 +842,6 @@ namespace rebgn {
                 c.belong(*ident);
             });
         }
-        Error err;
         if (node->arguments && node->arguments->type_map) {
             err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get(), true);
         }
@@ -832,8 +883,15 @@ namespace rebgn {
         else {
             err = decode_type(m, node->field_type, *ident, nullptr, node.get(), true);
         }
+        if (err) {
+            return err;
+        }
         if (node->arguments && node->arguments->sub_byte_length) {
             m.op(AbstractOp::END_DECODE_SUB_RANGE);
+        }
+        err = do_field_argument_assert(m, *ident, node);
+        if (err) {
+            return err;
         }
         return err;
     }

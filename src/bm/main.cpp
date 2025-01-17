@@ -213,6 +213,18 @@ namespace rebgn {
                 }
                 cout << " )";
             }
+            if (auto enc = c.encode_flags()) {
+                cout << " (";
+                size_t i = 0;
+                if (enc->has_seek()) {
+                    if (i) {
+                        cout << ",";
+                    }
+                    cout << "seek";
+                    i++;
+                }
+                cout << " )";
+            }
             if (auto dec = c.decode_flags()) {
                 cout << " (";
                 size_t i = 0;
@@ -224,7 +236,7 @@ namespace rebgn {
                     if (i) {
                         cout << ",";
                     }
-                    cout << "error";
+                    cout << "peek";
                     i++;
                 }
                 if (dec->has_seek()) {

@@ -2182,9 +2182,6 @@ namespace rebgn {
                                        !dst.has_remain_bytes() && src.has_remain_bytes() ||
                                        !dst.has_peek() && src.has_peek() ||
                                        !dst.has_seek() && src.has_seek();
-                            if (prev_diff != has_diff) {
-                                ;
-                            }
                             dst.has_eof(dst.has_eof() || src.has_eof());
                             dst.has_remain_bytes(dst.has_remain_bytes() || src.has_remain_bytes());
                             dst.has_peek(dst.has_peek() || src.has_peek());
@@ -2204,9 +2201,6 @@ namespace rebgn {
                             auto src = m.code[found->second].encode_flags().value();
                             auto prev_diff = has_diff;
                             has_diff = has_diff || !dst.has_seek() && src.has_seek();
-                            if (prev_diff != has_diff) {
-                                ;
-                            }
                             dst.has_seek(dst.has_seek() || src.has_seek());
                             m.code[idx].encode_flags(dst);
                         }

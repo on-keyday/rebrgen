@@ -19,8 +19,10 @@ namespace rebgn {
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node);
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, ast::ConstantLevel level);
-    expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level);
+    expected<Varint> define_int_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
+    expected<Varint> define_bool_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
@@ -476,7 +478,7 @@ namespace rebgn {
                         if (!id) {
                             return id.error();
                         }
-                        auto res = define_var(m, id.value(), counter, ast::ConstantLevel::immutable_variable);
+                        auto res = define_var(m, id.value(), counter, bop->left->expr_type, ast::ConstantLevel::immutable_variable);
                         if (!res) {
                             return res.error();
                         }

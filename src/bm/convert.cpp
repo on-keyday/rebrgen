@@ -71,21 +71,43 @@ namespace rebgn {
         return ident;
     }
 
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, ast::ConstantLevel level) {
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level) {
+        Storages s;
+        auto err = define_storage(m, s, typ);
+        if (err) {
+            return unexpect_error(std::move(err));
+        }
         m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
             c.ident(ident);
             c.ref(init_ref);
+            c.storage(std::move(s));
         });
         m.previous_assignments[ident.value()] = ident.value();
         return ident;
     }
 
-    expected<Varint> define_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
+    expected<Varint> define_bool_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
         auto ident = m.new_id(nullptr);
         if (!ident) {
             return ident;
         }
-        return define_var(m, *ident, init_ref, level);
+        return define_var(m, *ident, init_ref, std::make_shared<ast::BoolType>(), level);
+    }
+
+    expected<Varint> define_int_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
+        auto ident = m.new_id(nullptr);
+        if (!ident) {
+            return ident;
+        }
+        return define_var(m, *ident, init_ref, std::make_shared<ast::IntType>(brgen::lexer::Loc{}, 64, ast::Endian::unspec, false), level);
+    }
+
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level) {
+        auto ident = m.new_id(nullptr);
+        if (!ident) {
+            return ident;
+        }
+        return define_var(m, *ident, init_ref, typ, level);
     }
 
     expected<Varint> define_counter(Module& m, std::uint64_t init) {
@@ -93,7 +115,7 @@ namespace rebgn {
         if (!init_ref) {
             return init_ref;
         }
-        return define_tmp_var(m, *init_ref, ast::ConstantLevel::variable);
+        return define_int_tmp_var(m, *init_ref, ast::ConstantLevel::variable);
     }
 
     Error do_assign(Module& m,
@@ -326,7 +348,7 @@ namespace rebgn {
                     c.ident(*id);
                     c.storage(std::move(s));
                 });
-                auto tmp_var = define_tmp_var(m, *id, ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *id, node->expr_type, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -1488,7 +1510,7 @@ namespace rebgn {
                 });
             }
             else {
-                auto res = define_var(m, *ident_, *right_ref, node->right->constant_level);
+                auto res = define_var(m, *ident_, *right_ref, node->left->expr_type, node->right->constant_level);
                 if (!res) {
                     return res.error();
                 }

@@ -39,6 +39,13 @@ namespace bm2rust {
             return current_r.back();
         }
 
+        std::string mut_r() {
+            if (current_r.empty()) {
+                return "r";
+            }
+            return "&mut " + current_r.back();
+        }
+
         std::string w() {
             if (current_w.empty()) {
                 return "w";
@@ -315,9 +322,14 @@ namespace bm2rust {
                 if (params > 0) {
                     w.write(", ");
                 }
-                w.write("r :&mut R");
                 trait = NeedTrait::decoder;
                 decode_flags = code.decode_flags().value();
+                if (decode_flags.has_peek()) {  // for peek method, use BufReader
+                    w.write("r :&mut std::io::BufReader<R>");
+                }
+                else {
+                    w.write("r :&mut R");
+                }
                 params++;
             }
             if (code.op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
@@ -375,12 +387,7 @@ namespace bm2rust {
                 params++;
             }
             if (code.op == rebgn::AbstractOp::DECODER_PARAMETER) {
-                if (ctx.current_r.size()) {
-                    w.write("&mut ", ctx.current_r.back());
-                }
-                else {
-                    w.write(ctx.r());
-                }
+                w.write(ctx.mut_r());
                 params++;
             }
             if (code.op == rebgn::AbstractOp::STATE_VARIABLE_PARAMETER) {
@@ -1267,8 +1274,8 @@ namespace bm2rust {
             auto scope = w.indent_scope();
             auto belong = ctx.bm.code[ctx.ident_index_table[prev]].belong().value().value();
             auto belong_name = ctx.ident_table[belong];
-            w.writeln(std::format("{}.read_exact(&mut {}[{}..consumed_byte]){};",
-                                  ctx.r(), array, read_size, map_io_error(ctx, belong_name)));
+            w.writeln(std::format("std::io::Read::read_exact({},&mut {}[{}..consumed_byte]){};",
+                                  ctx.mut_r(), array, read_size, map_io_error(ctx, belong_name)));
             w.writeln(std::format("for i in {}..consumed_byte {{", read_size));
             auto scope2 = w.indent_scope();
             w.writeln(tmp, " |= (", array, "[i] as u", std::format("{}", total_size), ") <<", "8 * (", std::format("{}", total_size / 8), " - i - 1);");
@@ -1337,7 +1344,7 @@ namespace bm2rust {
     void deserialize(Context& ctx, TmpCodeWriter& w, size_t id, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
         auto tmp = std::format("tmp_de{}", id);
         w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
-        w.writeln(ctx.r(), ".read_exact(&mut ", tmp, ")", map_io_error(ctx, loc), ";");
+        w.writeln("std::io::Read::read_exact(", ctx.mut_r(), ",&mut ", tmp, ")", map_io_error(ctx, loc), ";");
         if (is_known_size(bit_size)) {
             w.writeln(target, " = u", std::format("{}", bit_size), "::from_be_bytes(", tmp, ");");
         }
@@ -1683,6 +1690,66 @@ namespace bm2rust {
                     }
                     break;
                 }
+                case rebgn::AbstractOp::PEEK_INT_VECTOR: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref_to_vec = code.left_ref().value().value();
+                    auto ref_to_len = code.right_ref().value().value();
+                    ctx.on_assign = true;
+                    auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
+                    ctx.on_assign = false;
+                    auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
+                    auto tmp = std::format("tmp_{}", ref_to_vec);
+                    if (bit_size == 8) {
+                        if (ctx.current_r.empty()) {
+                            w.writeln("let ", tmp, " = ", ctx.r(), ".peek(", len.back(), " as usize)", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        }
+                        else {
+                            w.writeln("let ", tmp, " = ", ctx.r(), ".fill_buf()", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        }
+                        w.writeln("if ", tmp, ".len() < ", len.back(), " as usize {");
+                        auto scope = w.indent_scope();
+                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"peek ", get_belong_name(ctx, code), "\",", tmp, ".len(),", len.back(), " as usize));");
+                        scope.execute();
+                        w.writeln("}");
+                        w.writeln(vec.back(), ".copy_from_slice(&", tmp, "[..", len.back(), " as usize]);");
+                    }
+                    else {
+                        w.writeln("/* Unimplemented peek int vector */");
+                    }
+                    break;
+                }
+                case rebgn::AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref_to_vec = code.ref().value().value();
+                    ctx.on_assign = true;
+                    auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
+                    ctx.on_assign = false;
+                    if (bit_size == 8) {
+                        w.writeln("std::io::Read::read_to_end(", ctx.mut_r(), ", &mut ", vec.back(), ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                    }
+                    else {
+                        auto tmp = std::format("tmp_hold_{}", ref_to_vec);
+                        w.writeln("let mut ", tmp, " = Vec::new();");
+                        w.writeln("std::io::Read::read_to_end(", ctx.mut_r(), ",&mut ", tmp, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        w.writeln("if ", tmp, ".len() % ", std::format("{}", bit_size / 8), " != 0 {");
+                        auto scope = w.indent_scope();
+                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"decode ", get_belong_name(ctx, code), "\",", tmp, ".len(),", std::format("{}", bit_size / 8), "));");
+                        scope.execute();
+                        auto tmp_i = std::format("tmp_i{}", ref_to_vec);
+                        w.writeln("for ", tmp_i, " in 0..", tmp, ".len() / ", std::format("{}", bit_size / 8), "{");
+                        auto scope2 = w.indent_scope();
+                        w.writeln("let mut ", tmp, " = 0;");
+                        w.writeln("for i in 0..", std::format("{}", bit_size / 8), "{");
+                        auto scope3 = w.indent_scope();
+                        w.writeln(tmp, " |= (", tmp, "[", tmp_i, " * ", std::format("{}", bit_size / 8), " + i] as u", std::format("{}", bit_size), ") << 8 * (", std::format("{}", bit_size / 8 - 1), " - i);");
+                        scope3.execute();
+                        w.writeln("}");
+                        w.writeln(vec.back(), ".push_back(", tmp, ");");
+                        scope2.execute();
+                        w.writeln("}");
+                    }
+                    break;
+                }
                 case rebgn::AbstractOp::DECODE_INT_VECTOR:
                 case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
                     auto bit_size = code.bit_size().value().value();
@@ -1705,11 +1772,11 @@ namespace bm2rust {
                     }
                     if (bit_size == 8) {
                         if (is_fixed) {
-                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("std::io::Read::read_exact({},&mut {}){};", ctx.mut_r(), vec.back(), map_io_error(ctx, belong_name)));
                         }
                         else {
                             w.writeln(std::format("{}.resize({} as usize,0);", vec.back(), len.back()));
-                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("std::io::Read::read_exact({},&mut {}){};", ctx.mut_r(), vec.back(), map_io_error(ctx, belong_name)));
                         }
                     }
                     else {
@@ -1829,7 +1896,7 @@ namespace bm2rust {
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp_array = std::format("tmp_array{}", ref);
                     w.writeln("let mut ", tmp_array, " :Vec<u8> = vec![0; ", len.back(), " as usize];");
-                    w.writeln(ctx.r(), ".read_exact(&mut ", tmp_array, ")", map_io_error(ctx, belong_name), ";");
+                    w.writeln("std::io::Read::read_exact(", ctx.mut_r(), ",&mut ", tmp_array, ")", map_io_error(ctx, belong_name), ";");
                     auto tmp_cursor = std::format("cursor{}", ref);
                     w.writeln("let mut ", tmp_cursor, " = std::io::Cursor::new(&", tmp_array, ");");
                     ctx.current_r.push_back(std::move(tmp_cursor));
@@ -1986,6 +2053,7 @@ namespace bm2rust {
         bool has_bit_field = false;
         bool has_array = false;
         bool has_optional = false;
+        bool has_peek = false;
         for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
@@ -1996,6 +2064,9 @@ namespace bm2rust {
             if (code.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD &&
                 code.merge_mode().value() == rebgn::MergeMode::COMMON_TYPE) {
                 has_optional = true;
+            }
+            if (code.op == rebgn::AbstractOp::PEEK_INT_VECTOR) {
+                has_peek = true;
             }
             if (auto s = code.storage()) {
                 for (auto& storage : s->storages) {
@@ -2013,7 +2084,7 @@ namespace bm2rust {
                     }
                 }
             }
-            if (has_vector && has_union && has_recursive && has_array) {
+            if (has_vector && has_union && has_recursive && has_array && has_optional && has_peek) {
                 break;
             }
         }
@@ -2033,6 +2104,12 @@ namespace bm2rust {
                     case rebgn::AbstractOp::METADATA: {
                         auto meta = code.metadata();
                         auto str = ctx.string_table[meta->name.value()];
+                        break;
+                    }
+                    case rebgn::AbstractOp::DEFINE_CONSTANT: {
+                        auto right = code.ref().value().value();
+                        auto s = eval(ctx.bm.code[ctx.ident_index_table[right]], ctx);
+                        ctx.cw.writeln("pub const ", ctx.ident_table[code.ident().value().value()], ": _", " = ", s.back(), ";");
                         break;
                     }
                     case rebgn::AbstractOp::DECLARE_ENUM: {
@@ -2062,6 +2139,9 @@ namespace bm2rust {
                         ctx.cw.writeln("#[derive(Debug,Default, Clone, Copy, PartialEq, Eq)]");
                         if (base_type.size() > 0) {
                             ctx.cw.writeln("#[repr(", base_type, ")]");
+                        }
+                        else {
+                            base_type = "usize";
                         }
                         ctx.cw.write("pub enum ", ident);
                         ctx.cw.writeln(" {");

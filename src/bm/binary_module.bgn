@@ -463,9 +463,14 @@ format Code:
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
             ref :Varint # ref to initial expr
+            storage :Storages
         AbstractOp.DEFINE_VARIABLE_REF:
             ident :Varint
             ref :Varint # ref to variable
+        AbstractOp.DEFINE_CONSTANT:
+            ident :Varint
+            ref :Varint # ref to initial expr
+            storage :Storages
         AbstractOp.DECLARE_VARIABLE:
             ref :Varint # ref to variable
         AbstractOp.DEFINE_PARAMETER:

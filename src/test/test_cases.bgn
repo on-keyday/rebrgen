@@ -631,7 +631,7 @@ format FrameBody:
 format DataFrame:
     if header_state.header.padding == 1:
         padding_len :u8
-        u32(header_state.header.len) > u32(padding_len + 1) # violate this is protocol error
+        u32(header_state.header.len) > u32(padding_len) + 1 # violate this is protocol error
     len ::= header_state.header.padding == 1 ? header_state.header.len - 1 - u32(padding_len) : header_state.header.len
     data :[len]u8
     if header_state.header.padding == 1:
@@ -694,3 +694,12 @@ format WindowUpdateFrame:
 
 format ContinuationFrame:
     header_block :[header_state.header.len]u8
+
+enum EdgeEnum:
+    :u1
+    NO_EDGE
+    EDGE 
+
+format Edge:
+    edge :EdgeEnum
+    reserved :u7    

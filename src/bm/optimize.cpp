@@ -1309,7 +1309,23 @@ namespace rebgn {
                 // variables.insert(code.ident().value().value());
                 break;
             }
-            case rebgn::AbstractOp::DEFINE_FIELD:
+            case rebgn::AbstractOp::DEFINE_FIELD: {
+                auto ident = code.ident().value().value();
+                auto got = get_field(m, ident);
+                if (got) {
+                    auto field = *got;
+                    if (field->is_state_variable) {
+                        if (!variables.variables.contains(ident)) {
+                            op(AbstractOp::STATE_VARIABLE_PARAMETER, [&](Code& m) {
+                                m.ref(code.ident().value());
+                            });
+                            variables.variables.insert(ident);
+                            variables.ordered_variables.push_back(ident);
+                        }
+                    }
+                }
+                break;
+            }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
                 // variables.insert(code.ident().value().value());
                 break;
@@ -1450,12 +1466,29 @@ namespace rebgn {
         return false;
     }
 
-    expected<Varint> access_array_length(Module& m, const std::shared_ptr<ast::Node>& len, auto&& op) {
+    expected<Varint> access_array_length(Module& m, RetrieveVarCtx& rvar, const std::shared_ptr<ast::Node>& len, auto&& op) {
         if (auto ident = ast::as<ast::Ident>(len); ident) {
-            return m.lookup_ident(ast::cast_to<ast::Ident>(len));
+            auto l = m.lookup_ident(ast::cast_to<ast::Ident>(len));
+            if (!l) {
+                return l;
+            }
+            auto got = get_field(m, l->value());
+            if (got) {
+                auto field_ptr = *got;
+                if (field_ptr->is_state_variable) {
+                    if (!rvar.variables.contains(l->value())) {
+                        op(AbstractOp::STATE_VARIABLE_PARAMETER, [&](Code& m) {
+                            m.ref(*l);
+                        });
+                        rvar.variables.insert(l->value());
+                        rvar.ordered_variables.push_back(l->value());
+                    }
+                }
+            }
+            return l;
         }
         else if (auto member = ast::as<ast::MemberAccess>(len); member) {
-            auto target = access_array_length(m, member->target, op);
+            auto target = access_array_length(m, rvar, member->target, op);
             if (!target) {
                 return target;
             }
@@ -1477,14 +1510,14 @@ namespace rebgn {
         return unexpect_error("Invalid node");
     }
 
-    Error add_array_length_setter(Module& m, ast::Field* field_ptr, Varint array_ref, Varint function, auto&& op) {
+    Error add_array_length_setter(Module& m, RetrieveVarCtx& rvar, ast::Field* field_ptr, Varint array_ref, Varint function, auto&& op) {
         auto array = ast::as<ast::ArrayType>(field_ptr->field_type);
         if (!array) {
             return error("Invalid field type");
         }
-        auto id = access_array_length(m, array->length, op);
-        if (!id) {
-            return id.error();
+        auto target_id = access_array_length(m, rvar, array->length, op);
+        if (!target_id) {
+            return target_id.error();
         }
         auto bit_size = array->length->expr_type->bit_size;
         if (auto u = ast::as<ast::UnionType>(array->length->expr_type); u && u->common_type) {
@@ -1540,8 +1573,13 @@ namespace rebgn {
         if (!*cast) {
             return error("Failed to add cast");
         }
+        auto assign_id = m.new_id(nullptr);
+        if (!assign_id) {
+            return assign_id.error();
+        }
         op(AbstractOp::ASSIGN, [&](Code& m) {
-            m.left_ref(*id);
+            m.ident(*assign_id);
+            m.left_ref(*target_id);
             m.right_ref(**cast);
         });
         return none;
@@ -1637,7 +1675,7 @@ namespace rebgn {
                 op(AbstractOp::IF, [&](Code& m) {
                     m.ref(expr_ref);
                 });
-                auto err = action(code);
+                auto err = action(code, variables);
                 if (err) {
                     return err;
                 }
@@ -1688,7 +1726,7 @@ namespace rebgn {
             });
             return none;
         };
-        auto err = do_foreach([&](const Code& code) {
+        auto err = do_foreach([&](const Code& code, RetrieveVarCtx& rvar) {
             auto expr_ref = code.right_ref().value();
             auto ident = m.new_id(nullptr);
             if (!ident) {
@@ -1775,7 +1813,7 @@ namespace rebgn {
             });
             return none;
         };
-        err = do_foreach([&](const Code& code) {
+        err = do_foreach([&](const Code& code, RetrieveVarCtx& rvar) {
             auto expr_ref = code.right_ref().value();
             if (code.op == AbstractOp::CONDITIONAL_PROPERTY) {
                 auto found = merged_fields.find(expr_ref.value());
@@ -1808,7 +1846,7 @@ namespace rebgn {
                     return err;
                 }
                 if (can_set_array_length(*field_ptr)) {
-                    auto err = add_array_length_setter(m, *field_ptr, expr_ref, setter_ident, op);
+                    auto err = add_array_length_setter(m, rvar, *field_ptr, expr_ref, setter_ident, op);
                     if (err) {
                         return err;
                     }
@@ -1876,11 +1914,17 @@ namespace rebgn {
             n.ref(*varint(ident));
             n.func_type(PropertyFunctionType::VECTOR_SETTER);
         });
-        err = add_array_length_setter(m, field_ptr, *ident_ref, setter_ident, op);
+        RetrieveVarCtx rvar;
+        err = add_array_length_setter(m, rvar, field_ptr, *ident_ref, setter_ident, op);
         if (err) {
             return err;
         }
+        auto assign_id = m.new_id(nullptr);
+        if (!assign_id) {
+            return assign_id.error();
+        }
         op(AbstractOp::ASSIGN, [&](Code& m) {
+            m.ident(*assign_id);
             m.left_ref(*ident_ref);
             m.right_ref(*prop);
         });

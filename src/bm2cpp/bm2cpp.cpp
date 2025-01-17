@@ -434,6 +434,9 @@ namespace bm2cpp {
                     if (find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], rebgn::AbstractOp::DEFINE_PROPERTY)) {
                         res.push_back(std::format("{}.{}()", left.back(), right_ident));
                     }
+                    else if (find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[code.right_ref().value().value()]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                        res.push_back(std::format("{}.{}()", left.back(), right_ident));
+                    }
                     else {
                         res.push_back(std::format("{}.{}", left.back(), right_ident));
                     }

@@ -1,0 +1,63 @@
+# costom boilerplate file from sisakulint
+name: sample deploy to GitHub Pages
+
+on:
+  # Trigger the workflow every time you push to the main branch
+  # Using a different branch name? Replace main with your branch’s name
+  push:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab on GitHub.
+  workflow_dispatch:
+
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        # Recommend to fix actions commit SHA
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
+        with:
+          actions-cache-folder: emsdk
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@96bed6edff20d1dd61ecff9b75cc519d516e6401 # master
+      - name: Cache
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        # prevent renovate from updating this
+        if: (!startsWith(github.ref , 'refs/heads/renovate/')) && (!startsWith(github.ref , 'refs/heads/dependabot/'))
+        id: cache_web
+        env:
+          cache-name: cache-web-built
+        with:
+          path: |
+            ./built
+            ./utils
+            ./emsdk
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('build.sh') }}
+      - name: Pull Utils
+        if: ${{ steps.cache_web.outputs.cache-hit }}
+        run: |
+          cd utils
+          git pull
+          . build wasm-em Release futils
+          cd ..
+      - name: Clone Utils
+        if: ${{ steps.cache_web.outputs.cache-hit }} == null
+        run: |
+          git clone https://github.com/on-keyday/utils.git
+      - name: Build
+        run: |
+          EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./build.sh web Release
+          cp README.md web/
+      - name: Upload Artifact
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: bmgen-web
+          path: web

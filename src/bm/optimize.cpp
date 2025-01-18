@@ -1227,6 +1227,18 @@ namespace rebgn {
         std::vector<ObjectID> ordered_variables;
     };
 
+    expected<ast::Field*> get_field(Module& m, ObjectID id) {
+        auto base = m.ident_table_rev.find(id);
+        if (base == m.ident_table_rev.end()) {
+            return unexpect_error("Invalid ident");
+        }
+        auto field_ptr = ast::as<ast::Field>(base->second->base.lock());
+        if (!field_ptr) {
+            return unexpect_error("Invalid field");
+        }
+        return field_ptr;
+    }
+
     Error retrieve_var(Module& m, auto&& op, const rebgn::Code& code, RetrieveVarCtx& variables) {
         switch (code.op) {
             case rebgn::AbstractOp::NOT_PREV_THEN: {
@@ -1583,18 +1595,6 @@ namespace rebgn {
             m.right_ref(**cast);
         });
         return none;
-    }
-
-    expected<ast::Field*> get_field(Module& m, ObjectID id) {
-        auto base = m.ident_table_rev.find(id);
-        if (base == m.ident_table_rev.end()) {
-            return unexpect_error("Invalid ident");
-        }
-        auto field_ptr = ast::as<ast::Field>(base->second->base.lock());
-        if (!field_ptr) {
-            return unexpect_error("Invalid field");
-        }
-        return field_ptr;
     }
 
     Error derive_property_getter_setter(Module& m, Code& base, std::vector<Code>& funcs, std::unordered_map<ObjectID, std::pair<Varint, Varint>>& merged_fields) {

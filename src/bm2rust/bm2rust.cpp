@@ -2159,7 +2159,7 @@ namespace bm2rust {
         w.writeln("}");
     }
 
-    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
+    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, bool enable_async) {
         Context ctx(w, bm);
         bool has_error = false;
         for (auto& sr : bm.strings.refs) {
@@ -2232,6 +2232,9 @@ namespace bm2rust {
         }
         else {
             write_error_type(ctx, ctx.cw, "Error");
+        }
+        if (enable_async) {
+            ctx.enable_async();
         }
         std::vector<futils::helper::DynDefer> defer;
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {

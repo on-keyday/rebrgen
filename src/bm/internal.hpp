@@ -1,7 +1,7 @@
 /*license*/
 #pragma once
 #include "convert.hpp"
-
+#include "helper.hpp"
 namespace rebgn {
     Error convert_node_definition(Module& m, const std::shared_ptr<ast::Node>& n);
     Error convert_node_encode(Module& m, const std::shared_ptr<ast::Node>& n);

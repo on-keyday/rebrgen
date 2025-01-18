@@ -1,6 +1,5 @@
 # Ethernet frame format
 
-config.rust.async = true
 
 enum EtherType:
     :u16

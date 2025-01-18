@@ -5,6 +5,11 @@ project(rebrgen)
 
 set(CMAKE_CXX_STANDARD 23)
 
+if("$ENV{BUILD_MODE}" STREQUAL "web")
+add_compile_options(-fexperimental-library)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -sENVIRONMENT=worker -sINVOKE_RUN=0 -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXIT_RUNTIME=0 -sEXPORTED_RUNTIME_METHODS=[ccall,cwrap,FS]")
+endif()
+
 include_directories("brgen/src")
 include_directories("$ENV{FUTILS_DIR}/src/include")
 link_directories("$ENV{FUTILS_DIR}/lib")
@@ -36,5 +41,11 @@ target_link_libraries(bm2cpp futils)
 target_link_libraries(bm2rust futils)
 
 install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)
+if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
+elseif("$ENV{BUILD_MODE}" STREQUAL "web")
+install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)
+install(FILES "${CMAKE_BINARY_DIR}/tool/bm2cpp.wasm" DESTINATION tool)
+install(FILES "${CMAKE_BINARY_DIR}/tool/bm2rust.wasm" DESTINATION tool)
+endif()

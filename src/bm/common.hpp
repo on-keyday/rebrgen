@@ -12,15 +12,16 @@ namespace rebgn {
     template <typename T>
     using expected = futils::helper::either::expected<T, Error>;
 
+#define FORMAT_ARG std::format_string<Args...>
     template <typename... Args>
-    Error error(std::format_string<Args...> fmt, Args&&... args) {
+    Error error(FORMAT_ARG fmt, Args&&... args) {
         return futils::error::StrError{
             std::format(fmt, std::forward<Args>(args)...),
         };
     }
 
     template <typename... Args>
-    futils::helper::either::unexpected<Error> unexpect_error(std::format_string<Args...> fmt, Args&&... args) {
+    futils::helper::either::unexpected<Error> unexpect_error(FORMAT_ARG fmt, Args&&... args) {
         return futils::helper::either::unexpected(error(fmt, std::forward<Args>(args)...));
     }
 

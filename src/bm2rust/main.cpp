@@ -6,15 +6,23 @@
 #include <file/file_view.h>
 #include "bm2rust.hpp"
 #include <file/file_stream.h>
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#include <tool/common/em_main.h>
+#endif
+
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::vector<std::string_view> args;
+    bool enable_async = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file", "FILE");
+        ctx.VarBool(&enable_async, "async", "enable async");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -38,12 +46,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
     futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
     futils::binary::writer w{fs.get_direct_write_handler(), &fs};
-    bm2rust::to_rust(w, bm);
+    bm2rust::to_rust(w, bm, flags.enable_async);
 
     return 0;
 }
 
-int main(int argc, char** argv) {
+int rust_main(int argc, char** argv) {
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags, [](auto&& str, bool err) { cout << str; },
@@ -51,3 +59,13 @@ int main(int argc, char** argv) {
             return Main(flags, ctx);
         });
 }
+
+#if defined(__EMSCRIPTEN__)
+extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
+    return em_main(cmdline, rust_main);
+}
+#else
+int main(int argc, char** argv) {
+    return rust_main(argc, argv);
+}
+#endif

@@ -6,6 +6,12 @@
 #include <file/file_view.h>
 #include "bm2cpp.hpp"
 #include <file/file_stream.h>
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#include <tool/common/em_main.h>
+#endif
+
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
@@ -42,7 +48,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     return 0;
 }
 
-int main(int argc, char** argv) {
+int cpp_main(int argc, char** argv) {
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags, [](auto&& str, bool err) { cout << str; },
@@ -50,3 +56,13 @@ int main(int argc, char** argv) {
             return Main(flags, ctx);
         });
 }
+
+#if defined(__EMSCRIPTEN__)
+extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
+    return em_main(cmdline, cpp_main);
+}
+#else
+int main(int argc, char** argv) {
+    return cpp_main(argc, argv);
+}
+#endif

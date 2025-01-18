@@ -5,6 +5,12 @@
 #include <wrap/cout.h>
 #include "convert.hpp"
 #include <file/file_stream.h>
+
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#include <tool/common/em_main.h>
+#endif
+
 namespace rebgn {
     rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input);
 }
@@ -339,7 +345,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     return 0;
 }
 
-int main(int argc, char** argv) {
+int bmgen_main(int argc, char** argv) {
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags, [](auto&& str, bool err) { 
@@ -353,3 +359,13 @@ int main(int argc, char** argv) {
             return Main(flags, ctx);
         });
 }
+
+#ifdef __EMSCRIPTEN__
+extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
+    return em_main(cmdline, bmgen_main);
+}
+#else
+int main(int argc, char** argv) {
+    return bmgen_main(argc, argv);
+}
+#endif

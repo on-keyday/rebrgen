@@ -51,7 +51,7 @@ jobs:
           . build wasm-em Release futils
           cd ..
       - name: Clone Utils
-        if: ${{ steps.cache_web.outputs.cache-hit }} == null
+        if: ${{ steps.cache_web.outputs.cache-hit }} == false
         run: |
           git clone https://github.com/on-keyday/utils.git
           cd utils

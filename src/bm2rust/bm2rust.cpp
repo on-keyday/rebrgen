@@ -910,6 +910,20 @@ namespace bm2rust {
                 }
                 break;
             }
+            case rebgn::AbstractOp::DEFINE_CONSTANT: {
+                auto& ref_index = ctx.ident_index_table[code.ref().value().value()];
+                res = eval(ctx.bm.code[ref_index], ctx);
+                auto& taken = res.back();
+                if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
+                    taken = std::format("const {}: {} = {};", found->second, type_to_string(ctx, *code.storage()), taken);
+                    res.push_back(found->second);
+                }
+                else {
+                    taken = std::format("const tmp{}: {} = {};", code.ident().value().value(), type_to_string(ctx, *code.storage()), taken);
+                    res.push_back(std::format("tmp{}", code.ident().value().value()));
+                }
+                break;
+            }
             case rebgn::AbstractOp::FIELD_AVAILABLE: {
                 auto this_as = code.left_ref().value().value();
                 if (this_as == 0) {
@@ -2109,7 +2123,8 @@ namespace bm2rust {
                     case rebgn::AbstractOp::DEFINE_CONSTANT: {
                         auto right = code.ref().value().value();
                         auto s = eval(ctx.bm.code[ctx.ident_index_table[right]], ctx);
-                        ctx.cw.writeln("pub const ", ctx.ident_table[code.ident().value().value()], ": _", " = ", s.back(), ";");
+                        auto type = type_to_string(ctx, *code.storage());
+                        ctx.cw.writeln("pub const ", ctx.ident_table[code.ident().value().value()], ": ", type, " = ", s.back(), ";");
                         break;
                     }
                     case rebgn::AbstractOp::DECLARE_ENUM: {

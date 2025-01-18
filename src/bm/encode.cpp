@@ -124,7 +124,7 @@ namespace rebgn {
                     return encode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
                 });
             }
-            if (!len) {
+            if (!arr->length) {
                 return error("Array length is not specified");
             }
             expected<Varint> len_;
@@ -791,47 +791,44 @@ namespace rebgn {
 
     Error do_field_argument_assert(Module& m, Varint ident, std::shared_ptr<ast::Field>& node) {
         if (node->arguments && node->arguments->arguments.size()) {
-            switch (node->arguments->argument_mapping) {
-                case ast::FieldArgumentMapping::direct: {
-                    std::optional<Varint> prev;
-                    for (auto& arg : node->arguments->arguments) {
-                        auto val = get_expr(m, arg);
-                        if (!val) {
-                            return val.error();
-                        }
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
+            if (size_t(node->arguments->argument_mapping) & size_t(ast::FieldArgumentMapping::direct)) {
+                std::optional<Varint> prev;
+                for (auto& arg : node->arguments->arguments) {
+                    auto val = get_expr(m, arg);
+                    if (!val) {
+                        return val.error();
+                    }
+                    auto new_id = m.new_id(nullptr);
+                    if (!new_id) {
+                        return error("Failed to generate new id");
+                    }
+                    m.op(AbstractOp::BINARY, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.bop(BinaryOp::equal);
+                        c.left_ref(ident);
+                        c.right_ref(*val);
+                    });
+                    if (prev) {
+                        auto or_id = m.new_id(nullptr);
+                        if (!or_id) {
                             return error("Failed to generate new id");
                         }
                         m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*new_id);
-                            c.bop(BinaryOp::equal);
-                            c.left_ref(ident);
-                            c.right_ref(*val);
+                            c.ident(*or_id);
+                            c.bop(BinaryOp::logical_or);
+                            c.left_ref(*new_id);
+                            c.right_ref(*prev);
                         });
-                        if (prev) {
-                            auto or_id = m.new_id(nullptr);
-                            if (!or_id) {
-                                return error("Failed to generate new id");
-                            }
-                            m.op(AbstractOp::BINARY, [&](Code& c) {
-                                c.ident(*or_id);
-                                c.bop(BinaryOp::logical_or);
-                                c.left_ref(*new_id);
-                                c.right_ref(*prev);
-                            });
-                            prev = *or_id;
-                        }
-                        else {
-                            prev = *new_id;
-                        }
+                        prev = *or_id;
                     }
-                    m.op(AbstractOp::ASSERT, [&](Code& c) {
-                        c.ref(*prev);
-                        c.belong(m.get_function());
-                    });
-                    break;
+                    else {
+                        prev = *new_id;
+                    }
                 }
+                m.op(AbstractOp::ASSERT, [&](Code& c) {
+                    c.ref(*prev);
+                    c.belong(m.get_function());
+                });
             }
         }
         return none;

@@ -1740,6 +1740,7 @@ namespace rebgn {
         struct union_struct_37 {
             Varint ident;
             Varint ref;
+            Storages storage;
         };
         struct union_struct_38 {
             Varint ident;
@@ -1748,6 +1749,7 @@ namespace rebgn {
         struct union_struct_39 {
             Varint ident;
             Varint ref;
+            Storages storage;
         };
         struct union_struct_40 {
             Varint ref;
@@ -18557,13 +18559,19 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_37>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<22>((*this).union_variant_15).storage;
         }
         if (AbstractOp::DEFINE_VARIABLE_REF == (*this).op) {
             return std::nullopt;
         }
         if (AbstractOp::DEFINE_CONSTANT == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_39>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<24>((*this).union_variant_15).storage;
         }
         if (AbstractOp::DECLARE_VARIABLE == (*this).op) {
             return std::nullopt;
@@ -18882,13 +18890,21 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_37>(union_variant_15)) {
+                union_variant_15 = union_struct_37();
+            }
+            std::get<22>((*this).union_variant_15).storage = v;
+            return true;
         }
         if (AbstractOp::DEFINE_VARIABLE_REF == (*this).op) {
             return false;
         }
         if (AbstractOp::DEFINE_CONSTANT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_39>(union_variant_15)) {
+                union_variant_15 = union_struct_39();
+            }
+            std::get<24>((*this).union_variant_15).storage = v;
+            return true;
         }
         if (AbstractOp::DECLARE_VARIABLE == (*this).op) {
             return false;
@@ -19216,13 +19232,21 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_VARIABLE == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_37>(union_variant_15)) {
+                union_variant_15 = union_struct_37();
+            }
+            std::get<22>((*this).union_variant_15).storage = std::move(v);
+            return true;
         }
         if (AbstractOp::DEFINE_VARIABLE_REF == (*this).op) {
             return false;
         }
         if (AbstractOp::DEFINE_CONSTANT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_39>(union_variant_15)) {
+                union_variant_15 = union_struct_39();
+            }
+            std::get<24>((*this).union_variant_15).storage = std::move(v);
+            return true;
         }
         if (AbstractOp::DECLARE_VARIABLE == (*this).op) {
             return false;
@@ -20788,6 +20812,9 @@ namespace rebgn {
             if (auto err = std::get<22>((*this).union_variant_15).ref.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<22>((*this).union_variant_15).storage.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::DEFINE_VARIABLE_REF == (*this).op) {
             if (!std::holds_alternative<union_struct_38>(union_variant_15)) {
@@ -20808,6 +20835,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<24>((*this).union_variant_15).ref.encode(w)) {
+                return err;
+            }
+            if (auto err = std::get<24>((*this).union_variant_15).storage.encode(w)) {
                 return err;
             }
         }
@@ -22045,6 +22075,9 @@ namespace rebgn {
             if (auto err = std::get<22>((*this).union_variant_15).ref.decode(r)) {
                 return err;
             }
+            if (auto err = std::get<22>((*this).union_variant_15).storage.decode(r)) {
+                return err;
+            }
         }
         else if (AbstractOp::DEFINE_VARIABLE_REF == (*this).op) {
             if (!std::holds_alternative<union_struct_38>(union_variant_15)) {
@@ -22065,6 +22098,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<24>((*this).union_variant_15).ref.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<24>((*this).union_variant_15).storage.decode(r)) {
                 return err;
             }
         }

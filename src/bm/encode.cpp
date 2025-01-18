@@ -124,6 +124,9 @@ namespace rebgn {
                     return encode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
                 });
             }
+            if (!len) {
+                return error("Array length is not specified");
+            }
             expected<Varint> len_;
             if (ast::is_any_range(arr->length)) {
                 len_ = m.new_node_id(arr->length);
@@ -140,7 +143,12 @@ namespace rebgn {
                 if (!len_init) {
                     return len_init.error();
                 }
-                len_ = define_tmp_var(m, *len_init, ast::ConstantLevel::immutable_variable);
+                Storages s;
+                auto err = define_storage(m, s, arr->length->expr_type);
+                if (err) {
+                    return err;
+                }
+                len_ = define_typed_tmp_var(m, *len_init, std::move(s), ast::ConstantLevel::immutable_variable);
                 if (!len_) {
                     return len_.error();
                 }
@@ -318,15 +326,17 @@ namespace rebgn {
                     return error("Failed to generate new id");
                 }
                 Storages s;
-                auto err = define_storage(m, s, std::make_shared<ast::IntType>(str_ty->loc, 8, ast::Endian::unspec, false));
+                auto int_typ = std::make_shared<ast::IntType>(str_ty->loc, 8, ast::Endian::unspec, false);
+                auto err = define_storage(m, s, int_typ);
                 if (err) {
                     return err;
                 }
+                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*tmp);
                     c.storage(std::move(s));
                 });
-                auto tmp_var = define_tmp_var(m, *tmp, ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *tmp, std::move(copy), ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -411,11 +421,12 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
+                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*new_obj);
                     c.storage(std::move(s));
                 });
-                auto tmp_var = define_tmp_var(m, *new_obj, ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *new_obj, std::move(copy), ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -539,11 +550,12 @@ namespace rebgn {
                         s.storages.back().size(*varint(*str->bit_size / futils::bit_per_byte));
                         s.storages.push_back(Storage{.type = StorageType::UINT});
                         s.storages.back().size(*varint(8));
+                        auto copy = s;
                         m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                             c.ident(*new_id);
                             c.storage(std::move(s));
                         });
-                        auto temporary_read_holder = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+                        auto temporary_read_holder = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
                         if (!temporary_read_holder) {
                             return temporary_read_holder.error();
                         }
@@ -570,7 +582,7 @@ namespace rebgn {
                                 c.ident(*flagObj);
                                 c.storage(std::move(isOkFlag));
                             });
-                            auto isOK = define_tmp_var(m, *flagObj, ast::ConstantLevel::variable);
+                            auto isOK = define_bool_tmp_var(m, *flagObj, ast::ConstantLevel::variable);
                             auto immTrue = immediate_bool(m, true);
                             if (!immTrue) {
                                 return immTrue.error();
@@ -650,7 +662,12 @@ namespace rebgn {
                 if (!id) {
                     return id.error();
                 }
-                auto len_ident = define_tmp_var(m, *id, ast::ConstantLevel::immutable_variable);
+                Storages s;
+                auto err = define_storage(m, s, arr->length->expr_type);
+                if (err) {
+                    return err;
+                }
+                auto len_ident = define_typed_tmp_var(m, *id, std::move(s), ast::ConstantLevel::immutable_variable);
                 if (!len_ident) {
                     return len_ident.error();
                 }
@@ -733,11 +750,12 @@ namespace rebgn {
             if (err) {
                 return err;
             }
+            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*storage);
                 c.storage(std::move(s));
             });
-            auto tmp_var = define_tmp_var(m, *storage, ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *storage, std::move(copy), ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }

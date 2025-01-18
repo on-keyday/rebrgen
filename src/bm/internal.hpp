@@ -19,10 +19,10 @@ namespace rebgn {
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node);
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level);
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, Storages&& typ, ast::ConstantLevel level);
     expected<Varint> define_int_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_bool_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
-    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level);
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, Storages&& typ, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
@@ -173,11 +173,12 @@ namespace rebgn {
             if (!new_id) {
                 return error("Failed to generate new id");
             }
+            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
                 c.storage(s);
             });
-            auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -291,11 +292,12 @@ namespace rebgn {
             if (!new_id) {
                 return error("Failed to generate new id");
             }
+            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
                 c.storage(s);
             });
-            auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -478,11 +480,16 @@ namespace rebgn {
                         if (!id) {
                             return id.error();
                         }
-                        auto res = define_var(m, id.value(), counter, bop->left->expr_type, ast::ConstantLevel::immutable_variable);
+                        Storages typ;
+                        auto err = define_storage(m, typ, bop->left->expr_type);
+                        if (err) {
+                            return err;
+                        }
+                        auto res = define_var(m, id.value(), counter, std::move(typ), ast::ConstantLevel::immutable_variable);
                         if (!res) {
                             return res.error();
                         }
-                        auto err = inner_block();
+                        err = inner_block();
                         if (err) {
                             return err;
                         }
@@ -510,7 +517,7 @@ namespace rebgn {
                             return e.error();
                         }
                     } /*otherwise, its inf*/
-                    auto tmp_var = define_tmp_var(m, start, ast::ConstantLevel::variable);
+                    auto tmp_var = define_bool_tmp_var(m, start, ast::ConstantLevel::variable);
                     if (!tmp_var) {
                         return tmp_var.error();
                     }

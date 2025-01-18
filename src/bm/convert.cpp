@@ -71,16 +71,11 @@ namespace rebgn {
         return ident;
     }
 
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level) {
-        Storages s;
-        auto err = define_storage(m, s, typ);
-        if (err) {
-            return unexpect_error(std::move(err));
-        }
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, Storages&& typ, ast::ConstantLevel level) {
         m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
             c.ident(ident);
             c.ref(init_ref);
-            c.storage(std::move(s));
+            c.storage(typ);
         });
         m.previous_assignments[ident.value()] = ident.value();
         return ident;
@@ -91,7 +86,15 @@ namespace rebgn {
         if (!ident) {
             return ident;
         }
-        return define_var(m, *ident, init_ref, std::make_shared<ast::BoolType>(), level);
+        return define_var(m, *ident, init_ref, Storages{
+                                                   .length = *varint(1),
+                                                   .storages = {
+                                                       {
+                                                           .type = StorageType::BOOL,
+                                                       },
+                                                   },
+                                               },
+                          level);
     }
 
     expected<Varint> define_int_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level) {
@@ -99,15 +102,24 @@ namespace rebgn {
         if (!ident) {
             return ident;
         }
-        return define_var(m, *ident, init_ref, std::make_shared<ast::IntType>(brgen::lexer::Loc{}, 64, ast::Endian::unspec, false), level);
+        auto tmp = Storages{
+            .length = *varint(1),
+            .storages = {
+                {
+                    .type = StorageType::UINT,
+                },
+            },
+        };
+        tmp.storages.front().size(*varint(64));
+        return define_var(m, *ident, init_ref, std::move(tmp), level);
     }
 
-    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, const std::shared_ptr<ast::Type>& typ, ast::ConstantLevel level) {
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, Storages&& typ, ast::ConstantLevel level) {
         auto ident = m.new_id(nullptr);
         if (!ident) {
             return ident;
         }
-        return define_var(m, *ident, init_ref, typ, level);
+        return define_var(m, *ident, init_ref, std::move(typ), level);
     }
 
     expected<Varint> define_counter(Module& m, std::uint64_t init) {
@@ -344,11 +356,12 @@ namespace rebgn {
                 if (!id) {
                     return id.error();
                 }
+                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*id);
                     c.storage(std::move(s));
                 });
-                auto tmp_var = define_typed_tmp_var(m, *id, node->expr_type, ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *id, std::move(copy), ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -723,7 +736,12 @@ namespace rebgn {
             if (!cond_) {
                 return error("Invalid union field condition");
             }
-            auto tmp_var = define_tmp_var(m, cond_.value(), ast::ConstantLevel::variable);
+            Storages s;
+            auto err = define_storage(m, s, cond->expr_type);
+            if (err) {
+                return err;
+            }
+            auto tmp_var = define_typed_tmp_var(m, cond_.value(), std::move(s), ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -820,7 +838,7 @@ namespace rebgn {
             if (!imm_false) {
                 return imm_false.error();
             }
-            auto tmp_var = define_tmp_var(m, *imm_false, ast::ConstantLevel::variable);
+            auto tmp_var = define_bool_tmp_var(m, *imm_false, ast::ConstantLevel::variable);
             auto imm_true = immediate_bool(m, true);
             if (!imm_true) {
                 return imm_true.error();
@@ -1365,11 +1383,12 @@ namespace rebgn {
         if (!new_id) {
             return new_id.error();
         }
+        auto copy = s;
         m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
             c.ident(*new_id);
             c.storage(s);
         });
-        auto tmp_var = define_tmp_var(m, *new_id, ast::ConstantLevel::variable);
+        auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
         if (!tmp_var) {
             return tmp_var.error();
         }
@@ -1502,15 +1521,21 @@ namespace rebgn {
             if (!right_ref) {
                 return error("Invalid binary expression: {}", right_ref.error().error());
             }
+            Storages typ;
+            auto err = define_storage(m, typ, node->left->expr_type, true);
+            if (err) {
+                return err;
+            }
             if (node->right->constant_level == ast::ConstantLevel::constant &&
                 node->op == ast::BinaryOp::const_assign) {
                 m.op(AbstractOp::DEFINE_CONSTANT, [&](Code& c) {
                     c.ident(*ident_);
                     c.ref(*right_ref);
+                    c.storage(std::move(typ));
                 });
             }
             else {
-                auto res = define_var(m, *ident_, *right_ref, node->left->expr_type, node->right->constant_level);
+                auto res = define_var(m, *ident_, *right_ref, std::move(typ), node->right->constant_level);
                 if (!res) {
                     return res.error();
                 }

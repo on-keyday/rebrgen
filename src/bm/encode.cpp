@@ -570,6 +570,7 @@ namespace rebgn {
                                 c.right_ref(*imm);
                                 c.endian(*endian);
                                 c.bit_size(*varint(8));
+                                c.belong(get_field_ref(m, field));
                             });
                             Storages isOkFlag;
                             isOkFlag.length.value(1);

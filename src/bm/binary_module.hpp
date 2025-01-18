@@ -1485,20 +1485,22 @@ namespace rebgn {
         static constexpr size_t fixed_header_size = 0;
     };
     struct DecodeParamFlags {
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 1, 4> flags_2_;
+        ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 1, 1, 3> flags_2_;
         bits_flag_alias_method(flags_2_, 0, has_seek);
         bits_flag_alias_method(flags_2_, 1, has_peek);
         bits_flag_alias_method(flags_2_, 2, has_eof);
         bits_flag_alias_method(flags_2_, 3, has_remain_bytes);
-        bits_flag_alias_method(flags_2_, 4, reserved);
+        bits_flag_alias_method(flags_2_, 4, has_sub_range);
+        bits_flag_alias_method(flags_2_, 5, reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
     struct EncodeParamFlags {
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_3_;
+        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_3_;
         bits_flag_alias_method(flags_3_, 0, has_seek);
-        bits_flag_alias_method(flags_3_, 1, reserved);
+        bits_flag_alias_method(flags_3_, 1, has_sub_range);
+        bits_flag_alias_method(flags_3_, 2, reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
@@ -1883,6 +1885,7 @@ namespace rebgn {
             Varint right_ref;
             EndianExpr endian;
             Varint bit_size;
+            Varint belong;
         };
         struct union_struct_68 {
             Varint ident;
@@ -2676,7 +2679,10 @@ namespace rebgn {
             return std::get<51>((*this).union_variant_15).belong;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_67>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<52>((*this).union_variant_15).belong;
         }
         if (AbstractOp::BIT_CAST == (*this).op) {
             return std::nullopt;
@@ -3102,7 +3108,11 @@ namespace rebgn {
             return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_67>(union_variant_15)) {
+                union_variant_15 = union_struct_67();
+            }
+            std::get<52>((*this).union_variant_15).belong = v;
+            return true;
         }
         if (AbstractOp::BIT_CAST == (*this).op) {
             return false;
@@ -3543,7 +3553,11 @@ namespace rebgn {
             return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_67>(union_variant_15)) {
+                union_variant_15 = union_struct_67();
+            }
+            std::get<52>((*this).union_variant_15).belong = std::move(v);
+            return true;
         }
         if (AbstractOp::BIT_CAST == (*this).op) {
             return false;
@@ -21213,6 +21227,9 @@ namespace rebgn {
             if (auto err = std::get<52>((*this).union_variant_15).bit_size.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<52>((*this).union_variant_15).belong.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::BIT_CAST == (*this).op) {
             if (!std::holds_alternative<union_struct_68>(union_variant_15)) {
@@ -22476,6 +22493,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<52>((*this).union_variant_15).bit_size.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<52>((*this).union_variant_15).belong.decode(r)) {
                 return err;
             }
         }

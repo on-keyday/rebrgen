@@ -21,6 +21,7 @@ namespace bm2rust {
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
         std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
+        std::unordered_map<std::uint64_t, std::string> metadata_table;
         std::string ptr_type;
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
@@ -69,6 +70,23 @@ namespace bm2rust {
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
             : cw(w), bm(bm) {
         }
+
+        bool use_async = false;
+
+        std::string BufReader = "std::io::BufReader";
+        std::string Read = "std::io::Read";
+        std::string Write = "std::io::Write";
+        std::string Seek = "std::io::Seek";
+        std::string BufRead = "std::io::BufRead";
+
+        void enable_async() {
+            use_async = true;
+            BufReader = "tokio::io::BufReader";
+            Read = "tokio::io::AsyncReadExt";
+            Write = "tokio::io::AsyncWriteExt";
+            Seek = "tokio::io::AsyncSeekExt";
+            BufRead = "tokio::io::AsyncBufReadExt";
+        }
     };
 
     std::uint64_t get_uint_size(size_t bit_size) {
@@ -99,10 +117,10 @@ namespace bm2rust {
         auto& storage = s.storages[index];
         switch (storage.type) {
             case rebgn::StorageType::CODER_RETURN: {
-                return "Result<(), " + ctx.error_type + ">";
+                return "std::result::Result<(), " + ctx.error_type + ">";
             }
             case rebgn::StorageType::PROPERTY_SETTER_RETURN: {
-                return "Result<(), " + ctx.error_type + ">";
+                return "std::result::Result<(), " + ctx.error_type + ">";
             }
             case rebgn::StorageType::PTR: {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
@@ -324,12 +342,17 @@ namespace bm2rust {
                 }
                 trait = NeedTrait::decoder;
                 decode_flags = code.decode_flags().value();
+                std::string typ;
                 if (decode_flags.has_peek()) {  // for peek method, use BufReader
-                    w.write("r :&mut std::io::BufReader<R>");
+                    typ = "&mut " + ctx.BufReader + "<R>";
                 }
                 else {
-                    w.write("r :&mut R");
+                    typ = "&mut R";
                 }
+                if (ctx.use_async) {
+                    typ = "std::pin::Pin<" + typ + ">";
+                }
+                w.write("r :&mut ", typ);
                 params++;
             }
             if (code.op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
@@ -564,8 +587,15 @@ namespace bm2rust {
         return "";
     }
 
-    std::string map_io_error(Context& ctx, const std::string& loc) {
-        return std::format(".map_err(|e| Error::IOError(\"{}\",e))?", loc);
+    std::string may_insert_await(Context& ctx) {
+        if (ctx.use_async) {
+            return ".await";
+        }
+        return "";
+    }
+
+    std::string map_io_error(Context& ctx, const std::string& loc, bool should_insert_await = true) {
+        return std::format("{}.map_err(|e| Error::IOError(\"{}\",e))?", should_insert_await ? may_insert_await(ctx) : "", loc);
     }
 
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
@@ -608,12 +638,8 @@ namespace bm2rust {
                 break;
             }
             case rebgn::AbstractOp::CAN_READ: {
-                auto r = ctx.r();
-                if (!ctx.current_r.empty()) {
-                    r = "&mut " + r;
-                }
                 auto belong_name = get_belong_name(ctx, code);
-                res.push_back(std::format("std::io::BufRead::fill_buf({}).map(|b| !b.is_empty()){}", r, map_io_error(ctx, belong_name)));
+                res.push_back(std::format("{}.fill_buf(){}.map(|b| !b.is_empty()){}", ctx.r(), may_insert_await(ctx), map_io_error(ctx, belong_name, false)));
                 break;
             }
             case rebgn::AbstractOp::CALL_CAST: {
@@ -1288,8 +1314,8 @@ namespace bm2rust {
             auto scope = w.indent_scope();
             auto belong = ctx.bm.code[ctx.ident_index_table[prev]].belong().value().value();
             auto belong_name = ctx.ident_table[belong];
-            w.writeln(std::format("std::io::Read::read_exact({},&mut {}[{}..consumed_byte]){};",
-                                  ctx.mut_r(), array, read_size, map_io_error(ctx, belong_name)));
+            w.writeln(std::format("{}.read_exact(&mut {}[{}..consumed_byte]){};",
+                                  ctx.r(), array, read_size, map_io_error(ctx, belong_name)));
             w.writeln(std::format("for i in {}..consumed_byte {{", read_size));
             auto scope2 = w.indent_scope();
             w.writeln(tmp, " |= (", array, "[i] as u", std::format("{}", total_size), ") <<", "8 * (", std::format("{}", total_size / 8), " - i - 1);");
@@ -1358,7 +1384,7 @@ namespace bm2rust {
     void deserialize(Context& ctx, TmpCodeWriter& w, size_t id, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
         auto tmp = std::format("tmp_de{}", id);
         w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
-        w.writeln("std::io::Read::read_exact(", ctx.mut_r(), ",&mut ", tmp, ")", map_io_error(ctx, loc), ";");
+        w.writeln(ctx.r(), ".read_exact(", "&mut ", tmp, ")", map_io_error(ctx, loc), ";");
         if (is_known_size(bit_size)) {
             w.writeln(target, " = u", std::format("{}", bit_size), "::from_be_bytes(", tmp, ");");
         }
@@ -1522,27 +1548,70 @@ namespace bm2rust {
                     NeedTrait trait = NeedTrait::none;
                     rebgn::EncodeParamFlags encode_flags;
                     rebgn::DecodeParamFlags decode_flags;
+                    auto add_write_trait = [&] {
+                        if (encode_flags.has_seek()) {
+                            w.write(" + ", ctx.Seek);
+                        }
+                    };
+                    auto add_read_trait = [&] {
+                        if (decode_flags.has_seek()) {
+                            w.write(" + ", ctx.Seek);
+                        }
+                        if (decode_flags.has_eof()) {
+                            w.write(" + ", ctx.BufRead);
+                        }
+                    };
+                    auto may_insert_async = [&] {
+                        if (ctx.use_async &&
+                            (trait == NeedTrait::encoder || trait == NeedTrait::decoder)) {
+                            w.write("async ");
+                        }
+                    };
                     add_function_parameters(ctx, params, fn_range, trait, encode_flags, decode_flags);
-                    w.write("pub fn ");
+                    if (trait == NeedTrait::encoder) {
+                        w.write("pub ");
+                        may_insert_async();
+                        w.writeln("fn encode_to_vec(&self) -> std::result::Result<Vec<u8>, Error> {");
+                        auto scope = w.indent_scope();
+                        w.writeln("let mut w = std::io::Cursor::new(Vec::new());");
+                        w.writeln("self.encode(&mut w)", may_insert_await(ctx), "?;");
+                        w.writeln("Ok(w.into_inner())");
+                        scope.execute();
+                        w.writeln("}");
+                    }
+                    else if (trait == NeedTrait::decoder) {
+                        w.write("pub ");
+                        may_insert_async();
+                        w.writeln("fn decode_exact");
+                        w.write("(data :&[u8]) -> Result<Self, Error> {");
+                        auto scope = w.indent_scope();
+                        if (decode_flags.has_peek()) {  // use BufReader
+                            w.writeln("let mut r = std::io::BufReader::new(std::io::Cursor::new(data));");
+                        }
+                        else {
+                            w.writeln("let mut r = std::io::Cursor::new(data);");
+                        }
+                        w.writeln("let mut result = Self::default();");
+                        w.writeln("result.decode(&mut r)", may_insert_await(ctx), "?;");
+                        w.writeln("Ok(result)");
+                        scope.execute();
+                        w.writeln("}");
+                    }
+                    w.write("pub ");
+                    may_insert_async();
+                    w.write("fn ");
                     if (trait == NeedTrait::property_setter) {
                         w.write("set_");
                     }
                     w.write(ident);
                     if (trait == NeedTrait::encoder) {
-                        w.write("<W: std::io::Write");
-                        if (encode_flags.has_seek()) {
-                            w.write(" + std::io::Seek");
-                        }
+                        w.write("<W: ", ctx.Write);
+                        add_write_trait();
                         w.write(">");
                     }
                     else if (trait == NeedTrait::decoder) {
-                        w.write("<R: std::io::Read");
-                        if (decode_flags.has_seek()) {
-                            w.write(" + std::io::Seek");
-                        }
-                        if (decode_flags.has_eof()) {
-                            w.write(" + std::io::BufRead");
-                        }
+                        w.write("<R: ", ctx.Read);
+                        add_read_trait();
                         w.write(">");
                     }
                     w.write("(");
@@ -1554,6 +1623,22 @@ namespace bm2rust {
                         w.write("-> ", type);
                     }
                     w.writeln(" {");
+                    if (trait == NeedTrait::decoder) {
+                        if (decode_flags.has_peek()) {
+                            w.writeln("use ", ctx.Read, ";");
+                            if (decode_flags.has_seek() || decode_flags.has_sub_range()) {
+                                w.writeln("use ", ctx.Seek, ";");
+                            }
+                            if (decode_flags.has_eof() || decode_flags.has_sub_range()) {
+                                w.writeln("use ", ctx.BufRead, ";");
+                            }
+                        }
+                        else if (decode_flags.has_sub_range()) {
+                            w.writeln("use ", ctx.Read, ";");
+                            w.writeln("use ", ctx.Seek, ";");
+                            w.writeln("use ", ctx.BufRead, ";");
+                        }
+                    }
                     defer.push_back(futils::helper::defer_ex([&, f = w.indent_scope_ex(), s = std::move(impl_scope)]() mutable {
                         f.execute();
                         w.writeln("}");
@@ -1609,7 +1694,7 @@ namespace bm2rust {
                     w.write(evaluated.back(), ".", name, "(");
                     auto range = ctx.ident_range_table[code.left_ref().value().value()];
                     code_call_parameter(ctx, w, range);
-                    w.writeln(")?;");
+                    w.writeln(")", may_insert_await(ctx), "?;");
                     break;
                 }
                 case rebgn::AbstractOp::BREAK: {
@@ -1739,12 +1824,12 @@ namespace bm2rust {
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     ctx.on_assign = false;
                     if (bit_size == 8) {
-                        w.writeln("std::io::Read::read_to_end(", ctx.mut_r(), ", &mut ", vec.back(), ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        w.writeln(ctx.r(), ".read_to_end(", "&mut ", vec.back(), ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
                     }
                     else {
                         auto tmp = std::format("tmp_hold_{}", ref_to_vec);
                         w.writeln("let mut ", tmp, " = Vec::new();");
-                        w.writeln("std::io::Read::read_to_end(", ctx.mut_r(), ",&mut ", tmp, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        w.writeln(ctx.r(), ".read_to_end(", ",&mut ", tmp, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
                         w.writeln("if ", tmp, ".len() % ", std::format("{}", bit_size / 8), " != 0 {");
                         auto scope = w.indent_scope();
                         w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"decode ", get_belong_name(ctx, code), "\",", tmp, ".len(),", std::format("{}", bit_size / 8), "));");
@@ -1786,11 +1871,11 @@ namespace bm2rust {
                     }
                     if (bit_size == 8) {
                         if (is_fixed) {
-                            w.writeln(std::format("std::io::Read::read_exact({},&mut {}){};", ctx.mut_r(), vec.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
                         }
                         else {
                             w.writeln(std::format("{}.resize({} as usize,0);", vec.back(), len.back()));
-                            w.writeln(std::format("std::io::Read::read_exact({},&mut {}){};", ctx.mut_r(), vec.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
                         }
                     }
                     else {
@@ -1910,7 +1995,7 @@ namespace bm2rust {
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto tmp_array = std::format("tmp_array{}", ref);
                     w.writeln("let mut ", tmp_array, " :Vec<u8> = vec![0; ", len.back(), " as usize];");
-                    w.writeln("std::io::Read::read_exact(", ctx.mut_r(), ",&mut ", tmp_array, ")", map_io_error(ctx, belong_name), ";");
+                    w.writeln(ctx.r(), ".read_exact(", "&mut ", tmp_array, ")", map_io_error(ctx, belong_name), ";");
                     auto tmp_cursor = std::format("cursor{}", ref);
                     w.writeln("let mut ", tmp_cursor, " = std::io::Cursor::new(&", tmp_array, ");");
                     ctx.current_r.push_back(std::move(tmp_cursor));
@@ -2061,6 +2146,10 @@ namespace bm2rust {
             ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
             auto& code = bm.code[id.range.start.value()];
         }
+        for (auto& md : bm.metadata.refs) {
+            ctx.metadata_table[md.code.value()] = md.string.data;
+        }
+
         bool has_union = false;
         bool has_vector = false;
         bool has_recursive = false;
@@ -2116,8 +2205,15 @@ namespace bm2rust {
                 auto& code = bm.code[i];
                 switch (code.op) {
                     case rebgn::AbstractOp::METADATA: {
-                        auto meta = code.metadata();
-                        auto str = ctx.string_table[meta->name.value()];
+                        auto meta = code.metadata().value();
+                        auto meta_str = ctx.metadata_table[meta.name.value()];
+                        if (meta_str == "config.rust.async") {
+                            auto expr = meta.expr_refs[0].value();
+                            auto& expr_code = bm.code[ctx.ident_index_table[expr]];
+                            if (expr_code.op == rebgn::AbstractOp::IMMEDIATE_TRUE) {
+                                ctx.enable_async();
+                            }
+                        }
                         break;
                     }
                     case rebgn::AbstractOp::DEFINE_CONSTANT: {

@@ -2121,38 +2121,44 @@ namespace rebgn {
             if (stack.empty()) {
                 continue;
             }
+            auto set_decode_flag = [&](auto&& set) {
+                auto idx = stack.back().decoder_parameter_index.value();
+                auto flags = m.code[idx].decode_flags().value();
+                set(flags);
+                m.code[idx].decode_flags(flags);
+            };
+            auto set_encode_flag = [&](auto&& set) {
+                auto idx = stack.back().encoder_parameter_index.value();
+                auto flags = m.code[idx].encode_flags().value();
+                set(flags);
+                m.code[idx].encode_flags(flags);
+            };
             if (stack.back().is_decoder()) {
                 function_to_coder[m.code[stack.back().current_function_index].ident().value().value()] = *stack.back().decoder_parameter_index;
-                auto set_flag = [&](auto&& set) {
-                    auto idx = stack.back().decoder_parameter_index.value();
-                    auto flags = m.code[idx].decode_flags().value();
-                    set(flags);
-                    m.code[idx].decode_flags(flags);
-                };
                 if (m.code[i].op == AbstractOp::CAN_READ) {
-                    set_flag([](auto& flags) { flags.has_eof(true); });
+                    set_decode_flag([](auto& flags) { flags.has_eof(true); });
                 }
                 if (m.code[i].op == AbstractOp::REMAIN_BYTES) {
-                    set_flag([](auto& flags) { flags.has_remain_bytes(true); });
+                    set_decode_flag([](auto& flags) { flags.has_remain_bytes(true); });
                 }
                 if (m.code[i].op == AbstractOp::PEEK_INT_VECTOR) {
-                    set_flag([](auto& flags) { flags.has_peek(true); });
+                    set_decode_flag([](auto& flags) { flags.has_peek(true); });
                 }
                 if (m.code[i].op == AbstractOp::BACKWARD_INPUT) {
-                    set_flag([](auto& flags) { flags.has_seek(true); });
+                    set_decode_flag([](auto& flags) { flags.has_seek(true); });
                 }
+            }
+            else if (stack.back().decoder_parameter_index.has_value()) {
+                set_decode_flag([](auto& flags) { flags.has_sub_range(true); });  // sub range will not be propagated by call
             }
             if (stack.back().is_encoder()) {
                 function_to_coder[m.code[stack.back().current_function_index].ident().value().value()] = *stack.back().encoder_parameter_index;
-                auto set_flag = [&](auto&& set) {
-                    auto idx = stack.back().encoder_parameter_index.value();
-                    auto flags = m.code[idx].encode_flags().value();
-                    set(flags);
-                    m.code[idx].encode_flags(flags);
-                };
                 if (m.code[i].op == AbstractOp::BACKWARD_OUTPUT) {
-                    set_flag([](auto& flags) { flags.has_seek(true); });
+                    set_encode_flag([](auto& flags) { flags.has_seek(true); });
                 }
+            }
+            else if (stack.back().encoder_parameter_index.has_value()) {
+                set_encode_flag([](auto& flags) { flags.has_sub_range(true); });
             }
         }
         std::set<ObjectID> reached;

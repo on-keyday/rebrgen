@@ -1,5 +1,7 @@
 # Ethernet frame format
 
+config.rust.async = true
+
 enum EtherType:
     :u16
     ipv4 = 0x0800

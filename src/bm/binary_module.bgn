@@ -343,11 +343,13 @@ format DecodeParamFlags:
     has_peek :u1
     has_eof :u1
     has_remain_bytes :u1
-    reserved :u4
+    has_sub_range :u1
+    reserved :u3
 
 format EncodeParamFlags:
     has_seek :u1
-    reserved :u7
+    has_sub_range :u1
+    reserved :u6
 
 # TODO: be recursive
 format Storage:
@@ -576,6 +578,7 @@ format Code:
             right_ref :Varint # ref to length
             endian :EndianExpr
             bit_size :Varint
+            belong :Varint # related field or null_id(for input.peek())
         AbstractOp.BIT_CAST:
             ident: Varint
             storage :Storages

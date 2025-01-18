@@ -13,3 +13,7 @@ This is aimed at improving flexibility and inter-language compatibility
 - C++ version is basically working but some bugs are remaining yet
 
 - Other languages are aimed to support in the future...
+
+# LICENSE
+
+MIT License

@@ -54,6 +54,9 @@ jobs:
         if: ${{ steps.cache_web.outputs.cache-hit }} == null
         run: |
           git clone https://github.com/on-keyday/utils.git
+          cd utils
+          . build wasm-em Release futils
+          cd ..
       - name: Build
         run: |
           chmod +x build.sh

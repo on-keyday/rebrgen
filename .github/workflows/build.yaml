@@ -54,6 +54,7 @@ jobs:
           git clone https://github.com/on-keyday/utils.git
       - name: Build
         run: |
+          chmod +x build.sh
           EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./build.sh web Release
           cp README.md web/
       - name: Upload Artifact

@@ -2,8 +2,8 @@
 
 RE:brgen (rebrgen) is a generator construction project for brgen(https://github.com/on-keyday/brgen)
 
-original brgen code generator is designed for AST-to-Code model
-rebrgen is for AST-to-VMCode-to-Code model
+while original brgen code generator is designed as AST-to-Code model,
+rebrgen is as AST-to-VMCode-to-Code model
 
 This is aimed at improving flexibility and inter-language compatibility
 

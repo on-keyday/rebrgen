@@ -6,6 +6,8 @@
 #include "convert.hpp"
 #include <file/file_stream.h>
 
+#include <fnet/util/base64.h>
+
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <tool/common/em_main.h>
@@ -20,13 +22,15 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view cfg_output;
     std::vector<std::string_view> args;
     bool print_parsed = false;
+    bool base64 = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
-        ctx.VarString<true>(&output, "o,output", "output file", "FILE");
+        ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
         ctx.VarBool(&print_parsed, "p,print-instructions", "print converted instructions");
+        ctx.VarBool(&base64, "base64", "base64 encode output");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -326,17 +330,54 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         rebgn::write_cfg(w, *m);
     }
     if (flags.output.size()) {
-        auto file = futils::file::File::create(flags.output);
-        if (!file) {
-            cerr << file.error().error<std::string>() << '\n';
-            return 1;
+        rebgn::Error err;
+        futils::file::FileError fserr;
+
+        auto get_fs_then = [&](auto&& then) {
+            if (flags.output == "-") {
+                futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
+                futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+                then(w, fs);
+            }
+            else {
+                auto file = futils::file::File::create(flags.output);
+                if (!file) {
+                    err = file.error();
+                    fserr = file.error();
+                    return;
+                }
+                futils::file::FileStream<std::string> fs{*file};
+                futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+                then(w, fs);
+            }
+        };
+        if (flags.base64) {
+            std::string buffer;
+            futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+            err = rebgn::save(*m, w);
+            if (err) {
+                cerr << err.error<std::string>() << '\n';
+                return 1;
+            }
+            std::string out;
+            if (!futils::base64::encode(buffer, out)) {
+                cerr << "base64 encode failed\n";
+                return 1;
+            }
+            get_fs_then([&](auto& w, auto& fs) {
+                w.write(out);
+                fserr = fs.error;
+            });
         }
-        futils::file::FileStream<std::string> fs{*file};
-        futils::binary::writer w{fs.get_direct_write_handler(), &fs};
-        auto err = rebgn::save(*m, w);
+        else {
+            get_fs_then([&](auto& w, auto& fs) {
+                err = rebgn::save(*m, w);
+                fserr = fs.error;
+            });
+        }
         if (err) {
-            if (fs.error.err_code != 0) {
-                cerr << fs.error.error<std::string>() << '\n';
+            if (fserr.err_code != 0) {
+                cerr << fserr.error<std::string>() << '\n';
             }
             cerr << err.error<std::string>() << '\n';
             return 1;

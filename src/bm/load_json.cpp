@@ -7,8 +7,8 @@
 namespace rebgn {
     rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input) {
         futils::file::View view;
-        if (!view.open(input)) {
-            return nullptr;
+        if (auto res = view.open(input); !res) {
+            return unexpect_error(Error(res.error()));
         }
         auto js = futils::json::parse<futils::json::JSON>(view, true);
         if (js.is_undef()) {

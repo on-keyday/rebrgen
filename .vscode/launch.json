@@ -50,6 +50,12 @@
             "console": "integratedTerminal",
             //"preLaunchTask": "build",
             //"symbolSearchPath": "lib\\"
+        },
+        {
+            "name": "Attach",
+            "type": "cppvsdbg",
+            "request": "attach",
+            "processId": "${command:pickProcess}",
         }
     ]
 }

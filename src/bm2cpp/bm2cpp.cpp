@@ -23,6 +23,8 @@ namespace bm2cpp {
         std::string ptr_type;
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
+        std::string bytes_type = "::futils::view::rvec";
+        std::string vector_type = "std::vector";
 
         std::vector<std::string> this_as;
         std::vector<std::pair<std::uint64_t, rebgn::PackedOpType>> bit_field_ident;
@@ -156,9 +158,9 @@ namespace bm2cpp {
             case rebgn::StorageType::VECTOR: {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
                 if (inner == "std::uint8_t") {
-                    return "::futils::view::rvec";
+                    return ctx.bytes_type;
                 }
-                return std::format("std::vector<{}>", inner);
+                return std::format("{}<{}>", ctx.vector_type, inner);
             }
             case rebgn::StorageType::BOOL:
                 return "bool";
@@ -1494,11 +1496,28 @@ namespace bm2cpp {
                         auto str = ctx.metadata_table[meta->name.value()];
                         if (str == "config.cpp.namespace" && meta->expr_refs.size() == 1) {
                             if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
-                                auto copy = found->second;
-                                copy.erase(copy.begin());
-                                copy.pop_back();
-                                ctx.cw.writeln("namespace ", copy, " {");
+                                ctx.cw.writeln("namespace ", found->second, " {");
                                 defer.push_back(ctx.cw.indent_scope_ex());
+                            }
+                        }
+                        if (str == "config.cpp.include") {
+                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                                ctx.cw.writeln("#include \"", found->second, "\"");
+                            }
+                        }
+                        if (str == "config.cpp.sys_include") {
+                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                                ctx.cw.writeln("#include <", found->second, ">");
+                            }
+                        }
+                        if (str == "config.cpp.bytes_type") {
+                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                                ctx.bytes_type = found->second;
+                            }
+                        }
+                        if (str == "config.cpp.vector_type") {
+                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                                ctx.vector_type = found->second;
                             }
                         }
                         break;

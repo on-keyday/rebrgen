@@ -1,5 +1,5 @@
 # costom boilerplate file from sisakulint
-name: sample deploy to GitHub Pages
+name: Deploy
 
 on:
   # Trigger the workflow every time you push to the main branch

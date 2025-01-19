@@ -364,6 +364,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 cerr << "base64 encode failed\n";
                 return 1;
             }
+            out.push_back('\n');  // for compatibility with text editors
             get_fs_then([&](auto& w, auto& fs) {
                 w.write(out);
                 fserr = fs.error;

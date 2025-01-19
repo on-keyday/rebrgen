@@ -1,7 +1,7 @@
 @echo off
 setlocal
 call build.bat
-set INPUT=full_networks.bgn
+set INPUT=../bm/binary_module.bgn
 C:\workspace\shbrgen\brgen\tool\src2json src/test/%INPUT% > save/sample.json
 tool\bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt
 tool\bmgen -p -i save/sample.json --print-only-op > save/save_op.txt

@@ -2324,7 +2324,7 @@ namespace bm2rust {
                                 auto str_ref = bm.code[j].right_ref().value().value();
                                 if (str_ref != 0) {
                                     auto str = ctx.string_table[str_ref];
-                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", ", str, "),");
+                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", \"", str, "\"),");
                                 }
                                 else {
                                     ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", \"", member, "\"),");

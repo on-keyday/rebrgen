@@ -1487,6 +1487,7 @@ namespace bm2cpp {
         }
         ctx.cw.writeln("#include <binary/number.h>");
         std::vector<futils::helper::DynDefer> defer;
+        std::string namespace_name;
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
                 auto& code = bm.code[i];
@@ -1496,8 +1497,7 @@ namespace bm2cpp {
                         auto str = ctx.metadata_table[meta->name.value()];
                         if (str == "config.cpp.namespace" && meta->expr_refs.size() == 1) {
                             if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
-                                ctx.cw.writeln("namespace ", found->second, " {");
-                                defer.push_back(ctx.cw.indent_scope_ex());
+                                namespace_name = found->second;
                             }
                         }
                         if (str == "config.cpp.include") {
@@ -1522,6 +1522,17 @@ namespace bm2cpp {
                         }
                         break;
                     }
+                }
+            }
+        }
+        if (namespace_name.size() > 0) {
+            ctx.cw.writeln("namespace ", namespace_name, " {");
+            defer.push_back(ctx.cw.indent_scope_ex());
+        }
+        for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
+            for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
+                auto& code = bm.code[i];
+                switch (code.op) {
                     case rebgn::AbstractOp::DECLARE_FORMAT:
                     case rebgn::AbstractOp::DECLARE_STATE: {
                         auto& ident = ctx.ident_table[code.ref().value().value()];

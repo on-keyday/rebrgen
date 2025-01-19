@@ -243,7 +243,13 @@ namespace rebgn {
             if (!ident) {
                 return new_id(nullptr);  // ephemeral id
             }
-            auto [base, _] = *ast::tool::lookup_base(ident);
+            std::shared_ptr<ast::Ident> base;
+            if (!ident->base.lock()) {  // for unresolved ident
+                base = ident;
+            }
+            else {
+                std::tie(base, std::ignore) = *ast::tool::lookup_base(ident);
+            }
             auto it = ident_table.find(base);
             if (it == ident_table.end()) {
                 auto id = new_node_id(base);

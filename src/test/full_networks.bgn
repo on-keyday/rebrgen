@@ -1,5 +1,5 @@
 # 1. Ethernet 
-
+config.url = "https://en.wikipedia.org/wiki/Ethernet_frame#Structure"
 
 enum EtherType:
     :u16
@@ -41,7 +41,8 @@ format EthernetFrame:
 
 
 # 2. ARP
-
+config.url = "https://ja.wikipedia.org/wiki/Address_Resolution_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc826"
 
 # ArpPacket 
 # arp packet is used to resolve ip address to mac address
@@ -68,6 +69,8 @@ format ArpPacket:
 
 
 # 3. IPv4
+config.url = "https://ja.wikipedia.org/wiki/IPv4"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc791"
 
 format IPv4Header:
     version :u4 ihl :u4 dscp :u6 ecn :u2 len :u16
@@ -83,14 +86,7 @@ format IPv4Packet:
     len ::= hdr.len - u16(hdr.ihl*4) 
     data :[len]u8
 
-format IPv6Header:
-    version :u4 
-    trafficClass :u8 flowLabel :u20
-    payloadLen :u16
-    nextHeader :ProtocolNumber
-    hopLimit :u8
-    srcAddr :[16]u8
-    dstAddr :[16]u8
+
 
 enum ProtocolNumber:
     :u8
@@ -131,7 +127,25 @@ fn checkSum(data :[]u8) -> u16:
         sum = (sum & 0xffff) + (sum >> 16)
     return u16(!sum)
 
+format IPv4PseudoHeader:
+    srcAddr :[4]u8
+    dstAddr :[4]u8
+    zero :u8
+    protocol :ProtocolNumber
+    length :u16
+
 # 4. IPv6
+config.url = "https://ja.wikipedia.org/wiki/IPv6"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc8200"
+
+format IPv6Header:
+    version :u4 
+    trafficClass :u8 flowLabel :u20
+    payloadLen :u16
+    nextHeader :ProtocolNumber
+    hopLimit :u8
+    srcAddr :[16]u8
+    dstAddr :[16]u8
 
 format HopByHopOptionHeader:
     nextHeader :ProtocolNumber 
@@ -171,17 +185,12 @@ format IPv6ChecksumPseudoHeader:
     zero :u24
     nextHeader :ProtocolNumber
 
-format IPv4PseudoHeader:
-    srcAddr :[4]u8
-    dstAddr :[4]u8
-    zero :u8
-    protocol :ProtocolNumber
-    length :u16
 
 # 5. UDP 
+config.url = "https://ja.wikipedia.org/wiki/User_Datagram_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc768"
 
 format UDPHeader:
-    config.rfc = "https://datatracker.ietf.org/doc/html/rfc768"
     src_port :u16
     dst_port :u16
     length  :u16
@@ -192,8 +201,9 @@ format UDPDatagram:
     data :[header.length-8]u8
 
 
-# 6. DHCP 
-
+# 6. DHCPv4 
+config.url = "https://ja.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc2131"
 
 DHCP_MAGIC ::= 0x63825363
 
@@ -290,7 +300,8 @@ format Option:
 
 
 # 7. DNS 
-
+config.url = "https://ja.wikipedia.org/wiki/Domain_Name_System"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc1035"
 
 enum DNSOpCode:
     :u4
@@ -386,7 +397,12 @@ format DNSMessage:
     additionals :[header.additional_count]DNSResourceRecord
 
 
-# 8. ICMP/9. NDP
+# 8. ICMPv4&v6/9. NDP
+config.url = "https://ja.wikipedia.org/wiki/Internet_Control_Message_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc792"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc4443"
+config.url = "https://en.wikipedia.org/wiki/Neighbor_Discovery_Protocol#Messages_formats"
+
 
 format ICMPHeader:
     type: u8
@@ -729,6 +745,8 @@ enum ICMPv6ParameterProblemCode:
     unrecognized_ipv6_option
 
 # 10. TCP 
+config.url = "https://ja.wikipedia.org/wiki/Transmission_Control_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc9293"
 
 format TCPHeader:
     srcPort :u16
@@ -812,8 +830,10 @@ format Timestamp:
     value :u32
     echoReply :u32
 
-# 11. HTTP
+# 11. HTTP/1.1
 
+config.url = "https://ja.wikipedia.org/wiki/Hypertext_Transfer_Protocol"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc9112"
 
 format RequestLine:
     method :[..]u8
@@ -848,7 +868,8 @@ format ResponseHeader:
     :"\r\n"
 
 # 12. WebSocket
-
+config.url = "https://ja.wikipedia.org/wiki/WebSocket"
+config.rfc = "https://datatracker.ietf.org/doc/html/rfc6455"
 
 enum WebSocketOpCode:
     :u4

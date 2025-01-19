@@ -1,4 +1,4 @@
-# Ethernet frame format
+# 1. Ethernet 
 
 
 enum EtherType:
@@ -40,7 +40,7 @@ format EthernetFrame:
         data :[len]u8
 
 
-# ARP packet format
+# 2. ARP
 
 
 # ArpPacket 
@@ -67,7 +67,7 @@ format ArpPacket:
 
 
 
-# IPv4/IPv6 packet format
+# 3. IPv4
 
 format IPv4Header:
     version :u4 ihl :u4 dscp :u6 ecn :u2 len :u16
@@ -131,6 +131,8 @@ fn checkSum(data :[]u8) -> u16:
         sum = (sum & 0xffff) + (sum >> 16)
     return u16(!sum)
 
+# 4. IPv6
+
 format HopByHopOptionHeader:
     nextHeader :ProtocolNumber 
     hdrExtLen :u8
@@ -176,7 +178,7 @@ format IPv4PseudoHeader:
     protocol :ProtocolNumber
     length :u16
 
-# UDP 
+# 5. UDP 
 
 format UDPHeader:
     config.rfc = "https://datatracker.ietf.org/doc/html/rfc768"
@@ -190,7 +192,7 @@ format UDPDatagram:
     data :[header.length-8]u8
 
 
-# DHCP 
+# 6. DHCP 
 
 
 DHCP_MAGIC ::= 0x63825363
@@ -287,7 +289,7 @@ format Option:
             data :[len]u8
 
 
-# DNS 
+# 7. DNS 
 
 
 enum DNSOpCode:
@@ -384,7 +386,7 @@ format DNSMessage:
     additionals :[header.additional_count]DNSResourceRecord
 
 
-# ICMP/NDP
+# 8. ICMP/9. NDP
 
 format ICMPHeader:
     type: u8
@@ -726,7 +728,7 @@ enum ICMPv6ParameterProblemCode:
     unrecognized_next_header
     unrecognized_ipv6_option
 
-# TCP 
+# 10. TCP 
 
 format TCPHeader:
     srcPort :u16
@@ -810,7 +812,7 @@ format Timestamp:
     value :u32
     echoReply :u32
 
-# HTTP
+# 11. HTTP
 
 
 format RequestLine:
@@ -845,7 +847,7 @@ format ResponseHeader:
     fields :[..]Field
     :"\r\n"
 
-# WebSocket
+# 12. WebSocket
 
 
 enum WebSocketOpCode:
@@ -857,7 +859,7 @@ enum WebSocketOpCode:
     Ping = 0x9
     Pong = 0xA
 
-format Frame:
+format WebSocketFrame:
     FIN :u1
     RSV1 :u1
     RSV2 :u1

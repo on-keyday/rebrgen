@@ -144,7 +144,14 @@ namespace rebgn {
                     return len_init.error();
                 }
                 Storages s;
-                auto err = define_storage(m, s, arr->length->expr_type);
+                auto expr_type = arr->length->expr_type;
+                if (auto u = ast::as<ast::UnionType>(expr_type)) {
+                    if (!u->common_type) {
+                        return error("Union type must have common type");
+                    }
+                    expr_type = u->common_type;
+                }
+                auto err = define_storage(m, s, expr_type);
                 if (err) {
                     return err;
                 }
@@ -664,7 +671,14 @@ namespace rebgn {
                     return id.error();
                 }
                 Storages s;
-                auto err = define_storage(m, s, arr->length->expr_type);
+                auto expr_type = arr->length->expr_type;
+                if (auto u = ast::as<ast::UnionType>(expr_type)) {
+                    if (!u->common_type) {
+                        return error("Union type must have common type");
+                    }
+                    expr_type = u->common_type;
+                }
+                auto err = define_storage(m, s, expr_type);
                 if (err) {
                     return err;
                 }

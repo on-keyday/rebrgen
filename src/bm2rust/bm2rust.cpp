@@ -1789,6 +1789,7 @@ namespace bm2rust {
                     }
                     break;
                 }
+                case rebgn::AbstractOp::ENCODE_INT_VECTOR_FIXED:
                 case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
                     auto bit_size = code.bit_size().value().value();
                     auto ref_to_vec = code.left_ref().value().value();
@@ -1796,17 +1797,19 @@ namespace bm2rust {
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
                     auto belong_name = get_belong_name(ctx, code);
-                    w.writeln(std::format("if({}.len() != {} as usize) {{", vec.back(), len.back()));
-                    auto scope = w.indent_scope();
-                    w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"encode ", belong_name, "\",", vec.back(), ".len(),", len.back(), " as usize));");
-                    scope.execute();
-                    w.writeln("}");
+                    if (code.op == rebgn::AbstractOp::ENCODE_INT_VECTOR) {
+                        w.writeln(std::format("if({}.len() != {} as usize) {{", vec.back(), len.back()));
+                        auto scope = w.indent_scope();
+                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"encode ", belong_name, "\",", vec.back(), ".len(),", len.back(), " as usize));");
+                        scope.execute();
+                        w.writeln("}");
+                    }
                     if (bit_size == 8) {
-                        w.writeln("w.write_all(&", vec.back(), ")", map_io_error(ctx, belong_name), ";");
+                        w.writeln("w.write_all(&", vec.back(), "[0..", len.back(), " as usize]", ")", map_io_error(ctx, belong_name), ";");
                     }
                     else {
                         auto tmp = std::format("i_{}", ref_to_vec);
-                        w.writeln("for & ", tmp, " in ", vec.back(), " {");
+                        w.writeln("for & ", tmp, " in ", vec.back(), "[0..", len.back(), " as usize]", " {");
                         auto scope = w.indent_scope();
                         serialize(ctx, w, bit_size, tmp, belong_name, code.endian().value());
                         scope.execute();
@@ -1903,7 +1906,7 @@ namespace bm2rust {
                     }
                     if (bit_size == 8) {
                         if (is_fixed) {
-                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("{}.read_exact(&mut {}[0..{}]){};", ctx.r(), vec.back(), len.back(), map_io_error(ctx, belong_name)));
                         }
                         else {
                             w.writeln(std::format("{}.resize({} as usize,0);", vec.back(), len.back()));

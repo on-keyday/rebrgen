@@ -11,6 +11,55 @@ namespace rebgn {
         return *m.lookup_ident(field->ident);
     }
 
+    expected<Varint> get_alignment_requirement(Module& m, ast::ArrayType* arr, ast::Field* field) {
+        auto ident = m.new_node_id(arr->length);
+        if (!ident) {
+            return ident;
+        }
+        m.op(AbstractOp::BYTE_OFFSET, [&](Code& c) {
+            c.ident(*ident);
+        });
+        auto imm_alignment = immediate(m, *field->arguments->alignment_value / 8);
+        if (!imm_alignment) {
+            return imm_alignment;
+        }
+        auto mod = m.new_id(nullptr);
+        if (!mod) {
+            return unexpect_error("Failed to generate new id");
+        }
+        // current size % alignment
+        m.op(AbstractOp::BINARY, [&](Code& c) {
+            c.ident(*mod);
+            c.bop(BinaryOp::mod);
+            c.left_ref(*ident);
+            c.right_ref(*imm_alignment);
+        });
+        auto cmp = m.new_id(nullptr);
+        auto imm_zero = immediate(m, 0);
+        if (!imm_zero) {
+            return imm_zero;
+        }
+        // alignment - (size % alignment)
+        m.op(AbstractOp::BINARY, [&](Code& c) {
+            c.ident(*cmp);
+            c.bop(BinaryOp::sub);
+            c.left_ref(*imm_alignment);
+            c.right_ref(*mod);
+        });
+        auto req_size = m.new_id(nullptr);
+        if (!req_size) {
+            return unexpect_error("Failed to generate new id");
+        }
+        // (alignment - (size % alignment)) % alignment
+        m.op(AbstractOp::BINARY, [&](Code& c) {
+            c.ident(*req_size);
+            c.bop(BinaryOp::mod);
+            c.left_ref(*ident);
+            c.right_ref(*imm_alignment);
+        });
+        return define_int_tmp_var(m, *req_size, ast::ConstantLevel::variable);
+    }
+
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
             auto bit_size = varint(*int_ty->bit_size);
@@ -137,6 +186,20 @@ namespace rebgn {
                     c.ident(*len_);
                     c.ref(base_ref);
                 });
+                if (is_alignment_vector(field)) {
+                    auto req_size = get_alignment_requirement(m, arr, field);
+                    if (!req_size) {
+                        return req_size.error();
+                    }
+                    m.op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c) {
+                        c.left_ref(base_ref);
+                        c.right_ref(*req_size);
+                        c.endian(*m.get_endian(Endian::unspec));
+                        c.bit_size(*varint(8));
+                        c.belong(get_field_ref(m, field));
+                    });
+                    return none;
+                }
             }
             else {
                 auto len_init = get_expr(m, arr->length);
@@ -450,7 +513,20 @@ namespace rebgn {
             };
             if (ast::is_any_range(arr->length)) {
                 if (field) {
-                    if (field->eventual_follow == ast::Follow::end) {
+                    if (is_alignment_vector(field)) {
+                        auto req_size = get_alignment_requirement(m, arr, field);
+                        if (!req_size) {
+                            return req_size.error();
+                        }
+                        m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
+                            c.left_ref(base_ref);
+                            c.right_ref(*req_size);
+                            c.endian(*m.get_endian(Endian::unspec));
+                            c.bit_size(*varint(8));
+                            c.belong(get_field_ref(m, field));
+                        });
+                    }
+                    else if (field->eventual_follow == ast::Follow::end) {
                         if (elem_is_int) {
                             auto endian = m.get_endian(Endian(elem_is_int->endian));
                             if (!endian) {

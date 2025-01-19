@@ -1017,6 +1017,24 @@ namespace rebgn {
         return none;
     }
 
+    bool is_alignment_vector(ast::Field* t) {
+        if (!t) {
+            return false;
+        }
+        if (auto arr = ast::as<ast::ArrayType>(t->field_type)) {
+            auto elm_is_int = ast::as<ast::IntType>(arr->element_type);
+            if (elm_is_int && !elm_is_int->is_signed &&
+                elm_is_int->bit_size == 8 &&
+                t->arguments &&
+                t->arguments->alignment_value &&
+                *t->arguments->alignment_value != 0 &&
+                *t->arguments->alignment_value % 8 == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     template <>
     Error define<ast::Field>(Module& m, std::shared_ptr<ast::Field>& node) {
         if (!node->ident) {
@@ -1059,14 +1077,27 @@ namespace rebgn {
                     c.ident(*ident);
                     c.belong(parent);
                 });
-                Storages s;
-                auto err = define_storage(m, s, node->field_type, true);
-                if (err) {
-                    return err;
+                if (is_alignment_vector(node.get())) {
+                    // alignment vector should have alignment byte - 1 array
+                    Storages s;
+                    s.storages.push_back(Storage{.type = StorageType::ARRAY});
+                    s.storages.push_back(Storage{.type = StorageType::UINT});
+                    s.storages[0].size(*varint(*node->arguments->alignment_value / 8 - 1));
+                    s.storages[1].size(*varint(8));
+                    m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                        c.storage(std::move(s));
+                    });
                 }
-                m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                    c.storage(std::move(s));
-                });
+                else {
+                    Storages s;
+                    auto err = define_storage(m, s, node->field_type, true);
+                    if (err) {
+                        return err;
+                    }
+                    m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+                        c.storage(std::move(s));
+                    });
+                }
                 m.op(AbstractOp::END_FIELD);
             }
             else {

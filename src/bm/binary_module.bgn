@@ -158,9 +158,10 @@ enum AbstractOp:
     ENCODE_INT
     DECODE_INT
     ENCODE_INT_VECTOR
+    ENCODE_INT_VECTOR_FIXED # must use length for fixed size (for example, alignment sub byte)
     DECODE_INT_VECTOR
     DECODE_INT_VECTOR_UNTIL_EOF
-    DECODE_INT_VECTOR_FIXED
+    DECODE_INT_VECTOR_FIXED # must use length for fixed size (for example, alignment sub byte)
     PEEK_INT_VECTOR
     BACKWARD_INPUT
     BACKWARD_OUTPUT
@@ -344,12 +345,14 @@ format DecodeParamFlags:
     has_eof :u1
     has_remain_bytes :u1
     has_sub_range :u1
-    reserved :u3
+    has_offset :u1
+    reserved :u2
 
 format EncodeParamFlags:
     has_seek :u1
     has_sub_range :u1
-    reserved :u6
+    has_offset :u1
+    reserved :u5
 
 # TODO: be recursive
 format Storage:
@@ -551,15 +554,21 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+        AbstractOp.ENCODE_INT_VECTOR_FIXED:
+            left_ref :Varint # ref to vector
+            right_ref :Varint # ref to length (length may be less than array size)
+            endian :EndianExpr
+            bit_size :Varint
+            belong :Varint # related field or null_id(for output.put())
         AbstractOp.DECODE_INT_VECTOR:
             left_ref :Varint # ref to vector
-            right_ref :Varint # ref to length
+            right_ref :Varint # ref to length 
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
         AbstractOp.DECODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
-            right_ref :Varint # ref to length
+            right_ref :Varint # ref to length (length may be less than array size)
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())

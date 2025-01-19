@@ -26,6 +26,7 @@ namespace rebgn {
     expected<Varint> define_counter(Module& m, std::uint64_t init);
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
+    bool is_alignment_vector(ast::Field* t);
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);

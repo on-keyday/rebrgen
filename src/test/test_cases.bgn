@@ -703,3 +703,17 @@ enum EdgeEnum:
 format Edge:
     edge :EdgeEnum
     reserved :u7    
+
+
+format NetLinkHeader:
+    len :u32
+    type :u16
+    flags :u16
+    seq :u32
+    pid :u32
+
+format NetLinkMessage:
+    hdr : NetLinkHeader
+    hdr.len >= 16
+    data :[hdr.len - 16]u8
+    align :[..]u8(input.align = 32) # Align to 32-bit boundary

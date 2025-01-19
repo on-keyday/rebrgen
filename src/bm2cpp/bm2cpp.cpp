@@ -1207,7 +1207,7 @@ namespace bm2cpp {
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
                     if (bit_size == 8) {
                         if (code.op == rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED) {
-                            ctx.cw.writeln(std::format("if(!r.read({})) {{ return false; }}", vec.back()));
+                            ctx.cw.writeln(std::format("if(!r.read(::futils::view::wvec({}).substr(0,{}))) {{ return false; }}", vec.back(), len.back()));
                         }
                         else {
                             ctx.cw.writeln(std::format("if(!r.read({},{})) {{ return false; }}", vec.back(), len.back()));

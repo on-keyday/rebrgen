@@ -424,8 +424,8 @@ namespace rebgn {
 
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node) {
         std::string candidate;
-        if (!futils::base64::decode(node->base64_value, candidate)) {
-            return unexpect_error("Invalid base64 string: {}", node->base64_value);
+        if (!futils::base64::decode(node->binary_value, candidate)) {
+            return unexpect_error("Invalid base64 string: {}", node->binary_value);
         }
         auto str_ref = m.lookup_string(candidate, &node->loc);
         if (!str_ref) {

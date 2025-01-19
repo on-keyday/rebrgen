@@ -41,6 +41,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     futils::binary::reader r{view};
     auto err = bm.decode(r);
     if (err) {
+        rebgn::AbstractOp prev_op = rebgn::AbstractOp::DEFINE_PROGRAM;
+        for (auto& c : bm.code) {
+            cout << to_string(c.op) << '\n';
+            if (c.op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
+                ;
+            }
+            prev_op = c.op;
+        }
         cout << err.error<std::string>() << '\n';
         return 1;
     }

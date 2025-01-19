@@ -581,7 +581,7 @@ namespace rebgn {
             c.type = t;
             set(c);
             s.storages.push_back(c);
-            s.length.value(s.length.value() + 1);
+            s.length = *varint(s.storages.size());
         };
         auto typ_with_size = [&](StorageType t, auto&& typ) {
             if (!typ->bit_size) {

@@ -23,6 +23,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::vector<std::string_view> args;
     bool print_parsed = false;
     bool base64 = false;
+    bool print_only_op = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -31,6 +32,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
         ctx.VarBool(&print_parsed, "p,print-instructions", "print converted instructions");
         ctx.VarBool(&base64, "base64", "base64 encode output");
+        ctx.VarBool(&print_only_op, "print-only-op", "print only op code(for debug)");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -317,7 +319,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 1;
     }
     if (flags.print_parsed) {
-        rebgn::print_code(*m);
+        if (flags.print_only_op) {
+            for (auto& c : m->code) {
+                cout << to_string(c.op) << '\n';
+            }
+        }
+        else {
+            rebgn::print_code(*m);
+        }
     }
     if (flags.cfg_output.size()) {
         auto file = futils::file::File::create(flags.cfg_output);

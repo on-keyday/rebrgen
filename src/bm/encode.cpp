@@ -962,6 +962,7 @@ namespace rebgn {
                 },
             });
         });
+        m.on_encode_fn = true;
         m.init_phi_stack(0);  // make it temporary
         auto f = m.enter_function(*new_id);
         auto err = foreach_node(m, node->body->elements, [&](auto& n) {

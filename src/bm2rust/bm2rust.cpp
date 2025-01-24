@@ -73,6 +73,7 @@ namespace bm2rust {
 
         bool use_async = false;
         bool use_buf_read_peek = false;
+        bool use_copy_on_write_vec = false;
 
         std::string BufReader = "std::io::BufReader";
         std::string Read = "std::io::Read";
@@ -117,6 +118,13 @@ namespace bm2rust {
     }
 
     constexpr auto rust_impl_Default_threshold = 32;
+
+    std::string get_vec_type(Context& ctx, const std::string& inner) {
+        if (ctx.use_copy_on_write_vec) {
+            return std::format("std::borrow::Cow<[{}]>", inner);
+        }
+        return std::format("std::vec::Vec<{}>", inner);
+    }
 
     std::string type_to_string(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
         if (s.storages.size() <= index) {
@@ -232,13 +240,13 @@ namespace bm2rust {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
                 auto type = std::format("[{}; {}]", inner, size);
                 if (size > rust_impl_Default_threshold) {
-                    return std::format("std::vec::Vec<{}>", inner);
+                    return get_vec_type(ctx, inner);
                 }
                 return type;
             }
             case rebgn::StorageType::VECTOR: {
                 auto inner = type_to_string(ctx, s, bit_size, index + 1);
-                return std::format("std::vec::Vec<{}>", inner);
+                return get_vec_type(ctx, inner);
             }
             case rebgn::StorageType::BOOL:
                 return "bool";
@@ -2162,7 +2170,7 @@ namespace bm2rust {
         w.writeln("}");
     }
 
-    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, bool enable_async) {
+    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx(w, bm);
         bool has_error = false;
         for (auto& sr : bm.strings.refs) {
@@ -2236,9 +2244,10 @@ namespace bm2rust {
         else {
             write_error_type(ctx, ctx.cw, "Error");
         }
-        if (enable_async) {
+        if (flags.enable_async) {
             ctx.enable_async();
         }
+        ctx.use_copy_on_write_vec = flags.use_copy_on_write;
         std::vector<futils::helper::DynDefer> defer;
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
@@ -2265,6 +2274,11 @@ namespace bm2rust {
                         if (meta_str == "config.rust.buf_reader_peek") {
                             check_bool([&] {
                                 ctx.use_buf_read_peek = true;
+                            });
+                        }
+                        if (meta_str == "config.rust.copy_on_write_vector") {
+                            check_bool([&] {
+                                ctx.use_copy_on_write_vec = true;
                             });
                         }
                         break;

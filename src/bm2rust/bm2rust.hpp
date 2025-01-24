@@ -4,6 +4,9 @@
 #include <bm/binary_module.hpp>
 
 namespace bm2rust {
-
-    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, bool enable_async);
+    struct Flags {
+        bool enable_async = false;
+        bool use_copy_on_write = false;
+    };
+    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags);
 }  // namespace bm2rust

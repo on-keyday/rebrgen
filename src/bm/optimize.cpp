@@ -1255,7 +1255,8 @@ namespace rebgn {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::CALL_CAST: {
-                for (auto&& p : code.param().value().expr_refs) {
+                auto param = code.param().value();
+                for (auto&& p : param.expr_refs) {
                     auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.value()]], variables);
                     if (err) {
                         return err;

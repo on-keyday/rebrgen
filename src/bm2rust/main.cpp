@@ -16,13 +16,14 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::vector<std::string_view> args;
-    bool enable_async = false;
+    bm2rust::Flags bm2rust_flags;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file", "FILE");
-        ctx.VarBool(&enable_async, "async", "enable async");
+        ctx.VarBool(&bm2rust_flags.enable_async, "async", "enable async");
+        ctx.VarBool(&bm2rust_flags.use_copy_on_write, "copy-on-write", "use copy-on-write vectors");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -54,7 +55,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
     futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
     futils::binary::writer w{fs.get_direct_write_handler(), &fs};
-    bm2rust::to_rust(w, bm, flags.enable_async);
+    bm2rust::to_rust(w, bm, flags.bm2rust_flags);
 
     return 0;
 }

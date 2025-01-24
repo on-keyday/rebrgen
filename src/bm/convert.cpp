@@ -729,19 +729,23 @@ namespace rebgn {
         return error("unsupported type on define storage: {}", node_type_to_string(typ->node_type));
     }
 
+    expected<Varint> define_expr_variable(Module& m, const std::shared_ptr<ast::Expr>& cond) {
+        auto cond_ = get_expr(m, cond);
+        if (!cond_) {
+            return unexpect_error("Invalid union field condition");
+        }
+        Storages s;
+        auto err = define_storage(m, s, cond->expr_type);
+        if (err) {
+            return unexpect_error(std::move(err));
+        }
+        return define_typed_tmp_var(m, cond_.value(), std::move(s), ast::ConstantLevel::immutable_variable);
+    }
+
     Error handle_union_type(Module& m, const std::shared_ptr<ast::UnionType>& ty, auto&& block) {
         std::optional<Varint> base_cond;
         if (auto cond = ty->cond.lock()) {
-            auto cond_ = get_expr(m, cond);
-            if (!cond_) {
-                return error("Invalid union field condition");
-            }
-            Storages s;
-            auto err = define_storage(m, s, cond->expr_type);
-            if (err) {
-                return err;
-            }
-            auto tmp_var = define_typed_tmp_var(m, cond_.value(), std::move(s), ast::ConstantLevel::variable);
+            auto tmp_var = define_expr_variable(m, cond);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -752,22 +756,41 @@ namespace rebgn {
             auto cond = c->cond.lock();
             auto field = c->field.lock();
             if (cond && !ast::is_any_range(cond)) {
-                auto origCond = get_expr(m, cond);
-                if (!origCond) {
-                    return error("Invalid union field condition");
-                }
-                if (base_cond) {
-                    auto new_id = m.new_id(nullptr);
-                    if (!new_id) {
-                        return new_id.error();
+                auto maybe_range = ast::as<ast::Range>(ast::as<ast::Identity>(cond)->expr);
+                Varint origCond;
+                if (maybe_range) {
+                    if (!base_cond) {
+                        return error("Invalid union field condition");
                     }
-                    m.op(AbstractOp::BINARY, [&](Code& c) {
-                        c.ident(*new_id);
-                        c.bop(BinaryOp::equal);
-                        c.left_ref(*base_cond);
-                        c.right_ref(*origCond);
-                    });
-                    origCond = new_id;
+                    auto err = do_range_compare(m, BinaryOp::equal, maybe_range, *base_cond);
+                    if (err) {
+                        return err;
+                    }
+                    auto ok = m.get_prev_expr();
+                    if (!ok) {
+                        return ok.error();
+                    }
+                    origCond = ok.value();
+                }
+                else {
+                    auto cond2 = get_expr(m, cond);
+                    if (!cond2) {
+                        return error("Invalid union field condition");
+                    }
+                    origCond = cond2.value();
+                    if (base_cond) {
+                        auto new_id = m.new_id(nullptr);
+                        if (!new_id) {
+                            return new_id.error();
+                        }
+                        m.op(AbstractOp::BINARY, [&](Code& c) {
+                            c.ident(*new_id);
+                            c.bop(BinaryOp::equal);
+                            c.left_ref(*base_cond);
+                            c.right_ref(origCond);
+                        });
+                        origCond = *new_id;
+                    }
                 }
                 auto cond_ = origCond;
                 if (prev_cond) {
@@ -778,15 +801,15 @@ namespace rebgn {
                     m.op(AbstractOp::NOT_PREV_THEN, [&](Code& c) {
                         c.ident(*new_id_2);
                         c.left_ref(*prev_cond);
-                        c.right_ref(*cond_);
+                        c.right_ref(cond_);
                     });
-                    cond_ = new_id_2;
+                    cond_ = *new_id_2;
                 }
-                auto err = block(cond_.value(), origCond.value(), field);
+                auto err = block(cond_, origCond, field);
                 if (err) {
                     return err;
                 }
-                prev_cond = cond_.value();
+                prev_cond = cond_;
             }
             else {
                 auto new_id = m.new_id(nullptr);
@@ -1539,6 +1562,114 @@ namespace rebgn {
         return false;
     }
 
+    bool is_range_compare(const std::shared_ptr<ast::Node>& node) {
+        if (auto binary = ast::as<ast::Binary>(node)) {
+            if (binary->op == ast::BinaryOp::equal || binary->op == ast::BinaryOp::not_equal) {
+                if (ast::as<ast::Range>(binary->left) || ast::as<ast::Range>(binary->right)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    Error do_range_compare(Module& m, BinaryOp op, ast::Range* range, Varint expr_) {
+        std::optional<Varint> start, end;
+        if (range->start) {
+            auto start_ = get_expr(m, range->start);
+            if (!start_) {
+                return start_.error();
+            }
+            start = start_.value();
+        }
+        if (range->end) {
+            auto end_ = get_expr(m, range->end);
+            if (!end_) {
+                return end_.error();
+            }
+            end = end_.value();
+        }
+        Varint new_id;
+        if (start) {
+            auto id = m.new_node_id(range->start);
+            if (!id) {
+                return id.error();
+            }
+            m.op(AbstractOp::BINARY, [&](Code& c) {
+                c.ident(*id);
+                c.bop(BinaryOp::less_or_eq);
+                c.left_ref(*start);
+                c.right_ref(expr_);
+            });
+            new_id = *id;
+        }
+        if (end) {
+            auto id = m.new_node_id(range->end);
+            if (!id) {
+                return id.error();
+            }
+            m.op(AbstractOp::BINARY, [&](Code& c) {
+                c.ident(*id);
+                c.bop(BinaryOp::less_or_eq);
+                c.left_ref(expr_);
+                c.right_ref(*end);
+            });
+            if (new_id.value() != 0) {
+                auto new_id_2 = m.new_id(nullptr);
+                if (!new_id_2) {
+                    return new_id_2.error();
+                }
+                m.op(AbstractOp::BINARY, [&](Code& c) {
+                    c.ident(*new_id_2);
+                    c.bop(BinaryOp::logical_and);
+                    c.left_ref(new_id);
+                    c.right_ref(*id);
+                });
+                new_id = new_id_2.value();
+            }
+            else {
+                new_id = *id;
+            }
+        }
+        if (op == BinaryOp::not_equal) {
+            auto new_id_2 = m.new_id(nullptr);
+            if (!new_id_2) {
+                return new_id_2.error();
+            }
+            m.op(AbstractOp::UNARY, [&](Code& c) {
+                c.ident(*new_id_2);
+                c.uop(UnaryOp::logical_not);
+                c.ref(new_id);
+            });
+            new_id = new_id_2.value();
+        }
+        m.set_prev_expr(new_id.value());
+        return none;
+    }
+
+    Error do_range_compare(Module& m, BinaryOp op, std::shared_ptr<ast::Expr>& left, std::shared_ptr<ast::Expr>& right) {
+        assert(op == BinaryOp::equal || op == BinaryOp::not_equal);
+        assert(ast::as<ast::Range>(left) || ast::as<ast::Range>(right));
+        if (ast::as<ast::Range>(left) && ast::as<ast::Range>(right)) {
+            return error("Currently, range comparison is not supported");
+        }
+        auto l_range = ast::as<ast::Range>(left);
+        auto r_range = ast::as<ast::Range>(right);
+        auto do_compare = [&](ast::Range* range, const std::shared_ptr<ast::Expr>& expr) {
+            auto expr_ = get_expr(m, expr);
+            if (!expr_) {
+                return expr_.error();
+            }
+            return do_range_compare(m, op, range, expr_.value());
+        };
+        if (l_range) {
+            return do_compare(l_range, right);
+        }
+        else {
+            return do_compare(r_range, left);
+        }
+    }
+
     template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
         if (node->op == ast::BinaryOp::define_assign ||
@@ -1591,6 +1722,9 @@ namespace rebgn {
                 c.right_ref(*right_ref);
             });
             return none;
+        }
+        if (is_range_compare(node)) {
+            return do_range_compare(m, BinaryOp(node->op), node->left, node->right);
         }
         auto left_ref = get_expr(m, node->left);
         if (!left_ref) {

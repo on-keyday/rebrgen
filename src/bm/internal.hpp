@@ -27,6 +27,10 @@ namespace rebgn {
     Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
     bool is_alignment_vector(ast::Field* t);
+    bool is_range_compare(const std::shared_ptr<ast::Node>& node);
+    Error do_range_compare(Module& m, BinaryOp op, ast::Range* range, Varint expr_);
+    Error do_range_compare(Module& m, BinaryOp op, std::shared_ptr<ast::Expr>& left, std::shared_ptr<ast::Expr>& right);
+    expected<Varint> define_expr_variable(Module& m, const std::shared_ptr<ast::Expr>& cond);
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive);
@@ -280,6 +284,29 @@ namespace rebgn {
         return none;
     }
 
+    inline bool can_be_numeric_match(std::shared_ptr<ast::Match>& node) {
+        if (!node->cond) {
+            return false;
+        }
+        auto expr_type = node->cond->expr->expr_type;
+        if (auto u = ast::as<ast::UnionType>(expr_type); u && u->common_type) {
+            expr_type = u->common_type;
+        }
+        if (!ast::as<ast::IntType>(expr_type) && !ast::as<ast::IntLiteralType>(expr_type) && !ast::as<ast::EnumType>(expr_type)) {
+            return false;
+        }
+        for (auto& b : node->branch) {
+            if (!ast::is_any_range(b->cond->expr)) {
+                if (!ast::as<ast::IntType>(b->cond->expr->expr_type) &&
+                    !ast::as<ast::IntLiteralType>(b->cond->expr->expr_type) &&
+                    !ast::as<ast::EnumType>(b->cond->expr->expr_type)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     Error convert_match(Module& m, std::shared_ptr<ast::Match>& node, auto&& eval) {
         std::optional<Varint> yield_value;
         std::optional<Storages> yield_storage;
@@ -307,7 +334,7 @@ namespace rebgn {
         }
         auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
         auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
-        if (node->cond) {
+        if (can_be_numeric_match(node)) {
             auto cond = get_expr(m, node->cond);
             if (!cond) {
                 return cond.error();
@@ -383,6 +410,14 @@ namespace rebgn {
         if (node->trial_match) {
             return error("Trial match is not supported yet");
         }
+        std::optional<Varint> base_expr;
+        if (node->cond) {
+            auto v = define_expr_variable(m, node->cond);
+            if (!v) {
+                return v.error();
+            }
+            base_expr = v.value();
+        }
         // translate into if-else
         std::shared_ptr<ast::Node> last = nullptr;
         for (auto& c : node->branch) {
@@ -395,21 +430,55 @@ namespace rebgn {
                 }
             }
             else {
-                auto cond = get_expr(m, c->cond->expr);
-                if (!cond) {
-                    return cond.error();
+                auto range = ast::as<ast::Range>(c->cond->expr);
+                Varint origCond;
+                if (range) {
+                    if (!base_expr) {
+                        return error("Invalid match branch; range condition is not allowed without base condition");
+                    }
+                    auto err = do_range_compare(m, BinaryOp::equal, range, *base_expr);
+                    if (err) {
+                        return err;
+                    }
+                    auto ok = m.get_prev_expr();
+                    if (!ok) {
+                        return ok.error();
+                    }
+                    origCond = ok.value();
+                }
+                else {
+                    auto cond = get_expr(m, c->cond->expr);
+                    if (!cond) {
+                        return cond.error();
+                    }
+                    if (base_expr) {
+                        auto new_id = m.new_id(nullptr);
+                        if (!new_id) {
+                            return new_id.error();
+                        }
+                        m.op(AbstractOp::BINARY, [&](Code& c) {
+                            c.ident(*new_id);
+                            c.bop(BinaryOp::equal);
+                            c.left_ref(*base_expr);
+                            c.right_ref(*cond);
+                        });
+                        origCond = *new_id;
+                    }
+                    else {
+                        origCond = *cond;
+                    }
                 }
                 if (!last) {
-                    m.init_phi_stack(cond->value());
+                    m.init_phi_stack(origCond.value());
                     m.op(AbstractOp::IF, [&](Code& c) {
-                        c.ref(*cond);
+                        c.ref(origCond);
                     });
                     last = c;
                 }
                 else {
-                    m.next_phi_candidate(cond->value());
+                    m.next_phi_candidate(origCond.value());
                     m.op(AbstractOp::ELIF, [&](Code& c) {
-                        c.ref(*cond);
+                        c.ref(origCond);
                     });
                     last = c;
                 }

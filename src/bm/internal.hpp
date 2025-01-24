@@ -19,12 +19,12 @@ namespace rebgn {
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node);
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, Storages&& typ, ast::ConstantLevel level);
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, StorageRef typ, ast::ConstantLevel level);
     expected<Varint> define_int_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
     expected<Varint> define_bool_tmp_var(Module& m, Varint init_ref, ast::ConstantLevel level);
-    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, Storages&& typ, ast::ConstantLevel level);
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, StorageRef typ, ast::ConstantLevel level);
     expected<Varint> define_counter(Module& m, std::uint64_t init);
-    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
+    expected<StorageRef> define_storage(Module& m, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive = false);
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n);
     bool is_alignment_vector(ast::Field* t);
     bool is_range_compare(const std::shared_ptr<ast::Node>& node);
@@ -63,10 +63,18 @@ namespace rebgn {
         if (!ident) {
             return unexpect_error(std::move(ident.error()));
         }
+        auto dst_ref = m.get_storage_ref(*dest, nullptr);
+        if (!dst_ref) {
+            return unexpect_error(std::move(dst_ref.error()));
+        }
+        auto src_ref = m.get_storage_ref(src_copy, nullptr);
+        if (!src_ref) {
+            return unexpect_error(std::move(src_ref.error()));
+        }
         op(AbstractOp::ASSIGN_CAST, [&](Code& c) {
             c.ident(*ident);
-            c.storage(*dest);
-            c.from(std::move(src_copy));
+            c.type(*dst_ref);
+            c.from(*src_ref);
             c.ref(right);
         });
         return *ident;
@@ -169,26 +177,28 @@ namespace rebgn {
         std::optional<Varint> yield_value;
         std::optional<Storages> yield_storage;
         if (!ast::as<ast::VoidType>(node->expr_type)) {
-            Storages s;
-            auto err = define_storage(m, s, node->expr_type);
-            if (err) {
-                return err;
+            auto s = define_storage(m, node->expr_type);
+            if (!s) {
+                return s.error();
             }
             auto new_id = m.new_node_id(node->expr_type);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
-            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
-                c.storage(s);
+                c.type(*s);
             });
-            auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *new_id, *s, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
             yield_value = *tmp_var;
-            yield_storage = std::move(s);
+            auto got = m.get_storage(*s);
+            if (!got) {
+                return got.error();
+            }
+            yield_storage = got.value();
         }
         auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
         auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
@@ -311,26 +321,28 @@ namespace rebgn {
         std::optional<Varint> yield_value;
         std::optional<Storages> yield_storage;
         if (!ast::as<ast::VoidType>(node->expr_type)) {
-            Storages s;
-            auto err = define_storage(m, s, node->expr_type);
-            if (err) {
-                return err;
+            auto s = define_storage(m, node->expr_type);
+            if (!s) {
+                return s.error();
             }
             auto new_id = m.new_node_id(node->expr_type);
             if (!new_id) {
                 return error("Failed to generate new id");
             }
-            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
-                c.storage(s);
+                c.type(*s);
             });
-            auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *new_id, *s, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
             yield_value = *tmp_var;
-            yield_storage = std::move(s);
+            auto got = m.get_storage(*s);
+            if (!got) {
+                return got.error();
+            }
+            yield_storage = std::move(got.value());
         }
         auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
         auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
@@ -550,16 +562,15 @@ namespace rebgn {
                         if (!id) {
                             return id.error();
                         }
-                        Storages typ;
-                        auto err = define_storage(m, typ, bop->left->expr_type);
-                        if (err) {
-                            return err;
+                        auto typ = define_storage(m, bop->left->expr_type);
+                        if (!typ) {
+                            return typ.error();
                         }
-                        auto res = define_var(m, id.value(), counter, std::move(typ), ast::ConstantLevel::immutable_variable);
+                        auto res = define_var(m, id.value(), counter, *typ, ast::ConstantLevel::immutable_variable);
                         if (!res) {
                             return res.error();
                         }
-                        err = inner_block();
+                        auto err = inner_block();
                         if (err) {
                             return err;
                         }

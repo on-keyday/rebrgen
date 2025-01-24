@@ -405,6 +405,17 @@ enum PropertyFunctionType:
     UNION_SETTER
     VECTOR_SETTER # like [len]u8. set both vector itself and length
 
+format StorageRef:
+    ref :Varint
+
+format StorageRefMap:
+    code :Varint
+    storage :Storages
+
+format StorageRefMaps:
+    length :Varint
+    maps :[length.value]StorageRefMap
+
 # ident is unique identifier
 # ref, left_ref, right_ref is reference to other object identifier
 format Code:
@@ -436,7 +447,7 @@ format Code:
             ident :Varint
         AbstractOp.IMMEDIATE_TYPE:
             ident :Varint
-            storage :Storages
+            type :StorageRef
         AbstractOp.DEFINE_FORMAT:
             ident :Varint
         AbstractOp.DEFINE_STATE:
@@ -468,14 +479,14 @@ format Code:
         AbstractOp.DEFINE_VARIABLE:
             ident :Varint
             ref :Varint # ref to initial expr
-            storage :Storages
+            type :StorageRef
         AbstractOp.DEFINE_VARIABLE_REF:
             ident :Varint
             ref :Varint # ref to variable
         AbstractOp.DEFINE_CONSTANT:
             ident :Varint
             ref :Varint # ref to initial expr
-            storage :Storages
+            type :StorageRef
         AbstractOp.DECLARE_VARIABLE:
             ref :Varint # ref to variable
         AbstractOp.DEFINE_PARAMETER:
@@ -485,7 +496,7 @@ format Code:
             ident :Varint
             belong :Varint # belong to union
         AbstractOp.SPECIFY_STORAGE_TYPE:
-            storage :Storages
+            type :StorageRef
         AbstractOp.FIELD_AVAILABLE:
             ident :Varint
             left_ref :Varint # ref to base expr (field or member access)
@@ -531,7 +542,7 @@ format Code:
         AbstractOp.OPTIONAL_OF:
             ident :Varint
             ref :Varint
-            storage :Storages
+            type :StorageRef
         AbstractOp.EMPTY_PTR:
             ident :Varint
         AbstractOp.EMPTY_OPTIONAL:
@@ -590,11 +601,11 @@ format Code:
             belong :Varint # related field or null_id(for input.peek())
         AbstractOp.BIT_CAST:
             ident: Varint
-            storage :Storages
+            type :StorageRef
             ref :Varint # ref to object
         AbstractOp.CALL_CAST:
             ident: Varint
-            storage :Storages
+            type :StorageRef
             param :Param
         AbstractOp.CALL_ENCODE:
             left_ref :Varint # ref to encoder
@@ -612,16 +623,16 @@ format Code:
             ref :Varint
         AbstractOp.ENUM_CAST:
             ident :Varint
-            storage :Storages
+            type :StorageRef
             ref :Varint # ref to object
         AbstractOp.ASSIGN_CAST:
             ident :Varint
             ref :Varint # ref to object
-            storage :Storages # to type
-            from :Storages # from type 
+            type :StorageRef # to type
+            from :StorageRef # from type 
         AbstractOp.NEW_OBJECT:
             ident :Varint
-            storage :Storages
+            type :StorageRef
         AbstractOp.INIT_RECURSIVE_STRUCT:
             left_ref :Varint # ref to recursive struct(format)
             right_ref :Varint # ref to object
@@ -667,7 +678,7 @@ format Code:
             belong :Varint # belong to union field
         AbstractOp.MERGED_CONDITIONAL_FIELD:
             ident :Varint
-            storage :Storages
+            type :StorageRef
             param :Param # ref to conditional fields
             belong :Varint # belong to property
             merge_mode :MergeMode
@@ -719,7 +730,7 @@ format Code:
             ident :Varint
             left_ref :Varint # ref to merged conditional field(for union) or field (for dynamic array)
             right_ref :Varint # ref to function
-            storage :Storages
+            type :StorageRef
         AbstractOp.PROPERTY_FUNCTION:
             ref :Varint # ref to merged conditional field
             func_type :PropertyFunctionType
@@ -810,6 +821,7 @@ format BinaryModule:
     strings :StringRefs
     identifiers :StringRefs
     ident_indexes :IdentIndexs
+    types :StorageRefMaps
     programs :Ranges # root ranges
     ident_ranges :IdentRanges
     has_debug_info :u1

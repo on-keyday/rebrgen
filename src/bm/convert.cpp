@@ -71,11 +71,11 @@ namespace rebgn {
         return ident;
     }
 
-    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, Storages&& typ, ast::ConstantLevel level) {
+    expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, StorageRef typ, ast::ConstantLevel level) {
         m.op(AbstractOp::DEFINE_VARIABLE, [&](Code& c) {
             c.ident(ident);
             c.ref(init_ref);
-            c.storage(typ);
+            c.type(typ);
         });
         m.previous_assignments[ident.value()] = ident.value();
         return ident;
@@ -86,14 +86,19 @@ namespace rebgn {
         if (!ident) {
             return ident;
         }
-        return define_var(m, *ident, init_ref, Storages{
-                                                   .length = *varint(1),
-                                                   .storages = {
-                                                       {
-                                                           .type = StorageType::BOOL,
-                                                       },
-                                                   },
-                                               },
+        auto ref = m.get_storage_ref(Storages{
+                                         .length = *varint(1),
+                                         .storages = {
+                                             {
+                                                 .type = StorageType::BOOL,
+                                             },
+                                         },
+                                     },
+                                     nullptr);
+        if (!ref) {
+            return unexpect_error(std::move(ref.error()));
+        }
+        return define_var(m, *ident, init_ref, *ref,
                           level);
     }
 
@@ -111,10 +116,14 @@ namespace rebgn {
             },
         };
         tmp.storages.front().size(*varint(64));
-        return define_var(m, *ident, init_ref, std::move(tmp), level);
+        auto ref = m.get_storage_ref(tmp, nullptr);
+        if (!ref) {
+            return unexpect_error(std::move(ref.error()));
+        }
+        return define_var(m, *ident, init_ref, *ref, level);
     }
 
-    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, Storages&& typ, ast::ConstantLevel level) {
+    expected<Varint> define_typed_tmp_var(Module& m, Varint init_ref, StorageRef typ, ast::ConstantLevel level) {
         auto ident = m.new_id(nullptr);
         if (!ident) {
             return ident;
@@ -347,25 +356,23 @@ namespace rebgn {
                 return none;
             }
             case ast::IOMethod::input_get: {
-                Storages s;
-                auto err = define_storage(m, s, node->expr_type);
-                if (err) {
-                    return err;
+                auto ref = define_storage(m, node->expr_type);
+                if (!ref) {
+                    return ref.error();
                 }
                 auto id = m.new_node_id(node);
                 if (!id) {
                     return id.error();
                 }
-                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*id);
-                    c.storage(std::move(s));
+                    c.type(*ref);
                 });
-                auto tmp_var = define_typed_tmp_var(m, *id, std::move(copy), ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *id, *ref, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, node->expr_type, *tmp_var, nullptr, nullptr, false);
+                auto err = decode_type(m, node->expr_type, *tmp_var, nullptr, nullptr, false);
                 if (err) {
                     return err;
                 }
@@ -451,10 +458,9 @@ namespace rebgn {
 
     template <>
     Error define<ast::TypeLiteral>(Module& m, std::shared_ptr<ast::TypeLiteral>& node) {
-        Storages s;
-        auto err = define_storage(m, s, node->type_literal);
-        if (err) {
-            return err;
+        auto s = define_storage(m, node->type_literal);
+        if (!s) {
+            return s.error();
         }
         auto new_id = m.new_node_id(node->type_literal);
         if (!new_id) {
@@ -462,7 +468,7 @@ namespace rebgn {
         }
         m.op(AbstractOp::IMMEDIATE_TYPE, [&](Code& c) {
             c.ident(*new_id);
-            c.storage(std::move(s));
+            c.type(*s);
         });
         m.set_prev_expr(new_id->value());
         return none;
@@ -575,7 +581,7 @@ namespace rebgn {
         return union_ident;
     }
 
-    Error define_storage(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive) {
+    Error define_storage_internal(Module& m, Storages& s, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive) {
         auto push = [&](StorageType t, auto&& set) {
             Storage c;
             c.type = t;
@@ -634,7 +640,7 @@ namespace rebgn {
             if (!base_type) {
                 return error("Invalid ident type(maybe bug)");
             }
-            return define_storage(m, s, base_type, should_detect_recursive);
+            return define_storage_internal(m, s, base_type, should_detect_recursive);
         }
         if (auto i = ast::as<ast::StructType>(typ)) {
             auto l = i->base.lock();
@@ -682,13 +688,18 @@ namespace rebgn {
             if (!base_type) {
                 return none;  // this is abstract enum
             }
-            return define_storage(m, s, base_type, should_detect_recursive);
+            return define_storage_internal(m, s, base_type, should_detect_recursive);
         }
         if (auto su = ast::as<ast::StructUnionType>(typ)) {
+            if (!m.union_ref) {
+                return error("Invalid union type(maybe bug)");
+            }
+            auto union_ident = m.union_ref;
+            m.union_ref = std::nullopt;
             auto size = su->structs.size();
             push(StorageType::VARIANT, [&](Storage& c) {
                 c.size(*varint(size));
-                // c.ref(*union_ident); MUST FILL BY CALLER
+                c.ref(*union_ident);
             });
             for (auto& st : su->structs) {
                 auto ident = m.lookup_struct(st);
@@ -720,7 +731,7 @@ namespace rebgn {
                 push(StorageType::VECTOR, [&](Storage& c) {});
                 should_detect_recursive = false;
             }
-            auto err = define_storage(m, s, a->element_type, should_detect_recursive);
+            auto err = define_storage_internal(m, s, a->element_type, should_detect_recursive);
             if (err) {
                 return err;
             }
@@ -729,17 +740,25 @@ namespace rebgn {
         return error("unsupported type on define storage: {}", node_type_to_string(typ->node_type));
     }
 
+    expected<StorageRef> define_storage(Module& m, const std::shared_ptr<ast::Type>& typ, bool should_detect_recursive) {
+        Storages s;
+        auto err = define_storage_internal(m, s, typ, should_detect_recursive);
+        if (err) {
+            return unexpect_error(std::move(err));
+        }
+        return m.get_storage_ref(std::move(s), &typ->loc);
+    }
+
     expected<Varint> define_expr_variable(Module& m, const std::shared_ptr<ast::Expr>& cond) {
         auto cond_ = get_expr(m, cond);
         if (!cond_) {
             return unexpect_error("Invalid union field condition");
         }
-        Storages s;
-        auto err = define_storage(m, s, cond->expr_type);
-        if (err) {
-            return unexpect_error(std::move(err));
+        auto ref = define_storage(m, cond->expr_type);
+        if (!ref) {
+            return unexpect_error(std::move(ref.error()));
         }
-        return define_typed_tmp_var(m, cond_.value(), std::move(s), ast::ConstantLevel::immutable_variable);
+        return define_typed_tmp_var(m, cond_.value(), *ref, ast::ConstantLevel::immutable_variable);
     }
 
     Error handle_union_type(Module& m, const std::shared_ptr<ast::UnionType>& ty, auto&& block) {
@@ -946,8 +965,7 @@ namespace rebgn {
             return err;
         }
         if (ty->common_type) {
-            Storages s;
-            auto err = define_storage(m, s, ty->common_type, true);
+            auto s = define_storage(m, ty->common_type, true);
             if (err) {
                 return err;
             }
@@ -962,7 +980,7 @@ namespace rebgn {
             }
             m.op(AbstractOp::MERGED_CONDITIONAL_FIELD, [&](Code& c) {  // all common type
                 c.ident(*ident);
-                c.storage(std::move(s));
+                c.type(*s);
                 c.param(std::move(param));
                 c.belong(belong);
                 c.merge_mode(MergeMode::COMMON_TYPE);
@@ -1076,21 +1094,17 @@ namespace rebgn {
             if (!union_ident_ref) {
                 return union_ident_ref.error();
             }
-            Storages s;
-            auto err = define_storage(m, s, node->field_type, true);
-            if (err) {
-                return err;
+            m.union_ref = union_ident_ref.value();
+            auto s = define_storage(m, node->field_type, true);
+            if (!s) {
+                return s.error();
             }
-            if (s.storages.size() == 0 || s.storages[0].type != StorageType::VARIANT) {
-                return error("Invalid union type(maybe bug)");
-            }
-            s.storages[0].ref(*union_ident_ref);  // fill union ident
             m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
                 c.ident(*ident);
                 c.belong(parent);
             });
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(std::move(s));
+                c.type(*s);
             });
             m.op(AbstractOp::END_FIELD);
         }
@@ -1107,18 +1121,21 @@ namespace rebgn {
                     s.storages.push_back(Storage{.type = StorageType::UINT});
                     s.storages[0].size(*varint(*node->arguments->alignment_value / 8 - 1));
                     s.storages[1].size(*varint(8));
+                    auto ref = m.get_storage_ref(std::move(s), &node->loc);
+                    if (!ref) {
+                        return ref.error();
+                    }
                     m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                        c.storage(std::move(s));
+                        c.type(*ref);
                     });
                 }
                 else {
-                    Storages s;
-                    auto err = define_storage(m, s, node->field_type, true);
-                    if (err) {
-                        return err;
+                    auto s = define_storage(m, node->field_type, true);
+                    if (!s) {
+                        return s.error();
                     }
                     m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                        c.storage(std::move(s));
+                        c.type(*s);
                     });
                 }
                 m.op(AbstractOp::END_FIELD);
@@ -1179,20 +1196,29 @@ namespace rebgn {
                 s.storages.push_back(Storage{.type = StorageType::CODER_RETURN});
                 s.length.value(1);
             }
-            auto err = define_storage(m, s, node->return_type);
+            auto err = define_storage_internal(m, s, node->return_type, false);
             if (err) {
                 return err;
             }
+            auto ref = m.get_storage_ref(std::move(s), &node->return_type->loc);
+            if (!ref) {
+                return ref.error();
+            }
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(std::move(s));
+                c.type(*ref);
             });
         }
         else if (is_encoder_or_decoder) {
+            auto ref = m.get_storage_ref(Storages{
+                                             .length = varint(1).value(),
+                                             .storages = {Storage{.type = StorageType::CODER_RETURN}},
+                                         },
+                                         &node->loc);
+            if (!ref) {
+                return ref.error();
+            }
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(Storages{
-                    .length = varint(1).value(),
-                    .storages = {Storage{.type = StorageType::CODER_RETURN}},
-                });
+                c.type(*ref);
             });
         }
         for (auto& p : node->parameters) {
@@ -1200,17 +1226,16 @@ namespace rebgn {
             if (!param_ident) {
                 return param_ident.error();
             }
-            Storages s;
-            auto err = define_storage(m, s, p->field_type);
-            if (err) {
-                return err;
+            auto s = define_storage(m, p->field_type);
+            if (!s) {
+                return s.error();
             }
             m.op(AbstractOp::DEFINE_PARAMETER, [&](Code& c) {
                 c.ident(*param_ident);
                 c.belong(*ident);
             });
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(std::move(s));
+                c.type(*s);
             });
             m.op(AbstractOp::END_PARAMETER);
         }
@@ -1264,13 +1289,12 @@ namespace rebgn {
         });
         m.map_struct(node->body->struct_type, ident->value());
         if (node->body->struct_type->type_map) {
-            Storages s;
-            auto err = define_storage(m, s, node->body->struct_type->type_map->type_literal, true);
-            if (err) {
-                return err;
+            auto s = define_storage(m, node->body->struct_type->type_map->type_literal, true);
+            if (!s) {
+                return s.error();
             }
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(std::move(s));
+                c.type(*s);
             });
         }
         std::vector<std::shared_ptr<ast::Field>> bit_fields;
@@ -1360,13 +1384,12 @@ namespace rebgn {
             c.ident(*ident);
         });
         if (node->base_type) {
-            Storages s;
-            auto err = define_storage(m, s, node->base_type);
-            if (err) {
-                return err;
+            auto s = define_storage(m, node->base_type);
+            if (!s) {
+                return s.error();
             }
             m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.storage(std::move(s));
+                c.type(*s);
             });
         }
         for (auto& me : node->members) {
@@ -1428,23 +1451,25 @@ namespace rebgn {
 
     template <>
     Error define<ast::Cond>(Module& m, std::shared_ptr<ast::Cond>& node) {
-        Storages s;
-        auto err = define_storage(m, s, node->expr_type);
-        if (err) {
-            return err;
+        auto s = define_storage(m, node->expr_type);
+        if (!s) {
+            return s.error();
         }
         auto new_id = m.new_node_id(node);
         if (!new_id) {
             return new_id.error();
         }
-        auto copy = s;
         m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
             c.ident(*new_id);
-            c.storage(s);
+            c.type(*s);
         });
-        auto tmp_var = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
+        auto tmp_var = define_typed_tmp_var(m, *new_id, *s, ast::ConstantLevel::variable);
         if (!tmp_var) {
             return tmp_var.error();
+        }
+        auto target_type = m.get_storage(*s);
+        if (!target_type) {
+            return target_type.error();
         }
         auto cond = get_expr(m, node->cond);
         if (!cond) {
@@ -1462,7 +1487,7 @@ namespace rebgn {
         if (!then_type) {
             return then_type.error();
         }
-        err = do_assign(m, &s, *then_type ? &**then_type : nullptr, *tmp_var, *then);
+        auto err = do_assign(m, &*target_type, *then_type ? &**then_type : nullptr, *tmp_var, *then);
         if (err) {
             return err;
         }
@@ -1476,7 +1501,7 @@ namespace rebgn {
         if (!els_type) {
             return els_type.error();
         }
-        err = do_assign(m, &s, *els_type ? &**els_type : nullptr, *tmp_var, *els);
+        err = do_assign(m, &*target_type, *els_type ? &**els_type : nullptr, *tmp_var, *els);
         if (err) {
             return err;
         }
@@ -1504,17 +1529,16 @@ namespace rebgn {
             }
             args.push_back(arg.value());
         }
-        Storages s;
-        auto err = define_storage(m, s, node->expr_type);
-        if (err) {
-            return err;
+        auto s = define_storage(m, node->expr_type);
+        if (!s) {
+            return s.error();
         }
         Param param;
         param.len_exprs = varint(args.size()).value();
         param.expr_refs = std::move(args);
         m.op(AbstractOp::CALL_CAST, [&](Code& c) {
             c.ident(*ident);
-            c.storage(std::move(s));
+            c.type(*s);
             c.param(std::move(param));
         });
         m.set_prev_expr(ident->value());
@@ -1526,7 +1550,7 @@ namespace rebgn {
         if (auto u = ast::as<ast::UnionType>(typ)) {
             if (u->common_type) {
                 s = Storages();
-                auto err = define_storage(m, s.value(), u->common_type, true);
+                auto err = define_storage_internal(m, s.value(), u->common_type, true);
                 if (err) {
                     return unexpect_error(std::move(err));
                 }
@@ -1534,7 +1558,7 @@ namespace rebgn {
         }
         else {
             s = Storages();
-            auto err = define_storage(m, s.value(), typ, true);
+            auto err = define_storage_internal(m, s.value(), typ, true);
             if (err) {
                 return unexpect_error(std::move(err));
             }
@@ -1683,21 +1707,20 @@ namespace rebgn {
             if (!right_ref) {
                 return error("Invalid binary expression: {}", right_ref.error().error());
             }
-            Storages typ;
-            auto err = define_storage(m, typ, node->left->expr_type, true);
-            if (err) {
-                return err;
+            auto typ = define_storage(m, node->left->expr_type, true);
+            if (!typ) {
+                return typ.error();
             }
             if (node->right->constant_level == ast::ConstantLevel::constant &&
                 node->op == ast::BinaryOp::const_assign) {
                 m.op(AbstractOp::DEFINE_CONSTANT, [&](Code& c) {
                     c.ident(*ident_);
                     c.ref(*right_ref);
-                    c.storage(std::move(typ));
+                    c.type(*typ);
                 });
             }
             else {
-                auto res = define_var(m, *ident_, *right_ref, std::move(typ), node->right->constant_level);
+                auto res = define_var(m, *ident_, *right_ref, *typ, node->right->constant_level);
                 if (!res) {
                     return res.error();
                 }

@@ -79,10 +79,9 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            Storages to;
-            auto err = define_storage(m, to, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
-            if (err) {
-                return err;
+            auto to = define_storage(m, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
+            if (!to) {
+                return to.error();
             }
             auto new_id = m.new_node_id(typ);
             if (!new_id) {
@@ -91,7 +90,7 @@ namespace rebgn {
             m.op(AbstractOp::BIT_CAST, [&](Code& c) {
                 c.ident(*new_id);
                 c.ref(base_ref);
-                c.storage(std::move(to));
+                c.type(*to);
             });
             auto bit_size = varint(*float_ty->bit_size);
             if (!bit_size) {
@@ -206,7 +205,6 @@ namespace rebgn {
                 if (!len_init) {
                     return len_init.error();
                 }
-                Storages s;
                 auto expr_type = arr->length->expr_type;
                 if (auto u = ast::as<ast::UnionType>(expr_type)) {
                     if (!u->common_type) {
@@ -214,11 +212,11 @@ namespace rebgn {
                     }
                     expr_type = u->common_type;
                 }
-                auto err = define_storage(m, s, expr_type);
-                if (err) {
-                    return err;
+                auto s = define_storage(m, expr_type);
+                if (!s) {
+                    return s.error();
                 }
-                len_ = define_typed_tmp_var(m, *len_init, std::move(s), ast::ConstantLevel::immutable_variable);
+                len_ = define_typed_tmp_var(m, *len_init, *s, ast::ConstantLevel::immutable_variable);
                 if (!len_) {
                     return len_.error();
                 }
@@ -305,17 +303,16 @@ namespace rebgn {
             if (!casted) {
                 return casted.error();
             }
-            Storages to;
-            auto err = define_storage(m, to, base_type);
-            if (err) {
-                return err;
+            auto to = define_storage(m, base_type);
+            if (!to) {
+                return to.error();
             }
             m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
-                c.storage(std::move(to));
+                c.type(*to);
                 c.ref(base_ref);
             });
-            err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
+            auto err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -350,18 +347,17 @@ namespace rebgn {
             if (!new_id) {
                 return error("Failed to generate new id");
             }
-            Storages from, to;
-            auto err = define_storage(m, from, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
-            if (err) {
-                return err;
+            auto from = define_storage(m, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
+            if (!from) {
+                return from.error();
             }
-            err = define_storage(m, to, typ);
-            if (err) {
-                return err;
+            auto to = define_storage(m, typ);
+            if (!to) {
+                return to.error();
             }
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*new_id);
-                c.storage(std::move(from));
+                c.type(*from);
             });
             auto endian = m.get_endian(Endian(float_ty->endian));
             if (!endian) {
@@ -379,7 +375,7 @@ namespace rebgn {
             }
             m.op(AbstractOp::BIT_CAST, [&](Code& c) {
                 c.ident(*next_id);
-                c.storage(std::move(to));
+                c.type(*to);
                 c.ref(*new_id);
             });
             return do_assign(m, nullptr, nullptr, base_ref, *next_id);
@@ -395,18 +391,16 @@ namespace rebgn {
                 if (!tmp) {
                     return error("Failed to generate new id");
                 }
-                Storages s;
                 auto int_typ = std::make_shared<ast::IntType>(str_ty->loc, 8, ast::Endian::unspec, false);
-                auto err = define_storage(m, s, int_typ);
-                if (err) {
-                    return err;
+                auto s = define_storage(m, int_typ);
+                if (!s) {
+                    return s.error();
                 }
-                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*tmp);
-                    c.storage(std::move(s));
+                    c.type(*s);
                 });
-                auto tmp_var = define_typed_tmp_var(m, *tmp, std::move(copy), ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *tmp, *s, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -486,21 +480,19 @@ namespace rebgn {
                 if (!new_obj) {
                     return new_obj.error();
                 }
-                Storages s;
-                auto err = define_storage(m, s, arr->element_type);
-                if (err) {
-                    return err;
+                auto s = define_storage(m, arr->element_type);
+                if (!s) {
+                    return s.error();
                 }
-                auto copy = s;
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*new_obj);
-                    c.storage(std::move(s));
+                    c.type(*s);
                 });
-                auto tmp_var = define_typed_tmp_var(m, *new_obj, std::move(copy), ast::ConstantLevel::variable);
+                auto tmp_var = define_typed_tmp_var(m, *new_obj, *s, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                err = decode_type(m, arr->element_type, *tmp_var, mapped_type, field, false);
+                auto err = decode_type(m, arr->element_type, *tmp_var, mapped_type, field, false);
                 if (err) {
                     return err;
                 }
@@ -633,12 +625,15 @@ namespace rebgn {
                         s.storages.back().size(*varint(*str->bit_size / futils::bit_per_byte));
                         s.storages.push_back(Storage{.type = StorageType::UINT});
                         s.storages.back().size(*varint(8));
-                        auto copy = s;
+                        auto ref = m.get_storage_ref(s, &next->loc);
+                        if (!ref) {
+                            return ref.error();
+                        }
                         m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                             c.ident(*new_id);
-                            c.storage(std::move(s));
+                            c.type(*ref);
                         });
-                        auto temporary_read_holder = define_typed_tmp_var(m, *new_id, std::move(copy), ast::ConstantLevel::variable);
+                        auto temporary_read_holder = define_typed_tmp_var(m, *new_id, *ref, ast::ConstantLevel::variable);
                         if (!temporary_read_holder) {
                             return temporary_read_holder.error();
                         }
@@ -658,13 +653,17 @@ namespace rebgn {
                             Storages isOkFlag;
                             isOkFlag.length.value(1);
                             isOkFlag.storages.push_back(Storage{.type = StorageType::BOOL});
+                            auto gen = m.get_storage_ref(isOkFlag, &next->loc);
+                            if (!gen) {
+                                return gen.error();
+                            }
                             auto flagObj = m.new_id(nullptr);
                             if (!flagObj) {
                                 return error("Failed to generate new id");
                             }
                             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                                 c.ident(*flagObj);
-                                c.storage(std::move(isOkFlag));
+                                c.type(*gen);
                             });
                             auto isOK = define_bool_tmp_var(m, *flagObj, ast::ConstantLevel::variable);
                             auto immTrue = immediate_bool(m, true);
@@ -746,7 +745,6 @@ namespace rebgn {
                 if (!id) {
                     return id.error();
                 }
-                Storages s;
                 auto expr_type = arr->length->expr_type;
                 if (auto u = ast::as<ast::UnionType>(expr_type)) {
                     if (!u->common_type) {
@@ -754,11 +752,11 @@ namespace rebgn {
                     }
                     expr_type = u->common_type;
                 }
-                auto err = define_storage(m, s, expr_type);
-                if (err) {
-                    return err;
+                auto s = define_storage(m, expr_type);
+                if (!s) {
+                    return s.error();
                 }
-                auto len_ident = define_typed_tmp_var(m, *id, std::move(s), ast::ConstantLevel::immutable_variable);
+                auto len_ident = define_typed_tmp_var(m, *id, *s, ast::ConstantLevel::immutable_variable);
                 if (!len_ident) {
                     return len_ident.error();
                 }
@@ -836,21 +834,19 @@ namespace rebgn {
             if (!storage) {
                 return storage.error();
             }
-            Storages s;
-            auto err = define_storage(m, s, base_type);
-            if (err) {
-                return err;
+            auto s = define_storage(m, base_type);
+            if (!s) {
+                return s.error();
             }
-            auto copy = s;
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*storage);
-                c.storage(std::move(s));
+                c.type(*s);
             });
-            auto tmp_var = define_typed_tmp_var(m, *storage, std::move(copy), ast::ConstantLevel::variable);
+            auto tmp_var = define_typed_tmp_var(m, *storage, *s, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
-            err = decode_type(m, base_type, *tmp_var, mapped_type, field, should_init_recursive);
+            auto err = decode_type(m, base_type, *tmp_var, mapped_type, field, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -858,14 +854,14 @@ namespace rebgn {
             if (!casted) {
                 return casted.error();
             }
-            Storages to;
-            err = define_storage(m, to, ast::cast_to<ast::EnumType>(typ));
-            if (err) {
+
+            auto to = define_storage(m, ast::cast_to<ast::EnumType>(typ));
+            if (!to) {
                 return err;
             }
             m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
-                c.storage(std::move(to));
+                c.type(*to);
                 c.ref(*tmp_var);
             });
             return do_assign(m, nullptr, nullptr, base_ref, *casted);
@@ -1030,13 +1026,18 @@ namespace rebgn {
             c.ident(*new_id);
             c.belong(*fmt_ident);
         });
+        auto typ = m.get_storage_ref(Storages{
+                                         .length = varint(1).value(),
+                                         .storages = {
+                                             Storage{.type = StorageType::CODER_RETURN},
+                                         },
+                                     },
+                                     &node->loc);
+        if (!typ) {
+            return typ.error();
+        }
         m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-            c.storage(Storages{
-                .length = varint(1).value(),
-                .storages = {
-                    Storage{.type = StorageType::CODER_RETURN},
-                },
-            });
+            c.type(*typ);
         });
         m.on_encode_fn = true;
         m.init_phi_stack(0);  // make it temporary
@@ -1105,13 +1106,18 @@ namespace rebgn {
             c.ident(*new_id);
             c.belong(fmt_ident.value());
         });
+        auto typ = m.get_storage_ref(Storages{
+                                         .length = varint(1).value(),
+                                         .storages = {
+                                             Storage{.type = StorageType::CODER_RETURN},
+                                         },
+                                     },
+                                     &node->loc);
+        if (!typ) {
+            return typ.error();
+        }
         m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-            c.storage(Storages{
-                .length = varint(1).value(),
-                .storages = {
-                    Storage{.type = StorageType::CODER_RETURN},
-                },
-            });
+            c.type(*typ);
         });
         m.on_encode_fn = false;
         m.init_phi_stack(0);  // make it temporary

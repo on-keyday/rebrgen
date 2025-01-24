@@ -54,6 +54,89 @@ namespace rebgn {
             }
             cout << '\n';
         }
+        auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
+            bool found_ident = false;
+            if (use_index) {
+                if (auto found = m.ident_index_table.find(ref.value()); found != m.ident_index_table.end()) {
+                    std::string_view s = to_string(m.code[found->second].op);
+                    if (s.starts_with("DEFINE_")) {
+                        s = s.substr(7);
+                    }
+                    cout << " " << s;
+                    found_ident = true;
+                }
+            }
+            if (auto found = m.ident_table_rev.find(ref.value()); found != m.ident_table_rev.end()) {
+                cout << " " << found->second->ident;
+                found_ident = true;
+            }
+            if (auto found = m.string_table_rev.find(ref.value()); found != m.string_table_rev.end()) {
+                cout << " \"" << futils::escape::escape_str<std::string>(found->second, futils::escape::EscapeFlag::hex) << "\"";
+                found_ident = true;
+            }
+            if (auto found = m.metadata_table_rev.find(ref.value()); found != m.metadata_table_rev.end()) {
+                cout << " " << found->second;
+                found_ident = true;
+            }
+            if (found_ident) {
+                cout << "(" << ref.value() << ")";
+            }
+            else {
+                cout << " " << ref.value();
+            }
+        };
+        auto print_type = [&](const rebgn::StorageRef& s) {
+            cout << "type " << s.ref.value();
+            auto found = m.get_storage(s);
+            if (!found) {
+                cout << " (unknown storage)";
+                return;
+            }
+            if (found->length.value() != found->storages.size()) {
+                cout << " (length mismatch)";
+            }
+            cout << " (";
+            for (auto& st : found->storages) {
+                cout << " " << to_string(st.type);
+                if (auto size = st.size()) {
+                    if (st.type == rebgn::StorageType::ARRAY) {
+                        cout << " length:" << size->value();
+                    }
+                    else if (st.type == rebgn::StorageType::INT || st.type == rebgn::StorageType::UINT ||
+                             st.type == rebgn::StorageType::FLOAT) {
+                        cout << " size:";
+                        if (size->value() % 8 == 0) {
+                            cout << " " << size->value() / 8 << "byte =";
+                        }
+                        cout << " " << size->value() << "bit";
+                    }
+                    else if (st.type == rebgn::StorageType::STRUCT_REF) {
+                        if (size->value() == 0) {
+                            cout << " (variable)";
+                        }
+                        else {
+                            auto siz = size->value() - 1;
+                            cout << " size:";
+                            if (siz % 8 == 0) {
+                                cout << siz / 8 << "byte =";
+                            }
+                            cout << " " << siz << "bit";
+                        }
+                    }
+                    else if (st.type == rebgn::StorageType::VARIANT) {
+                        cout << " alternative:" << size->value();
+                    }
+                }
+                if (auto ref = st.ref()) {
+                    print_ref(*ref);
+                }
+            }
+            cout << " )";
+        };
+        for (auto& t : m.storage_key_table_rev) {
+            print_type(StorageRef{.ref = rebgn::Varint(t.first)});
+            cout << '\n';
+        }
         std::string nest;
         for (auto& c : m.code) {
             switch (c.op) {
@@ -83,37 +166,7 @@ namespace rebgn {
                 default:
                     break;
             }
-            auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
-                bool found_ident = false;
-                if (use_index) {
-                    if (auto found = m.ident_index_table.find(ref.value()); found != m.ident_index_table.end()) {
-                        std::string_view s = to_string(m.code[found->second].op);
-                        if (s.starts_with("DEFINE_")) {
-                            s = s.substr(7);
-                        }
-                        cout << " " << s;
-                        found_ident = true;
-                    }
-                }
-                if (auto found = m.ident_table_rev.find(ref.value()); found != m.ident_table_rev.end()) {
-                    cout << " " << found->second->ident;
-                    found_ident = true;
-                }
-                if (auto found = m.string_table_rev.find(ref.value()); found != m.string_table_rev.end()) {
-                    cout << " " << found->second;
-                    found_ident = true;
-                }
-                if (auto found = m.metadata_table_rev.find(ref.value()); found != m.metadata_table_rev.end()) {
-                    cout << " " << found->second;
-                    found_ident = true;
-                }
-                if (found_ident) {
-                    cout << "(" << ref.value() << ")";
-                }
-                else {
-                    cout << " " << ref.value();
-                }
-            };
+
             cout << nest << to_string(c.op);
             if (auto uop = c.uop()) {
                 cout << " " << to_string(*uop);
@@ -165,21 +218,13 @@ namespace rebgn {
                     cout << " " << bit_plus_one->value() - 1 << "bit";
                 }
             }
-            auto print_type = [&](rebgn::Storages& s) {
-                for (auto& st : s.storages) {
-                    cout << " " << to_string(st.type);
-                    if (auto size = st.size()) {
-                        cout << " " << size->value();
-                    }
-                    if (auto ref = st.ref()) {
-                        print_ref(*ref);
-                    }
-                }
-            };
-            if (auto s = c.storage()) {
+
+            if (auto s = c.type()) {
+                cout << " ";
                 print_type(*s);
             }
             if (auto s = c.from()) {
+                cout << " ";
                 print_type(*s);
             }
             if (auto e = c.endian()) {

@@ -82,6 +82,26 @@ namespace rebgn {
         }
         bm.ident_indexes.refs_length = length.value();
 
+        for (auto& s : m.storage_key_table_rev) {
+            auto found = m.storage_table.find(s.second);
+            if (found == m.storage_table.end()) {
+                return error("Storage key not found: {}", s.second);
+            }
+            auto key = varint(s.first);
+            if (!key) {
+                return key.error();
+            }
+            bm.types.maps.push_back({
+                .code = key.value(),
+                .storage = std::move(found->second),
+            });
+        }
+        length = varint(bm.types.maps.size());
+        if (!length) {
+            return length.error();
+        }
+        bm.types.length = length.value();
+
         auto process_ranges = [&](auto& ranges, auto& bm_ranges) -> Error {
             auto length = varint(ranges.size());
             if (!length) {

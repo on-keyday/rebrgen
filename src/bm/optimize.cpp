@@ -886,7 +886,12 @@ namespace rebgn {
         size_t bit_size = 0;
         for (size_t i = index; m.code[i].op != end_op; i++) {
             if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
-                auto storage = *m.code[i].storage();
+                auto ref = *m.code[i].type();
+                auto got = m.get_storage(ref);
+                if (!got) {
+                    return unexpect_error(std::move(got.error()));
+                }
+                auto& storage = got.value();
                 size_t factor = 1;
                 for (size_t j = 0; j < storage.storages.size(); j++) {
                     auto& s = storage.storages[j];
@@ -990,8 +995,12 @@ namespace rebgn {
                 s.size(*varint(found->second));
                 storage.storages.push_back(std::move(s));
                 storage.length = *varint(1);
+                auto ref = m.get_storage_ref(storage, nullptr);
+                if (!ref) {
+                    return ref.error();
+                }
                 rebound.push_back(make_code(AbstractOp::SPECIFY_STORAGE_TYPE, [&](auto& c) {
-                    c.storage(std::move(storage));
+                    c.type(*ref);
                 }));
             }
         }
@@ -1031,9 +1040,11 @@ namespace rebgn {
                             break;
                         }
                         if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
-                            auto storage = m.code[i].storage().value();
-                            auto key = storage_key(storage);
-                            ctx.type_to_storage[key] = std::move(storage);
+                            auto found = m.storage_key_table_rev.find(m.code[i].type().value().ref.value());
+                            if (found == m.storage_key_table_rev.end()) {
+                                return error("Invalid storage key");
+                            }
+                            auto& key = found->second;
                             auto& map = conditional_fields[parent];
                             map[key].push_back(target);
                             break;
@@ -1063,7 +1074,11 @@ namespace rebgn {
                 exists.insert(c.ident().value().value());
                 ctx.exists.insert(c.ident().value().value());
                 auto param = c.param().value();
-                auto key = storage_key(c.storage().value());
+                auto found = m.storage_key_table_rev.find(c.type().value().ref.value());
+                if (found == m.storage_key_table_rev.end()) {
+                    return error("Invalid storage key");
+                }
+                auto& key = found->second;
                 for (auto& p : param.expr_refs) {
                     auto& code = m.code[m.ident_index_table[p.value()]];
                     if (auto found = ctx.conditional_properties.find(code.ident()->value()); found != ctx.conditional_properties.end()) {
@@ -1085,7 +1100,11 @@ namespace rebgn {
                 bool exist = false;
                 for (auto& e : exists) {
                     auto& c = m.code[m.ident_index_table[e]];
-                    auto common_type_key = storage_key(c.storage().value());
+                    auto found = m.storage_key_table_rev.find(c.type().value().ref.value());
+                    if (found == m.storage_key_table_rev.end()) {
+                        return error("Invalid storage key");
+                    }
+                    auto& common_type_key = found->second;
                     auto param = c.param().value().expr_refs;
                     if (common_type_key == key && std::ranges::equal(param, value, [](auto& a, auto& b) {
                             return a.value() == b.value();
@@ -1134,17 +1153,21 @@ namespace rebgn {
                 }
                 auto found = ctx.properties_to_merged.find(target->value());
                 if (found != ctx.properties_to_merged.end()) {
-                    for (auto& m : found->second) {
-                        if (ctx.exists.find(m) != ctx.exists.end()) {
+                    for (auto& mr : found->second) {
+                        if (ctx.exists.find(mr) != ctx.exists.end()) {
                             continue;
                         }
-                        auto& merged = ctx.merged_conditional_fields[m];
+                        auto& merged = ctx.merged_conditional_fields[mr];
                         Param param;
                         param.expr_refs = std::move(merged.second);
                         param.len_exprs = *varint(param.expr_refs.size());
+                        auto found2 = m.storage_key_table.find(merged.first);
+                        if (found2 == m.storage_key_table.end()) {
+                            return error("Invalid storage key");
+                        }
                         rebound.push_back(make_code(AbstractOp::MERGED_CONDITIONAL_FIELD, [&](auto& c) {
-                            c.ident(*varint(m));
-                            c.storage(ctx.type_to_storage[merged.first]);
+                            c.ident(*varint(mr));
+                            c.type(StorageRef{.ref = *varint(found2->second)});
                             c.param(std::move(param));
                             c.belong(*target);
                             c.merge_mode(MergeMode::STRICT_TYPE);
@@ -1608,8 +1631,13 @@ namespace rebgn {
         auto getter_ident = getter_setter.first;
         auto setter_ident = getter_setter.second;
         auto mode = base.merge_mode().value();
-        auto type = base.storage().value();
+        auto type_found = m.get_storage(base.type().value());
+        if (!type_found) {
+            return type_found.error();
+        }
+        auto type = type_found.value();
         auto originalType = type;
+        auto originalTypeRef = base.type().value();
         auto param = base.param().value();
         auto do_foreach = [&](auto&& action, auto&& ret_empty) {
             RetrieveVarCtx variables;
@@ -1699,8 +1727,12 @@ namespace rebgn {
         else {
             type.storages.insert(type.storages.begin(), Storage{.type = StorageType::PTR});
         }
+        auto ret_type_ref = m.get_storage_ref(type, nullptr);
+        if (!ret_type_ref) {
+            return ret_type_ref.error();
+        }
         op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-            n.storage(type);
+            n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
             n.ref(merged_ident);
@@ -1757,7 +1789,7 @@ namespace rebgn {
                     op(AbstractOp::OPTIONAL_OF, [&](Code& m) {
                         m.ident(*ident);
                         m.ref(expr_ref);
-                        m.storage(originalType);
+                        m.type(originalTypeRef);
                     });
                 }
                 else {
@@ -1792,13 +1824,18 @@ namespace rebgn {
             n.ident(*prop);
             n.left_ref(merged_ident);
             n.right_ref(setter_ident);
-            n.storage(originalType);
+            n.type(originalTypeRef);
         });
+        ret_type_ref = m.get_storage_ref(Storages{
+                                             .length = *varint(1),
+                                             .storages = {Storage{.type = StorageType::PROPERTY_SETTER_RETURN}},
+                                         },
+                                         nullptr);
+        if (!ret_type_ref) {
+            return ret_type_ref.error();
+        }
         op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-            n.storage(Storages{
-                .length = *varint(1),
-                .storages = {Storage{.type = StorageType::PROPERTY_SETTER_RETURN}},
-            });
+            n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
             n.ref(merged_ident);
@@ -1841,10 +1878,9 @@ namespace rebgn {
                 if (!field_ptr) {
                     return field_ptr.error();
                 }
-                Storages storage;
-                auto err = define_storage(m, storage, (*field_ptr)->field_type);
-                if (err) {
-                    return err;
+                auto storage = define_storage(m, (*field_ptr)->field_type);
+                if (!storage) {
+                    return storage.error();
                 }
                 if (can_set_array_length(*field_ptr)) {
                     auto err = add_array_length_setter(m, rvar, *field_ptr, expr_ref, setter_ident, op);
@@ -1852,8 +1888,12 @@ namespace rebgn {
                         return err;
                     }
                 }
+                auto to_type = m.get_storage(*storage);
+                if (!to_type) {
+                    return to_type.error();
+                }
                 auto right = *prop;
-                auto maybe_cast = add_assign_cast(m, op, &storage, &originalType, right);
+                auto maybe_cast = add_assign_cast(m, op, &*to_type, &originalType, right);
                 if (!maybe_cast) {
                     return maybe_cast.error();
                 }
@@ -1882,10 +1922,9 @@ namespace rebgn {
 
     Error derive_set_array_function(Module& m, Varint setter_ident, ObjectID ident, ast::Field* field_ptr, auto&& op) {
         auto belong = m.code[m.ident_index_table[ident]].belong().value();
-        Storages originalType;
-        auto err = define_storage(m, originalType, field_ptr->field_type);
-        if (err) {
-            return err;
+        auto originalType = define_storage(m, field_ptr->field_type);
+        if (!originalType) {
+            return originalType.error();
         }
         op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
             n.ident(setter_ident);
@@ -1903,20 +1942,26 @@ namespace rebgn {
             n.ident(*prop);
             n.left_ref(*ident_ref);
             n.right_ref(setter_ident);
-            n.storage(originalType);
+            n.type(*originalType);
         });
-        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
-            n.storage(Storages{
+        auto ret_type_ref = m.get_storage_ref(
+            Storages{
                 .length = *varint(1),
                 .storages = {Storage{.type = StorageType::PROPERTY_SETTER_RETURN}},
-            });
+            },
+            nullptr);
+        if (!ret_type_ref) {
+            return ret_type_ref.error();
+        }
+        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+            n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
             n.ref(*varint(ident));
             n.func_type(PropertyFunctionType::VECTOR_SETTER);
         });
         RetrieveVarCtx rvar;
-        err = add_array_length_setter(m, rvar, field_ptr, *ident_ref, setter_ident, op);
+        auto err = add_array_length_setter(m, rvar, field_ptr, *ident_ref, setter_ident, op);
         if (err) {
             return err;
         }
@@ -1993,7 +2038,11 @@ namespace rebgn {
                     properties_to_merged[belong.value()] = merged_ident.value();
                 }
                 else {
-                    ident += "_" + property_name_suffix(m, c.storage().value());
+                    auto found = m.get_storage(c.type().value());
+                    if (!found) {
+                        return found.error();
+                    }
+                    ident += "_" + property_name_suffix(m, found.value());
                 }
                 auto temporary_getter_ident = std::make_shared<ast::Ident>(base->loc, ident);
                 temporary_getter_ident->base = base->base;

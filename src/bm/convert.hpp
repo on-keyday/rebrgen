@@ -7,6 +7,7 @@
 #include <core/ast/ast.h>
 #include <core/ast/tool/ident.h>
 #include "common.hpp"
+#include "helper.hpp"
 #include <unordered_set>
 namespace rebgn {
 
@@ -75,12 +76,48 @@ namespace rebgn {
         std::uint64_t object_id = 1;
         std::vector<std::shared_ptr<CFG>> cfgs;
 
+        std::unordered_map<std::string, Storages> storage_table;
+        std::unordered_map<std::string, ObjectID> storage_key_table;
+        std::unordered_map<ObjectID, std::string> storage_key_table_rev;
+
+        expected<StorageRef> get_storage_ref(const Storages& s, brgen::lexer::Loc* loc) {
+            auto key = storage_key(s);
+            if (auto found = storage_key_table.find(key); found != storage_key_table.end()) {
+                auto k = varint(found->second);
+                if (!k) {
+                    return unexpect_error(std::move(k.error()));
+                }
+                return StorageRef{.ref = *k};
+            }
+            auto id = new_id(loc);
+            if (!id) {
+                return unexpect_error(std::move(id.error()));
+            }
+            storage_table.emplace(key, s);
+            storage_key_table.emplace(key, id->value());
+            storage_key_table_rev.emplace(id->value(), key);
+            return StorageRef{.ref = id.value()};
+        }
+
+        expected<Storages> get_storage(StorageRef ref) {
+            auto id = ref.ref.value();
+            if (auto found = storage_key_table_rev.find(id); found != storage_key_table_rev.end()) {
+                auto key = found->second;
+                if (auto s = storage_table.find(key); s != storage_table.end()) {
+                    return s->second;
+                }
+            }
+            return unexpect_error("Invalid storage reference");
+        }
+
         // internal
         bool on_encode_fn = false;
         std::optional<Varint> on_function;
         Endian global_endian = Endian::big;  // default to big endian
         Endian local_endian = Endian::unspec;
         ObjectID current_dynamic_endian = null_id;
+
+        std::optional<Varint> union_ref;
 
         Varint get_function() const {
             if (on_function) {

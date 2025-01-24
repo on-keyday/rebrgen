@@ -2280,6 +2280,59 @@ namespace rebgn {
         }
     }
 
+    Error optimize_type_usage(Module& m) {
+        std::unordered_map<ObjectID, std::uint64_t> type_usage;
+        std::set<ObjectID> reached;
+        for (auto& c : m.code) {
+            if (auto s = c.type()) {
+                reached.insert(s.value().ref.value());
+                type_usage[s.value().ref.value()]++;
+            }
+            if (auto f = c.from()) {
+                reached.insert(f.value().ref.value());
+                type_usage[f.value().ref.value()]++;
+            }
+        }
+        std::vector<std::tuple<ObjectID /*original*/, std::uint64_t /*usage*/, ObjectID /*map to*/>> sorted;
+        for (auto& [k, v] : type_usage) {
+            sorted.emplace_back(k, v, 0);
+        }
+        std::sort(sorted.begin(), sorted.end(), [](auto& a, auto& b) { return std::get<1>(a) > std::get<1>(b); });
+        if (reached.size() != sorted.size()) {
+            return error("Invalid type usage");
+        }
+        size_t i = 0;
+        for (auto& r : reached) {
+            std::get<2>(sorted[i]) = r;
+            i++;
+        }
+        std::unordered_map<ObjectID, ObjectID> mapping;
+        for (auto& [k, _, v] : sorted) {
+            mapping[k] = v;
+        }
+        std::unordered_map<ObjectID, std::string> new_storage_key_table_rev;
+        std::unordered_map<std::string, ObjectID> new_storage_key_table;
+        for (auto& mp : mapping) {
+            auto old = m.storage_key_table_rev.find(mp.first);
+            if (old == m.storage_key_table_rev.end()) {
+                return error("Invalid storage key");
+            }
+            new_storage_key_table_rev[mp.second] = old->second;
+            new_storage_key_table[old->second] = mp.second;
+        }
+        for (auto& c : m.code) {
+            if (auto s = c.type()) {
+                c.type(StorageRef{.ref = *varint(mapping[s.value().ref.value()])});
+            }
+            if (auto f = c.from()) {
+                c.from(StorageRef{.ref = *varint(mapping[f.value().ref.value()])});
+            }
+        }
+        m.storage_key_table = std::move(new_storage_key_table);
+        m.storage_key_table_rev = std::move(new_storage_key_table_rev);
+        return none;
+    }
+
     Error optimize(Module& m, const std::shared_ptr<ast::Node>& node) {
         auto err = flatten(m);
         if (err) {
@@ -2320,6 +2373,10 @@ namespace rebgn {
         }
         rebind_ident_index(m);
         err = add_ident_ranges(m);
+        if (err) {
+            return err;
+        }
+        err = optimize_type_usage(m);
         if (err) {
             return err;
         }

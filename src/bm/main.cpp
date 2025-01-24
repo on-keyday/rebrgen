@@ -111,12 +111,12 @@ namespace rebgn {
                         cout << " " << size->value() << "bit";
                     }
                     else if (st.type == rebgn::StorageType::STRUCT_REF) {
+                        cout << " size:";
                         if (size->value() == 0) {
                             cout << " (variable)";
                         }
                         else {
                             auto siz = size->value() - 1;
-                            cout << " size:";
                             if (siz % 8 == 0) {
                                 cout << siz / 8 << "byte =";
                             }

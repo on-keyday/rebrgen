@@ -20,6 +20,7 @@ namespace bm2cpp {
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
         std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
+        std::unordered_map<std::uint64_t, rebgn::Storages> storage_table;
         std::string ptr_type;
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
@@ -45,7 +46,7 @@ namespace bm2cpp {
         }
     };
 
-    std::string type_to_string(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
         if (s.storages.size() <= index) {
             return "void";
         }
@@ -58,11 +59,11 @@ namespace bm2cpp {
                 return "bool";
             }
             case rebgn::StorageType::PTR: {
-                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                auto inner = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return inner + "*";
             }
             case rebgn::StorageType::OPTIONAL: {
-                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                auto inner = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return "std::optional<" + inner + ">";
             }
             case rebgn::StorageType::UINT: {
@@ -141,7 +142,7 @@ namespace bm2cpp {
                 std::string variant = "std::variant<std::monostate";
                 for (index++; index < s.storages.size(); index++) {
                     auto& storage = s.storages[index];
-                    auto inner = type_to_string(ctx, s, &bit_size_candidate, index);
+                    auto inner = type_to_string_impl(ctx, s, &bit_size_candidate, index);
                     variant += ", " + inner;
                     if (bit_size) {
                         *bit_size = std::max(*bit_size, bit_size_candidate);
@@ -152,11 +153,11 @@ namespace bm2cpp {
             }
             case rebgn::StorageType::ARRAY: {
                 auto size = storage.size().value().value();
-                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                auto inner = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return std::format("std::array<{}, {}>", inner, size);
             }
             case rebgn::StorageType::VECTOR: {
-                auto inner = type_to_string(ctx, s, bit_size, index + 1);
+                auto inner = type_to_string_impl(ctx, s, bit_size, index + 1);
                 if (inner == "std::uint8_t") {
                     return ctx.bytes_type;
                 }
@@ -168,6 +169,10 @@ namespace bm2cpp {
                 return "void";
             }
         }
+    }
+
+    std::string type_to_string(Context& ctx, rebgn::StorageRef s, size_t* bit_size = nullptr) {
+        return type_to_string_impl(ctx, ctx.storage_table[s.ref.value()], bit_size);
     }
 
     std::optional<size_t> find_op(Context& ctx, rebgn::Range range, rebgn::AbstractOp op, size_t from = 0) {
@@ -357,7 +362,7 @@ namespace bm2cpp {
                 return eval(ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]], ctx);
             }
             case rebgn::AbstractOp::CALL_CAST: {
-                auto type_str = type_to_string(ctx, *code.storage());
+                auto type_str = type_to_string(ctx, *code.type());
                 auto param = code.param().value();
                 std::string arg_call;
                 for (size_t i = 0; i < param.expr_refs.size(); i++) {
@@ -421,7 +426,7 @@ namespace bm2cpp {
                 break;
             }
             case rebgn::AbstractOp::IMMEDIATE_TYPE: {
-                res.push_back(type_to_string(ctx, *code.storage()));
+                res.push_back(type_to_string(ctx, *code.type()));
                 break;
             }
             case rebgn::AbstractOp::ACCESS: {
@@ -495,13 +500,13 @@ namespace bm2cpp {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);
-                auto typ = code.storage().value();
+                auto typ = code.type().value();
                 auto type = type_to_string(ctx, typ);
                 res.push_back(std::format("static_cast<{}>({})", type, ref.back()));
                 break;
             }
             case rebgn::AbstractOp::NEW_OBJECT: {
-                auto storage = *code.storage();
+                auto storage = *code.type();
                 auto type = type_to_string(ctx, storage);
                 res.push_back(std::format("{}{{}}", type));
                 break;
@@ -517,8 +522,8 @@ namespace bm2cpp {
                 bool should_deref = false;
                 auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
                 if (found) {
-                    auto st = *ctx.bm.code[*found].storage();
-                    if (st.storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                    auto st = *ctx.bm.code[*found].type();
+                    if (ctx.storage_table[st.ref.value()].storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
                         should_deref = true;
                     }
                 }
@@ -642,7 +647,7 @@ namespace bm2cpp {
             }
             if (code.op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
                 auto param_name = std::format("param{}", code.ident().value().value());
-                auto type = type_to_string(ctx, *code.storage());
+                auto type = type_to_string(ctx, *code.type());
                 if (params > 0) {
                     ctx.cw.write(", ");
                 }
@@ -659,7 +664,7 @@ namespace bm2cpp {
                 if (!specify) {
                     continue;
                 }
-                auto storage = *ctx.bm.code[*specify].storage();
+                auto storage = *ctx.bm.code[*specify].type();
                 auto type = type_to_string(ctx, storage);
                 auto& ident = ctx.ident_table[code.ref().value().value()];
                 if (params > 0) {
@@ -673,7 +678,7 @@ namespace bm2cpp {
                 if (!specify) {
                     continue;
                 }
-                auto storage = *ctx.bm.code[*specify].storage();
+                auto storage = *ctx.bm.code[*specify].type();
                 auto type = type_to_string(ctx, storage);
                 auto& ident = ctx.ident_table[code.ref().value().value()];
                 if (params > 0) {
@@ -746,7 +751,7 @@ namespace bm2cpp {
                             continue;  // skip
                         }
                         auto typ = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                        auto result = type_to_string(ctx, *ctx.bm.code[*typ].storage());
+                        auto result = type_to_string(ctx, *ctx.bm.code[*typ].type());
                         auto getter_ident = ctx.ident_table[func.ident().value().value()];
                         ctx.cw.writeln(result, " ", getter_ident, "();");
                     }
@@ -786,9 +791,9 @@ namespace bm2cpp {
                                     ctx.cw.writeln("/* Unimplemented field */");
                                     continue;
                                 }
-                                auto storages = *ctx.bm.code[*storage].storage();
+                                auto storages = *ctx.bm.code[*storage].type();
                                 std::string enum_ident;
-                                for (auto& s : storages.storages) {
+                                for (auto& s : ctx.storage_table[storages.ref.value()].storages) {
                                     if (s.type == rebgn::StorageType::ENUM) {
                                         enum_ident = ctx.ident_table[s.ref().value().value()];
                                         break;
@@ -812,7 +817,7 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::SPECIFY_STORAGE_TYPE: {
-                    auto storage = *code.storage();
+                    auto storage = *code.type();
                     auto type = type_to_string(ctx, storage);
                     ctx.cw.writeln(type);
                     break;
@@ -835,7 +840,7 @@ namespace bm2cpp {
                         ctx.cw.writeln("/* Unimplemented field */");
                         break;
                     }
-                    auto storage = *ctx.bm.code[*specify].storage();
+                    auto storage = *ctx.bm.code[*specify].type();
                     size_t bit_size = 0;
                     auto type = type_to_string(ctx, storage, &bit_size);
                     if (ctx.bm_ctx.inner_bit_operations) {
@@ -861,7 +866,7 @@ namespace bm2cpp {
                         ctx.cw.write("void ", ident, "(");
                     }
                     else {
-                        auto storage = *ctx.bm.code[*ret].storage();
+                        auto storage = *ctx.bm.code[*ret].type();
                         auto type = type_to_string(ctx, storage);
                         ctx.cw.write(type, " ", ident, "(");
                     }
@@ -942,7 +947,7 @@ namespace bm2cpp {
                         break;
                     }
                     size_t bit_size = 0;
-                    auto type = type_to_string(ctx, *ctx.bm.code[*typ].storage(), &bit_size);
+                    auto type = type_to_string(ctx, *ctx.bm.code[*typ].type(), &bit_size);
                     auto ident = code.ident().value().value();
                     auto tmp = std::format("tmp{}", ident);
                     auto ptype = code.packed_op_type().value();
@@ -1063,7 +1068,7 @@ namespace bm2cpp {
                         ctx.cw.write("void ");
                     }
                     else {
-                        auto storage = *ctx.bm.code[*ret].storage();
+                        auto storage = *ctx.bm.code[*ret].type();
                         auto type = type_to_string(ctx, storage);
                         ctx.cw.write(type, " ");
                     }
@@ -1433,6 +1438,23 @@ namespace bm2cpp {
         bool has_bit_field = false;
         bool has_array = false;
         bool has_optional = false;
+        for (auto& typ : bm.types.maps) {
+            ctx.storage_table[typ.code.value()] = typ.storage;
+            for (auto& storage : typ.storage.storages) {
+                if (storage.type == rebgn::StorageType::VECTOR) {
+                    has_vector = true;
+                    break;
+                }
+                if (storage.type == rebgn::StorageType::ARRAY) {
+                    has_array = true;
+                    break;
+                }
+                if (storage.type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                    has_recursive = true;
+                    break;
+                }
+            }
+        }
         for (auto& code : bm.code) {
             if (code.op == rebgn::AbstractOp::DEFINE_UNION) {
                 has_union = true;
@@ -1443,22 +1465,6 @@ namespace bm2cpp {
             if (code.op == rebgn::AbstractOp::MERGED_CONDITIONAL_FIELD &&
                 code.merge_mode().value() == rebgn::MergeMode::COMMON_TYPE) {
                 has_optional = true;
-            }
-            if (auto s = code.storage()) {
-                for (auto& storage : s->storages) {
-                    if (storage.type == rebgn::StorageType::VECTOR) {
-                        has_vector = true;
-                        break;
-                    }
-                    if (storage.type == rebgn::StorageType::ARRAY) {
-                        has_array = true;
-                        break;
-                    }
-                    if (storage.type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
-                        has_recursive = true;
-                        break;
-                    }
-                }
             }
             if (has_vector && has_union && has_recursive && has_array) {
                 break;
@@ -1547,7 +1553,7 @@ namespace bm2cpp {
                         auto def = ctx.ident_index_table[code.ref().value().value()];
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
                             if (bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
-                                base_type = type_to_string(ctx, *bm.code[j].storage());
+                                base_type = type_to_string(ctx, *bm.code[j].type());
                                 continue;
                             }
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {

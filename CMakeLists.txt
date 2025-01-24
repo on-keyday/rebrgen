@@ -26,26 +26,26 @@ add_executable(bmgen
     "src/bm/optimize.cpp"
 )
 
-#add_executable(bm2cpp
-#    "src/bm2cpp/main.cpp"
-#    "src/bm2cpp/bm2cpp.cpp"
-#)
+add_executable(bm2cpp
+    "src/bm2cpp/main.cpp"
+    "src/bm2cpp/bm2cpp.cpp"
+)
 
-#add_executable(bm2rust
-#    "src/bm2rust/main.cpp"
-#    "src/bm2rust/bm2rust.cpp"
-#)   
+add_executable(bm2rust
+    "src/bm2rust/main.cpp"
+    "src/bm2rust/bm2rust.cpp"
+)   
 
 target_link_libraries(bmgen futils)
-#target_link_libraries(bm2cpp futils)
-#target_link_libraries(bm2rust futils)
+target_link_libraries(bm2cpp futils)
+target_link_libraries(bm2rust futils)
 
-install(TARGETS bmgen DESTINATION tool)
+install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)
-#install(FILES "${CMAKE_BINARY_DIR}/tool/bm2cpp.wasm" DESTINATION tool)
-#install(FILES "${CMAKE_BINARY_DIR}/tool/bm2rust.wasm" DESTINATION tool)
+install(FILES "${CMAKE_BINARY_DIR}/tool/bm2cpp.wasm" DESTINATION tool)
+install(FILES "${CMAKE_BINARY_DIR}/tool/bm2rust.wasm" DESTINATION tool)
 endif()

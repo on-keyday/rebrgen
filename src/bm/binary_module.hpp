@@ -1954,6 +1954,7 @@ namespace rebgn {
         struct union_struct_76 {
             Varint ident;
             StorageRef type;
+            StorageRef from;
             Varint ref;
         };
         struct union_struct_77 {
@@ -8613,7 +8614,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::ENUM_CAST == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_76>(union_variant_15)) {
+                return std::nullopt;
+            }
+            return std::get<61>((*this).union_variant_15).from;
         }
         if (AbstractOp::ASSIGN_CAST == (*this).op) {
             if (!std::holds_alternative<union_struct_77>(union_variant_15)) {
@@ -8805,7 +8809,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::ENUM_CAST == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_76>(union_variant_15)) {
+                union_variant_15 = union_struct_76();
+            }
+            std::get<61>((*this).union_variant_15).from = v;
+            return true;
         }
         if (AbstractOp::ASSIGN_CAST == (*this).op) {
             if (!std::holds_alternative<union_struct_77>(union_variant_15)) {
@@ -8998,7 +9006,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::ENUM_CAST == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_76>(union_variant_15)) {
+                union_variant_15 = union_struct_76();
+            }
+            std::get<61>((*this).union_variant_15).from = std::move(v);
+            return true;
         }
         if (AbstractOp::ASSIGN_CAST == (*this).op) {
             if (!std::holds_alternative<union_struct_77>(union_variant_15)) {
@@ -21645,6 +21657,9 @@ namespace rebgn {
             if (auto err = std::get<61>((*this).union_variant_15).type.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<61>((*this).union_variant_15).from.encode(w)) {
+                return err;
+            }
             if (auto err = std::get<61>((*this).union_variant_15).ref.encode(w)) {
                 return err;
             }
@@ -22931,6 +22946,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<61>((*this).union_variant_15).type.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<61>((*this).union_variant_15).from.decode(r)) {
                 return err;
             }
             if (auto err = std::get<61>((*this).union_variant_15).ref.decode(r)) {

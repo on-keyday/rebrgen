@@ -307,9 +307,14 @@ namespace rebgn {
             if (!to) {
                 return to.error();
             }
+            auto from = define_storage(m, typ);
+            if (!from) {
+                return from.error();
+            }
             m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.type(*to);
+                c.from(*from);
                 c.ref(base_ref);
             });
             auto err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
@@ -862,6 +867,7 @@ namespace rebgn {
             m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.type(*to);
+                c.from(*s);
                 c.ref(*tmp_var);
             });
             return do_assign(m, nullptr, nullptr, base_ref, *casted);

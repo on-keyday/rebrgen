@@ -624,6 +624,7 @@ format Code:
         AbstractOp.ENUM_CAST:
             ident :Varint
             type :StorageRef
+            from :StorageRef
             ref :Varint # ref to object
         AbstractOp.ASSIGN_CAST:
             ident :Varint

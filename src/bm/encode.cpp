@@ -1282,6 +1282,16 @@ namespace rebgn {
         return none;
     }
 
+    template <>
+    Error encode<ast::Assert>(Module& m, std::shared_ptr<ast::Assert>& node) {
+        return convert_node_definition(m, node);
+    }
+
+    template <>
+    Error decode<ast::Assert>(Module& m, std::shared_ptr<ast::Assert>& node) {
+        return convert_node_definition(m, node);
+    }
+
     template <class T>
     concept has_encode = requires(Module& m, std::shared_ptr<T>& n) {
         encode<T>(m, n);

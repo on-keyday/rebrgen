@@ -1622,12 +1622,24 @@ namespace bm2rust {
                         w.writeln("Ok(w.into_inner())");
                         scope.execute();
                         w.writeln("}");
+
+                        w.write("pub ");
+                        may_insert_async();
+                        w.writeln("fn encode_to_fixed<'b>(&self, data: &'b mut [u8]) -> std::result::Result<&'b [u8], Error> {");
+                        auto scope2 = w.indent_scope();
+                        w.writeln("let mut w = std::io::Cursor::new(&mut *data);");
+                        w.writeln("self.encode(&mut ", pass, ")", may_insert_await(ctx), "?;");
+                        w.writeln("let written = w.position() as usize;");
+                        w.writeln("drop(w);");
+                        w.writeln("Ok(&data[0..written])");
+                        scope2.execute();
+                        w.writeln("}");
                     }
                     else if (trait == NeedTrait::decoder) {
                         w.write("pub ");
                         may_insert_async();
-                        w.writeln("fn decode_exact");
-                        w.write("(data :&[u8]) -> Result<Self, Error> {");
+                        w.write("fn decode_slice<'b>");
+                        w.writeln("(data :&'b [u8]) -> Result<(Self,&'b [u8]), Error> {");
                         auto scope = w.indent_scope();
                         if (decode_flags.has_peek() && ctx.use_buf_read_peek) {  // use BufReader
                             w.writeln("let mut r = ", ctx.BufReader, "::new(std::io::Cursor::new(data));");
@@ -1636,10 +1648,26 @@ namespace bm2rust {
                             w.writeln("let mut r = std::io::Cursor::new(data);");
                         }
                         w.writeln("let mut result = Self::default();");
-                        std::string pass = "&mut " + may_wrap_pin(ctx, "r");
+                        std::string pass = "&mut r";
+                        if (ctx.use_async) {
+                            w.writeln("let mut r2 = std::pin::Pin::new(&mut r);");
+                            pass = "&mut r2";
+                        }
                         w.writeln("result.decode(", pass, ")", may_insert_await(ctx), "?;");
-                        w.writeln("Ok(result)");
+                        w.writeln("Ok((result,&data[r.position() as usize..]))");
                         scope.execute();
+                        w.writeln("}");
+                        w.write("pub ");
+                        may_insert_async();
+                        w.write("fn decode_exact");
+                        w.writeln("(data :&[u8]) -> Result<Self, Error> {");
+                        auto scope2 = w.indent_scope();
+                        w.writeln("let (result,rest) = Self::decode_slice(data)", may_insert_await(ctx), "?;");
+                        w.writeln("if rest.len() > 0 {");
+                        w.writeln("return Err(", ctx.error_type, "::AssertError(\"Unexpected data\"));");
+                        w.writeln("}");
+                        w.writeln("Ok(result)");
+                        scope2.execute();
                         w.writeln("}");
                     }
                     w.write("pub ");

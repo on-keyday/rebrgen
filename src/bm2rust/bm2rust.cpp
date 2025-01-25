@@ -678,7 +678,7 @@ namespace bm2rust {
                 else if (param.expr_refs.size() == 1) {
                     auto eval_arg = eval(ctx.bm.code[ctx.ident_index_table[param.expr_refs[0].value()]], ctx).back();
                     if (ctx.storage_table[storage.ref.value()].storages[0].type == rebgn::StorageType::ENUM) {
-                        res.push_back(std::format("unsafe {{ std::mem::transmute::<_,{}>({}) }}", type_str, eval_arg));
+                        res.push_back(std::format("({}::from({}))", type_str, eval_arg));
                     }
                     else {
                         res.push_back(std::format("({} as {})", eval_arg, type_str));
@@ -887,7 +887,7 @@ namespace bm2rust {
                 auto type = type_to_string(ctx, typ);
                 if (ctx.storage_table[typ.ref.value()].storages[0].type == rebgn::StorageType::ENUM) {
                     auto srcType = type_to_string(ctx, *code.from());
-                    res.push_back(std::format("unsafe {{ std::mem::transmute::<{},{}>({}) }}", srcType, type, ref.back()));
+                    res.push_back(std::format("{}::from({})", type, ref.back()));
                 }
                 else {
                     res.push_back(std::format("({} as {})", ref.back(), type));
@@ -1196,11 +1196,11 @@ namespace bm2rust {
                                 consumed_size += field_size;
                                 auto mask = std::format("{}", (std::uint64_t(1) << field_size) - 1);
                                 if (enum_ident.size()) {
-                                    w2.write("unsafe { std::mem::transmute(");
+                                    w2.write("(");
                                 }
                                 w2.write("((self.", field_name, ">>", std::format("{}", bit_size - consumed_size), ") & ", mask, ") as ", str);
                                 if (enum_ident.size()) {
-                                    w2.write(") }");
+                                    w2.write(").into()");
                                 }
                                 else if (field_size == 1) {
                                     w2.write(" != 0");
@@ -2426,6 +2426,18 @@ namespace bm2rust {
                         ctx.cw.writeln("}");
                         scope3.execute();
                         ctx.cw.writeln("}");
+
+                        if (base_type != "usize") {
+                            ctx.cw.writeln("impl std::convert::From<", base_type, "> for ", ident, " {");
+                            auto scope6 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("fn from(e: ", base_type, ") -> Self {");
+                            auto scope7 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("unsafe { std::mem::transmute(e) }");
+                            scope7.execute();
+                            ctx.cw.writeln("}");
+                            scope6.execute();
+                            ctx.cw.writeln("}");
+                        }
                         break;
                     }
                     default:

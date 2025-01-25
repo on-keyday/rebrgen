@@ -106,6 +106,13 @@ namespace bm2rust {
         return "";
     }
 
+    std::string may_get_to_mut(Context& ctx) {
+        if (ctx.use_copy_on_write_vec) {
+            return ".to_mut()";
+        }
+        return "";
+    }
+
     std::uint64_t get_uint_size(size_t bit_size) {
         if (bit_size <= 8) {
             return 8;
@@ -711,12 +718,7 @@ namespace bm2rust {
                 auto right_index = ctx.ident_index_table[code.right_ref().value().value()];
                 auto right = eval(ctx.bm.code[right_index], ctx);
                 res.insert(res.end(), right.begin(), right.end() - 1);
-                if (ctx.use_copy_on_write_vec) {
-                    res.push_back(std::format("{}.to_mut().push({});", left.back(), right.back()));
-                }
-                else {
-                    res.push_back(std::format("{}.push({});", left.back(), right.back()));
-                }
+                res.push_back(std::format("{}{}.push({});", left.back(), may_get_to_mut(ctx), right.back()));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN_CAST: {
@@ -1879,13 +1881,15 @@ namespace bm2rust {
                     ctx.on_assign = true;
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     ctx.on_assign = false;
+                    auto to_mut = may_get_to_mut(ctx);
+                    auto mut_prefix = to_mut.size() ? "" : "&mut ";
                     if (bit_size == 8) {
-                        w.writeln(ctx.r(), ".read_to_end(", "&mut ", vec.back(), ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        w.writeln(ctx.r(), ".read_to_end(", mut_prefix, vec.back(), to_mut, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
                     }
                     else {
                         auto tmp = std::format("tmp_hold_{}", ref_to_vec);
                         w.writeln("let mut ", tmp, " = Vec::new();");
-                        w.writeln(ctx.r(), ".read_to_end(", ",&mut ", tmp, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
+                        w.writeln(ctx.r(), ".read_to_end(", "&mut ", tmp, ")", map_io_error(ctx, get_belong_name(ctx, code)), ";");
                         w.writeln("if ", tmp, ".len() % ", std::format("{}", bit_size / 8), " != 0 {");
                         auto scope = w.indent_scope();
                         w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"decode ", get_belong_name(ctx, code), "\",", tmp, ".len(),", std::format("{}", bit_size / 8), "));");
@@ -1899,7 +1903,7 @@ namespace bm2rust {
                         w.writeln(tmp, " |= (", tmp, "[", tmp_i, " * ", std::format("{}", bit_size / 8), " + i] as u", std::format("{}", bit_size), ") << 8 * (", std::format("{}", bit_size / 8 - 1), " - i);");
                         scope3.execute();
                         w.writeln("}");
-                        w.writeln(vec.back(), ".push_back(", tmp, ");");
+                        w.writeln(vec.back(), to_mut, ".push(", tmp, ");");
                         scope2.execute();
                         w.writeln("}");
                     }
@@ -1930,8 +1934,10 @@ namespace bm2rust {
                             w.writeln(std::format("{}.read_exact(&mut {}[0..{}]){};", ctx.r(), vec.back(), len.back(), map_io_error(ctx, belong_name)));
                         }
                         else {
-                            w.writeln(std::format("{}.resize({} as usize,0);", vec.back(), len.back()));
-                            w.writeln(std::format("{}.read_exact(&mut {}){};", ctx.r(), vec.back(), map_io_error(ctx, belong_name)));
+                            auto to_mut = may_get_to_mut(ctx);
+                            auto mut_prefix = to_mut.size() ? "" : "&mut ";
+                            w.writeln(std::format("{}{}.resize({} as usize,0);", vec.back(), to_mut, len.back()));
+                            w.writeln(std::format("{}.read_exact({}{}{}){};", ctx.r(), mut_prefix, vec.back(), to_mut, map_io_error(ctx, belong_name)));
                         }
                     }
                     else {

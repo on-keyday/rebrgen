@@ -28,7 +28,7 @@ namespace bm2rust {
         std::vector<futils::helper::DynDefer> on_functions;
 
         std::vector<std::string> this_as;
-        std::vector<std::tuple<std::uint64_t /*index*/, std::uint64_t /*bit size*/, rebgn::PackedOpType>> bit_field_ident;
+        std::vector<std::tuple<std::uint64_t /*index*/, std::uint64_t /*bit size*/, rebgn::PackedOpType, rebgn::EndianExpr>> bit_field_ident;
         std::string error_type = "Error";
 
         std::vector<std::string> current_r;
@@ -1313,16 +1313,141 @@ namespace bm2rust {
         }
     }
 
+    constexpr bool is_known_size(size_t size) {
+        return size == 8 || size == 16 || size == 32 || size == 64;
+    }
+
+    void serialize_shift(Context& ctx, TmpCodeWriter& w, const std::string& to_array, const std::string& array_index, const std::string& from, const std::string& target_size, const std::string& shift_index, rebgn::EndianExpr endian) {
+        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"big\")]");
+            }
+            w.writeln(to_array, "[", array_index, "] = ((", from, " >> (", target_size, " - ", shift_index, " - 1) * 8) & 0xff) as u8;");
+        }
+        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"little\")]");
+            }
+            w.writeln(to_array, "[", array_index, "] = ((", from, " >> (", shift_index, " * 8) & 0xff) as u8;");
+        }
+    }
+
+    void serialize(Context& ctx, TmpCodeWriter& w, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
+        if (is_known_size(bit_size)) {
+            std::string_view method = "to_be_bytes";  // for u8 default
+            switch (endian.endian) {
+                case rebgn::Endian::big:
+                    method = "to_be_bytes";
+                    break;
+                case rebgn::Endian::little:
+                    method = "to_le_bytes";
+                    break;
+                case rebgn::Endian::native:
+                    method = "to_ne_bytes";
+                    break;
+            }
+            w.writeln("w.write_all(&", target, ".", method, "())", map_io_error(ctx, loc), ";");
+        }
+        else {
+            auto target_size = get_uint_size(bit_size) / 8;
+            auto byte_size = bit_size / 8;
+            auto tmp = std::format("tmp_se{}", bit_size);
+            w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"big\")]");
+            }
+            if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+                w.writeln(tmp, ".copy_from_slice(&", target, ".to_be_bytes()[", std::format("{}", target_size - byte_size), "..]);");
+            }
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"little\")]");
+            }
+            if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+                w.writeln(tmp, ".copy_from_slice(&", target, ".to_le_bytes()[0..", std::format("{}", byte_size), "]);");
+            }
+            w.writeln("w.write_all(&", tmp, ")", map_io_error(ctx, loc), ";");
+        }
+    }
+
+    void deserialize_shift(Context& ctx, TmpCodeWriter& w, const std::string& assign_to, const std::string& array, const std::string& array_index, const std::string& cast, size_t target_size, rebgn::EndianExpr endian, const std::string& shift_index) {
+        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"big\")]");
+            }
+            w.writeln(assign_to, " |= (", array, "[", array_index, "]", " as ", cast, ") << 8 * (", std::format("{}", target_size - 1), " - ", shift_index, ");");
+        }
+        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"little\")]");
+            }
+            w.writeln(assign_to, " |= (", array, "[", array_index, "]", " as ", cast, ") << 8 * ", shift_index, ";");
+        }
+    }
+
+    void deserialize(Context& ctx, TmpCodeWriter& w, size_t id, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
+        auto tmp = std::format("tmp_de{}", id);
+        w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
+        w.writeln(ctx.r(), ".read_exact(", "&mut ", tmp, ")", map_io_error(ctx, loc), ";");
+        if (is_known_size(bit_size)) {
+            std::string_view method = "from_be_bytes";
+            switch (endian.endian) {
+                case rebgn::Endian::big:
+                    method = "from_be_bytes";
+                    break;
+                case rebgn::Endian::little:
+                    method = "from_le_bytes";
+                    break;
+                case rebgn::Endian::native:
+                    method = "from_ne_bytes";
+                    break;
+            }
+            w.writeln(target, " = u", std::format("{}", bit_size), "::", method, "(", tmp, ");");
+        }
+        else {
+            auto byte_size = bit_size / 8;
+            auto target_bit_size = get_uint_size(bit_size);
+            auto target_size = target_bit_size / 8;
+            auto tmp_i = std::format("tmp_i{}", id);
+            w.writeln("for ", tmp_i, " in 0..", std::format("{}", byte_size), "{");
+            auto space = w.indent_scope();
+            deserialize_shift(ctx, w, target, tmp, tmp_i, std::format("u{}", target_bit_size), target_size, endian, tmp_i);
+            space.execute();
+            w.writeln("}");
+        }
+    }
+
     void encode_bit_field(Context& ctx, TmpCodeWriter& w, std::uint64_t bit_size, std::uint64_t ref) {
         auto prev = std::get<0>(ctx.bit_field_ident.back());
         auto total_size = std::get<1>(ctx.bit_field_ident.back());
+        auto endian = std::get<3>(ctx.bit_field_ident.back());
         auto bit_counter = std::format("bit_counter{}", prev);
         auto tmp = std::format("tmp{}", prev);
         auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
         auto bit_count = bit_size;
-        w.writeln(std::format("{} <<= {};", tmp, bit_count));
         auto eval = evaluated.back();
-        w.writeln(std::format("{} |= ({} & {}) as u{};", tmp, eval, (std::uint64_t(1) << bit_count) - 1, total_size));
+        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"big\")]");
+                w.writeln("{");
+            }
+            // from msb
+            w.writeln(std::format("{} <<= {};", tmp, bit_count));
+            w.writeln(std::format("{} |= ({} & {}) as u{};", tmp, eval, (std::uint64_t(1) << bit_count) - 1, total_size));
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("}");
+            }
+        }
+        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"little\")]");
+                w.writeln("{");
+            }
+            // from lsb
+            w.writeln(std::format("{} |= ({} & {}) as u{} << {}", tmp, eval, (std::uint64_t(1) << bit_count) - 1, total_size, bit_counter));
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("}");
+            }
+        }
         w.writeln(std::format("{} += {};", bit_counter, bit_count));
     }
 
@@ -1330,6 +1455,7 @@ namespace bm2rust {
         auto prev = std::get<0>(ctx.bit_field_ident.back());
         auto total_size = std::get<1>(ctx.bit_field_ident.back());
         auto ptype = std::get<2>(ctx.bit_field_ident.back());
+        auto endian = std::get<3>(ctx.bit_field_ident.back());
         auto bit_counter = std::format("bit_counter{}", prev);
         auto tmp = std::format("tmp{}", prev);
         ctx.on_assign = true;
@@ -1350,7 +1476,7 @@ namespace bm2rust {
                                   ctx.r(), array, read_size, map_io_error(ctx, belong_name)));
             w.writeln(std::format("for i in {}..consumed_byte {{", read_size));
             auto scope2 = w.indent_scope();
-            w.writeln(tmp, " |= (", array, "[i] as u", std::format("{}", total_size), ") <<", "8 * (", std::format("{}", total_size / 8), " - i - 1);");
+            deserialize_shift(ctx, w, tmp, array, "i", std::format("u{}", total_size), total_size / 8, endian, "i");
             scope2.execute();
             w.writeln("}");
             scope.execute();
@@ -1369,66 +1495,52 @@ namespace bm2rust {
         if (dst_bit_size == 1) {
             not_zero = " != 0";
         }
-        if (evaluated.back().back() == ')') {
-            evaluated.back().pop_back();  // must be end with )
-            if (auto in_union = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_UNION);
-                in_union && find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
-                auto belong = ctx.bm.code[ctx.ident_index_table[*in_union]].belong();
-                auto storage_type = find_op(ctx, ctx.ident_range_table[belong.value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                if (storage_type) {
-                    auto storage = *ctx.bm.code[*storage_type].type();
-                    size_t bit_size = 0;
-                    type_to_string(ctx, storage, &bit_size);
-                    type = get_uint(bit_size);
-                    if (bit_size == 1) {
-                        not_zero = " != 0";
-                    }
-                    else {
-                        not_zero = "";
-                    }
+        assert(evaluated.back().back() == ')');
+        evaluated.back().pop_back();  // must be end with )
+        if (auto in_union = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_UNION);
+            in_union && find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+            auto belong = ctx.bm.code[ctx.ident_index_table[*in_union]].belong();
+            auto storage_type = find_op(ctx, ctx.ident_range_table[belong.value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+            if (storage_type) {
+                auto storage = *ctx.bm.code[*storage_type].type();
+                size_t bit_size = 0;
+                type_to_string(ctx, storage, &bit_size);
+                type = get_uint(bit_size);
+                if (bit_size == 1) {
+                    not_zero = " != 0";
+                }
+                else {
+                    not_zero = "";
                 }
             }
+        }
+        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"big\")]");
+                w.writeln("{");
+            }
+            // example: 最初にbit_counter=64。1bitフィールドを読み込むので bit_counter = 63になる
+            //          上位ビットから埋められていくのでmsb0を読みたいとするとシフト数は63(bit_counter)となり
+            //          63ビット目を読むことになる。以降も同様に、たとえば次に2bitフィールドを読む場合は
+            //          bit_counter = 61となり、シフト数が61となり,61,62ビット目を読むことになる
             w.writeln(std::format("{}(({} >> {}) & {}) as {}{});", evaluated.back(), tmp, bit_counter, (std::uint64_t(1) << bit_size) - 1, type, not_zero));
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("}");
+            }
         }
-        else {
-            w.writeln(std::format("{} = (({} >> {}) & {}) as {}{};", evaluated.back(), tmp, bit_counter, (std::uint64_t(1) << bit_size) - 1, type, not_zero));
-        }
-    }
-
-    constexpr bool is_known_size(size_t size) {
-        return size == 8 || size == 16 || size == 32 || size == 64;
-    }
-
-    void serialize(Context& ctx, TmpCodeWriter& w, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
-        if (is_known_size(bit_size)) {
-            w.writeln("w.write_all(&", target, ".to_be_bytes())", map_io_error(ctx, loc), ";");
-        }
-        else {
-            auto target_size = get_uint_size(bit_size) / 8;
-            auto byte_size = bit_size / 8;
-            auto tmp = std::format("tmp_se{}", bit_size);
-            w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
-            w.writeln(tmp, ".copy_from_slice(&", target, ".to_be_bytes()[", std::format("{}", target_size - byte_size), "..]);");
-            w.writeln("w.write_all(&", tmp, ")", map_io_error(ctx, loc), ";");
-        }
-    }
-
-    void deserialize(Context& ctx, TmpCodeWriter& w, size_t id, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
-        auto tmp = std::format("tmp_de{}", id);
-        w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
-        w.writeln(ctx.r(), ".read_exact(", "&mut ", tmp, ")", map_io_error(ctx, loc), ";");
-        if (is_known_size(bit_size)) {
-            w.writeln(target, " = u", std::format("{}", bit_size), "::from_be_bytes(", tmp, ");");
-        }
-        else {
-            auto byte_size = bit_size / 8;
-            auto target_size = get_uint_size(bit_size) / 8;
-            auto tmp_i = std::format("tmp_i{}", id);
-            w.writeln("for ", tmp_i, " in 0..", std::format("{}", byte_size), "{");
-            auto space = w.indent_scope();
-            w.writeln(target, " |= (", tmp, "[", tmp_i, "] as u", std::format("{}", target_size * 8), ") << 8 * (", std::format("{}", target_size - 1), " - ", tmp_i, ");");
-            space.execute();
-            w.writeln("}");
+        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("#[cfg(target_endian = \"little\")]");
+                w.writeln("{");
+            }
+            // example: 最初にbit_counter=64。 1bitフィールドを読み込むので bit_counter = 63になる
+            //          下位ビットから埋められていくのでlsb0を読みたいとするとシフト数は64 - 63(bit_counter) - 1(bit_size) = 0となり
+            //          0ビット目を読むことになる。以降も同様に、たとえば次に2bitフィールドを読む場合は
+            //          bit_counter = 61となり、シフト数が64 - 61(bit_counter) - 2(bit_size) = 1となり,1,2ビット目を読むことになる
+            w.writeln(std::format("{}(({} >> ({} - {} - {})) & {}) as {}{});", evaluated.back(), tmp, total_size, bit_counter, bit_size, (std::uint64_t(1) << bit_size) - 1, type, not_zero));
+            if (endian.endian == rebgn::Endian::native) {
+                w.writeln("}");
+            }
         }
     }
 
@@ -1456,10 +1568,10 @@ namespace bm2rust {
                     w.writeln("let mut ", tmp, ":", type, " = 0; /* bit field */");
                     if (code.op == rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION) {
                         w.writeln("let mut ", bit_counter, " = 0;");
-                        ctx.bit_field_ident.push_back({code.ident()->value(), bit_size, ptype});
+                        ctx.bit_field_ident.push_back({code.ident()->value(), bit_size, ptype, code.endian().value()});
                         defer.push_back(futils::helper::defer_ex([=, &w, &ctx]() {
                             if (ptype == rebgn::PackedOpType::FIXED) {
-                                serialize(ctx, w, bit_size, tmp, tmp, {.endian = rebgn::Endian::big});
+                                serialize(ctx, w, bit_size, tmp, tmp, code.endian().value());
                             }
                             else {
                                 auto tmp_array = std::format("tmp_array{}", ident);
@@ -1469,7 +1581,7 @@ namespace bm2rust {
                                 auto step = std::format("step{}", ident);
                                 w.writeln("for ", step, " in 0..", byte_counter, "{");
                                 auto space = w.indent_scope();
-                                w.writeln(tmp_array, "[", step, "] = ((", tmp, " >> (", byte_counter, " - ", step, " - 1) * 8) & 0xff) as u8;");
+                                serialize_shift(ctx, w, tmp_array, step, tmp, byte_counter, step, code.endian().value());
                                 space.execute();
                                 w.writeln("}");
                                 w.writeln("w.write_all(&", tmp_array, "[0..", byte_counter, "])", map_io_error(ctx, belong_name), ";");
@@ -1477,10 +1589,10 @@ namespace bm2rust {
                         }));
                     }
                     else {
-                        ctx.bit_field_ident.push_back({code.ident()->value(), bit_size, ptype});
+                        ctx.bit_field_ident.push_back({code.ident()->value(), bit_size, ptype, code.endian().value()});
                         w.writeln(std::format("let mut {} = {};", bit_counter, bit_size));
                         if (ptype == rebgn::PackedOpType::FIXED) {
-                            deserialize(ctx, w, code.ident()->value(), bit_size, tmp, tmp, {.endian = rebgn::Endian::big});
+                            deserialize(ctx, w, code.ident()->value(), bit_size, tmp, tmp, code.endian().value());
                         }
                         else {
                             auto read_size = std::format("read_size{}", ident);
@@ -1925,13 +2037,14 @@ namespace bm2rust {
                         auto tmp_i = std::format("tmp_i{}", ref_to_vec);
                         w.writeln("for ", tmp_i, " in 0..", tmp, ".len() / ", std::format("{}", bit_size / 8), "{");
                         auto scope2 = w.indent_scope();
-                        w.writeln("let mut ", tmp, " = 0;");
+                        auto tmp2 = std::format("tmp2_{}", ref_to_vec);
+                        w.writeln("let mut ", tmp2, " = 0;");
                         w.writeln("for i in 0..", std::format("{}", bit_size / 8), "{");
                         auto scope3 = w.indent_scope();
-                        w.writeln(tmp, " |= (", tmp, "[", tmp_i, " * ", std::format("{}", bit_size / 8), " + i] as u", std::format("{}", bit_size), ") << 8 * (", std::format("{}", bit_size / 8 - 1), " - i);");
+                        deserialize_shift(ctx, w, tmp2, tmp, std::format("{} * {} + i", tmp_i, bit_size / 8), std::format("u{}", bit_size), bit_size / 8, code.endian().value(), "i");
                         scope3.execute();
                         w.writeln("}");
-                        w.writeln(vec.back(), to_mut, ".push(", tmp, ");");
+                        w.writeln(vec.back(), to_mut, ".push(", tmp2, ");");
                         scope2.execute();
                         w.writeln("}");
                     }

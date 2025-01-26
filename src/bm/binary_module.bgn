@@ -698,10 +698,12 @@ format Code:
             ident :Varint
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
+            endian :EndianExpr
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
+            endian :EndianExpr
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:

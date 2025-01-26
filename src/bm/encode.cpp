@@ -1004,6 +1004,19 @@ namespace rebgn {
         return err;
     }
 
+    Endian get_type_endian(const std::shared_ptr<ast::Type>& typ) {
+        if (auto int_ty = ast::as<ast::IntType>(typ)) {
+            return Endian(int_ty->endian);
+        }
+        if (auto float_ty = ast::as<ast::FloatType>(typ)) {
+            return Endian(float_ty->endian);
+        }
+        if (auto enum_ty = ast::as<ast::EnumType>(typ)) {
+            return get_type_endian(enum_ty->base.lock()->base_type);
+        }
+        return Endian::unspec;
+    }
+
     template <>
     Error encode<ast::Format>(Module& m, std::shared_ptr<ast::Format>& node) {
         auto fmt_ident = m.lookup_ident(node->ident);
@@ -1056,10 +1069,12 @@ namespace rebgn {
                     return error("Failed to generate new id");
                 }
                 auto typ = m.bit_field_variability[n];
+                auto field = ast::as<ast::Field>(n);
                 m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
                     c.belong(found->second);
                     c.packed_op_type(typ);
+                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr)));
                 });
             }
             auto err = convert_node_encode(m, n);
@@ -1136,10 +1151,12 @@ namespace rebgn {
                     return error("Failed to generate new id");
                 }
                 auto typ = m.bit_field_variability[n];
+                auto field = ast::as<ast::Field>(n);
                 m.op(AbstractOp::BEGIN_DECODE_PACKED_OPERATION, [&](Code& c) {
                     c.ident(*new_id);
                     c.belong(found->second);
                     c.packed_op_type(typ);
+                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr)));
                 });
             }
             auto err = convert_node_decode(m, n);

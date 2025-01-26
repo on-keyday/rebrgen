@@ -317,6 +317,7 @@ namespace rebgn {
         big = 1,
         little = 2,
         dynamic = 3,
+        native = 4,
     };
     constexpr const char* to_string(Endian e) {
         switch (e) {
@@ -328,6 +329,8 @@ namespace rebgn {
                 return "little";
             case Endian::dynamic:
                 return "dynamic";
+            case Endian::native:
+                return "native";
         }
         return "";
     }
@@ -347,6 +350,9 @@ namespace rebgn {
         }
         if (str == "dynamic") {
             return Endian::dynamic;
+        }
+        if (str == "native") {
+            return Endian::native;
         }
         return std::nullopt;
     }

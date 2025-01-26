@@ -1870,6 +1870,9 @@ namespace rebgn {
                 else if (node->order_value == 1) {
                     m.set_endian(Endian::little);
                 }
+                else if (node->order_value == 2) {
+                    m.set_endian(Endian::native);
+                }
                 else {
                     return error("Invalid endian value");
                 }

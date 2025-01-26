@@ -75,6 +75,7 @@ enum Endian:
     big
     little
     dynamic # this is for clarification; not in brgen ast node
+    native # this is for clarification; not in brgen ast node
 
 enum BitOrder:
     :u8

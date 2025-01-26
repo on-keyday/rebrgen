@@ -59,6 +59,8 @@ namespace rebgn {
         std::unordered_map<ObjectID, ObjectID> start_state;
         ObjectID current_condition = null_id;
         std::vector<PhiCandidate> candidates;
+        ObjectID current_dynamic_endian = null_id;
+        Endian current_endian = Endian::unspec;
     };
 
     struct Module {
@@ -178,6 +180,8 @@ namespace rebgn {
             phi_stack.push_back(PhiStack{
                 .start_state = previous_assignments,
                 .current_condition = condition,
+                .current_dynamic_endian = current_dynamic_endian,
+                .current_endian = local_endian,
             });
         }
 
@@ -187,6 +191,8 @@ namespace rebgn {
                 .condition = phi_stack.back().current_condition,
                 .candidate = std::move(previous_assignments),
             });
+            current_dynamic_endian = phi_stack.back().current_dynamic_endian;
+            local_endian = phi_stack.back().current_endian;
             previous_assignments = phi_stack.back().start_state;
             phi_stack.back().current_condition = condition;
         }
@@ -198,6 +204,8 @@ namespace rebgn {
                 .candidate = std::move(previous_assignments),
             });
             auto stack = std::move(phi_stack.back());
+            current_dynamic_endian = stack.current_dynamic_endian;
+            local_endian = stack.current_endian;
             phi_stack.pop_back();
             return stack;
         }

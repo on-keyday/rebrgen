@@ -2185,12 +2185,14 @@ namespace bm2rust {
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto belong_name = get_belong_name(ctx, code);
                     auto tmp_array = std::format("tmp_array{}", ref);
-                    std::string new_vec = may_wrap_pin(ctx, "Vec::with_capacity(" + len.back() + " as usize)");
-                    w.writeln("let mut ", tmp_array, " = ", new_vec, ";");
-                    ctx.current_w.push_back(std::move(tmp_array));
+                    auto tmp_cursor = std::format("cursor{}", ref);
+                    w.writeln("let mut ", tmp_array, " = ", "Vec::with_capacity(" + len.back() + " as usize)", ";");
+                    std::string new_vec = may_wrap_pin(ctx, std::format("std::io::Cursor::new(&mut {})", tmp_array));
+                    w.writeln("let mut ", tmp_cursor, " = ", new_vec, ";");
+                    ctx.current_w.push_back(std::move(tmp_cursor));
                     defer.push_back(futils::helper::defer_ex([&, ref = ref, len]() mutable {
-                        auto tmp_array = std::move(ctx.current_w.back());
                         ctx.current_w.pop_back();
+                        auto tmp_array = std::format("tmp_array{}", ref);
                         w.writeln("if ", tmp_array, ".len() != ", len.back(), " as usize {");
                         auto scope = w.indent_scope();
                         w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"encode ", tmp_array, "\",", len.back(), " as usize,", tmp_array, ".len()));");

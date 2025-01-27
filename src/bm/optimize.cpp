@@ -1366,6 +1366,9 @@ namespace rebgn {
                 // variables.insert(code.ident().value().value());
                 break;
             }
+            case rebgn::AbstractOp::DEFINE_CONSTANT: {
+                break;  // TODO(on-keyday): check constant origin
+            }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
                 if (err) {

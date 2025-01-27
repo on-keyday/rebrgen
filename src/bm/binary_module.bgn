@@ -214,6 +214,7 @@ enum AbstractOp:
     PROPERTY_ASSIGN
 
     ASSERT
+    LENGTH_CHECK
     EXPLICIT_ERROR
 
     ACCESS
@@ -648,6 +649,10 @@ format Code:
             right_ref :Varint # ref to object
         AbstractOp.ASSERT:
             ref :Varint # ref to condition expr
+            belong :Varint # belong to function
+        AbstractOp.LENGTH_CHECK: # for array or vector
+            left_ref :Varint # ref to vector 
+            right_ref :Varint # ref to length
             belong :Varint # belong to function
         AbstractOp.IF:
             ref :Varint

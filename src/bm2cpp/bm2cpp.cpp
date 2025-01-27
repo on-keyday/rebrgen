@@ -1061,6 +1061,14 @@ namespace bm2cpp {
                     ctx.cw.writeln("if(!", evaluated.back(), ") { return false; }");
                     break;
                 }
+                case rebgn::AbstractOp::LENGTH_CHECK: {
+                    auto ref_to_vec = code.left_ref().value().value();
+                    auto ref_to_len = code.right_ref().value().value();
+                    auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
+                    auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
+                    ctx.cw.writeln("if(", vec.back(), ".size() != ", len.back(), ") { return false; }");
+                    break;
+                }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
                     auto fn_range = ctx.ident_range_table[code.ident().value().value()];
                     auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);

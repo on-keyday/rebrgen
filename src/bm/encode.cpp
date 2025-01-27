@@ -153,12 +153,13 @@ namespace rebgn {
                     if (!endian) {
                         return endian.error();
                     }
-                    m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
+                    m.op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*imm);
                         c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                         c.belong(get_field_ref(m, field));
+                        c.array_length(*varint(*len));
                     });
                     return none;
                 }
@@ -179,15 +180,15 @@ namespace rebgn {
                 return error("Array length is not specified");
             }
             expected<Varint> len_;
+            len_ = m.new_node_id(arr->length);
+            if (!len_) {
+                return error("Failed to generate new id");
+            }
+            m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
+                c.ident(*len_);
+                c.ref(base_ref);
+            });
             if (ast::is_any_range(arr->length)) {
-                len_ = m.new_node_id(arr->length);
-                if (!len_) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
-                    c.ident(*len_);
-                    c.ref(base_ref);
-                });
                 if (is_alignment_vector(field)) {
                     auto req_size = get_alignment_requirement(m, arr, field, true);
                     if (!req_size) {
@@ -220,25 +221,28 @@ namespace rebgn {
                 if (!s) {
                     return s.error();
                 }
-                len_ = define_typed_tmp_var(m, *len_init, *s, ast::ConstantLevel::immutable_variable);
-                if (!len_) {
-                    return len_.error();
+                auto expected_len = define_typed_tmp_var(m, *len_init, *s, ast::ConstantLevel::immutable_variable);
+                if (!expected_len) {
+                    return expected_len.error();
                 }
+                // add length check
+                m.op(AbstractOp::LENGTH_CHECK, [&](Code& c) {
+                    c.left_ref(base_ref);
+                    c.right_ref(*expected_len);
+                    c.belong(get_field_ref(m, field));
+                });
             }
             if (elem_is_int) {
                 auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                 if (!endian) {
                     return endian.error();
                 }
-                m.op(arr->length_value ? AbstractOp::ENCODE_INT_VECTOR_FIXED : AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
+                m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
                     c.left_ref(base_ref);
                     c.right_ref(*len_);
                     c.endian(*endian);
                     c.bit_size(*varint(*elem_is_int->bit_size));
                     c.belong(get_field_ref(m, field));
-                    if (arr->length_value) {
-                        c.array_length(*varint(arr->length_value.value()));
-                    }
                 });
                 return none;
             }

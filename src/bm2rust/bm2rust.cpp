@@ -1687,6 +1687,17 @@ namespace bm2rust {
                     w.writeln("}");
                     break;
                 }
+                case rebgn::AbstractOp::LENGTH_CHECK: {
+                    auto vec = code.left_ref().value().value();
+                    auto len = code.right_ref().value().value();
+                    auto belong_name = get_belong_name(ctx, code);
+                    auto vec_eval = eval(ctx.bm.code[ctx.ident_index_table[vec]], ctx);
+                    auto len_eval = eval(ctx.bm.code[ctx.ident_index_table[len]], ctx);
+                    w.writeln("if ", vec_eval.back(), ".len() != ", len_eval.back(), " as usize {");
+                    w.writeln("return Err(Error::ArrayLengthMismatch(\"encode ", belong_name, "\", ", len_eval.back(), " as usize, ", vec_eval.back(), ".len()));");
+                    w.writeln("}");
+                    break;
+                }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
                     auto fn_range = ctx.ident_range_table[code.ident().value().value()];
                     auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
@@ -1970,13 +1981,6 @@ namespace bm2rust {
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
                     auto belong_name = get_belong_name(ctx, code);
-                    if (code.op == rebgn::AbstractOp::ENCODE_INT_VECTOR) {
-                        w.writeln(std::format("if({}.len() != {} as usize) {{", vec.back(), len.back()));
-                        auto scope = w.indent_scope();
-                        w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"encode ", belong_name, "\",", vec.back(), ".len(),", len.back(), " as usize));");
-                        scope.execute();
-                        w.writeln("}");
-                    }
                     if (bit_size == 8) {
                         w.writeln("w.write_all(&", vec.back(), "[0..", len.back(), " as usize]", ")", map_io_error(ctx, belong_name), ";");
                     }

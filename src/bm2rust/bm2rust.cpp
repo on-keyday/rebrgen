@@ -1094,7 +1094,7 @@ namespace bm2rust {
                     w.writeln(std::format("struct Variant{}{} {{", code.ident().value().value(), may_get_lifetime(ctx)));
                     defer.push_back(w.indent_scope_ex());
                     if (ctx.use_copy_on_write_vec) {
-                        w.writeln("_phantom: std::marker::PhantomData<&'a ()>,");
+                        w.writeln("pub _phantom: std::marker::PhantomData<&'a ()>,");
                     }
                     break;
                 }
@@ -1288,7 +1288,7 @@ namespace bm2rust {
                     w.writeln("pub struct ", ident, may_get_lifetime(ctx), " {");
                     defer.push_back(w.indent_scope_ex());
                     if (ctx.use_copy_on_write_vec) {
-                        w.writeln("_phantom: std::marker::PhantomData<&'a ()>,");
+                        w.writeln("pub _phantom: std::marker::PhantomData<&'a ()>,");
                     }
                     break;
                 }

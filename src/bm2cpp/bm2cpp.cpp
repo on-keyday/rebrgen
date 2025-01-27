@@ -1164,7 +1164,7 @@ namespace bm2cpp {
                         auto& ident = ctx.ident_index_table[ref];
                         auto s = eval(ctx.bm.code[ident], ctx);
                         auto endian = code.endian().value();
-                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
                         ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     }
                     break;
@@ -1178,7 +1178,7 @@ namespace bm2cpp {
                         auto& ident = ctx.ident_index_table[ref];
                         auto s = eval(ctx.bm.code[ident], ctx);
                         auto endian = code.endian().value();
-                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
                         ctx.cw.writeln("if(!::futils::binary::read_num(r,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     }
                     break;
@@ -1220,7 +1220,7 @@ namespace bm2cpp {
                     }
                     else {
                         auto endian = code.endian().value();
-                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
                         auto tmp_i = std::format("i_{}", ref_to_vec);
                         ctx.cw.writeln("for(size_t ", tmp_i, " = 0; ", tmp_i, " < ", len.back(), "; ", tmp_i, "++) {");
                         auto scope = ctx.cw.indent_scope();

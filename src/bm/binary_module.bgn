@@ -70,7 +70,7 @@ enum UnaryOp:
     bit_not = "~" # this is for clarification; not in brgen ast node
 
 enum Endian:
-    :u8
+    :u3
     unspec
     big
     little
@@ -399,6 +399,8 @@ format PhiParams:
 
 format EndianExpr:
     endian :Endian
+    sign :u1 # 0 for unsigned, 1 for signed (for storage optimization)
+    reserved :u4
     dynamic_ref :Varint # ref to dynamic endian or null
 
 enum PropertyFunctionType:

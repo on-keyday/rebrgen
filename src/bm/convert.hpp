@@ -138,17 +138,18 @@ namespace rebgn {
             return futils::helper::defer([&] { on_function = std::nullopt; });
         }
 
-        expected<EndianExpr> get_endian(Endian base) {
+        expected<EndianExpr> get_endian(Endian base, bool sign) {
             EndianExpr e;
-            e.endian = base;
+            e.sign(sign);
+            e.endian(base);
             if (base != Endian::unspec) {
                 return e;
             }
-            e.endian = global_endian;
+            e.endian(global_endian);
             if (on_function) {
-                e.endian = local_endian;
+                e.endian(local_endian);
             }
-            if (e.endian == Endian::dynamic) {
+            if (e.endian() == Endian::dynamic) {
                 auto ref = varint(current_dynamic_endian);
                 if (!ref) {
                     return unexpect_error(std::move(ref.error()));

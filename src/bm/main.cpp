@@ -231,7 +231,8 @@ namespace rebgn {
                 print_type(*s);
             }
             if (auto e = c.endian()) {
-                cout << " " << to_string(e->endian);
+                cout << " " << to_string(e->endian());
+                cout << " " << (e->sign() ? "signed" : "unsigned");
                 if (e->dynamic_ref.value() != 0) {
                     print_ref(e->dynamic_ref);
                 }

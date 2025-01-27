@@ -1328,14 +1328,14 @@ namespace bm2rust {
     }
 
     void serialize_shift(Context& ctx, TmpCodeWriter& w, const std::string& to_array, const std::string& array_index, const std::string& from, const std::string& target_size, const std::string& shift_index, rebgn::EndianExpr endian) {
-        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::big || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"big\")]");
             }
             w.writeln(to_array, "[", array_index, "] = ((", from, " >> (", target_size, " - ", shift_index, " - 1) * 8) & 0xff) as u8;");
         }
-        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::little || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"little\")]");
             }
             w.writeln(to_array, "[", array_index, "] = ((", from, " >> (", shift_index, " * 8) & 0xff) as u8;");
@@ -1345,7 +1345,7 @@ namespace bm2rust {
     void serialize(Context& ctx, TmpCodeWriter& w, size_t bit_size, const std::string& loc, const std::string& target, rebgn::EndianExpr endian) {
         if (is_known_size(bit_size)) {
             std::string_view method = "to_be_bytes";  // for u8 default
-            switch (endian.endian) {
+            switch (endian.endian()) {
                 case rebgn::Endian::big:
                     method = "to_be_bytes";
                     break;
@@ -1363,16 +1363,16 @@ namespace bm2rust {
             auto byte_size = bit_size / 8;
             auto tmp = std::format("tmp_se{}", bit_size);
             w.writeln("let mut ", tmp, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"big\")]");
             }
-            if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::big || endian.endian() == rebgn::Endian::native) {
                 w.writeln(tmp, ".copy_from_slice(&", target, ".to_be_bytes()[", std::format("{}", target_size - byte_size), "..]);");
             }
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"little\")]");
             }
-            if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::little || endian.endian() == rebgn::Endian::native) {
                 w.writeln(tmp, ".copy_from_slice(&", target, ".to_le_bytes()[0..", std::format("{}", byte_size), "]);");
             }
             w.writeln("w.write_all(&", tmp, ")", map_io_error(ctx, loc), ";");
@@ -1380,14 +1380,14 @@ namespace bm2rust {
     }
 
     void deserialize_shift(Context& ctx, TmpCodeWriter& w, const std::string& assign_to, const std::string& array, const std::string& array_index, const std::string& cast, size_t target_size, rebgn::EndianExpr endian, const std::string& shift_index) {
-        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::big || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"big\")]");
             }
             w.writeln(assign_to, " |= (", array, "[", array_index, "]", " as ", cast, ") << 8 * (", std::format("{}", target_size - 1), " - ", shift_index, ");");
         }
-        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::little || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"little\")]");
             }
             w.writeln(assign_to, " |= (", array, "[", array_index, "]", " as ", cast, ") << 8 * ", shift_index, ";");
@@ -1400,7 +1400,7 @@ namespace bm2rust {
         w.writeln(ctx.r(), ".read_exact(", "&mut ", tmp, ")", map_io_error(ctx, loc), ";");
         if (is_known_size(bit_size)) {
             std::string_view method = "from_be_bytes";
-            switch (endian.endian) {
+            switch (endian.endian()) {
                 case rebgn::Endian::big:
                     method = "from_be_bytes";
                     break;
@@ -1411,7 +1411,7 @@ namespace bm2rust {
                     method = "from_ne_bytes";
                     break;
             }
-            w.writeln(target, " = u", std::format("{}", bit_size), "::", method, "(", tmp, ");");
+            w.writeln(target, " = ", endian.sign() ? "i" : "u", std::format("{}", bit_size), "::", method, "(", tmp, ");");
         }
         else {
             auto byte_size = bit_size / 8;
@@ -1435,26 +1435,26 @@ namespace bm2rust {
         auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
         auto bit_count = bit_size;
         auto eval = evaluated.back();
-        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::big || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"big\")]");
                 w.writeln("{");
             }
             // from msb
             w.writeln(std::format("{} <<= {};", tmp, bit_count));
             w.writeln(std::format("{} |= ({} & {}) as u{};", tmp, eval, (std::uint64_t(1) << bit_count) - 1, total_size));
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("}");
             }
         }
-        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::little || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"little\")]");
                 w.writeln("{");
             }
             // from lsb
             w.writeln(std::format("{} |= ({} & {}) as u{} << {}", tmp, eval, (std::uint64_t(1) << bit_count) - 1, total_size, bit_counter));
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("}");
             }
         }
@@ -1524,8 +1524,8 @@ namespace bm2rust {
                 }
             }
         }
-        if (endian.endian == rebgn::Endian::big || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::big || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"big\")]");
                 w.writeln("{");
             }
@@ -1534,12 +1534,12 @@ namespace bm2rust {
             //          63ビット目を読むことになる。以降も同様に、たとえば次に2bitフィールドを読む場合は
             //          bit_counter = 61となり、シフト数が61となり,61,62ビット目を読むことになる
             w.writeln(std::format("{}(({} >> {}) & {}) as {}{});", evaluated.back(), tmp, bit_counter, (std::uint64_t(1) << bit_size) - 1, type, not_zero));
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("}");
             }
         }
-        if (endian.endian == rebgn::Endian::little || endian.endian == rebgn::Endian::native) {
-            if (endian.endian == rebgn::Endian::native) {
+        if (endian.endian() == rebgn::Endian::little || endian.endian() == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("#[cfg(target_endian = \"little\")]");
                 w.writeln("{");
             }
@@ -1548,7 +1548,7 @@ namespace bm2rust {
             //          0ビット目を読むことになる。以降も同様に、たとえば次に2bitフィールドを読む場合は
             //          bit_counter = 61となり、シフト数が64 - 61(bit_counter) - 2(bit_size) = 1となり,1,2ビット目を読むことになる
             w.writeln(std::format("{}(({} >> ({} - {} - {})) & {}) as {}{});", evaluated.back(), tmp, total_size, bit_counter, bit_size, (std::uint64_t(1) << bit_size) - 1, type, not_zero));
-            if (endian.endian == rebgn::Endian::native) {
+            if (endian.endian() == rebgn::Endian::native) {
                 w.writeln("}");
             }
         }
@@ -1940,7 +1940,7 @@ namespace bm2rust {
                         auto& ident = ctx.ident_index_table[ref];
                         auto s = eval(ctx.bm.code[ident], ctx);
                         auto endian = code.endian().value();
-                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
                         auto belong_name = get_belong_name(ctx, code);
                         serialize(ctx, w, code.bit_size()->value(), belong_name, s.back(), endian);
                     }
@@ -2079,7 +2079,7 @@ namespace bm2rust {
                     }
                     if (bit_size == 8) {
                         if (is_fixed) {
-                            w.writeln(std::format("{}.read_exact(&mut {}[0..{}]){};", ctx.r(), vec.back(), len.back(), map_io_error(ctx, belong_name)));
+                            w.writeln(std::format("{}.read_exact(&mut {}[0..{} as usize]){};", ctx.r(), vec.back(), len.back(), map_io_error(ctx, belong_name)));
                         }
                         else {
                             auto to_mut = may_get_to_mut(ctx);
@@ -2090,7 +2090,7 @@ namespace bm2rust {
                     }
                     else {
                         auto endian = code.endian().value();
-                        auto is_big = endian.endian == rebgn::Endian::little ? false : true;
+                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
                         auto tmp_i = std::format("i_{}", ref_to_vec);
                         w.writeln("for ", tmp_i, " in 0..", len.back(), "{");
                         auto scope = w.indent_scope();

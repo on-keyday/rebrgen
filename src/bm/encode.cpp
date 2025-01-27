@@ -69,7 +69,7 @@ namespace rebgn {
             if (!bit_size) {
                 return bit_size.error();
             }
-            auto endian = m.get_endian(Endian(int_ty->endian));
+            auto endian = m.get_endian(Endian(int_ty->endian), int_ty->is_signed);
             if (!endian) {
                 return endian.error();
             }
@@ -99,7 +99,7 @@ namespace rebgn {
             if (!bit_size) {
                 return bit_size.error();
             }
-            auto endian = m.get_endian(Endian(float_ty->endian));
+            auto endian = m.get_endian(Endian(float_ty->endian), false);
             if (!endian) {
                 return endian.error();
             }
@@ -127,7 +127,7 @@ namespace rebgn {
                     c.left_ref(*str_ref);
                     c.right_ref(counter);
                 });
-                auto endian = m.get_endian(Endian::unspec);
+                auto endian = m.get_endian(Endian::unspec, false);
                 if (!endian) {
                     return endian.error();
                 }
@@ -149,7 +149,7 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                     if (!endian) {
                         return endian.error();
                     }
@@ -196,7 +196,7 @@ namespace rebgn {
                     m.op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*req_size);
-                        c.endian(*m.get_endian(Endian::unspec));
+                        c.endian(*m.get_endian(Endian::unspec, false));
                         c.bit_size(*varint(8));
                         c.belong(get_field_ref(m, field));
                         c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
@@ -226,7 +226,7 @@ namespace rebgn {
                 }
             }
             if (elem_is_int) {
-                auto endian = m.get_endian(Endian(elem_is_int->endian));
+                auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                 if (!endian) {
                     return endian.error();
                 }
@@ -342,7 +342,7 @@ namespace rebgn {
 
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
-            auto endian = m.get_endian(Endian(int_ty->endian));
+            auto endian = m.get_endian(Endian(int_ty->endian), int_ty->is_signed);
             if (!endian) {
                 return endian.error();
             }
@@ -371,7 +371,7 @@ namespace rebgn {
                 c.ident(*new_id);
                 c.type(*from);
             });
-            auto endian = m.get_endian(Endian(float_ty->endian));
+            auto endian = m.get_endian(Endian(float_ty->endian), false);
             if (!endian) {
                 return endian.error();
             }
@@ -416,7 +416,7 @@ namespace rebgn {
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
-                auto endian = m.get_endian(Endian::unspec);
+                auto endian = m.get_endian(Endian::unspec, false);
                 if (!endian) {
                     return endian.error();
                 }
@@ -461,7 +461,7 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                     if (!endian) {
                         return endian.error();
                     }
@@ -526,7 +526,7 @@ namespace rebgn {
                         m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
                             c.left_ref(base_ref);
                             c.right_ref(*req_size);
-                            c.endian(*m.get_endian(Endian::unspec));
+                            c.endian(*m.get_endian(Endian::unspec, false));
                             c.bit_size(*varint(8));
                             c.belong(get_field_ref(m, field));
                             c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
@@ -535,7 +535,7 @@ namespace rebgn {
                     }
                     else if (field->eventual_follow == ast::Follow::end) {
                         if (elem_is_int) {
-                            auto endian = m.get_endian(Endian(elem_is_int->endian));
+                            auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                             if (!endian) {
                                 return endian.error();
                             }
@@ -598,7 +598,7 @@ namespace rebgn {
                                 c.ref(*assert_expr);
                                 c.belong(m.get_function());
                             });
-                            auto endian = m.get_endian(Endian(elem_is_int->endian));
+                            auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                             if (!endian) {
                                 return endian.error();
                             }
@@ -654,7 +654,7 @@ namespace rebgn {
                         }
                         m.op(AbstractOp::LOOP_INFINITE);
                         {
-                            auto endian = m.get_endian(Endian::unspec);
+                            auto endian = m.get_endian(Endian::unspec, false);
                             if (!endian) {
                                 return endian.error();
                             }
@@ -776,7 +776,7 @@ namespace rebgn {
                     return len_ident.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian));
+                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                     if (!endian) {
                         return endian.error();
                     }
@@ -1084,7 +1084,7 @@ namespace rebgn {
                     c.ident(*new_id);
                     c.belong(found->second);
                     c.packed_op_type(typ);
-                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr)));
+                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr), false));
                 });
             }
             auto err = convert_node_encode(m, n);
@@ -1166,7 +1166,7 @@ namespace rebgn {
                     c.ident(*new_id);
                     c.belong(found->second);
                     c.packed_op_type(typ);
-                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr)));
+                    c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr), false));
                 });
             }
             auto err = convert_node_decode(m, n);

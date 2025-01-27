@@ -166,7 +166,8 @@ enum AbstractOp:
     PEEK_INT_VECTOR
     BACKWARD_INPUT
     BACKWARD_OUTPUT
-    BYTE_OFFSET
+    INPUT_BYTE_OFFSET
+    OUTPUT_BYTE_OFFSET
     BIT_OFFSET
     REMAIN_BYTES
     CAN_READ
@@ -572,6 +573,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+            array_length :Varint # array length
         AbstractOp.DECODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length 
@@ -584,6 +586,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            array_length :Varint # array length
         AbstractOp.DECODE_INT_VECTOR_UNTIL_EOF:
             ref :Varint # ref to vector
             endian :EndianExpr
@@ -755,7 +758,9 @@ format Code:
             param :Param
         AbstractOp.BIT_OFFSET:
             ident :Varint
-        AbstractOp.BYTE_OFFSET:
+        AbstractOp.INPUT_BYTE_OFFSET:
+            ident :Varint
+        AbstractOp.OUTPUT_BYTE_OFFSET:
             ident :Varint
         AbstractOp.ARRAY_SIZE:
             ident :Varint

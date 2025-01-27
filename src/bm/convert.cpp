@@ -347,7 +347,7 @@ namespace rebgn {
                     return new_id.error();
                 }
                 m.op(node->method == ast::IOMethod::input_offset
-                         ? AbstractOp::BYTE_OFFSET
+                         ? (m.on_encode_fn ? AbstractOp::OUTPUT_BYTE_OFFSET : AbstractOp::INPUT_BYTE_OFFSET)
                          : AbstractOp::BIT_OFFSET,
                      [&](Code& c) {
                          c.ident(*new_id);
@@ -1117,6 +1117,7 @@ namespace rebgn {
                 if (is_alignment_vector(node.get())) {
                     // alignment vector should have alignment byte - 1 array
                     Storages s;
+                    s.length.value(2);
                     s.storages.push_back(Storage{.type = StorageType::ARRAY});
                     s.storages.push_back(Storage{.type = StorageType::UINT});
                     s.storages[0].size(*varint(*node->arguments->alignment_value / 8 - 1));

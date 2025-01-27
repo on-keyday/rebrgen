@@ -83,6 +83,9 @@ namespace rebgn {
         std::unordered_map<ObjectID, std::string> storage_key_table_rev;
 
         expected<StorageRef> get_storage_ref(const Storages& s, brgen::lexer::Loc* loc) {
+            if (s.length.value() != s.storages.size()) {
+                return unexpect_error("Invalid storage length");
+            }
             auto key = storage_key(s);
             if (auto found = storage_key_table.find(key); found != storage_key_table.end()) {
                 auto k = varint(found->second);

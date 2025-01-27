@@ -2194,7 +2194,7 @@ namespace rebgn {
                 if (m.code[i].op == AbstractOp::PEEK_INT_VECTOR) {
                     set_decode_flag([](auto& flags) { flags.has_peek(true); });
                 }
-                if (m.code[i].op == AbstractOp::BACKWARD_INPUT) {
+                if (m.code[i].op == AbstractOp::BACKWARD_INPUT || m.code[i].op == AbstractOp::INPUT_BYTE_OFFSET) {
                     set_decode_flag([](auto& flags) { flags.has_seek(true); });
                 }
             }
@@ -2203,7 +2203,7 @@ namespace rebgn {
             }
             if (stack.back().is_encoder()) {
                 function_to_coder[m.code[stack.back().current_function_index].ident().value().value()] = *stack.back().encoder_parameter_index;
-                if (m.code[i].op == AbstractOp::BACKWARD_OUTPUT) {
+                if (m.code[i].op == AbstractOp::BACKWARD_OUTPUT || m.code[i].op == AbstractOp::OUTPUT_BYTE_OFFSET) {
                     set_encode_flag([](auto& flags) { flags.has_seek(true); });
                 }
             }

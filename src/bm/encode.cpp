@@ -11,12 +11,12 @@ namespace rebgn {
         return *m.lookup_ident(field->ident);
     }
 
-    expected<Varint> get_alignment_requirement(Module& m, ast::ArrayType* arr, ast::Field* field) {
+    expected<Varint> get_alignment_requirement(Module& m, ast::ArrayType* arr, ast::Field* field, bool on_encode) {
         auto ident = m.new_node_id(arr->length);
         if (!ident) {
             return ident;
         }
-        m.op(AbstractOp::BYTE_OFFSET, [&](Code& c) {
+        m.op(on_encode ? AbstractOp::OUTPUT_BYTE_OFFSET : AbstractOp::INPUT_BYTE_OFFSET, [&](Code& c) {
             c.ident(*ident);
         });
         auto imm_alignment = immediate(m, *field->arguments->alignment_value / 8);
@@ -35,6 +35,9 @@ namespace rebgn {
             c.right_ref(*imm_alignment);
         });
         auto cmp = m.new_id(nullptr);
+        if (!cmp) {
+            return unexpect_error("Failed to generate new id");
+        }
         auto imm_zero = immediate(m, 0);
         if (!imm_zero) {
             return imm_zero;
@@ -54,7 +57,7 @@ namespace rebgn {
         m.op(AbstractOp::BINARY, [&](Code& c) {
             c.ident(*req_size);
             c.bop(BinaryOp::mod);
-            c.left_ref(*ident);
+            c.left_ref(*cmp);
             c.right_ref(*imm_alignment);
         });
         return define_int_tmp_var(m, *req_size, ast::ConstantLevel::variable);
@@ -186,7 +189,7 @@ namespace rebgn {
                     c.ref(base_ref);
                 });
                 if (is_alignment_vector(field)) {
-                    auto req_size = get_alignment_requirement(m, arr, field);
+                    auto req_size = get_alignment_requirement(m, arr, field, true);
                     if (!req_size) {
                         return req_size.error();
                     }
@@ -196,6 +199,7 @@ namespace rebgn {
                         c.endian(*m.get_endian(Endian::unspec));
                         c.bit_size(*varint(8));
                         c.belong(get_field_ref(m, field));
+                        c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
                     });
                     return none;
                 }
@@ -226,12 +230,15 @@ namespace rebgn {
                 if (!endian) {
                     return endian.error();
                 }
-                m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
+                m.op(arr->length_value ? AbstractOp::ENCODE_INT_VECTOR_FIXED : AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
                     c.left_ref(base_ref);
                     c.right_ref(*len_);
                     c.endian(*endian);
                     c.bit_size(*varint(*elem_is_int->bit_size));
                     c.belong(get_field_ref(m, field));
+                    if (arr->length_value) {
+                        c.array_length(*varint(arr->length_value.value()));
+                    }
                 });
                 return none;
             }
@@ -464,6 +471,7 @@ namespace rebgn {
                         c.endian(*endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                         c.belong(get_field_ref(m, field));
+                        c.array_length(*varint(*len));
                     });
                     return none;
                 }
@@ -511,7 +519,7 @@ namespace rebgn {
             if (ast::is_any_range(arr->length)) {
                 if (field) {
                     if (is_alignment_vector(field)) {
-                        auto req_size = get_alignment_requirement(m, arr, field);
+                        auto req_size = get_alignment_requirement(m, arr, field, false);
                         if (!req_size) {
                             return req_size.error();
                         }
@@ -521,7 +529,9 @@ namespace rebgn {
                             c.endian(*m.get_endian(Endian::unspec));
                             c.bit_size(*varint(8));
                             c.belong(get_field_ref(m, field));
+                            c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
                         });
+                        return none;
                     }
                     else if (field->eventual_follow == ast::Follow::end) {
                         if (elem_is_int) {

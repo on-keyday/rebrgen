@@ -207,6 +207,9 @@ namespace rebgn {
             if (auto m = c.func_type()) {
                 cout << " " << to_string(*m);
             }
+            if (auto length = c.array_length()) {
+                cout << " " << length->value() << " elements";
+            }
             if (auto bit_size = c.bit_size()) {
                 cout << " " << bit_size->value() << "bit";
             }

@@ -667,6 +667,16 @@ namespace bm2rust {
                 res.push_back(std::format("{}.fill_buf(){}.map(|b| !b.is_empty()){}", ctx.r(), may_insert_await(ctx), map_io_error(ctx, belong_name, false)));
                 break;
             }
+            case rebgn::AbstractOp::INPUT_BYTE_OFFSET:
+            case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
+                auto belong_name = get_belong_name(ctx, code);
+                res.push_back(std::format("{}.seek(std::io::SeekFrom::Current(0)){}",
+                                          code.op == rebgn::AbstractOp::INPUT_BYTE_OFFSET
+                                              ? ctx.r()
+                                              : ctx.w(),
+                                          map_io_error(ctx, belong_name)));
+                break;
+            }
             case rebgn::AbstractOp::CALL_CAST: {
                 auto storage = *code.type();
                 auto type_str = type_to_string(ctx, storage);
@@ -2062,11 +2072,8 @@ namespace bm2rust {
                     auto belong_name = get_belong_name(ctx, code);
                     bool is_fixed = code.op == rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED;
                     if (is_fixed) {
-                        auto& imm = ctx.bm.code[ctx.ident_index_table[ref_to_len]];
-                        if (imm.op == rebgn::AbstractOp::IMMEDIATE_INT64) {
-                            is_fixed = false;
-                        }
-                        else if (imm.int_value()->value() > rust_impl_Default_threshold) {
+                        auto len = code.array_length()->value();
+                        if (len > rust_impl_Default_threshold) {
                             is_fixed = false;
                         }
                     }

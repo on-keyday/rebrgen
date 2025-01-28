@@ -226,7 +226,7 @@ namespace rebgn {
                 cout << " ";
                 print_type(*s);
             }
-            if (auto s = c.from()) {
+            if (auto s = c.from_type()) {
                 cout << " ";
                 print_type(*s);
             }

@@ -171,13 +171,12 @@ enum AbstractOp:
     BIT_OFFSET
     REMAIN_BYTES
     CAN_READ
+    IS_LITTLE_ENDIAN # whether platform is little endian (for native endian support)
     CALL_ENCODE
     CALL_DECODE
 
-    ENUM_CAST # for enum
-    BIT_CAST # for float
-    CALL_CAST # for Cast ast node
-    ASSIGN_CAST # on assignment
+    CAST
+    CALL_CAST # for Cast with multi argument ast node
 
     ADDRESS_OF
     OPTIONAL_OF
@@ -223,7 +222,6 @@ enum AbstractOp:
     APPEND
     INC
     DEC
-    NEG
     CALL
     RET
     RET_SUCCESS
@@ -272,6 +270,21 @@ enum AbstractOp:
 
 
 
+enum CastType:
+    :u8
+    ENUM_TO_INT
+    INT_TO_ENUM
+    FLOAT_TO_INT_BIT
+    INT_TO_FLOAT_BIT
+    VECTOR_TO_ARRAY
+    ARRAY_TO_VECTOR
+    INT_TO_VECTOR
+    INT_TO_ARRAY
+    SMALL_INT_TO_LARGE_INT
+    LARGE_INT_TO_SMALL_INT
+    SIGNED_TO_UNSIGNED
+    UNSIGNED_TO_SIGNED
+    OTHER
 
 
 # context that is used on code generation
@@ -606,10 +619,12 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.peek())
-        AbstractOp.BIT_CAST:
+        AbstractOp.CAST:
             ident: Varint
-            type :StorageRef
             ref :Varint # ref to object
+            type :StorageRef
+            from_type :StorageRef
+            cast_type :CastType
         AbstractOp.CALL_CAST:
             ident: Varint
             type :StorageRef
@@ -628,16 +643,6 @@ format Code:
             ref :Varint
         AbstractOp.EVAL_EXPR:
             ref :Varint
-        AbstractOp.ENUM_CAST:
-            ident :Varint
-            type :StorageRef
-            from :StorageRef
-            ref :Varint # ref to object
-        AbstractOp.ASSIGN_CAST:
-            ident :Varint
-            ref :Varint # ref to object
-            type :StorageRef # to type
-            from :StorageRef # from type 
         AbstractOp.NEW_OBJECT:
             ident :Varint
             type :StorageRef
@@ -784,6 +789,9 @@ format Code:
         AbstractOp.CAN_READ:
             ident :Varint
             belong :Varint # related field
+        AbstractOp.IS_LITTLE_ENDIAN:
+            ident :Varint
+            ref :Varint # ref to dynamic endian variable(dynamic) or null(platform)
         AbstractOp.REMAIN_BYTES:
             ident :Varint
 

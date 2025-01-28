@@ -82,6 +82,10 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
+            auto from = define_storage(m, typ);
+            if (!from) {
+                return from.error();
+            }
             auto to = define_storage(m, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
             if (!to) {
                 return to.error();
@@ -90,10 +94,12 @@ namespace rebgn {
             if (!new_id) {
                 return error("Failed to generate new id");
             }
-            m.op(AbstractOp::BIT_CAST, [&](Code& c) {
+            m.op(AbstractOp::CAST, [&](Code& c) {
                 c.ident(*new_id);
                 c.ref(base_ref);
                 c.type(*to);
+                c.from_type(*from);
+                c.cast_type(CastType::FLOAT_TO_INT_BIT);
             });
             auto bit_size = varint(*float_ty->bit_size);
             if (!bit_size) {
@@ -322,11 +328,12 @@ namespace rebgn {
             if (!from) {
                 return from.error();
             }
-            m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
+            m.op(AbstractOp::CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.type(*to);
-                c.from(*from);
+                c.from_type(*from);
                 c.ref(base_ref);
+                c.cast_type(CastType::ENUM_TO_INT);
             });
             auto err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
             if (err) {
@@ -389,10 +396,12 @@ namespace rebgn {
             if (!next_id) {
                 return error("Failed to generate new id");
             }
-            m.op(AbstractOp::BIT_CAST, [&](Code& c) {
+            m.op(AbstractOp::CAST, [&](Code& c) {
                 c.ident(*next_id);
                 c.type(*to);
+                c.from_type(*from);
                 c.ref(*new_id);
+                c.cast_type(CastType::INT_TO_FLOAT_BIT);
             });
             return do_assign(m, nullptr, nullptr, base_ref, *next_id);
         }
@@ -878,11 +887,12 @@ namespace rebgn {
             if (!to) {
                 return err;
             }
-            m.op(AbstractOp::ENUM_CAST, [&](Code& c) {
+            m.op(AbstractOp::CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.type(*to);
-                c.from(*s);
+                c.from_type(*s);
                 c.ref(*tmp_var);
+                c.cast_type(CastType::INT_TO_ENUM);
             });
             return do_assign(m, nullptr, nullptr, base_ref, *casted);
         }

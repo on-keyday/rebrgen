@@ -7,6 +7,60 @@
 #include <fnet/util/base64.h>
 namespace rebgn {
 
+    CastType get_cast_type(const Storages& dest, const Storages& src) {
+        if (dest.storages[0].type == StorageType::VECTOR) {
+            if (src.storages[0].type == StorageType::ARRAY) {
+                return CastType::ARRAY_TO_VECTOR;
+            }
+            if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
+                return CastType::INT_TO_VECTOR;
+            }
+        }
+        if (dest.storages[0].type == StorageType::ARRAY) {
+            if (src.storages[0].type == StorageType::VECTOR) {
+                return CastType::VECTOR_TO_ARRAY;
+            }
+            if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
+                return CastType::INT_TO_ARRAY;
+            }
+        }
+        if (dest.storages[0].type == StorageType::INT || dest.storages[0].type == StorageType::UINT) {
+            if (src.storages[0].type == StorageType::ENUM) {
+                return CastType::ENUM_TO_INT;
+            }
+            if (src.storages[0].type == StorageType::FLOAT) {
+                return CastType::FLOAT_TO_INT_BIT;
+            }
+            if (dest.storages[0].type == StorageType::UINT || dest.storages[0].type == StorageType::INT) {
+                auto dest_size = dest.storages[0].size()->value();
+                auto src_size = src.storages[0].size()->value();
+                if (dest_size < src_size) {
+                    return CastType::LARGE_INT_TO_SMALL_INT;
+                }
+                if (dest_size > src_size) {
+                    return CastType::SMALL_INT_TO_LARGE_INT;
+                }
+                if (dest.storages[0].type == StorageType::UINT && src.storages[0].type == StorageType::INT) {
+                    return CastType::SIGNED_TO_UNSIGNED;
+                }
+                if (dest.storages[0].type == StorageType::INT && src.storages[0].type == StorageType::UINT) {
+                    return CastType::UNSIGNED_TO_SIGNED;
+                }
+            }
+        }
+        if (dest.storages[0].type == StorageType::ENUM) {
+            if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
+                return CastType::INT_TO_ENUM;
+            }
+        }
+        if (dest.storages[0].type == StorageType::FLOAT) {
+            if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
+                return CastType::INT_TO_FLOAT_BIT;
+            }
+        }
+        return CastType::OTHER;
+    }
+
     expected<Varint> get_expr(Module& m, const std::shared_ptr<ast::Expr>& n) {
         m.set_prev_expr(null_id);
         auto err = convert_node_definition(m, n);
@@ -51,6 +105,9 @@ namespace rebgn {
     }
 
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc) {
+        if (auto found = m.immediate_table.find(n); found != m.immediate_table.end()) {
+            return varint(found->second);
+        }
         auto ident = m.new_id(loc);
         if (!ident) {
             return ident;
@@ -68,6 +125,7 @@ namespace rebgn {
                 c.ident(*ident);
             });
         }
+        m.immediate_table[n] = ident->value();
         return ident;
     }
 
@@ -1534,14 +1592,47 @@ namespace rebgn {
         if (!s) {
             return s.error();
         }
-        Param param;
-        param.len_exprs = varint(args.size()).value();
-        param.expr_refs = std::move(args);
-        m.op(AbstractOp::CALL_CAST, [&](Code& c) {
-            c.ident(*ident);
-            c.type(*s);
-            c.param(std::move(param));
-        });
+        if (args.size() == 0) {
+            // this is new object creation
+            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                c.ident(*ident);
+                c.type(*s);
+            });
+        }
+        else if (args.size() == 1) {
+            auto expr_type = may_get_type(m, node->arguments[0]->expr_type);
+            if (!expr_type) {
+                return expr_type.error();
+            }
+            if (!*expr_type) {
+                return error("Invalid cast expression");
+            }
+            auto from = m.get_storage_ref(**expr_type, &node->loc);
+            if (!from) {
+                return from.error();
+            }
+            auto to = m.get_storage(*s);
+            if (!to) {
+                return to.error();
+            }
+            m.op(AbstractOp::CAST, [&](Code& c) {
+                c.ident(*ident);
+                c.type(*s);
+                c.ref(args[0]);
+                c.from_type(*from);
+                c.cast_type(get_cast_type(*to, **expr_type));
+            });
+        }
+        else {
+            Param param;
+            param.len_exprs = varint(args.size()).value();
+            param.expr_refs = std::move(args);
+            m.op(AbstractOp::CALL_CAST, [&](Code& c) {
+                c.ident(*ident);
+                c.type(*s);
+                c.param(std::move(param));
+            });
+        }
         m.set_prev_expr(ident->value());
         return none;
     }

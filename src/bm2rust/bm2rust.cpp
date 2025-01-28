@@ -10,36 +10,12 @@
 #include <span>
 #include <regex>
 #include <escape/escape.h>
+#include <bm2/context.hpp>
 
 namespace bm2rust {
-    using TmpCodeWriter = futils::code::CodeWriter<std::string>;
-
-    struct Context {
-        futils::code::CodeWriter<futils::binary::writer&> cw;
-        const rebgn::BinaryModule& bm;
-        std::unordered_map<std::uint64_t, std::string> string_table;
-        std::unordered_map<std::uint64_t, std::string> ident_table;
-        std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
-        std::unordered_map<std::uint64_t, rebgn::Range> ident_range_table;
-        std::unordered_map<std::uint64_t, std::string> metadata_table;
-        std::unordered_map<std::uint64_t, rebgn::Storages> storage_table;
-        std::string ptr_type;
-        rebgn::BMContext bm_ctx;
-        std::vector<futils::helper::DynDefer> on_functions;
-
-        std::vector<std::string> this_as;
-        std::vector<std::tuple<std::uint64_t /*index*/, std::uint64_t /*bit size*/, rebgn::PackedOpType, rebgn::EndianExpr>> bit_field_ident;
+    using TmpCodeWriter = bm2::TmpCodeWriter;
+    struct Context : bm2::Context {
         std::string error_type = "Error";
-
-        std::vector<std::string> current_r;
-        std::vector<std::string> current_w;
-
-        std::string r() {
-            if (current_r.empty()) {
-                return "r";
-            }
-            return current_r.back();
-        }
 
         std::string mut_r() {
             if (current_r.empty()) {
@@ -48,28 +24,8 @@ namespace bm2rust {
             return "&mut " + current_r.back();
         }
 
-        std::string w() {
-            if (current_w.empty()) {
-                return "w";
-            }
-            return current_w.back();
-        }
-
-        bool on_assign = false;
-
-        std::string this_() {
-            if (this_as.empty()) {
-                return "self";
-            }
-            return this_as.back();
-        }
-
-        const rebgn::Code& ref(rebgn::Varint ident) {
-            return bm.code[ident_index_table[ident.value()]];
-        }
-
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
-            : cw(w), bm(bm) {
+            : bm2::Context(w, bm, "r", "w", "self") {
         }
 
         bool use_async = false;
@@ -1427,9 +1383,9 @@ namespace bm2rust {
     }
 
     void encode_bit_field(Context& ctx, TmpCodeWriter& w, std::uint64_t bit_size, std::uint64_t ref) {
-        auto prev = std::get<0>(ctx.bit_field_ident.back());
-        auto total_size = std::get<1>(ctx.bit_field_ident.back());
-        auto endian = std::get<3>(ctx.bit_field_ident.back());
+        auto prev = ctx.bit_field_ident.back().ident;
+        auto total_size = ctx.bit_field_ident.back().bit_size;
+        auto endian = ctx.bit_field_ident.back().endian;
         auto bit_counter = std::format("bit_counter{}", prev);
         auto tmp = std::format("tmp{}", prev);
         auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
@@ -1462,10 +1418,10 @@ namespace bm2rust {
     }
 
     void decode_bit_field(Context& ctx, TmpCodeWriter& w, std::uint64_t bit_size, std::uint64_t ref) {
-        auto prev = std::get<0>(ctx.bit_field_ident.back());
-        auto total_size = std::get<1>(ctx.bit_field_ident.back());
-        auto ptype = std::get<2>(ctx.bit_field_ident.back());
-        auto endian = std::get<3>(ctx.bit_field_ident.back());
+        auto prev = ctx.bit_field_ident.back().ident;
+        auto total_size = ctx.bit_field_ident.back().bit_size;
+        auto ptype = ctx.bit_field_ident.back().op;
+        auto endian = ctx.bit_field_ident.back().endian;
         auto bit_counter = std::format("bit_counter{}", prev);
         auto tmp = std::format("tmp{}", prev);
         ctx.on_assign = true;

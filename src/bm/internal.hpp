@@ -39,6 +39,8 @@ namespace rebgn {
                     const Storages* target_type,
                     const Storages* source_type,
                     Varint left, Varint right, bool should_recursive_struct_assign = false);
+
+    CastType get_cast_type(const Storages& dest, const Storages& src);
     expected<std::optional<Varint>> add_assign_cast(Module& m, auto&& op, const Storages* dest, const Storages* src, Varint right,
                                                     bool should_recursive_struct_assign = false) {
         if (!dest || !src) {
@@ -71,11 +73,12 @@ namespace rebgn {
         if (!src_ref) {
             return unexpect_error(std::move(src_ref.error()));
         }
-        op(AbstractOp::ASSIGN_CAST, [&](Code& c) {
+        op(AbstractOp::CAST, [&](Code& c) {
             c.ident(*ident);
             c.type(*dst_ref);
-            c.from(*src_ref);
+            c.from_type(*src_ref);
             c.ref(right);
+            c.cast_type(get_cast_type(*dst_ref, *src_ref));
         });
         return *ident;
     }

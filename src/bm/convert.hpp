@@ -78,6 +78,8 @@ namespace rebgn {
         std::uint64_t object_id = 1;
         std::vector<std::shared_ptr<CFG>> cfgs;
 
+        std::unordered_map<std::uint64_t, ObjectID> immediate_table;
+
         std::unordered_map<std::string, Storages> storage_table;
         std::unordered_map<std::string, ObjectID> storage_key_table;
         std::unordered_map<ObjectID, std::string> storage_key_table_rev;

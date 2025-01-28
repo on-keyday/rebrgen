@@ -1271,7 +1271,7 @@ namespace rebgn {
                 }
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.right_ref().value().value()]], variables);
             }
-            case rebgn::AbstractOp::ASSIGN_CAST: {
+            case rebgn::AbstractOp::CAST: {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::ARRAY_SIZE: {
@@ -2291,7 +2291,7 @@ namespace rebgn {
                 reached.insert(s.value().ref.value());
                 type_usage[s.value().ref.value()]++;
             }
-            if (auto f = c.from()) {
+            if (auto f = c.from_type()) {
                 reached.insert(f.value().ref.value());
                 type_usage[f.value().ref.value()]++;
             }
@@ -2327,12 +2327,817 @@ namespace rebgn {
             if (auto s = c.type()) {
                 c.type(StorageRef{.ref = *varint(mapping[s.value().ref.value()])});
             }
-            if (auto f = c.from()) {
-                c.from(StorageRef{.ref = *varint(mapping[f.value().ref.value()])});
+            if (auto f = c.from_type()) {
+                c.from_type(StorageRef{.ref = *varint(mapping[f.value().ref.value()])});
             }
         }
         m.storage_key_table = std::move(new_storage_key_table);
         m.storage_key_table_rev = std::move(new_storage_key_table_rev);
+        return none;
+    }
+
+    Error add_endian_specific(Module& m, EndianExpr endian, auto&& op, auto&& on_little_endian, auto&& on_big_endian) {
+        auto is_native_or_dynamic = endian.endian() == Endian::native || endian.endian() == Endian::dynamic;
+        if (is_native_or_dynamic) {
+            auto is_little = m.new_id(nullptr);
+            if (!is_little) {
+                return is_little.error();
+            }
+            op(AbstractOp::IS_LITTLE_ENDIAN, [&](Code& m) {
+                m.ident(*is_little);
+                m.ref(endian.dynamic_ref);  // dynamic endian or null for native
+            });
+            op(AbstractOp::IF, [&](Code& m) {
+                m.ref(*is_little);
+            });
+        }
+        if (enc_endian.endian() == Endian::little || is_native_or_dynamic) {
+            auto err = on_little_endian();
+            if (err) {
+                return err;
+            }
+        }
+        if (is_native_or_dynamic) {
+            op(AbstractOp::ELSE, [&](Code& m) {});
+        }
+        if (enc_endian.endian() == Endian::big || is_native_or_dynamic) {
+            auto err = on_big_endian();
+            if (err) {
+                return err;
+            }
+        }
+        if (is_native_or_dynamic) {
+            op(AbstractOp::END_IF, [&](Code& m) {});
+        }
+        return none;
+    }
+
+    Error expand_bit_operation(Module& m) {
+        std::vector<Code> new_code;
+        auto op = [&](AbstractOp o, auto&& set) {
+            new_code.push_back(make_code(o, set));
+        };
+        auto immediate = [&](std::uint64_t value) {
+            if (auto found = m.immediate_table.find(value); found != m.immediate_table.end()) {
+                return varint(found->second);
+            }
+            auto new_id = m.new_id(nullptr);
+            if (!new_id) {
+                return new_id;
+            }
+            if (auto vin = varint(value); vin) {
+                op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
+                    m.ident(*new_id);
+                    m.int_value(*vin);
+                });
+            }
+            else {
+                op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
+                    m.ident(*new_id);
+                    m.int_value64(value);
+                });
+            }
+            return new_id;
+        };
+        auto new_var = [&](StorageRef ref, Varint new_id) {
+            auto new_var = m.new_id(nullptr);
+            if (!new_var) {
+                return new_var;
+            }
+            op(AbstractOp::DEFINE_VARIABLE, [&](Code& m) {
+                m.ident(*new_var);
+                m.ref(new_id);
+                m.type(ref);
+            });
+            return new_var;
+        };
+        auto new_default_var = [&](StorageRef ref) {
+            auto new_id = m.new_id(nullptr);
+            if (!new_id) {
+                return new_id;
+            }
+            op(AbstractOp::NEW_OBJECT, [&](Code& m) {
+                m.ident(*new_id);
+                m.type(ref);
+            });
+            return new_var(ref, *new_id);
+        };
+        auto new_array = [&](std::uint64_t len) {
+            Storages storage{.length = *varint(2), .storages = {Storage{.type = StorageType::ARRAY}, Storage{.type = StorageType::UINT}}};
+            storage.storages[0].size(*varint(len));
+            storage.storages[1].size(*varint(8));
+            auto ref = m.get_storage_ref(storage, nullptr);
+            if (!ref) {
+                return ref.transform([](auto&&) { return Varint(); });
+            }
+            return new_default_var(*ref);
+        };
+        bool on_bit_operation = false;
+        EndianExpr endian{};
+        PackedOpType packed_op = PackedOpType::FIXED;
+        size_t bit_size = 0;
+        Varint counter, target, tmp_array, read_bytes;
+        StorageRef target_type, nbit_typ;
+        std::optional<StorageRef> u8_typ;
+
+        auto get_nbit_typ = [&](size_t nbit_typ, bool sign) -> expected<StorageRef> {
+            if (nbit_typ == 8 && !sign && u8_typ) {
+                return *u8_typ;
+            }
+            Storage storage{.type = sign ? StorageType::INT : StorageType::UINT};
+            storage.size(*varint(nbit_typ));
+            auto res = m.get_storage_ref(Storages{.length = *varint(1), .storages = {storage}}, nullptr);
+            if (!res) {
+                res;
+            }
+            if (nbit_typ == 8 && !sign) {
+                u8_typ = *res;
+            }
+            return *res;
+        };
+        // target = target | (target_type(value) << shift_index)
+        auto assign_to_target = [&](Varint ref, Varint shift_index, auto&& src_type, auto&& src_type_storage) {
+            // cast to target type
+            auto cast = m.new_id(nullptr);
+            if (!cast) {
+                return cast.error();
+            }
+            auto dst_storage = m.get_storage(target_type);
+            if (!dst_storage) {
+                return dst_storage.error();
+            }
+            op(AbstractOp::CAST, [&](Code& m) {
+                m.ident(*cast);
+                m.ref(ref);
+                m.type(target_type);
+                m.from_type(*src_type);
+                m.cast_type(get_cast_type(*dst_storage, *src_type_storage));
+            });
+            auto shift = m.new_id(nullptr);
+            if (!shift) {
+                return shift.error();
+            }
+            op(AbstractOp::BINARY, [&](Code& m) {
+                m.ident(*shift);
+                m.left_ref(*cast);
+                m.right_ref(shift_index);
+                m.bop(BinaryOp::left_logical_shift);
+            });
+            auto bit_or = m.new_id(nullptr);
+            if (!bit_or) {
+                return bit_or.error();
+            }
+            op(AbstractOp::BINARY, [&](Code& m) {
+                m.ident(*bit_or);
+                m.left_ref(target);
+                m.right_ref(*shift);
+                m.bop(BinaryOp::bit_or);
+            });
+            auto assign = m.new_id(nullptr);
+            if (!assign) {
+                return assign.error();
+            }
+            op(AbstractOp::ASSIGN, [&](Code& m) {
+                m.ident(*assign);
+                m.left_ref(target);
+                m.right_ref(*bit_or);
+            });
+        };
+
+        auto add_counter = [&](size_t i) {
+            auto add = m.new_id(nullptr);
+            if (!add) {
+                return add.error();
+            }
+            auto imm = immediate(i);
+            if (!imm) {
+                return imm.error();
+            }
+            op(AbstractOp::BINARY, [&](Code& m) {
+                m.ident(*add);
+                m.left_ref(counter);
+                m.right_ref(*imm);
+                m.bop(BinaryOp::add);
+            });
+            auto assign = m.new_id(nullptr);
+            if (!assign) {
+                return assign.error();
+            }
+            op(AbstractOp::ASSIGN, [&](Code& m) {
+                m.ident(*assign);
+                m.left_ref(counter);
+                m.right_ref(*add);
+            });
+        };
+
+        for (auto& code : m.code) {
+            if (code.op == rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION ||
+                code.op == rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION) {
+                new_code.push_back(code);  // copy
+                on_bit_operation = true;
+                endian = code.endian().value();
+                packed_op = code.packed_op_type().value();
+                auto& maybe_type = m.code[m.ident_index_table[code.belong().value().value()] + 1];
+                if (maybe_type.op != rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
+                    return error("Invalid packed operation");
+                }
+                auto type = m.get_storage(maybe_type.type().value());
+                if (!type) {
+                    return type.error();
+                }
+
+                auto new_target_type = maybe_type.type().value();
+                auto new_bit_size = type.value().storages[0].size()->value();
+                auto new_target_var = new_default_var(new_target_type);
+                if (!new_target_var) {
+                    return new_target_var.error();
+                }
+
+                auto n_bit = futils::binary::log2i(new_bit_size);
+                Storage storage{.type = StorageType::UINT};
+                storage.size(*varint(n_bit));
+                auto new_nbit_typ = m.get_storage_ref(Storages{.length = *varint(1), .storages = {storage}}, nullptr);
+                if (!new_nbit_typ) {
+                    return new_nbit_typ.error();
+                }
+                auto zero = immediate(0);
+                if (!zero) {
+                    return zero.error();
+                }
+                auto new_counter_var = new_var(*new_nbit_typ, *zero);
+                if (!new_counter_var) {
+                    return new_counter_var.error();
+                }
+                Varint new_tmp_array, new_read_bytes;
+                if (packed_op == PackedOpType::VARIABLE) {
+                    auto new_array_var = new_array(new_bit_size / 8);
+                    if (!new_array_var) {
+                        return new_array_var.error();
+                    }
+                    new_tmp_array = *new_array_var;
+                }
+                if (code.op == rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION) {
+                    if (packed_op == PackedOpType::FIXED) {
+                        op(AbstractOp::DECODE_INT, [&](Code& m) {
+                            m.ref(*new_target_var);
+                            m.endian(endian);
+                            m.bit_size(*varint(new_bit_size));
+                            m.belong(code.belong().value());
+                        });
+                    }
+                    else {
+                        auto read_bytes_var = new_var(*new_nbit_typ, *zero);
+                        if (!read_bytes_var) {
+                            return read_bytes_var.error();
+                        }
+                        new_read_bytes = *read_bytes_var;
+                    }
+                }
+
+                nbit_typ = *new_nbit_typ;
+                counter = *new_counter_var;
+                target_type = maybe_type.type().value();
+                target = *new_target_var;
+                tmp_array = new_tmp_array;
+                read_bytes = new_read_bytes;
+            }
+            else if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION ||
+                     code.op == rebgn::AbstractOp::END_DECODE_PACKED_OPERATION) {
+                if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION) {
+                    if (packed_op == PackedOpType::FIXED) {
+                        op(AbstractOp::ENCODE_INT, [&](Code& m) {
+                            m.ref(counter);
+                            m.endian(endian);
+                            m.bit_size(*varint(bit_size));
+                            m.belong(code.belong().value());
+                        });
+                    }
+                    else {
+                        // counter / 8
+                        auto div = m.new_id(nullptr);
+                        if (!div) {
+                            return div.error();
+                        }
+                        auto eight = immediate(8);
+                        if (!eight) {
+                            return eight.error();
+                        }
+                        op(AbstractOp::BINARY, [&](Code& m) {
+                            m.ident(*div);
+                            m.left_ref(counter);
+                            m.right_ref(*eight);
+                            m.bop(BinaryOp::div);
+                        });
+                        auto zero = immediate(0);
+                        if (!zero) {
+                            return zero.error();
+                        }
+                        // TODO(on-keyday): for now, only support power of 8 bit
+                        auto result_byte_count = new_var(nbit_typ, *div);
+                        auto i_ = new_var(nbit_typ, *zero);
+                        // i_ < result_byte_count
+                        auto less = m.new_id(nullptr);
+                        if (!less) {
+                            return less.error();
+                        }
+                        op(AbstractOp::BINARY, [&](Code& m) {
+                            m.ident(*less);
+                            m.left_ref(*i_);
+                            m.right_ref(*result_byte_count);
+                            m.bop(BinaryOp::less);
+                        });
+                        // while (i_ < result_byte_count)
+                        op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
+                            m.ref(*less);
+                        });
+                        {
+                            // on each loop
+                            // on little endian:
+                            //    tmp_array[i_] = u8((target >> (i_ * 8)) & 0xff)
+                            // on big endian:
+                            //    tmp_array[i_] = u8((target >> ((bit_size / 8 - i_ - 1) * 8)) & 0xff)
+                            // on native endian, platform dependent
+                            // on dynamic endian, dynamic variable dependent
+                            auto assign_to_array = [&](auto&& shift_index) {
+                                auto mul = m.new_id(nullptr);
+                                if (!mul) {
+                                    return mul.error();
+                                }
+                                op(AbstractOp::BINARY, [&](Code& m) {
+                                    m.ident(*mul);
+                                    m.left_ref(*i_);
+                                    m.right_ref(*eight);
+                                    m.bop(BinaryOp::mul);
+                                });
+                                auto shift = m.new_id(nullptr);
+                                if (!shift) {
+                                    return shift.error();
+                                }
+                                op(AbstractOp::BINARY, [&](Code& m) {
+                                    m.ident(*shift);
+                                    m.left_ref(target);
+                                    m.right_ref(*mul);
+                                    m.bop(BinaryOp::right_logical_shift);
+                                });
+                                auto and_ = m.new_id(nullptr);
+                                if (!and_) {
+                                    return and_.error();
+                                }
+                                auto immFF = immediate(0xff);
+                                if (!immFF) {
+                                    return immFF.error();
+                                }
+                                op(AbstractOp::BINARY, [&](Code& m) {
+                                    m.ident(*and_);
+                                    m.left_ref(*shift);
+                                    m.right_ref(*immFF);
+                                    m.bop(BinaryOp::bit_and);
+                                });
+                                auto cast = m.new_id(nullptr);
+                                if (!cast) {
+                                    return cast.error();
+                                }
+                                auto u8_typ = get_nbit_typ(8, false);
+                                if (!u8_typ) {
+                                    return u8_typ.error();
+                                }
+                                op(AbstractOp::CAST, [&](Code& m) {
+                                    m.ident(*cast);
+                                    m.ref(*cast);
+                                    m.type(*u8_typ);
+                                    m.from_type(target_type);
+                                    m.cast_type(CastType::SMALL_INT_TO_LARGE_INT);
+                                });
+                                auto array_index = m.new_id(nullptr);
+                                if (!array_index) {
+                                    return array_index.error();
+                                }
+                                op(AbstractOp::INDEX, [&](Code& m) {
+                                    m.ident(*array_index);
+                                    m.left_ref(tmp_array);
+                                    m.right_ref(*i_);
+                                });
+                                auto assign = m.new_id(nullptr);
+                                if (!assign) {
+                                    return assign.error();
+                                }
+                                op(AbstractOp::ASSIGN, [&](Code& m) {
+                                    m.ident(*assign);
+                                    m.left_ref(*array_index);
+                                    m.right_ref(*cast);
+                                });
+                            };
+                            auto is_native_or_dynamic = endian.endian() == Endian::native || endian.endian() == Endian::dynamic;
+                            if (is_native_or_dynamic) {
+                                auto is_little = m.new_id(nullptr);
+                                if (!is_little) {
+                                    return is_little.error();
+                                }
+                                op(AbstractOp::IS_LITTLE_ENDIAN, [&](Code& m) {
+                                    m.ident(*is_little);
+                                    m.ref(endian.dynamic_ref);  // dynamic endian or null for native
+                                });
+                                op(AbstractOp::IF, [&](Code& m) {
+                                    m.ref(*is_little);
+                                });
+                            }
+                            if (endian.endian() == Endian::little || is_native_or_dynamic) {
+                                assign_to_array(*i_);
+                            }
+                            if (is_native_or_dynamic) {
+                                op(AbstractOp::ELSE, [&](Code& m) {});
+                            }
+                            if (endian.endian() == Endian::big || is_native_or_dynamic) {
+                                auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
+                                if (!bit_size_div_8_minus_1) {
+                                    return bit_size_div_8_minus_1.error();
+                                }
+                                auto sub = m.new_id(nullptr);
+                                if (!sub) {
+                                    return sub.error();
+                                }
+                                op(AbstractOp::BINARY, [&](Code& m) {
+                                    m.ident(*sub);
+                                    m.left_ref(*bit_size_div_8_minus_1);
+                                    m.right_ref(*i_);
+                                    m.bop(BinaryOp::sub);
+                                });
+                                auto sub1 = m.new_id(nullptr);
+                                if (!sub1) {
+                                    return sub1.error();
+                                }
+                                auto one = immediate(1);
+                                if (!one) {
+                                    return one.error();
+                                }
+                                op(AbstractOp::BINARY, [&](Code& m) {
+                                    m.ident(*sub1);
+                                    m.left_ref(*sub);
+                                    m.right_ref(*one);
+                                    m.bop(BinaryOp::sub);
+                                });
+                                assign_to_array(*sub1);
+                            }
+                            if (is_native_or_dynamic) {
+                                op(AbstractOp::END_IF, [&](Code& m) {});
+                            }
+                            op(AbstractOp::INC, [&](Code& m) {
+                                m.ref(*i_);
+                            });
+                        }
+                        op(AbstractOp::END_LOOP, [&](Code& m) {});
+                    }
+                }
+                new_code.push_back(code);  // copy
+                on_bit_operation = false;
+            }
+            else if (on_bit_operation && code.op == rebgn::AbstractOp::ENCODE_INT) {
+                auto enc_bit_size = code.bit_size()->value();
+                auto enc_endian = code.endian().value();
+                auto src_type = get_nbit_typ(bit_size, enc_endian.sign());
+                if (!src_type) {
+                    return src_type.error();
+                }
+                auto src_type_storage = m.get_storage(*src_type);
+                if (!src_type_storage) {
+                    return src_type_storage.error();
+                }
+                // on little endian:
+                //   // fill from lsb
+                //   target = target | (target_type(value) << counter)
+                //   counter += bit_size
+                // on big endian:
+                //   // fill from msb
+                //   counter += bit_size
+                //   target = target | (target_type(value) << (nbit - counter))
+                // on native endian, platform dependent
+                // on dynamic endian, dynamic variable dependent
+                auto err = add_endian_specific(
+                    m, endian, op,
+                    [&]() {
+                        assign_to_target(code.ref().value(), counter, src_type, src_type_storage);
+                        add_counter(enc_bit_size);
+                    },
+                    [&]() {
+                        add_counter(enc_bit_size);
+                        auto bit_size_ = immediate(bit_size);
+                        if (!bit_size_) {
+                            return bit_size_.error();
+                        }
+                        auto sub = m.new_id(nullptr);
+                        if (!sub) {
+                            return sub.error();
+                        }
+                        op(AbstractOp::BINARY, [&](Code& m) {
+                            m.ident(*sub);
+                            m.left_ref(*bit_size_);
+                            m.right_ref(counter);
+                            m.bop(BinaryOp::sub);
+                        });
+                        assign_to_target(code.ref().value(), *sub, src_type, src_type_storage);
+                    });
+                if (err) {
+                    return err;
+                }
+            }
+            else if (on_bit_operation && code.op == rebgn::AbstractOp::DECODE_INT) {
+                auto dec_bit_size = code.bit_size()->value();
+                auto dec_endian = code.endian().value();
+                auto src_type = get_nbit_typ(bit_size, dec_endian.sign());
+                if (!src_type) {
+                    return src_type.error();
+                }
+                auto src_type_storage = m.get_storage(*src_type);
+                if (!src_type_storage) {
+                    return src_type_storage.error();
+                }
+                if (packed_op == PackedOpType::VARIABLE) {
+                    // consumed_bytes = (counter + dec_bit_size + 7) / 8
+                    // if (read_bytes < consumed_bytes)
+                    //   for (i_ = read_bytes; i_ < consumed_bytes; i_++)
+                    //     tmp_array[i_] = decode_u8()
+                    // on little endian:
+                    //     target = target | (target_type(tmp_array[i_]) << (i_ * 8))
+                    // on big endian:
+                    //     target = target | (target_type(tmp_array[i_]) << ((bit_size / 8 - i_ - 1) * 8))
+                    // on native endian, platform dependents
+                    // on dynamic endian, dynamic variable dependent
+                    //   read_bytes = consumed_bytes
+                    auto add = m.new_id(nullptr);
+                    if (!add) {
+                        return add.error();
+                    }
+                    auto imm = immediate(7);
+                    if (!imm) {
+                        return imm.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*add);
+                        m.left_ref(counter);
+                        m.right_ref(*varint(dec_bit_size));
+                        m.bop(BinaryOp::add);
+                    });
+                    auto add2 = m.new_id(nullptr);
+                    if (!add2) {
+                        return add2.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*add2);
+                        m.left_ref(*add);
+                        m.right_ref(*imm);
+                        m.bop(BinaryOp::add);
+                    });
+                    auto div = m.new_id(nullptr);
+                    if (!div) {
+                        return div.error();
+                    }
+                    auto eight = immediate(8);
+                    if (!eight) {
+                        return eight.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*div);
+                        m.left_ref(*add2);
+                        m.right_ref(*eight);
+                        m.bop(BinaryOp::div);
+                    });
+                    auto consumed_bytes = new_var(nbit_typ, *div);
+                    if (!consumed_bytes) {
+                        return consumed_bytes.error();
+                    }
+                    auto less = m.new_id(nullptr);
+                    if (!less) {
+                        return less.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*less);
+                        m.left_ref(read_bytes);
+                        m.right_ref(*consumed_bytes);
+                        m.bop(BinaryOp::less);
+                    });
+                    op(AbstractOp::IF, [&](Code& m) {
+                        m.ref(*less);
+                    });
+                    {
+                        auto i_ = new_var(nbit_typ, read_bytes);
+                        if (!i_) {
+                            return i_.error();
+                        }
+                        auto less2 = m.new_id(nullptr);
+                        if (!less2) {
+                            return less2.error();
+                        }
+                        op(AbstractOp::BINARY, [&](Code& m) {
+                            m.ident(*less2);
+                            m.left_ref(*i_);
+                            m.right_ref(*consumed_bytes);
+                            m.bop(BinaryOp::less);
+                        });
+                        op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
+                            m.ref(*less2);
+                        });
+                        {
+                            auto array_index = m.new_id(nullptr);
+                            if (!array_index) {
+                                return array_index.error();
+                            }
+                            op(AbstractOp::INDEX, [&](Code& m) {
+                                m.ident(*array_index);
+                                m.left_ref(tmp_array);
+                                m.right_ref(*i_);
+                            });
+                            op(AbstractOp::DECODE_INT, [&](Code& m) {
+                                m.ref(*array_index);
+                                m.endian(endian);
+                                m.bit_size(*varint(8));
+                                m.belong(code.belong().value());
+                            });
+
+                            auto u8_typ = get_nbit_typ(8, false);
+                            if (!u8_typ) {
+                                return u8_typ.error();
+                            }
+                            auto u8_typ_storage = m.get_storage(*u8_typ);
+                            if (!u8_typ_storage) {
+                                return u8_typ_storage.error();
+                            }
+                            auto err = add_endian_specific(
+                                m, endian, op,
+                                [&]() {
+                                    auto mul = m.new_id(nullptr);
+                                    if (!mul) {
+                                        return mul.error();
+                                    }
+                                    auto eight = immediate(8);
+                                    if (!eight) {
+                                        return eight.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*mul);
+                                        m.left_ref(*i_);
+                                        m.right_ref(*eight);
+                                        m.bop(BinaryOp::mul);
+                                    });
+                                    assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
+                                },
+                                [&]() {
+                                    auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
+                                    if (!bit_size_div_8_minus_1) {
+                                        return bit_size_div_8_minus_1.error();
+                                    }
+                                    auto sub = m.new_id(nullptr);
+                                    if (!sub) {
+                                        return sub.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*sub);
+                                        m.left_ref(*bit_size_div_8_minus_1);
+                                        m.right_ref(*i_);
+                                        m.bop(BinaryOp::sub);
+                                    });
+                                    auto mul = m.new_id(nullptr);
+                                    if (!mul) {
+                                        return mul.error();
+                                    }
+                                    auto eight = immediate(8);
+                                    if (!eight) {
+                                        return eight.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*mul);
+                                        m.left_ref(*sub);
+                                        m.right_ref(*eight);
+                                        m.bop(BinaryOp::mul);
+                                    });
+                                    assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
+                                });
+                            op(AbstractOp::INC, [&](Code& m) {
+                                m.ref(*i_);
+                            });
+                        }
+                        op(AbstractOp::END_LOOP, [&](Code& m) {});
+                        auto assign = m.new_id(nullptr);
+                        if (!assign) {
+                            return assign.error();
+                        }
+                        op(AbstractOp::ASSIGN, [&](Code& m) {
+                            m.ident(*assign);
+                            m.left_ref(read_bytes);
+                            m.right_ref(*consumed_bytes);
+                        });
+                    }
+                    op(AbstractOp::END_IF, [&](Code& m) {});
+                }
+
+                // on little endian:
+                //   // get from lsb
+                //  ref = src_type((target >> counter) & ((1 << dec_bit_size) - 1))
+                //  counter += dec_bit_size
+                // on big endian:
+                //   // get from msb
+                //  counter += dec_bit_size
+                //  ref = src_type((target >> (nbit - counter)) & ((1 << dec_bit_size) - 1))
+                // on native endian, platform dependent
+                // on dynamic endian, dynamic variable dependent
+                auto assign_to_ref = [&](Varint shift_index) {
+                    auto shift = m.new_id(nullptr);
+                    if (!shift) {
+                        return shift.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*shift);
+                        m.left_ref(target);
+                        m.right_ref(shift_index);
+                        m.bop(BinaryOp::right_logical_shift);
+                    });
+                    auto and_ = m.new_id(nullptr);
+                    if (!and_) {
+                        return and_.error();
+                    }
+                    auto mask = immediate((std::uint64_t(1) << dec_bit_size) - 1);
+                    if (!mask) {
+                        return mask.error();
+                    }
+                    op(AbstractOp::BINARY, [&](Code& m) {
+                        m.ident(*and_);
+                        m.left_ref(*shift);
+                        m.right_ref(*mask);
+                        m.bop(BinaryOp::bit_and);
+                    });
+                    auto cast = m.new_id(nullptr);
+                    if (!cast) {
+                        return cast.error();
+                    }
+                    auto target_type_storage = m.get_storage(target_type);
+                    if (!target_type_storage) {
+                        return target_type_storage.error();
+                    }
+                    op(AbstractOp::CAST, [&](Code& m) {
+                        m.ident(*cast);
+                        m.ref(*and_);
+                        m.type(*src_type);
+                        m.from_type(target_type);
+                        m.cast_type(get_cast_type(*src_type_storage, *target_type_storage));
+                    });
+                    auto assign = m.new_id(nullptr);
+                    if (!assign) {
+                        return assign.error();
+                    }
+                    op(AbstractOp::ASSIGN, [&](Code& m) {
+                        m.ident(*assign);
+                        m.left_ref(code.ref().value());
+                        m.right_ref(*cast);
+                    });
+                };
+                auto err = add_endian_specific(
+                    m, dec_endian, op,
+                    [&]() {
+                        assign_to_ref(counter);
+                        add_counter(dec_bit_size);
+                    },
+                    [&]() {
+                        add_counter(dec_bit_size);
+                        auto bit_size_ = immediate(bit_size);
+                        if (!bit_size_) {
+                            return bit_size_.error();
+                        }
+                        auto sub = m.new_id(nullptr);
+                        if (!sub) {
+                            return sub.error();
+                        }
+                        op(AbstractOp::BINARY, [&](Code& m) {
+                            m.ident(*sub);
+                            m.left_ref(*bit_size_);
+                            m.right_ref(counter);
+                            m.bop(BinaryOp::sub);
+                        });
+                        assign_to_ref(*sub);
+                    });
+                if (err) {
+                    return err;
+                }
+            }
+            else {
+                new_code.push_back(code);
+            }
+        }
+        m.code = std::move(new_code);
+        return none;
+    }
+
+    Error sort_immediate(Module& m) {
+        std::vector<Code> new_code;
+        for (auto& code : m.code) {
+            if (code.op == rebgn::AbstractOp::IMMEDIATE_INT || code.op == rebgn::AbstractOp::IMMEDIATE_INT64) {
+                new_code.push_back(std::move(code));
+            }
+        }
+        for (auto& code : m.code) {
+            if (code.op != rebgn::AbstractOp::IMMEDIATE_INT && code.op != rebgn::AbstractOp::IMMEDIATE_INT64) {
+                new_code.push_back(std::move(code));
+            }
+        }
+        m.code = std::move(new_code);
         return none;
     }
 
@@ -2370,6 +3175,11 @@ namespace rebgn {
         }
         rebind_ident_index(m);
         analyze_encoder_decoder_traits(m);
+        err = expand_bit_operation(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
         err = generate_cfg1(m);
         if (err) {
             return err;
@@ -2380,6 +3190,10 @@ namespace rebgn {
             return err;
         }
         err = optimize_type_usage(m);
+        if (err) {
+            return err;
+        }
+        err = sort_immediate(m);
         if (err) {
             return err;
         }

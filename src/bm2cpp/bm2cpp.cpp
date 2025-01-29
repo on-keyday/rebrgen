@@ -1134,15 +1134,6 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::CALL_ENCODE:
                 case rebgn::AbstractOp::CALL_DECODE: {
-                    if (ctx.bm_ctx.inner_bit_operations) {
-                        if (code.op == rebgn::AbstractOp::CALL_ENCODE) {
-                            encode_bit_field(ctx, code.bit_size_plus()->value() - 1, code.right_ref().value().value());
-                        }
-                        else {
-                            decode_bit_field(ctx, code.bit_size_plus()->value() - 1, code.right_ref().value().value());
-                        }
-                        break;
-                    }
                     auto ref = code.right_ref().value().value();
                     auto evaluated = eval(ctx.bm.code[ctx.ident_index_table[ref]], ctx);
                     auto name = ctx.ident_table[code.left_ref().value().value()];
@@ -1182,17 +1173,12 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT: {
-                    if (ctx.bm_ctx.inner_bit_operations) {
-                        encode_bit_field(ctx, code.bit_size()->value(), code.ref().value().value());
-                    }
-                    else {
-                        auto ref = code.ref().value().value();
-                        auto& ident = ctx.ident_index_table[ref];
-                        auto s = eval(ctx.bm.code[ident], ctx);
-                        auto endian = code.endian().value();
-                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
-                        ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
-                    }
+                    auto ref = code.ref().value().value();
+                    auto& ident = ctx.ident_index_table[ref];
+                    auto s = eval(ctx.bm.code[ident], ctx);
+                    auto endian = code.endian().value();
+                    auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
+                    ctx.cw.writeln("if(!::futils::binary::write_num(w,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     break;
                 }
                 case rebgn::AbstractOp::DECODE_INT: {

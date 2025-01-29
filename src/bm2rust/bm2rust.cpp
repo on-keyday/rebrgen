@@ -582,6 +582,15 @@ namespace bm2rust {
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
+            case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
+                if (code.ref()->value() == 0) {
+                    res.push_back("cfg!(target_endian = \"little\")");
+                }
+                else {
+                    res.push_back("/* Unimplemented dynamic endian */");
+                }
+                break;
+            }
             case rebgn::AbstractOp::PHI: {
                 auto ref = code.ref().value().value();
                 auto idx = ctx.ident_index_table[ref];

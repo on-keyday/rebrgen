@@ -687,24 +687,46 @@ namespace bm2rust {
                 res.push_back(std::format("{}{}.push({});", left.back(), may_get_to_mut(ctx), right.back()));
                 break;
             }
-            case rebgn::AbstractOp::ASSIGN_CAST: {
+            case rebgn::AbstractOp::CAST: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
                 res.insert(res.end(), ref.begin(), ref.end() - 1);
                 size_t to_bit_size = 0, from_bit_size = 0;
                 auto to_type = type_to_string(ctx, *code.type(), &to_bit_size);
-                auto from_type = type_to_string(ctx, *code.from(), &from_bit_size);
-                if (to_type.starts_with("std::option::Option<std::boxed::Box<")) {
-                    res.push_back("Some(Box::new(" + ref.back() + "))");
-                }
-                else if (to_bit_size == 1) {
-                    res.push_back(std::format("{} != 0", ref.back()));
-                }
-                else if (to_bit_size < from_bit_size) {
-                    res.push_back(std::format("{}.try_into()?", ref.back()));
-                }
-                else {
-                    res.push_back(std::format("{}.into()", ref.back()));
+                auto from_type = type_to_string(ctx, *code.from_type(), &from_bit_size);
+                auto cast_type = code.cast_type().value();
+                switch (cast_type) {
+                    case rebgn::CastType::STRUCT_TO_RECURSIVE_STRUCT:
+                        res.push_back(std::format("Some(Box::new({}))", ref.back()));
+                        break;
+                    case rebgn::CastType::INT_TO_ONE_BIT: {
+                        res.push_back(std::format("{} != 0", ref.back()));
+                        break;
+                    }
+                    case rebgn::CastType::ONE_BIT_TO_INT: {
+                        res.push_back(ref.back());
+                        break;
+                    }
+                    case rebgn::CastType::LARGE_INT_TO_SMALL_INT: {
+                        res.push_back(std::format("({} as {})", ref.back(), to_type));
+                        break;
+                    }
+                    case rebgn::CastType::SMALL_INT_TO_LARGE_INT: {
+                        res.push_back(std::format("({} as {})", ref.back(), to_type));
+                        break;
+                    }
+                    case rebgn::CastType::ENUM_TO_INT: {
+                        res.push_back(std::format("{}::from({})", to_type, ref.back()));
+                        break;
+                    }
+                    case rebgn::CastType::INT_TO_ENUM: {
+                        res.push_back(std::format("{}::from({})", to_type, ref.back()));
+                        break;
+                    }
+                    default: {
+                        res.push_back(std::format("/* Unimplemented cast type {} */", to_string(cast_type)));
+                        break;
+                    }
                 }
                 break;
             }
@@ -723,7 +745,7 @@ namespace bm2rust {
                     if (ctx.bm.code[right_index].op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
                         is_input_parameter = true;
                     }
-                    else if (ctx.bm.code[right_index].op == rebgn::AbstractOp::ASSIGN_CAST) {
+                    else if (ctx.bm.code[right_index].op == rebgn::AbstractOp::CAST) {
                         auto right_ref = ctx.bm.code[right_index].ref().value().value();
                         auto right_ref_index = ctx.ident_index_table[right_ref];
                         if (ctx.bm.code[right_ref_index].op == rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER) {
@@ -845,6 +867,7 @@ namespace bm2rust {
                 res.push_back(std::format("({}{})", uop, ref.back()));
                 break;
             }
+            /*
             case rebgn::AbstractOp::ENUM_CAST: {
                 auto ref_index = ctx.ident_index_table[code.ref().value().value()];
                 auto ref = eval(ctx.bm.code[ref_index], ctx);
@@ -852,7 +875,7 @@ namespace bm2rust {
                 auto typ = code.type().value();
                 auto type = type_to_string(ctx, typ);
                 if (ctx.storage_table[typ.ref.value()].storages[0].type == rebgn::StorageType::ENUM) {
-                    auto srcType = type_to_string(ctx, *code.from());
+                    auto srcType = type_to_string(ctx, *code.from_type());
                     res.push_back(std::format("{}::from({})", type, ref.back()));
                 }
                 else {
@@ -860,6 +883,7 @@ namespace bm2rust {
                 }
                 break;
             }
+            */
             case rebgn::AbstractOp::NEW_OBJECT: {
                 auto storage = *code.type();
                 auto type = type_to_string(ctx, storage);
@@ -1525,13 +1549,23 @@ namespace bm2rust {
                         w.writeln("/* Unimplemented bit field */");
                         break;
                     }
+                    ctx.bit_field_ident.push_back({code.ident()->value(), code.bit_size()->value(), code.packed_op_type().value(), code.endian().value()});
+                    /*
+                    auto bit_field = ctx.ident_range_table[code.belong().value().value()];
+                    auto belong_name = ctx.ident_table[code.belong().value().value()];
+                    auto typ = find_op(ctx, bit_field, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    if (!typ) {
+                        w.writeln("/* Unimplemented bit field *
+                    ");
+                        break;
+                }
                     size_t bit_size = 0;
                     auto type = type_to_string(ctx, *ctx.bm.code[*typ].type(), &bit_size);
                     auto ident = code.ident().value().value();
                     auto tmp = std::format("tmp{}", ident);
                     auto ptype = code.packed_op_type().value();
                     auto bit_counter = std::format("bit_counter{}", ident);
-                    w.writeln("let mut ", tmp, ":", type, " = 0; /* bit field */");
+                    w.writeln("let mut ", tmp, ":", type, " = 0; /* bit field *");
                     if (code.op == rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION) {
                         w.writeln("let mut ", bit_counter, " = 0;");
                         ctx.bit_field_ident.push_back({code.ident()->value(), bit_size, ptype, code.endian().value()});
@@ -1569,16 +1603,13 @@ namespace bm2rust {
                             w.writeln("let mut ", array, " = <[u8; ", std::format("{}", bit_size / 8), "]>::default();");
                         }
                     }
+                    */
                     break;
                 }
-                case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION: {
-                    ctx.bm_ctx.inner_bit_operations = false;
-                    break;
-                }
+                case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = false;
                     ctx.bit_field_ident.pop_back();
-                    defer.pop_back();
                     break;
                 }
                 case rebgn::AbstractOp::IF: {
@@ -1899,34 +1930,33 @@ namespace bm2rust {
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT: {
-                    if (ctx.bm_ctx.inner_bit_operations) {
-                        encode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
-                    }
-                    else {
-                        auto ref = code.ref().value().value();
-                        auto& ident = ctx.ident_index_table[ref];
-                        auto s = eval(ctx.bm.code[ident], ctx);
-                        auto endian = code.endian().value();
-                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
-                        auto belong_name = get_belong_name(ctx, code);
-                        serialize(ctx, w, code.bit_size()->value(), belong_name, s.back(), endian);
-                    }
+                    // if (ctx.bm_ctx.inner_bit_operations) {
+                    //     encode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
+                    // }
+                    // else {
+                    auto ref = code.ref().value().value();
+                    auto& ident = ctx.ident_index_table[ref];
+                    auto s = eval(ctx.bm.code[ident], ctx);
+                    auto endian = code.endian().value();
+                    auto belong_name = get_belong_name(ctx, code);
+                    serialize(ctx, w, code.bit_size()->value(), belong_name, s.back(), endian);
+                    //}
                     break;
                 }
                 case rebgn::AbstractOp::DECODE_INT: {
-                    if (ctx.bm_ctx.inner_bit_operations) {
-                        decode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
-                    }
-                    else {
-                        auto ref = code.ref().value().value();
-                        auto& ident = ctx.ident_index_table[ref];
-                        ctx.on_assign = true;
-                        auto s = eval(ctx.bm.code[ident], ctx);
-                        ctx.on_assign = false;
-                        auto endian = code.endian().value();
-                        auto belong_name = get_belong_name(ctx, code);
-                        deserialize(ctx, w, ref, code.bit_size()->value(), belong_name, s.back(), endian);
-                    }
+                    // if (ctx.bm_ctx.inner_bit_operations) {
+                    //     decode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
+                    // }
+                    // else {
+                    auto ref = code.ref().value().value();
+                    auto& ident = ctx.ident_index_table[ref];
+                    ctx.on_assign = true;
+                    auto s = eval(ctx.bm.code[ident], ctx);
+                    ctx.on_assign = false;
+                    auto endian = code.endian().value();
+                    auto belong_name = get_belong_name(ctx, code);
+                    deserialize(ctx, w, ref, code.bit_size()->value(), belong_name, s.back(), endian);
+                    //}
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT_VECTOR_FIXED:
@@ -1937,6 +1967,16 @@ namespace bm2rust {
                     auto vec = eval(ctx.bm.code[ctx.ident_index_table[ref_to_vec]], ctx);
                     auto len = eval(ctx.bm.code[ctx.ident_index_table[ref_to_len]], ctx);
                     auto belong_name = get_belong_name(ctx, code);
+                    if (code.op == rebgn::AbstractOp::ENCODE_INT_VECTOR_FIXED) {
+                        auto array_length = code.array_length()->value();
+                        if (array_length > rust_impl_Default_threshold) {
+                            w.writeln(std::format("if {}.len() < {} as usize {{", vec.back(), len.back()));
+                            auto scope = w.indent_scope();
+                            w.writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"encode ", belong_name, "\",", vec.back(), ".len(),", len.back(), " as usize));");
+                            scope.execute();
+                            w.writeln("}");
+                        }
+                    }
                     if (bit_size == 8) {
                         w.writeln("w.write_all(&", vec.back(), "[0..", len.back(), " as usize]", ")", map_io_error(ctx, belong_name), ";");
                     }
@@ -2184,10 +2224,7 @@ namespace bm2rust {
                     }));
                     break;
                 }
-                case rebgn::AbstractOp::END_ENCODE_SUB_RANGE: {
-                    defer.pop_back();
-                    break;
-                }
+                case rebgn::AbstractOp::END_ENCODE_SUB_RANGE:
                 case rebgn::AbstractOp::END_DECODE_SUB_RANGE: {
                     defer.pop_back();
                     break;
@@ -2519,6 +2556,16 @@ namespace bm2rust {
                             ctx.cw.writeln("}");
                             scope6.execute();
                             ctx.cw.writeln("}");
+
+                            ctx.cw.writeln("impl std::convert::From<", ident, "> for ", base_type, " {");
+                            auto scope8 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("fn from(e: ", ident, ") -> Self {");
+                            auto scope9 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("unsafe { std::mem::transmute(e) }");
+                            scope9.execute();
+                            ctx.cw.writeln("}");
+                            scope8.execute();
+                            ctx.cw.writeln("}");
                         }
                         break;
                     }
@@ -2530,7 +2577,8 @@ namespace bm2rust {
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             TmpCodeWriter tmp;
-            inner_block(ctx, tmp, {.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
+            auto range = bm.programs.ranges[j];
+            inner_block(ctx, tmp, {.start = range.start.value() + 1, .end = range.end.value() - 1});
             ctx.cw.write_unformatted(tmp.out());
         }
         for (auto& def : ctx.on_functions) {

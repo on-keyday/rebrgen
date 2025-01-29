@@ -54,6 +54,7 @@ namespace rebgn {
             }
             cout << '\n';
         }
+
         auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
             bool found_ident = false;
             if (use_index) {
@@ -229,6 +230,9 @@ namespace rebgn {
             if (auto s = c.from_type()) {
                 cout << " ";
                 print_type(*s);
+            }
+            if (auto s = c.cast_type()) {
+                cout << " " << to_string(*s);
             }
             if (auto e = c.endian()) {
                 cout << " " << to_string(e->endian());

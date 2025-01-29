@@ -284,6 +284,12 @@ enum CastType:
     LARGE_INT_TO_SMALL_INT
     SIGNED_TO_UNSIGNED
     UNSIGNED_TO_SIGNED
+    ONE_BIT_TO_INT
+    INT_TO_ONE_BIT
+    BOOL_TO_INT
+    INT_TO_BOOL
+    STRUCT_TO_RECURSIVE_STRUCT
+    RECURSIVE_STRUCT_TO_STRUCT
     OTHER
 
 
@@ -714,11 +720,13 @@ format Code:
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
             endian :EndianExpr
+            bit_size :Varint
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
             endian :EndianExpr
+            bit_size :Varint
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:

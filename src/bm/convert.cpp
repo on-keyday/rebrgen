@@ -35,9 +35,15 @@ namespace rebgn {
                 auto dest_size = dest.storages[0].size()->value();
                 auto src_size = src.storages[0].size()->value();
                 if (dest_size < src_size) {
+                    if (dest_size == 1) {
+                        return CastType::INT_TO_ONE_BIT;
+                    }
                     return CastType::LARGE_INT_TO_SMALL_INT;
                 }
                 if (dest_size > src_size) {
+                    if (src_size == 1) {
+                        return CastType::ONE_BIT_TO_INT;
+                    }
                     return CastType::SMALL_INT_TO_LARGE_INT;
                 }
                 if (dest.storages[0].type == StorageType::UINT && src.storages[0].type == StorageType::INT) {
@@ -46,6 +52,9 @@ namespace rebgn {
                 if (dest.storages[0].type == StorageType::INT && src.storages[0].type == StorageType::UINT) {
                     return CastType::UNSIGNED_TO_SIGNED;
                 }
+            }
+            if (src.storages[0].type == StorageType::BOOL) {
+                return CastType::BOOL_TO_INT;
             }
         }
         if (dest.storages[0].type == StorageType::ENUM) {
@@ -56,6 +65,21 @@ namespace rebgn {
         if (dest.storages[0].type == StorageType::FLOAT) {
             if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
                 return CastType::INT_TO_FLOAT_BIT;
+            }
+        }
+        if (dest.storages[0].type == StorageType::BOOL) {
+            if (src.storages[0].type == StorageType::INT || src.storages[0].type == StorageType::UINT) {
+                return CastType::INT_TO_BOOL;
+            }
+        }
+        if (dest.storages[0].type == StorageType::RECURSIVE_STRUCT_REF) {
+            if (src.storages[0].type == StorageType::STRUCT_REF) {
+                return CastType::STRUCT_TO_RECURSIVE_STRUCT;
+            }
+        }
+        if (dest.storages[0].type == StorageType::STRUCT_REF) {
+            if (src.storages[0].type == StorageType::RECURSIVE_STRUCT_REF) {
+                return CastType::RECURSIVE_STRUCT_TO_STRUCT;
             }
         }
         return CastType::OTHER;
@@ -1576,10 +1600,6 @@ namespace rebgn {
 
     template <>
     Error define<ast::Cast>(Module& m, std::shared_ptr<ast::Cast>& node) {
-        auto ident = m.new_node_id(node);
-        if (!ident) {
-            return ident.error();
-        }
         std::vector<Varint> args;
         for (auto& p : node->arguments) {
             auto arg = get_expr(m, p);
@@ -1593,11 +1613,16 @@ namespace rebgn {
             return s.error();
         }
         if (args.size() == 0) {
+            auto ident = m.new_node_id(node);
+            if (!ident) {
+                return ident.error();
+            }
             // this is new object creation
             m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                 c.ident(*ident);
                 c.type(*s);
             });
+            m.set_prev_expr(ident->value());
         }
         else if (args.size() == 1) {
             auto expr_type = may_get_type(m, node->arguments[0]->expr_type);
@@ -1615,15 +1640,22 @@ namespace rebgn {
             if (!to) {
                 return to.error();
             }
-            m.op(AbstractOp::CAST, [&](Code& c) {
-                c.ident(*ident);
-                c.type(*s);
-                c.ref(args[0]);
-                c.from_type(*from);
-                c.cast_type(get_cast_type(*to, **expr_type));
-            });
+            auto c = add_assign_cast(m, [&](auto&&... args) { return m.op(args...); }, &*to, &**expr_type, args[0]);
+            if (!c) {
+                return c.error();
+            }
+            if (*c) {
+                m.set_prev_expr((**c).value());
+            }
+            else {
+                m.set_prev_expr(args[0].value());
+            }
         }
         else {
+            auto ident = m.new_node_id(node);
+            if (!ident) {
+                return ident.error();
+            }
             Param param;
             param.len_exprs = varint(args.size()).value();
             param.expr_refs = std::move(args);
@@ -1632,8 +1664,9 @@ namespace rebgn {
                 c.type(*s);
                 c.param(std::move(param));
             });
+            m.set_prev_expr(ident->value());
         }
-        m.set_prev_expr(ident->value());
+
         return none;
     }
 

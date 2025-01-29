@@ -78,7 +78,7 @@ namespace rebgn {
             c.type(*dst_ref);
             c.from_type(*src_ref);
             c.ref(right);
-            c.cast_type(get_cast_type(*dst_ref, *src_ref));
+            c.cast_type(get_cast_type(*dest, src_copy));
         });
         return *ident;
     }

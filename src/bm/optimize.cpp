@@ -456,6 +456,17 @@ namespace rebgn {
         return none;
     }
 
+    Error remap_programs(Module& m) {
+        m.programs.clear();
+        for (auto& range : m.ident_to_ranges) {
+            auto index = range.range.start.value();
+            if (m.code[index].op == AbstractOp::DEFINE_PROGRAM) {
+                m.programs.push_back(range.range);
+            }
+        }
+        return none;
+    }
+
     Error search_encode_decode(Module& m, std::vector<size_t>& index_of_operation_and_loop, Varint fn) {
         auto& start = m.ident_index_table[fn.value()];
         index_of_operation_and_loop.push_back(start);  // for define function
@@ -1336,9 +1347,6 @@ namespace rebgn {
                 break;
             }
             case rebgn::AbstractOp::UNARY: {
-                return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
-            }
-            case rebgn::AbstractOp::ENUM_CAST: {
                 return retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
             }
             case rebgn::AbstractOp::DEFINE_PARAMETER: {
@@ -2351,7 +2359,7 @@ namespace rebgn {
                 m.ref(*is_little);
             });
         }
-        if (enc_endian.endian() == Endian::little || is_native_or_dynamic) {
+        if (endian.endian() == Endian::little || is_native_or_dynamic) {
             auto err = on_little_endian();
             if (err) {
                 return err;
@@ -2360,7 +2368,7 @@ namespace rebgn {
         if (is_native_or_dynamic) {
             op(AbstractOp::ELSE, [&](Code& m) {});
         }
-        if (enc_endian.endian() == Endian::big || is_native_or_dynamic) {
+        if (endian.endian() == Endian::big || is_native_or_dynamic) {
             auto err = on_big_endian();
             if (err) {
                 return err;
@@ -2436,7 +2444,7 @@ namespace rebgn {
         EndianExpr endian{};
         PackedOpType packed_op = PackedOpType::FIXED;
         size_t bit_size = 0;
-        Varint counter, target, tmp_array, read_bytes;
+        Varint counter, target, tmp_array, read_bytes, belong;
         StorageRef target_type, nbit_typ;
         std::optional<StorageRef> u8_typ;
 
@@ -2448,7 +2456,7 @@ namespace rebgn {
             storage.size(*varint(nbit_typ));
             auto res = m.get_storage_ref(Storages{.length = *varint(1), .storages = {storage}}, nullptr);
             if (!res) {
-                res;
+                return res;
             }
             if (nbit_typ == 8 && !sign) {
                 u8_typ = *res;
@@ -2466,20 +2474,17 @@ namespace rebgn {
             if (!dst_storage) {
                 return dst_storage.error();
             }
-            op(AbstractOp::CAST, [&](Code& m) {
-                m.ident(*cast);
-                m.ref(ref);
-                m.type(target_type);
-                m.from_type(*src_type);
-                m.cast_type(get_cast_type(*dst_storage, *src_type_storage));
-            });
+            auto casted = add_assign_cast(m, op, &*dst_storage, &*src_type_storage, ref);
+            if (!casted) {
+                return casted.error();
+            }
             auto shift = m.new_id(nullptr);
             if (!shift) {
                 return shift.error();
             }
             op(AbstractOp::BINARY, [&](Code& m) {
                 m.ident(*shift);
-                m.left_ref(*cast);
+                m.left_ref(*casted ? **casted : ref);
                 m.right_ref(shift_index);
                 m.bop(BinaryOp::left_logical_shift);
             });
@@ -2502,6 +2507,7 @@ namespace rebgn {
                 m.left_ref(target);
                 m.right_ref(*bit_or);
             });
+            return none;
         };
 
         auto add_counter = [&](size_t i) {
@@ -2528,15 +2534,16 @@ namespace rebgn {
                 m.left_ref(counter);
                 m.right_ref(*add);
             });
+            return none;
         };
 
         for (auto& code : m.code) {
             if (code.op == rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION ||
                 code.op == rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION) {
-                new_code.push_back(code);  // copy
                 on_bit_operation = true;
                 endian = code.endian().value();
                 packed_op = code.packed_op_type().value();
+                belong = code.belong().value();  // refer to bit field
                 auto& maybe_type = m.code[m.ident_index_table[code.belong().value().value()] + 1];
                 if (maybe_type.op != rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
                     return error("Invalid packed operation");
@@ -2548,6 +2555,9 @@ namespace rebgn {
 
                 auto new_target_type = maybe_type.type().value();
                 auto new_bit_size = type.value().storages[0].size()->value();
+
+                code.bit_size(*varint(new_bit_size));
+                new_code.push_back(code);  // copy
                 auto new_target_var = new_default_var(new_target_type);
                 if (!new_target_var) {
                     return new_target_var.error();
@@ -2582,7 +2592,7 @@ namespace rebgn {
                             m.ref(*new_target_var);
                             m.endian(endian);
                             m.bit_size(*varint(new_bit_size));
-                            m.belong(code.belong().value());
+                            m.belong(belong);  // refer to bit field
                         });
                     }
                     else {
@@ -2600,16 +2610,17 @@ namespace rebgn {
                 target = *new_target_var;
                 tmp_array = new_tmp_array;
                 read_bytes = new_read_bytes;
+                bit_size = new_bit_size;
             }
             else if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION ||
                      code.op == rebgn::AbstractOp::END_DECODE_PACKED_OPERATION) {
                 if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION) {
                     if (packed_op == PackedOpType::FIXED) {
                         op(AbstractOp::ENCODE_INT, [&](Code& m) {
-                            m.ref(counter);
+                            m.ref(target);
                             m.endian(endian);
                             m.bit_size(*varint(bit_size));
-                            m.belong(code.belong().value());
+                            m.belong(belong);  // refer to bit field
                         });
                     }
                     else {
@@ -2726,66 +2737,60 @@ namespace rebgn {
                                     m.left_ref(*array_index);
                                     m.right_ref(*cast);
                                 });
+                                return none;
                             };
-                            auto is_native_or_dynamic = endian.endian() == Endian::native || endian.endian() == Endian::dynamic;
-                            if (is_native_or_dynamic) {
-                                auto is_little = m.new_id(nullptr);
-                                if (!is_little) {
-                                    return is_little.error();
-                                }
-                                op(AbstractOp::IS_LITTLE_ENDIAN, [&](Code& m) {
-                                    m.ident(*is_little);
-                                    m.ref(endian.dynamic_ref);  // dynamic endian or null for native
+                            auto err = add_endian_specific(
+                                m, endian, op,
+                                [&]() {
+                                    return assign_to_array(*i_);
+                                },
+                                [&]() {
+                                    auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
+                                    if (!bit_size_div_8_minus_1) {
+                                        return bit_size_div_8_minus_1.error();
+                                    }
+                                    auto sub = m.new_id(nullptr);
+                                    if (!sub) {
+                                        return sub.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*sub);
+                                        m.left_ref(*bit_size_div_8_minus_1);
+                                        m.right_ref(*i_);
+                                        m.bop(BinaryOp::sub);
+                                    });
+                                    auto sub1 = m.new_id(nullptr);
+                                    if (!sub1) {
+                                        return sub1.error();
+                                    }
+                                    auto one = immediate(1);
+                                    if (!one) {
+                                        return one.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*sub1);
+                                        m.left_ref(*sub);
+                                        m.right_ref(*one);
+                                        m.bop(BinaryOp::sub);
+                                    });
+                                    return assign_to_array(*sub1);
                                 });
-                                op(AbstractOp::IF, [&](Code& m) {
-                                    m.ref(*is_little);
-                                });
-                            }
-                            if (endian.endian() == Endian::little || is_native_or_dynamic) {
-                                assign_to_array(*i_);
-                            }
-                            if (is_native_or_dynamic) {
-                                op(AbstractOp::ELSE, [&](Code& m) {});
-                            }
-                            if (endian.endian() == Endian::big || is_native_or_dynamic) {
-                                auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
-                                if (!bit_size_div_8_minus_1) {
-                                    return bit_size_div_8_minus_1.error();
-                                }
-                                auto sub = m.new_id(nullptr);
-                                if (!sub) {
-                                    return sub.error();
-                                }
-                                op(AbstractOp::BINARY, [&](Code& m) {
-                                    m.ident(*sub);
-                                    m.left_ref(*bit_size_div_8_minus_1);
-                                    m.right_ref(*i_);
-                                    m.bop(BinaryOp::sub);
-                                });
-                                auto sub1 = m.new_id(nullptr);
-                                if (!sub1) {
-                                    return sub1.error();
-                                }
-                                auto one = immediate(1);
-                                if (!one) {
-                                    return one.error();
-                                }
-                                op(AbstractOp::BINARY, [&](Code& m) {
-                                    m.ident(*sub1);
-                                    m.left_ref(*sub);
-                                    m.right_ref(*one);
-                                    m.bop(BinaryOp::sub);
-                                });
-                                assign_to_array(*sub1);
-                            }
-                            if (is_native_or_dynamic) {
-                                op(AbstractOp::END_IF, [&](Code& m) {});
+                            if (err) {
+                                return err;
                             }
                             op(AbstractOp::INC, [&](Code& m) {
                                 m.ref(*i_);
                             });
                         }
                         op(AbstractOp::END_LOOP, [&](Code& m) {});
+                        op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& m) {
+                            m.left_ref(tmp_array);
+                            m.right_ref(*result_byte_count);
+                            m.endian(endian);
+                            m.bit_size(*varint(bit_size));
+                            m.belong(belong);  // refer to bit field
+                            m.array_length(*result_byte_count);
+                        });
                     }
                 }
                 new_code.push_back(code);  // copy
@@ -2794,7 +2799,7 @@ namespace rebgn {
             else if (on_bit_operation && code.op == rebgn::AbstractOp::ENCODE_INT) {
                 auto enc_bit_size = code.bit_size()->value();
                 auto enc_endian = code.endian().value();
-                auto src_type = get_nbit_typ(bit_size, enc_endian.sign());
+                auto src_type = get_nbit_typ(enc_bit_size, enc_endian.sign());
                 if (!src_type) {
                     return src_type.error();
                 }
@@ -2815,11 +2820,17 @@ namespace rebgn {
                 auto err = add_endian_specific(
                     m, endian, op,
                     [&]() {
-                        assign_to_target(code.ref().value(), counter, src_type, src_type_storage);
-                        add_counter(enc_bit_size);
+                        auto err = assign_to_target(code.ref().value(), counter, src_type, src_type_storage);
+                        if (err) {
+                            return err;
+                        }
+                        return add_counter(enc_bit_size);
                     },
                     [&]() {
-                        add_counter(enc_bit_size);
+                        auto err = add_counter(enc_bit_size);
+                        if (err) {
+                            return err;
+                        }
                         auto bit_size_ = immediate(bit_size);
                         if (!bit_size_) {
                             return bit_size_.error();
@@ -2834,7 +2845,7 @@ namespace rebgn {
                             m.right_ref(counter);
                             m.bop(BinaryOp::sub);
                         });
-                        assign_to_target(code.ref().value(), *sub, src_type, src_type_storage);
+                        return assign_to_target(code.ref().value(), *sub, src_type, src_type_storage);
                     });
                 if (err) {
                     return err;
@@ -2843,7 +2854,7 @@ namespace rebgn {
             else if (on_bit_operation && code.op == rebgn::AbstractOp::DECODE_INT) {
                 auto dec_bit_size = code.bit_size()->value();
                 auto dec_endian = code.endian().value();
-                auto src_type = get_nbit_typ(bit_size, dec_endian.sign());
+                auto src_type = get_nbit_typ(dec_bit_size, dec_endian.sign());
                 if (!src_type) {
                     return src_type.error();
                 }
@@ -2950,7 +2961,7 @@ namespace rebgn {
                                 m.ref(*array_index);
                                 m.endian(endian);
                                 m.bit_size(*varint(8));
-                                m.belong(code.belong().value());
+                                m.belong(code.ref().value());
                             });
 
                             auto u8_typ = get_nbit_typ(8, false);
@@ -2978,7 +2989,7 @@ namespace rebgn {
                                         m.right_ref(*eight);
                                         m.bop(BinaryOp::mul);
                                     });
-                                    assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
+                                    return assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
                                 },
                                 [&]() {
                                     auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
@@ -3009,7 +3020,7 @@ namespace rebgn {
                                         m.right_ref(*eight);
                                         m.bop(BinaryOp::mul);
                                     });
-                                    assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
+                                    return assign_to_target(*array_index, *mul, u8_typ, u8_typ_storage);
                                 });
                             op(AbstractOp::INC, [&](Code& m) {
                                 m.ref(*i_);
@@ -3029,14 +3040,15 @@ namespace rebgn {
                     op(AbstractOp::END_IF, [&](Code& m) {});
                 }
 
+                // mask = ((1 << dec_bit_size) - 1)
                 // on little endian:
                 //   // get from lsb
-                //  ref = src_type((target >> counter) & ((1 << dec_bit_size) - 1))
+                //  ref = src_type((target >> counter) & mask)
                 //  counter += dec_bit_size
                 // on big endian:
                 //   // get from msb
                 //  counter += dec_bit_size
-                //  ref = src_type((target >> (nbit - counter)) & ((1 << dec_bit_size) - 1))
+                //  ref = src_type((target >> (nbit - counter)) & mask)
                 // on native endian, platform dependent
                 // on dynamic endian, dynamic variable dependent
                 auto assign_to_ref = [&](Varint shift_index) {
@@ -3072,13 +3084,10 @@ namespace rebgn {
                     if (!target_type_storage) {
                         return target_type_storage.error();
                     }
-                    op(AbstractOp::CAST, [&](Code& m) {
-                        m.ident(*cast);
-                        m.ref(*and_);
-                        m.type(*src_type);
-                        m.from_type(target_type);
-                        m.cast_type(get_cast_type(*src_type_storage, *target_type_storage));
-                    });
+                    auto casted = add_assign_cast(m, op, &*src_type_storage, &*target_type_storage, *and_);
+                    if (!casted) {
+                        return casted.error();
+                    }
                     auto assign = m.new_id(nullptr);
                     if (!assign) {
                         return assign.error();
@@ -3086,17 +3095,24 @@ namespace rebgn {
                     op(AbstractOp::ASSIGN, [&](Code& m) {
                         m.ident(*assign);
                         m.left_ref(code.ref().value());
-                        m.right_ref(*cast);
+                        m.right_ref(*casted ? **casted : *and_);
                     });
+                    return none;
                 };
                 auto err = add_endian_specific(
                     m, dec_endian, op,
                     [&]() {
-                        assign_to_ref(counter);
-                        add_counter(dec_bit_size);
+                        auto err = assign_to_ref(counter);
+                        if (err) {
+                            return err;
+                        }
+                        return add_counter(dec_bit_size);
                     },
                     [&]() {
-                        add_counter(dec_bit_size);
+                        auto err = add_counter(dec_bit_size);
+                        if (err) {
+                            return err;
+                        }
                         auto bit_size_ = immediate(bit_size);
                         if (!bit_size_) {
                             return bit_size_.error();
@@ -3111,7 +3127,7 @@ namespace rebgn {
                             m.right_ref(counter);
                             m.bop(BinaryOp::sub);
                         });
-                        assign_to_ref(*sub);
+                        return assign_to_ref(*sub);
                     });
                 if (err) {
                     return err;
@@ -3180,6 +3196,11 @@ namespace rebgn {
             return err;
         }
         rebind_ident_index(m);
+        err = sort_immediate(m);
+        if (err) {
+            return err;
+        }
+        rebind_ident_index(m);
         err = generate_cfg1(m);
         if (err) {
             return err;
@@ -3189,11 +3210,8 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        remap_programs(m);
         err = optimize_type_usage(m);
-        if (err) {
-            return err;
-        }
-        err = sort_immediate(m);
         if (err) {
             return err;
         }

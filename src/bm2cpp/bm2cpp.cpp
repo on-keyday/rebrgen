@@ -372,6 +372,9 @@ namespace bm2cpp {
                         res.push_back(res_str);
                         break;
                     }
+                    default:
+                        res.push_back(std::format("/*unknown cast type {}*/", to_string(code.cast_type().value())));
+                        break;
                 }
                 break;
             }

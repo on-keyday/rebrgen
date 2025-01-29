@@ -12,7 +12,8 @@
             "args": [
                 "-i","${workspaceRoot}/save/sample.json",
                 "-o","${workspaceRoot}/save/save.bin",
-                "-c","${workspaceRoot}/save/save.dot"
+                "-c","${workspaceRoot}/save/save.dot",
+                "-p"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

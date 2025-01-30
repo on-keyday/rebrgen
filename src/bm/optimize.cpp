@@ -59,13 +59,6 @@ namespace rebgn {
                 return none;
             };
             switch (c.op) {
-                case AbstractOp::DEFINE_PARAMETER: {
-                    auto err = do_extract(AbstractOp::DEFINE_PARAMETER, AbstractOp::END_PARAMETER);
-                    if (err) {
-                        return err;
-                    }
-                    break;
-                }
                 case AbstractOp::DEFINE_FUNCTION: {
                     auto err = do_extract(AbstractOp::DEFINE_FUNCTION, AbstractOp::END_FUNCTION);
                     if (err) {
@@ -89,13 +82,6 @@ namespace rebgn {
                 }
                 case AbstractOp::DEFINE_STATE: {
                     auto err = do_extract(AbstractOp::DEFINE_STATE, AbstractOp::END_STATE);
-                    if (err) {
-                        return err;
-                    }
-                    break;
-                }
-                case AbstractOp::DEFINE_FIELD: {
-                    auto err = do_extract(AbstractOp::DEFINE_FIELD, AbstractOp::END_FIELD);
                     if (err) {
                         return err;
                     }
@@ -153,8 +139,6 @@ namespace rebgn {
                 return AbstractOp::DECLARE_FORMAT;
             case AbstractOp::DEFINE_UNION:
                 return AbstractOp::DECLARE_UNION;
-            case AbstractOp::DEFINE_FIELD:
-                return AbstractOp::DECLARE_FIELD;
             case AbstractOp::DEFINE_UNION_MEMBER:
                 return AbstractOp::DECLARE_UNION_MEMBER;
             case AbstractOp::DEFINE_PROGRAM:
@@ -163,8 +147,6 @@ namespace rebgn {
                 return AbstractOp::DECLARE_STATE;
             case AbstractOp::DEFINE_BIT_FIELD:
                 return AbstractOp::DECLARE_BIT_FIELD;
-            case AbstractOp::DEFINE_PARAMETER:
-                return AbstractOp::DECLARE_PARAMETER;
             case AbstractOp::DEFINE_PROPERTY:
                 return AbstractOp::DECLARE_PROPERTY;
             default:
@@ -832,9 +814,6 @@ namespace rebgn {
                 case AbstractOp::DEFINE_STATE:
                     end_op = AbstractOp::END_STATE;
                     break;
-                case AbstractOp::DEFINE_FIELD:
-                    end_op = AbstractOp::END_FIELD;
-                    break;
                 case AbstractOp::DEFINE_UNION:
                     end_op = AbstractOp::END_UNION;
                     break;
@@ -843,9 +822,6 @@ namespace rebgn {
                     break;
                 case AbstractOp::DEFINE_PROGRAM:
                     end_op = AbstractOp::END_PROGRAM;
-                    break;
-                case AbstractOp::DEFINE_PARAMETER:
-                    end_op = AbstractOp::END_PARAMETER;
                     break;
                 case AbstractOp::DEFINE_BIT_FIELD:
                     end_op = AbstractOp::END_BIT_FIELD;
@@ -893,9 +869,65 @@ namespace rebgn {
         }
     };
 
+    expected<size_t> get_from_type(Module& m, const Storages& storage, std::set<ObjectID>& searched) {
+        size_t factor = 1;
+        for (size_t j = 0; j < storage.storages.size(); j++) {
+            auto& s = storage.storages[j];
+            if (s.type == StorageType::ARRAY) {
+                factor *= s.size().value().value();
+            }
+            else if (s.type == StorageType::UINT || s.type == StorageType::INT) {
+                factor *= s.size().value().value();
+            }
+            else if (s.type == StorageType::STRUCT_REF) {
+                auto ref = s.ref().value().value();
+                if (searched.find(ref) != searched.end()) {
+                    return unexpect_error(InfiniteError{"Infinite: STRUCT_REF"});
+                }
+                searched.insert(ref);
+                auto idx = m.ident_index_table[ref];
+                auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FORMAT, idx);
+                searched.erase(ref);
+                if (!size) {
+                    return size.error();
+                }
+                factor *= size.value();
+            }
+            else if (s.type == StorageType::ENUM) {
+                // skip
+            }
+            else if (s.type == StorageType::VARIANT) {
+                size_t candidate = 0;
+                for (j++; j < storage.storages.size(); j++) {
+                    if (storage.storages[j].type != StorageType::STRUCT_REF) {
+                        return unexpect_error("Invalid storage type: {}", to_string(storage.storages[j].type));
+                    }
+                    auto ref = storage.storages[j].ref().value().value();
+                    if (searched.find(ref) != searched.end()) {
+                        return unexpect_error(InfiniteError{"Infinite: VARIANT"});
+                    }
+                    searched.insert(ref);
+                    auto idx = m.ident_index_table[ref];
+                    auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_UNION_MEMBER, idx);
+                    searched.erase(ref);
+                    if (!size) {
+                        return size.error();
+                    }
+                    candidate = std::max(candidate, size.value());
+                }
+                factor *= candidate;
+            }
+            else {
+                return unexpect_error(InfiniteError{std::format("Invalid storage type: {}", to_string(s.type))});
+            }
+        }
+        return factor;
+    }
+
     expected<size_t> decide_maximum_bit_field_size(Module& m, std::set<ObjectID>& searched, AbstractOp end_op, size_t index) {
         size_t bit_size = 0;
         for (size_t i = index; m.code[i].op != end_op; i++) {
+            /*
             if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
                 auto ref = *m.code[i].type();
                 auto got = m.get_storage(ref);
@@ -903,62 +935,20 @@ namespace rebgn {
                     return unexpect_error(std::move(got.error()));
                 }
                 auto& storage = got.value();
-                size_t factor = 1;
-                for (size_t j = 0; j < storage.storages.size(); j++) {
-                    auto& s = storage.storages[j];
-                    if (s.type == StorageType::ARRAY) {
-                        factor *= s.size().value().value();
-                    }
-                    else if (s.type == StorageType::UINT || s.type == StorageType::INT) {
-                        factor *= s.size().value().value();
-                    }
-                    else if (s.type == StorageType::STRUCT_REF) {
-                        auto ref = s.ref().value().value();
-                        if (searched.find(ref) != searched.end()) {
-                            return unexpect_error(InfiniteError{"Infinite: STRUCT_REF"});
-                        }
-                        searched.insert(ref);
-                        auto idx = m.ident_index_table[ref];
-                        auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FORMAT, idx);
-                        searched.erase(ref);
-                        if (!size) {
-                            return size.error();
-                        }
-                        factor *= size.value();
-                    }
-                    else if (s.type == StorageType::ENUM) {
-                        // skip
-                    }
-                    else if (s.type == StorageType::VARIANT) {
-                        size_t candidate = 0;
-                        for (j++; j < storage.storages.size(); j++) {
-                            if (storage.storages[j].type != StorageType::STRUCT_REF) {
-                                return unexpect_error("Invalid storage type: {}", to_string(storage.storages[j].type));
-                            }
-                            auto ref = storage.storages[j].ref().value().value();
-                            if (searched.find(ref) != searched.end()) {
-                                return unexpect_error(InfiniteError{"Infinite: VARIANT"});
-                            }
-                            searched.insert(ref);
-                            auto idx = m.ident_index_table[ref];
-                            auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_UNION_MEMBER, idx);
-                            searched.erase(ref);
-                            if (!size) {
-                                return size.error();
-                            }
-                            candidate = std::max(candidate, size.value());
-                        }
-                        factor *= candidate;
-                    }
-                    else {
-                        return unexpect_error(InfiniteError{std::format("Invalid storage type: {}", to_string(s.type))});
-                    }
+                auto size = get_from_type(m, storage, searched);
+                if (!size) {
+                    return size.error();
                 }
-                bit_size += factor;
+                bit_size += size.value();
             }
-            if (m.code[i].op == AbstractOp::DECLARE_FIELD) {
-                auto index = m.ident_index_table[m.code[i].ref().value().value()];
-                auto size = decide_maximum_bit_field_size(m, searched, AbstractOp::END_FIELD, index);
+            */
+            if (m.code[i].op == AbstractOp::DEFINE_FIELD) {
+                auto ref = *m.code[i].type();
+                auto got = m.get_storage(ref);
+                if (!got) {
+                    return unexpect_error(std::move(got.error()));
+                }
+                auto size = get_from_type(m, got.value(), searched);
                 if (!size) {
                     return size.error();
                 }
@@ -993,27 +983,24 @@ namespace rebgn {
         }
         std::vector<Code> rebound;
         for (auto& c : m.code) {
-            rebound.push_back(std::move(c));
             if (c.op == AbstractOp::DEFINE_BIT_FIELD) {
                 auto ident = c.ident().value().value();
                 auto found = bit_fields.find(ident);
-                if (found == bit_fields.end()) {
-                    continue;
-                }
-                Storages storage;
-                Storage s;
-                s.type = StorageType::UINT;
-                s.size(*varint(found->second));
-                storage.storages.push_back(std::move(s));
-                storage.length = *varint(1);
-                auto ref = m.get_storage_ref(storage, nullptr);
-                if (!ref) {
-                    return ref.error();
-                }
-                rebound.push_back(make_code(AbstractOp::SPECIFY_STORAGE_TYPE, [&](auto& c) {
+                if (found != bit_fields.end()) {
+                    Storages storage;
+                    Storage s;
+                    s.type = StorageType::UINT;
+                    s.size(*varint(found->second));
+                    storage.storages.push_back(std::move(s));
+                    storage.length = *varint(1);
+                    auto ref = m.get_storage_ref(storage, nullptr);
+                    if (!ref) {
+                        return ref.error();
+                    }
                     c.type(*ref);
-                }));
+                }
             }
+            rebound.push_back(std::move(c));
         }
         m.code = std::move(rebound);
         return none;
@@ -1046,21 +1033,14 @@ namespace rebgn {
                 auto target = c.ident().value();
                 auto idx = m.ident_index_table[child];
                 if (m.code[idx].op == AbstractOp::DEFINE_FIELD) {
-                    for (size_t i = idx + 1; i < m.code.size(); i++) {
-                        if (m.code[i].op == AbstractOp::END_FIELD) {
-                            break;
-                        }
-                        if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
-                            auto found = m.storage_key_table_rev.find(m.code[i].type().value().ref.value());
-                            if (found == m.storage_key_table_rev.end()) {
-                                return error("Invalid storage key");
-                            }
-                            auto& key = found->second;
-                            auto& map = conditional_fields[parent];
-                            map[key].push_back(target);
-                            break;
-                        }
+                    auto type = m.code[idx].type().value().ref.value();
+                    auto found = m.storage_key_table_rev.find(m.code[i].type().value().ref.value());
+                    if (found == m.storage_key_table_rev.end()) {
+                        return error("Invalid storage key");
                     }
+                    auto& key = found->second;
+                    auto& map = conditional_fields[parent];
+                    map[key].push_back(target);
                 }
                 else if (m.code[idx].op == AbstractOp::DEFINE_PROPERTY) {
                     auto err = merge_conditional_inner(m, ctx, idx + 1, AbstractOp::END_PROPERTY);
@@ -1574,18 +1554,28 @@ namespace rebgn {
             return error("Invalid bit size");
         }
         auto max_value = (std::uint64_t(1) << *bit_size) - 1;
-        auto value_id = m.new_id(nullptr);
-        if (*bit_size >= 63) {
-            op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
-                m.ident(*value_id);
-                m.int_value64(max_value);
-            });
+        Varint value_id;
+        if (auto found = m.immediate_table.find(max_value); found != m.immediate_table.end()) {
+            value_id = *varint(found->second);
         }
         else {
-            op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
-                m.ident(*value_id);
-                m.int_value(*varint(max_value));
-            });
+            auto new_value_id = m.new_id(nullptr);
+            if (!new_value_id) {
+                return new_value_id.error();
+            }
+            value_id = *new_value_id;
+            if (*bit_size >= 63) {
+                op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
+                    m.ident(value_id);
+                    m.int_value64(max_value);
+                });
+            }
+            else {
+                op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
+                    m.ident(value_id);
+                    m.int_value(*varint(max_value));
+                });
+            }
         }
         auto length_id = m.new_id(nullptr);
         if (!length_id) {
@@ -1602,7 +1592,7 @@ namespace rebgn {
         op(AbstractOp::BINARY, [&](Code& m) {
             m.ident(*cmp_id);
             m.left_ref(*length_id);
-            m.right_ref(*value_id);
+            m.right_ref(value_id);
             m.bop(BinaryOp::less_or_eq);
         });
         op(AbstractOp::ASSERT, [&](Code& m) {
@@ -1742,7 +1732,7 @@ namespace rebgn {
         if (!ret_type_ref) {
             return ret_type_ref.error();
         }
-        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+        op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
@@ -1845,7 +1835,7 @@ namespace rebgn {
         if (!ret_type_ref) {
             return ret_type_ref.error();
         }
-        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+        op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
@@ -1889,7 +1879,7 @@ namespace rebgn {
                 if (!field_ptr) {
                     return field_ptr.error();
                 }
-                auto storage = define_storage(m, (*field_ptr)->field_type);
+                auto storage = define_storage(m, (*field_ptr)->field_type, true);
                 if (!storage) {
                     return storage.error();
                 }
@@ -1964,7 +1954,7 @@ namespace rebgn {
         if (!ret_type_ref) {
             return ret_type_ref.error();
         }
-        op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& n) {
+        op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
         op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
@@ -2119,7 +2109,7 @@ namespace rebgn {
                 }
                 continue;
             }
-            else if (c.op == AbstractOp::DECLARE_FIELD) {
+            else if (c.op == AbstractOp::DEFINE_FIELD) {
                 auto ident = c.ref().value();
                 if (auto found = set_array_length.find(ident.value());
                     found != set_array_length.end()) {
@@ -2466,10 +2456,6 @@ namespace rebgn {
         // target = target | (target_type(value) << shift_index)
         auto assign_to_target = [&](Varint ref, Varint shift_index, auto&& src_type, auto&& src_type_storage) {
             // cast to target type
-            auto cast = m.new_id(nullptr);
-            if (!cast) {
-                return cast.error();
-            }
             auto dst_storage = m.get_storage(target_type);
             if (!dst_storage) {
                 return dst_storage.error();
@@ -2544,8 +2530,8 @@ namespace rebgn {
                 endian = code.endian().value();
                 packed_op = code.packed_op_type().value();
                 belong = code.belong().value();  // refer to bit field
-                auto& maybe_type = m.code[m.ident_index_table[code.belong().value().value()] + 1];
-                if (maybe_type.op != rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
+                auto& maybe_type = m.code[m.ident_index_table[code.belong().value().value()]];
+                if (maybe_type.op != rebgn::AbstractOp::DEFINE_BIT_FIELD) {
                     return error("Invalid packed operation");
                 }
                 auto type = m.get_storage(maybe_type.type().value());
@@ -2666,17 +2652,17 @@ namespace rebgn {
                             // on little endian:
                             //    tmp_array[i_] = u8((target >> (i_ * 8)) & 0xff)
                             // on big endian:
-                            //    tmp_array[i_] = u8((target >> ((bit_size / 8 - i_ - 1) * 8)) & 0xff)
+                            //    tmp_array[i_] = u8((target >> ((bit_size / 8 - 1 - i_) * 8)) & 0xff)
                             // on native endian, platform dependent
                             // on dynamic endian, dynamic variable dependent
-                            auto assign_to_array = [&](auto&& shift_index) {
+                            auto assign_to_array = [&](Varint shift_index) {
                                 auto mul = m.new_id(nullptr);
                                 if (!mul) {
                                     return mul.error();
                                 }
                                 op(AbstractOp::BINARY, [&](Code& m) {
                                     m.ident(*mul);
-                                    m.left_ref(*i_);
+                                    m.left_ref(shift_index);
                                     m.right_ref(*eight);
                                     m.bop(BinaryOp::mul);
                                 });
@@ -2714,7 +2700,7 @@ namespace rebgn {
                                 }
                                 op(AbstractOp::CAST, [&](Code& m) {
                                     m.ident(*cast);
-                                    m.ref(*cast);
+                                    m.ref(*and_);
                                     m.type(*u8_typ);
                                     m.from_type(target_type);
                                     m.cast_type(CastType::SMALL_INT_TO_LARGE_INT);
@@ -2759,21 +2745,7 @@ namespace rebgn {
                                         m.right_ref(*i_);
                                         m.bop(BinaryOp::sub);
                                     });
-                                    auto sub1 = m.new_id(nullptr);
-                                    if (!sub1) {
-                                        return sub1.error();
-                                    }
-                                    auto one = immediate(1);
-                                    if (!one) {
-                                        return one.error();
-                                    }
-                                    op(AbstractOp::BINARY, [&](Code& m) {
-                                        m.ident(*sub1);
-                                        m.left_ref(*sub);
-                                        m.right_ref(*one);
-                                        m.bop(BinaryOp::sub);
-                                    });
-                                    return assign_to_array(*sub1);
+                                    return assign_to_array(*sub);
                                 });
                             if (err) {
                                 return err;
@@ -2787,7 +2759,7 @@ namespace rebgn {
                             m.left_ref(tmp_array);
                             m.right_ref(*result_byte_count);
                             m.endian(endian);
-                            m.bit_size(*varint(bit_size));
+                            m.bit_size(*varint(8));
                             m.belong(belong);  // refer to bit field
                             m.array_length(*result_byte_count);
                         });
@@ -2882,10 +2854,14 @@ namespace rebgn {
                     if (!imm) {
                         return imm.error();
                     }
+                    auto imm_size = immediate(dec_bit_size);
+                    if (!imm_size) {
+                        return imm_size.error();
+                    }
                     op(AbstractOp::BINARY, [&](Code& m) {
                         m.ident(*add);
                         m.left_ref(counter);
-                        m.right_ref(*varint(dec_bit_size));
+                        m.right_ref(*imm_size);
                         m.bop(BinaryOp::add);
                     });
                     auto add2 = m.new_id(nullptr);

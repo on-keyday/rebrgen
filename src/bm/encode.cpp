@@ -1079,7 +1079,7 @@ namespace rebgn {
         if (!typ) {
             return typ.error();
         }
-        m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+        m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
             c.type(*typ);
         });
         m.on_encode_fn = true;
@@ -1161,7 +1161,7 @@ namespace rebgn {
         if (!typ) {
             return typ.error();
         }
-        m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+        m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
             c.type(*typ);
         });
         m.on_encode_fn = false;

@@ -708,13 +708,6 @@ namespace rebgn {
             push(StorageType::UINT, [&](Storage& c) {
                 c.size(*varint(8));
             });
-            auto ref = static_str(m, f->strong_ref);
-            if (!ref) {
-                return ref.error();
-            }
-            m.op(AbstractOp::SPECIFY_FIXED_VALUE, [&](Code& c) {
-                c.ref(*ref);
-            });
             return none;
         }
         if (auto i = ast::as<ast::IdentType>(typ)) {
@@ -1184,18 +1177,12 @@ namespace rebgn {
             m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
                 c.ident(*ident);
                 c.belong(parent);
-            });
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.type(*s);
             });
-            m.op(AbstractOp::END_FIELD);
         }
         else {
             if (!ast::as<ast::UnionType>(node->field_type)) {
-                m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
-                    c.ident(*ident);
-                    c.belong(parent);
-                });
+                StorageRef type;
                 if (is_alignment_vector(node.get())) {
                     // alignment vector should have alignment byte - 1 array
                     Storages s;
@@ -1208,20 +1195,20 @@ namespace rebgn {
                     if (!ref) {
                         return ref.error();
                     }
-                    m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                        c.type(*ref);
-                    });
+                    type = *ref;
                 }
                 else {
                     auto s = define_storage(m, node->field_type, true);
                     if (!s) {
                         return s.error();
                     }
-                    m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                        c.type(*s);
-                    });
+                    type = *s;
                 }
-                m.op(AbstractOp::END_FIELD);
+                m.op(AbstractOp::DEFINE_FIELD, [&](Code& c) {
+                    c.ident(*ident);
+                    c.belong(parent);
+                    c.type(type);
+                });
             }
             else {
                 m.op(AbstractOp::DEFINE_PROPERTY, [&](Code& c) {
@@ -1287,7 +1274,7 @@ namespace rebgn {
             if (!ref) {
                 return ref.error();
             }
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+            m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
                 c.type(*ref);
             });
         }
@@ -1300,7 +1287,7 @@ namespace rebgn {
             if (!ref) {
                 return ref.error();
             }
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+            m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
                 c.type(*ref);
             });
         }
@@ -1316,11 +1303,8 @@ namespace rebgn {
             m.op(AbstractOp::DEFINE_PARAMETER, [&](Code& c) {
                 c.ident(*param_ident);
                 c.belong(*ident);
-            });
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
                 c.type(*s);
             });
-            m.op(AbstractOp::END_PARAMETER);
         }
         m.init_phi_stack(0);  // temporary
         auto old = m.enter_function(*ident);
@@ -1376,7 +1360,7 @@ namespace rebgn {
             if (!s) {
                 return s.error();
             }
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
+            m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
                 c.type(*s);
             });
         }
@@ -1436,6 +1420,7 @@ namespace rebgn {
                     m.op(AbstractOp::DEFINE_BIT_FIELD, [&](Code& c) {
                         c.ident(found->second);
                         c.belong(ident.value());
+                        // type will be filled later
                     });
                     m.map_struct(node->body->struct_type, found->second.value());  // temporary remap
                 }
@@ -1463,18 +1448,18 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
-        m.op(AbstractOp::DEFINE_ENUM, [&](Code& c) {
-            c.ident(*ident);
-        });
+        StorageRef base_type;  // base type or null
         if (node->base_type) {
             auto s = define_storage(m, node->base_type);
             if (!s) {
                 return s.error();
             }
-            m.op(AbstractOp::SPECIFY_STORAGE_TYPE, [&](Code& c) {
-                c.type(*s);
-            });
+            base_type = *s;
         }
+        m.op(AbstractOp::DEFINE_ENUM, [&](Code& c) {
+            c.ident(*ident);
+            c.type(base_type);
+        });
         for (auto& me : node->members) {
             auto ident = m.lookup_ident(me->ident);
             if (!ident) {

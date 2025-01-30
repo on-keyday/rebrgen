@@ -87,6 +87,10 @@ namespace rebgn {
             }
         };
         auto print_type = [&](const rebgn::StorageRef& s) {
+            if (s.ref.value() == 0) {
+                cout << "void";
+                return;
+            }
             cout << "type " << s.ref.value();
             auto found = m.get_storage(s);
             if (!found) {
@@ -143,7 +147,6 @@ namespace rebgn {
             switch (c.op) {
                 case rebgn::AbstractOp::END_ENUM:
                 case rebgn::AbstractOp::END_FORMAT:
-                case rebgn::AbstractOp::END_FIELD:
                 case rebgn::AbstractOp::END_UNION:
                 case rebgn::AbstractOp::END_UNION_MEMBER:
                 case rebgn::AbstractOp::END_FUNCTION:
@@ -156,7 +159,6 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_PROGRAM:
                 case rebgn::AbstractOp::END_STATE:
                 case rebgn::AbstractOp::END_BIT_FIELD:
-                case rebgn::AbstractOp::END_PARAMETER:
                 case rebgn::AbstractOp::END_PROPERTY:
                 case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION:
@@ -324,7 +326,6 @@ namespace rebgn {
             switch (c.op) {
                 case rebgn::AbstractOp::DEFINE_ENUM:
                 case rebgn::AbstractOp::DEFINE_FORMAT:
-                case rebgn::AbstractOp::DEFINE_FIELD:
                 case rebgn::AbstractOp::DEFINE_UNION:
                 case rebgn::AbstractOp::DEFINE_UNION_MEMBER:
                 case rebgn::AbstractOp::DEFINE_FUNCTION:
@@ -340,7 +341,6 @@ namespace rebgn {
                 case rebgn::AbstractOp::DEFINE_PROGRAM:
                 case rebgn::AbstractOp::DEFINE_STATE:
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD:
-                case rebgn::AbstractOp::DEFINE_PARAMETER:
                 case rebgn::AbstractOp::DEFINE_PROPERTY:
                 case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION:

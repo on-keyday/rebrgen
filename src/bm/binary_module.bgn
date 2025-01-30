@@ -91,9 +91,7 @@ enum AbstractOp:
     IMPORT
     DYNAMIC_ENDIAN
     SPECIFY_BIT_ORDER
-    SPECIFY_ALIGNMENT
-    SPECIFY_STORAGE_TYPE
-    SPECIFY_FIXED_VALUE
+    RETURN_TYPE
 
     DEFINE_PROGRAM
     END_PROGRAM
@@ -104,8 +102,6 @@ enum AbstractOp:
     DECLARE_FORMAT
 
     DEFINE_FIELD
-    END_FIELD
-    DECLARE_FIELD
     CONDITIONAL_FIELD
     CONDITIONAL_PROPERTY
     MERGED_CONDITIONAL_FIELD
@@ -118,8 +114,6 @@ enum AbstractOp:
     DEFINE_PROPERTY_GETTER
 
     DEFINE_PARAMETER
-    END_PARAMETER
-    DECLARE_PARAMETER
     
     DEFINE_FUNCTION
     END_FUNCTION
@@ -458,8 +452,6 @@ format Code:
         AbstractOp.IMMEDIATE_INT:
             ident :Varint
             int_value :Varint
-        AbstractOp.SPECIFY_FIXED_VALUE:
-            ref :Varint
         AbstractOp.IMMEDIATE_INT64:
             ident :Varint
             int_value64 :u64
@@ -479,11 +471,13 @@ format Code:
         AbstractOp.DEFINE_FIELD:
             ident :Varint
             belong :Varint # belong to format or state or union or null
+            type :StorageRef
         AbstractOp.DEFINE_PROPERTY:
             ident :Varint
             belong :Varint # belong to format or state or union or null
         AbstractOp.DEFINE_ENUM:
             ident :Varint
+            type :StorageRef # base type or null
         AbstractOp.DEFINE_ENUM_MEMBER:
             ident :Varint
             left_ref :Varint # ref to init expr
@@ -516,10 +510,11 @@ format Code:
         AbstractOp.DEFINE_PARAMETER:
             ident: Varint
             belong :Varint # belong to function
+            type :StorageRef
         AbstractOp.DEFINE_UNION_MEMBER:
             ident :Varint
             belong :Varint # belong to union
-        AbstractOp.SPECIFY_STORAGE_TYPE:
+        AbstractOp.RETURN_TYPE:
             type :StorageRef
         AbstractOp.FIELD_AVAILABLE:
             ident :Varint
@@ -673,11 +668,7 @@ format Code:
             ref :Varint
         AbstractOp.DECLARE_STATE:
             ref :Varint
-        AbstractOp.DECLARE_FIELD:
-            ref :Varint
         AbstractOp.DECLARE_PROPERTY:
-            ref :Varint
-        AbstractOp.DECLARE_PARAMETER:
             ref :Varint
         AbstractOp.DECLARE_BIT_FIELD:
             ref :Varint
@@ -712,6 +703,7 @@ format Code:
         AbstractOp.DEFINE_BIT_FIELD:
             ident :Varint
             belong :Varint # belong to format or state or union or null
+            type :StorageRef # bit field sum type
         AbstractOp.APPEND:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to object

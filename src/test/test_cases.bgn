@@ -717,3 +717,19 @@ format NetLinkMessage:
     hdr.len >= 16
     data :[hdr.len - 16]u8
     align :[..]u8(input.align = 32) # Align to 32-bit boundary
+
+format LeBitField:
+    lsb :ul1
+    other :ul6
+    msb :ul1
+
+format BeBitField:
+    msb :ub1
+    other :ub6
+    lsb :ub1
+
+format NativeBitField:
+    input.endian = config.endian.native
+    msb_or_lsb :u1
+    other :u6
+    lsb_or_msb :u1

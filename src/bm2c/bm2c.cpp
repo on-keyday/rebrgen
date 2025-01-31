@@ -132,8 +132,8 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
+            result.push_back("/*Unimplemented DEFINE_VARIABLE*/");
+            break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE_REF: {
             auto ref=code.ref().value();
@@ -144,8 +144,8 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::DECLARE_VARIABLE: {
-            result.push_back("/*Unimplemented DECLARE_VARIABLE*/");
-            break;
+            auto ref=code.ref().value();
+            return eval(ctx.ref(ref), ctx);
         }
         case rebgn::AbstractOp::BINARY: {
             auto op = code.bop().value();
@@ -261,31 +261,56 @@ namespace bm2c {
         }return result;
     }
     void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
+        size_t params = 0;
         for(size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
                 case rebgn::AbstractOp::RETURN_TYPE: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented RETURN_TYPE*/ ");
+                    params++;
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_PARAMETER: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented DEFINE_PARAMETER*/ ");
+                    params++;
                     break;
                 }
                 case rebgn::AbstractOp::ENCODER_PARAMETER: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented ENCODER_PARAMETER*/ ");
+                    params++;
                     break;
                 }
                 case rebgn::AbstractOp::DECODER_PARAMETER: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented DECODER_PARAMETER*/ ");
+                    params++;
                     break;
                 }
                 case rebgn::AbstractOp::STATE_VARIABLE_PARAMETER: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented STATE_VARIABLE_PARAMETER*/ ");
+                    params++;
                     break;
                 }
                 case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
+                    if(params > 0) {
+                        w.write(", ");
+                    }
                     w.writeln("/*Unimplemented PROPERTY_INPUT_PARAMETER*/ ");
+                    params++;
                     break;
                 }
                 default: {
@@ -296,6 +321,7 @@ namespace bm2c {
         }
     }
     void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
+        std::vector<futils::helper::DynDefer> defer;
         for(size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
@@ -305,6 +331,10 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::END_FORMAT: {
                 w.writeln("/*Unimplemented END_FORMAT*/ ");
+                break;
+            }
+            case rebgn::AbstractOp::DECLARE_FORMAT: {
+                w.writeln("/*Unimplemented DECLARE_FORMAT*/ ");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FIELD: {
@@ -385,7 +415,7 @@ namespace bm2c {
             }
             default: {
                 if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {
-                    w.writeln(std::format("/*Unimplemented op {}*/", to_string(code.op)));
+                    w.writeln(std::format("/*Unimplemented {}*/", to_string(code.op)));
                 }
                 break;
             }
@@ -393,6 +423,7 @@ namespace bm2c {
         }
     }
     void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
+        std::vector<futils::helper::DynDefer> defer;
         for(size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
@@ -412,20 +443,21 @@ namespace bm2c {
                 w.writeln("/*Unimplemented SPECIFY_BIT_ORDER*/ ");
                 break;
             }
-            case rebgn::AbstractOp::DECLARE_FORMAT: {
-                w.writeln("/*Unimplemented DECLARE_FORMAT*/ ");
-                break;
-            }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 w.writeln("/*Unimplemented DECLARE_PROPERTY*/ ");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
-                w.writeln("/*Unimplemented DEFINE_FUNCTION*/ ");
+                auto range = ctx.ident_range_table[code.ident()->value()];
+                w.writeln("/*Unimplemented function: */(");
+                add_parameter(ctx, w, range);
+                w.writeln(") { ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_FUNCTION: {
-                w.writeln("/*Unimplemented END_FUNCTION*/ ");
+                defer.pop_back();
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
@@ -493,11 +525,15 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
-                w.writeln("/*Unimplemented LOOP_INFINITE*/ ");
+                w.writeln("for(;;) {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::LOOP_CONDITION: {
-                w.writeln("/*Unimplemented LOOP_CONDITION*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("while (",evaluated.back(),") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CONTINUE: {
@@ -509,23 +545,36 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::END_LOOP: {
-                w.writeln("/*Unimplemented END_LOOP*/ ");
+                defer.pop_back();
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::IF: {
-                w.writeln("/*Unimplemented IF*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("if (",evaluated.back(),") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELIF: {
-                w.writeln("/*Unimplemented ELIF*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                defer.pop_back();
+                w.writeln("}");
+                w.writeln("else if (",evaluated.back(),") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELSE: {
-                w.writeln("/*Unimplemented ELSE*/ ");
+                defer.pop_back();
+                w.writeln("}");
+                w.writeln("else {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_IF: {
-                w.writeln("/*Unimplemented END_IF*/ ");
+                defer.pop_back();
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::MATCH: {
@@ -683,7 +732,7 @@ namespace bm2c {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */
             TmpCodeWriter w;
             inner_block(ctx, w, rebgn::Range{.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});
-            w.write_unformatted(w.out());
+            ctx.cw.write_unformatted(w.out());
         }
         for (auto& def : ctx.on_functions) {
             def.execute();
@@ -696,7 +745,7 @@ namespace bm2c {
             }
             TmpCodeWriter w;
             inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});
-            w.write_unformatted(w.out());
+            ctx.cw.write_unformatted(w.out());
         }
     }
 }  // namespace bm2c

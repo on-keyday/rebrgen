@@ -101,6 +101,7 @@ namespace rebgn {
             case AbstractOp::DEFINE_ENUM_MEMBER:
             case AbstractOp::DECLARE_ENUM:
             case AbstractOp::DEFINE_FORMAT:
+            case AbstractOp::DECLARE_FORMAT:
             case AbstractOp::DECLARE_UNION:
             case AbstractOp::DEFINE_UNION:
             case AbstractOp::DECLARE_UNION_MEMBER:

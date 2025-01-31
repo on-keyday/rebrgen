@@ -75,6 +75,7 @@ namespace rebgn {
         bm2::TmpCodeWriter add_parameter;
         add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_parameter = add_parameter.indent_scope();
+        add_parameter.writeln("size_t params = 0;");
         add_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_add_parameter = add_parameter.indent_scope();
         add_parameter.writeln("auto& code = ctx.bm.code[i];");
@@ -84,6 +85,7 @@ namespace rebgn {
         bm2::TmpCodeWriter add_call_parameter;
         add_call_parameter.writeln("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_call_parameter = add_call_parameter.indent_scope();
+        add_call_parameter.writeln("size_t params = 0;");
         add_call_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_add_call_parameter = add_call_parameter.indent_scope();
         add_call_parameter.writeln("auto& code = ctx.bm.code[i];");
@@ -93,6 +95,7 @@ namespace rebgn {
         bm2::TmpCodeWriter inner_block;
         inner_block.writeln("void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_block = inner_block.indent_scope();
+        inner_block.writeln("std::vector<futils::helper::DynDefer> defer;");
         inner_block.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_block = inner_block.indent_scope();
         inner_block.writeln("auto& code = ctx.bm.code[i];");
@@ -101,6 +104,7 @@ namespace rebgn {
         bm2::TmpCodeWriter inner_function;
         inner_function.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_function = inner_function.indent_scope();
+        inner_function.writeln("std::vector<futils::helper::DynDefer> defer;");
         inner_function.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_function = inner_function.indent_scope();
         inner_function.writeln("auto& code = ctx.bm.code[i];");
@@ -184,7 +188,7 @@ namespace rebgn {
                         eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
                         eval.indent_writeln("break;");
                     }
-                    else if (op == AbstractOp::PHI || op == AbstractOp::DEFINE_VARIABLE ||
+                    else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
                              op == AbstractOp::DEFINE_VARIABLE_REF) {
                         eval.indent_writeln("auto ref=code.ref().value();");
                         eval.indent_writeln("return eval(ctx.ref(ref), ctx);");
@@ -219,12 +223,24 @@ namespace rebgn {
                 }
                 if (is_parameter_related(op)) {
                     add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                    auto scope = add_parameter.indent_scope();
+                    add_parameter.writeln("if(params > 0) {");
+                    add_parameter.indent_writeln("w.write(\", \");");
+                    add_parameter.writeln("}");
+                    scope.execute();
                     add_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_parameter.indent_writeln("params++;");
                     add_parameter.indent_writeln("break;");
                     add_parameter.writeln("}");
 
                     add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                    auto scope_call = add_call_parameter.indent_scope();
+                    add_call_parameter.writeln("if(params > 0) {");
+                    add_call_parameter.indent_writeln("w.write(\", \");");
+                    add_call_parameter.writeln("}");
+                    scope_call.execute();
                     add_call_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_call_parameter.indent_writeln("params++;");
                     add_call_parameter.indent_writeln("break;");
                     add_call_parameter.writeln("}");
                 }
@@ -254,6 +270,57 @@ namespace rebgn {
                         inner_function.indent_writeln("auto param = code.param().value();");
                         inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);");
                         inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
+                             op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
+                             op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION) {
+                        if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION) {
+                            inner_function.indent_writeln("auto ref = code.ref().value();");
+                            inner_function.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+                        }
+                        if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                            inner_function.indent_writeln("defer.pop_back();");
+                        }
+                        auto indent = inner_function.indent_scope();
+                        if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                            inner_function.writeln("w.writeln(\"}\");");
+                        }
+                        if (op == AbstractOp::DEFINE_FUNCTION) {
+                            inner_function.writeln("auto range = ctx.ident_range_table[code.ident()->value()];");
+                            inner_function.writeln("w.writeln(\"/*Unimplemented function: */(\");");
+                            inner_function.writeln("add_parameter(ctx, w, range);");
+                            inner_function.writeln("w.writeln(\") { \");");
+                        }
+                        else {
+                            inner_function.write("w.writeln(\"");
+                            switch (op) {
+                                case AbstractOp::IF:
+                                    inner_function.write("if (\",evaluated.back(),\") {");
+                                    break;
+                                case AbstractOp::ELIF:
+                                    inner_function.write("else if (\",evaluated.back(),\") {");
+                                    break;
+                                case AbstractOp::ELSE:
+                                    inner_function.write("else {");
+                                    break;
+                                case AbstractOp::LOOP_INFINITE:
+                                    inner_function.write("for(;;) {");
+                                    break;
+                                case AbstractOp::LOOP_CONDITION:
+                                    inner_function.write("while (\",evaluated.back(),\") {");
+                                    break;
+                            }
+                            inner_function.writeln("\");");
+                        }
+                        indent.execute();
+                        inner_function.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
+                             op == AbstractOp::END_FUNCTION) {
+                        inner_function.indent_writeln("defer.pop_back();");
+                        inner_function.indent_writeln("w.writeln(\"}\");");
                         inner_function.indent_writeln("break;");
                     }
                     else {
@@ -290,7 +357,7 @@ namespace rebgn {
         inner_block.writeln("default: {");
         auto if_block = inner_block.indent_scope();
         inner_block.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
-        inner_block.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented op {}"), "\", to_string(code.op)));");
+        inner_block.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
         inner_block.writeln("}");
         inner_block.writeln("break;");
         if_block.execute();
@@ -441,7 +508,7 @@ namespace rebgn {
         w.indent_writeln("/* exclude DEFINE_PROGRAM and END_PROGRAM */");
         w.indent_writeln("TmpCodeWriter w;");
         w.indent_writeln("inner_block(ctx, w, rebgn::Range{.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});");
-        w.indent_writeln("w.write_unformatted(w.out());");
+        w.indent_writeln("ctx.cw.write_unformatted(w.out());");
         w.writeln("}");
 
         w.writeln("for (auto& def : ctx.on_functions) {");
@@ -457,7 +524,7 @@ namespace rebgn {
         w.writeln("}");
         w.writeln("TmpCodeWriter w;");
         w.writeln("inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});");
-        w.writeln("w.write_unformatted(w.out());");
+        w.writeln("ctx.cw.write_unformatted(w.out());");
         _scope.execute();
         w.writeln("}");
 

@@ -52,6 +52,21 @@
             //"symbolSearchPath": "lib\\"
         },
         {
+            "name": "Debug bm2c",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/bm2c",
+            "args": [
+                "-i","${workspaceRoot}/save/save.bin",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
             "name": "Attach",
             "type": "cppvsdbg",
             "request": "attach",

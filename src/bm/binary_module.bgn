@@ -537,12 +537,12 @@ format Code:
             ref :Varint # ref to expr
         AbstractOp.ACCESS:
             ident :Varint
-            left_ref :Varint
-            right_ref :Varint
+            left_ref :Varint # ref to base expr
+            right_ref :Varint # ref to member name
         AbstractOp.INDEX:
             ident :Varint
-            left_ref :Varint
-            right_ref :Varint
+            left_ref :Varint # ref to base expr
+            right_ref :Varint # ref to index expr
         AbstractOp.ASSIGN:
             ident :Varint # for assignment analysis
             ref :Varint # ref to previous definition, assignment or phi

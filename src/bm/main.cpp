@@ -88,7 +88,7 @@ namespace rebgn {
         };
         auto print_type = [&](const rebgn::StorageRef& s) {
             if (s.ref.value() == 0) {
-                cout << "void";
+                cout << "(no type)";
                 return;
             }
             cout << "type " << s.ref.value();

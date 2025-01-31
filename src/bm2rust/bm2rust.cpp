@@ -356,9 +356,9 @@ namespace bm2rust {
                 w.write(ident, " :&mut ", type);
             }
             if (code.op == rebgn::AbstractOp::DEFINE_PARAMETER) {
-                auto storage = *ctx.bm.code[ctx.ident_index_table[code.ref()->value()]].type();
+                auto storage = *code.type();
                 auto type = type_to_string(ctx, storage);
-                auto& ident = ctx.ident_table[code.ref().value().value()];
+                auto& ident = ctx.ident_table[code.ident().value().value()];
                 if (params > 0) {
                     w.write(", ");
                 }
@@ -568,6 +568,32 @@ namespace bm2rust {
         return std::format("{}.map_err(|e| Error::IOError(\"{}\",e))?", should_insert_await ? may_insert_await(ctx) : "", loc);
     }
 
+    std::string may_union_cast(Context& ctx, rebgn::Varint ref, const std::string& wrap) {
+        if (auto in_union = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref.value()]], rebgn::AbstractOp::DEFINE_UNION);
+            in_union && find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref.value()]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+            auto belong = ctx.bm.code[ctx.ident_index_table[*in_union]].belong();
+            auto type = ctx.bm.code[ctx.ident_index_table[belong->value()]].type().value();
+            size_t bit_size = 0;
+            type_to_string(ctx, type, &bit_size);
+            auto type_str = get_uint(bit_size);
+            return "(" + wrap + " as " + type_str + ")";
+        }
+        else if (ctx.bm.code[ctx.ident_index_table[ref.value()]].op == rebgn::AbstractOp::DEFINE_FIELD) {
+            auto type = *ctx.bm.code[ctx.ident_index_table[ref.value()]].type();
+            auto is_enum = ctx.storage_table[type.ref.value()].storages.front().type == rebgn::StorageType::ENUM;
+            if (is_enum) {
+                return wrap;
+            }
+            size_t bit_size = 0;
+            type_to_string(ctx, type, &bit_size);
+            if (bit_size == 1) {
+                return wrap + " != 0";
+            }
+            return wrap;
+        }
+        return wrap;
+    }
+
     std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<std::string> res;
         switch (code.op) {
@@ -773,7 +799,8 @@ namespace bm2rust {
                         std::ranges::reverse(arg);
                         arg = "," + arg;
                     }
-                    res.push_back(std::format("{}{}{});", left.back(), right.back(), arg));
+                    auto cast = may_union_cast(ctx, code.left_ref().value(), right.back());
+                    res.push_back(std::format("{}{}{});", left.back(), cast, arg));
                 }
                 else {
                     res.push_back(std::format("{} = {};", left.back(), right.back()));
@@ -1136,7 +1163,7 @@ namespace bm2rust {
                     size_t bit_size = 0;
                     auto type = type_to_string(ctx, type_ref, &bit_size);
                     w.write(field_name, " :", type, ",");
-                    defer.push_back(futils::helper::defer_ex([&, field_name, type_ref, bit_size] {
+                    defer.push_back(futils::helper::defer_ex([&, field_name, type, type_ref, bit_size] {
                         auto name = ctx.bm.code[range.start].belong().value().value();
                         auto belong_name = ctx.ident_table[name];
                         ctx.bm_ctx.inner_bit_operations = false;
@@ -1224,11 +1251,11 @@ namespace bm2rust {
                         break;  // skip global field
                     }
                     std::string ident;
-                    if (auto found = ctx.ident_table.find(code.ref().value().value()); found != ctx.ident_table.end()) {
+                    if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
                         ident = found->second;
                     }
                     else {
-                        ident = std::format("field_{}", code.ref().value().value());
+                        ident = std::format("field_{}", code.ident().value().value());
                     }
                     auto storage = *code.type();
                     size_t bit_size = 0;
@@ -1419,26 +1446,6 @@ namespace bm2rust {
             }
         }
         w.writeln(std::format("{} += {};", bit_counter, bit_count));
-    }
-
-    bool is(Context& ctx, rebgn::Varint ref) {
-        if (auto in_union = find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref.value()]], rebgn::AbstractOp::DEFINE_UNION);
-            in_union && find_belong_op(ctx, ctx.bm.code[ctx.ident_index_table[ref.value()]], rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
-            auto belong = ctx.bm.code[ctx.ident_index_table[*in_union]].belong();
-            auto storage_type = find_op(ctx, ctx.ident_range_table[belong.value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-            if (storage_type) {
-                auto storage = *ctx.bm.code[*storage_type].type();
-                size_t bit_size = 0;
-                type_to_string(ctx, storage, &bit_size);
-                type = get_uint(bit_size);
-                if (bit_size == 1) {
-                    not_zero = " != 0";
-                }
-                else {
-                    not_zero = "";
-                }
-            }
-        }
     }
 
     void decode_bit_field(Context& ctx, TmpCodeWriter& w, std::uint64_t bit_size, std::uint64_t ref) {
@@ -2484,11 +2491,11 @@ namespace bm2rust {
                         auto def = ctx.ident_index_table[code.ref().value().value()];
                         size_t count = 0;
                         std::vector<std::string> evaluated;
+                        auto base_type_ref = ctx.bm.code[def].type().value();
+                        if (base_type_ref.ref.value() != 0) {
+                            base_type = type_to_string(ctx, base_type_ref);
+                        }
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
-                            if (bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
-                                base_type = type_to_string(ctx, *bm.code[j].type());
-                                continue;
-                            }
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto ident = ctx.ident_table[bm.code[j].ident().value().value()];
                                 auto init = ctx.ident_index_table[bm.code[j].left_ref().value().value()];

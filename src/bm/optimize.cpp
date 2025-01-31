@@ -869,6 +869,8 @@ namespace rebgn {
         }
     };
 
+    expected<size_t> decide_maximum_bit_field_size(Module& m, std::set<ObjectID>& searched, AbstractOp end_op, size_t index);
+
     expected<size_t> get_from_type(Module& m, const Storages& storage, std::set<ObjectID>& searched) {
         size_t factor = 1;
         for (size_t j = 0; j < storage.storages.size(); j++) {
@@ -1034,7 +1036,7 @@ namespace rebgn {
                 auto idx = m.ident_index_table[child];
                 if (m.code[idx].op == AbstractOp::DEFINE_FIELD) {
                     auto type = m.code[idx].type().value().ref.value();
-                    auto found = m.storage_key_table_rev.find(m.code[i].type().value().ref.value());
+                    auto found = m.storage_key_table_rev.find(type);
                     if (found == m.storage_key_table_rev.end()) {
                         return error("Invalid storage key");
                     }
@@ -2110,7 +2112,7 @@ namespace rebgn {
                 continue;
             }
             else if (c.op == AbstractOp::DEFINE_FIELD) {
-                auto ident = c.ref().value();
+                auto ident = c.ident().value();
                 if (auto found = set_array_length.find(ident.value());
                     found != set_array_length.end()) {
                     rebound.push_back(std::move(c));
@@ -2286,10 +2288,16 @@ namespace rebgn {
         std::set<ObjectID> reached;
         for (auto& c : m.code) {
             if (auto s = c.type()) {
+                if (s->ref.value() == 0) {  // null, skip
+                    continue;
+                }
                 reached.insert(s.value().ref.value());
                 type_usage[s.value().ref.value()]++;
             }
             if (auto f = c.from_type()) {
+                if (f->ref.value() == 0) {  // null, skip
+                    continue;
+                }
                 reached.insert(f.value().ref.value());
                 type_usage[f.value().ref.value()]++;
             }
@@ -2323,9 +2331,15 @@ namespace rebgn {
         }
         for (auto& c : m.code) {
             if (auto s = c.type()) {
+                if (s->ref.value() == 0) {
+                    continue;
+                }
                 c.type(StorageRef{.ref = *varint(mapping[s.value().ref.value()])});
             }
             if (auto f = c.from_type()) {
+                if (f->ref.value() == 0) {
+                    continue;
+                }
                 c.from_type(StorageRef{.ref = *varint(mapping[f.value().ref.value()])});
             }
         }
@@ -2592,7 +2606,7 @@ namespace rebgn {
 
                 nbit_typ = *new_nbit_typ;
                 counter = *new_counter_var;
-                target_type = maybe_type.type().value();
+                target_type = new_target_type;
                 target = *new_target_var;
                 tmp_array = new_tmp_array;
                 read_bytes = new_read_bytes;

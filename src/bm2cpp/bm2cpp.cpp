@@ -528,10 +528,9 @@ namespace bm2cpp {
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
                 auto range = ctx.ident_range_table[code.ident().value().value()];
                 bool should_deref = false;
-                auto found = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                if (found) {
-                    auto st = *ctx.bm.code[*found].type();
-                    if (ctx.storage_table[st.ref.value()].storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
+                if (auto type = code.type()) {
+                    auto& st = ctx.storage_table[type->ref.value()];
+                    if (st.storages.back().type == rebgn::StorageType::RECURSIVE_STRUCT_REF) {
                         should_deref = true;
                     }
                 }
@@ -667,12 +666,7 @@ namespace bm2cpp {
                 }
             }
             if (code.op == rebgn::AbstractOp::STATE_VARIABLE_PARAMETER) {
-                auto field_range = ctx.ident_range_table[code.ref().value().value()];
-                auto specify = find_op(ctx, field_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                if (!specify) {
-                    continue;
-                }
-                auto storage = *ctx.bm.code[*specify].type();
+                auto storage = *ctx.bm.code[ctx.ident_index_table[code.ref()->value()]].type();
                 auto type = type_to_string(ctx, storage);
                 auto& ident = ctx.ident_table[code.ref().value().value()];
                 if (params > 0) {
@@ -680,15 +674,10 @@ namespace bm2cpp {
                 }
                 ctx.cw.write(type, "& ", ident);
             }
-            if (code.op == rebgn::AbstractOp::DECLARE_PARAMETER) {
-                auto param_range = ctx.ident_range_table[code.ref().value().value()];
-                auto specify = find_op(ctx, param_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                if (!specify) {
-                    continue;
-                }
-                auto storage = *ctx.bm.code[*specify].type();
+            if (code.op == rebgn::AbstractOp::DEFINE_PARAMETER) {
+                auto storage = *code.type();
                 auto type = type_to_string(ctx, storage);
-                auto& ident = ctx.ident_table[code.ref().value().value()];
+                auto& ident = ctx.ident_table[code.ident().value().value()];
                 if (params > 0) {
                     ctx.cw.write(", ");
                 }
@@ -758,7 +747,7 @@ namespace bm2cpp {
                         if (is_bit_field_property(ctx, range)) {
                             continue;  // skip
                         }
-                        auto typ = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                        auto typ = find_op(ctx, range, rebgn::AbstractOp::RETURN_TYPE);
                         auto result = type_to_string(ctx, *ctx.bm.code[*typ].type());
                         auto getter_ident = ctx.ident_table[func.ident().value().value()];
                         ctx.cw.writeln(result, " ", getter_ident, "();");
@@ -781,6 +770,8 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
                     ctx.cw.writeln("::futils::binary::flags_t<");
+                    auto type = type_to_string(ctx, *code.type());
+                    ctx.cw.write(type);
                     defer.push_back(futils::helper::defer_ex([&] {
                         ctx.cw.writeln(">");
                         auto name = ctx.bm.code[range.start].ident().value().value();
@@ -789,17 +780,12 @@ namespace bm2cpp {
                         ctx.bm_ctx.inner_bit_operations = false;
                         size_t counter = 0;
                         for (size_t i = range.start; i < range.end; i++) {
-                            if (ctx.bm.code[i].op == rebgn::AbstractOp::DECLARE_FIELD) {
-                                auto ident = ctx.ident_table[ctx.bm.code[i].ref().value().value()];
+                            if (ctx.bm.code[i].op == rebgn::AbstractOp::DEFINE_FIELD) {
+                                auto ident = ctx.ident_table[ctx.bm.code[i].ident().value().value()];
                                 if (ident == "") {
                                     ident = std::format("field_{}", ctx.bm.code[i].ref().value().value());
                                 }
-                                auto storage = find_op(ctx, ctx.ident_range_table[ctx.bm.code[i].ref().value().value()], rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                                if (!storage) {
-                                    ctx.cw.writeln("/* Unimplemented field */");
-                                    continue;
-                                }
-                                auto storages = *ctx.bm.code[*storage].type();
+                                auto storages = *ctx.bm.code[i].type();
                                 std::string enum_ident;
                                 for (auto& s : ctx.storage_table[storages.ref.value()].storages) {
                                     if (s.type == rebgn::StorageType::ENUM) {
@@ -824,31 +810,19 @@ namespace bm2cpp {
                     defer.pop_back();
                     break;
                 }
-                case rebgn::AbstractOp::SPECIFY_STORAGE_TYPE: {
-                    auto storage = *code.type();
-                    auto type = type_to_string(ctx, storage);
-                    ctx.cw.writeln(type);
-                    break;
-                }
-                case rebgn::AbstractOp::DECLARE_FIELD: {
-                    auto belong = ctx.bm.code[ctx.ident_index_table[code.ref().value().value()]].belong().value().value();
+                case rebgn::AbstractOp::DEFINE_FIELD: {
+                    auto belong = code.belong().value().value();
                     if (belong == 0 || ctx.bm.code[ctx.ident_index_table[belong]].op == rebgn::AbstractOp::DEFINE_PROGRAM) {
                         break;  // skip global field
                     }
                     std::string ident;
-                    if (auto found = ctx.ident_table.find(code.ref().value().value()); found != ctx.ident_table.end()) {
+                    if (auto found = ctx.ident_table.find(code.ident().value().value()); found != ctx.ident_table.end()) {
                         ident = found->second;
                     }
                     else {
-                        ident = std::format("field_{}", code.ref().value().value());
+                        ident = std::format("field_{}", code.ident().value().value());
                     }
-                    auto range = ctx.ident_range_table[code.ref().value().value()];
-                    auto specify = find_op(ctx, range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
-                    if (!specify) {
-                        ctx.cw.writeln("/* Unimplemented field */");
-                        break;
-                    }
-                    auto storage = *ctx.bm.code[*specify].type();
+                    auto storage = *code.type();
                     size_t bit_size = 0;
                     auto type = type_to_string(ctx, storage, &bit_size);
                     if (ctx.bm_ctx.inner_bit_operations) {
@@ -869,7 +843,7 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::DECLARE_FUNCTION: {
                     auto& ident = ctx.ident_table[code.ref().value().value()];
                     auto fn_range = ctx.ident_range_table[code.ref().value().value()];
-                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::RETURN_TYPE);
                     if (!ret) {
                         ctx.cw.write("void ", ident, "(");
                     }
@@ -948,10 +922,17 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = true;
+                    ctx.bit_field_ident.push_back(bm2::BitFieldState{
+                        .ident = code.ident()->value(),
+                        .op = code.packed_op_type().value(),
+                        .bit_size = code.bit_size()->value(),
+                        .endian = code.endian().value(),
+                    });
+                    /**
                     auto bit_field = ctx.ident_range_table[code.belong().value().value()];
                     auto typ = find_op(ctx, bit_field, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
                     if (!typ) {
-                        ctx.cw.writeln("/* Unimplemented bit field */");
+                        ctx.cw.writeln("/* Unimplemented bit field *");
                         break;
                     }
                     size_t bit_size = 0;
@@ -960,15 +941,10 @@ namespace bm2cpp {
                     auto tmp = std::format("tmp{}", ident);
                     auto ptype = code.packed_op_type().value();
                     auto bit_counter = std::format("bit_counter{}", ident);
-                    ctx.cw.writeln(type, " ", tmp, "{}; /* bit field */");
+                    ctx.cw.writeln(type, " ", tmp, "{}; /* bit field *");
                     if (code.op == rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION) {
                         ctx.cw.writeln("size_t ", bit_counter, " = 0;");
-                        ctx.bit_field_ident.push_back(bm2::BitFieldState{
-                            .ident = code.ident()->value(),
-                            .op = ptype,
-                            .bit_size = bit_size,
-                            .endian = code.endian().value(),
-                        });
+
                         defer.push_back(futils::helper::defer_ex([=, &ctx]() {
                             if (ptype == rebgn::PackedOpType::FIXED) {
                                 bool is_big_endian = true;  // currently only big endian is supported
@@ -1009,16 +985,13 @@ namespace bm2cpp {
                             ctx.cw.writeln("unsigned char ", array, "[sizeof(", tmp, ")]{};");
                         }
                     }
+                    */
                     break;
                 }
-                case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION: {
-                    ctx.bm_ctx.inner_bit_operations = false;
-                    break;
-                }
+                case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = false;
                     ctx.bit_field_ident.pop_back();
-                    defer.pop_back();
                     break;
                 }
                 case rebgn::AbstractOp::IF: {
@@ -1089,7 +1062,7 @@ namespace bm2cpp {
                 }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
                     auto fn_range = ctx.ident_range_table[code.ident().value().value()];
-                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::SPECIFY_STORAGE_TYPE);
+                    auto ret = find_op(ctx, fn_range, rebgn::AbstractOp::RETURN_TYPE);
                     if (!ret) {
                         ctx.cw.write("void ");
                     }
@@ -1182,17 +1155,12 @@ namespace bm2cpp {
                     break;
                 }
                 case rebgn::AbstractOp::DECODE_INT: {
-                    if (ctx.bm_ctx.inner_bit_operations) {
-                        decode_bit_field(ctx, code.bit_size()->value(), code.ref().value().value());
-                    }
-                    else {
-                        auto ref = code.ref().value().value();
-                        auto& ident = ctx.ident_index_table[ref];
-                        auto s = eval(ctx.bm.code[ident], ctx);
-                        auto endian = code.endian().value();
-                        auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
-                        ctx.cw.writeln("if(!::futils::binary::read_num(r,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
-                    }
+                    auto ref = code.ref().value().value();
+                    auto& ident = ctx.ident_index_table[ref];
+                    auto s = eval(ctx.bm.code[ident], ctx);
+                    auto endian = code.endian().value();
+                    auto is_big = endian.endian() == rebgn::Endian::little ? false : true;
+                    ctx.cw.writeln("if(!::futils::binary::read_num(r,", s.back(), ",", is_big ? "true" : "false", ")) { return false; }");
                     break;
                 }
                 case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
@@ -1563,11 +1531,10 @@ namespace bm2cpp {
                         TmpCodeWriter tmp;
                         std::string base_type;
                         auto def = ctx.ident_index_table[code.ref().value().value()];
+                        if (auto ty = ctx.bm.code[def].type().value(); ty.ref.value() != 0) {
+                            base_type = type_to_string(ctx, ty);
+                        }
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
-                            if (bm.code[j].op == rebgn::AbstractOp::SPECIFY_STORAGE_TYPE) {
-                                base_type = type_to_string(ctx, *bm.code[j].type());
-                                continue;
-                            }
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto ident = ctx.ident_table[bm.code[j].ident().value().value()];
                                 auto init = ctx.ident_index_table[bm.code[j].left_ref().value().value()];

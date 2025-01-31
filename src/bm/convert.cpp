@@ -430,7 +430,7 @@ namespace rebgn {
                 }
                 m.op(node->method == ast::IOMethod::input_offset
                          ? (m.on_encode_fn ? AbstractOp::OUTPUT_BYTE_OFFSET : AbstractOp::INPUT_BYTE_OFFSET)
-                         : AbstractOp::BIT_OFFSET,
+                         : (m.on_encode_fn ? AbstractOp::OUTPUT_BIT_OFFSET : AbstractOp::INPUT_BIT_OFFSET),
                      [&](Code& c) {
                          c.ident(*new_id);
                      });

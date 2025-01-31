@@ -1,15 +1,15 @@
+/*license*/
 #include <bm2/context.hpp>
-#include <bm2/entry.hpp>
 #include <bm/helper.hpp>
+#include "bm2c.hpp"
 namespace bm2c {
     using TmpCodeWriter = bm2::TmpCodeWriter;
-    struct Flags {};
     struct Context : bm2::Context {
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","(*this)", std::move(escape_ident)} {}
     };
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
         if (s.storages.size() <= index) {
-            return /*type index overflow*/;
+            return "/*type index overflow*/";
         }
         auto& storage = s.storages[index];
         switch (storage.type) {
@@ -35,9 +35,11 @@ namespace bm2c {
                 return "/*Unimplemented ENUM*/";
             }
             case rebgn::StorageType::ARRAY: {
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return "/*Unimplemented ARRAY*/";
             }
             case rebgn::StorageType::VECTOR: {
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return "/*Unimplemented VECTOR*/";
             }
             case rebgn::StorageType::VARIANT: {
@@ -50,9 +52,11 @@ namespace bm2c {
                 return "/*Unimplemented PROPERTY_SETTER_RETURN*/";
             }
             case rebgn::StorageType::OPTIONAL: {
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return "/*Unimplemented OPTIONAL*/";
             }
             case rebgn::StorageType::PTR: {
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 return "/*Unimplemented PTR*/";
             }
             default: {
@@ -63,6 +67,233 @@ namespace bm2c {
     std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref) {
         auto& storage = ctx.storage_table[ref.ref.value()];
         return type_to_string_impl(ctx, storage);
+    }
+    std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
+        std::vector<std::string> result;
+        switch(code.op) {
+        case rebgn::AbstractOp::DEFINE_PROPERTY: {
+            result.push_back("/*Unimplemented DEFINE_PROPERTY*/");
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_PARAMETER: {
+            result.push_back("/*Unimplemented DEFINE_PARAMETER*/");
+            break;
+        }
+        case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
+            result.push_back("/*Unimplemented INPUT_BYTE_OFFSET*/");
+            break;
+        }
+        case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
+            result.push_back("/*Unimplemented OUTPUT_BYTE_OFFSET*/");
+            break;
+        }
+        case rebgn::AbstractOp::INPUT_BIT_OFFSET: {
+            result.push_back("/*Unimplemented INPUT_BIT_OFFSET*/");
+            break;
+        }
+        case rebgn::AbstractOp::OUTPUT_BIT_OFFSET: {
+            result.push_back("/*Unimplemented OUTPUT_BIT_OFFSET*/");
+            break;
+        }
+        case rebgn::AbstractOp::REMAIN_BYTES: {
+            result.push_back("/*Unimplemented REMAIN_BYTES*/");
+            break;
+        }
+        case rebgn::AbstractOp::CAN_READ: {
+            result.push_back("/*Unimplemented CAN_READ*/");
+            break;
+        }
+        case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
+            result.push_back("/*Unimplemented IS_LITTLE_ENDIAN*/");
+            break;
+        }
+        case rebgn::AbstractOp::CAST: {
+            result.push_back("/*Unimplemented CAST*/");
+            break;
+        }
+        case rebgn::AbstractOp::CALL_CAST: {
+            result.push_back("/*Unimplemented CALL_CAST*/");
+            break;
+        }
+        case rebgn::AbstractOp::ADDRESS_OF: {
+            result.push_back("/*Unimplemented ADDRESS_OF*/");
+            break;
+        }
+        case rebgn::AbstractOp::OPTIONAL_OF: {
+            result.push_back("/*Unimplemented OPTIONAL_OF*/");
+            break;
+        }
+        case rebgn::AbstractOp::EMPTY_PTR: {
+            result.push_back("/*Unimplemented EMPTY_PTR*/");
+            break;
+        }
+        case rebgn::AbstractOp::EMPTY_OPTIONAL: {
+            result.push_back("/*Unimplemented EMPTY_OPTIONAL*/");
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_VARIABLE: {
+            auto ref=code.ref().value();
+            return eval(ctx.ref(ref), ctx);
+        }
+        case rebgn::AbstractOp::DEFINE_VARIABLE_REF: {
+            auto ref=code.ref().value();
+            return eval(ctx.ref(ref), ctx);
+        }
+        case rebgn::AbstractOp::DEFINE_CONSTANT: {
+            result.push_back("/*Unimplemented DEFINE_CONSTANT*/");
+            break;
+        }
+        case rebgn::AbstractOp::DECLARE_VARIABLE: {
+            result.push_back("/*Unimplemented DECLARE_VARIABLE*/");
+            break;
+        }
+        case rebgn::AbstractOp::BINARY: {
+            auto op = code.bop().value();
+            auto left_ref = code.left_ref().value();
+            auto right_ref = code.right_ref().value();
+            auto left_eval = eval(ctx.ref(left_ref), ctx);
+            result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
+            auto right_eval = eval(ctx.ref(right_ref), ctx);
+            result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);
+            auto opstr = to_string(op);
+            result.push_back(std::format("({} {} {})", left_eval.back(), opstr, right_eval.back()));
+            break;
+        }
+        case rebgn::AbstractOp::UNARY: {
+            auto op = code.uop().value();
+            auto ref = code.ref().value();
+            auto target = eval(ctx.ref(ref), ctx);
+            auto opstr = to_string(op);
+            result.push_back(std::format("({}{})", opstr, target.back()));
+            break;
+        }
+        case rebgn::AbstractOp::ASSIGN: {
+            auto left_ref = code.left_ref().value();
+            auto right_ref = code.right_ref().value();
+            auto left_eval = eval(ctx.ref(left_ref), ctx);
+            result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
+            auto right_eval = eval(ctx.ref(right_ref), ctx);
+            result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);
+            result.push_back(std::format("{} = {}", left_eval.back(), right_eval.back()));
+            result.push_back(left_eval.back());
+            break;
+        }
+        case rebgn::AbstractOp::ACCESS: {
+            result.push_back("/*Unimplemented ACCESS*/");
+            break;
+        }
+        case rebgn::AbstractOp::INDEX: {
+            result.push_back("/*Unimplemented INDEX*/");
+            break;
+        }
+        case rebgn::AbstractOp::CALL: {
+            result.push_back("/*Unimplemented CALL*/");
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_TRUE: {
+            result.push_back("true");
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_FALSE: {
+            result.push_back("false");
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_INT: {
+            result.push_back(std::format("{}", code.int_value()->value()));
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_INT64: {
+            result.push_back(std::format("{}", *code.int_value64()));
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_CHAR: {
+            auto char_code = code.int_value()->value();
+            result.push_back("/*Unimplemented IMMEDIATE_CHAR*/");
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_STRING: {
+            result.push_back("/*Unimplemented IMMEDIATE_STRING*/");
+            break;
+        }
+        case rebgn::AbstractOp::IMMEDIATE_TYPE: {
+            auto type = code.type().value();
+            result.push_back(type_to_string(ctx, type));
+            break;
+        }
+        case rebgn::AbstractOp::NEW_OBJECT: {
+            result.push_back("/*Unimplemented NEW_OBJECT*/");
+            break;
+        }
+        case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
+            result.push_back("/*Unimplemented PROPERTY_INPUT_PARAMETER*/");
+            break;
+        }
+        case rebgn::AbstractOp::ARRAY_SIZE: {
+            result.push_back("/*Unimplemented ARRAY_SIZE*/");
+            break;
+        }
+        case rebgn::AbstractOp::FIELD_AVAILABLE: {
+            auto left_ref = code.left_ref().value();
+            if(left_ref.value() == 0) {
+                auto right_ref = code.right_ref().value();
+                auto right_eval = eval(ctx.ref(right_ref), ctx);
+                result.insert(result.end(), right_eval.begin(), right_eval.end());
+            }
+            else {
+                auto left_eval = eval(ctx.ref(left_ref), ctx);
+                result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
+                ctx.this_as.push_back(left_eval.back());
+                auto right_ref = code.right_ref().value();
+                auto right_eval = eval(ctx.ref(right_ref), ctx);
+                result.insert(result.end(), right_eval.begin(), right_eval.end());
+                ctx.this_as.pop_back();
+            }
+            break;
+        }
+        case rebgn::AbstractOp::PHI: {
+            auto ref=code.ref().value();
+            return eval(ctx.ref(ref), ctx);
+        }
+        default: {
+            result.push_back(std::format("/*Unimplemented {}*/", to_string(code.op)));
+            break;
+        }
+        }return result;
+    }
+    void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
+        for(size_t i = range.start; i < range.end; i++) {
+            auto& code = ctx.bm.code[i];
+            switch(code.op) {
+                case rebgn::AbstractOp::RETURN_TYPE: {
+                    w.writeln("/*Unimplemented RETURN_TYPE*/ ");
+                    break;
+                }
+                case rebgn::AbstractOp::DEFINE_PARAMETER: {
+                    w.writeln("/*Unimplemented DEFINE_PARAMETER*/ ");
+                    break;
+                }
+                case rebgn::AbstractOp::ENCODER_PARAMETER: {
+                    w.writeln("/*Unimplemented ENCODER_PARAMETER*/ ");
+                    break;
+                }
+                case rebgn::AbstractOp::DECODER_PARAMETER: {
+                    w.writeln("/*Unimplemented DECODER_PARAMETER*/ ");
+                    break;
+                }
+                case rebgn::AbstractOp::STATE_VARIABLE_PARAMETER: {
+                    w.writeln("/*Unimplemented STATE_VARIABLE_PARAMETER*/ ");
+                    break;
+                }
+                case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
+                    w.writeln("/*Unimplemented PROPERTY_INPUT_PARAMETER*/ ");
+                    break;
+                }
+                default: {
+                    // skip other op
+                    break;
+                }
+            }
+        }
     }
     void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
         for(size_t i = range.start; i < range.end; i++) {
@@ -80,6 +311,10 @@ namespace bm2c {
                 w.writeln("/*Unimplemented DEFINE_FIELD*/ ");
                 break;
             }
+            case rebgn::AbstractOp::END_PROPERTY: {
+                w.writeln("/*Unimplemented END_PROPERTY*/ ");
+                break;
+            }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 w.writeln("/*Unimplemented DECLARE_FUNCTION*/ ");
                 break;
@@ -90,6 +325,14 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::END_ENUM: {
                 w.writeln("/*Unimplemented END_ENUM*/ ");
+                break;
+            }
+            case rebgn::AbstractOp::DECLARE_ENUM: {
+                w.writeln("/*Unimplemented DECLARE_ENUM*/ ");
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
+                w.writeln("/*Unimplemented DEFINE_ENUM_MEMBER*/ ");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
@@ -124,6 +367,10 @@ namespace bm2c {
                 w.writeln("/*Unimplemented END_STATE*/ ");
                 break;
             }
+            case rebgn::AbstractOp::DECLARE_STATE: {
+                w.writeln("/*Unimplemented DECLARE_STATE*/ ");
+                break;
+            }
             case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
                 w.writeln("/*Unimplemented DEFINE_BIT_FIELD*/ ");
                 break;
@@ -132,11 +379,16 @@ namespace bm2c {
                 w.writeln("/*Unimplemented END_BIT_FIELD*/ ");
                 break;
             }
+            case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
+                w.writeln("/*Unimplemented DECLARE_BIT_FIELD*/ ");
+                break;
+            }
             default: {
-                if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op))
-                    w.writeln(std::format("/* Unimplemented {} */", to_string(code.op)));
+                if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {
+                    w.writeln(std::format("/*Unimplemented op {}*/", to_string(code.op)));
                 }
                 break;
+            }
             }
         }
     }
@@ -160,24 +412,12 @@ namespace bm2c {
                 w.writeln("/*Unimplemented SPECIFY_BIT_ORDER*/ ");
                 break;
             }
-            case rebgn::AbstractOp::RETURN_TYPE: {
-                w.writeln("/*Unimplemented RETURN_TYPE*/ ");
-                break;
-            }
             case rebgn::AbstractOp::DECLARE_FORMAT: {
                 w.writeln("/*Unimplemented DECLARE_FORMAT*/ ");
                 break;
             }
-            case rebgn::AbstractOp::END_PROPERTY: {
-                w.writeln("/*Unimplemented END_PROPERTY*/ ");
-                break;
-            }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 w.writeln("/*Unimplemented DECLARE_PROPERTY*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DEFINE_PARAMETER: {
-                w.writeln("/*Unimplemented DEFINE_PARAMETER*/ ");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
@@ -186,22 +426,6 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::END_FUNCTION: {
                 w.writeln("/*Unimplemented END_FUNCTION*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DECLARE_ENUM: {
-                w.writeln("/*Unimplemented DECLARE_ENUM*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
-                w.writeln("/*Unimplemented DEFINE_ENUM_MEMBER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DECLARE_STATE: {
-                w.writeln("/*Unimplemented DECLARE_STATE*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
-                w.writeln("/*Unimplemented DECLARE_BIT_FIELD*/ ");
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
@@ -258,10 +482,6 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::BACKWARD_OUTPUT: {
                 w.writeln("/*Unimplemented BACKWARD_OUTPUT*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::BIT_OFFSET: {
-                w.writeln("/*Unimplemented BIT_OFFSET*/ ");
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
@@ -336,20 +556,13 @@ namespace bm2c {
                 w.writeln("/*Unimplemented DEFINE_VARIABLE*/ ");
                 break;
             }
-            case rebgn::AbstractOp::DEFINE_VARIABLE_REF: {
-                w.writeln("/*Unimplemented DEFINE_VARIABLE_REF*/ ");
-                break;
-            }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
                 w.writeln("/*Unimplemented DEFINE_CONSTANT*/ ");
                 break;
             }
-            case rebgn::AbstractOp::DECLARE_VARIABLE: {
-                w.writeln("/*Unimplemented DECLARE_VARIABLE*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::NOT_PREV_THEN: {
-                w.writeln("/*Unimplemented NOT_PREV_THEN*/ ");
+            case rebgn::AbstractOp::ASSIGN: {
+                auto evaluated = eval(code, ctx);
+                w.writeln(evaluated[evaluated.size() - 2]);
                 break;
             }
             case rebgn::AbstractOp::PROPERTY_ASSIGN: {
@@ -357,7 +570,8 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::ASSERT: {
-                w.writeln("/*Unimplemented ASSERT*/ ");
+                auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
+                w.writeln("/*Unimplemented ASSERT*/");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -365,19 +579,21 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
-                w.writeln("/*Unimplemented EXPLICIT_ERROR*/ ");
+                auto param = code.param().value();
+                auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);
+                w.writeln("/*Unimplemented EXPLICIT_ERROR*/");
                 break;
             }
             case rebgn::AbstractOp::APPEND: {
-                w.writeln("/*Unimplemented APPEND*/ ");
+                auto vector_ref = code.left_ref().value();
+                auto new_element_ref = code.right_ref().value();
+                auto vector_eval = eval(ctx.ref(vector_ref), ctx);
+                auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
+                w.writeln("/*Unimplemented APPEND*/");
                 break;
             }
             case rebgn::AbstractOp::INC: {
                 w.writeln("/*Unimplemented INC*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DEC: {
-                w.writeln("/*Unimplemented DEC*/ ");
                 break;
             }
             case rebgn::AbstractOp::RET: {
@@ -412,22 +628,6 @@ namespace bm2c {
                 w.writeln("/*Unimplemented CHECK_UNION*/ ");
                 break;
             }
-            case rebgn::AbstractOp::ENCODER_PARAMETER: {
-                w.writeln("/*Unimplemented ENCODER_PARAMETER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DECODER_PARAMETER: {
-                w.writeln("/*Unimplemented DECODER_PARAMETER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::STATE_VARIABLE_PARAMETER: {
-                w.writeln("/*Unimplemented STATE_VARIABLE_PARAMETER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
-                w.writeln("/*Unimplemented PROPERTY_INPUT_PARAMETER*/ ");
-                break;
-            }
             case rebgn::AbstractOp::EVAL_EXPR: {
                 w.writeln("/*Unimplemented EVAL_EXPR*/ ");
                 break;
@@ -453,7 +653,7 @@ namespace bm2c {
                 break;
             }
             default: {
-                if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)) {
+                if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {
                     w.writeln(std::format("/*Unimplemented {}*/", to_string(code.op)));
                 }
                 break;
@@ -461,167 +661,8 @@ namespace bm2c {
             }
         }
     }
-    std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {
-        std::vector<std::string> result;
-        switch(code.op) {
-        case rebgn::AbstractOp::DEFINE_PROPERTY: {
-            result.push_back("/*Unimplemented DEFINE_PROPERTY*/");
-            break;
-        }
-        case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
-            result.push_back("/*Unimplemented INPUT_BYTE_OFFSET*/");
-            break;
-        }
-        case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
-            result.push_back("/*Unimplemented OUTPUT_BYTE_OFFSET*/");
-            break;
-        }
-        case rebgn::AbstractOp::REMAIN_BYTES: {
-            result.push_back("/*Unimplemented REMAIN_BYTES*/");
-            break;
-        }
-        case rebgn::AbstractOp::CAN_READ: {
-            result.push_back("/*Unimplemented CAN_READ*/");
-            break;
-        }
-        case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
-            result.push_back("/*Unimplemented IS_LITTLE_ENDIAN*/");
-            break;
-        }
-        case rebgn::AbstractOp::CAST: {
-            result.push_back("/*Unimplemented CAST*/");
-            break;
-        }
-        case rebgn::AbstractOp::CALL_CAST: {
-            result.push_back("/*Unimplemented CALL_CAST*/");
-            break;
-        }
-        case rebgn::AbstractOp::ADDRESS_OF: {
-            result.push_back("/*Unimplemented ADDRESS_OF*/");
-            break;
-        }
-        case rebgn::AbstractOp::OPTIONAL_OF: {
-            result.push_back("/*Unimplemented OPTIONAL_OF*/");
-            break;
-        }
-        case rebgn::AbstractOp::EMPTY_PTR: {
-            result.push_back("/*Unimplemented EMPTY_PTR*/");
-            break;
-        }
-        case rebgn::AbstractOp::EMPTY_OPTIONAL: {
-            result.push_back("/*Unimplemented EMPTY_OPTIONAL*/");
-            break;
-        }
-        case rebgn::AbstractOp::DEFINE_VARIABLE: {
-            result.push_back("/*Unimplemented DEFINE_VARIABLE*/");
-            break;
-        }
-        case rebgn::AbstractOp::DEFINE_CONSTANT: {
-            result.push_back("/*Unimplemented DEFINE_CONSTANT*/");
-            break;
-        }
-        case rebgn::AbstractOp::BINARY: {
-            auto op = code.bop().value();
-            auto left_ref = code.left_ref().value();
-            auto right_ref = code.right_ref().value();
-            auto left_eval = eval(ctx.ref(left_ref), ctx);
-            result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
-            auto right_eval = eval(ctx.ref(right_ref), ctx);
-            result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);
-            auto opstr = to_string(op);
-            result.push_back(std::format("({} {} {})", left_eval.back(), opstr, right_eval.back()));
-            break;
-        }
-        case rebgn::AbstractOp::UNARY: {
-            auto op = code.uop().value();
-            auto ref = code.ref().value();
-            auto target = eval(ctx.ref(ref), ctx);
-            auto opstr = to_string(op);
-            result.push_back(std::format("({}{})", opstr, target.back()));
-            break;
-        }
-        case rebgn::AbstractOp::ASSIGN: {
-            result.push_back("/*Unimplemented ASSIGN*/");
-            break;
-        }
-        case rebgn::AbstractOp::ACCESS: {
-            result.push_back("/*Unimplemented ACCESS*/");
-            break;
-        }
-        case rebgn::AbstractOp::INDEX: {
-            result.push_back("/*Unimplemented INDEX*/");
-            break;
-        }
-        case rebgn::AbstractOp::CALL: {
-            result.push_back("/*Unimplemented CALL*/");
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_TRUE: {
-            result.push_back("true");
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_FALSE: {
-            result.push_back("false");
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_INT: {
-            result.push_back(std::format("{}", code.int_value()->value()));
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_INT64: {
-            result.push_back(std::format("{}", *code.int_value64()));
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_CHAR: {
-            result.push_back("/*Unimplemented IMMEDIATE_CHAR*/");
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_STRING: {
-            result.push_back("/*Unimplemented IMMEDIATE_STRING*/");
-            break;
-        }
-        case rebgn::AbstractOp::IMMEDIATE_TYPE: {
-            result.push_back("/*Unimplemented IMMEDIATE_TYPE*/");
-            break;
-        }
-        case rebgn::AbstractOp::NEW_OBJECT: {
-            result.push_back("/*Unimplemented NEW_OBJECT*/");
-            break;
-        }
-        case rebgn::AbstractOp::ARRAY_SIZE: {
-            result.push_back("/*Unimplemented ARRAY_SIZE*/");
-            break;
-        }
-        case rebgn::AbstractOp::FIELD_AVAILABLE: {
-            auto left_ref = code.left_ref().value();
-            if(left_ref.value() == 0) {
-                auto right_ref = code.right_ref().value();
-                auto right_eval = eval(ctx.ref(right_ref), ctx);
-                result.insert(result.end(), right_eval.begin(), right_eval.end());
-            }
-            else {
-                auto left_eval = eval(ctx.ref(left_ref), ctx);
-                result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
-                ctx.this_as.push_back(left_eval.back());
-                auto right_ref = code.right_ref().value();
-                auto right_eval = eval(ctx.ref(right_ref), ctx);
-                result.insert(result.end(), right_eval.begin(), right_eval.end());
-                ctx.this_as.pop_back();
-            }
-            break;
-        }
-        case rebgn::AbstractOp::PHI: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
-        }
-        default: {
-            result.push_back(std::format("/*Unimplemented {}*/", to_string(code.op)));
-            break;
-        }
-        }return result;
-    }
     void to_c(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
-        Context ctx{w, bm, [&](Context& ctx, std::uint64_t id, auto&& str) {
+        Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             return str;
         }};
         // search metadata
@@ -659,13 +700,3 @@ namespace bm2c {
         }
     }
 }  // namespace bm2c
-struct Flags : bm2::Flags {
-    bm2c::Flags bm2c_flags;
-    void bind(futils::cmdline::option::Context& ctx) {
-        bind_help(ctx);
-    }
-};
-DEFINE_ENTRY(Flags) {
-    bm2c::to_c(w, bm,flags.bm2c_flags);
-    return 0;
-}

@@ -11,7 +11,7 @@ cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_I
 cmake --build ./built/%BUILD_MODE%/%BUILD_TYPE% --target install
 
 
-rem set BUILD_MODE=web
-rem call %EMSDK_PATH%
-rem call emcmake cmake -G Ninja -D CMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%/web -S . -B ./built/%BUILD_MODE%/%BUILD_TYPE%
-rem cmake --build ./built/%BUILD_MODE%/%BUILD_TYPE% --target install
+set BUILD_MODE=web
+call %EMSDK_PATH%
+call emcmake cmake -G Ninja -D CMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%/web -S . -B ./built/%BUILD_MODE%/%BUILD_TYPE%
+cmake --build ./built/%BUILD_MODE%/%BUILD_TYPE% --target install

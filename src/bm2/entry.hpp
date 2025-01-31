@@ -15,6 +15,7 @@ namespace bm2 {
     struct Flags : futils::cmdline::templ::HelpOption {
         std::string_view input;
         std::string_view output;
+        bool dump_code = false;
         // std::vector<std::string_view> args;
         // static constexpr auto arg_desc = "[option] args...";
 
@@ -22,6 +23,7 @@ namespace bm2 {
             bind_help(ctx);
             ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
             ctx.VarString<true>(&output, "o,output", "output file", "FILE");
+            ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
         }
     };
     namespace internal {
@@ -41,6 +43,11 @@ namespace bm2 {
             futils::binary::reader r{view};
             auto err = bm.decode(r);
             if (err) {
+                if (flags.dump_code) {
+                    for (auto& code : bm.code) {
+                        cout << to_string(code.op) << '\n';
+                    }
+                }
                 cerr << err.error<std::string>() << '\n';
                 return 1;
             }
@@ -64,7 +71,7 @@ namespace bm2 {
 int bm2_main(int argc, char** argv);
 #if defined(__EMSCRIPTEN__)
 extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
-    return em_main(cmdline, cpp_main);
+    return em_main(cmdline, bm2_main);
 }
 #else
 int main(int argc, char** argv) {

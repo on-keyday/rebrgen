@@ -1,0 +1,10 @@
+#license
+cmake_minimum_required(VERSION 3.0)
+project(bm2c)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
+add_executable(bm2c main.cpp bm2c.cpp)
+target_link_libraries(bm2c futils)
+install(TARGETS bm2c DESTINATION tool)
+if ("$ENV{BUILD_MODE}" STREQUAL "web")
+  install(FILES "${CMAKE_BINARY_DIR}/tool/bm2c.wasm" DESTINATION tool)
+endif()

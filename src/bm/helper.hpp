@@ -41,6 +41,7 @@ namespace rebgn {
             case AbstractOp::DEFINE_FIELD:
             case AbstractOp::DEFINE_VARIABLE:
             case AbstractOp::DEFINE_CONSTANT:
+            case AbstractOp::ASSIGN:
                 return true;
             default:
                 return false;
@@ -70,17 +71,24 @@ namespace rebgn {
             case AbstractOp::FIELD_AVAILABLE:
             case AbstractOp::INPUT_BYTE_OFFSET:
             case AbstractOp::OUTPUT_BYTE_OFFSET:
+            case AbstractOp::INPUT_BIT_OFFSET:
+            case AbstractOp::OUTPUT_BIT_OFFSET:
             case AbstractOp::REMAIN_BYTES:
             case AbstractOp::PHI:
             case AbstractOp::ASSIGN:
             case AbstractOp::DEFINE_FIELD:
             case AbstractOp::DEFINE_PROPERTY:
             case AbstractOp::DEFINE_VARIABLE:
+            case AbstractOp::DECLARE_VARIABLE:
+            case AbstractOp::DEFINE_VARIABLE_REF:
             case AbstractOp::DEFINE_CONSTANT:
             case AbstractOp::NEW_OBJECT:
             case AbstractOp::CALL:
             case AbstractOp::INDEX:
             case AbstractOp::ACCESS:
+
+            case AbstractOp::DEFINE_PARAMETER:
+            case AbstractOp::PROPERTY_INPUT_PARAMETER:
                 return true;
             default:
                 return false;
@@ -90,13 +98,17 @@ namespace rebgn {
     inline bool is_struct_define_related(AbstractOp op) {
         switch (op) {
             case AbstractOp::DEFINE_ENUM:
+            case AbstractOp::DEFINE_ENUM_MEMBER:
+            case AbstractOp::DECLARE_ENUM:
             case AbstractOp::DEFINE_FORMAT:
             case AbstractOp::DECLARE_UNION:
             case AbstractOp::DEFINE_UNION:
             case AbstractOp::DECLARE_UNION_MEMBER:
             case AbstractOp::DEFINE_UNION_MEMBER:
             case AbstractOp::DEFINE_STATE:
+            case AbstractOp::DECLARE_STATE:
             case AbstractOp::DEFINE_BIT_FIELD:
+            case AbstractOp::DECLARE_BIT_FIELD:
             case AbstractOp::DECLARE_FUNCTION:
             case AbstractOp::END_STATE:
             case AbstractOp::END_BIT_FIELD:
@@ -105,6 +117,7 @@ namespace rebgn {
             case AbstractOp::END_UNION:
             case AbstractOp::END_UNION_MEMBER:
             case AbstractOp::DEFINE_FIELD:
+            case AbstractOp::END_PROPERTY:
                 return true;
             default:
                 return false;
@@ -124,6 +137,21 @@ namespace rebgn {
             case AbstractOp::DEFINE_ENCODER:
             case AbstractOp::DEFINE_DECODER:
             case AbstractOp::PROPERTY_FUNCTION:
+            case AbstractOp::NOT_PREV_THEN:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    inline bool is_parameter_related(AbstractOp op) {
+        switch (op) {
+            case AbstractOp::RETURN_TYPE:
+            case AbstractOp::ENCODER_PARAMETER:
+            case AbstractOp::DECODER_PARAMETER:
+            case AbstractOp::STATE_VARIABLE_PARAMETER:
+            case AbstractOp::PROPERTY_INPUT_PARAMETER:
+            case AbstractOp::DEFINE_PARAMETER:
                 return true;
             default:
                 return false;

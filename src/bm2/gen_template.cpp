@@ -7,12 +7,16 @@
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view lang_name;
     bool is_header = false;
+    bool is_main = false;
+    bool is_cmake = false;
     std::string_view comment_prefix = "/*";
     std::string_view comment_suffix = "*/";
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&lang_name, "lang", "language name", "LANG", futils::cmdline::option::CustomFlag::required);
         ctx.VarBool(&is_header, "header", "generate header file");
+        ctx.VarBool(&is_main, "main", "generate main file");
+        ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
         ctx.VarString<true>(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
         ctx.VarString<true>(&comment_suffix, "comment-suffix", "comment suffix", "SUFFIX");
     }
@@ -27,14 +31,14 @@ struct Flags : futils::cmdline::templ::HelpOption {
     }
 };
 namespace rebgn {
-    void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+    void write_impl_template(bm2::TmpCodeWriter& w, Flags& flags) {
         bm2::TmpCodeWriter type_to_string;
 
         type_to_string.writeln("std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {");
         auto scope_type_to_string = type_to_string.indent_scope();
         type_to_string.writeln("if (s.storages.size() <= index) {");
         auto if_block_type = type_to_string.indent_scope();
-        type_to_string.writeln("return ", flags.wrap_comment("type index overflow"), ";");
+        type_to_string.writeln("return \"", flags.wrap_comment("type index overflow"), "\";");
         if_block_type.execute();
         type_to_string.writeln("}");
         type_to_string.writeln("auto& storage = s.storages[index];");
@@ -44,6 +48,9 @@ namespace rebgn {
             auto type = StorageType(i);
             type_to_string.writeln(std::format("case rebgn::StorageType::{}: {{", to_string(type)));
             auto scope_type = type_to_string.indent_scope();
+            if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
+                type_to_string.writeln("auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);");
+            }
             type_to_string.writeln(std::format("return \"{}\";", flags.wrap_comment("Unimplemented " + std::string(to_string(type)))));
             scope_type.execute();
             type_to_string.writeln("}");
@@ -65,25 +72,46 @@ namespace rebgn {
         scope_type_to_string_ref.execute();
         type_to_string.writeln("}");
 
+        bm2::TmpCodeWriter add_parameter;
+        add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
+        auto scope_add_parameter = add_parameter.indent_scope();
+        add_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
+        auto scope_nest_add_parameter = add_parameter.indent_scope();
+        add_parameter.writeln("auto& code = ctx.bm.code[i];");
+        add_parameter.writeln("switch(code.op) {");
+        auto scope_switch_add_parameter = add_parameter.indent_scope();
+
+        bm2::TmpCodeWriter add_call_parameter;
+        add_call_parameter.writeln("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
+        auto scope_add_call_parameter = add_call_parameter.indent_scope();
+        add_call_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
+        auto scope_nest_add_call_parameter = add_call_parameter.indent_scope();
+        add_call_parameter.writeln("auto& code = ctx.bm.code[i];");
+        add_call_parameter.writeln("switch(code.op) {");
+        auto scope_switch_add_call_parameter = add_call_parameter.indent_scope();
+
         bm2::TmpCodeWriter inner_block;
-        bm2::TmpCodeWriter inner_function;
-        bm2::TmpCodeWriter eval;
         inner_block.writeln("void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_block = inner_block.indent_scope();
         inner_block.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_block = inner_block.indent_scope();
         inner_block.writeln("auto& code = ctx.bm.code[i];");
         inner_block.writeln("switch(code.op) {");
+
+        bm2::TmpCodeWriter inner_function;
         inner_function.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_function = inner_function.indent_scope();
         inner_function.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_function = inner_function.indent_scope();
         inner_function.writeln("auto& code = ctx.bm.code[i];");
         inner_function.writeln("switch(code.op) {");
+
+        bm2::TmpCodeWriter eval;
         eval.writeln("std::vector<std::string> eval(const rebgn::Code& code, Context& ctx) {");
         auto scope_eval = eval.indent_scope();
         eval.writeln("std::vector<std::string> result;");
         eval.writeln("switch(code.op) {");
+
         for (size_t i = 0; to_string(AbstractOp(i))[0] != 0; i++) {
             auto op = AbstractOp(i);
             if (rebgn::is_marker(op)) {
@@ -119,6 +147,17 @@ namespace rebgn {
                         eval.indent_writeln("result.push_back(std::format(\"({}{})\", opstr, target.back()));");
                         eval.indent_writeln("break;");
                     }
+                    else if (op == AbstractOp::ASSIGN) {
+                        eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                        eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                        eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                        eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                        eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                        eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+                        eval.indent_writeln("result.push_back(std::format(\"{} = {}\", left_eval.back(), right_eval.back()));");
+                        eval.indent_writeln("result.push_back(left_eval.back());");
+                        eval.indent_writeln("break;");
+                    }
                     else if (op == AbstractOp::IMMEDIATE_INT) {
                         eval.indent_writeln("result.push_back(std::format(\"{}\", code.int_value()->value()));");
                         eval.indent_writeln("break;");
@@ -135,7 +174,18 @@ namespace rebgn {
                         eval.indent_writeln("result.push_back(std::format(\"{}\", *code.int_value64()));");
                         eval.indent_writeln("break;");
                     }
-                    else if (op == AbstractOp::PHI) {
+                    else if (op == AbstractOp::IMMEDIATE_TYPE) {
+                        eval.indent_writeln("auto type = code.type().value();");
+                        eval.indent_writeln("result.push_back(type_to_string(ctx, type));");
+                        eval.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::IMMEDIATE_CHAR) {
+                        eval.indent_writeln("auto char_code = code.int_value()->value();");
+                        eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        eval.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::PHI || op == AbstractOp::DEFINE_VARIABLE ||
+                             op == AbstractOp::DEFINE_VARIABLE_REF) {
                         eval.indent_writeln("auto ref=code.ref().value();");
                         eval.indent_writeln("return eval(ctx.ref(ref), ctx);");
                     }
@@ -167,21 +217,84 @@ namespace rebgn {
                     }
                     eval.writeln("}");
                 }
-                if (!is_expr(op) || is_both_expr_and_def(op)) {
+                if (is_parameter_related(op)) {
+                    add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                    add_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_parameter.indent_writeln("break;");
+                    add_parameter.writeln("}");
+
+                    add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                    add_call_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_call_parameter.indent_writeln("break;");
+                    add_call_parameter.writeln("}");
+                }
+                else if (!is_expr(op) || is_both_expr_and_def(op)) {
                     inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                    inner_function.indent_writeln("break;");
+                    if (op == AbstractOp::APPEND) {
+                        inner_function.indent_writeln("auto vector_ref = code.left_ref().value();");
+                        inner_function.indent_writeln("auto new_element_ref = code.right_ref().value();");
+                        inner_function.indent_writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
+                        // inner_function.indent_writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
+                        inner_function.indent_writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
+                        // inner_function.indent_writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
+                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::ASSIGN) {
+                        inner_function.indent_writeln("auto evaluated = eval(code, ctx);");
+                        inner_function.indent_writeln("w.writeln(evaluated[evaluated.size() - 2]);");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::ASSERT) {
+                        inner_function.indent_writeln("auto evaluated = eval(ctx.ref(code.ref().value()), ctx);");
+                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else if (op == AbstractOp::EXPLICIT_ERROR) {
+                        inner_function.indent_writeln("auto param = code.param().value();");
+                        inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);");
+                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        inner_function.indent_writeln("break;");
+                    }
+                    else {
+                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                        inner_function.indent_writeln("break;");
+                    }
                     inner_function.writeln("}");
                 }
             }
         }
+
+        add_parameter.writeln("default: {");
+        add_parameter.indent_writeln("// skip other op");
+        add_parameter.indent_writeln("break;");
+        add_parameter.writeln("}");
+        scope_switch_add_parameter.execute();
+        add_parameter.writeln("}");
+        scope_nest_add_parameter.execute();
+        add_parameter.writeln("}");  // close for
+        scope_add_parameter.execute();
+        add_parameter.writeln("}");  // close function
+
+        add_call_parameter.writeln("default: {");
+        add_call_parameter.indent_writeln("// skip other op");
+        add_call_parameter.indent_writeln("break;");
+        add_call_parameter.writeln("}");
+        scope_switch_add_call_parameter.execute();
+        add_call_parameter.writeln("}");
+        scope_nest_add_call_parameter.execute();
+        add_call_parameter.writeln("}");  // close for
+        scope_add_call_parameter.execute();
+        add_call_parameter.writeln("}");  // close function
+
         inner_block.writeln("default: {");
         auto if_block = inner_block.indent_scope();
-        inner_block.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op))");
-        inner_block.indent_writeln("w.writeln(std::format(\"/* Unimplemented {} */\", to_string(code.op)));");
+        inner_block.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
+        inner_block.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented op {}"), "\", to_string(code.op)));");
         inner_block.writeln("}");
         inner_block.writeln("break;");
         if_block.execute();
+        inner_block.writeln("}");  // close default
         inner_block.writeln("}");  // close switch
         scope_nest_block.execute();
         inner_block.writeln("}");  // close for
@@ -190,7 +303,7 @@ namespace rebgn {
 
         inner_function.writeln("default: {");
         auto if_function = inner_function.indent_scope();
-        inner_function.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)) {");
+        inner_function.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
         inner_function.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
         inner_function.writeln("}");
         inner_function.writeln("break;");
@@ -211,27 +324,92 @@ namespace rebgn {
         scope_eval.execute();
         eval.writeln("}");  // close function
 
-        w.writeln("#include <bm2/context.hpp>");
+        w.write_unformatted(type_to_string.out());
+        w.write_unformatted(eval.out());
+        w.write_unformatted(add_parameter.out());
+        w.write_unformatted(inner_block.out());
+        w.write_unformatted(inner_function.out());
+    }
+
+    void code_main(bm2::TmpCodeWriter& w, Flags& flags) {
+        w.writeln("/*license*/");
+        w.writeln("#include \"bm2", flags.lang_name, ".hpp\"");
         w.writeln("#include <bm2/entry.hpp>");
+        w.writeln("struct Flags : bm2::Flags {");
+        w.indent_writeln("bm2", flags.lang_name, "::Flags bm2", flags.lang_name, "_flags;");
+        w.indent_writeln("void bind(futils::cmdline::option::Context& ctx) {");
+        auto scope_bind = w.indent_scope();
+        w.indent_writeln("bm2::Flags::bind(ctx);");
+        scope_bind.execute();
+        w.indent_writeln("}");
+        w.writeln("};");
+
+        w.writeln("DEFINE_ENTRY(Flags) {");
+        auto scope_entry = w.indent_scope();
+        w.writeln("bm2", flags.lang_name, "::to_", flags.lang_name, "(w, bm,flags.bm2", flags.lang_name, "_flags);");
+        w.writeln("return 0;");
+        scope_entry.execute();
+        w.writeln("}");
+    }
+
+    void code_header(bm2::TmpCodeWriter& w, Flags& flags) {
+        w.writeln("/*license*/");
+        w.writeln("#pragma once");
+        w.writeln("#include <binary/writer.h>");
+        w.writeln("#include <bm/binary_module.hpp>");
+        w.writeln("namespace bm2", flags.lang_name, " {");
+        auto scope = w.indent_scope();
+        w.writeln("struct Flags {};");
+
+        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags);");
+        scope.execute();
+        w.writeln("}  // namespace bm2", flags.lang_name);
+    }
+
+    void code_cmake(bm2::TmpCodeWriter& w, Flags& flags) {
+        w.writeln("#license");
+        w.writeln("cmake_minimum_required(VERSION 3.0)");
+        w.writeln("project(bm2", flags.lang_name, ")");
+        w.writeln("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)");
+        w.writeln("add_executable(bm2", flags.lang_name, " main.cpp bm2", flags.lang_name, ".cpp)");
+        w.writeln("target_link_libraries(bm2", flags.lang_name, " futils)");
+        w.writeln("install(TARGETS bm2", flags.lang_name, " DESTINATION tool)");
+        w.writeln("if (\"$ENV{BUILD_MODE}\" STREQUAL \"web\")");
+        w.writeln("  install(FILES \"${CMAKE_BINARY_DIR}/tool/bm2", flags.lang_name, ".wasm\" DESTINATION tool)");
+        w.writeln("endif()");
+    }
+
+    void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+        if (flags.is_header) {
+            code_header(w, flags);
+            return;
+        }
+        if (flags.is_main) {
+            code_main(w, flags);
+            return;
+        }
+        if (flags.is_cmake) {
+            code_cmake(w, flags);
+            return;
+        }
+        w.writeln("/*license*/");
+        w.writeln("#include <bm2/context.hpp>");
         w.writeln("#include <bm/helper.hpp>");
+        w.writeln("#include \"bm2", flags.lang_name, ".hpp\"");
         w.writeln("namespace bm2", flags.lang_name, " {");
         auto scope = w.indent_scope();
         w.writeln("using TmpCodeWriter = bm2::TmpCodeWriter;");
-        w.writeln("struct Flags {};");
         w.writeln("struct Context : bm2::Context {");
         auto scope_context = w.indent_scope();
         w.writeln("Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,\"r\",\"w\",\"(*this)\", std::move(escape_ident)} {}");
         scope_context.execute();
         w.writeln("};");
 
-        w.write_unformatted(type_to_string.out());
-        w.write_unformatted(inner_block.out());
-        w.write_unformatted(inner_function.out());
-        w.write_unformatted(eval.out());
+        write_impl_template(w, flags);
 
         w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {");
         auto scope_to_xxx = w.indent_scope();
-        w.writeln("Context ctx{w, bm, [&](Context& ctx, std::uint64_t id, auto&& str) {");
+        w.writeln("Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
         auto scope_escape_ident = w.indent_scope();
         w.writeln("return str;");
         scope_escape_ident.execute();
@@ -288,22 +466,6 @@ namespace rebgn {
 
         scope.execute();
         w.writeln("}  // namespace bm2", flags.lang_name);
-
-        w.writeln("struct Flags : bm2::Flags {");
-        w.indent_writeln("bm2", flags.lang_name, "::Flags bm2", flags.lang_name, "_flags;");
-        w.indent_writeln("void bind(futils::cmdline::option::Context& ctx) {");
-        auto scope_bind = w.indent_scope();
-        w.indent_writeln("bind_help(ctx);");
-        scope_bind.execute();
-        w.indent_writeln("}");
-        w.writeln("};");
-
-        w.writeln("DEFINE_ENTRY(Flags) {");
-        auto scope_entry = w.indent_scope();
-        w.writeln("bm2", flags.lang_name, "::to_", flags.lang_name, "(w, bm,flags.bm2", flags.lang_name, "_flags);");
-        w.writeln("return 0;");
-        scope_entry.execute();
-        w.writeln("}");
     }
 }  // namespace rebgn
 

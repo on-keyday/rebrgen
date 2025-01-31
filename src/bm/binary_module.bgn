@@ -162,7 +162,8 @@ enum AbstractOp:
     BACKWARD_OUTPUT
     INPUT_BYTE_OFFSET
     OUTPUT_BYTE_OFFSET
-    BIT_OFFSET
+    INPUT_BIT_OFFSET
+    OUTPUT_BIT_OFFSET
     REMAIN_BYTES
     CAN_READ
     IS_LITTLE_ENDIAN # whether platform is little endian (for native endian support)
@@ -215,7 +216,6 @@ enum AbstractOp:
     INDEX
     APPEND
     INC
-    DEC
     CALL
     RET
     RET_SUCCESS
@@ -640,8 +640,6 @@ format Code:
             bit_size_plus :Varint  # bit size plus 1 (0 means null)
         AbstractOp.INC:
             ref :Varint
-        AbstractOp.DEC:
-            ref :Varint
         AbstractOp.EVAL_EXPR:
             ref :Varint
         AbstractOp.NEW_OBJECT:
@@ -768,7 +766,9 @@ format Code:
             ident :Varint
             ref :Varint # ref to function
             param :Param
-        AbstractOp.BIT_OFFSET:
+        AbstractOp.INPUT_BIT_OFFSET:
+            ident :Varint
+        AbstractOp.OUTPUT_BIT_OFFSET:
             ident :Varint
         AbstractOp.INPUT_BYTE_OFFSET:
             ident :Varint

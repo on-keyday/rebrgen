@@ -37,7 +37,10 @@ add_executable(bm2rust
 )   
 
 add_executable(gen_template 
-    "src/bm2/gen_template.cpp")
+    "src/bm2/gen_template.cpp"
+)
+
+add_subdirectory("src")
 
 target_link_libraries(bmgen futils)
 target_link_libraries(bm2cpp futils)

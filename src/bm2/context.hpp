@@ -66,8 +66,59 @@ namespace bm2 {
         }
 
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm,
-                std::string_view root_r, std::string_view root_w, std::string_view root_this)
+                std::string_view root_r, std::string_view root_w, std::string_view root_this, auto&& escape_ident)
             : cw(w), bm(bm), root_r(root_r), root_w(root_w), root_this(root_this) {
+            auto& ctx = *this;
+            for (auto& sr : bm.strings.refs) {
+                ctx.string_table[sr.code.value()] = sr.string.data;
+            }
+            for (auto& id : bm.ident_indexes.refs) {
+                ctx.ident_index_table[id.ident.value()] = id.index.value();
+            }
+            for (auto& id : bm.ident_ranges.ranges) {
+                ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
+                auto& code = bm.code[id.range.start.value()];
+            }
+            for (auto& md : bm.metadata.refs) {
+                ctx.metadata_table[md.code.value()] = md.string.data;
+            }
+            for (auto& ir : bm.identifiers.refs) {
+                auto escaped = escape_ident(ctx, ir.code.value(), ir.string.data);
+                ctx.ident_table[ir.code.value()] = std::move(escaped);
+            }
+        }
+
+        friend std::optional<size_t> find_op(Context& ctx, rebgn::Range range, rebgn::AbstractOp op, size_t from = 0) {
+            if (from == 0) {
+                from = range.start;
+            }
+            for (size_t i = from; i < range.end; i++) {
+                if (ctx.bm.code[i].op == op) {
+                    return i;
+                }
+            }
+            return std::nullopt;
+        }
+
+        friend std::vector<size_t> find_ops(Context& ctx, rebgn::Range range, rebgn::AbstractOp op) {
+            std::vector<size_t> res;
+            for (size_t i = range.start; i < range.end; i++) {
+                if (ctx.bm.code[i].op == op) {
+                    res.push_back(i);
+                }
+            }
+            return res;
+        }
+
+        friend std::optional<size_t> find_belong_op(Context& ctx, const rebgn::Code& code, rebgn::AbstractOp op) {
+            if (code.op == op) {
+                return code.ident().value().value();
+            }
+            if (auto belong = code.belong(); belong) {
+                auto idx = ctx.ident_index_table[belong.value().value()];
+                return find_belong_op(ctx, ctx.bm.code[idx], op);
+            }
+            return std::nullopt;
         }
     };
 

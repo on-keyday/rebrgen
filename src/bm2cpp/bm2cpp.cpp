@@ -14,8 +14,8 @@ namespace bm2cpp {
     using TmpCodeWriter = bm2::TmpCodeWriter;
 
     struct Context : bm2::Context {
-        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
-            : bm2::Context(w, bm, "r", "w", "(*this)") {
+        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape)
+            : bm2::Context(w, bm, "r", "w", "(*this)", escape) {
         }
 
         std::string bytes_type = "::futils::view::rvec";
@@ -149,39 +149,6 @@ namespace bm2cpp {
 
     std::string type_to_string(Context& ctx, rebgn::StorageRef s, size_t* bit_size = nullptr) {
         return type_to_string_impl(ctx, ctx.storage_table[s.ref.value()], bit_size);
-    }
-
-    std::optional<size_t> find_op(Context& ctx, rebgn::Range range, rebgn::AbstractOp op, size_t from = 0) {
-        if (from == 0) {
-            from = range.start;
-        }
-        for (size_t i = from; i < range.end; i++) {
-            if (ctx.bm.code[i].op == op) {
-                return i;
-            }
-        }
-        return std::nullopt;
-    }
-
-    std::vector<size_t> find_ops(Context& ctx, rebgn::Range range, rebgn::AbstractOp op) {
-        std::vector<size_t> res;
-        for (size_t i = range.start; i < range.end; i++) {
-            if (ctx.bm.code[i].op == op) {
-                res.push_back(i);
-            }
-        }
-        return res;
-    }
-
-    std::optional<size_t> find_belong_op(Context& ctx, const rebgn::Code& code, rebgn::AbstractOp op) {
-        if (code.op == op) {
-            return code.ident().value().value();
-        }
-        if (auto belong = code.belong(); belong) {
-            auto idx = ctx.ident_index_table[belong.value().value()];
-            return find_belong_op(ctx, ctx.bm.code[idx], op);
-        }
-        return std::nullopt;
     }
 
     enum class BitField {
@@ -1389,31 +1356,16 @@ namespace bm2cpp {
     }
 
     void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
-        Context ctx(w, bm);
-        for (auto& m : bm.metadata.refs) {
-            ctx.metadata_table[m.code.value()] = m.string.data;
-        }
-        for (auto& sr : bm.strings.refs) {
-            ctx.string_table[sr.code.value()] = sr.string.data;
-        }
-        for (auto& id : bm.ident_indexes.refs) {
-            ctx.ident_index_table[id.ident.value()] = id.index.value();
-        }
-        for (auto& id : bm.ident_ranges.ranges) {
-            ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
-            auto& code = bm.code[id.range.start.value()];
-        }
-        for (auto& ir : bm.identifiers.refs) {
-            if (auto range = ctx.ident_range_table.find(ir.code.value()); range != ctx.ident_range_table.end()) {
+        Context ctx(w, bm, [&](auto&& ctx, auto&& code, auto&& str) {
+            if (auto range = ctx.ident_range_table.find(code); range != ctx.ident_range_table.end()) {
                 if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::PROPERTY_FUNCTION)) {
                     if (ctx.bm.code[*f].func_type() == rebgn::PropertyFunctionType::VECTOR_SETTER) {
-                        ctx.ident_table[ir.code.value()] = std::format("set_{}", escape_cpp_keyword(ir.string.data));
-                        continue;
+                        return std::format("set_{}", escape_cpp_keyword(str));
                     }
                 }
             }
-            ctx.ident_table[ir.code.value()] = escape_cpp_keyword(ir.string.data);
-        }
+            return escape_cpp_keyword(str);
+        });
         bool has_union = false;
         bool has_vector = false;
         bool has_recursive = false;

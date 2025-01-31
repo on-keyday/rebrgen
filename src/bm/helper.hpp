@@ -35,6 +35,18 @@ namespace rebgn {
         return key;
     }
 
+    inline bool is_both_expr_and_def(AbstractOp op) {
+        switch (op) {
+            case AbstractOp::DEFINE_FUNCTION:
+            case AbstractOp::DEFINE_FIELD:
+            case AbstractOp::DEFINE_VARIABLE:
+            case AbstractOp::DEFINE_CONSTANT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     inline bool is_expr(AbstractOp op) {
         switch (op) {
             case AbstractOp::IMMEDIATE_INT:
@@ -60,8 +72,61 @@ namespace rebgn {
             case AbstractOp::OUTPUT_BYTE_OFFSET:
             case AbstractOp::REMAIN_BYTES:
             case AbstractOp::PHI:
+            case AbstractOp::ASSIGN:
+            case AbstractOp::DEFINE_FIELD:
+            case AbstractOp::DEFINE_PROPERTY:
+            case AbstractOp::DEFINE_VARIABLE:
+            case AbstractOp::DEFINE_CONSTANT:
+            case AbstractOp::NEW_OBJECT:
+            case AbstractOp::CALL:
+            case AbstractOp::INDEX:
+            case AbstractOp::ACCESS:
                 return true;
+            default:
+                return false;
         }
-        return false;
+    }
+
+    inline bool is_struct_define_related(AbstractOp op) {
+        switch (op) {
+            case AbstractOp::DEFINE_ENUM:
+            case AbstractOp::DEFINE_FORMAT:
+            case AbstractOp::DECLARE_UNION:
+            case AbstractOp::DEFINE_UNION:
+            case AbstractOp::DECLARE_UNION_MEMBER:
+            case AbstractOp::DEFINE_UNION_MEMBER:
+            case AbstractOp::DEFINE_STATE:
+            case AbstractOp::DEFINE_BIT_FIELD:
+            case AbstractOp::DECLARE_FUNCTION:
+            case AbstractOp::END_STATE:
+            case AbstractOp::END_BIT_FIELD:
+            case AbstractOp::END_ENUM:
+            case AbstractOp::END_FORMAT:
+            case AbstractOp::END_UNION:
+            case AbstractOp::END_UNION_MEMBER:
+            case AbstractOp::DEFINE_FIELD:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    inline bool is_marker(AbstractOp op) {
+        switch (op) {
+            case AbstractOp::DEFINE_PROGRAM:
+            case AbstractOp::END_PROGRAM:
+            case AbstractOp::DECLARE_PROGRAM:
+            case AbstractOp::DEFINE_PROPERTY_GETTER:
+            case AbstractOp::DEFINE_PROPERTY_SETTER:
+            case AbstractOp::CONDITIONAL_FIELD:
+            case AbstractOp::CONDITIONAL_PROPERTY:
+            case AbstractOp::MERGED_CONDITIONAL_FIELD:
+            case AbstractOp::DEFINE_ENCODER:
+            case AbstractOp::DEFINE_DECODER:
+            case AbstractOp::PROPERTY_FUNCTION:
+                return true;
+            default:
+                return false;
+        }
     }
 }  // namespace rebgn

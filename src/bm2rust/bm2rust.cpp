@@ -24,8 +24,8 @@ namespace bm2rust {
             return "&mut " + current_r.back();
         }
 
-        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm)
-            : bm2::Context(w, bm, "r", "w", "self") {
+        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape)
+            : bm2::Context(w, bm, "r", "w", "self", escape) {
         }
 
         bool use_async = false;
@@ -2366,29 +2366,14 @@ namespace bm2rust {
     }
 
     void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
-        Context ctx(w, bm);
         bool has_error = false;
-        for (auto& sr : bm.strings.refs) {
-            ctx.string_table[sr.code.value()] = sr.string.data;
-        }
-        for (auto& ir : bm.identifiers.refs) {
-            auto escaped = escape_rust_keyword(ir.string.data);
-            if (escaped == "Error") {
+        Context ctx(w, bm, [&](auto&& _1, auto&& _2, auto&& str) {
+            auto esc = escape_rust_keyword(str);
+            if (esc == "Error") {
                 has_error = true;
             }
-            ctx.ident_table[ir.code.value()] = std::move(escaped);
-        }
-        for (auto& id : bm.ident_indexes.refs) {
-            ctx.ident_index_table[id.ident.value()] = id.index.value();
-        }
-
-        for (auto& id : bm.ident_ranges.ranges) {
-            ctx.ident_range_table[id.ident.value()] = rebgn::Range{.start = id.range.start.value(), .end = id.range.end.value()};
-            auto& code = bm.code[id.range.start.value()];
-        }
-        for (auto& md : bm.metadata.refs) {
-            ctx.metadata_table[md.code.value()] = md.string.data;
-        }
+            return esc;
+        });
 
         bool has_union = false;
         bool has_vector = false;

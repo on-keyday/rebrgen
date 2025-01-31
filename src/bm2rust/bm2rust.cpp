@@ -2257,7 +2257,9 @@ namespace bm2rust {
                     break;
                 }
                 default:
-                    w.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    if (!rebgn::is_expr(code.op)) {
+                        ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    }
                     break;
             }
         }

@@ -1288,7 +1288,9 @@ namespace bm2cpp {
                     break;
                 }
                 default:
-                    ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    if (!rebgn::is_expr(code.op)) {
+                        ctx.cw.writeln("/* Unimplemented op: ", to_string(code.op), " */");
+                    }
                     break;
             }
         }

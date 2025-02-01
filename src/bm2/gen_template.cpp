@@ -11,6 +11,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool is_cmake = false;
     std::string_view comment_prefix = "/*";
     std::string_view comment_suffix = "*/";
+    bool prior_ident = false;
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&lang_name, "lang", "language name", "LANG", futils::cmdline::option::CustomFlag::required);
@@ -51,7 +52,85 @@ namespace rebgn {
             if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
                 type_to_string.writeln("auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);");
             }
-            type_to_string.writeln(std::format("return \"{}\";", flags.wrap_comment("Unimplemented " + std::string(to_string(type)))));
+            if (type == StorageType::UINT || type == StorageType::INT) {
+                type_to_string.writeln("auto size = storage.size().value().value();");
+                type_to_string.writeln("if (bit_size) {");
+                auto if_block_size = type_to_string.indent_scope();
+                type_to_string.writeln("*bit_size = size;");
+                if_block_size.execute();
+                type_to_string.writeln("}");
+                if (type == StorageType::UINT) {
+                    type_to_string.writeln("if (size <= 8) {");
+                    auto if_block_size_8 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::uint8_t\";");
+                    if_block_size_8.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 16) {");
+                    auto if_block_size_16 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::uint16_t\";");
+                    if_block_size_16.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::uint32_t\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::uint64_t\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
+                else {
+                    type_to_string.writeln("if (size <= 8) {");
+                    auto if_block_size_8 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::int8_t\";");
+                    if_block_size_8.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 16) {");
+                    auto if_block_size_16 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::int16_t\";");
+                    if_block_size_16.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::int32_t\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"std::int64_t\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
+            }
+            else if (type == StorageType::STRUCT_REF) {
+                type_to_string.writeln("auto ref = storage.ref().value().value();");
+                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+                type_to_string.writeln("return ident;");
+            }
+            else if (type == StorageType::RECURSIVE_STRUCT_REF) {
+                type_to_string.writeln("auto ref = storage.ref().value().value();");
+                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+                type_to_string.writeln("return std::format(\"{}*\", ident);");
+            }
+            else if (type == StorageType::BOOL) {
+                type_to_string.writeln("return \"bool\";");
+            }
+            else if (type == StorageType::ENUM) {
+                type_to_string.writeln("auto ref = storage.ref().value().value();");
+                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+                type_to_string.writeln("return ident;");
+            }
+            else if (type == StorageType::VARIANT) {
+                type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
+            }
+            else if (type == StorageType::CODER_RETURN) {
+                type_to_string.writeln("return \"" + flags.wrap_comment("bool") + "\";");
+            }
+            else {
+                type_to_string.writeln(std::format("return \"{}\";", flags.wrap_comment("Unimplemented " + std::string(to_string(type)))));
+            }
             scope_type.execute();
             type_to_string.writeln("}");
         }
@@ -123,112 +202,192 @@ namespace rebgn {
             }
             if (is_struct_define_related(op)) {
                 inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                inner_block.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
+                    op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY) {
+                    inner_block.indent_writeln("auto ref = code.ref().value();");
+                    inner_block.indent_writeln("auto range = ctx.range(ref);");
+                    inner_block.indent_writeln("inner_block(ctx, w, range);");
+                }
+                else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
+                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    inner_block.indent_writeln("w.writeln(\"struct \", ident, \" { \");");
+                    inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                }
+                else if (op == AbstractOp::DEFINE_ENUM) {
+                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    inner_block.indent_writeln("w.writeln(\"enum \", ident, \" { \");");
+                    inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                }
+                else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
+                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    inner_block.indent_writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
+                    inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.back(), \",\");");
+                }
+                else if (op == AbstractOp::DEFINE_FIELD) {
+                    inner_block.indent_writeln("auto type = type_to_string(ctx, code.type().value());");
+                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    if (flags.prior_ident) {
+                        inner_block.indent_writeln("w.writeln(ident, \" \", type, \";\");");
+                    }
+                    else {
+                        inner_block.indent_writeln("w.writeln(type, \" \", ident, \";\");");
+                    }
+                }
+                else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE) {
+                    inner_block.indent_writeln("defer.pop_back();");
+                    inner_block.indent_writeln("w.writeln(\"};\");");
+                }
+                else {
+                    inner_block.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                }
                 inner_block.indent_writeln("break;");
                 inner_block.writeln("}");
             }
-            else {
-                if (is_expr(op)) {
-                    eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    // some are may be common in several languages, so it is better to implement in the inner_function
-                    if (op == AbstractOp::BINARY) {
-                        eval.indent_writeln("auto op = code.bop().value();");
-                        eval.indent_writeln("auto left_ref = code.left_ref().value();");
-                        eval.indent_writeln("auto right_ref = code.right_ref().value();");
-                        eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                        eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
-                        eval.indent_writeln("auto opstr = to_string(op);");
-                        eval.indent_writeln("result.push_back(std::format(\"({} {} {})\", left_eval.back(), opstr, right_eval.back()));");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::UNARY) {
-                        eval.indent_writeln("auto op = code.uop().value();");
-                        eval.indent_writeln("auto ref = code.ref().value();");
-                        eval.indent_writeln("auto target = eval(ctx.ref(ref), ctx);");
-                        eval.indent_writeln("auto opstr = to_string(op);");
-                        eval.indent_writeln("result.push_back(std::format(\"({}{})\", opstr, target.back()));");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::ASSIGN) {
-                        eval.indent_writeln("auto left_ref = code.left_ref().value();");
-                        eval.indent_writeln("auto right_ref = code.right_ref().value();");
-                        eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                        eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
-                        eval.indent_writeln("result.push_back(std::format(\"{} = {}\", left_eval.back(), right_eval.back()));");
-                        eval.indent_writeln("result.push_back(left_eval.back());");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_INT) {
-                        eval.indent_writeln("result.push_back(std::format(\"{}\", code.int_value()->value()));");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_TRUE) {
-                        eval.indent_writeln("result.push_back(\"true\");");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_FALSE) {
-                        eval.indent_writeln("result.push_back(\"false\");");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_INT64) {
-                        eval.indent_writeln("result.push_back(std::format(\"{}\", *code.int_value64()));");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_TYPE) {
-                        eval.indent_writeln("auto type = code.type().value();");
-                        eval.indent_writeln("result.push_back(type_to_string(ctx, type));");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IMMEDIATE_CHAR) {
-                        eval.indent_writeln("auto char_code = code.int_value()->value();");
-                        eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        eval.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
-                             op == AbstractOp::DEFINE_VARIABLE_REF) {
-                        eval.indent_writeln("auto ref=code.ref().value();");
-                        eval.indent_writeln("return eval(ctx.ref(ref), ctx);");
-                    }
-                    else if (op == AbstractOp::FIELD_AVAILABLE) {
-                        eval.indent_writeln("auto left_ref = code.left_ref().value();");
-                        eval.indent_writeln("if(left_ref.value() == 0) {");
-                        auto if_block = eval.indent_scope();
-                        eval.indent_writeln("auto right_ref = code.right_ref().value();");
-                        eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
-                        if_block.execute();
-                        eval.indent_writeln("}");
-                        eval.indent_writeln("else {");
-                        auto else_block = eval.indent_scope();
-                        eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                        eval.indent_writeln("ctx.this_as.push_back(left_eval.back());");
-                        eval.indent_writeln("auto right_ref = code.right_ref().value();");
-                        eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                        eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
-                        eval.indent_writeln("ctx.this_as.pop_back();");
-                        else_block.execute();
-                        eval.indent_writeln("}");
-                        eval.indent_writeln("break;");
+
+            if (is_expr(op)) {
+                eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                // some are may be common in several languages, so it is better to implement in the inner_function
+                if (op == AbstractOp::BINARY) {
+                    eval.indent_writeln("auto op = code.bop().value();");
+                    eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                    eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+                    eval.indent_writeln("auto opstr = to_string(op);");
+                    eval.indent_writeln("result.push_back(std::format(\"({} {} {})\", left_eval.back(), opstr, right_eval.back()));");
+                }
+                else if (op == AbstractOp::UNARY) {
+                    eval.indent_writeln("auto op = code.uop().value();");
+                    eval.indent_writeln("auto ref = code.ref().value();");
+                    eval.indent_writeln("auto target = eval(ctx.ref(ref), ctx);");
+                    eval.indent_writeln("auto opstr = to_string(op);");
+                    eval.indent_writeln("result.push_back(std::format(\"({}{})\", opstr, target.back()));");
+                }
+                else if (op == AbstractOp::ASSIGN) {
+                    eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                    eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+                    eval.indent_writeln("result.push_back(std::format(\"{} = {}\", left_eval.back(), right_eval.back()));");
+                    eval.indent_writeln("result.push_back(left_eval.back());");
+                }
+                else if (op == AbstractOp::IMMEDIATE_INT) {
+                    eval.indent_writeln("result.push_back(std::format(\"{}\", code.int_value()->value()));");
+                }
+                else if (op == AbstractOp::IMMEDIATE_TRUE) {
+                    eval.indent_writeln("result.push_back(\"true\");");
+                }
+                else if (op == AbstractOp::IMMEDIATE_FALSE) {
+                    eval.indent_writeln("result.push_back(\"false\");");
+                }
+                else if (op == AbstractOp::IMMEDIATE_INT64) {
+                    eval.indent_writeln("result.push_back(std::format(\"{}\", *code.int_value64()));");
+                }
+                else if (op == AbstractOp::IMMEDIATE_TYPE) {
+                    eval.indent_writeln("auto type = code.type().value();");
+                    eval.indent_writeln("result.push_back(type_to_string(ctx, type));");
+                }
+                else if (op == AbstractOp::IMMEDIATE_CHAR) {
+                    eval.indent_writeln("auto char_code = code.int_value()->value();");
+                    eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                }
+                else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
+                         op == AbstractOp::DEFINE_VARIABLE_REF) {
+                    eval.indent_writeln("auto ref=code.ref().value();");
+                    eval.indent_writeln("return eval(ctx.ref(ref), ctx);");
+                }
+                else if (op == AbstractOp::ACCESS) {
+                    eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                    eval.indent_writeln("auto right_ident = ctx.ident(right_ref);");
+                    eval.indent_writeln("result.push_back(std::format(\"{}.{}\", left_eval.back(), right_ident));");
+                }
+                else if (op == AbstractOp::INDEX) {
+                    eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                    eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+                    eval.indent_writeln("result.push_back(std::format(\"{}[{}]\", left_eval.back(), right_eval.back()));");
+                }
+                else if (op == AbstractOp::ARRAY_SIZE) {
+                    eval.indent_writeln("auto vector_ref = code.ref().value();");
+                    eval.indent_writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
+                    eval.indent_writeln("result.push_back(std::format(\"{}.size()\", vector_eval.back()));");
+                }
+                else if (op == AbstractOp::DEFINE_VARIABLE) {
+                    eval.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    eval.indent_writeln("auto ref = code.ref().value();");
+                    eval.indent_writeln("auto type = type_to_string(ctx,code.type().value());");
+                    eval.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
+                    if (flags.prior_ident) {
+                        eval.indent_writeln("result.push_back(std::format(\"{} {} = {}\", ident, type, evaluated.back()));");
                     }
                     else {
-                        eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        eval.indent_writeln("break;");
+                        eval.indent_writeln("result.push_back(std::format(\"{} {} = {}\",type, ident, evaluated.back()));");
                     }
-                    eval.writeln("}");
+                    eval.indent_writeln("result.push_back(ident);");
                 }
-                if (is_parameter_related(op)) {
+                else if (op == AbstractOp::FIELD_AVAILABLE) {
+                    eval.indent_writeln("auto left_ref = code.left_ref().value();");
+                    eval.indent_writeln("if(left_ref.value() == 0) {");
+                    auto if_block = eval.indent_scope();
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
+                    if_block.execute();
+                    eval.indent_writeln("}");
+                    eval.indent_writeln("else {");
+                    auto else_block = eval.indent_scope();
+                    eval.indent_writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+                    eval.indent_writeln("ctx.this_as.push_back(left_eval.back());");
+                    eval.indent_writeln("auto right_ref = code.right_ref().value();");
+                    eval.indent_writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
+                    eval.indent_writeln("ctx.this_as.pop_back();");
+                    else_block.execute();
+                    eval.indent_writeln("}");
+                }
+                else {
+                    eval.indent_writeln("result.push_back(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                }
+                eval.indent_writeln("break;");
+                eval.writeln("}");
+            }
+            if (is_parameter_related(op)) {
+                if (op != AbstractOp::RETURN_TYPE) {
                     add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
                     auto scope = add_parameter.indent_scope();
                     add_parameter.writeln("if(params > 0) {");
                     add_parameter.indent_writeln("w.write(\", \");");
                     add_parameter.writeln("}");
                     scope.execute();
-                    add_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    if (op == AbstractOp::PROPERTY_INPUT_PARAMETER ||
+                        op == AbstractOp::DEFINE_PARAMETER ||
+                        op == AbstractOp::STATE_VARIABLE_PARAMETER) {
+                        add_parameter.indent_writeln("auto ref = code.ident().value();");
+                        add_parameter.indent_writeln("auto type = type_to_string(ctx,code.type().value());");
+                        add_parameter.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                        if (flags.prior_ident) {
+                            add_parameter.indent_writeln("w.write(ident, \" \", type);");
+                        }
+                        else {
+                            add_parameter.indent_writeln("w.write(type, \" \", ident);");
+                        }
+                    }
+                    else {
+                        add_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    }
                     add_parameter.indent_writeln("params++;");
                     add_parameter.indent_writeln("break;");
                     add_parameter.writeln("}");
@@ -239,96 +398,140 @@ namespace rebgn {
                     add_call_parameter.indent_writeln("w.write(\", \");");
                     add_call_parameter.writeln("}");
                     scope_call.execute();
-                    add_call_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    if (op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
+                        add_call_parameter.indent_writeln("auto ref = code.ident().value();");
+                        add_call_parameter.indent_writeln("auto ident = ctx.ident(ref);");
+                        add_call_parameter.indent_writeln("w.writeln(ident);");
+                    }
+                    else {
+                        add_call_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    }
                     add_call_parameter.indent_writeln("params++;");
                     add_call_parameter.indent_writeln("break;");
                     add_call_parameter.writeln("}");
                 }
-                else if (!is_expr(op) || is_both_expr_and_def(op)) {
-                    inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    if (op == AbstractOp::APPEND) {
-                        inner_function.indent_writeln("auto vector_ref = code.left_ref().value();");
-                        inner_function.indent_writeln("auto new_element_ref = code.right_ref().value();");
-                        inner_function.indent_writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
-                        // inner_function.indent_writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
-                        inner_function.indent_writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
-                        // inner_function.indent_writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
-                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        inner_function.indent_writeln("break;");
+            }
+            if ((!is_expr(op) && !is_struct_define_related(op) && !is_parameter_related(op)) || is_both_expr_and_def(op)) {
+                inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+                if (op == AbstractOp::APPEND) {
+                    inner_function.indent_writeln("auto vector_ref = code.left_ref().value();");
+                    inner_function.indent_writeln("auto new_element_ref = code.right_ref().value();");
+                    inner_function.indent_writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
+                    // inner_function.indent_writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
+                    inner_function.indent_writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
+                    // inner_function.indent_writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
+                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::ASSIGN) {
+                    inner_function.indent_writeln("auto evaluated = eval(code, ctx);");
+                    inner_function.indent_writeln("w.writeln(evaluated[evaluated.size() - 2]);");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::DEFINE_VARIABLE) {
+                    inner_function.indent_writeln("auto evaluated = eval(code, ctx);");
+                    inner_function.indent_writeln("w.writeln(evaluated[evaluated.size() - 2]);");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::ASSERT) {
+                    inner_function.indent_writeln("auto evaluated = eval(ctx.ref(code.ref().value()), ctx);");
+                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::EXPLICIT_ERROR) {
+                    inner_function.indent_writeln("auto param = code.param().value();");
+                    inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);");
+                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
+                         op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
+                         op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION) {
+                    if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION) {
+                        inner_function.indent_writeln("auto ref = code.ref().value();");
+                        inner_function.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
                     }
-                    else if (op == AbstractOp::ASSIGN) {
-                        inner_function.indent_writeln("auto evaluated = eval(code, ctx);");
-                        inner_function.indent_writeln("w.writeln(evaluated[evaluated.size() - 2]);");
-                        inner_function.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::ASSERT) {
-                        inner_function.indent_writeln("auto evaluated = eval(ctx.ref(code.ref().value()), ctx);");
-                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        inner_function.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::EXPLICIT_ERROR) {
-                        inner_function.indent_writeln("auto param = code.param().value();");
-                        inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);");
-                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        inner_function.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
-                             op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
-                             op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION) {
-                        if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION) {
-                            inner_function.indent_writeln("auto ref = code.ref().value();");
-                            inner_function.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
-                        }
-                        if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                            inner_function.indent_writeln("defer.pop_back();");
-                        }
-                        auto indent = inner_function.indent_scope();
-                        if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                            inner_function.writeln("w.writeln(\"}\");");
-                        }
-                        if (op == AbstractOp::DEFINE_FUNCTION) {
-                            inner_function.writeln("auto range = ctx.ident_range_table[code.ident()->value()];");
-                            inner_function.writeln("w.writeln(\"/*Unimplemented function: */(\");");
-                            inner_function.writeln("add_parameter(ctx, w, range);");
-                            inner_function.writeln("w.writeln(\") { \");");
-                        }
-                        else {
-                            inner_function.write("w.writeln(\"");
-                            switch (op) {
-                                case AbstractOp::IF:
-                                    inner_function.write("if (\",evaluated.back(),\") {");
-                                    break;
-                                case AbstractOp::ELIF:
-                                    inner_function.write("else if (\",evaluated.back(),\") {");
-                                    break;
-                                case AbstractOp::ELSE:
-                                    inner_function.write("else {");
-                                    break;
-                                case AbstractOp::LOOP_INFINITE:
-                                    inner_function.write("for(;;) {");
-                                    break;
-                                case AbstractOp::LOOP_CONDITION:
-                                    inner_function.write("while (\",evaluated.back(),\") {");
-                                    break;
-                            }
-                            inner_function.writeln("\");");
-                        }
-                        indent.execute();
-                        inner_function.indent_writeln("defer.push_back(w.indent_scope_ex());");
-                        inner_function.indent_writeln("break;");
-                    }
-                    else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
-                             op == AbstractOp::END_FUNCTION) {
+                    if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         inner_function.indent_writeln("defer.pop_back();");
-                        inner_function.indent_writeln("w.writeln(\"}\");");
-                        inner_function.indent_writeln("break;");
+                    }
+                    auto indent = inner_function.indent_scope();
+                    if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                        inner_function.writeln("w.writeln(\"}\");");
+                    }
+                    if (op == AbstractOp::DEFINE_FUNCTION) {
+                        inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
+                        inner_function.writeln("auto range = ctx.range(code.ident().value());");
+                        inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
+                        inner_function.writeln("if(!found_type_pos) {");
+                        inner_function.indent_writeln("w.writeln(\"void\");");
+                        inner_function.writeln("}");
+                        inner_function.writeln("else {");
+                        inner_function.indent_writeln("auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());");
+                        inner_function.indent_writeln("w.writeln(type);");
+                        inner_function.writeln("}");
+                        inner_function.writeln("w.writeln(\" \", ident, \"(\");");
+                        inner_function.writeln("add_parameter(ctx, w, range);");
+                        inner_function.writeln("w.writeln(\") { \");");
                     }
                     else {
-                        inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                        inner_function.indent_writeln("break;");
+                        inner_function.write("w.writeln(\"");
+                        switch (op) {
+                            case AbstractOp::IF:
+                                inner_function.write("if (\",evaluated.back(),\") {");
+                                break;
+                            case AbstractOp::ELIF:
+                                inner_function.write("else if (\",evaluated.back(),\") {");
+                                break;
+                            case AbstractOp::ELSE:
+                                inner_function.write("else {");
+                                break;
+                            case AbstractOp::LOOP_INFINITE:
+                                inner_function.write("for(;;) {");
+                                break;
+                            case AbstractOp::LOOP_CONDITION:
+                                inner_function.write("while (\",evaluated.back(),\") {");
+                                break;
+                        }
+                        inner_function.writeln("\");");
                     }
-                    inner_function.writeln("}");
+                    indent.execute();
+                    inner_function.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                    inner_function.indent_writeln("break;");
                 }
+                else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
+                         op == AbstractOp::END_FUNCTION) {
+                    inner_function.indent_writeln("defer.pop_back();");
+                    inner_function.indent_writeln("w.writeln(\"}\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::CONTINUE) {
+                    inner_function.indent_writeln("w.writeln(\"continue;\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::BREAK) {
+                    inner_function.indent_writeln("w.writeln(\"break;\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::RET) {
+                    inner_function.indent_writeln("auto ref = code.ref().value();");
+                    auto scope = inner_function.indent_scope();
+                    inner_function.writeln("if(ref.value() != 0) {");
+                    inner_function.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+                    inner_function.indent_writeln("w.writeln(\"return \", evaluated.back(), \";\");");
+                    scope.execute();
+                    inner_function.indent_writeln("}");
+                    inner_function.indent_writeln("else {");
+                    auto else_scope = inner_function.indent_scope();
+                    inner_function.indent_writeln("w.writeln(\"return;\");");
+                    else_scope.execute();
+                    inner_function.indent_writeln("}");
+                    inner_function.indent_writeln("break;");
+                }
+                else {
+                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    inner_function.indent_writeln("break;");
+                }
+                inner_function.writeln("}");
             }
         }
 
@@ -394,6 +597,7 @@ namespace rebgn {
         w.write_unformatted(type_to_string.out());
         w.write_unformatted(eval.out());
         w.write_unformatted(add_parameter.out());
+        w.write_unformatted(add_call_parameter.out());
         w.write_unformatted(inner_block.out());
         w.write_unformatted(inner_function.out());
     }

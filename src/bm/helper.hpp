@@ -37,8 +37,6 @@ namespace rebgn {
 
     inline bool is_both_expr_and_def(AbstractOp op) {
         switch (op) {
-            case AbstractOp::DEFINE_FUNCTION:
-            case AbstractOp::DEFINE_FIELD:
             case AbstractOp::DEFINE_VARIABLE:
             case AbstractOp::DEFINE_CONSTANT:
             case AbstractOp::ASSIGN:
@@ -118,6 +116,8 @@ namespace rebgn {
             case AbstractOp::END_UNION:
             case AbstractOp::END_UNION_MEMBER:
             case AbstractOp::DEFINE_FIELD:
+            case AbstractOp::DEFINE_PROPERTY:
+            case AbstractOp::DECLARE_PROPERTY:
             case AbstractOp::END_PROPERTY:
                 return true;
             default:

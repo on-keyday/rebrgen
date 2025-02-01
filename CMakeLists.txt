@@ -47,7 +47,8 @@ target_link_libraries(bm2cpp futils)
 target_link_libraries(bm2rust futils)
 target_link_libraries(gen_template futils)
 
-install(TARGETS bmgen bm2cpp bm2rust gen_template DESTINATION tool)
+install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)
+install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)

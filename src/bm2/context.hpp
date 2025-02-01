@@ -5,6 +5,7 @@
 #include <binary/writer.h>
 #include <unordered_map>
 #include <bm/binary_module.hpp>
+#include <format>
 
 namespace bm2 {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -65,6 +66,18 @@ namespace bm2 {
             return bm.code[ident_index_table[ident.value()]];
         }
 
+        std::string ident(rebgn::Varint ident) {
+            auto& ref = ident_table[ident.value()];
+            if (ref.empty()) {
+                ref = std::format("tmp{}", ident.value());
+            }
+            return ref;
+        }
+
+        rebgn::Range range(rebgn::Varint ident) {
+            return ident_range_table[ident.value()];
+        }
+
         Context(futils::binary::writer& w, const rebgn::BinaryModule& bm,
                 std::string_view root_r, std::string_view root_w, std::string_view root_this, auto&& escape_ident)
             : cw(w), bm(bm), root_r(root_r), root_w(root_w), root_this(root_this) {
@@ -81,6 +94,9 @@ namespace bm2 {
             }
             for (auto& md : bm.metadata.refs) {
                 ctx.metadata_table[md.code.value()] = md.string.data;
+            }
+            for (auto& st : bm.types.maps) {
+                ctx.storage_table[st.code.value()] = st.storage;
             }
             for (auto& ir : bm.identifiers.refs) {
                 auto escaped = escape_ident(ctx, ir.code.value(), ir.string.data);

@@ -1886,7 +1886,7 @@ namespace rebgn {
                     return storage.error();
                 }
                 if (can_set_array_length(*field_ptr)) {
-                    auto err = add_array_length_setter(m, rvar, *field_ptr, expr_ref, setter_ident, op);
+                    auto err = add_array_length_setter(m, rvar, *field_ptr, expr_ref, *prop, op);
                     if (err) {
                         return err;
                     }
@@ -1964,7 +1964,7 @@ namespace rebgn {
             n.func_type(PropertyFunctionType::VECTOR_SETTER);
         });
         RetrieveVarCtx rvar;
-        auto err = add_array_length_setter(m, rvar, field_ptr, *ident_ref, setter_ident, op);
+        auto err = add_array_length_setter(m, rvar, field_ptr, *ident_ref, *prop, op);
         if (err) {
             return err;
         }

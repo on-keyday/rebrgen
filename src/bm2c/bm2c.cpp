@@ -19,16 +19,16 @@ namespace bm2c {
                     *bit_size = size;
                 }
                 if (size <= 8) {
-                    return "std::int8_t";
+                    return "int8_t";
                 }
                 else if (size <= 16) {
-                    return "std::int16_t";
+                    return "int16_t";
                 }
                 else if (size <= 32) {
-                    return "std::int32_t";
+                    return "int32_t";
                 }
                 else {
-                    return "std::int64_t";
+                    return "int64_t";
                 }
             }
             case rebgn::StorageType::UINT: {
@@ -37,16 +37,16 @@ namespace bm2c {
                     *bit_size = size;
                 }
                 if (size <= 8) {
-                    return "std::uint8_t";
+                    return "uint8_t";
                 }
                 else if (size <= 16) {
-                    return "std::uint16_t";
+                    return "uint16_t";
                 }
                 else if (size <= 32) {
-                    return "std::uint32_t";
+                    return "uint32_t";
                 }
                 else {
-                    return "std::uint64_t";
+                    return "uint64_t";
                 }
             }
             case rebgn::StorageType::FLOAT: {
@@ -82,10 +82,10 @@ namespace bm2c {
                 return "/*Unimplemented VARIANT*/";
             }
             case rebgn::StorageType::CODER_RETURN: {
-                return "/*bool*/";
+                return "bool";
             }
             case rebgn::StorageType::PROPERTY_SETTER_RETURN: {
-                return "/*Unimplemented PROPERTY_SETTER_RETURN*/";
+                return "bool";
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
@@ -93,7 +93,7 @@ namespace bm2c {
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return "/*Unimplemented PTR*/";
+                return std::format("{}*", base_type);
             }
             default: {
                 return std::format("/*Unimplemented {}*/", to_string(storage.type));
@@ -148,7 +148,12 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::CAST: {
-            result.push_back("/*Unimplemented CAST*/");
+            auto type = code.type().value();
+            auto ref = code.ref().value();
+            auto type_str = type_to_string(ctx, type);
+            auto evaluated = eval(ctx.ref(ref), ctx);
+            result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);
+            result.push_back(std::format("({}){}", type_str, evaluated.back()));
             break;
         }
         case rebgn::AbstractOp::CALL_CAST: {

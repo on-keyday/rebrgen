@@ -11,6 +11,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool is_cmake = false;
     std::string_view comment_prefix = "/*";
     std::string_view comment_suffix = "*/";
+    std::string_view int_type_placeholder = "std::int{}_t";
+    std::string_view uint_type_placeholder = "std::uint{}_t";
     bool prior_ident = false;
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -18,8 +20,34 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_header, "header", "generate header file");
         ctx.VarBool(&is_main, "main", "generate main file");
         ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
+        ctx.VarBool(&prior_ident, "prior-ident", "prioritize identifier than type when defining field or parameter or variable");
         ctx.VarString<true>(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
         ctx.VarString<true>(&comment_suffix, "comment-suffix", "comment suffix", "SUFFIX");
+        ctx.VarString<true>(&int_type_placeholder, "int-type", "int type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
+        ctx.VarString<true>(&uint_type_placeholder, "uint-type", "uint type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
+    }
+
+    bool is_valid_placeholder(std::string_view placeholder) {
+        auto first_found = placeholder.find("{}");
+        if (first_found == std::string_view::npos) {
+            return false;
+        }
+        auto second_found = placeholder.find("{}", first_found + 1);
+        return second_found == std::string_view::npos;
+    }
+
+    std::string wrap_int(size_t bit_size) {
+        if (is_valid_placeholder(int_type_placeholder)) {
+            return std::vformat(int_type_placeholder, std::make_format_args(bit_size));
+        }
+        return std::format("/* invalid placeholder: {} */", int_type_placeholder);
+    }
+
+    std::string wrap_uint(size_t bit_size) {
+        if (is_valid_placeholder(uint_type_placeholder)) {
+            return std::vformat(uint_type_placeholder, std::make_format_args(bit_size));
+        }
+        return std::format("/* invalid placeholder: {} */", uint_type_placeholder);
     }
 
     std::string wrap_comment(const std::string& comment) {
@@ -62,44 +90,44 @@ namespace rebgn {
                 if (type == StorageType::UINT) {
                     type_to_string.writeln("if (size <= 8) {");
                     auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::uint8_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
                     if_block_size_8.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else if (size <= 16) {");
                     auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::uint16_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
                     if_block_size_16.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else if (size <= 32) {");
                     auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::uint32_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
                     if_block_size_32.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else {");
                     auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::uint64_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
                     if_block_size_64.execute();
                     type_to_string.writeln("}");
                 }
                 else {
                     type_to_string.writeln("if (size <= 8) {");
                     auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::int8_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
                     if_block_size_8.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else if (size <= 16) {");
                     auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::int16_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
                     if_block_size_16.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else if (size <= 32) {");
                     auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::int32_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
                     if_block_size_32.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("else {");
                     auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"std::int64_t\";");
+                    type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
                     if_block_size_64.execute();
                     type_to_string.writeln("}");
                 }
@@ -126,8 +154,15 @@ namespace rebgn {
                 type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
             }
             else if (type == StorageType::CODER_RETURN) {
-                type_to_string.writeln("return \"" + flags.wrap_comment("bool") + "\";");
+                type_to_string.writeln("return \"bool\";");
             }
+            else if (type == StorageType::PROPERTY_SETTER_RETURN) {
+                type_to_string.writeln("return \"bool\";");
+            }
+            else if (type == StorageType::PTR) {
+                type_to_string.writeln("return std::format(\"{}*\", base_type);");
+            }
+
             else {
                 type_to_string.writeln(std::format("return \"{}\";", flags.wrap_comment("Unimplemented " + std::string(to_string(type)))));
             }
@@ -336,6 +371,14 @@ namespace rebgn {
                         eval.indent_writeln("result.push_back(std::format(\"{} {} = {}\",type, ident, evaluated.back()));");
                     }
                     eval.indent_writeln("result.push_back(ident);");
+                }
+                else if (op == AbstractOp::CAST) {
+                    eval.indent_writeln("auto type = code.type().value();");
+                    eval.indent_writeln("auto ref = code.ref().value();");
+                    eval.indent_writeln("auto type_str = type_to_string(ctx, type);");
+                    eval.indent_writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+                    eval.indent_writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
+                    eval.indent_writeln("result.push_back(std::format(\"({}){}\", type_str, evaluated.back()));");
                 }
                 else if (op == AbstractOp::FIELD_AVAILABLE) {
                     eval.indent_writeln("auto left_ref = code.left_ref().value();");

@@ -1,0 +1,10 @@
+#license
+cmake_minimum_required(VERSION 3.0)
+project(bm2hexmap)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
+add_executable(bm2hexmap main.cpp bm2hexmap.cpp)
+target_link_libraries(bm2hexmap futils)
+install(TARGETS bm2hexmap DESTINATION tool)
+if ("$ENV{BUILD_MODE}" STREQUAL "web")
+  install(FILES "${CMAKE_BINARY_DIR}/tool/bm2hexmap.wasm" DESTINATION tool)
+endif()

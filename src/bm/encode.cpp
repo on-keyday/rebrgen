@@ -964,15 +964,45 @@ namespace rebgn {
         if (err) {
             return err;
         }
+        std::optional<Varint> seek_pos_holder;
         if (node->arguments && node->arguments->sub_byte_length) {
-            auto len = get_expr(m, node->arguments->sub_byte_length);
-            if (!len) {
-                return len.error();
+            if (node->arguments->sub_byte_begin) {
+                auto offset = get_expr(m, node->arguments->sub_byte_begin);
+                if (!offset) {
+                    return offset.error();
+                }
+                auto save_current_pos = m.new_id(nullptr);
+                if (!save_current_pos) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::OUTPUT_BYTE_OFFSET, [&](Code& c) {
+                    c.ident(*save_current_pos);
+                });
+                auto tmpvar = define_int_tmp_var(m, *save_current_pos, ast::ConstantLevel::immutable_variable);
+                if (!tmpvar) {
+                    return tmpvar.error();
+                }
+                seek_pos_holder = *tmpvar;
+                m.op(AbstractOp::SEEK_ENCODER, [&](Code& c) {
+                    c.ref(*offset);
+                    c.belong(*ident);
+                });
             }
-            m.op(AbstractOp::BEGIN_ENCODE_SUB_RANGE, [&](Code& c) {
-                c.ref(*len);
-                c.belong(*ident);
-            });
+            if (ast::is_any_range(node->arguments->sub_byte_length)) {
+                if (!node->arguments->sub_byte_begin) {
+                    return error("until eof subrange is not supported without begin");
+                }
+            }
+            else {
+                auto len = get_expr(m, node->arguments->sub_byte_length);
+                if (!len) {
+                    return len.error();
+                }
+                m.op(AbstractOp::BEGIN_ENCODE_SUB_RANGE, [&](Code& c) {
+                    c.ref(*len);
+                    c.belong(*ident);
+                });
+            }
         }
         if (node->arguments && node->arguments->type_map) {
             err = encode_type(m, node->field_type, *ident, node->arguments->type_map->type_literal, node.get(), true);
@@ -983,8 +1013,15 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        if (node->arguments && node->arguments->sub_byte_length) {
+        if (node->arguments && node->arguments->sub_byte_length &&
+            !ast::is_any_range(node->arguments->sub_byte_length)) {
             m.op(AbstractOp::END_ENCODE_SUB_RANGE);
+        }
+        if (seek_pos_holder) {
+            m.op(AbstractOp::SEEK_ENCODER, [&](Code& c) {
+                c.ref(*seek_pos_holder);
+                c.belong(*ident);
+            });
         }
         return none;
     }
@@ -998,15 +1035,45 @@ namespace rebgn {
         if (!ident) {
             return ident.error();
         }
+        std::optional<Varint> seek_pos_holder;
         if (node->arguments && node->arguments->sub_byte_length) {
-            auto len = get_expr(m, node->arguments->sub_byte_length);
-            if (!len) {
-                return len.error();
+            if (node->arguments->sub_byte_begin) {
+                auto offset = get_expr(m, node->arguments->sub_byte_begin);
+                if (!offset) {
+                    return offset.error();
+                }
+                auto save_current_pos = m.new_id(nullptr);
+                if (!save_current_pos) {
+                    return error("Failed to generate new id");
+                }
+                m.op(AbstractOp::INPUT_BYTE_OFFSET, [&](Code& c) {
+                    c.ident(*save_current_pos);
+                });
+                auto tmpvar = define_int_tmp_var(m, *save_current_pos, ast::ConstantLevel::immutable_variable);
+                if (!tmpvar) {
+                    return tmpvar.error();
+                }
+                seek_pos_holder = *tmpvar;
+                m.op(AbstractOp::SEEK_DECODER, [&](Code& c) {
+                    c.ref(*offset);
+                    c.belong(*ident);
+                });
             }
-            m.op(AbstractOp::BEGIN_DECODE_SUB_RANGE, [&](Code& c) {
-                c.ref(*len);
-                c.belong(*ident);
-            });
+            if (ast::is_any_range(node->arguments->sub_byte_length)) {
+                if (!node->arguments->sub_byte_begin) {
+                    return error("until eof subrange is not supported without begin");
+                }
+            }
+            else {
+                auto len = get_expr(m, node->arguments->sub_byte_length);
+                if (!len) {
+                    return len.error();
+                }
+                m.op(AbstractOp::BEGIN_DECODE_SUB_RANGE, [&](Code& c) {
+                    c.ref(*len);
+                    c.belong(*ident);
+                });
+            }
         }
         Error err;
         if (node->arguments && node->arguments->type_map) {
@@ -1018,8 +1085,15 @@ namespace rebgn {
         if (err) {
             return err;
         }
-        if (node->arguments && node->arguments->sub_byte_length) {
+        if (node->arguments && node->arguments->sub_byte_length &&
+            !ast::is_any_range(node->arguments->sub_byte_length)) {
             m.op(AbstractOp::END_DECODE_SUB_RANGE);
+        }
+        if (seek_pos_holder) {
+            m.op(AbstractOp::SEEK_DECODER, [&](Code& c) {
+                c.ref(*seek_pos_holder);
+                c.belong(*ident);
+            });
         }
         err = do_field_argument_assert(m, *ident, node);
         if (err) {

@@ -255,6 +255,9 @@ enum AbstractOp:
     BEGIN_DECODE_SUB_RANGE
     END_DECODE_SUB_RANGE
 
+    SEEK_ENCODER
+    SEEK_DECODER
+
     FIELD_AVAILABLE
 
     PHI # for assignment analysis
@@ -786,6 +789,12 @@ format Code:
         AbstractOp.BEGIN_DECODE_SUB_RANGE:
             ref :Varint # length of sub range
             belong :Varint # related field
+        AbstractOp.SEEK_ENCODER:
+            ref :Varint # ref to offset
+            belong :Varint # related field
+        AbstractOp.SEEK_DECODER:
+            ref :Varint # ref to offset
+            belong :Varint # related field            
         AbstractOp.CAN_READ:
             ident :Varint
             belong :Varint # related field

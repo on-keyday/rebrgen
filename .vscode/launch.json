@@ -67,6 +67,23 @@
             //"symbolSearchPath": "lib\\"
         },
         {
+            "name": "Debug bm2hexmap",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/bm2hexmap",
+            "args": [
+                "-i","${workspaceRoot}/save/save.bin",
+                "--binary","${workspaceRoot}/save/save.bin",
+                "--start-format","Simple"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
             "name": "Attach",
             "type": "cppvsdbg",
             "request": "attach",

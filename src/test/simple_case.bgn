@@ -1,0 +1,5 @@
+
+format Simple:
+    hello :u8
+    world :u16
+    data :[10]u8

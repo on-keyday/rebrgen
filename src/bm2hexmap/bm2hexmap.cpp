@@ -1147,8 +1147,8 @@ namespace bm2hexmap {
         std::vector<json::JSON> offset_ranges;
         for (auto& range : ctx.offset_ranges) {
             json::JSON json;
-            json["start"] = range.start;
-            json["end"] = range.end;
+            json["start"] = std::uint64_t(range.start);
+            json["end"] = std::uint64_t(range.end);
             json["related_field"] = related_field_to_string(ctx, range.related_field);
             std::string related_data_base64;
             futils::base64::encode(range.related_data, related_data_base64);

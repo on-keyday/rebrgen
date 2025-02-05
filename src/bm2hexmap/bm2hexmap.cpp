@@ -367,21 +367,21 @@ namespace bm2hexmap {
                                 case rebgn::BinaryOp::right_logical_shift:
                                     return left >> right;
                                 case rebgn::BinaryOp::logical_and:
-                                    return size_t(left && right);
+                                    return std::uint64_t(left && right);
                                 case rebgn::BinaryOp::logical_or:
-                                    return size_t(left || right);
+                                    return std::uint64_t(left || right);
                                 case rebgn::BinaryOp::equal:
-                                    return size_t(left == right);
+                                    return std::uint64_t(left == right);
                                 case rebgn::BinaryOp::not_equal:
-                                    return size_t(left != right);
+                                    return std::uint64_t(left != right);
                                 case rebgn::BinaryOp::less:
-                                    return size_t(left < right);
+                                    return std::uint64_t(left < right);
                                 case rebgn::BinaryOp::less_or_eq:
-                                    return size_t(left <= right);
+                                    return std::uint64_t(left <= right);
                                 case rebgn::BinaryOp::grater:
-                                    return size_t(left > right);
+                                    return std::uint64_t(left > right);
                                 case rebgn::BinaryOp::grater_or_eq:
-                                    return size_t(left >= right);
+                                    return std::uint64_t(left >= right);
                                 default:
                                     return unexpect_error("Unhandled binary op: {}", to_string(op));
                             }

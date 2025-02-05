@@ -1,5 +1,5 @@
 #license
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.25)
 project(bm2hexmap)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
 add_executable(bm2hexmap main.cpp bm2hexmap.cpp)

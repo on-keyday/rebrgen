@@ -682,7 +682,7 @@ namespace rebgn {
 
     void code_cmake(bm2::TmpCodeWriter& w, Flags& flags) {
         w.writeln("#license");
-        w.writeln("cmake_minimum_required(VERSION 3.0)");
+        w.writeln("cmake_minimum_required(VERSION 3.25)");
         w.writeln("project(bm2", flags.lang_name, ")");
         w.writeln("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)");
         w.writeln("add_executable(bm2", flags.lang_name, " main.cpp bm2", flags.lang_name, ".cpp)");

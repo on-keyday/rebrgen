@@ -397,16 +397,16 @@ namespace bm2hexmap {
                 auto opstr = to_string(op);
                 auto repr = std::format("({}{})", opstr, target.back().repr);
                 auto value = target.back().value & [&](auto v) {
-                    return new_int(v->as_int() & [&](auto i) {
+                    return new_int(v->as_int() & [&](auto i) -> expected<std::uint64_t> {
                         switch (op) {
                             case rebgn::UnaryOp::minus_sign:
                                 return -i;
                             case rebgn::UnaryOp::bit_not:
                                 return ~i;
                             case rebgn::UnaryOp::logical_not:
-                                return !i ? size_t(1) : size_t(0);
+                                return !i ? std::uint64_t(1) : std::uint64_t(0);
                             default:
-                                return i;
+                                return unexpect_error("Unhandled unary op: {}", to_string(op));
                         }
                     });
                 };

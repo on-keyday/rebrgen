@@ -312,7 +312,7 @@ namespace bm2hexmap {
                 auto type = type_to_string(ctx, code.type().value());
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);
-                result.push_back(std::format("{} {} = {}", type, ident, evaluated.back()));
+                result.push_back(std::format("{} {} = {}", type, ident, evaluated.back().repr));
                 result.push_back(ident);
                 break;
             }
@@ -339,7 +339,7 @@ namespace bm2hexmap {
                 auto right_eval = eval(ctx.ref(right_ref), ctx);
                 result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);
                 auto opstr = to_string(op);
-                auto repr = std::format("({} {} {})", left_eval.back(), opstr, right_eval.back());
+                auto repr = std::format("({} {} {})", left_eval.back().repr, opstr, right_eval.back().repr);
                 auto value = get_left_and_right(left_eval.back().value, right_eval.back().value) & [&](auto pair) {
                     return get_left_and_right(pair.first->as_int(), pair.second->as_int()) & [&](auto pair) {
                         return new_int([&] -> expected<std::uint64_t> {
@@ -395,7 +395,7 @@ namespace bm2hexmap {
                 auto ref = code.ref().value();
                 auto target = eval(ctx.ref(ref), ctx);
                 auto opstr = to_string(op);
-                auto repr = std::format("({}{})", opstr, target.back());
+                auto repr = std::format("({}{})", opstr, target.back().repr);
                 auto value = target.back().value & [&](auto v) {
                     return new_int(v->as_int() & [&](auto i) {
                         switch (op) {
@@ -498,7 +498,7 @@ namespace bm2hexmap {
                 auto vector_ref = code.ref().value();
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);
-                auto repr = std::format("{}.size()", vector_eval.back());
+                auto repr = std::format("{}.size()", vector_eval.back().repr);
                 auto value = new_int(vector_eval.back().value & [&](auto v) {
                     return v->size();
                 });
@@ -968,7 +968,7 @@ namespace bm2hexmap {
                 case rebgn::AbstractOp::IF: {
                     auto ref = code.ref().value();
                     auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("if (", evaluated.back(), ") {");
+                    w.writeln("if (", evaluated.back().repr, ") {");
                     defer.push_back(w.indent_scope_ex());
                     break;
                 }
@@ -977,7 +977,7 @@ namespace bm2hexmap {
                     auto evaluated = eval(ctx.ref(ref), ctx);
                     defer.pop_back();
                     w.writeln("}");
-                    w.writeln("else if (", evaluated.back(), ") {");
+                    w.writeln("else if (", evaluated.back().repr, ") {");
                     defer.push_back(w.indent_scope_ex());
                     break;
                 }
@@ -1019,7 +1019,7 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::DEFINE_VARIABLE: {
                     auto evaluated = eval(code, ctx);
-                    w.writeln(evaluated[evaluated.size() - 2]);
+                    w.writeln(evaluated[evaluated.size() - 2].repr);
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1028,7 +1028,7 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::ASSIGN: {
                     auto evaluated = eval(code, ctx);
-                    w.writeln(evaluated[evaluated.size() - 2]);
+                    w.writeln(evaluated[evaluated.size() - 2].repr);
                     break;
                 }
                 case rebgn::AbstractOp::PROPERTY_ASSIGN: {
@@ -1066,7 +1066,7 @@ namespace bm2hexmap {
                     auto ref = code.ref().value();
                     if (ref.value() != 0) {
                         auto evaluated = eval(ctx.ref(ref), ctx);
-                        w.writeln("return ", evaluated.back(), ";");
+                        w.writeln("return ", evaluated.back().repr, ";");
                     }
                     else {
                         w.writeln("return;");

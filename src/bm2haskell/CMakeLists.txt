@@ -1,0 +1,10 @@
+#license
+cmake_minimum_required(VERSION 3.25)
+project(bm2haskell)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
+add_executable(bm2haskell main.cpp bm2haskell.cpp)
+target_link_libraries(bm2haskell futils)
+install(TARGETS bm2haskell DESTINATION tool)
+if ("$ENV{BUILD_MODE}" STREQUAL "web")
+  install(FILES "${CMAKE_BINARY_DIR}/tool/bm2haskell.wasm" DESTINATION tool)
+endif()

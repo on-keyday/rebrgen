@@ -29,7 +29,8 @@ namespace bm2hexmap {
     }
 
     struct Value {
-        std::variant<std::monostate, std::uint64_t, std::vector<std::shared_ptr<Value>>,
+        std::variant<std::monostate, std::uint64_t,
+                     std::string /*enum */, std::vector<std::shared_ptr<Value>>,
                      std::unordered_map<std::string, std::shared_ptr<Value>>>
             value;
 
@@ -73,6 +74,23 @@ namespace bm2hexmap {
             }
             return unexpect_error("Index error");
         }
+
+        expected<void> push(expected<std::shared_ptr<Value>> v) {
+            if (auto p = std::get_if<std::vector<std::shared_ptr<Value>>>(&value); p) {
+                p->push_back(*v);
+                return {};
+            }
+            return unexpect_error("Push error");
+        }
+    };
+
+    using Map = std::unordered_map<std::string, std::shared_ptr<Value>>;
+
+    struct Stack {
+        rebgn::AbstractOp op = rebgn::AbstractOp::IMMEDIATE_INT;
+        Map variables;
+        size_t pc = 0;
+        size_t end = 0;  // for loop or if
     };
 
     struct Context : bm2::Context {
@@ -81,18 +99,91 @@ namespace bm2hexmap {
 
         std::vector<OffsetRange> offset_ranges;
 
-        using Map = std::unordered_map<std::string, std::shared_ptr<Value>>;
-
-        Map variables;
+        std::vector<Stack> stack;
 
         Map self;
 
         std::vector<Map> self_stack;
 
+        size_t read_offset = 0;
+
+        std::map<std::string, std::vector<std::pair<std::uint64_t, std::string>>> enum_map;
+
         // map identifier to format name
         std::unordered_map<std::string, rebgn::Varint> format_table;
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident)
             : bm2::Context{w, bm, "r", "w", "(*this)", std::move(escape_ident)} {}
+
+        std::vector<size_t> op_step;
+
+        bool do_break(size_t& i) {
+            while (stack.size()) {
+                auto& top = stack.back();
+                if (top.op == rebgn::AbstractOp::LOOP_INFINITE ||
+                    top.op == rebgn::AbstractOp::LOOP_CONDITION) {
+                    i = top.end;
+                    stack.pop_back();
+                    return true;
+                }
+                stack.pop_back();
+            }
+            output["error"] = "break";
+            return false;
+        }
+
+        bool do_continue(size_t& i) {
+            while (stack.size()) {
+                auto& top = stack.back();
+                if (top.op == rebgn::AbstractOp::LOOP_INFINITE ||
+                    top.op == rebgn::AbstractOp::LOOP_CONDITION) {
+                    i = top.pc - 1;
+                    return true;
+                }
+                stack.pop_back();
+            }
+            output["error"] = "continue";
+            return false;
+        }
+
+        bool do_end_if(size_t& i) {
+            if (!stack.empty()) {
+                auto& top = stack.back();
+                if (top.op == rebgn::AbstractOp::IF || top.op == rebgn::AbstractOp::ELIF ||
+                    top.op == rebgn::AbstractOp::ELSE) {
+                    i = top.end;
+                    stack.pop_back();
+                    return true;
+                }
+            }
+            output["error"] = "end if";
+            return false;
+        }
+
+        void enter_stack(rebgn::AbstractOp op, size_t pc, size_t end) {
+            stack.push_back(Stack{op, {}, pc, end});
+        }
+
+        std::string enum_str(const std::string& belong, std::uint64_t value) {
+            auto found = enum_map.find(belong);
+            if (found != enum_map.end()) {
+                for (auto& [v, s] : found->second) {
+                    if (v == value) {
+                        return belong + "." + s;
+                    }
+                }
+            }
+            return std::format("{}({})", belong, value);
+        }
+
+        std::shared_ptr<Value> variable(const std::string& ident) {
+            for (auto it = stack.rbegin(); it != stack.rend(); it++) {
+                auto found = it->variables.find(ident);
+                if (found != it->variables.end()) {
+                    return found->second;
+                }
+            }
+            return stack.back().variables[ident] = std::make_shared<Value>();
+        }
     };
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
         if (s.storages.size() <= index) {
@@ -201,15 +292,21 @@ namespace bm2hexmap {
         return v;
     }
 
-    std::shared_ptr<Value> new_array() {
+    std::shared_ptr<Value> new_array(size_t initial = 0) {
         auto v = std::make_shared<Value>();
-        v->value = std::vector<std::shared_ptr<Value>>();
+        v->value = std::vector<std::shared_ptr<Value>>(initial);
         return v;
     }
 
     std::shared_ptr<Value> new_map() {
         auto v = std::make_shared<Value>();
         v->value = std::unordered_map<std::string, std::shared_ptr<Value>>();
+        return v;
+    }
+
+    std::shared_ptr<Value> new_enum(const std::string& enum_str) {
+        auto v = std::make_shared<Value>();
+        v->value = enum_str;
         return v;
     }
 
@@ -220,10 +317,14 @@ namespace bm2hexmap {
         EvalResult() = default;
 
         EvalResult(const char* repr)
-            : repr(repr) {}
+            : repr(repr) {
+            value = unexpect_error("Not implemented");
+        }
 
         EvalResult(std::string repr)
-            : repr(repr) {}
+            : repr(repr) {
+            value = unexpect_error("Not implemented");
+        }
 
         EvalResult(expected<std::shared_ptr<Value>> value, std::string repr)
             : value(std::move(value)), repr(repr) {}
@@ -238,7 +339,12 @@ namespace bm2hexmap {
         std::vector<EvalResult> result;
         switch (code.op) {
             case rebgn::AbstractOp::DEFINE_FIELD: {
-                result.push_back("/*Unimplemented DEFINE_FIELD*/");
+                auto ident = ctx.ident(code.ident().value());
+                auto& field = ctx.self[ident];
+                if (!field) {
+                    field = std::make_shared<Value>();
+                }
+                result.push_back(EvalResult(field, ident));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -250,7 +356,8 @@ namespace bm2hexmap {
                 break;
             }
             case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
-                result.push_back("/*Unimplemented INPUT_BYTE_OFFSET*/");
+                // result.push_back("/*Unimplemented INPUT_BYTE_OFFSET*/");
+                result.push_back(EvalResult(new_int(ctx.read_offset), "input.offset"));
                 break;
             }
             case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
@@ -270,7 +377,8 @@ namespace bm2hexmap {
                 break;
             }
             case rebgn::AbstractOp::CAN_READ: {
-                result.push_back("/*Unimplemented CAN_READ*/");
+                auto can_read = ctx.read_offset < ctx.input_binary.size();
+                result.push_back(EvalResult(new_int(can_read), "can_read"));
                 break;
             }
             case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
@@ -283,7 +391,21 @@ namespace bm2hexmap {
                 auto type_str = type_to_string(ctx, type);
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);
-                result.push_back(std::format("({}){}", type_str, evaluated.back().repr));
+                if (code.cast_type() == rebgn::CastType::INT_TO_ENUM) {
+                    auto last_int = evaluated.back().value & [&](auto v) {
+                        return v->as_int();
+                    };
+                    if (!last_int) {
+                        return {EvalResult(last_int.error().error()), ""};
+                    }
+                    auto enum_ref = ctx.storage_table[type.ref.value()].storages[0].ref().value();
+                    auto ident = ctx.ident(enum_ref);
+                    auto repr = ctx.enum_str(ident, *last_int);
+                    result.push_back(EvalResult(new_enum(ctx.enum_str(ident, *last_int)), repr));
+                }
+                else {
+                    result.push_back(EvalResult(evaluated.back().value, std::format("({}){}", type_str, evaluated.back().repr)));
+                }
                 break;
             }
             case rebgn::AbstractOp::CALL_CAST: {
@@ -308,12 +430,12 @@ namespace bm2hexmap {
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 auto ident = ctx.ident(code.ident().value());
-                auto ref = code.ref().value();
-                auto type = type_to_string(ctx, code.type().value());
-                auto evaluated = eval(ctx.ref(ref), ctx);
-                result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);
-                result.push_back(std::format("{} {} = {}", type, ident, evaluated.back().repr));
-                result.push_back(ident);
+                // auto ref = code.ref().value();
+                // auto type = type_to_string(ctx, code.type().value());
+                // auto evaluated = eval(ctx.ref(ref), ctx);
+                // result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);
+                // result.push_back(std::format("{} {} = {}", type, ident, evaluated.back().repr));
+                result.push_back(EvalResult(ctx.variable(ident), ident));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE_REF: {
@@ -388,6 +510,7 @@ namespace bm2hexmap {
                         }());
                     };
                 };
+                result.push_back(EvalResult{std::move(value), repr});
                 break;
             }
             case rebgn::AbstractOp::UNARY: {
@@ -432,10 +555,16 @@ namespace bm2hexmap {
                 result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);
                 auto right_ident = ctx.ident(right_ref);
                 auto repr = std::format("{}.{}", left_eval.back().repr, right_ident);
-                auto value = left_eval.back().value & [&](auto v) {
-                    return v->index(right_ident);
-                };
-                result.push_back(EvalResult{std::move(value), repr});
+                if (ctx.ref(left_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE) {
+                    // enum
+                    result.push_back(EvalResult(new_enum(repr), repr));
+                }
+                else {
+                    auto value = left_eval.back().value & [&](auto v) {
+                        return v->index(right_ident);
+                    };
+                    result.push_back(EvalResult{std::move(value), repr});
+                }
                 break;
             }
             case rebgn::AbstractOp::INDEX: {
@@ -487,7 +616,20 @@ namespace bm2hexmap {
                 break;
             }
             case rebgn::AbstractOp::NEW_OBJECT: {
-                result.push_back("/*Unimplemented NEW_OBJECT*/");
+                auto& typ = ctx.storage_table[code.type().value().ref.value()].storages[0];
+                if (typ.type == rebgn::StorageType::BOOL || typ.type == rebgn::StorageType::INT || typ.type == rebgn::StorageType::UINT) {
+                    result.push_back(EvalResult{new_int(0), "0"});
+                }
+                else if (typ.type == rebgn::StorageType::ARRAY) {
+                    auto size = typ.size().value().value();
+                    result.push_back(EvalResult{new_array(size), "[]"});
+                }
+                else if (typ.type == rebgn::StorageType::VECTOR) {
+                    result.push_back(EvalResult{new_array(0), "[]"});
+                }
+                else {
+                    result.push_back(EvalResult(new_map(), "{}"));
+                }
                 break;
             }
             case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
@@ -674,8 +816,7 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::DEFINE_FIELD: {
                     auto type = type_to_string(ctx, code.type().value());
-                    auto ident = ctx.ident(code.ident().value());
-                    w.writeln(type, " ", ident, ";");
+
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -783,6 +924,12 @@ namespace bm2hexmap {
     }
 
     bool map_n_bit_to_field(Context& ctx, futils::binary::reader& r, size_t bit_size, rebgn::Varint ref, rebgn::Varint related_field, rebgn::EndianExpr endian) {
+        auto evaluated = eval(ctx.ref(ref), ctx);
+        if (!evaluated.back().value) {
+            ctx.output["error"] = evaluated.back().value.error().error();
+            return false;
+        }
+
         if (bit_size % 8 == 0) {
             futils::view::rvec data;
             auto offset = r.offset();
@@ -808,17 +955,76 @@ namespace bm2hexmap {
                 .related_data = data,
                 .interpreted_value = interpreted_value,
             });
+            ctx.read_offset = r.offset();
+            evaluated.back().value.value()->value = interpreted_value;
             return true;
         }
         ctx.output["error"] = "bit size not multiple of 8";
         return false;
     }
 
+    size_t find_next_else_or_end_if(Context& ctx, size_t start, bool include_else = false) {
+        size_t nested = 0;
+        for (size_t i = start + 1;; i++) {
+            if (i >= ctx.bm.code.size()) {
+                return ctx.bm.code.size();
+            }
+            auto& code = ctx.bm.code[i];
+            if (nested) {
+                if (code.op == rebgn::AbstractOp::END_IF) {
+                    nested--;
+                }
+            }
+            else {
+                if (!include_else) {
+                    if (code.op == rebgn::AbstractOp::END_IF) {
+                        return i;
+                    }
+                }
+                else {
+                    if (code.op == rebgn::AbstractOp::ELIF || code.op == rebgn::AbstractOp::ELSE || code.op == rebgn::AbstractOp::END_IF) {
+                        return i;
+                    }
+                }
+            }
+            if (code.op == rebgn::AbstractOp::IF) {
+                nested++;
+            }
+        }
+    }
+
+    size_t find_next_end_loop(Context& ctx, size_t start) {
+        size_t nested = 0;
+        for (size_t i = start + 1;; i++) {
+            if (i >= ctx.bm.code.size()) {
+                return ctx.bm.code.size();
+            }
+            auto& code = ctx.bm.code[i];
+            if (nested) {
+                if (code.op == rebgn::AbstractOp::END_LOOP) {
+                    nested--;
+                }
+            }
+            else {
+                if (code.op == rebgn::AbstractOp::END_LOOP) {
+                    return i;
+                }
+            }
+            if (code.op == rebgn::AbstractOp::LOOP_INFINITE || code.op == rebgn::AbstractOp::LOOP_CONDITION) {
+                nested++;
+            }
+        }
+    }
+
     void inner_function(Context& ctx, futils::binary::reader& r, rebgn::Range range) {
-        std::vector<futils::helper::DynDefer> defer;
+        // std::vector<futils::helper::DynDefer> defer;
+        bool from_if = false;
         TmpCodeWriter w;
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
+            auto d = futils::helper::defer([&] {
+                ctx.op_step.push_back(i);
+            });
             switch (code.op) {
                 case rebgn::AbstractOp::METADATA: {
                     w.writeln("/*Unimplemented METADATA*/ ");
@@ -850,11 +1056,11 @@ namespace bm2hexmap {
                     w.writeln(" ", ident, "(");
                     add_parameter(ctx, w, range);
                     w.writeln(") { ");
-                    defer.push_back(w.indent_scope_ex());
+                    // defer.push_back(w.indent_scope_ex());
                     break;
                 }
                 case rebgn::AbstractOp::END_FUNCTION: {
-                    defer.pop_back();
+                    // defer.pop_back();
                     w.writeln("}");
                     break;
                 }
@@ -937,60 +1143,178 @@ namespace bm2hexmap {
                     break;
                 }
                 case rebgn::AbstractOp::CALL_DECODE: {
-                    w.writeln("/*Unimplemented CALL_DECODE*/ ");
+                    auto ref_to_decoder = code.left_ref().value();
+                    ctx.self_stack.push_back(std::move(ctx.self));
+                    ctx.enter_stack(rebgn::AbstractOp::CALL_DECODE, i, i);
+                    auto range = ctx.range(ref_to_decoder);
+                    inner_function(ctx, r, range);
+                    auto ref = eval(ctx.ref(code.right_ref().value()), ctx);
+                    if (!ref.back().value) {
+                        ctx.output["error"] = ref.back().value.error().error();
+                        return;
+                    }
+                    ref.back().value.value()->value = std::move(ctx.self);
+                    ctx.stack.pop_back();
+                    ctx.self = std::move(ctx.self_stack.back());
+                    ctx.self_stack.pop_back();
+                    // w.writeln("/*Unimplemented CALL_DECODE*/ ");
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_INFINITE: {
-                    w.writeln("for(;;) {");
-                    defer.push_back(w.indent_scope_ex());
+                    // w.writeln("for(;;) {");
+                    //  defer.push_back(w.indent_scope_ex());
+                    auto end = find_next_end_loop(ctx, i);
+                    if (end == ctx.bm.code.size()) {
+                        ctx.output["error"] = "no end loop found";
+                        return;
+                    }
+                    ctx.enter_stack(rebgn::AbstractOp::LOOP_INFINITE, i, end);
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_CONDITION: {
                     auto ref = code.ref().value();
                     auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("while (", evaluated.back().repr, ") {");
-                    defer.push_back(w.indent_scope_ex());
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value()->as_int();
+                    if (!res) {
+                        ctx.output["error"] = "loop condition not int";
+                        return;
+                    }
+                    auto end = find_next_end_loop(ctx, i);
+                    if (end == ctx.bm.code.size()) {
+                        ctx.output["error"] = "no end loop found";
+                        return;
+                    }
+                    if (*res) {
+                        ctx.enter_stack(rebgn::AbstractOp::LOOP_CONDITION, i, end);
+                    }
+                    else {
+                        i = end;
+                    }
+                    // w.writeln("while (", evaluated.back().repr, ") {");
+                    // defer.push_back(w.indent_scope_ex());
                     break;
                 }
                 case rebgn::AbstractOp::CONTINUE: {
-                    w.writeln("continue;");
+                    // w.writeln("continue;");
+                    if (!ctx.do_continue(i)) {
+                        return;
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::BREAK: {
-                    w.writeln("break;");
+                    if (!ctx.do_break(i)) {
+                        return;
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::END_LOOP: {
-                    defer.pop_back();
+                    // defer.pop_back();
                     w.writeln("}");
                     break;
                 }
                 case rebgn::AbstractOp::IF: {
                     auto ref = code.ref().value();
                     auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("if (", evaluated.back().repr, ") {");
-                    defer.push_back(w.indent_scope_ex());
+                    // w.writeln("if (", evaluated.back().repr, ") {");
+                    // defer.push_back(w.indent_scope_ex());
+                    auto end = find_next_else_or_end_if(ctx, i, true);
+                    if (end == ctx.bm.code.size()) {
+                        ctx.output["error"] = "no end if found";
+                        return;
+                    }
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value()->as_int();
+                    if (!res) {
+                        ctx.output["error"] = "if condition not int";
+                        return;
+                    }
+                    if (*res) {
+                        auto end_final = find_next_else_or_end_if(ctx, i, false);
+                        ctx.enter_stack(rebgn::AbstractOp::IF, i, end_final);
+                    }
+                    else {
+                        if (ctx.bm.code[i].op != rebgn::AbstractOp::END_IF) {
+                            i = end - 1;
+                            from_if = true;
+                        }
+                        else {
+                            i = end;
+                        }
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::ELIF: {
+                    if (!from_if) {
+                        if (!ctx.do_end_if(i)) {
+                            return;
+                        }
+                        break;
+                    }
                     auto ref = code.ref().value();
                     auto evaluated = eval(ctx.ref(ref), ctx);
-                    defer.pop_back();
-                    w.writeln("}");
-                    w.writeln("else if (", evaluated.back().repr, ") {");
-                    defer.push_back(w.indent_scope_ex());
+                    // defer.pop_back();
+                    // w.writeln("}");
+                    // w.writeln("else if (", evaluated.back().repr, ") {");
+                    // defer.push_back(w.indent_scope_ex());
+                    auto end = find_next_else_or_end_if(ctx, i, true);
+                    if (end == ctx.bm.code.size()) {
+                        ctx.output["error"] = "no end if found";
+                        return;
+                    }
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value()->as_int();
+                    if (!res) {
+                        ctx.output["error"] = "if condition not int";
+                        return;
+                    }
+                    if (*res) {
+                        auto end_final = find_next_else_or_end_if(ctx, i, false);
+                        ctx.enter_stack(rebgn::AbstractOp::ELIF, i, end_final);
+                    }
+                    else {
+                        if (ctx.bm.code[i].op != rebgn::AbstractOp::END_IF) {
+                            i = end - 1;
+                        }
+                        else {
+                            i = end;
+                        }
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::ELSE: {
-                    defer.pop_back();
-                    w.writeln("}");
-                    w.writeln("else {");
-                    defer.push_back(w.indent_scope_ex());
+                    if (!from_if) {
+                        if (!ctx.do_end_if(i)) {
+                            return;
+                        }
+                    }
+                    auto end = find_next_else_or_end_if(ctx, i, true);
+                    if (end == ctx.bm.code.size()) {
+                        ctx.output["error"] = "no end if found";
+                        return;
+                    }
+                    ctx.enter_stack(rebgn::AbstractOp::ELSE, i, end);
+                    // defer.pop_back();
+                    // w.writeln("}");
+                    // w.writeln("else {");
+                    // defer.push_back(w.indent_scope_ex());
                     break;
                 }
                 case rebgn::AbstractOp::END_IF: {
-                    defer.pop_back();
-                    w.writeln("}");
+                    if (!ctx.do_end_if(i)) {
+                        return;
+                    }
+                    // defer.pop_back();
+                    // w.writeln("}");
                     break;
                 }
                 case rebgn::AbstractOp::MATCH: {
@@ -1018,8 +1342,16 @@ namespace bm2hexmap {
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_VARIABLE: {
-                    auto evaluated = eval(code, ctx);
-                    w.writeln(evaluated[evaluated.size() - 2].repr);
+                    auto new_variable = std::make_shared<Value>();
+                    auto ident = ctx.ident(code.ident().value());
+                    auto ref = code.ref().value();
+                    auto init_eval = eval(ctx.ref(code.ref().value()), ctx);
+                    if (!init_eval.back().value) {
+                        ctx.output["error"] = init_eval.back().value.error().error();
+                        return;
+                    }
+                    new_variable->value = init_eval.back().value.value()->value;
+                    ctx.stack.back().variables[ident] = new_variable;
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1028,7 +1360,14 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::ASSIGN: {
                     auto evaluated = eval(code, ctx);
-                    w.writeln(evaluated[evaluated.size() - 2].repr);
+                    // w.writeln(evaluated[evaluated.size() - 2].repr);
+                    auto init = evaluated[evaluated.size() - 2].value;
+                    auto ref = evaluated[evaluated.size() - 1].value;
+                    if (!ref || !init) {
+                        ctx.output["error"] = "variable assign error";
+                        return;
+                    }
+                    (*ref)->value = (*init)->value;
                     break;
                 }
                 case rebgn::AbstractOp::PROPERTY_ASSIGN: {
@@ -1055,11 +1394,31 @@ namespace bm2hexmap {
                     auto new_element_ref = code.right_ref().value();
                     auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                     auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
-                    w.writeln("/*Unimplemented APPEND*/");
+                    if (!vector_eval.back().value) {
+                        ctx.output["error"] = vector_eval.back().value.error().error();
+                        return;
+                    }
+                    auto res = vector_eval.back().value.value()->push(new_element_eval.back().value);
+                    if (!res) {
+                        ctx.output["error"] = res.error().error();
+                        return;
+                    }
                     break;
                 }
                 case rebgn::AbstractOp::INC: {
-                    w.writeln("/*Unimplemented INC*/ ");
+                    auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto val = evaluated.back().value.value();
+                    auto res = val->as_int();
+                    if (!res) {
+                        ctx.output["error"] = res.error().error();
+                        return;
+                    }
+                    val->value = *res + 1;
+                    // w.writeln("/*Unimplemented INC*/ ");
                     break;
                 }
                 case rebgn::AbstractOp::RET: {
@@ -1130,6 +1489,7 @@ namespace bm2hexmap {
                         ctx.output["error"] = std::format("Unimplemented {}", to_string(code.op));
                         return;
                     }
+                    d.cancel();
                     break;
                 }
             }
@@ -1143,6 +1503,38 @@ namespace bm2hexmap {
         return ctx.ident(related_field);
     }
 
+    void map_value_to_json(Context& ctx, json::JSON& json, const std::shared_ptr<Value>& val) {
+        if (std::holds_alternative<std::uint64_t>(val->value)) {
+            json = std::uint64_t(std::get<std::uint64_t>(val->value));
+        }
+        else if (std::holds_alternative<std::string>(val->value)) {
+            json = std::get<std::string>(val->value);
+        }
+        else if (std::holds_alternative<std::vector<std::shared_ptr<Value>>>(val->value)) {
+            auto& vec = std::get<std::vector<std::shared_ptr<Value>>>(val->value);
+            json::JSON arr;
+            for (auto& v : vec) {
+                json::JSON j;
+                map_value_to_json(ctx, j, v);
+                arr.push_back(j);
+            }
+            json = std::move(arr);
+        }
+        else if (std::holds_alternative<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value)) {
+            auto& map = std::get<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value);
+            json::JSON obj;
+            for (auto& [k, v] : map) {
+                json::JSON j;
+                map_value_to_json(ctx, j, v);
+                obj[k] = j;
+            }
+            json = std::move(obj);
+        }
+        else {
+            json = nullptr;
+        }
+    }
+
     void dump_json(Context& ctx) {
         std::vector<json::JSON> offset_ranges;
         for (auto& range : ctx.offset_ranges) {
@@ -1150,13 +1542,38 @@ namespace bm2hexmap {
             json["start"] = std::uint64_t(range.start);
             json["end"] = std::uint64_t(range.end);
             json["related_field"] = related_field_to_string(ctx, range.related_field);
-            std::string related_data_base64;
-            futils::base64::encode(range.related_data, related_data_base64);
-            json["related_data"] = related_data_base64;
+
+            auto& x = json["related_data"];
+            for (auto& y : range.related_data) {
+                x.push_back(std::uint64_t(y));
+            }
             json["interpreted_value"] = range.interpreted_value;
             offset_ranges.push_back(json);
         }
         ctx.output["offset_ranges"] = std::move(offset_ranges);
+        std::vector<json::JSON> ops;
+        for (auto& op : ctx.op_step) {
+            ops.push_back(to_string(ctx.bm.code[op].op));
+        }
+        ctx.output["op_step"] = std::move(ops);
+        auto& self = ctx.output["self"];
+        for (auto& kv : ctx.self) {
+            json::JSON json;
+            map_value_to_json(ctx, json, kv.second);
+            self[kv.first] = json;
+        }
+        auto& variables = ctx.output["variables"];
+        variables.init_array();
+        for (auto& s : ctx.stack) {
+            json::JSON base;
+            base.init_obj();
+            for (auto& kv : s.variables) {
+                json::JSON json;
+                map_value_to_json(ctx, json, kv.second);
+                base[kv.first] = json;
+            }
+            variables.push_back(base);
+        }
         json::Stringer<futils::binary::writer&> s{ctx.cw.out()};
         json::to_string(ctx.output, s);
     }
@@ -1175,6 +1592,30 @@ namespace bm2hexmap {
                         auto str = ctx.metadata_table[meta->name.value()];
                         // handle metadata...
                         break;
+                    }
+                    case rebgn::AbstractOp::DEFINE_ENUM: {
+                        auto range = ctx.range(code.ident().value());
+                        auto ident = ctx.ident(code.ident().value());
+                        auto& vec = ctx.enum_map[ident];
+                        for (size_t k = range.start; k < range.end; k++) {
+                            auto& code = ctx.bm.code[k];
+                            if (code.op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                                auto ident = ctx.ident(code.ident().value());
+                                auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
+                                if (!evaluated.back().value) {
+                                    ctx.output["error"] = evaluated.back().value.error().error();
+                                    dump_json(ctx);
+                                    return;
+                                }
+                                auto value = evaluated.back().value.value()->as_int();
+                                if (!value) {
+                                    ctx.output["error"] = value.error().error();
+                                    dump_json(ctx);
+                                    return;
+                                }
+                                vec.push_back({*value, ident});
+                            }
+                        }
                     }
                 }
             }
@@ -1204,6 +1645,7 @@ namespace bm2hexmap {
         auto format_ref = found->second;
         auto func_range = ctx.range(format_ref);
         futils::binary::reader r{flags.input_binary};
+        ctx.enter_stack(rebgn::AbstractOp::DEFINE_PROGRAM, 0, ctx.bm.code.size());
         inner_function(ctx, r, func_range);
         dump_json(ctx);
     }

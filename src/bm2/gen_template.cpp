@@ -721,12 +721,21 @@ namespace rebgn {
 
         write_impl_template(w, flags);
 
+        w.writeln("std::string escape_", flags.lang_name, "_keyword(const std::string& str) {");
+        auto scope_escape_ident = w.indent_scope();
+        w.writeln("if (str == \"if\" || str == \"for\" || str == \"else\" || str == \"break\" || str == \"continue\") {");
+        w.indent_writeln("return str + \"_\";");
+        w.writeln("}");
+        w.writeln("return str;");
+        scope_escape_ident.execute();
+        w.writeln("}");
+
         w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {");
         auto scope_to_xxx = w.indent_scope();
         w.writeln("Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
-        auto scope_escape_ident = w.indent_scope();
-        w.writeln("return str;");
-        scope_escape_ident.execute();
+        auto scope_escape_key_ident = w.indent_scope();
+        w.writeln("return escape_", flags.lang_name, "_keyword(str);");
+        scope_escape_key_ident.execute();
         w.writeln("}};");
         w.writeln("// search metadata");
         w.writeln("for (size_t j = 0; j < bm.programs.ranges.size(); j++) {");

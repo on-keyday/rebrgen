@@ -73,8 +73,8 @@
             "program": "${workspaceRoot}/tool/bm2hexmap",
             "args": [
                 "-i","${workspaceRoot}/save/save.bin",
-                "--binary","${workspaceRoot}/save/save.bin",
-                "--start-format","Simple"
+                "--binary","${workspaceRoot}/save/bridge_msg.bin",
+                "--start-format","NetLinkMessage"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

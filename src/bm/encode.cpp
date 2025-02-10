@@ -546,7 +546,9 @@ namespace rebgn {
                         });
                         return none;
                     }
-                    else if (field->eventual_follow == ast::Follow::end) {
+                    else if (field->follow == ast::Follow::end ||
+                             (field->arguments && field->arguments->sub_byte_length)  // this means that the field is a sub-byte field
+                    ) {
                         if (elem_is_int) {
                             auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
                             if (!endian) {
@@ -570,7 +572,7 @@ namespace rebgn {
                         });
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
-                    else if (field->eventual_follow == ast::Follow::fixed) {
+                    else if (field->follow == ast::Follow::fixed) {
                         auto new_id = m.new_id(nullptr);
                         if (!new_id) {
                             return new_id.error();
@@ -632,7 +634,7 @@ namespace rebgn {
                         });
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
-                    else if (field->eventual_follow == ast::Follow::constant) {
+                    else if (field->follow == ast::Follow::constant) {
                         auto next = field->next.lock();
                         if (!next) {
                             return error("Invalid next field");

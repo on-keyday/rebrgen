@@ -28,15 +28,23 @@ namespace bm2hexmap {
         return futils::helper::either::unexpected{Error(futils::error::StrError{std::format(s, std::forward<decltype(args)>(args)...)})};
     }
 
+    struct EnumValue {
+        std::string str;
+        std::uint64_t value;
+    };
+
     struct Value {
         std::variant<std::monostate, std::uint64_t,
-                     std::string /*enum */, std::vector<std::shared_ptr<Value>>,
+                     EnumValue, std::vector<std::shared_ptr<Value>>,
                      std::unordered_map<std::string, std::shared_ptr<Value>>>
             value;
 
         expected<std::uint64_t> as_int() {
             if (auto p = std::get_if<std::uint64_t>(&value); p) {
                 return *p;
+            }
+            if (auto e = std::get_if<EnumValue>(&value); e) {
+                return e->value;
             }
             return unexpect_error("Not an int");
         }
@@ -47,6 +55,9 @@ namespace bm2hexmap {
             }
             if (auto p = std::get_if<std::vector<std::shared_ptr<Value>>>(&value); p) {
                 if (*index < p->size()) {
+                    if (!(*p)[*index]) {
+                        (*p)[*index] = std::make_shared<Value>();
+                    }
                     return (*p)[*index];
                 }
             }
@@ -76,6 +87,12 @@ namespace bm2hexmap {
         }
 
         expected<void> push(expected<std::shared_ptr<Value>> v) {
+            if (!v) {
+                return unexpect_error("Push error: {}", v.error().error());
+            }
+            if (std::holds_alternative<std::monostate>(value)) {
+                value = std::vector<std::shared_ptr<Value>>();
+            }
             if (auto p = std::get_if<std::vector<std::shared_ptr<Value>>>(&value); p) {
                 p->push_back(*v);
                 return {};
@@ -106,6 +123,7 @@ namespace bm2hexmap {
         std::vector<Map> self_stack;
 
         size_t read_offset = 0;
+        bool can_read = true;
 
         std::map<std::string, std::vector<std::pair<std::uint64_t, std::string>>> enum_map;
 
@@ -131,13 +149,16 @@ namespace bm2hexmap {
             return false;
         }
 
-        bool do_continue(size_t& i) {
+        bool do_continue(size_t& i, bool must_be_top = false) {
             while (stack.size()) {
                 auto& top = stack.back();
                 if (top.op == rebgn::AbstractOp::LOOP_INFINITE ||
                     top.op == rebgn::AbstractOp::LOOP_CONDITION) {
                     i = top.pc - 1;
                     return true;
+                }
+                if (must_be_top) {
+                    break;
                 }
                 stack.pop_back();
             }
@@ -173,6 +194,18 @@ namespace bm2hexmap {
                 }
             }
             return std::format("{}({})", belong, value);
+        }
+
+        std::uint64_t enum_value(const std::string& belong, const std::string& value) {
+            auto found = enum_map.find(belong);
+            if (found != enum_map.end()) {
+                for (auto& [v, s] : found->second) {
+                    if (s == value) {
+                        return v;
+                    }
+                }
+            }
+            return 0;
         }
 
         std::shared_ptr<Value> variable(const std::string& ident) {
@@ -294,7 +327,11 @@ namespace bm2hexmap {
 
     std::shared_ptr<Value> new_array(size_t initial = 0) {
         auto v = std::make_shared<Value>();
-        v->value = std::vector<std::shared_ptr<Value>>(initial);
+        auto ini = std::vector<std::shared_ptr<Value>>(initial);
+        for (auto& i : ini) {
+            i = std::make_shared<Value>();
+        }
+        v->value = std::move(ini);
         return v;
     }
 
@@ -304,9 +341,9 @@ namespace bm2hexmap {
         return v;
     }
 
-    std::shared_ptr<Value> new_enum(const std::string& enum_str) {
+    std::shared_ptr<Value> new_enum(const std::string& enum_str, std::uint64_t value) {
         auto v = std::make_shared<Value>();
-        v->value = enum_str;
+        v->value = EnumValue{enum_str, value};
         return v;
     }
 
@@ -314,7 +351,7 @@ namespace bm2hexmap {
         expected<std::shared_ptr<Value>> value;
         std::string repr;
 
-        EvalResult() = default;
+        explicit EvalResult() = default;
 
         EvalResult(const char* repr)
             : repr(repr) {
@@ -327,7 +364,9 @@ namespace bm2hexmap {
         }
 
         EvalResult(expected<std::shared_ptr<Value>> value, std::string repr)
-            : value(std::move(value)), repr(repr) {}
+            : value(std::move(value)), repr(repr) {
+            ;
+        }
     };
 
     template <typename T, typename U>
@@ -337,6 +376,9 @@ namespace bm2hexmap {
 
     std::vector<EvalResult> eval(const rebgn::Code& code, Context& ctx) {
         std::vector<EvalResult> result;
+        auto d = futils::helper::defer([&] {
+            ctx.op_step.push_back(&code - &ctx.bm.code[0]);
+        });
         switch (code.op) {
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto ident = ctx.ident(code.ident().value());
@@ -377,8 +419,7 @@ namespace bm2hexmap {
                 break;
             }
             case rebgn::AbstractOp::CAN_READ: {
-                auto can_read = ctx.read_offset < ctx.input_binary.size();
-                result.push_back(EvalResult(new_int(can_read), "can_read"));
+                result.push_back(EvalResult(new_int(ctx.can_read), "can_read"));
                 break;
             }
             case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
@@ -401,7 +442,7 @@ namespace bm2hexmap {
                     auto enum_ref = ctx.storage_table[type.ref.value()].storages[0].ref().value();
                     auto ident = ctx.ident(enum_ref);
                     auto repr = ctx.enum_str(ident, *last_int);
-                    result.push_back(EvalResult(new_enum(ctx.enum_str(ident, *last_int)), repr));
+                    result.push_back(EvalResult(new_enum(ctx.enum_str(ident, *last_int), *last_int), repr));
                 }
                 else {
                     result.push_back(EvalResult(evaluated.back().value, std::format("({}){}", type_str, evaluated.back().repr)));
@@ -444,7 +485,8 @@ namespace bm2hexmap {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
-                result.push_back("/*Unimplemented DEFINE_CONSTANT*/");
+                auto ref = code.ref().value();
+                return eval(ctx.ref(ref), ctx);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_VARIABLE: {
@@ -557,7 +599,7 @@ namespace bm2hexmap {
                 auto repr = std::format("{}.{}", left_eval.back().repr, right_ident);
                 if (ctx.ref(left_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE) {
                     // enum
-                    result.push_back(EvalResult(new_enum(repr), repr));
+                    result.push_back(EvalResult(new_enum(repr, ctx.enum_value(left_eval.back().repr, right_ident)), repr));
                 }
                 else {
                     auto value = left_eval.back().value & [&](auto v) {
@@ -923,18 +965,12 @@ namespace bm2hexmap {
         }
     }
 
-    bool map_n_bit_to_field(Context& ctx, futils::binary::reader& r, size_t bit_size, rebgn::Varint ref, rebgn::Varint related_field, rebgn::EndianExpr endian) {
-        auto evaluated = eval(ctx.ref(ref), ctx);
-        if (!evaluated.back().value) {
-            ctx.output["error"] = evaluated.back().value.error().error();
-            return false;
-        }
-
+    bool map_n_bit_to_field(Context& ctx, futils::binary::reader& r, size_t bit_size, std::shared_ptr<Value>& ref, rebgn::Varint related_field, rebgn::EndianExpr endian) {
         if (bit_size % 8 == 0) {
             futils::view::rvec data;
             auto offset = r.offset();
             if (!r.read(data, bit_size / 8)) {
-                ctx.output["error"] = "shorter than expected";
+                ctx.output["error"] = std::format("read {} bytes failed", bit_size / 8);
                 return false;
             }
             auto then_offset = r.offset();
@@ -956,7 +992,8 @@ namespace bm2hexmap {
                 .interpreted_value = interpreted_value,
             });
             ctx.read_offset = r.offset();
-            evaluated.back().value.value()->value = interpreted_value;
+            ctx.can_read = !r.empty();
+            ref->value = interpreted_value;
             return true;
         }
         ctx.output["error"] = "bit size not multiple of 8";
@@ -1087,16 +1124,7 @@ namespace bm2hexmap {
                 case rebgn::AbstractOp::ENCODE_INT: {
                     break;  // no encode in hexmap
                 }
-                case rebgn::AbstractOp::DECODE_INT: {
-                    auto bit_size = code.bit_size().value().value();
-                    auto ref = code.ref().value();
-                    auto endian = code.endian().value();
-                    auto belong = code.belong().value();
-                    if (!map_n_bit_to_field(ctx, r, bit_size, ref, belong, endian)) {
-                        return;
-                    }
-                    break;
-                }
+
                 case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
                     w.writeln("/*Unimplemented ENCODE_INT_VECTOR*/ ");
                     break;
@@ -1105,22 +1133,90 @@ namespace bm2hexmap {
                     w.writeln("/*Unimplemented ENCODE_INT_VECTOR_FIXED*/ ");
                     break;
                 }
-                case rebgn::AbstractOp::DECODE_INT_VECTOR: {
-                    w.writeln("/*Unimplemented DECODE_INT_VECTOR*/ ");
-                    break;
-                }
-                case rebgn::AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: {
-                    w.writeln("/*Unimplemented DECODE_INT_VECTOR_UNTIL_EOF*/ ");
-                    break;
-                }
-                case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
+                case rebgn::AbstractOp::DECODE_INT: {
                     auto bit_size = code.bit_size().value().value();
                     auto ref = code.ref().value();
                     auto endian = code.endian().value();
                     auto belong = code.belong().value();
-                    auto array_size = code.array_length().value().value();
-                    for (size_t i = 0; i < array_size; i++) {
-                        if (!map_n_bit_to_field(ctx, r, bit_size, ref, belong, endian)) {
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value();
+                    if (!map_n_bit_to_field(ctx, r, bit_size, res, belong, endian)) {
+                        return;
+                    }
+                    break;
+                }
+                case rebgn::AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref = code.ref().value();
+                    auto endian = code.endian().value();
+                    auto belong = code.belong().value();
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value();
+                    for (size_t i = 0; !r.empty(); i++) {
+                        auto tmp = new_int(0);
+                        if (!tmp) {
+                            ctx.output["error"] = tmp.error().error();
+                            return;
+                        }
+                        if (!map_n_bit_to_field(ctx, r, bit_size, *tmp, belong, endian)) {
+                            return;
+                        }
+                        auto ok = res->push(*tmp);
+                        if (!ok) {
+                            ctx.output["error"] = ok.error().error();
+                            return;
+                        }
+                    }
+                    break;
+                }
+                case rebgn::AbstractOp::DECODE_INT_VECTOR:
+                case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
+                    auto bit_size = code.bit_size().value().value();
+                    auto ref = code.left_ref().value();
+                    auto length = code.right_ref().value();
+                    auto endian = code.endian().value();
+                    auto belong = code.belong().value();
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto length_evaluated = eval(ctx.ref(length), ctx);
+                    if (!length_evaluated.back().value) {
+                        ctx.output["error"] = length_evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto len_int = length_evaluated.back().value.value()->as_int();
+                    if (!len_int) {
+                        ctx.output["error"] = "length not int";
+                        return;
+                    }
+                    auto res = evaluated.back().value.value();
+                    if (std::holds_alternative<std::monostate>(res->value)) {
+                        res->value = std::vector<std::shared_ptr<Value>>(*len_int);
+                    }
+                    for (size_t i = 0; i < *len_int; i++) {
+                        auto tmp = new_int(0);
+                        if (!tmp) {
+                            ctx.output["error"] = tmp.error().error();
+                            return;
+                        }
+                        if (!map_n_bit_to_field(ctx, r, bit_size, *tmp, belong, endian)) {
+                            return;
+                        }
+                        auto ok = res->index(i) & [&](auto v) {
+                            v->value = (*tmp)->value;
+                        };
+                        if (!ok) {
+                            ctx.output["error"] = ok.error().error();
                             return;
                         }
                     }
@@ -1143,21 +1239,27 @@ namespace bm2hexmap {
                     break;
                 }
                 case rebgn::AbstractOp::CALL_DECODE: {
-                    auto ref_to_decoder = code.left_ref().value();
-                    ctx.self_stack.push_back(std::move(ctx.self));
-                    ctx.enter_stack(rebgn::AbstractOp::CALL_DECODE, i, i);
-                    auto range = ctx.range(ref_to_decoder);
-                    inner_function(ctx, r, range);
                     auto ref = eval(ctx.ref(code.right_ref().value()), ctx);
                     if (!ref.back().value) {
                         ctx.output["error"] = ref.back().value.error().error();
                         return;
                     }
+                    auto ref_to_decoder = code.left_ref().value();
+                    ctx.self_stack.push_back(std::move(ctx.self));
+                    auto current_stack = ctx.stack.size();
+                    ctx.enter_stack(rebgn::AbstractOp::CALL_DECODE, i, i);
+                    auto range = ctx.range(ref_to_decoder);
+                    inner_function(ctx, r, range);
                     ref.back().value.value()->value = std::move(ctx.self);
-                    ctx.stack.pop_back();
+                    while (ctx.stack.size() > current_stack) {
+                        ctx.stack.pop_back();
+                    }
+                    if (ctx.stack.size() != current_stack) {
+                        ctx.output["error"] = "stack size not match";
+                        return;
+                    }
                     ctx.self = std::move(ctx.self_stack.back());
                     ctx.self_stack.pop_back();
-                    // w.writeln("/*Unimplemented CALL_DECODE*/ ");
                     break;
                 }
                 case rebgn::AbstractOp::LOOP_INFINITE: {
@@ -1212,6 +1314,9 @@ namespace bm2hexmap {
                     break;
                 }
                 case rebgn::AbstractOp::END_LOOP: {
+                    if (!ctx.do_continue(i, true)) {
+                        return;
+                    }
                     // defer.pop_back();
                     w.writeln("}");
                     break;
@@ -1257,6 +1362,7 @@ namespace bm2hexmap {
                         }
                         break;
                     }
+                    from_if = false;
                     auto ref = code.ref().value();
                     auto evaluated = eval(ctx.ref(ref), ctx);
                     // defer.pop_back();
@@ -1297,6 +1403,7 @@ namespace bm2hexmap {
                             return;
                         }
                     }
+                    from_if = false;
                     auto end = find_next_else_or_end_if(ctx, i, true);
                     if (end == ctx.bm.code.size()) {
                         ctx.output["error"] = "no end if found";
@@ -1376,7 +1483,20 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::ASSERT: {
                     auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
-                    w.writeln("/*Unimplemented ASSERT*/");
+                    if (!evaluated.back().value) {
+                        ctx.output["error"] = evaluated.back().value.error().error();
+                        return;
+                    }
+                    auto res = evaluated.back().value.value()->as_int();
+                    if (!res) {
+                        ctx.output["error"] = res.error().error();
+                        return;
+                    }
+                    if (!*res) {
+                        ctx.output["error"] = std::format("assert failed: {}", evaluated.back().repr);
+                        return;
+                    }
+                    // w.writeln("/*Unimplemented ASSERT*/");
                     break;
                 }
                 case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -1477,7 +1597,34 @@ namespace bm2hexmap {
                     break;
                 }
                 case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE: {
-                    w.writeln("/*Unimplemented BEGIN_DECODE_SUB_RANGE*/ ");
+                    // w.writeln("/*Unimplemented BEGIN_DECODE_SUB_RANGE*/ ");
+                    auto length_ref = eval(ctx.ref(code.ref().value()), ctx);
+                    if (!length_ref.back().value) {
+                        ctx.output["error"] = length_ref.back().value.error().error();
+                        return;
+                    }
+                    auto length = length_ref.back().value.value()->as_int();
+                    if (!length) {
+                        ctx.output["error"] = length.error().error();
+                        return;
+                    }
+                    futils::view::rvec sub_vec;
+                    if (!r.read(sub_vec, *length)) {
+                        ctx.output["error"] = std::format("shorter than expected, expected {} got {}", *length, r.remain().size());
+                        return;
+                    }
+                    futils::binary::reader sub_r{sub_vec};
+                    auto end = find_op(ctx, range, rebgn::AbstractOp::END_DECODE_SUB_RANGE, i);
+                    if (!end) {
+                        ctx.output["error"] = "no end decode sub range found";
+                        return;
+                    }
+                    ctx.read_offset = 0;
+                    ctx.can_read = !sub_r.empty();
+                    inner_function(ctx, sub_r, {i + 1, *end});
+                    ctx.read_offset = r.offset();
+                    ctx.can_read = !r.empty();
+                    i = *end;
                     break;
                 }
                 case rebgn::AbstractOp::END_DECODE_SUB_RANGE: {
@@ -1504,15 +1651,20 @@ namespace bm2hexmap {
     }
 
     void map_value_to_json(Context& ctx, json::JSON& json, const std::shared_ptr<Value>& val) {
+        if (!val) {
+            json = nullptr;
+            return;
+        }
         if (std::holds_alternative<std::uint64_t>(val->value)) {
             json = std::uint64_t(std::get<std::uint64_t>(val->value));
         }
-        else if (std::holds_alternative<std::string>(val->value)) {
-            json = std::get<std::string>(val->value);
+        else if (std::holds_alternative<EnumValue>(val->value)) {
+            json = std::get<EnumValue>(val->value).str;
         }
         else if (std::holds_alternative<std::vector<std::shared_ptr<Value>>>(val->value)) {
             auto& vec = std::get<std::vector<std::shared_ptr<Value>>>(val->value);
             json::JSON arr;
+            arr.init_array();
             for (auto& v : vec) {
                 json::JSON j;
                 map_value_to_json(ctx, j, v);
@@ -1523,6 +1675,7 @@ namespace bm2hexmap {
         else if (std::holds_alternative<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value)) {
             auto& map = std::get<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value);
             json::JSON obj;
+            obj.init_obj();
             for (auto& [k, v] : map) {
                 json::JSON j;
                 map_value_to_json(ctx, j, v);
@@ -1535,8 +1688,10 @@ namespace bm2hexmap {
         }
     }
 
-    void dump_json(Context& ctx) {
+    void dump_json(Context& ctx, futils::binary::reader& r) {
         std::vector<json::JSON> offset_ranges;
+        ctx.output["read_offset"] = std::uint64_t(r.offset());
+        ctx.output["read_remain"] = std::uint64_t(r.remain().size());
         for (auto& range : ctx.offset_ranges) {
             json::JSON json;
             json["start"] = std::uint64_t(range.start);
@@ -1557,10 +1712,20 @@ namespace bm2hexmap {
         }
         ctx.output["op_step"] = std::move(ops);
         auto& self = ctx.output["self"];
+        auto& current = self[0];
         for (auto& kv : ctx.self) {
             json::JSON json;
             map_value_to_json(ctx, json, kv.second);
-            self[kv.first] = json;
+            current[kv.first] = std::move(json);
+        }
+        for (auto& self_stack : ctx.self_stack) {
+            json::JSON current;
+            for (auto& kv : self_stack) {
+                json::JSON json;
+                map_value_to_json(ctx, json, kv.second);
+                current[kv.first] = json;
+            }
+            self.push_back(current);
         }
         auto& variables = ctx.output["variables"];
         variables.init_array();
@@ -1582,6 +1747,7 @@ namespace bm2hexmap {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
                         return str;
                     }};
+        futils::binary::reader r{flags.input_binary};
         // search metadata
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {
@@ -1593,9 +1759,10 @@ namespace bm2hexmap {
                         // handle metadata...
                         break;
                     }
-                    case rebgn::AbstractOp::DEFINE_ENUM: {
-                        auto range = ctx.range(code.ident().value());
-                        auto ident = ctx.ident(code.ident().value());
+                    case rebgn::AbstractOp::DECLARE_ENUM: {
+                        auto& def = ctx.ref(code.ref().value());
+                        auto range = ctx.range(def.ident().value());
+                        auto ident = ctx.ident(def.ident().value());
                         auto& vec = ctx.enum_map[ident];
                         for (size_t k = range.start; k < range.end; k++) {
                             auto& code = ctx.bm.code[k];
@@ -1604,13 +1771,13 @@ namespace bm2hexmap {
                                 auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
                                 if (!evaluated.back().value) {
                                     ctx.output["error"] = evaluated.back().value.error().error();
-                                    dump_json(ctx);
+                                    dump_json(ctx, r);
                                     return;
                                 }
                                 auto value = evaluated.back().value.value()->as_int();
                                 if (!value) {
                                     ctx.output["error"] = value.error().error();
-                                    dump_json(ctx);
+                                    dump_json(ctx, r);
                                     return;
                                 }
                                 vec.push_back({*value, ident});
@@ -1639,14 +1806,14 @@ namespace bm2hexmap {
         auto found = ctx.format_table.find(flags.start_format_name);
         if (found == ctx.format_table.end()) {
             ctx.output["error"] = "format not found";
-            dump_json(ctx);
+            dump_json(ctx, r);
             return;
         }
         auto format_ref = found->second;
         auto func_range = ctx.range(format_ref);
-        futils::binary::reader r{flags.input_binary};
+
         ctx.enter_stack(rebgn::AbstractOp::DEFINE_PROGRAM, 0, ctx.bm.code.size());
         inner_function(ctx, r, func_range);
-        dump_json(ctx);
+        dump_json(ctx, r);
     }
 }  // namespace bm2hexmap

@@ -1001,6 +1001,7 @@ namespace rebgn {
                     return len.error();
                 }
                 m.op(AbstractOp::BEGIN_ENCODE_SUB_RANGE, [&](Code& c) {
+                    c.sub_range_type(SubRangeType::byte_len);
                     c.ref(*len);
                     c.belong(*ident);
                 });
@@ -1072,6 +1073,7 @@ namespace rebgn {
                     return len.error();
                 }
                 m.op(AbstractOp::BEGIN_DECODE_SUB_RANGE, [&](Code& c) {
+                    c.sub_range_type(SubRangeType::byte_len);
                     c.ref(*len);
                     c.belong(*ident);
                 });

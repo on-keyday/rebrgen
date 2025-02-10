@@ -265,6 +265,10 @@ enum AbstractOp:
     PROPERTY_FUNCTION # marker for property function
 
 
+enum SubRangeType:
+    :u8
+    byte_len # ref specifies byte length
+    replacement # ref specifies replacement byte array
 
 
 enum CastType:
@@ -784,9 +788,11 @@ format Code:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to size
         AbstractOp.BEGIN_ENCODE_SUB_RANGE:
-            ref :Varint # length of sub range
+            sub_range_type :SubRangeType
+            ref :Varint # length of sub range or vector
             belong :Varint # related field
         AbstractOp.BEGIN_DECODE_SUB_RANGE:
+            sub_range_type :SubRangeType
             ref :Varint # length of sub range
             belong :Varint # related field
         AbstractOp.SEEK_ENCODER:

@@ -570,6 +570,14 @@ namespace rebgn {
                     inner_function.indent_writeln("}");
                     inner_function.indent_writeln("break;");
                 }
+                else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
+                    inner_function.indent_writeln("w.writeln(\"return true;\");");
+                    inner_function.indent_writeln("break;");
+                }
+                else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
+                    inner_function.indent_writeln("w.writeln(\"return false;\");");
+                    inner_function.indent_writeln("break;");
+                }
                 else {
                     inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
                     inner_function.indent_writeln("break;");

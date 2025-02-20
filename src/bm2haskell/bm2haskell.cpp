@@ -601,10 +601,6 @@ namespace bm2haskell {
                     w.writeln("{- Unimplemented DYNAMIC_ENDIAN -} ");
                     break;
                 }
-                case rebgn::AbstractOp::SPECIFY_BIT_ORDER: {
-                    w.writeln("{- Unimplemented SPECIFY_BIT_ORDER -} ");
-                    break;
-                }
                 case rebgn::AbstractOp::DEFINE_FUNCTION: {
                     auto ident = ctx.ident(code.ident().value());
                     auto range = ctx.range(code.ident().value());

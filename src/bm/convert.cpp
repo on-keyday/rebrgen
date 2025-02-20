@@ -1804,6 +1804,10 @@ namespace rebgn {
         }
     }
 
+    Error do_OrCond(Module& m, const std::shared_ptr<ast::Expr>& base, const std::shared_ptr<ast::OrCond>& cond) {
+        return none;
+    }
+
     template <>
     Error define<ast::Binary>(Module& m, std::shared_ptr<ast::Binary>& node) {
         if (node->op == ast::BinaryOp::define_assign ||

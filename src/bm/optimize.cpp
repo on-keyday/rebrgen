@@ -1578,6 +1578,7 @@ namespace rebgn {
                     m.int_value(*varint(max_value));
                 });
             }
+            m.immediate_table[max_value] = value_id.value();
         }
         auto length_id = m.new_id(nullptr);
         if (!length_id) {
@@ -2409,6 +2410,7 @@ namespace rebgn {
                     m.int_value64(value);
                 });
             }
+            m.immediate_table[value] = new_id->value();
             return new_id;
         };
         auto new_var = [&](StorageRef ref, Varint new_id) {

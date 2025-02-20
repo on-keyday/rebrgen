@@ -263,6 +263,9 @@ enum AbstractOp:
 
     PROPERTY_FUNCTION # marker for property function
 
+    FALLBACK_BEGIN
+    FALLBACK_END
+
 
 enum SubRangeType:
     :u8
@@ -425,10 +428,16 @@ format EndianExpr:
 
 enum FunctionType:
     :u8
+    FREE
+    MEMBER
+    ENCODE
+    DECODE
+    BIT_GETTER
+    BIT_SETTER
     UNION_GETTER
     UNION_SETTER
     VECTOR_SETTER # like [len]u8. set both vector itself and length
-    
+
 
 format StorageRef:
     ref :Varint
@@ -492,6 +501,7 @@ format Code:
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
             belong :Varint # belong to format or null
+            func_type :FunctionType
         AbstractOp.DEFINE_ENCODER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to encoder
@@ -757,7 +767,7 @@ format Code:
             type :StorageRef
         AbstractOp.PROPERTY_FUNCTION:
             ref :Varint # ref to merged conditional field
-            func_type :FunctionType
+        #    func_type :FunctionType
         AbstractOp.DEFINE_PROPERTY_SETTER:
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function

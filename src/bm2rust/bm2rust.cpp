@@ -524,13 +524,13 @@ namespace bm2rust {
     bool is_bit_field_property(Context& ctx, rebgn::Range range) {
         if (auto op = find_op(ctx, range, rebgn::AbstractOp::PROPERTY_FUNCTION); op) {
             // merged conditional field
-            auto& p = ctx.bm.code[ctx.ident_index_table[ctx.bm.code[*op].ref()->value()]];
+            auto& p = ctx.ref(ctx.bm.code[*op].ref().value());
             if (p.merge_mode() == rebgn::MergeMode::STRICT_TYPE) {
                 auto param = p.param();
                 bool cont = false;
                 for (auto& pa : param->expr_refs) {
-                    auto& idx = ctx.bm.code[ctx.ident_index_table[pa.value()]];
-                    auto& ident = ctx.bm.code[ctx.ident_index_table[idx.right_ref()->value()]];
+                    auto& idx = ctx.ref(pa);
+                    auto& ident = ctx.ref(idx.right_ref().value());
                     if (find_belong_op(ctx, ident, rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
                         return true;
                     }

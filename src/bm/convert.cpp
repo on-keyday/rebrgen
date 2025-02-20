@@ -1240,10 +1240,7 @@ namespace rebgn {
             }
             parent = *parent_;
         }
-        m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-            c.ident(*ident);
-            c.belong(parent);
-        });
+
         bool is_encoder = false, is_decoder = false;
         if (auto fmt = ast::as<ast::Format>(node->belong.lock())) {
             if (fmt->encode_fn.lock() == node) {
@@ -1260,6 +1257,21 @@ namespace rebgn {
         if (is_decoder) {
             m.on_encode_fn = false;
         }
+        m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
+            c.ident(*ident);
+            c.belong(parent);
+            if (is_encoder_or_decoder) {
+                c.func_type(is_encoder ? FunctionType::ENCODE : FunctionType::DECODE);
+            }
+            else {
+                if (parent.value() == null_id) {
+                    c.func_type(FunctionType::FREE);
+                }
+                else {
+                    c.func_type(FunctionType::MEMBER);
+                }
+            }
+        });
         if (node->return_type && !ast::as<ast::VoidType>(node->return_type)) {
             Storages s;
             if (is_encoder_or_decoder) {

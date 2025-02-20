@@ -1146,6 +1146,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*new_id);
             c.belong(*fmt_ident);
+            c.func_type(FunctionType::ENCODE);
         });
         auto typ = m.get_storage_ref(Storages{
                                          .length = varint(1).value(),
@@ -1228,6 +1229,7 @@ namespace rebgn {
         m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
             c.ident(*new_id);
             c.belong(fmt_ident.value());
+            c.func_type(FunctionType::DECODE);
         });
         auto typ = m.get_storage_ref(Storages{
                                          .length = varint(1).value(),

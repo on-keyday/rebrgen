@@ -1722,6 +1722,7 @@ namespace rebgn {
         op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
             n.ident(getter_ident);
             n.belong(belong_of_belong);
+            n.func_type(FunctionType::UNION_GETTER);
         });
 
         type.length = *varint(type.storages.size() + 1);
@@ -1738,9 +1739,8 @@ namespace rebgn {
         op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
-        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
-            n.ref(merged_ident);
-            n.func_type(PropertyFunctionType::UNION_GETTER);
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& m) {
+            m.ref(merged_ident);
         });
         auto ret_empty = [&]() {
             auto empty_ident = m.new_id(nullptr);
@@ -1819,6 +1819,7 @@ namespace rebgn {
         op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
             n.ident(setter_ident);
             n.belong(belong_of_belong);
+            n.func_type(FunctionType::UNION_SETTER);
         });
         auto prop = m.new_id(nullptr);
         if (!prop) {
@@ -1841,9 +1842,8 @@ namespace rebgn {
         op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
-        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
-            n.ref(merged_ident);
-            n.func_type(PropertyFunctionType::UNION_SETTER);
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& m) {
+            m.ref(merged_ident);
         });
         auto bool_ident = m.new_id(nullptr);
         if (!bool_ident) {
@@ -1933,6 +1933,7 @@ namespace rebgn {
         op(AbstractOp::DEFINE_FUNCTION, [&](Code& n) {
             n.ident(setter_ident);
             n.belong(belong);
+            n.func_type(FunctionType::VECTOR_SETTER);
         });
         auto prop = m.new_id(nullptr);
         if (!prop) {
@@ -1960,9 +1961,8 @@ namespace rebgn {
         op(AbstractOp::RETURN_TYPE, [&](Code& n) {
             n.type(*ret_type_ref);
         });
-        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& n) {
-            n.ref(*varint(ident));
-            n.func_type(PropertyFunctionType::VECTOR_SETTER);
+        op(AbstractOp::PROPERTY_FUNCTION, [&](Code& m) {
+            m.ref(*ident_ref);
         });
         RetrieveVarCtx rvar;
         auto err = add_array_length_setter(m, rvar, field_ptr, *prop, setter_ident, op);

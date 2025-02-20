@@ -137,7 +137,6 @@ namespace rebgn {
             case AbstractOp::MERGED_CONDITIONAL_FIELD:
             case AbstractOp::DEFINE_ENCODER:
             case AbstractOp::DEFINE_DECODER:
-            case AbstractOp::PROPERTY_FUNCTION:
             case AbstractOp::NOT_PREV_THEN:
                 return true;
             default:

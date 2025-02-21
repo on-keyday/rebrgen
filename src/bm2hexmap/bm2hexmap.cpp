@@ -1501,7 +1501,7 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::EXPLICIT_ERROR: {
                     auto param = code.param().value();
-                    auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);
+                    auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
                     w.writeln("/*Unimplemented EXPLICIT_ERROR*/");
                     break;
                 }

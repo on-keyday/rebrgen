@@ -483,7 +483,7 @@ namespace rebgn {
                 }
                 else if (op == AbstractOp::EXPLICIT_ERROR) {
                     inner_function.indent_writeln("auto param = code.param().value();");
-                    inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);");
+                    inner_function.indent_writeln("auto evaluated = eval(ctx.ref(param.refs[0]), ctx);");
                     inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
                     inner_function.indent_writeln("break;");
                 }

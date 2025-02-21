@@ -240,7 +240,7 @@ namespace bm2cpp {
             if (p.merge_mode() == rebgn::MergeMode::STRICT_TYPE) {
                 auto param = p.param();
                 bool cont = false;
-                for (auto& pa : param->expr_refs) {
+                for (auto& pa : param->refs) {
                     auto& idx = ctx.bm.code[ctx.ident_index_table[pa.value()]];
                     auto& ident = ctx.bm.code[ctx.ident_index_table[idx.right_ref()->value()]];
                     if (find_belong_op(ctx, ident, rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
@@ -349,8 +349,8 @@ namespace bm2cpp {
                 auto type_str = type_to_string(ctx, *code.type());
                 auto param = code.param().value();
                 std::string arg_call;
-                for (size_t i = 0; i < param.expr_refs.size(); i++) {
-                    auto index = ctx.ident_index_table[param.expr_refs[i].value()];
+                for (size_t i = 0; i < param.refs.size(); i++) {
+                    auto index = ctx.ident_index_table[param.refs[i].value()];
                     auto expr = eval(ctx.bm.code[index], ctx);
                     res.insert(res.end(), expr.begin(), expr.end() - 1);
                     if (i) {
@@ -1358,8 +1358,8 @@ namespace bm2cpp {
     void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
         Context ctx(w, bm, [&](auto&& ctx, auto&& code, auto&& str) {
             if (auto range = ctx.ident_range_table.find(code); range != ctx.ident_range_table.end()) {
-                if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::PROPERTY_FUNCTION)) {
-                    if (ctx.bm.code[*f].func_type() == rebgn::PropertyFunctionType::VECTOR_SETTER) {
+                if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::DEFINE_FUNCTION)) {
+                    if (ctx.bm.code[*f].func_type() == rebgn::FunctionType::VECTOR_SETTER) {
                         return std::format("set_{}", escape_cpp_keyword(str));
                     }
                 }
@@ -1435,28 +1435,28 @@ namespace bm2cpp {
                     case rebgn::AbstractOp::METADATA: {
                         auto meta = code.metadata();
                         auto str = ctx.metadata_table[meta->name.value()];
-                        if (str == "config.cpp.namespace" && meta->expr_refs.size() == 1) {
-                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                        if (str == "config.cpp.namespace" && meta->refs.size() == 1) {
+                            if (auto found = ctx.string_table.find(meta->refs[0].value()); found != ctx.string_table.end()) {
                                 namespace_name = found->second;
                             }
                         }
                         if (str == "config.cpp.include") {
-                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                            if (auto found = ctx.string_table.find(meta->refs[0].value()); found != ctx.string_table.end()) {
                                 ctx.cw.writeln("#include \"", found->second, "\"");
                             }
                         }
                         if (str == "config.cpp.sys_include") {
-                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                            if (auto found = ctx.string_table.find(meta->refs[0].value()); found != ctx.string_table.end()) {
                                 ctx.cw.writeln("#include <", found->second, ">");
                             }
                         }
                         if (str == "config.cpp.bytes_type") {
-                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                            if (auto found = ctx.string_table.find(meta->refs[0].value()); found != ctx.string_table.end()) {
                                 ctx.bytes_type = found->second;
                             }
                         }
                         if (str == "config.cpp.vector_type") {
-                            if (auto found = ctx.string_table.find(meta->expr_refs[0].value()); found != ctx.string_table.end()) {
+                            if (auto found = ctx.string_table.find(meta->refs[0].value()); found != ctx.string_table.end()) {
                                 ctx.vector_type = found->second;
                             }
                         }

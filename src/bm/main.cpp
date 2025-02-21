@@ -56,6 +56,10 @@ namespace rebgn {
         }
 
         auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
+            if (ref.value() == 0) {
+                cout << " (no ref)";
+                return;
+            }
             bool found_ident = false;
             if (use_index) {
                 if (auto found = m.ident_index_table.find(ref.value()); found != m.ident_index_table.end()) {
@@ -164,6 +168,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_ENCODE_SUB_RANGE:
                 case rebgn::AbstractOp::END_DECODE_SUB_RANGE:
+                case rebgn::AbstractOp::END_FALLBACK:
                     nest.resize(nest.size() - 2);
                     break;
                 default:
@@ -248,7 +253,7 @@ namespace rebgn {
             }
             if (auto m = c.metadata()) {
                 print_ref(m->name);
-                for (auto& v : m->expr_refs) {
+                for (auto& v : m->refs) {
                     cout << " ";
                     print_ref(v);
                 }
@@ -256,7 +261,7 @@ namespace rebgn {
             if (auto param = c.param()) {
                 cout << " (";
                 bool first = true;
-                for (auto& p : param->expr_refs) {
+                for (auto& p : param->refs) {
                     if (first) {
                         first = false;
                     }
@@ -325,6 +330,9 @@ namespace rebgn {
                 }
                 cout << " )";
             }
+            if (auto fb = c.fallback()) {
+                print_ref(*fb);
+            }
             cout << '\n';
             switch (c.op) {
                 case rebgn::AbstractOp::DEFINE_ENUM:
@@ -349,6 +357,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_ENCODE_SUB_RANGE:
                 case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE:
+                case rebgn::AbstractOp::DEFINE_FALLBACK:
                     nest += "  ";
                     break;
                 default:

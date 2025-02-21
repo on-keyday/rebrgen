@@ -2,6 +2,7 @@
 #pragma once
 #include "convert.hpp"
 #include "helper.hpp"
+#include "macro.hpp"
 namespace rebgn {
     Error convert_node_definition(Module& m, const std::shared_ptr<ast::Node>& n);
     Error convert_node_encode(Module& m, const std::shared_ptr<ast::Node>& n);
@@ -17,6 +18,31 @@ namespace rebgn {
     Error decode(Module& m, std::shared_ptr<T>& node) = delete;
 
     expected<Varint> static_str(Module& m, const std::shared_ptr<ast::StrLiteral>& node);
+    expected<Varint> immediate(Module& m, auto&& op, std::uint64_t n, brgen::lexer::Loc* loc = nullptr) {
+        if (auto found = m.immediate_table.find(n); found != m.immediate_table.end()) {
+            return varint(found->second);
+        }
+        auto ident = m.new_id(loc);
+        if (!ident) {
+            return ident;
+        }
+        auto val = varint(n);
+        if (!val) {
+            op(AbstractOp::IMMEDIATE_INT64, [&](Code& c) {
+                c.int_value64(n);
+                c.ident(*ident);
+            });
+        }
+        else {
+            op(AbstractOp::IMMEDIATE_INT, [&](Code& c) {
+                c.int_value(*val);
+                c.ident(*ident);
+            });
+        }
+        m.immediate_table[n] = ident->value();
+        return ident;
+    }
+
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, StorageRef typ, ast::ConstantLevel level);
@@ -116,33 +142,28 @@ namespace rebgn {
         return none;
     }
 
-    Error counter_loop(Module& m, Varint length, auto&& block) {
+    Error counter_loop(Module& m, auto&& op, Varint length, auto&& block) {
         auto counter = define_counter(m, 0);
         if (!counter) {
             return counter.error();
         }
-        auto cmp = m.new_id(nullptr);
-        if (!cmp) {
-            return cmp.error();
-        }
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*cmp);
-            c.bop(BinaryOp::less);
-            c.left_ref(*counter);
-            c.right_ref(length);
-        });
-        m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-            c.ref(*cmp);
+        BM_BINARY(op, cmp, BinaryOp::less, *counter, length);
+        op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+            c.ref(cmp);
         });
         auto err = block(*counter);
         if (err) {
             return err;
         }
-        m.op(AbstractOp::INC, [&](Code& c) {
+        op(AbstractOp::INC, [&](Code& c) {
             c.ref(*counter);
         });
-        m.op(AbstractOp::END_LOOP);
+        op(AbstractOp::END_LOOP, [&](Code& c) {});
         return none;
+    }
+
+    Error counter_loop(Module& m, Varint length, auto&& block) {
+        return counter_loop(m, [&](auto&& op, auto&& block) { return m.op(op, block); }, length, block);
     }
 
     void add_switch_union(Module& m, std::shared_ptr<ast::StructType>& node);
@@ -462,25 +483,13 @@ namespace rebgn {
                     origCond = ok.value();
                 }
                 else {
-                    auto cond = get_expr(m, c->cond->expr);
-                    if (!cond) {
-                        return cond.error();
-                    }
+                    BM_GET_EXPR(cond, m, c->cond->expr);
                     if (base_expr) {
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
-                            return new_id.error();
-                        }
-                        m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*new_id);
-                            c.bop(BinaryOp::equal);
-                            c.left_ref(*base_expr);
-                            c.right_ref(*cond);
-                        });
-                        origCond = *new_id;
+                        BM_BINARY(m.op, new_id, BinaryOp::equal, *base_expr, cond);
+                        origCond = new_id;
                     }
                     else {
-                        origCond = *cond;
+                        origCond = cond;
                     }
                 }
                 if (!last) {
@@ -606,17 +615,9 @@ namespace rebgn {
                         return tmp_var.error();
                     }
                     if (end.value() != 0) {
-                        auto id = m.new_node_id(node);
-                        m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*id);
-                            c.left_ref(*tmp_var);
-                            c.bop(l->op == ast::BinaryOp::range_inclusive
-                                      ? BinaryOp::less_or_eq
-                                      : BinaryOp::less);
-                            c.right_ref(end);
-                        });
+                        BM_BINARY_NODE(m.op, id, l->op == ast::BinaryOp::range_inclusive ? BinaryOp::less_or_eq : BinaryOp::less, *tmp_var, end, node);
                         m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-                            c.ref(*tmp_var);
+                            c.ref(id);
                         });
                     }
                     else {
@@ -641,22 +642,11 @@ namespace rebgn {
                         c.ref(*target);
                     });
                     return counter_loop(m, *size_id, [&](Varint counter) {
-                        auto idx = m.new_id(nullptr);
-                        if (!idx) {
-                            return idx.error();
-                        }
-                        m.op(AbstractOp::INDEX, [&](Code& c) {
-                            c.ident(*idx);
-                            c.left_ref(*target);
-                            c.right_ref(counter);
-                        });
-                        auto ident = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));
-                        if (!ident) {
-                            return ident.error();
-                        }
+                        BM_INDEX(m.op, idx, *target, counter);
+                        BM_LOOKUP_IDENT(ident, m, ast::cast_to<ast::Ident>(bop->left));
                         m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
-                            c.ident(*ident);
-                            c.ref(*idx);
+                            c.ident(ident);
+                            c.ref(idx);
                         });
                         auto err = inner_block();
                         if (err) {
@@ -675,22 +665,11 @@ namespace rebgn {
                         return len.error();
                     }
                     return counter_loop(m, *len, [&](Varint counter) {
-                        auto id = m.new_id(nullptr);
-                        if (!id) {
-                            return id.error();
-                        }
-                        m.op(AbstractOp::INDEX, [&](Code& c) {
-                            c.ident(*id);
-                            c.left_ref(*str_id);
-                            c.right_ref(counter);
-                        });
-                        auto ident = m.lookup_ident(ast::cast_to<ast::Ident>(bop->left));
-                        if (!ident) {
-                            return ident.error();
-                        }
+                        BM_INDEX(m.op, id, *str_id, counter);
+                        BM_LOOKUP_IDENT(ident, m, ast::cast_to<ast::Ident>(bop->left));
                         m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
-                            c.ident(*ident);
-                            c.ref(*id);
+                            c.ident(ident);
+                            c.ref(id);
                         });
                         auto err = inner_block();
                         if (err) {
@@ -709,12 +688,9 @@ namespace rebgn {
             }
         }
         if (node->cond) {
-            auto cond = get_expr(m, node->cond);
-            if (!cond) {
-                return cond.error();
-            }
+            BM_GET_EXPR(cond, m, node->cond);
             m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
-                c.ref(*cond);
+                c.ref(cond);
             });
         }
         else {

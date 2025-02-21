@@ -263,8 +263,8 @@ enum AbstractOp:
 
     PROPERTY_FUNCTION # marker for property function
 
-    FALLBACK_BEGIN
-    FALLBACK_END
+    DEFINE_FALLBACK
+    END_FALLBACK
 
 
 enum SubRangeType:
@@ -405,12 +405,12 @@ format Storages:
 
 format Metadata:
     name :Varint
-    len_exprs :Varint
-    expr_refs :[len_exprs.value]Varint
+    len :Varint
+    refs :[len.value]Varint
 
 format Param:
-    len_exprs :Varint
-    expr_refs :[len_exprs.value]Varint
+    len :Varint
+    refs :[len.value]Varint
     
 format PhiParam:
     condition :Varint
@@ -595,6 +595,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
@@ -728,12 +729,18 @@ format Code:
             packed_op_type :PackedOpType
             endian :EndianExpr
             bit_size :Varint
+            fallback :Varint # ref to fallback block
+        AbstractOp.END_ENCODE_PACKED_OPERATION:
+            fallback :Varint # ref to fallback block
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
             endian :EndianExpr
             bit_size :Varint
+            fallback :Varint # ref to fallback block
+        AbstractOp.END_DECODE_PACKED_OPERATION:
+            fallback :Varint # ref to fallback block
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:
@@ -818,6 +825,8 @@ format Code:
             ident :Varint
             ref :Varint # ref to dynamic endian variable(dynamic) or null(platform)
         AbstractOp.REMAIN_BYTES:
+            ident :Varint
+        AbstractOp.DEFINE_FALLBACK:
             ident :Varint
 
 

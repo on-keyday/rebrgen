@@ -528,7 +528,7 @@ namespace bm2rust {
             if (p.merge_mode() == rebgn::MergeMode::STRICT_TYPE) {
                 auto param = p.param();
                 bool cont = false;
-                for (auto& pa : param->expr_refs) {
+                for (auto& pa : param->refs) {
                     auto& idx = ctx.ref(pa);
                     auto& ident = ctx.ref(idx.right_ref().value());
                     if (find_belong_op(ctx, ident, rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
@@ -661,12 +661,12 @@ namespace bm2rust {
                 auto storage = *code.type();
                 auto type_str = type_to_string(ctx, storage);
                 auto param = code.param().value();
-                if (param.expr_refs.size() == 0) {
+                if (param.refs.size() == 0) {
                     res.push_back(std::format("({}::default())", type_str));
                     break;
                 }
-                else if (param.expr_refs.size() == 1) {
-                    auto eval_arg = eval(ctx.bm.code[ctx.ident_index_table[param.expr_refs[0].value()]], ctx).back();
+                else if (param.refs.size() == 1) {
+                    auto eval_arg = eval(ctx.bm.code[ctx.ident_index_table[param.refs[0].value()]], ctx).back();
                     if (ctx.storage_table[storage.ref.value()].storages[0].type == rebgn::StorageType::ENUM) {
                         res.push_back(std::format("({}::from({}))", type_str, eval_arg));
                     }
@@ -676,8 +676,8 @@ namespace bm2rust {
                 }
                 else {
                     std::string arg_call;
-                    for (size_t i = 0; i < param.expr_refs.size(); i++) {
-                        auto index = ctx.ident_index_table[param.expr_refs[i].value()];
+                    for (size_t i = 0; i < param.refs.size(); i++) {
+                        auto index = ctx.ident_index_table[param.refs[i].value()];
                         auto expr = eval(ctx.bm.code[index], ctx);
                         res.insert(res.end(), expr.begin(), expr.end() - 1);
                         if (i) {
@@ -2438,10 +2438,10 @@ namespace bm2rust {
                         auto meta = code.metadata().value();
                         auto meta_str = ctx.metadata_table[meta.name.value()];
                         auto check_bool = [&](auto&& action) {
-                            if (meta.expr_refs.size() == 0) {
+                            if (meta.refs.size() == 0) {
                                 return;
                             }
-                            auto expr = meta.expr_refs[0].value();
+                            auto expr = meta.refs[0].value();
                             auto& expr_code = bm.code[ctx.ident_index_table[expr]];
                             if (expr_code.op == rebgn::AbstractOp::IMMEDIATE_TRUE) {
                                 action();

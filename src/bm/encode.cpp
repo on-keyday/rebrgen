@@ -2,6 +2,7 @@
 
 #include "internal.hpp"
 #include <core/ast/tool/eval.h>
+#include "macro.hpp"
 
 namespace rebgn {
     Varint get_field_ref(Module& m, ast::Field* field) {
@@ -23,44 +24,24 @@ namespace rebgn {
         if (!imm_alignment) {
             return imm_alignment;
         }
-        auto mod = m.new_id(nullptr);
-        if (!mod) {
-            return unexpect_error("Failed to generate new id");
-        }
-        // current size % alignment
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*mod);
-            c.bop(BinaryOp::mod);
-            c.left_ref(*ident);
-            c.right_ref(*imm_alignment);
-        });
-        auto cmp = m.new_id(nullptr);
-        if (!cmp) {
-            return unexpect_error("Failed to generate new id");
-        }
+
+        /*
         auto imm_zero = immediate(m, 0);
         if (!imm_zero) {
             return imm_zero;
         }
+        */
+
+        // size % alignment
+        BM_BINARY_UNEXPECTED(m.op, mod, BinaryOp::mod, *ident, *imm_alignment);
+
         // alignment - (size % alignment)
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*cmp);
-            c.bop(BinaryOp::sub);
-            c.left_ref(*imm_alignment);
-            c.right_ref(*mod);
-        });
-        auto req_size = m.new_id(nullptr);
-        if (!req_size) {
-            return unexpect_error("Failed to generate new id");
-        }
+        BM_BINARY_UNEXPECTED(m.op, cmp, BinaryOp::sub, *imm_alignment, mod);
+
         // (alignment - (size % alignment)) % alignment
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*req_size);
-            c.bop(BinaryOp::mod);
-            c.left_ref(*cmp);
-            c.right_ref(*imm_alignment);
-        });
-        return define_int_tmp_var(m, *req_size, ast::ConstantLevel::variable);
+        BM_BINARY_UNEXPECTED(m.op, req_size, BinaryOp::mod, cmp, *imm_alignment);
+
+        return define_int_tmp_var(m, req_size, ast::ConstantLevel::variable);
     }
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
@@ -412,20 +393,25 @@ namespace rebgn {
                 return max_len.error();
             }
             return counter_loop(m, *max_len, [&](Varint counter) {
-                auto tmp = m.new_id(nullptr);
-                if (!tmp) {
-                    return error("Failed to generate new id");
-                }
                 auto int_typ = std::make_shared<ast::IntType>(str_ty->loc, 8, ast::Endian::unspec, false);
+                /*
                 auto s = define_storage(m, int_typ);
                 if (!s) {
                     return s.error();
+                }
+
+                auto tmp = m.new_id(nullptr);
+                if (!tmp) {
+                    return error("Failed to generate new id");
                 }
                 m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
                     c.ident(*tmp);
                     c.type(*s);
                 });
-                auto tmp_var = define_typed_tmp_var(m, *tmp, *s, ast::ConstantLevel::variable);
+                */
+                BM_DEFINE_STORAGE(s, m, int_typ);
+                BM_NEW_OBJECT(m.op, tmp, s);
+                auto tmp_var = define_typed_tmp_var(m, tmp, s, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -448,18 +434,9 @@ namespace rebgn {
                     c.left_ref(*str_ref);
                     c.right_ref(counter);
                 });
-                auto cmp = m.new_id(nullptr);
-                if (!cmp) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::BINARY, [&](Code& c) {
-                    c.ident(*cmp);
-                    c.bop(BinaryOp::equal);
-                    c.left_ref(*index);
-                    c.right_ref(*tmp_var);
-                });
+                BM_BINARY(m.op, cmp, BinaryOp::equal, *index, *tmp_var);
                 m.op(AbstractOp::ASSERT, [&](Code& c) {
-                    c.ref(*cmp);
+                    c.ref(cmp);
                     c.belong(m.get_function());
                 });
                 return none;
@@ -573,44 +550,32 @@ namespace rebgn {
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
                     else if (field->follow == ast::Follow::fixed) {
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
-                            return new_id.error();
-                        }
                         auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
                         auto imm = immediate(m, tail);
                         if (!imm) {
                             return imm.error();
                         }
-                        auto next_id = m.new_id(nullptr);
-                        if (!next_id) {
-                            return next_id.error();
-                        }
+                        BM_NEW_ID(next_id, error);
                         m.op(AbstractOp::REMAIN_BYTES, [&](Code& c) {
-                            c.ident(*next_id);
+                            c.ident(next_id);
                         });
                         if (elem_is_int) {
                             // remain_bytes = REMAIN_BYTES - tail
                             // assert remain_bytes % elem_size == 0
                             // decode_int_vector(read_bytes / elem_size)
-                            m.op(AbstractOp::BINARY, [&](Code& c) {
-                                c.ident(*new_id);
-                                c.bop(BinaryOp::sub);
-                                c.left_ref(*next_id);
-                                c.right_ref(*imm);
-                            });
-                            auto assert_expr = m.new_id(nullptr);
-                            if (!assert_expr) {
-                                return assert_expr.error();
+                            BM_BINARY(m.op, new_id, BinaryOp::sub, next_id, *imm);
+                            auto elem_size = immediate(m, *elem_is_int->bit_size / futils::bit_per_byte);
+                            if (!elem_size) {
+                                return elem_size.error();
                             }
-                            m.op(AbstractOp::BINARY, [&](Code& c) {
-                                c.ident(*assert_expr);
-                                c.bop(BinaryOp::mod);
-                                c.left_ref(*new_id);
-                                c.right_ref(*varint(*elem_is_int->bit_size / futils::bit_per_byte));
-                            });
+                            auto imm0 = immediate(m, 0);
+                            if (!imm0) {
+                                return imm0.error();
+                            }
+                            BM_BINARY(m.op, mod, BinaryOp::mod, new_id, *elem_size);
+                            BM_BINARY(m.op, assert_expr, BinaryOp::equal, mod, *imm0);
                             m.op(AbstractOp::ASSERT, [&](Code& c) {
-                                c.ref(*assert_expr);
+                                c.ref(assert_expr);
                                 c.belong(m.get_function());
                             });
                             auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
@@ -619,20 +584,15 @@ namespace rebgn {
                             }
                             m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
                                 c.left_ref(base_ref);
-                                c.right_ref(*new_id);
+                                c.right_ref(new_id);
                                 c.endian(*endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
                                 c.belong(get_field_ref(m, field));
                             });
                             return none;
                         }
-                        m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*new_id);
-                            c.bop(BinaryOp::grater);
-                            c.left_ref(*next_id);
-                            c.right_ref(*imm);
-                        });
-                        return conditional_loop(m, *new_id, undelying_decoder);
+                        BM_BINARY(m.op, new_id, BinaryOp::grater, next_id, *imm);
+                        return conditional_loop(m, new_id, undelying_decoder);
                     }
                     else if (field->follow == ast::Follow::constant) {
                         auto next = field->next.lock();
@@ -645,10 +605,7 @@ namespace rebgn {
                         if (!imm) {
                             return imm.error();
                         }
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
-                            return new_id.error();
-                        }
+
                         Storages s;
                         s.length.value(2);
                         s.storages.push_back(Storage{.type = StorageType::ARRAY});
@@ -659,11 +616,8 @@ namespace rebgn {
                         if (!ref) {
                             return ref.error();
                         }
-                        m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                            c.ident(*new_id);
-                            c.type(*ref);
-                        });
-                        auto temporary_read_holder = define_typed_tmp_var(m, *new_id, *ref, ast::ConstantLevel::variable);
+                        BM_NEW_OBJECT(m.op, new_id, *ref);
+                        auto temporary_read_holder = define_typed_tmp_var(m, new_id, *ref, ast::ConstantLevel::variable);
                         if (!temporary_read_holder) {
                             return temporary_read_holder.error();
                         }
@@ -687,15 +641,8 @@ namespace rebgn {
                             if (!gen) {
                                 return gen.error();
                             }
-                            auto flagObj = m.new_id(nullptr);
-                            if (!flagObj) {
-                                return error("Failed to generate new id");
-                            }
-                            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                                c.ident(*flagObj);
-                                c.type(*gen);
-                            });
-                            auto isOK = define_bool_tmp_var(m, *flagObj, ast::ConstantLevel::variable);
+                            BM_NEW_OBJECT(m.op, flagObj, *gen);
+                            auto isOK = define_bool_tmp_var(m, flagObj, ast::ConstantLevel::variable);
                             auto immTrue = immediate_bool(m, true);
                             if (!immTrue) {
                                 return immTrue.error();
@@ -709,37 +656,12 @@ namespace rebgn {
                                 return err;
                             }
                             err = counter_loop(m, *imm, [&](Varint i) {
-                                auto index_str = m.new_id(nullptr);
-                                if (!index_str) {
-                                    return error("Failed to generate new id");
-                                }
-                                m.op(AbstractOp::INDEX, [&](Code& c) {
-                                    c.ident(*index_str);
-                                    c.left_ref(*str_ref);
-                                    c.right_ref(i);
-                                });
-                                auto index_peek = m.new_id(nullptr);
-                                if (!index_peek) {
-                                    return error("Failed to generate new id");
-                                }
-                                m.op(AbstractOp::INDEX, [&](Code& c) {
-                                    c.ident(*index_peek);
-                                    c.left_ref(*temporary_read_holder);
-                                    c.right_ref(i);
-                                });
-                                auto cmp = m.new_id(nullptr);
-                                if (!cmp) {
-                                    return error("Failed to generate new id");
-                                }
-                                m.op(AbstractOp::BINARY, [&](Code& c) {
-                                    c.ident(*cmp);
-                                    c.bop(BinaryOp::not_equal);
-                                    c.left_ref(*index_str);
-                                    c.right_ref(*index_peek);
-                                });
-                                m.init_phi_stack(cmp->value());
+                                BM_INDEX(m.op, index_str, *str_ref, i);
+                                BM_INDEX(m.op, index_peek, *temporary_read_holder, i);
+                                BM_BINARY(m.op, cmp, BinaryOp::not_equal, index_str, index_peek);
+                                m.init_phi_stack(cmp.value());
                                 m.op(AbstractOp::IF, [&](Code& c) {
-                                    c.ref(*cmp);
+                                    c.ref(cmp);
                                 });
                                 err = do_assign(m, nullptr, nullptr, *isOK, *immFalse);
                                 m.op(AbstractOp::BREAK);
@@ -860,19 +782,9 @@ namespace rebgn {
             if (!ident) {
                 return ident.error();
             }
-            auto storage = m.new_id(nullptr);
-            if (!storage) {
-                return storage.error();
-            }
-            auto s = define_storage(m, base_type);
-            if (!s) {
-                return s.error();
-            }
-            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                c.ident(*storage);
-                c.type(*s);
-            });
-            auto tmp_var = define_typed_tmp_var(m, *storage, *s, ast::ConstantLevel::variable);
+            BM_DEFINE_STORAGE(s, m, base_type);
+            BM_NEW_OBJECT(m.op, storage, s);
+            auto tmp_var = define_typed_tmp_var(m, storage, s, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -892,7 +804,7 @@ namespace rebgn {
             m.op(AbstractOp::CAST, [&](Code& c) {
                 c.ident(*casted);
                 c.type(*to);
-                c.from_type(*s);
+                c.from_type(s);
                 c.ref(*tmp_var);
                 c.cast_type(CastType::INT_TO_ENUM);
             });
@@ -913,35 +825,14 @@ namespace rebgn {
             if (size_t(node->arguments->argument_mapping) & size_t(ast::FieldArgumentMapping::direct)) {
                 std::optional<Varint> prev;
                 for (auto& arg : node->arguments->arguments) {
-                    auto val = get_expr(m, arg);
-                    if (!val) {
-                        return val.error();
-                    }
-                    auto new_id = m.new_id(nullptr);
-                    if (!new_id) {
-                        return error("Failed to generate new id");
-                    }
-                    m.op(AbstractOp::BINARY, [&](Code& c) {
-                        c.ident(*new_id);
-                        c.bop(BinaryOp::equal);
-                        c.left_ref(ident);
-                        c.right_ref(*val);
-                    });
+                    BM_GET_EXPR(val, m, arg);
+                    BM_BINARY(m.op, new_id, BinaryOp::equal, ident, val);
                     if (prev) {
-                        auto or_id = m.new_id(nullptr);
-                        if (!or_id) {
-                            return error("Failed to generate new id");
-                        }
-                        m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*or_id);
-                            c.bop(BinaryOp::logical_or);
-                            c.left_ref(*new_id);
-                            c.right_ref(*prev);
-                        });
-                        prev = *or_id;
+                        BM_BINARY(m.op, or_id, BinaryOp::logical_or, new_id, *prev);
+                        prev = or_id;
                     }
                     else {
-                        prev = *new_id;
+                        prev = new_id;
                     }
                 }
                 m.op(AbstractOp::ASSERT, [&](Code& c) {

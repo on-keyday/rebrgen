@@ -5,6 +5,8 @@
 #include <set>
 #include "helper.hpp"
 #include <fnet/util/base64.h>
+#include "macro.hpp"
+
 namespace rebgn {
 
     CastType get_cast_type(const Storages& dest, const Storages& src) {
@@ -129,28 +131,7 @@ namespace rebgn {
     }
 
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc) {
-        if (auto found = m.immediate_table.find(n); found != m.immediate_table.end()) {
-            return varint(found->second);
-        }
-        auto ident = m.new_id(loc);
-        if (!ident) {
-            return ident;
-        }
-        auto val = varint(n);
-        if (!val) {
-            m.op(AbstractOp::IMMEDIATE_INT64, [&](Code& c) {
-                c.int_value64(n);
-                c.ident(*ident);
-            });
-        }
-        else {
-            m.op(AbstractOp::IMMEDIATE_INT, [&](Code& c) {
-                c.int_value(*val);
-                c.ident(*ident);
-            });
-        }
-        m.immediate_table[n] = ident->value();
-        return ident;
+        return immediate(m, [&](auto&&... args) { m.op(args...); }, n, loc);
     }
 
     expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, StorageRef typ, ast::ConstantLevel level) {
@@ -873,17 +854,8 @@ namespace rebgn {
                     }
                     origCond = cond2.value();
                     if (base_cond) {
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
-                            return new_id.error();
-                        }
-                        m.op(AbstractOp::BINARY, [&](Code& c) {
-                            c.ident(*new_id);
-                            c.bop(BinaryOp::equal);
-                            c.left_ref(*base_cond);
-                            c.right_ref(origCond);
-                        });
-                        origCond = *new_id;
+                        BM_BINARY(m.op, new_id, BinaryOp::equal, *base_cond, origCond);
+                        origCond = new_id;
                     }
                 }
                 auto cond_ = origCond;
@@ -1033,7 +1005,7 @@ namespace rebgn {
                 c.right_ref(*ident);
                 c.belong(belong);
             });
-            param.expr_refs.push_back(*cond_field_id);
+            param.refs.push_back(*cond_field_id);
             return none;
         });
         if (err) {
@@ -1044,11 +1016,11 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto len = varint(param.expr_refs.size());
+            auto len = varint(param.refs.size());
             if (!len) {
                 return len.error();
             }
-            param.len_exprs = *len;
+            param.len = *len;
             auto ident = m.new_id(nullptr);
             if (!ident) {
                 return ident.error();
@@ -1085,13 +1057,13 @@ namespace rebgn {
             if (!err) {
                 return err.error();
             }
-            param.expr_refs.push_back(*err);
+            param.refs.push_back(*err);
         }
-        auto len = varint(param.expr_refs.size());
+        auto len = varint(param.refs.size());
         if (!len) {
             return len.error();
         }
-        param.len_exprs = *len;
+        param.len = *len;
         m.op(AbstractOp::EXPLICIT_ERROR, [&](Code& c) {
             c.param(std::move(param));
             c.belong(m.get_function());
@@ -1122,8 +1094,8 @@ namespace rebgn {
             return len.error();
         }
         Param param;
-        param.len_exprs = *len;
-        param.expr_refs = std::move(args);
+        param.len = *len;
+        param.refs = std::move(args);
         m.op(AbstractOp::CALL, [&](Code& c) {
             c.ident(*new_id);
             c.ref(*callee);
@@ -1456,31 +1428,19 @@ namespace rebgn {
 
     template <>
     Error define<ast::Enum>(Module& m, std::shared_ptr<ast::Enum>& node) {
-        auto ident = m.lookup_ident(node->ident);
-        if (!ident) {
-            return ident.error();
-        }
+        BM_LOOKUP_IDENT(ident, m, node->ident);
         StorageRef base_type;  // base type or null
         if (node->base_type) {
-            auto s = define_storage(m, node->base_type);
-            if (!s) {
-                return s.error();
-            }
-            base_type = *s;
+            BM_DEFINE_STORAGE(s, m, node->base_type);
+            base_type = s;
         }
         m.op(AbstractOp::DEFINE_ENUM, [&](Code& c) {
-            c.ident(*ident);
+            c.ident(ident);
             c.type(base_type);
         });
         for (auto& me : node->members) {
-            auto ident = m.lookup_ident(me->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            auto ref = get_expr(m, me->value);
-            if (!ref) {
-                return error("Invalid enum member value");
-            }
+            BM_LOOKUP_IDENT(ident, m, me->ident);
+            BM_GET_EXPR(ref, m, me->value);
             Varint str_ref;
             if (me->str_literal) {
                 auto st = static_str(m, me->str_literal);
@@ -1490,8 +1450,8 @@ namespace rebgn {
                 str_ref = *st;
             }
             m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
-                c.ident(*ident);
-                c.left_ref(*ref);
+                c.ident(ident);
+                c.left_ref(ref);
                 c.right_ref(str_ref);
             });
         }
@@ -1605,21 +1565,21 @@ namespace rebgn {
             }
             args.push_back(arg.value());
         }
-        auto s = define_storage(m, node->expr_type);
-        if (!s) {
-            return s.error();
-        }
+        BM_DEFINE_STORAGE(s, m, node->expr_type);
         if (args.size() == 0) {
-            auto ident = m.new_node_id(node);
-            if (!ident) {
-                return ident.error();
-            }
-            // this is new object creation
-            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                c.ident(*ident);
-                c.type(*s);
-            });
-            m.set_prev_expr(ident->value());
+            /*
+                auto ident = m.new_node_id(node);
+                if (!ident) {
+                    return ident.error();
+                }
+                // this is new object creation
+                m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
+                    c.ident(*ident);
+                    c.type(*s);
+                });
+            */
+            BM_NEW_OBJECT(m.op, ident, s);
+            m.set_prev_expr(ident.value());
         }
         else if (args.size() == 1) {
             auto expr_type = may_get_type(m, node->arguments[0]->expr_type);
@@ -1633,7 +1593,7 @@ namespace rebgn {
             if (!from) {
                 return from.error();
             }
-            auto to = m.get_storage(*s);
+            auto to = m.get_storage(s);
             if (!to) {
                 return to.error();
             }
@@ -1649,19 +1609,16 @@ namespace rebgn {
             }
         }
         else {
-            auto ident = m.new_node_id(node);
-            if (!ident) {
-                return ident.error();
-            }
+            BM_NEW_NODE_ID(ident, error, node);
             Param param;
-            param.len_exprs = varint(args.size()).value();
-            param.expr_refs = std::move(args);
+            param.len = varint(args.size()).value();
+            param.refs = std::move(args);
             m.op(AbstractOp::CALL_CAST, [&](Code& c) {
-                c.ident(*ident);
-                c.type(*s);
+                c.ident(ident);
+                c.type(s);
                 c.param(std::move(param));
             });
-            m.set_prev_expr(ident->value());
+            m.set_prev_expr(ident.value());
         }
 
         return none;
@@ -1722,72 +1679,31 @@ namespace rebgn {
     Error do_range_compare(Module& m, BinaryOp op, ast::Range* range, Varint expr_) {
         std::optional<Varint> start, end;
         if (range->start) {
-            auto start_ = get_expr(m, range->start);
-            if (!start_) {
-                return start_.error();
-            }
-            start = start_.value();
+            BM_GET_EXPR(start_, m, range->start);
+            start = start_;
         }
         if (range->end) {
-            auto end_ = get_expr(m, range->end);
-            if (!end_) {
-                return end_.error();
-            }
-            end = end_.value();
+            BM_GET_EXPR(end_, m, range->end);
+            end = end_;
         }
         Varint new_id;
         if (start) {
-            auto id = m.new_node_id(range->start);
-            if (!id) {
-                return id.error();
-            }
-            m.op(AbstractOp::BINARY, [&](Code& c) {
-                c.ident(*id);
-                c.bop(BinaryOp::less_or_eq);
-                c.left_ref(*start);
-                c.right_ref(expr_);
-            });
-            new_id = *id;
+            BM_BINARY(m.op, id, BinaryOp::less_or_eq, *start, expr_);
+            new_id = id;
         }
         if (end) {
-            auto id = m.new_node_id(range->end);
-            if (!id) {
-                return id.error();
-            }
-            m.op(AbstractOp::BINARY, [&](Code& c) {
-                c.ident(*id);
-                c.bop(BinaryOp::less_or_eq);
-                c.left_ref(expr_);
-                c.right_ref(*end);
-            });
+            BM_BINARY(m.op, id, BinaryOp::less_or_eq, expr_, *end);
             if (new_id.value() != 0) {
-                auto new_id_2 = m.new_id(nullptr);
-                if (!new_id_2) {
-                    return new_id_2.error();
-                }
-                m.op(AbstractOp::BINARY, [&](Code& c) {
-                    c.ident(*new_id_2);
-                    c.bop(BinaryOp::logical_and);
-                    c.left_ref(new_id);
-                    c.right_ref(*id);
-                });
-                new_id = new_id_2.value();
+                BM_BINARY(m.op, new_id_2, BinaryOp::logical_and, new_id, id);
+                new_id = new_id_2;
             }
             else {
-                new_id = *id;
+                new_id = id;
             }
         }
         if (op == BinaryOp::not_equal) {
-            auto new_id_2 = m.new_id(nullptr);
-            if (!new_id_2) {
-                return new_id_2.error();
-            }
-            m.op(AbstractOp::UNARY, [&](Code& c) {
-                c.ident(*new_id_2);
-                c.uop(UnaryOp::logical_not);
-                c.ref(new_id);
-            });
-            new_id = new_id_2.value();
+            BM_UNARY(m.op, new_id_2, UnaryOp::logical_not, new_id);
+            new_id = new_id_2;
         }
         m.set_prev_expr(new_id.value());
         return none;
@@ -1905,10 +1821,12 @@ namespace rebgn {
         if (node->op == ast::BinaryOp::assign) {
             return handle_assign(*right_ref);
         }
+        /*
         auto ident = m.new_node_id(node);
         if (!ident) {
             return ident.error();
         }
+        */
         auto bop = BinaryOp(node->op);
         bool should_assign = false;
         switch (bop) {
@@ -1963,20 +1881,15 @@ namespace rebgn {
             default:
                 break;
         }
-        m.op(AbstractOp::BINARY, [&](Code& c) {
-            c.ident(*ident);
-            c.bop(bop);
-            c.left_ref(*left_ref);
-            c.right_ref(*right_ref);
-        });
+        BM_BINARY_NODE(m.op, ident, bop, *left_ref, *right_ref, node);
         if (should_assign) {
-            auto err = handle_assign(*ident);
+            auto err = handle_assign(ident);
             if (err) {
                 return err;
             }
         }
         else {
-            m.set_prev_expr(ident->value());
+            m.set_prev_expr(ident.value());
         }
         return none;
     }
@@ -2038,12 +1951,12 @@ namespace rebgn {
         }
         Metadata md;
         md.name = *node_name;
-        md.expr_refs = std::move(values);
-        auto length = varint(md.expr_refs.size());
+        md.refs = std::move(values);
+        auto length = varint(md.refs.size());
         if (!length) {
             return length.error();
         }
-        md.len_exprs = length.value();
+        md.len = length.value();
         m.op(AbstractOp::METADATA, [&](Code& c) {
             c.metadata(std::move(md));
         });

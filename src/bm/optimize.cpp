@@ -1072,7 +1072,7 @@ namespace rebgn {
                     return error("Invalid storage key");
                 }
                 auto& key = found->second;
-                for (auto& p : param.expr_refs) {
+                for (auto& p : param.refs) {
                     auto& code = m.code[m.ident_index_table[p.value()]];
                     if (auto found = ctx.conditional_properties.find(code.ident()->value()); found != ctx.conditional_properties.end()) {
                         for (auto& mf : found->second) {
@@ -1098,7 +1098,7 @@ namespace rebgn {
                         return error("Invalid storage key");
                     }
                     auto& common_type_key = found->second;
-                    auto param = c.param().value().expr_refs;
+                    auto param = c.param().value().refs;
                     if (common_type_key == key && std::ranges::equal(param, value, [](auto& a, auto& b) {
                             return a.value() == b.value();
                         })) {
@@ -1152,8 +1152,8 @@ namespace rebgn {
                         }
                         auto& merged = ctx.merged_conditional_fields[mr];
                         Param param;
-                        param.expr_refs = std::move(merged.second);
-                        param.len_exprs = *varint(param.expr_refs.size());
+                        param.refs = std::move(merged.second);
+                        param.len = *varint(param.refs.size());
                         auto found2 = m.storage_key_table.find(merged.first);
                         if (found2 == m.storage_key_table.end()) {
                             return error("Invalid storage key");
@@ -1272,7 +1272,7 @@ namespace rebgn {
             }
             case rebgn::AbstractOp::CALL_CAST: {
                 auto param = code.param().value();
-                for (auto&& p : param.expr_refs) {
+                for (auto&& p : param.refs) {
                     auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.value()]], variables);
                     if (err) {
                         return err;
@@ -1392,7 +1392,7 @@ namespace rebgn {
                     return err;
                 }
                 auto params = code.param().value();
-                for (auto& p : params.expr_refs) {
+                for (auto& p : params.refs) {
                     auto err = retrieve_var(m, op, m.code[m.ident_index_table[p.value()]], variables);
                     if (err) {
                         return err;
@@ -1557,29 +1557,8 @@ namespace rebgn {
         }
         auto max_value = (std::uint64_t(1) << *bit_size) - 1;
         Varint value_id;
-        if (auto found = m.immediate_table.find(max_value); found != m.immediate_table.end()) {
-            value_id = *varint(found->second);
-        }
-        else {
-            auto new_value_id = m.new_id(nullptr);
-            if (!new_value_id) {
-                return new_value_id.error();
-            }
-            value_id = *new_value_id;
-            if (*bit_size >= 63) {
-                op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
-                    m.ident(value_id);
-                    m.int_value64(max_value);
-                });
-            }
-            else {
-                op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
-                    m.ident(value_id);
-                    m.int_value(*varint(max_value));
-                });
-            }
-            m.immediate_table[max_value] = value_id.value();
-        }
+
+        immediate(m, op, max_value);
         auto length_id = m.new_id(nullptr);
         if (!length_id) {
             return length_id.error();
@@ -1588,18 +1567,9 @@ namespace rebgn {
             m.ident(*length_id);
             m.ref(array_ref);
         });
-        auto cmp_id = m.new_id(nullptr);
-        if (!cmp_id) {
-            return cmp_id.error();
-        }
-        op(AbstractOp::BINARY, [&](Code& m) {
-            m.ident(*cmp_id);
-            m.left_ref(*length_id);
-            m.right_ref(value_id);
-            m.bop(BinaryOp::less_or_eq);
-        });
+        BM_BINARY(op, cmp_id, BinaryOp::less_or_eq, *length_id, value_id);
         op(AbstractOp::ASSERT, [&](Code& m) {
-            m.ref(*cmp_id);
+            m.ref(cmp_id);
             m.belong(function);
         });
         auto dst = Storages{.length = *varint(1), .storages = {Storage{.type = StorageType::UINT}}};
@@ -1645,7 +1615,7 @@ namespace rebgn {
         auto param = base.param().value();
         auto do_foreach = [&](auto&& action, auto&& ret_empty) {
             RetrieveVarCtx variables;
-            for (auto& c : param.expr_refs) {
+            for (auto& c : param.refs) {
                 auto& conditional_field = m.code[m.ident_index_table[c.value()]];
                 auto err = retrieve_var(m, op, m.code[m.ident_index_table[conditional_field.left_ref().value().value()]], variables);
                 if (err) {
@@ -1653,7 +1623,7 @@ namespace rebgn {
                 }
             }
             std::optional<ObjectID> prev_cond;
-            for (auto& c : param.expr_refs) {
+            for (auto& c : param.refs) {
                 // get CONDITIONAL_FIELD or CONDITIONAL_PROPERTY
                 auto& code = m.code[m.ident_index_table[c.value()]];
                 // get condition expr
@@ -2384,68 +2354,47 @@ namespace rebgn {
         }
         return none;
     }
+#define NEW_CODE_OP(new_code)                                                                                                          \
+    auto op = [&](AbstractOp o, auto&& set) {                                                                                          \
+        new_code.push_back(make_code(o, set));                                                                                         \
+    };                                                                                                                                 \
+    auto new_var = [&](StorageRef ref, Varint new_id) {                                                                                \
+        auto new_var = m.new_id(nullptr);                                                                                              \
+        if (!new_var) {                                                                                                                \
+            return new_var;                                                                                                            \
+        }                                                                                                                              \
+        op(AbstractOp::DEFINE_VARIABLE, [&](Code& m) {                                                                                 \
+            m.ident(*new_var);                                                                                                         \
+            m.ref(new_id);                                                                                                             \
+            m.type(ref);                                                                                                               \
+        });                                                                                                                            \
+        return new_var;                                                                                                                \
+    };                                                                                                                                 \
+    auto new_default_var = [&](StorageRef ref) {                                                                                       \
+        auto new_id = m.new_id(nullptr);                                                                                               \
+        if (!new_id) {                                                                                                                 \
+            return new_id;                                                                                                             \
+        }                                                                                                                              \
+        op(AbstractOp::NEW_OBJECT, [&](Code& m) {                                                                                      \
+            m.ident(*new_id);                                                                                                          \
+            m.type(ref);                                                                                                               \
+        });                                                                                                                            \
+        return new_var(ref, *new_id);                                                                                                  \
+    };                                                                                                                                 \
+    auto new_array = [&](std::uint64_t len) {                                                                                          \
+        Storages storage{.length = *varint(2), .storages = {Storage{.type = StorageType::ARRAY}, Storage{.type = StorageType::UINT}}}; \
+        storage.storages[0].size(*varint(len));                                                                                        \
+        storage.storages[1].size(*varint(8));                                                                                          \
+        auto ref = m.get_storage_ref(storage, nullptr);                                                                                \
+        if (!ref) {                                                                                                                    \
+            return ref.transform([](auto&&) { return Varint(); });                                                                     \
+        }                                                                                                                              \
+        return new_default_var(*ref);                                                                                                  \
+    };
 
     Error expand_bit_operation(Module& m) {
         std::vector<Code> new_code;
-        auto op = [&](AbstractOp o, auto&& set) {
-            new_code.push_back(make_code(o, set));
-        };
-        auto immediate = [&](std::uint64_t value) {
-            if (auto found = m.immediate_table.find(value); found != m.immediate_table.end()) {
-                return varint(found->second);
-            }
-            auto new_id = m.new_id(nullptr);
-            if (!new_id) {
-                return new_id;
-            }
-            if (auto vin = varint(value); vin) {
-                op(AbstractOp::IMMEDIATE_INT, [&](Code& m) {
-                    m.ident(*new_id);
-                    m.int_value(*vin);
-                });
-            }
-            else {
-                op(AbstractOp::IMMEDIATE_INT64, [&](Code& m) {
-                    m.ident(*new_id);
-                    m.int_value64(value);
-                });
-            }
-            m.immediate_table[value] = new_id->value();
-            return new_id;
-        };
-        auto new_var = [&](StorageRef ref, Varint new_id) {
-            auto new_var = m.new_id(nullptr);
-            if (!new_var) {
-                return new_var;
-            }
-            op(AbstractOp::DEFINE_VARIABLE, [&](Code& m) {
-                m.ident(*new_var);
-                m.ref(new_id);
-                m.type(ref);
-            });
-            return new_var;
-        };
-        auto new_default_var = [&](StorageRef ref) {
-            auto new_id = m.new_id(nullptr);
-            if (!new_id) {
-                return new_id;
-            }
-            op(AbstractOp::NEW_OBJECT, [&](Code& m) {
-                m.ident(*new_id);
-                m.type(ref);
-            });
-            return new_var(ref, *new_id);
-        };
-        auto new_array = [&](std::uint64_t len) {
-            Storages storage{.length = *varint(2), .storages = {Storage{.type = StorageType::ARRAY}, Storage{.type = StorageType::UINT}}};
-            storage.storages[0].size(*varint(len));
-            storage.storages[1].size(*varint(8));
-            auto ref = m.get_storage_ref(storage, nullptr);
-            if (!ref) {
-                return ref.transform([](auto&&) { return Varint(); });
-            }
-            return new_default_var(*ref);
-        };
+        NEW_CODE_OP(new_code);
         bool on_bit_operation = false;
         EndianExpr endian{};
         PackedOpType packed_op = PackedOpType::FIXED;
@@ -2559,232 +2508,263 @@ namespace rebgn {
                 auto new_bit_size = type.value().storages[0].size()->value();
 
                 code.bit_size(*varint(new_bit_size));
-                new_code.push_back(code);  // copy
-                auto new_target_var = new_default_var(new_target_type);
-                if (!new_target_var) {
-                    return new_target_var.error();
+                auto fallback_id = m.new_id(nullptr);
+                if (!fallback_id) {
+                    return fallback_id.error();
                 }
+                code.fallback(*fallback_id);
 
-                auto n_bit = futils::binary::log2i(new_bit_size);
-                Storage storage{.type = StorageType::UINT};
-                storage.size(*varint(n_bit));
-                auto new_nbit_typ = m.get_storage_ref(Storages{.length = *varint(1), .storages = {storage}}, nullptr);
-                if (!new_nbit_typ) {
-                    return new_nbit_typ.error();
-                }
-                auto zero = immediate(0);
-                if (!zero) {
-                    return zero.error();
-                }
-                auto new_counter_var = new_var(*new_nbit_typ, *zero);
-                if (!new_counter_var) {
-                    return new_counter_var.error();
-                }
-                Varint new_tmp_array, new_read_bytes;
-                if (packed_op == PackedOpType::VARIABLE) {
-                    auto new_array_var = new_array(new_bit_size / 8);
-                    if (!new_array_var) {
-                        return new_array_var.error();
+                op(AbstractOp::DEFINE_FALLBACK, [&](Code& m) {
+                    m.ident(*fallback_id);
+                });
+                {
+                    auto new_target_var = new_default_var(new_target_type);
+                    if (!new_target_var) {
+                        return new_target_var.error();
                     }
-                    new_tmp_array = *new_array_var;
-                }
-                if (code.op == rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION) {
-                    if (packed_op == PackedOpType::FIXED) {
-                        op(AbstractOp::DECODE_INT, [&](Code& m) {
-                            m.ref(*new_target_var);
-                            m.endian(endian);
-                            m.bit_size(*varint(new_bit_size));
-                            m.belong(belong);  // refer to bit field
-                        });
+
+                    auto n_bit = futils::binary::log2i(new_bit_size);
+                    Storage storage{.type = StorageType::UINT};
+                    storage.size(*varint(n_bit));
+                    auto new_nbit_typ = m.get_storage_ref(Storages{.length = *varint(1), .storages = {storage}}, nullptr);
+                    if (!new_nbit_typ) {
+                        return new_nbit_typ.error();
                     }
-                    else {
-                        auto read_bytes_var = new_var(*new_nbit_typ, *zero);
-                        if (!read_bytes_var) {
-                            return read_bytes_var.error();
+                    auto zero = immediate(0);
+                    if (!zero) {
+                        return zero.error();
+                    }
+                    auto new_counter_var = new_var(*new_nbit_typ, *zero);
+                    if (!new_counter_var) {
+                        return new_counter_var.error();
+                    }
+                    Varint new_tmp_array, new_read_bytes;
+                    if (packed_op == PackedOpType::VARIABLE) {
+                        auto new_array_var = new_array(new_bit_size / 8);
+                        if (!new_array_var) {
+                            return new_array_var.error();
                         }
-                        new_read_bytes = *read_bytes_var;
+                        new_tmp_array = *new_array_var;
                     }
+                    if (code.op == rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION) {
+                        if (packed_op == PackedOpType::FIXED) {
+                            op(AbstractOp::DECODE_INT, [&](Code& m) {
+                                m.ref(*new_target_var);
+                                m.endian(endian);
+                                m.bit_size(*varint(new_bit_size));
+                                m.belong(belong);  // refer to bit field
+                            });
+                        }
+                        else {
+                            auto read_bytes_var = new_var(*new_nbit_typ, *zero);
+                            if (!read_bytes_var) {
+                                return read_bytes_var.error();
+                            }
+                            new_read_bytes = *read_bytes_var;
+                        }
+                    }
+
+                    nbit_typ = *new_nbit_typ;
+                    counter = *new_counter_var;
+                    target_type = new_target_type;
+                    target = *new_target_var;
+                    tmp_array = new_tmp_array;
+                    read_bytes = new_read_bytes;
+                    bit_size = new_bit_size;
                 }
 
-                nbit_typ = *new_nbit_typ;
-                counter = *new_counter_var;
-                target_type = new_target_type;
-                target = *new_target_var;
-                tmp_array = new_tmp_array;
-                read_bytes = new_read_bytes;
-                bit_size = new_bit_size;
+                op(AbstractOp::END_FALLBACK, [&](Code& m) {});
             }
             else if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION ||
                      code.op == rebgn::AbstractOp::END_DECODE_PACKED_OPERATION) {
-                if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION) {
-                    if (packed_op == PackedOpType::FIXED) {
-                        op(AbstractOp::ENCODE_INT, [&](Code& m) {
-                            m.ref(target);
-                            m.endian(endian);
-                            m.bit_size(*varint(bit_size));
-                            m.belong(belong);  // refer to bit field
-                        });
-                    }
-                    else {
-                        // counter / 8
-                        auto div = m.new_id(nullptr);
-                        if (!div) {
-                            return div.error();
-                        }
-                        auto eight = immediate(8);
-                        if (!eight) {
-                            return eight.error();
-                        }
-                        op(AbstractOp::BINARY, [&](Code& m) {
-                            m.ident(*div);
-                            m.left_ref(counter);
-                            m.right_ref(*eight);
-                            m.bop(BinaryOp::div);
-                        });
-                        auto zero = immediate(0);
-                        if (!zero) {
-                            return zero.error();
-                        }
-                        // TODO(on-keyday): for now, only support power of 8 bit
-                        auto result_byte_count = new_var(nbit_typ, *div);
-                        auto i_ = new_var(nbit_typ, *zero);
-                        // i_ < result_byte_count
-                        auto less = m.new_id(nullptr);
-                        if (!less) {
-                            return less.error();
-                        }
-                        op(AbstractOp::BINARY, [&](Code& m) {
-                            m.ident(*less);
-                            m.left_ref(*i_);
-                            m.right_ref(*result_byte_count);
-                            m.bop(BinaryOp::less);
-                        });
-                        // while (i_ < result_byte_count)
-                        op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
-                            m.ref(*less);
-                        });
-                        {
-                            // on each loop
-                            // on little endian:
-                            //    tmp_array[i_] = u8((target >> (i_ * 8)) & 0xff)
-                            // on big endian:
-                            //    tmp_array[i_] = u8((target >> ((bit_size / 8 - 1 - i_) * 8)) & 0xff)
-                            // on native endian, platform dependent
-                            // on dynamic endian, dynamic variable dependent
-                            auto assign_to_array = [&](Varint shift_index) {
-                                auto mul = m.new_id(nullptr);
-                                if (!mul) {
-                                    return mul.error();
-                                }
-                                op(AbstractOp::BINARY, [&](Code& m) {
-                                    m.ident(*mul);
-                                    m.left_ref(shift_index);
-                                    m.right_ref(*eight);
-                                    m.bop(BinaryOp::mul);
-                                });
-                                auto shift = m.new_id(nullptr);
-                                if (!shift) {
-                                    return shift.error();
-                                }
-                                op(AbstractOp::BINARY, [&](Code& m) {
-                                    m.ident(*shift);
-                                    m.left_ref(target);
-                                    m.right_ref(*mul);
-                                    m.bop(BinaryOp::right_logical_shift);
-                                });
-                                auto and_ = m.new_id(nullptr);
-                                if (!and_) {
-                                    return and_.error();
-                                }
-                                auto immFF = immediate(0xff);
-                                if (!immFF) {
-                                    return immFF.error();
-                                }
-                                op(AbstractOp::BINARY, [&](Code& m) {
-                                    m.ident(*and_);
-                                    m.left_ref(*shift);
-                                    m.right_ref(*immFF);
-                                    m.bop(BinaryOp::bit_and);
-                                });
-                                auto cast = m.new_id(nullptr);
-                                if (!cast) {
-                                    return cast.error();
-                                }
-                                auto u8_typ = get_nbit_typ(8, false);
-                                if (!u8_typ) {
-                                    return u8_typ.error();
-                                }
-                                op(AbstractOp::CAST, [&](Code& m) {
-                                    m.ident(*cast);
-                                    m.ref(*and_);
-                                    m.type(*u8_typ);
-                                    m.from_type(target_type);
-                                    m.cast_type(CastType::SMALL_INT_TO_LARGE_INT);
-                                });
-                                auto array_index = m.new_id(nullptr);
-                                if (!array_index) {
-                                    return array_index.error();
-                                }
-                                op(AbstractOp::INDEX, [&](Code& m) {
-                                    m.ident(*array_index);
-                                    m.left_ref(tmp_array);
-                                    m.right_ref(*i_);
-                                });
-                                auto assign = m.new_id(nullptr);
-                                if (!assign) {
-                                    return assign.error();
-                                }
-                                op(AbstractOp::ASSIGN, [&](Code& m) {
-                                    m.ident(*assign);
-                                    m.left_ref(*array_index);
-                                    m.right_ref(*cast);
-                                });
-                                return none;
-                            };
-                            auto err = add_endian_specific(
-                                m, endian, op,
-                                [&]() {
-                                    return assign_to_array(*i_);
-                                },
-                                [&]() {
-                                    auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
-                                    if (!bit_size_div_8_minus_1) {
-                                        return bit_size_div_8_minus_1.error();
-                                    }
-                                    auto sub = m.new_id(nullptr);
-                                    if (!sub) {
-                                        return sub.error();
-                                    }
-                                    op(AbstractOp::BINARY, [&](Code& m) {
-                                        m.ident(*sub);
-                                        m.left_ref(*bit_size_div_8_minus_1);
-                                        m.right_ref(*i_);
-                                        m.bop(BinaryOp::sub);
-                                    });
-                                    return assign_to_array(*sub);
-                                });
-                            if (err) {
-                                return err;
-                            }
-                            op(AbstractOp::INC, [&](Code& m) {
-                                m.ref(*i_);
+                auto fallback_id = m.new_id(nullptr);
+                if (!fallback_id) {
+                    return fallback_id.error();
+                }
+                code.fallback(*fallback_id);
+                op(AbstractOp::DEFINE_FALLBACK, [&](Code& m) {
+                    m.ident(*fallback_id);
+                });
+                {
+                    if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION) {
+                        if (packed_op == PackedOpType::FIXED) {
+                            op(AbstractOp::ENCODE_INT, [&](Code& m) {
+                                m.ref(target);
+                                m.endian(endian);
+                                m.bit_size(*varint(bit_size));
+                                m.belong(belong);  // refer to bit field
                             });
                         }
-                        op(AbstractOp::END_LOOP, [&](Code& m) {});
-                        op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& m) {
-                            m.left_ref(tmp_array);
-                            m.right_ref(*result_byte_count);
-                            m.endian(endian);
-                            m.bit_size(*varint(8));
-                            m.belong(belong);  // refer to bit field
-                            m.array_length(*result_byte_count);
-                        });
+                        else {
+                            // counter / 8
+                            auto div = m.new_id(nullptr);
+                            if (!div) {
+                                return div.error();
+                            }
+                            auto eight = immediate(8);
+                            if (!eight) {
+                                return eight.error();
+                            }
+                            op(AbstractOp::BINARY, [&](Code& m) {
+                                m.ident(*div);
+                                m.left_ref(counter);
+                                m.right_ref(*eight);
+                                m.bop(BinaryOp::div);
+                            });
+                            auto zero = immediate(0);
+                            if (!zero) {
+                                return zero.error();
+                            }
+                            // TODO(on-keyday): for now, only support power of 8 bit
+                            auto result_byte_count = new_var(nbit_typ, *div);
+                            auto i_ = new_var(nbit_typ, *zero);
+                            // i_ < result_byte_count
+                            auto less = m.new_id(nullptr);
+                            if (!less) {
+                                return less.error();
+                            }
+                            op(AbstractOp::BINARY, [&](Code& m) {
+                                m.ident(*less);
+                                m.left_ref(*i_);
+                                m.right_ref(*result_byte_count);
+                                m.bop(BinaryOp::less);
+                            });
+                            // while (i_ < result_byte_count)
+                            op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
+                                m.ref(*less);
+                            });
+                            {
+                                // on each loop
+                                // on little endian:
+                                //    tmp_array[i_] = u8((target >> (i_ * 8)) & 0xff)
+                                // on big endian:
+                                //    tmp_array[i_] = u8((target >> ((bit_size / 8 - 1 - i_) * 8)) & 0xff)
+                                // on native endian, platform dependent
+                                // on dynamic endian, dynamic variable dependent
+                                auto assign_to_array = [&](Varint shift_index) {
+                                    auto mul = m.new_id(nullptr);
+                                    if (!mul) {
+                                        return mul.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*mul);
+                                        m.left_ref(shift_index);
+                                        m.right_ref(*eight);
+                                        m.bop(BinaryOp::mul);
+                                    });
+                                    auto shift = m.new_id(nullptr);
+                                    if (!shift) {
+                                        return shift.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*shift);
+                                        m.left_ref(target);
+                                        m.right_ref(*mul);
+                                        m.bop(BinaryOp::right_logical_shift);
+                                    });
+                                    auto and_ = m.new_id(nullptr);
+                                    if (!and_) {
+                                        return and_.error();
+                                    }
+                                    auto immFF = immediate(0xff);
+                                    if (!immFF) {
+                                        return immFF.error();
+                                    }
+                                    op(AbstractOp::BINARY, [&](Code& m) {
+                                        m.ident(*and_);
+                                        m.left_ref(*shift);
+                                        m.right_ref(*immFF);
+                                        m.bop(BinaryOp::bit_and);
+                                    });
+                                    auto cast = m.new_id(nullptr);
+                                    if (!cast) {
+                                        return cast.error();
+                                    }
+                                    auto u8_typ = get_nbit_typ(8, false);
+                                    if (!u8_typ) {
+                                        return u8_typ.error();
+                                    }
+                                    op(AbstractOp::CAST, [&](Code& m) {
+                                        m.ident(*cast);
+                                        m.ref(*and_);
+                                        m.type(*u8_typ);
+                                        m.from_type(target_type);
+                                        m.cast_type(CastType::SMALL_INT_TO_LARGE_INT);
+                                    });
+                                    auto array_index = m.new_id(nullptr);
+                                    if (!array_index) {
+                                        return array_index.error();
+                                    }
+                                    op(AbstractOp::INDEX, [&](Code& m) {
+                                        m.ident(*array_index);
+                                        m.left_ref(tmp_array);
+                                        m.right_ref(*i_);
+                                    });
+                                    auto assign = m.new_id(nullptr);
+                                    if (!assign) {
+                                        return assign.error();
+                                    }
+                                    op(AbstractOp::ASSIGN, [&](Code& m) {
+                                        m.ident(*assign);
+                                        m.left_ref(*array_index);
+                                        m.right_ref(*cast);
+                                    });
+                                    return none;
+                                };
+                                auto err = add_endian_specific(
+                                    m, endian, op,
+                                    [&]() {
+                                        return assign_to_array(*i_);
+                                    },
+                                    [&]() {
+                                        auto bit_size_div_8_minus_1 = immediate(bit_size / 8 - 1);
+                                        if (!bit_size_div_8_minus_1) {
+                                            return bit_size_div_8_minus_1.error();
+                                        }
+                                        auto sub = m.new_id(nullptr);
+                                        if (!sub) {
+                                            return sub.error();
+                                        }
+                                        op(AbstractOp::BINARY, [&](Code& m) {
+                                            m.ident(*sub);
+                                            m.left_ref(*bit_size_div_8_minus_1);
+                                            m.right_ref(*i_);
+                                            m.bop(BinaryOp::sub);
+                                        });
+                                        return assign_to_array(*sub);
+                                    });
+                                if (err) {
+                                    return err;
+                                }
+                                op(AbstractOp::INC, [&](Code& m) {
+                                    m.ref(*i_);
+                                });
+                            }
+                            op(AbstractOp::END_LOOP, [&](Code& m) {});
+                            op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& m) {
+                                m.left_ref(tmp_array);
+                                m.right_ref(*result_byte_count);
+                                m.endian(endian);
+                                m.bit_size(*varint(8));
+                                m.belong(belong);  // refer to bit field
+                                m.array_length(*result_byte_count);
+                            });
+                        }
                     }
                 }
-                new_code.push_back(code);  // copy
+                op(AbstractOp::END_FALLBACK, [&](Code& m) {});
+                // new_code.push_back(code);  // copy
                 on_bit_operation = false;
             }
             else if (on_bit_operation && code.op == rebgn::AbstractOp::ENCODE_INT) {
+                auto fallback_id = m.new_id(nullptr);
+                if (!fallback_id) {
+                    return fallback_id.error();
+                }
+                code.fallback(*fallback_id);
+                op(AbstractOp::DEFINE_FALLBACK, [&](Code& m) {
+                    m.ident(*fallback_id);
+                });
                 auto enc_bit_size = code.bit_size()->value();
                 auto enc_endian = code.endian().value();
                 auto src_type = get_nbit_typ(enc_bit_size, enc_endian.sign());
@@ -2838,8 +2818,17 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
+                op(AbstractOp::END_FALLBACK, [&](Code& m) {});
             }
             else if (on_bit_operation && code.op == rebgn::AbstractOp::DECODE_INT) {
+                auto fallback_id = m.new_id(nullptr);
+                if (!fallback_id) {
+                    return fallback_id.error();
+                }
+                code.fallback(*fallback_id);
+                op(AbstractOp::DEFINE_FALLBACK, [&](Code& m) {
+                    m.ident(*fallback_id);
+                });
                 auto dec_bit_size = code.bit_size()->value();
                 auto dec_endian = code.endian().value();
                 auto src_type = get_nbit_typ(dec_bit_size, dec_endian.sign());
@@ -3124,12 +3113,93 @@ namespace rebgn {
                 if (err) {
                     return err;
                 }
-            }
-            else {
-                new_code.push_back(code);
+                op(AbstractOp::END_FALLBACK, [&](Code& m) {});
             }
         }
-        m.code = std::move(new_code);
+        m.code.insert(m.code.end(), new_code.begin(), new_code.end());
+        return none;
+    }
+
+    Error fallback_encode_int(Module& m, Code& code, std::vector<Code>& new_code) {
+        NEW_CODE_OP(new_code);
+        auto fallback_id = m.new_id(nullptr);
+        if (!fallback_id) {
+            return fallback_id.error();
+        }
+        code.fallback(*fallback_id);
+        op(AbstractOp::DEFINE_FALLBACK, [&](Code& m) {
+            m.ident(*fallback_id);
+        });
+
+        auto value = code.ref().value();
+        auto bit_size = code.bit_size()->value();
+        auto endian = code.endian().value();
+
+        auto buffer = new_array(bit_size / 8);
+        if (!buffer) {
+            return buffer.error();
+        }
+        auto len = immediate(bit_size / 8);
+        if (!len) {
+            return len.error();
+        }
+
+        auto st = Storages{.length = *varint(1), .storages = {Storage{.type = StorageType::UINT}}};
+        st.storages[0].size(*varint(64));
+
+        auto ref = m.get_storage_ref(st, nullptr);
+        if (!ref) {
+            return ref.error();
+        }
+
+        auto counter = new_var(*ref, *immediate(0));
+        if (!counter) {
+            return counter.error();
+        }
+
+        auto cmp_id = m.new_id(nullptr);
+        if (!cmp_id) {
+            return cmp_id.error();
+        }
+
+        op(AbstractOp::BINARY, [&](Code& m) {
+            m.ident(*cmp_id);
+            m.left_ref(*counter);
+            m.right_ref(*len);
+            m.bop(BinaryOp::less);
+        });
+
+        auto loop = [&](auto&& body) -> Error {
+            op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
+                m.ref(*cmp_id);
+            });
+            BM_ERROR_WRAP_ERROR(_, error, body());
+            op(AbstractOp::END_LOOP, [&](Code& m) {});
+            return none;
+        };
+
+        // if big endian
+        //  // len - 1 can be constant
+        //  buffer[counter] = (value >> ((len - 1) - counter) * 8) & 0xff
+        // else
+        //  buffer[counter] = (value >> (8 * counter)) & 0xff
+        auto err = add_endian_specific(
+            m, endian, op,
+            [&] {  // on little endian
+                return loop([&] {
+                    BM_BINARY(op, mul);
+                });
+            },
+            [&] {  // on big endian
+                return loop([&] {
+
+                });
+            });
+        if (err) {
+            return err;
+        }
+
+        op(AbstractOp::END_FALLBACK, [&](Code& m) {});
         return none;
     }
 

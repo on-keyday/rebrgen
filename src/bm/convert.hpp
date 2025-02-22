@@ -15,6 +15,8 @@ namespace rebgn {
 
     constexpr ObjectID null_id = 0;
 
+    constexpr Varint null_varint = Varint();
+
     constexpr expected<Varint> varint(std::uint64_t n) {
         Varint v;
         if (n < 0x40) {
@@ -344,7 +346,7 @@ namespace rebgn {
 
     Error save(Module& m, futils::binary::writer& w);
 
-    Error optimize(Module& m, const std::shared_ptr<ast::Node>& node);
+    Error transform(Module& m, const std::shared_ptr<ast::Node>& node);
 
     void write_cfg(futils::binary::writer& w, Module& m);
 }  // namespace rebgn

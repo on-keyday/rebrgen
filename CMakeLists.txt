@@ -23,7 +23,16 @@ add_executable(bmgen
     "src/bm/encode.cpp"
     "src/bm/load_json.cpp" 
     "src/bm/save_module.cpp"
-    "src/bm/optimize.cpp"
+    "src/bm/transform.cpp"
+    "src/bm/transform/bind_coder.cpp"
+    "src/bm/transform/bit_field_size.cpp"
+    "src/bm/transform/control_flow_graph.cpp"
+    "src/bm/transform/flatten.cpp"
+    "src/bm/transform/merge_conditional.cpp"
+    "src/bm/transform/property_accessor.cpp"
+    "src/bm/transform/sort_formats.cpp"
+    "src/bm/transform/fallback/bit_op.cpp"
+    "src/bm/transform/fallback/encode.cpp"
 )
 
 add_executable(bm2cpp

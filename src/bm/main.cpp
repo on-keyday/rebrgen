@@ -378,7 +378,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cerr << m.error().error<std::string>() << '\n';
         return 1;
     }
-    auto err = rebgn::optimize(*m, *res);
+    auto err = rebgn::transform(*m, *res);
     if (err) {
         cerr << err.error<std::string>() << '\n';
         return 1;

@@ -1,22 +1,23 @@
 /*license*/
 #pragma once
 
-#define BM_ERROR_WRAP(name, handle_error, expr)                                                  \
-    auto tmp__##name##__ = expr;                                                                 \
-    if (!tmp__##name##__) {                                                                      \
-        return handle_error("{} at {}:{}", tmp__##name##__.error().error(), __FILE__, __LINE__); \
-    }                                                                                            \
+#define HANDLE_ERROR(handle_error, expr) handle_error("{}\n at {} {}:{}", expr.error(), __func__, __FILE__, __LINE__)
+
+#define BM_ERROR_WRAP(name, handle_error, expr)                     \
+    auto tmp__##name##__ = expr;                                    \
+    if (!tmp__##name##__) {                                         \
+        return HANDLE_ERROR(handle_error, tmp__##name##__.error()); \
+    }                                                               \
     auto name = *tmp__##name##__
 
-#define BM_ERROR_WRAP_ERROR(name, handle_error, expr)                                   \
-    auto err__##name##__ = expr;                                                        \
-    if (err__##name##__) {                                                              \
-        return handle_error("{} at {}:{}" tmp__##name##__.error(), __FILE__, __LINE__); \
-    }                                                                                   \
-    auto name = *tmp__##name##__
+#define BM_ERROR_WRAP_ERROR(handle_error, expr)             \
+    auto err__##name##__ = expr;                            \
+    if (err__##name##__) {                                  \
+        return HANDLE_ERROR(handle_error, err__##name##__); \
+    }
 
-#define BM_NEW_ID(name, handle_error) \
-    BM_ERROR_WRAP(name, handle_error, (m.new_id(nullptr)))
+#define BM_NEW_ID(name, handle_error, loc) \
+    BM_ERROR_WRAP(name, handle_error, (m.new_id(loc)))
 
 #define BM_NEW_NODE_ID(name, handle_error, node) \
     BM_ERROR_WRAP(name, handle_error, (m.new_node_id(node)))
@@ -31,16 +32,16 @@
     })
 
 #define BM_BINARY(op, id_name, bin_op, left, right) \
-    BM_BINARY_BASE(op, id_name, bin_op, left, right, BM_NEW_ID, error)
+    BM_BINARY_BASE(op, id_name, bin_op, left, right, BM_NEW_ID, error, nullptr)
 
 #define BM_BINARY_NODE(op, id_name, bin_op, left, right, node) \
     BM_BINARY_BASE(op, id_name, bin_op, left, right, BM_NEW_NODE_ID, error, node)
 
 #define BM_BINARY_UNEXPECTED(op, id_name, bin_op, left, right) \
-    BM_BINARY_BASE(op, id_name, bin_op, left, right, BM_NEW_ID, unexpect_error)
+    BM_BINARY_BASE(op, id_name, bin_op, left, right, BM_NEW_ID, unexpect_error, nullptr)
 
 #define BM_UNARY(op, id_name, un_op, ref_) \
-    BM_NEW_ID(id_name, error);             \
+    BM_NEW_ID(id_name, error, nullptr);    \
     op(AbstractOp::UNARY, [&](Code& c) {   \
         c.ident(id_name);                  \
         c.uop(un_op);                      \
@@ -57,14 +58,14 @@
     BM_ERROR_WRAP(ident, error, (define_storage(m, type_node __VA_OPT__(, )##__VA_ARGS__)))
 
 #define BM_NEW_OBJECT(op, id_name, type_)     \
-    BM_NEW_ID(id_name, error);                \
+    BM_NEW_ID(id_name, error, nullptr);       \
     op(AbstractOp::NEW_OBJECT, [&](Code& c) { \
         c.ident(id_name);                     \
         c.type(type_);                        \
     })
 
 #define BM_INDEX(op, id_name, array, index) \
-    BM_NEW_ID(id_name, error);              \
+    BM_NEW_ID(id_name, error, nullptr);     \
     op(AbstractOp::INDEX, [&](Code& c) {    \
         c.ident(id_name);                   \
         c.left_ref(array);                  \
@@ -73,3 +74,40 @@
 
 #define BM_IMMEDIATE(op, id_name, value) \
     BM_ERROR_WRAP(id_name, error, (immediate(m, op, value)))
+
+#define BM_ASSIGN(op, id_name, left, right, prev_assign, loc) \
+    BM_NEW_ID(id_name, error, loc);                           \
+    op(AbstractOp::ASSIGN, [&](Code& c) {                     \
+        c.ident(id_name);                                     \
+        c.left_ref(left);                                     \
+        c.right_ref(right);                                   \
+        c.ref(prev_assign);                                   \
+    })
+
+#define BM_ASSIGN_NODE(op, id_name, left, right, prev_assign, node) \
+    BM_NEW_NODE_ID(id_name, error, node);                           \
+    op(AbstractOp::ASSIGN, [&](Code& c) {                           \
+        c.ident(id_name);                                           \
+        c.left_ref(left);                                           \
+        c.right_ref(right);                                         \
+        c.ref(prev_assign);                                         \
+    })
+
+#define BM_CAST(op, id_name, dst_type, src_type, expr, cast_kind) \
+    BM_NEW_ID(id_name, error, nullptr);                           \
+    op(AbstractOp::CAST, [&](Code& c) {                           \
+        c.ident(id_name);                                         \
+        c.type(dst_type);                                         \
+        c.from_type(src_type);                                    \
+        c.ref(expr);                                              \
+        c.cast_type(cast_kind);                                   \
+    })
+
+#define BM_REF(op, abs_op, ref_) op(abs_op, [&](Code& c) { c.ref(ref_); })
+#define BM_OP(op, abs_op) op(abs_op, [&](Code& c) {})
+
+#define BM_GET_STORAGE_REF_WITH_LOC(storage_ref, handle_error, storage, loc) \
+    BM_ERROR_WRAP(storage_ref, handle_error, (m.get_storage_ref(storage, loc)))
+
+#define BM_GET_STORAGE_REF(storage_ref, storage) \
+    BM_GET_STORAGE_REF_WITH_LOC(storage_ref, storage, nullptr)

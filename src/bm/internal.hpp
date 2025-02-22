@@ -64,7 +64,7 @@ namespace rebgn {
     Error do_assign(Module& m,
                     const Storages* target_type,
                     const Storages* source_type,
-                    Varint left, Varint right, bool should_recursive_struct_assign = false);
+                    Varint left, Varint right, bool should_recursive_struct_assign = false, brgen::lexer::Loc* loc = nullptr);
 
     CastType get_cast_type(const Storages& dest, const Storages& src);
     expected<std::optional<Varint>> add_assign_cast(Module& m, auto&& op, const Storages* dest, const Storages* src, Varint right,
@@ -708,5 +708,12 @@ namespace rebgn {
         }
         m.op(AbstractOp::END_LOOP);
         return none;
+    }
+
+    Code make_code(AbstractOp op, auto&& set) {
+        Code c;
+        c.op = op;
+        set(c);
+        return c;
     }
 }  // namespace rebgn

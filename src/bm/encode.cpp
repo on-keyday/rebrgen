@@ -549,13 +549,13 @@ namespace rebgn {
                         });
                         return conditional_loop(m, *new_id, undelying_decoder);
                     }
-                    else if (field->follow == ast::Follow::fixed) {
+                    else if (field->eventual_follow == ast::Follow::fixed) {
                         auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
                         auto imm = immediate(m, tail);
                         if (!imm) {
                             return imm.error();
                         }
-                        BM_NEW_ID(next_id, error);
+                        BM_NEW_ID(next_id, error, nullptr);
                         m.op(AbstractOp::REMAIN_BYTES, [&](Code& c) {
                             c.ident(next_id);
                         });

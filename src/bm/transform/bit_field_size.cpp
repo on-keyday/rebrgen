@@ -71,21 +71,6 @@ namespace rebgn {
     expected<size_t> decide_maximum_bit_field_size(Module& m, std::unordered_set<ObjectID>& searched, AbstractOp end_op, size_t index) {
         size_t bit_size = 0;
         for (size_t i = index; m.code[i].op != end_op; i++) {
-            /*
-            if (m.code[i].op == AbstractOp::SPECIFY_STORAGE_TYPE) {
-                auto ref = *m.code[i].type();
-                auto got = m.get_storage(ref);
-                if (!got) {
-                    return unexpect_error(std::move(got.error()));
-                }
-                auto& storage = got.value();
-                auto size = get_from_type(m, storage, searched);
-                if (!size) {
-                    return size.error();
-                }
-                bit_size += size.value();
-            }
-            */
             if (m.code[i].op == AbstractOp::DEFINE_FIELD) {
                 auto ref = *m.code[i].type();
                 auto got = m.get_storage(ref);

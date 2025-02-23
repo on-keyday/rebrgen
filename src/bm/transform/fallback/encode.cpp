@@ -13,6 +13,7 @@ namespace rebgn {
         auto value = code.ref().value();
         auto bit_size = code.bit_size()->value();
         auto endian = code.endian().value();
+        auto belong = code.belong().value();
 
         BM_ERROR_WRAP(buffer, error, (new_array(bit_size / 8)));
         BM_IMMEDIATE(op, len, bit_size / 8);
@@ -20,14 +21,10 @@ namespace rebgn {
         auto st = Storages{.length = *varint(1), .storages = {Storage{.type = StorageType::UINT}}};
         st.storages[0].size(*varint(64));
 
-        auto ref = m.get_storage_ref(st, nullptr);
-        if (!ref) {
-            return ref.error();
-        }
-
+        BM_GET_STORAGE_REF(ref, st);
         BM_IMMEDIATE(op, imm0, 0);
 
-        BM_ERROR_WRAP(counter, error, (new_var(*ref, imm0)));
+        BM_ERROR_WRAP(counter, error, (new_var(ref, imm0)));
 
         BM_BINARY(op, cmp_id, BinaryOp::less, counter, len);
 
@@ -76,6 +73,8 @@ namespace rebgn {
         if (err) {
             return err;
         }
+
+        BM_ENCODE_INT_VEC_FIXED(op, buffer, endian, 8, belong, bit_size / 8);
 
         op(AbstractOp::END_FALLBACK, [&](Code& m) {});
         return none;

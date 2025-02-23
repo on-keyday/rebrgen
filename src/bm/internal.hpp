@@ -87,26 +87,10 @@ namespace rebgn {
                 }
             }
         }
-        auto ident = m.new_id(nullptr);
-        if (!ident) {
-            return unexpect_error(std::move(ident.error()));
-        }
-        auto dst_ref = m.get_storage_ref(*dest, nullptr);
-        if (!dst_ref) {
-            return unexpect_error(std::move(dst_ref.error()));
-        }
-        auto src_ref = m.get_storage_ref(src_copy, nullptr);
-        if (!src_ref) {
-            return unexpect_error(std::move(src_ref.error()));
-        }
-        op(AbstractOp::CAST, [&](Code& c) {
-            c.ident(*ident);
-            c.type(*dst_ref);
-            c.from_type(*src_ref);
-            c.ref(right);
-            c.cast_type(get_cast_type(*dest, src_copy));
-        });
-        return *ident;
+        BM_GET_STORAGE_REF_WITH_LOC(dst_ref, unexpect_error, *dest, nullptr);
+        BM_GET_STORAGE_REF_WITH_LOC(src_ref, unexpect_error, src_copy, nullptr);
+        BM_CAST_WITH_ERROR(op, ident, unexpect_error, dst_ref, src_ref, right, (get_cast_type(*dest, src_copy)));
+        return ident;
     }
     expected<std::optional<Storages>> may_get_type(Module& m, const std::shared_ptr<ast::Type>& typ);
     inline void maybe_insert_eval_expr(Module& m, const std::shared_ptr<ast::Node>& n) {

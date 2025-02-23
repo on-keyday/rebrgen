@@ -632,6 +632,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.PEEK_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length

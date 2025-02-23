@@ -2099,6 +2099,7 @@ namespace rebgn {
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
+            Varint fallback;
         };
         struct union_struct_68 {
             Varint left_ref;
@@ -10301,7 +10302,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DECODE_INT == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_67>(union_variant_16)) {
+                return std::nullopt;
+            }
+            return std::get<51>((*this).union_variant_16).fallback;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
             return std::nullopt;
@@ -10572,7 +10576,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DECODE_INT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_67>(union_variant_16)) {
+                union_variant_16 = union_struct_67();
+            }
+            std::get<51>((*this).union_variant_16).fallback = v;
+            return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
             return false;
@@ -10847,7 +10855,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DECODE_INT == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_67>(union_variant_16)) {
+                union_variant_16 = union_struct_67();
+            }
+            std::get<51>((*this).union_variant_16).fallback = std::move(v);
+            return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
             return false;
@@ -24180,6 +24192,9 @@ namespace rebgn {
             if (auto err = std::get<51>((*this).union_variant_16).belong.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<51>((*this).union_variant_16).fallback.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::PEEK_INT_VECTOR == (*this).op) {
             if (!std::holds_alternative<union_struct_68>(union_variant_16)) {
@@ -25545,6 +25560,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<51>((*this).union_variant_16).belong.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<51>((*this).union_variant_16).fallback.decode(r)) {
                 return err;
             }
         }

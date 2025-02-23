@@ -17,11 +17,8 @@ namespace rebgn {
         // target = target | (target_type(value) << shift_index)
         auto assign_to_target = [&](Varint ref, Varint shift_index, auto&& src_type, auto&& src_type_storage) {
             // cast to target type
-            auto dst_storage = m.get_storage(target_type);
-            if (!dst_storage) {
-                return dst_storage.error();
-            }
-            auto casted = add_assign_cast(m, op, &*dst_storage, &*src_type_storage, ref);
+            BM_ERROR_WRAP(dst_storage, error, (m.get_storage(target_type)));
+            auto casted = add_assign_cast(m, op, &dst_storage, &src_type_storage, ref);
             if (!casted) {
                 return casted.error();
             }
@@ -132,12 +129,7 @@ namespace rebgn {
                 {
                     if (code.op == rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION) {
                         if (packed_op == PackedOpType::FIXED) {
-                            op(AbstractOp::ENCODE_INT, [&](Code& m) {
-                                m.ref(target);
-                                m.endian(endian);
-                                m.bit_size(*varint(bit_size));
-                                m.belong(belong);  // refer to bit field
-                            });
+                            BM_ENCODE_INT(op, target, endian, bit_size, belong);
                         }
                         else {
                             // counter / 8
@@ -186,14 +178,7 @@ namespace rebgn {
                                 BM_REF(op, AbstractOp::INC, i_);
                             }
                             BM_OP(op, AbstractOp::END_LOOP);
-                            op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& m) {
-                                m.left_ref(tmp_array);
-                                m.right_ref(result_byte_count);
-                                m.endian(endian);
-                                m.bit_size(*varint(8));
-                                m.belong(belong);  // refer to bit field
-                                m.array_length(result_byte_count);
-                            });
+                            BM_ENCODE_INT_VEC_FIXED(op, tmp_array, endian, 8, belong, bit_size / 8);
                         }
                     }
                 }
@@ -212,14 +197,9 @@ namespace rebgn {
                 });
                 auto enc_bit_size = code.bit_size()->value();
                 auto enc_endian = code.endian().value();
-                auto src_type = get_nbit_typ(enc_bit_size, enc_endian.sign());
-                if (!src_type) {
-                    return src_type.error();
-                }
-                auto src_type_storage = m.get_storage(*src_type);
-                if (!src_type_storage) {
-                    return src_type_storage.error();
-                }
+                BM_ERROR_WRAP(src_type, error, (get_nbit_typ(enc_bit_size, enc_endian.sign())));
+                BM_ERROR_WRAP(src_type_storage, error, (m.get_storage(src_type)));
+
                 // on little endian:
                 //   // fill from lsb
                 //   target = target | (target_type(value) << counter)
@@ -261,26 +241,22 @@ namespace rebgn {
                 });
                 auto dec_bit_size = code.bit_size()->value();
                 auto dec_endian = code.endian().value();
-                auto src_type = get_nbit_typ(dec_bit_size, dec_endian.sign());
-                if (!src_type) {
-                    return src_type.error();
-                }
-                auto src_type_storage = m.get_storage(*src_type);
-                if (!src_type_storage) {
-                    return src_type_storage.error();
-                }
+                BM_ERROR_WRAP(src_type, error, (get_nbit_typ(dec_bit_size, dec_endian.sign())));
+                BM_ERROR_WRAP(src_type_storage, error, (m.get_storage(src_type)));
+
                 if (packed_op == PackedOpType::VARIABLE) {
                     // consumed_bytes = (counter + dec_bit_size + 7) / 8
                     // if (read_bytes < consumed_bytes)
                     //   for (i_ = read_bytes; i_ < consumed_bytes; i_++)
                     //     tmp_array[i_] = decode_u8()
-                    // on little endian:
-                    //     target = target | (target_type(tmp_array[i_]) << (i_ * 8))
-                    // on big endian:
-                    //     target = target | (target_type(tmp_array[i_]) << ((bit_size / 8 - i_ - 1) * 8))
-                    // on native endian, platform dependents
-                    // on dynamic endian, dynamic variable dependent
-                    //   read_bytes = consumed_bytes
+                    //     on little endian:
+                    //       target = target | (target_type(tmp_array[i_]) << (i_ * 8))
+                    //     on big endian:
+                    //       target = target | (target_type(tmp_array[i_]) << ((bit_size / 8 - i_ - 1) * 8))
+                    //     on native endian, platform dependents (same as either little or big endian)
+                    //     on dynamic endian, dynamic variable dependent (same as either little or big endian)
+                    //   read_bytes = consumed_bytes // assign consumed_bytes to read_bytes
+                    // end if
 
                     BM_IMMEDIATE(op, imm7, 7);
                     BM_IMMEDIATE(op, imm_size, dec_bit_size);
@@ -301,20 +277,9 @@ namespace rebgn {
                         });
                         {
                             BM_INDEX(op, array_index, tmp_array, i_);
-                            op(AbstractOp::DECODE_INT, [&](Code& m) {
-                                m.ref(array_index);
-                                m.endian(endian);
-                                m.bit_size(*varint(8));
-                                m.belong(code.ref().value());
-                            });
-                            auto u8_typ = get_nbit_typ(8, false);
-                            if (!u8_typ) {
-                                return u8_typ.error();
-                            }
-                            auto u8_typ_storage = m.get_storage(*u8_typ);
-                            if (!u8_typ_storage) {
-                                return u8_typ_storage.error();
-                            }
+                            BM_DECODE_INT(op, array_index, endian, 8, code.ref().value());
+                            BM_ERROR_WRAP(u8_typ, error, (get_nbit_typ(8, false)));
+                            BM_ERROR_WRAP(u8_typ_storage, error, (m.get_storage(u8_typ)));
                             auto err = add_endian_specific(
                                 m, endian, op,
                                 [&]() {
@@ -354,7 +319,7 @@ namespace rebgn {
                     if (!target_type_storage) {
                         return target_type_storage.error();
                     }
-                    auto casted = add_assign_cast(m, op, &*src_type_storage, &*target_type_storage, and_);
+                    auto casted = add_assign_cast(m, op, &src_type_storage, &*target_type_storage, and_);
                     if (!casted) {
                         return casted.error();
                     }
@@ -383,4 +348,4 @@ namespace rebgn {
         return none;
     }
 
-}
+}  // namespace rebgn

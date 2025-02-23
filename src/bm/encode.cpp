@@ -25,13 +25,6 @@ namespace rebgn {
             return imm_alignment;
         }
 
-        /*
-        auto imm_zero = immediate(m, 0);
-        if (!imm_zero) {
-            return imm_zero;
-        }
-        */
-
         // size % alignment
         BM_BINARY_UNEXPECTED(m.op, mod, BinaryOp::mod, *ident, *imm_alignment);
 
@@ -46,84 +39,28 @@ namespace rebgn {
 
     Error encode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
-            auto bit_size = varint(*int_ty->bit_size);
-            if (!bit_size) {
-                return bit_size.error();
-            }
-            auto endian = m.get_endian(Endian(int_ty->endian), int_ty->is_signed);
-            if (!endian) {
-                return endian.error();
-            }
-            m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                c.ref(base_ref);
-                c.endian(*endian);
-                c.bit_size(*bit_size);
-                c.belong(get_field_ref(m, field));
-            });
+            BM_GET_ENDIAN(endian, int_ty->endian, int_ty->is_signed);
+            BM_ENCODE_INT(m.op, base_ref, endian, *int_ty->bit_size, (get_field_ref(m, field)));
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            auto from = define_storage(m, typ);
-            if (!from) {
-                return from.error();
-            }
-            auto to = define_storage(m, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
-            if (!to) {
-                return to.error();
-            }
-            auto new_id = m.new_node_id(typ);
-            if (!new_id) {
-                return error("Failed to generate new id");
-            }
-            m.op(AbstractOp::CAST, [&](Code& c) {
-                c.ident(*new_id);
-                c.ref(base_ref);
-                c.type(*to);
-                c.from_type(*from);
-                c.cast_type(CastType::FLOAT_TO_INT_BIT);
-            });
-            auto bit_size = varint(*float_ty->bit_size);
-            if (!bit_size) {
-                return bit_size.error();
-            }
-            auto endian = m.get_endian(Endian(float_ty->endian), false);
-            if (!endian) {
-                return endian.error();
-            }
-            m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                c.ref(*new_id);
-                c.endian(*endian);
-                c.bit_size(*bit_size);
-                c.belong(get_field_ref(m, field));
-            });
+            BM_DEFINE_STORAGE(from, m, typ);
+            BM_DEFINE_STORAGE(to, m, (std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false)));
+            BM_CAST(m.op, new_id, to, from, base_ref, CastType::FLOAT_TO_INT_BIT);
+            BM_GET_ENDIAN(endian, float_ty->endian, false);
+            BM_ENCODE_INT(m.op, new_id, endian, *float_ty->bit_size, (get_field_ref(m, field)));
             return none;
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
-            auto str_ref = static_str(m, str_ty->strong_ref);
+            BM_ERROR_WRAP(str_ref, error, (static_str(m, str_ty->strong_ref)));
             auto max_len = immediate(m, *str_ty->bit_size / 8);
             if (!max_len) {
                 return max_len.error();
             }
             return counter_loop(m, *max_len, [&](Varint counter) {
-                auto index = m.new_id(nullptr);
-                if (!index) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(*str_ref);
-                    c.right_ref(counter);
-                });
-                auto endian = m.get_endian(Endian::unspec, false);
-                if (!endian) {
-                    return endian.error();
-                }
-                m.op(AbstractOp::ENCODE_INT, [&](Code& c) {
-                    c.ref(*index);
-                    c.endian(*endian);
-                    c.bit_size(*varint(8));
-                    c.belong(get_field_ref(m, field));
-                });
+                BM_INDEX(m.op, index, str_ref, counter);
+                BM_GET_ENDIAN(endian, Endian::unspec, false);
+                BM_ENCODE_INT(m.op, index, endian, 8, (get_field_ref(m, field)));
                 return none;
             });
         }
@@ -136,43 +73,21 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
-                    if (!endian) {
-                        return endian.error();
-                    }
-                    m.op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c) {
-                        c.left_ref(base_ref);
-                        c.right_ref(*imm);
-                        c.endian(*endian);
-                        c.bit_size(*varint(*elem_is_int->bit_size));
-                        c.belong(get_field_ref(m, field));
-                        c.array_length(*varint(*len));
-                    });
+                    BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
+                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
-                    auto index = m.new_id(nullptr);
-                    if (!index) {
-                        return error("Failed to generate new id");
-                    }
-                    m.op(AbstractOp::INDEX, [&](Code& c) {
-                        c.ident(*index);
-                        c.left_ref(base_ref);
-                        c.right_ref(i);
-                    });
-                    return encode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
+                    BM_INDEX(m.op, index, base_ref, i);
+                    return encode_type(m, arr->element_type, index, mapped_type, field, should_init_recursive);
                 });
             }
             if (!arr->length) {
                 return error("Array length is not specified");
             }
-            expected<Varint> len_;
-            len_ = m.new_node_id(arr->length);
-            if (!len_) {
-                return error("Failed to generate new id");
-            }
+            BM_NEW_NODE_ID(len_, error, arr->length);
             m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
-                c.ident(*len_);
+                c.ident(len_);
                 c.ref(base_ref);
             });
             if (ast::is_any_range(arr->length)) {
@@ -181,14 +96,9 @@ namespace rebgn {
                     if (!req_size) {
                         return req_size.error();
                     }
-                    m.op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c) {
-                        c.left_ref(base_ref);
-                        c.right_ref(*req_size);
-                        c.endian(*m.get_endian(Endian::unspec, false));
-                        c.bit_size(*varint(8));
-                        c.belong(get_field_ref(m, field));
-                        c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
-                    });
+                    BM_GET_ENDIAN(endian, Endian::unspec, false);
+                    auto array_size = *field->arguments->alignment_value / 8 - 1;
+                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, endian, 8, (get_field_ref(m, field)), array_size);
                     return none;
                 }
             }
@@ -220,30 +130,19 @@ namespace rebgn {
                 });
             }
             if (elem_is_int) {
-                auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
-                if (!endian) {
-                    return endian.error();
-                }
+                BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
                 m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
                     c.left_ref(base_ref);
-                    c.right_ref(*len_);
-                    c.endian(*endian);
+                    c.right_ref(len_);
+                    c.endian(endian);
                     c.bit_size(*varint(*elem_is_int->bit_size));
                     c.belong(get_field_ref(m, field));
                 });
                 return none;
             }
-            return counter_loop(m, *len_, [&](Varint counter) {
-                auto index = m.new_id(nullptr);
-                if (!index) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(base_ref);
-                    c.right_ref(counter);
-                });
-                auto err = encode_type(m, arr->element_type, *index, mapped_type, field, false);
+            return counter_loop(m, len_, [&](Varint counter) {
+                BM_INDEX(m.op, index, base_ref, counter);
+                auto err = encode_type(m, arr->element_type, index, mapped_type, field, false);
                 if (err) {
                     return err;
                 }
@@ -293,30 +192,11 @@ namespace rebgn {
             if (!base_type) {
                 return error("abstract enum {} in encode", base_enum->ident->ident);
             }
-            auto ident = m.lookup_ident(base_enum->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            auto casted = m.new_node_id(typ);
-            if (!casted) {
-                return casted.error();
-            }
-            auto to = define_storage(m, base_type);
-            if (!to) {
-                return to.error();
-            }
-            auto from = define_storage(m, typ);
-            if (!from) {
-                return from.error();
-            }
-            m.op(AbstractOp::CAST, [&](Code& c) {
-                c.ident(*casted);
-                c.type(*to);
-                c.from_type(*from);
-                c.ref(base_ref);
-                c.cast_type(CastType::ENUM_TO_INT);
-            });
-            auto err = encode_type(m, base_type, *casted, mapped_type, field, should_init_recursive);
+            BM_LOOKUP_IDENT(ident, m, base_enum->ident);
+            BM_DEFINE_STORAGE(to, m, base_type);
+            BM_DEFINE_STORAGE(from, m, typ);
+            BM_CAST(m.op, casted, to, from, base_ref, CastType::ENUM_TO_INT);
+            auto err = encode_type(m, base_type, casted, mapped_type, field, should_init_recursive);
             if (err) {
                 return err;
             }
@@ -334,57 +214,20 @@ namespace rebgn {
 
     Error decode_type(Module& m, std::shared_ptr<ast::Type>& typ, Varint base_ref, std::shared_ptr<ast::Type> mapped_type, ast::Field* field, bool should_init_recursive) {
         if (auto int_ty = ast::as<ast::IntType>(typ)) {
-            auto endian = m.get_endian(Endian(int_ty->endian), int_ty->is_signed);
-            if (!endian) {
-                return endian.error();
-            }
-            m.op(AbstractOp::DECODE_INT, [&](Code& c) {
-                c.ref(base_ref);
-                c.endian(*endian);
-                c.bit_size(*varint(*int_ty->bit_size));
-                c.belong(get_field_ref(m, field));
-            });
+            BM_GET_ENDIAN(endian, int_ty->endian, int_ty->is_signed);
+            BM_DECODE_INT(m.op, base_ref, endian, *int_ty->bit_size, (get_field_ref(m, field)));
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            auto new_id = m.new_node_id(typ);
-            if (!new_id) {
-                return error("Failed to generate new id");
-            }
-            auto from = define_storage(m, std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false));
-            if (!from) {
-                return from.error();
-            }
-            auto to = define_storage(m, typ);
-            if (!to) {
-                return to.error();
-            }
-            m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                c.ident(*new_id);
-                c.type(*from);
-            });
-            auto endian = m.get_endian(Endian(float_ty->endian), false);
-            if (!endian) {
-                return endian.error();
-            }
-            m.op(AbstractOp::DECODE_INT, [&](Code& c) {
-                c.ref(*new_id);
-                c.endian(*endian);
-                c.bit_size(*varint(*float_ty->bit_size));
-                c.belong(get_field_ref(m, field));
-            });
-            auto next_id = m.new_id(nullptr);
-            if (!next_id) {
-                return error("Failed to generate new id");
-            }
-            m.op(AbstractOp::CAST, [&](Code& c) {
-                c.ident(*next_id);
-                c.type(*to);
-                c.from_type(*from);
-                c.ref(*new_id);
-                c.cast_type(CastType::INT_TO_FLOAT_BIT);
-            });
-            return do_assign(m, nullptr, nullptr, base_ref, *next_id);
+            BM_NEW_NODE_ID(new_id, error, typ);
+            BM_DEFINE_STORAGE(from, m, (std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false)));
+            BM_DEFINE_STORAGE(to, m, typ);
+            BM_NEW_OBJECT(m.op, new_id, from);
+            BM_ERROR_WRAP(tmp_var, error, (define_typed_tmp_var(m, new_id, from, ast::ConstantLevel::variable)));
+            BM_GET_ENDIAN(endian, float_ty->endian, false);
+            BM_DECODE_INT(m.op, tmp_var, endian, *float_ty->bit_size, (get_field_ref(m, field)));
+            BM_CAST(m.op, next_id, to, from, tmp_var, CastType::INT_TO_FLOAT_BIT);
+            return do_assign(m, nullptr, nullptr, base_ref, next_id);
         }
         if (auto str_ty = ast::as<ast::StrLiteralType>(typ)) {
             auto str_ref = static_str(m, str_ty->strong_ref);
@@ -394,47 +237,13 @@ namespace rebgn {
             }
             return counter_loop(m, *max_len, [&](Varint counter) {
                 auto int_typ = std::make_shared<ast::IntType>(str_ty->loc, 8, ast::Endian::unspec, false);
-                /*
-                auto s = define_storage(m, int_typ);
-                if (!s) {
-                    return s.error();
-                }
-
-                auto tmp = m.new_id(nullptr);
-                if (!tmp) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                    c.ident(*tmp);
-                    c.type(*s);
-                });
-                */
                 BM_DEFINE_STORAGE(s, m, int_typ);
                 BM_NEW_OBJECT(m.op, tmp, s);
-                auto tmp_var = define_typed_tmp_var(m, tmp, s, ast::ConstantLevel::variable);
-                if (!tmp_var) {
-                    return tmp_var.error();
-                }
-                auto endian = m.get_endian(Endian::unspec, false);
-                if (!endian) {
-                    return endian.error();
-                }
-                m.op(AbstractOp::DECODE_INT, [&](Code& c) {
-                    c.ref(*tmp_var);
-                    c.endian(*endian);
-                    c.bit_size(*varint(8));
-                    c.belong(get_field_ref(m, field));
-                });
-                auto index = m.new_id(nullptr);
-                if (!index) {
-                    return error("Failed to generate new id");
-                }
-                m.op(AbstractOp::INDEX, [&](Code& c) {
-                    c.ident(*index);
-                    c.left_ref(*str_ref);
-                    c.right_ref(counter);
-                });
-                BM_BINARY(m.op, cmp, BinaryOp::equal, *index, *tmp_var);
+                BM_ERROR_WRAP(tmp_var, error, define_typed_tmp_var(m, tmp, s, ast::ConstantLevel::variable));
+                BM_GET_ENDIAN(endian, Endian::unspec, false);
+                BM_DECODE_INT(m.op, tmp_var, endian, 8, (get_field_ref(m, field)));
+                BM_INDEX(m.op, index, *str_ref, counter);
+                BM_BINARY(m.op, cmp, BinaryOp::equal, index, tmp_var);
                 m.op(AbstractOp::ASSERT, [&](Code& c) {
                     c.ref(cmp);
                     c.belong(m.get_function());
@@ -451,14 +260,11 @@ namespace rebgn {
                     return imm.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
-                    if (!endian) {
-                        return endian.error();
-                    }
+                    BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
                     m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*imm);
-                        c.endian(*endian);
+                        c.endian(endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                         c.belong(get_field_ref(m, field));
                         c.array_length(*varint(*len));
@@ -466,32 +272,14 @@ namespace rebgn {
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
-                    auto index = m.new_id(nullptr);
-                    if (!index) {
-                        return error("Failed to generate new id");
-                    }
-                    m.op(AbstractOp::INDEX, [&](Code& c) {
-                        c.ident(*index);
-                        c.left_ref(base_ref);
-                        c.right_ref(i);
-                    });
-                    return decode_type(m, arr->element_type, *index, mapped_type, field, should_init_recursive);
+                    BM_INDEX(m.op, index, base_ref, i);
+                    return decode_type(m, arr->element_type, index, mapped_type, field, should_init_recursive);
                 });
             }
             auto undelying_decoder = [&] {
-                auto new_obj = m.new_node_id(arr->element_type);
-                if (!new_obj) {
-                    return new_obj.error();
-                }
-                auto s = define_storage(m, arr->element_type);
-                if (!s) {
-                    return s.error();
-                }
-                m.op(AbstractOp::NEW_OBJECT, [&](Code& c) {
-                    c.ident(*new_obj);
-                    c.type(*s);
-                });
-                auto tmp_var = define_typed_tmp_var(m, *new_obj, *s, ast::ConstantLevel::variable);
+                BM_DEFINE_STORAGE(s, m, arr->element_type);
+                BM_NEW_OBJECT(m.op, new_obj, s);
+                auto tmp_var = define_typed_tmp_var(m, new_obj, s, ast::ConstantLevel::variable);
                 if (!tmp_var) {
                     return tmp_var.error();
                 }
@@ -539,15 +327,12 @@ namespace rebgn {
                             });
                             return none;
                         }
-                        auto new_id = m.new_id(nullptr);
-                        if (!new_id) {
-                            return error("Failed to generate new id");
-                        }
+                        BM_NEW_ID(new_id, error, nullptr);
                         m.op(AbstractOp::CAN_READ, [&](Code& c) {
-                            c.ident(*new_id);
+                            c.ident(new_id);
                             c.belong(get_field_ref(m, field));
                         });
-                        return conditional_loop(m, *new_id, undelying_decoder);
+                        return conditional_loop(m, new_id, undelying_decoder);
                     }
                     else if (field->eventual_follow == ast::Follow::fixed) {
                         auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
@@ -578,14 +363,11 @@ namespace rebgn {
                                 c.ref(assert_expr);
                                 c.belong(m.get_function());
                             });
-                            auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
-                            if (!endian) {
-                                return endian.error();
-                            }
+                            BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
                             m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
                                 c.left_ref(base_ref);
                                 c.right_ref(new_id);
-                                c.endian(*endian);
+                                c.endian(endian);
                                 c.bit_size(*varint(*elem_is_int->bit_size));
                                 c.belong(get_field_ref(m, field));
                             });
@@ -637,12 +419,9 @@ namespace rebgn {
                             Storages isOkFlag;
                             isOkFlag.length.value(1);
                             isOkFlag.storages.push_back(Storage{.type = StorageType::BOOL});
-                            auto gen = m.get_storage_ref(isOkFlag, &next->loc);
-                            if (!gen) {
-                                return gen.error();
-                            }
-                            BM_NEW_OBJECT(m.op, flagObj, *gen);
-                            auto isOK = define_bool_tmp_var(m, flagObj, ast::ConstantLevel::variable);
+                            BM_GET_STORAGE_REF_WITH_LOC(gen, error, isOkFlag, &next->loc);
+                            BM_NEW_OBJECT(m.op, flagObj, gen);
+                            BM_ERROR_WRAP(isOK, error, (define_bool_tmp_var(m, flagObj, ast::ConstantLevel::variable)));
                             auto immTrue = immediate_bool(m, true);
                             if (!immTrue) {
                                 return immTrue.error();
@@ -651,7 +430,7 @@ namespace rebgn {
                             if (!immFalse) {
                                 return immFalse.error();
                             }
-                            auto err = do_assign(m, nullptr, nullptr, *isOK, *immTrue);
+                            auto err = do_assign(m, nullptr, nullptr, isOK, *immTrue);
                             if (err) {
                                 return err;
                             }
@@ -663,7 +442,7 @@ namespace rebgn {
                                 m.op(AbstractOp::IF, [&](Code& c) {
                                     c.ref(cmp);
                                 });
-                                err = do_assign(m, nullptr, nullptr, *isOK, *immFalse);
+                                err = do_assign(m, nullptr, nullptr, isOK, *immFalse);
                                 m.op(AbstractOp::BREAK);
                                 m.op(AbstractOp::END_IF);
                                 return insert_phi(m, m.end_phi_stack());
@@ -672,7 +451,7 @@ namespace rebgn {
                                 return err;
                             }
                             m.op(AbstractOp::IF, [&](Code& c) {
-                                c.ref(*isOK);
+                                c.ref(isOK);
                             });
                             m.op(AbstractOp::BREAK);
                             m.op(AbstractOp::END_IF);
@@ -693,10 +472,7 @@ namespace rebgn {
                 }
             }
             else {
-                auto id = get_expr(m, arr->length);
-                if (!id) {
-                    return id.error();
-                }
+                BM_GET_EXPR(id, m, arr->length);
                 auto expr_type = arr->length->expr_type;
                 if (auto u = ast::as<ast::UnionType>(expr_type)) {
                     if (!u->common_type) {
@@ -704,23 +480,17 @@ namespace rebgn {
                     }
                     expr_type = u->common_type;
                 }
-                auto s = define_storage(m, expr_type);
-                if (!s) {
-                    return s.error();
-                }
-                auto len_ident = define_typed_tmp_var(m, *id, *s, ast::ConstantLevel::immutable_variable);
+                BM_DEFINE_STORAGE(s, m, expr_type);
+                auto len_ident = define_typed_tmp_var(m, id, s, ast::ConstantLevel::immutable_variable);
                 if (!len_ident) {
                     return len_ident.error();
                 }
                 if (elem_is_int) {
-                    auto endian = m.get_endian(Endian(elem_is_int->endian), elem_is_int->is_signed);
-                    if (!endian) {
-                        return endian.error();
-                    }
+                    BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
                     m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
                         c.left_ref(base_ref);
                         c.right_ref(*len_ident);
-                        c.endian(*endian);
+                        c.endian(endian);
                         c.bit_size(*varint(*elem_is_int->bit_size));
                         c.belong(get_field_ref(m, field));
                     });
@@ -778,13 +548,10 @@ namespace rebgn {
             if (!base_type) {
                 return error("abstract enum {} in decode", base_enum->ident->ident);
             }
-            auto ident = m.lookup_ident(base_enum->ident);
-            if (!ident) {
-                return ident.error();
-            }
-            BM_DEFINE_STORAGE(s, m, base_type);
-            BM_NEW_OBJECT(m.op, storage, s);
-            auto tmp_var = define_typed_tmp_var(m, storage, s, ast::ConstantLevel::variable);
+            BM_LOOKUP_IDENT(ident, m, base_enum->ident);
+            BM_DEFINE_STORAGE(from, m, base_type);
+            BM_NEW_OBJECT(m.op, storage, from);
+            auto tmp_var = define_typed_tmp_var(m, storage, from, ast::ConstantLevel::variable);
             if (!tmp_var) {
                 return tmp_var.error();
             }
@@ -792,23 +559,10 @@ namespace rebgn {
             if (err) {
                 return err;
             }
-            auto casted = m.new_id(nullptr);
-            if (!casted) {
-                return casted.error();
-            }
 
-            auto to = define_storage(m, ast::cast_to<ast::EnumType>(typ));
-            if (!to) {
-                return err;
-            }
-            m.op(AbstractOp::CAST, [&](Code& c) {
-                c.ident(*casted);
-                c.type(*to);
-                c.from_type(s);
-                c.ref(*tmp_var);
-                c.cast_type(CastType::INT_TO_ENUM);
-            });
-            return do_assign(m, nullptr, nullptr, base_ref, *casted);
+            BM_DEFINE_STORAGE(to, m, ast::cast_to<ast::EnumType>(typ));
+            BM_CAST(m.op, casted, to, from, *tmp_var, CastType::INT_TO_ENUM);
+            return do_assign(m, nullptr, nullptr, base_ref, casted);
         }
         if (auto i = ast::as<ast::IdentType>(typ)) {
             auto base_type = i->base.lock();

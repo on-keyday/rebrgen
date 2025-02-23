@@ -8,7 +8,7 @@
     if (!tmp__##name##__) {                                         \
         return HANDLE_ERROR(handle_error, tmp__##name##__.error()); \
     }                                                               \
-    auto name = *tmp__##name##__
+    auto name = std::move(*tmp__##name##__)
 
 #define BM_ERROR_WRAP_ERROR(handle_error, expr)             \
     auto err__##name##__ = expr;                            \
@@ -93,15 +93,18 @@
         c.ref(prev_assign);                                         \
     })
 
-#define BM_CAST(op, id_name, dst_type, src_type, expr, cast_kind) \
-    BM_NEW_ID(id_name, error, nullptr);                           \
-    op(AbstractOp::CAST, [&](Code& c) {                           \
-        c.ident(id_name);                                         \
-        c.type(dst_type);                                         \
-        c.from_type(src_type);                                    \
-        c.ref(expr);                                              \
-        c.cast_type(cast_kind);                                   \
+#define BM_CAST_WITH_ERROR(op, id_name, error, dst_type, src_type, expr, cast_kind) \
+    BM_NEW_ID(id_name, error, nullptr);                                             \
+    op(AbstractOp::CAST, [&](Code& c) {                                             \
+        c.ident(id_name);                                                           \
+        c.type(dst_type);                                                           \
+        c.from_type(src_type);                                                      \
+        c.ref(expr);                                                                \
+        c.cast_type(cast_kind);                                                     \
     })
+
+#define BM_CAST(op, id_name, dst_type, src_type, expr, cast_kind) \
+    BM_CAST_WITH_ERROR(op, id_name, error, dst_type, src_type, expr, cast_kind)
 
 #define BM_REF(op, abs_op, ref_) op(abs_op, [&](Code& c) { c.ref(ref_); })
 #define BM_OP(op, abs_op) op(abs_op, [&](Code& c) {})
@@ -110,4 +113,36 @@
     BM_ERROR_WRAP(storage_ref, handle_error, (m.get_storage_ref(storage, loc)))
 
 #define BM_GET_STORAGE_REF(storage_ref, storage) \
-    BM_GET_STORAGE_REF_WITH_LOC(storage_ref, storage, nullptr)
+    BM_GET_STORAGE_REF_WITH_LOC(storage_ref, error, storage, nullptr)
+
+#define BM_ENCODE_INT(op, target, endian_, bit_size_, belong_) \
+    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_))); \
+    op(AbstractOp::ENCODE_INT, [&](Code& c__) {                \
+        c__.ref(target);                                       \
+        c__.endian(endian_);                                   \
+        c__.bit_size(tmp_bit_size__);                          \
+        c__.belong(belong_);                                   \
+    });
+
+#define BM_DECODE_INT(op, target, endian_, bit_size_, belong_) \
+    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_))); \
+    op(AbstractOp::DECODE_INT, [&](Code& c__) {                \
+        c__.ref(target);                                       \
+        c__.endian(endian_);                                   \
+        c__.bit_size(tmp_bit_size__);                          \
+        c__.belong(belong_);                                   \
+    });
+
+#define BM_ENCODE_INT_VEC_FIXED(op, target, endian_, bit_size_, belong_, array_length_) \
+    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_)));                          \
+    BM_ERROR_WRAP(tmp_array_length__, error, (varint(array_length_)));                  \
+    op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c__) {                            \
+        c__.left_ref(target);                                                           \
+        c__.endian(endian_);                                                            \
+        c__.bit_size(tmp_bit_size__);                                                   \
+        c__.belong(belong_);                                                            \
+        c__.array_length(tmp_array_length__);                                           \
+    });
+
+#define BM_GET_ENDIAN(id_name, endian, is_signed) \
+    BM_ERROR_WRAP(id_name, error, (m.get_endian(Endian(endian), is_signed)))

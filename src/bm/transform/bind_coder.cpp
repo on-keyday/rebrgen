@@ -4,12 +4,12 @@
 namespace rebgn {
     Error bind_encoder_and_decoder(Module& m) {
         std::vector<Code> rebound;
-        std::map<std::uint64_t, std::uint64_t> should_bind_encoder;
-        std::map<std::uint64_t, std::uint64_t> should_bind_decoder;
-        std::map<std::uint64_t, std::uint64_t> encoder_to_fmt;
-        std::map<std::uint64_t, std::uint64_t> decoder_to_fmt;
-        std::map<std::uint64_t, std::uint64_t> fmt_to_encoder;
-        std::map<std::uint64_t, std::uint64_t> fmt_to_decoder;
+        std::unordered_map<std::uint64_t, std::uint64_t> should_bind_encoder;
+        std::unordered_map<std::uint64_t, std::uint64_t> should_bind_decoder;
+        std::unordered_map<std::uint64_t, std::uint64_t> encoder_to_fmt;
+        std::unordered_map<std::uint64_t, std::uint64_t> decoder_to_fmt;
+        std::unordered_map<std::uint64_t, std::uint64_t> fmt_to_encoder;
+        std::unordered_map<std::uint64_t, std::uint64_t> fmt_to_decoder;
         for (auto& c : m.code) {
             if (c.op == AbstractOp::DEFINE_ENCODER || c.op == AbstractOp::DEFINE_DECODER) {
                 auto fmt_begin = c.left_ref().value().value();
@@ -44,6 +44,31 @@ namespace rebgn {
                 }
             }
         }
+
+        auto add_state_variables = [&](ObjectID fmt) {
+            auto ident = m.ident_table_rev.find(fmt);
+            if (ident == m.ident_table_rev.end()) {
+                return error("Invalid format ident: {}", fmt);
+            }
+            auto base = ast::as<ast::Format>(ident->second->base.lock());
+            if (!base) {
+                return error("Invalid format ident: {}", fmt);
+            }
+            for (auto& s : base->state_variables) {
+                auto lock = s.lock();
+                if (!lock) {
+                    return error("Invalid state variable");
+                }
+                auto ident = m.lookup_ident(lock->ident);
+                if (!ident) {
+                    return ident.error();
+                }
+                rebound.push_back(make_code(AbstractOp::STATE_VARIABLE_PARAMETER, [&](auto& c) {
+                    c.ref(*ident);
+                }));
+            }
+            return none;
+        };
 
         for (auto& c : m.code) {
             if (c.op == AbstractOp::DEFINE_FORMAT) {
@@ -87,30 +112,6 @@ namespace rebgn {
                 // skip
             }
             else if (c.op == AbstractOp::DEFINE_FUNCTION) {
-                auto add_state_variables = [&](ObjectID fmt) {
-                    auto ident = m.ident_table_rev.find(fmt);
-                    if (ident == m.ident_table_rev.end()) {
-                        return error("Invalid format ident: {}", fmt);
-                    }
-                    auto base = ast::as<ast::Format>(ident->second->base.lock());
-                    if (!base) {
-                        return error("Invalid format ident: {}", fmt);
-                    }
-                    for (auto& s : base->state_variables) {
-                        auto lock = s.lock();
-                        if (!lock) {
-                            return error("Invalid state variable");
-                        }
-                        auto ident = m.lookup_ident(lock->ident);
-                        if (!ident) {
-                            return ident.error();
-                        }
-                        rebound.push_back(make_code(AbstractOp::STATE_VARIABLE_PARAMETER, [&](auto& c) {
-                            c.ref(*ident);
-                        }));
-                    }
-                    return none;
-                };
                 auto ident = c.ident().value();
                 rebound.push_back(std::move(c));
                 if (auto found = encoder_to_fmt.find(ident.value()); found != encoder_to_fmt.end()) {

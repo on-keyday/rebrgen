@@ -178,7 +178,7 @@ namespace rebgn {
                                 BM_REF(op, AbstractOp::INC, i_);
                             }
                             BM_OP(op, AbstractOp::END_LOOP);
-                            BM_ENCODE_INT_VEC_FIXED(op, tmp_array, endian, 8, belong, bit_size / 8);
+                            BM_ENCODE_INT_VEC_FIXED(op, tmp_array, result_byte_count, endian, 8, belong, bit_size / 8);
                         }
                     }
                 }

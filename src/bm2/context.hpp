@@ -138,4 +138,6 @@ namespace bm2 {
         }
     };
 
+    constexpr std::uint64_t null_ref = 0;
+
 }  // namespace bm2

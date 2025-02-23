@@ -21,15 +21,13 @@ namespace rebgn {
                 for (auto j = i + 1; j < range.end; j++) {
                     if (mod.code[j].op == begin_op) {
                         nested++;
-                        continue;
                     }
-                    if (mod.code[j].op == end_op) {
-                        if (nested) {
-                            nested--;
-                            continue;
+                    else if (mod.code[j].op == end_op) {
+                        if (nested == 0) {
+                            end = j + 1;
+                            break;
                         }
-                        end = j + 1;
-                        break;
+                        nested--;
                     }
                 }
                 NestedRanges r = {{start, end}};
@@ -156,7 +154,9 @@ namespace rebgn {
                     return err;
                 }
                 auto last = r.nested[outer_range].range.end - 1;
-                outer_nested.insert(outer_nested.end(), tmp.begin(), tmp.end());
+                outer_nested.insert(outer_nested.end(),
+                                    std::make_move_iterator(tmp.begin()),
+                                    std::make_move_iterator(tmp.end()));
                 i = last;
                 outer_range++;
             }
@@ -175,9 +175,12 @@ namespace rebgn {
         }
         std::vector<Code> flat;
         std::vector<Code> outer_nested;
-        flatten_ranges(m, ranges, flat, outer_nested);
+        err = flatten_ranges(m, ranges, flat, outer_nested);
+        if (err) {
+            return err;
+        }
         m.code = std::move(flat);
-        m.code.insert(m.code.end(), outer_nested.begin(), outer_nested.end());
+        m.code.insert(m.code.end(), std::make_move_iterator(outer_nested.begin()), std::make_move_iterator(outer_nested.end()));
         return none;
     }
 }  // namespace rebgn

@@ -1552,6 +1552,8 @@ namespace bm2rust {
                 case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = true;
+                    auto fallback = code.fallback().value();
+                    inner_function(ctx, w, ctx.range(fallback));
                     /*
                     auto bit_field = ctx.ident_table[code.belong().value().value()];
                     auto belong_name = ctx.ident_table[code.belong().value().value()];
@@ -1620,6 +1622,8 @@ namespace bm2rust {
                 }
                 case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
+                    auto fallback = code.fallback().value();
+                    inner_function(ctx, w, ctx.range(fallback));
                     ctx.bm_ctx.inner_bit_operations = false;
                     ctx.bit_field_ident.pop_back();
                     break;
@@ -1961,12 +1965,17 @@ namespace bm2rust {
                     //     encode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
                     // }
                     // else {
-                    auto ref = code.ref().value().value();
-                    auto& ident = ctx.ident_index_table[ref];
-                    auto s = eval(ctx.bm.code[ident], ctx);
-                    auto endian = code.endian().value();
-                    auto belong_name = get_belong_name(ctx, code);
-                    serialize(ctx, w, code.bit_size()->value(), belong_name, s.back(), endian);
+                    if (auto fallback = code.fallback(); fallback && fallback.value().value() != bm2::null_ref) {
+                        inner_function(ctx, w, ctx.range(fallback.value()));
+                    }
+                    else {
+                        auto ref = code.ref().value().value();
+                        auto& ident = ctx.ident_index_table[ref];
+                        auto s = eval(ctx.bm.code[ident], ctx);
+                        auto endian = code.endian().value();
+                        auto belong_name = get_belong_name(ctx, code);
+                        serialize(ctx, w, code.bit_size()->value(), belong_name, s.back(), endian);
+                    }
                     //}
                     break;
                 }
@@ -1975,14 +1984,19 @@ namespace bm2rust {
                     //     decode_bit_field(ctx, w, code.bit_size()->value(), code.ref().value().value());
                     // }
                     // else {
-                    auto ref = code.ref().value().value();
-                    auto& ident = ctx.ident_index_table[ref];
-                    ctx.on_assign = true;
-                    auto s = eval(ctx.bm.code[ident], ctx);
-                    ctx.on_assign = false;
-                    auto endian = code.endian().value();
-                    auto belong_name = get_belong_name(ctx, code);
-                    deserialize(ctx, w, ref, code.bit_size()->value(), belong_name, s.back(), endian);
+                    if (auto fallback = code.fallback(); fallback && fallback.value().value() != bm2::null_ref) {
+                        inner_function(ctx, w, ctx.range(fallback.value()));
+                    }
+                    else {
+                        auto ref = code.ref().value().value();
+                        auto& ident = ctx.ident_index_table[ref];
+                        ctx.on_assign = true;
+                        auto s = eval(ctx.bm.code[ident], ctx);
+                        ctx.on_assign = false;
+                        auto endian = code.endian().value();
+                        auto belong_name = get_belong_name(ctx, code);
+                        deserialize(ctx, w, ref, code.bit_size()->value(), belong_name, s.back(), endian);
+                    }
                     //}
                     break;
                 }

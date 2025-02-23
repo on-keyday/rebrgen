@@ -11,4 +11,6 @@ namespace rebgn {
     Error derive_property_functions(Module& m);
     Error generate_cfg1(Module& m);
     Error expand_bit_operation(Module& m);
+    void replace_call_encode_decode_ref(Module& m);
+    Error apply_encode_fallback(Module& m);
 }  // namespace rebgn

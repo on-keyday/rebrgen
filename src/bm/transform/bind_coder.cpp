@@ -2,6 +2,8 @@
 #include <bm/internal.hpp>
 
 namespace rebgn {
+    // this function binds encoder and decoder to format
+    // `bind` means to place function declaration (DECLARE_FUNCTION) and DEFINE_ENCODER or DEFINE_DECODER in range between DEFINE_FORMAT and END_FORMAT
     Error bind_encoder_and_decoder(Module& m) {
         std::vector<Code> rebound;
         std::unordered_map<std::uint64_t, std::uint64_t> should_bind_encoder;
@@ -59,12 +61,9 @@ namespace rebgn {
                 if (!lock) {
                     return error("Invalid state variable");
                 }
-                auto ident = m.lookup_ident(lock->ident);
-                if (!ident) {
-                    return ident.error();
-                }
+                BM_LOOKUP_IDENT(ident, m, lock->ident);
                 rebound.push_back(make_code(AbstractOp::STATE_VARIABLE_PARAMETER, [&](auto& c) {
-                    c.ref(*ident);
+                    c.ref(ident);
                 }));
             }
             return none;
@@ -135,6 +134,22 @@ namespace rebgn {
         }
         m.code = std::move(rebound);
         return none;
+    }
+
+    void replace_call_encode_decode_ref(Module& m) {
+        for (auto& c : m.code) {
+            if (c.op == AbstractOp::CALL_ENCODE || c.op == AbstractOp::CALL_DECODE) {
+                auto fmt = m.ident_index_table[c.left_ref().value().value()];  // currently this refers to DEFINE_FORMAT
+                for (size_t j = fmt; m.code[j].op != AbstractOp::END_FORMAT; j++) {
+                    if ((c.op == AbstractOp::CALL_ENCODE && m.code[j].op == AbstractOp::DEFINE_ENCODER) ||
+                        (c.op == AbstractOp::CALL_DECODE && m.code[j].op == AbstractOp::DEFINE_DECODER)) {
+                        auto ident = m.code[j].right_ref().value();
+                        c.left_ref(ident);  // replace to DEFINE_FUNCTION. this DEFINE_FUNCTION holds belong which is original DEFINE_FORMAT
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }  // namespace rebgn

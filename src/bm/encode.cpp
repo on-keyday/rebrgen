@@ -74,7 +74,7 @@ namespace rebgn {
                 }
                 if (elem_is_int) {
                     BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
+                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, *imm, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
@@ -98,7 +98,7 @@ namespace rebgn {
                     }
                     BM_GET_ENDIAN(endian, Endian::unspec, false);
                     auto array_size = *field->arguments->alignment_value / 8 - 1;
-                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, endian, 8, (get_field_ref(m, field)), array_size);
+                    BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, *req_size, endian, 8, (get_field_ref(m, field)), array_size);
                     return none;
                 }
             }
@@ -219,7 +219,6 @@ namespace rebgn {
             return none;
         }
         if (auto float_ty = ast::as<ast::FloatType>(typ)) {
-            BM_NEW_NODE_ID(new_id, error, typ);
             BM_DEFINE_STORAGE(from, m, (std::make_shared<ast::IntType>(float_ty->loc, *float_ty->bit_size, ast::Endian::unspec, false)));
             BM_DEFINE_STORAGE(to, m, typ);
             BM_NEW_OBJECT(m.op, new_id, from);
@@ -261,14 +260,7 @@ namespace rebgn {
                 }
                 if (elem_is_int) {
                     BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-                    m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
-                        c.left_ref(base_ref);
-                        c.right_ref(*imm);
-                        c.endian(endian);
-                        c.bit_size(*varint(*elem_is_int->bit_size));
-                        c.belong(get_field_ref(m, field));
-                        c.array_length(*varint(*len));
-                    });
+                    BM_DECODE_INT_VEC_FIXED(m.op, base_ref, *imm, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
                     return none;
                 }
                 return counter_loop(m, *imm, [&](Varint i) {
@@ -301,14 +293,8 @@ namespace rebgn {
                         if (!req_size) {
                             return req_size.error();
                         }
-                        m.op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c) {
-                            c.left_ref(base_ref);
-                            c.right_ref(*req_size);
-                            c.endian(*m.get_endian(Endian::unspec, false));
-                            c.bit_size(*varint(8));
-                            c.belong(get_field_ref(m, field));
-                            c.array_length(*varint(*field->arguments->alignment_value / 8 - 1));
-                        });
+                        BM_GET_ENDIAN(endian, Endian::unspec, false);
+                        BM_DECODE_INT_VEC_FIXED(m.op, base_ref, *req_size, endian, 8, (get_field_ref(m, field)), *field->arguments->alignment_value / 8 - 1);
                         return none;
                     }
                     else if (field->follow == ast::Follow::end ||

@@ -366,7 +366,7 @@ namespace bm2c {
                     if (params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ident().value();
+                    auto ref = code.ref().value();
                     auto type = type_to_string(ctx, code.type().value());
                     auto ident = ctx.ident(code.ident().value());
                     w.write(type, " ", ident);

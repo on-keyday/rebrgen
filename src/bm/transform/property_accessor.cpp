@@ -367,18 +367,13 @@ namespace rebgn {
             return error("Invalid bit size");
         }
         auto max_value = (std::uint64_t(1) << *bit_size) - 1;
-        Varint value_id;
-
-        immediate(m, op, max_value);
-        auto length_id = m.new_id(nullptr);
-        if (!length_id) {
-            return length_id.error();
-        }
+        BM_IMMEDIATE(op, value_id, max_value);
+        BM_NEW_ID(length_id, error, nullptr);
         op(AbstractOp::ARRAY_SIZE, [&](Code& m) {
-            m.ident(*length_id);
+            m.ident(length_id);
             m.ref(array_ref);
         });
-        BM_BINARY(op, cmp_id, BinaryOp::less_or_eq, *length_id, value_id);
+        BM_BINARY(op, cmp_id, BinaryOp::less_or_eq, length_id, value_id);
         op(AbstractOp::ASSERT, [&](Code& m) {
             m.ref(cmp_id);
             m.belong(function);
@@ -387,22 +382,14 @@ namespace rebgn {
         auto src = dst;
         dst.storages[0].size(*varint(*bit_size));
         src.storages[0].size(*varint(*bit_size + 1));  // to force insert cast
-        auto cast = add_assign_cast(m, op, &dst, &src, *length_id, false);
+        auto cast = add_assign_cast(m, op, &dst, &src, length_id, false);
         if (!cast) {
             return cast.error();
         }
         if (!*cast) {
             return error("Failed to add cast");
         }
-        auto assign_id = m.new_id(nullptr);
-        if (!assign_id) {
-            return assign_id.error();
-        }
-        op(AbstractOp::ASSIGN, [&](Code& m) {
-            m.ident(*assign_id);
-            m.left_ref(*target_id);
-            m.right_ref(**cast);
-        });
+        BM_ASSIGN(op, assign_id, *target_id, **cast, null_varint, nullptr);
         return none;
     }
 

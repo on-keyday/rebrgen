@@ -57,6 +57,9 @@ namespace rebgn {
                 case AbstractOp::DEFINE_PROPERTY:
                     end_op = AbstractOp::END_PROPERTY;
                     break;
+                case AbstractOp::DEFINE_FALLBACK:
+                    end_op = AbstractOp::END_FALLBACK;
+                    break;
                 default:
                     continue;
             }
@@ -71,22 +74,6 @@ namespace rebgn {
             m.ident_to_ranges.push_back(std::move(range));
         }
         return none;
-    }
-
-    void replace_call_encode_decode_ref(Module& m) {
-        for (auto& c : m.code) {
-            if (c.op == AbstractOp::CALL_ENCODE || c.op == AbstractOp::CALL_DECODE) {
-                auto fmt = m.ident_index_table[c.left_ref().value().value()];  // currently this refers to DEFINE_FORMAT
-                for (size_t j = fmt; m.code[j].op != AbstractOp::END_FORMAT; j++) {
-                    if ((c.op == AbstractOp::CALL_ENCODE && m.code[j].op == AbstractOp::DEFINE_ENCODER) ||
-                        (c.op == AbstractOp::CALL_DECODE && m.code[j].op == AbstractOp::DEFINE_DECODER)) {
-                        auto ident = m.code[j].right_ref().value();
-                        c.left_ref(ident);  // replace to DEFINE_FUNCTION. this DEFINE_FUNCTION holds belong which is original DEFINE_FORMAT
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     struct FunctionStack {
@@ -346,6 +333,7 @@ namespace rebgn {
         APPLY_AND_REBIND(derive_property_functions);
         analyze_encoder_decoder_traits(m);
         APPLY_AND_REBIND(expand_bit_operation);
+        APPLY_AND_REBIND(apply_encode_fallback);
         APPLY_AND_REBIND(sort_immediate);
         APPLY_AND_REBIND(generate_cfg1);
         auto err = add_ident_ranges(m);

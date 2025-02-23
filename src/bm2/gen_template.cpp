@@ -578,6 +578,20 @@ namespace rebgn {
                     inner_function.indent_writeln("w.writeln(\"return false;\");");
                     inner_function.indent_writeln("break;");
                 }
+                else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT) {
+                    inner_function.indent_writeln("auto fallback = code.fallback().value()");
+                    inner_function.indent_writeln("if(fallback.value() != 0) {");
+                    auto indent = inner_function.indent_scope();
+                    inner_function.indent_writeln("auto range = ctx.range(fallback);");
+                    inner_function.indent_writeln("inner_function(ctx, w, range);");
+                    indent.execute();
+                    inner_function.indent_writeln("}");
+                    inner_function.indent_writeln("else {");
+                    auto indent2 = inner_function.indent_scope();
+                    inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    indent2.execute();
+                    inner_function.indent_writeln("}");
+                }
                 else {
                     inner_function.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
                     inner_function.indent_writeln("break;");

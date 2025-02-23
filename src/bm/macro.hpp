@@ -75,6 +75,9 @@
 #define BM_IMMEDIATE(op, id_name, value) \
     BM_ERROR_WRAP(id_name, error, (immediate(m, op, value)))
 
+#define BM_IMMEDIATE_UNEXPECT(op, id_name, value) \
+    BM_ERROR_WRAP(id_name, unexpect_error, (immediate(m, op, value)))
+
 #define BM_ASSIGN(op, id_name, left, right, prev_assign, loc) \
     BM_NEW_ID(id_name, error, loc);                           \
     op(AbstractOp::ASSIGN, [&](Code& c) {                     \
@@ -133,15 +136,28 @@
         c__.belong(belong_);                                   \
     });
 
-#define BM_ENCODE_INT_VEC_FIXED(op, target, endian_, bit_size_, belong_, array_length_) \
-    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_)));                          \
-    BM_ERROR_WRAP(tmp_array_length__, error, (varint(array_length_)));                  \
-    op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c__) {                            \
-        c__.left_ref(target);                                                           \
-        c__.endian(endian_);                                                            \
-        c__.bit_size(tmp_bit_size__);                                                   \
-        c__.belong(belong_);                                                            \
-        c__.array_length(tmp_array_length__);                                           \
+#define BM_ENCODE_INT_VEC_FIXED(op, target, len, endian_, bit_size_, belong_, array_length_) \
+    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_)));                               \
+    BM_ERROR_WRAP(tmp_array_length__, error, (varint(array_length_)));                       \
+    op(AbstractOp::ENCODE_INT_VECTOR_FIXED, [&](Code& c__) {                                 \
+        c__.left_ref(target);                                                                \
+        c__.right_ref(len);                                                                  \
+        c__.endian(endian_);                                                                 \
+        c__.bit_size(tmp_bit_size__);                                                        \
+        c__.belong(belong_);                                                                 \
+        c__.array_length(tmp_array_length__);                                                \
+    });
+
+#define BM_DECODE_INT_VEC_FIXED(op, target, len, endian_, bit_size_, belong_, array_length_) \
+    BM_ERROR_WRAP(tmp_bit_size__, error, (varint(bit_size_)));                               \
+    BM_ERROR_WRAP(tmp_array_length__, error, (varint(array_length_)));                       \
+    op(AbstractOp::DECODE_INT_VECTOR_FIXED, [&](Code& c__) {                                 \
+        c__.left_ref(target);                                                                \
+        c__.right_ref(len);                                                                  \
+        c__.endian(endian_);                                                                 \
+        c__.bit_size(tmp_bit_size__);                                                        \
+        c__.belong(belong_);                                                                 \
+        c__.array_length(tmp_array_length__);                                                \
     });
 
 #define BM_GET_ENDIAN(id_name, endian, is_signed) \

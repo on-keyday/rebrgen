@@ -602,6 +602,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length (length may be less than array size)
@@ -609,12 +610,14 @@ format Code:
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
             array_length :Varint # array length
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length 
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length (length may be less than array size)
@@ -622,11 +625,13 @@ format Code:
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
             array_length :Varint # array length
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR_UNTIL_EOF:
             ref :Varint # ref to vector
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT:
             ref :Varint
             endian :EndianExpr

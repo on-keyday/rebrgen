@@ -590,6 +590,7 @@ format Code:
         AbstractOp.DYNAMIC_ENDIAN:
             ident :Varint
             ref :Varint # ref to endian expr
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT:
             ref :Varint
             endian :EndianExpr
@@ -830,6 +831,7 @@ format Code:
         AbstractOp.IS_LITTLE_ENDIAN:
             ident :Varint
             ref :Varint # ref to dynamic endian variable(dynamic) or null(platform)
+            fallback :Varint # ref to fallback boolean expr
         AbstractOp.REMAIN_BYTES:
             ident :Varint
         AbstractOp.DEFINE_FALLBACK:

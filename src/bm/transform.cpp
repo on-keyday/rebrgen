@@ -334,6 +334,7 @@ namespace rebgn {
         analyze_encoder_decoder_traits(m);
         APPLY_AND_REBIND(expand_bit_operation);
         APPLY_AND_REBIND(apply_encode_fallback);
+        APPLY_AND_REBIND(apply_dynamic_endian_fallback);
         APPLY_AND_REBIND(sort_immediate);
         APPLY_AND_REBIND(generate_cfg1);
         auto err = add_ident_ranges(m);

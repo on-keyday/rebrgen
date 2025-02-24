@@ -113,4 +113,14 @@ namespace rebgn {
         };
     }
 
+    auto loop(auto&& op, Varint cmp_id, Varint counter, auto&& body) -> Error {
+        op(AbstractOp::LOOP_CONDITION, [&](Code& m) {
+            m.ref(cmp_id);
+        });
+        BM_ERROR_WRAP_ERROR(error, body());
+        BM_REF(op, AbstractOp::INC, counter);
+        op(AbstractOp::END_LOOP, [&](Code& m) {});
+        return none;
+    }
+
 }  // namespace rebgn

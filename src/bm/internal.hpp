@@ -43,6 +43,32 @@ namespace rebgn {
         return ident;
     }
 
+    expected<Varint> immediate_bool(Module& m, auto&& op, bool b, brgen::lexer::Loc* loc = nullptr) {
+        if (b && m.true_id) {
+            return *m.true_id;
+        }
+        if (!b && m.false_id) {
+            return *m.false_id;
+        }
+        auto ident = m.new_id(loc);
+        if (!ident) {
+            return ident;
+        }
+        if (b) {
+            op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
+                c.ident(*ident);
+            });
+            m.true_id = *ident;
+        }
+        else {
+            op(AbstractOp::IMMEDIATE_FALSE, [&](Code& c) {
+                c.ident(*ident);
+            });
+            m.false_id = *ident;
+        }
+        return ident;
+    }
+
     expected<Varint> immediate(Module& m, std::uint64_t n, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc = nullptr);
     expected<Varint> define_var(Module& m, Varint ident, Varint init_ref, StorageRef typ, ast::ConstantLevel level);

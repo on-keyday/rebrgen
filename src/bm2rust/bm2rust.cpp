@@ -602,7 +602,12 @@ namespace bm2rust {
                     res.push_back("cfg!(target_endian = \"little\")");
                 }
                 else {
-                    res.push_back("/* Unimplemented dynamic endian */");
+                    if (code.fallback()->value() != 0) {
+                        res = eval(ctx.ref(code.fallback().value()), ctx);
+                    }
+                    else {
+                        res.push_back("/* Unimplemented dynamic endian */");
+                    }
                 }
                 break;
             }
@@ -1549,6 +1554,12 @@ namespace bm2rust {
         for (size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch (code.op) {
+                case rebgn::AbstractOp::DYNAMIC_ENDIAN: {
+                    if (auto fallback = code.fallback(); fallback) {
+                        inner_function(ctx, w, ctx.range(fallback.value()));
+                    }
+                    break;
+                }
                 case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION:
                 case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                     ctx.bm_ctx.inner_bit_operations = true;

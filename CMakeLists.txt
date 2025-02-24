@@ -33,6 +33,7 @@ add_executable(bmgen
     "src/bm/transform/sort_formats.cpp"
     "src/bm/transform/fallback/bit_op.cpp"
     "src/bm/transform/fallback/encode.cpp"
+    "src/bm/transform/fallback/endian.cpp"
 )
 
 add_executable(bm2cpp

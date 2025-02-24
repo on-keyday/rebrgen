@@ -13,4 +13,5 @@ namespace rebgn {
     Error expand_bit_operation(Module& m);
     void replace_call_encode_decode_ref(Module& m);
     Error apply_encode_fallback(Module& m);
+    Error apply_dynamic_endian_fallback(Module& m);
 }  // namespace rebgn

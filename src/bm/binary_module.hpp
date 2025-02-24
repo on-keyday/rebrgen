@@ -2050,6 +2050,7 @@ namespace rebgn {
         struct union_struct_60 {
             Varint ident;
             Varint ref;
+            Varint fallback;
         };
         struct union_struct_61 {
             Varint ref;
@@ -2358,6 +2359,7 @@ namespace rebgn {
         struct union_struct_129 {
             Varint ident;
             Varint ref;
+            Varint fallback;
         };
         struct union_struct_130 {
             Varint ident;
@@ -10283,7 +10285,10 @@ namespace rebgn {
             return std::nullopt;
         }
         if (AbstractOp::DYNAMIC_ENDIAN == (*this).op) {
-            return std::nullopt;
+            if (!std::holds_alternative<union_struct_60>(union_variant_16)) {
+                return std::nullopt;
+            }
+            return std::get<44>((*this).union_variant_16).fallback;
         }
         if (AbstractOp::ENCODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_61>(union_variant_16)) {
@@ -10438,6 +10443,96 @@ namespace rebgn {
             }
             return std::get<84>((*this).union_variant_16).fallback;
         }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CHECK_UNION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RET_SUCCESS == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_OK == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_FAIL == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CALL == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::INPUT_BIT_OFFSET == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::OUTPUT_BIT_OFFSET == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::INPUT_BYTE_OFFSET == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::OUTPUT_BYTE_OFFSET == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::ARRAY_SIZE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::RESERVE_SIZE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BEGIN_ENCODE_SUB_RANGE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::BEGIN_DECODE_SUB_RANGE == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SEEK_ENCODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::SEEK_DECODER == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::CAN_READ == (*this).op) {
+            return std::nullopt;
+        }
+        if (AbstractOp::IS_LITTLE_ENDIAN == (*this).op) {
+            if (!std::holds_alternative<union_struct_129>(union_variant_16)) {
+                return std::nullopt;
+            }
+            return std::get<113>((*this).union_variant_16).fallback;
+        }
         return std::nullopt;
     }
     inline bool Code::fallback(const Varint& v) {
@@ -10571,7 +10666,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DYNAMIC_ENDIAN == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_60>(union_variant_16)) {
+                union_variant_16 = union_struct_60();
+            }
+            std::get<44>((*this).union_variant_16).fallback = v;
+            return true;
         }
         if (AbstractOp::ENCODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_61>(union_variant_16)) {
@@ -10737,6 +10836,97 @@ namespace rebgn {
             std::get<84>((*this).union_variant_16).fallback = v;
             return true;
         }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CHECK_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_SUCCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_OK == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_FAIL == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INPUT_BIT_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::OUTPUT_BIT_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INPUT_BYTE_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::OUTPUT_BYTE_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ARRAY_SIZE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RESERVE_SIZE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BEGIN_ENCODE_SUB_RANGE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BEGIN_DECODE_SUB_RANGE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SEEK_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SEEK_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CAN_READ == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IS_LITTLE_ENDIAN == (*this).op) {
+            if (!std::holds_alternative<union_struct_129>(union_variant_16)) {
+                union_variant_16 = union_struct_129();
+            }
+            std::get<113>((*this).union_variant_16).fallback = v;
+            return true;
+        }
         return false;
     }
     inline bool Code::fallback(Varint&& v) {
@@ -10870,7 +11060,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DYNAMIC_ENDIAN == (*this).op) {
-            return false;
+            if (!std::holds_alternative<union_struct_60>(union_variant_16)) {
+                union_variant_16 = union_struct_60();
+            }
+            std::get<44>((*this).union_variant_16).fallback = std::move(v);
+            return true;
         }
         if (AbstractOp::ENCODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_61>(union_variant_16)) {
@@ -11034,6 +11228,97 @@ namespace rebgn {
                 union_variant_16 = union_struct_100();
             }
             std::get<84>((*this).union_variant_16).fallback = std::move(v);
+            return true;
+        }
+        if (AbstractOp::SWITCH_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CHECK_UNION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_SUCCESS == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_OK == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RET_PROPERTY_SETTER_FAIL == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXHAUSTIVE_MATCH == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ENCODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECODER_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_INPUT_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::PROPERTY_FUNCTION == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_SETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY_GETTER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::STATE_VARIABLE_PARAMETER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::EXPLICIT_ERROR == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CALL == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INPUT_BIT_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::OUTPUT_BIT_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::INPUT_BYTE_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::OUTPUT_BYTE_OFFSET == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::ARRAY_SIZE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::RESERVE_SIZE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BEGIN_ENCODE_SUB_RANGE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::BEGIN_DECODE_SUB_RANGE == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SEEK_ENCODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::SEEK_DECODER == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::CAN_READ == (*this).op) {
+            return false;
+        }
+        if (AbstractOp::IS_LITTLE_ENDIAN == (*this).op) {
+            if (!std::holds_alternative<union_struct_129>(union_variant_16)) {
+                union_variant_16 = union_struct_129();
+            }
+            std::get<113>((*this).union_variant_16).fallback = std::move(v);
             return true;
         }
         return false;
@@ -24112,6 +24397,9 @@ namespace rebgn {
             if (auto err = std::get<44>((*this).union_variant_16).ref.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<44>((*this).union_variant_16).fallback.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::ENCODE_INT == (*this).op) {
             if (!std::holds_alternative<union_struct_61>(union_variant_16)) {
@@ -24974,6 +25262,9 @@ namespace rebgn {
             if (auto err = std::get<113>((*this).union_variant_16).ref.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<113>((*this).union_variant_16).fallback.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::REMAIN_BYTES == (*this).op) {
             if (!std::holds_alternative<union_struct_130>(union_variant_16)) {
@@ -25495,6 +25786,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<44>((*this).union_variant_16).ref.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<44>((*this).union_variant_16).fallback.decode(r)) {
                 return err;
             }
         }
@@ -26364,6 +26658,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<113>((*this).union_variant_16).ref.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<113>((*this).union_variant_16).fallback.decode(r)) {
                 return err;
             }
         }

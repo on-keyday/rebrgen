@@ -97,21 +97,7 @@ namespace rebgn {
     }
 
     expected<Varint> immediate_bool(Module& m, bool b, brgen::lexer::Loc* loc) {
-        auto ident = m.new_id(loc);
-        if (!ident) {
-            return ident;
-        }
-        if (b) {
-            m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
-                c.ident(*ident);
-            });
-        }
-        else {
-            m.op(AbstractOp::IMMEDIATE_FALSE, [&](Code& c) {
-                c.ident(*ident);
-            });
-        }
-        return ident;
+        return immediate_bool(m, [&](auto&&... args) { m.op(args...); }, b, loc);
     }
 
     expected<Varint> immediate_char(Module& m, std::uint64_t c, brgen::lexer::Loc* loc) {
@@ -854,14 +840,14 @@ namespace rebgn {
                 prev_cond = cond_;
             }
             else {
-                auto new_id = m.new_id(nullptr);
-                if (!new_id) {
-                    return new_id.error();
+                auto imm_true = immediate_bool(m, true);
+                if (!imm_true) {
+                    return imm_true.error();
                 }
                 if (prev_cond) {
-                    auto imm_true = immediate_bool(m, true);
-                    if (!imm_true) {
-                        return imm_true.error();
+                    auto new_id = m.new_id(nullptr);
+                    if (!new_id) {
+                        return new_id.error();
                     }
                     m.op(AbstractOp::NOT_PREV_THEN, [&](Code& c) {
                         c.ident(*new_id);
@@ -874,10 +860,7 @@ namespace rebgn {
                     }
                 }
                 else {
-                    m.op(AbstractOp::IMMEDIATE_TRUE, [&](Code& c) {
-                        c.ident(*new_id);
-                    });
-                    auto err = block(*new_id, *new_id, field);
+                    auto err = block(*imm_true, *imm_true, field);
                     if (err) {
                         return err;
                     }

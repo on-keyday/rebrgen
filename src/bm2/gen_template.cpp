@@ -10,10 +10,13 @@
 #include <json/json_export.h>
 
 struct Flags : futils::cmdline::templ::HelpOption {
-    std::string lang_name;
     bool is_header = false;
     bool is_main = false;
     bool is_cmake = false;
+    std::string_view config_file = "config.json";
+
+    // json options
+    std::string lang_name;
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
     std::string int_type_placeholder = "std::int{}_t";
@@ -38,10 +41,16 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string field_type_separator = " ";
     std::string field_end = ";";
     std::string enum_member_end = ",";
-
+    std::string func_keyword = "";
+    std::string func_type_separator = " ";
+    std::string func_void_return_type = "void";
     bool prior_ident = false;
-
-    std::string_view config_file = "config.json";
+    std::string if_keyword = "if";
+    std::string elif_keyword = "else if";
+    std::string else_keyword = "else";
+    std::string infinity_loop = "for(;;)";
+    std::string conditional_loop = "while";
+    bool condition_has_parentheses = true;
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -71,6 +80,15 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(field_type_separator, "field_type_separator");
         FROM_JSON_OPT(field_end, "field_end");
         FROM_JSON_OPT(enum_member_end, "enum_member_end");
+        FROM_JSON_OPT(func_keyword, "func_keyword");
+        FROM_JSON_OPT(func_type_separator, "func_type_separator");
+        FROM_JSON_OPT(func_void_return_type, "func_void_return_type");
+        FROM_JSON_OPT(if_keyword, "if_keyword");
+        FROM_JSON_OPT(elif_keyword, "elif_keyword");
+        FROM_JSON_OPT(else_keyword, "else_keyword");
+        FROM_JSON_OPT(infinity_loop, "infinity_loop");
+        FROM_JSON_OPT(conditional_loop, "conditional_loop");
+        FROM_JSON_OPT(condition_has_parentheses, "condition_has_parentheses");
         JSON_PARAM_END()
     }
 
@@ -105,6 +123,15 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString(&field_type_separator, "field-type-separator", "field type separator", "SEPARATOR");
         ctx.VarString(&field_end, "field-end", "field end", "END");
         ctx.VarString(&enum_member_end, "enum-member-end", "enum member end", "END");
+        ctx.VarString(&func_keyword, "func-keyword", "function keyword", "KEYWORD");
+        ctx.VarString(&func_type_separator, "func-type-separator", "function type separator", "SEPARATOR");
+        ctx.VarString(&func_void_return_type, "func-void-return-type", "function void return type", "TYPE");
+        ctx.VarString(&if_keyword, "if-keyword", "if keyword", "KEYWORD");
+        ctx.VarString(&elif_keyword, "elif-keyword", "elif keyword", "KEYWORD");
+        ctx.VarString(&else_keyword, "else-keyword", "else keyword", "KEYWORD");
+        ctx.VarString(&infinity_loop, "infinity-loop", "infinity loop", "LOOP");
+        ctx.VarString(&conditional_loop, "conditional-loop", "conditional loop", "LOOP");
+        ctx.VarBool(&condition_has_parentheses, "condition-has-parentheses", "condition has parentheses");
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
     }
 
@@ -601,7 +628,7 @@ namespace rebgn {
                         }
                     }
                     else {
-                        add_parameter.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                        add_parameter.indent_writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
                     }
                     add_parameter.indent_writeln("params++;");
                     add_parameter.indent_writeln("break;");
@@ -686,40 +713,59 @@ namespace rebgn {
                     }
                     auto indent = inner_function.indent_scope();
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                        inner_function.writeln("w.writeln(\"}\");");
+                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
                     }
                     if (op == AbstractOp::DEFINE_FUNCTION) {
                         inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
                         inner_function.writeln("auto range = ctx.range(code.ident().value());");
                         inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
-                        inner_function.writeln("if(!found_type_pos) {");
-                        inner_function.writeln("w.writeln(\"void\");");
-                        inner_function.writeln("}");
-                        inner_function.writeln("else {");
-                        inner_function.writeln("auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());");
-                        inner_function.writeln("w.write(type);");
-                        inner_function.writeln("}");
+                        if (!flags.func_keyword.size()) {
+                            inner_function.writeln("if(!found_type_pos) {");
+                            inner_function.writeln("w.write(\"", flags.func_void_return_type, "\");");
+                            inner_function.writeln("}");
+                            inner_function.writeln("else {");
+                            inner_function.writeln("auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());");
+                            inner_function.writeln("w.write(type);");
+                            inner_function.writeln("}");
+                        }
+                        else {
+                            inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
+                        }
                         inner_function.writeln("w.write(\" \", ident, \"(\");");
                         inner_function.writeln("add_parameter(ctx, w, range);");
-                        inner_function.writeln("w.writeln(\") ", flags.block_begin, "\");");
+                        inner_function.writeln("w.write(\") \");");
+                        if (flags.func_keyword.size()) {
+                            inner_function.writeln("if(!found_type_pos) {");
+                            inner_function.writeln("w.write(\"", flags.func_void_return_type, "\");");
+                            inner_function.writeln("}");
+                            inner_function.writeln("else {");
+                            inner_function.writeln("auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());");
+                            inner_function.writeln("w.write(\"", flags.func_type_separator, "\",type);");
+                            inner_function.writeln("}");
+                        }
+                        inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
                     }
                     else {
                         inner_function.write("w.writeln(\"");
+                        std::string condition = "\",evaluated.result,\"";
+                        if (flags.condition_has_parentheses) {
+                            condition = "(" + condition + ")";
+                        }
                         switch (op) {
                             case AbstractOp::IF:
-                                inner_function.write("if (\",evaluated.result,\") ", flags.block_begin);
+                                inner_function.write(flags.if_keyword, " ", condition, " ", flags.block_begin);
                                 break;
                             case AbstractOp::ELIF:
-                                inner_function.write("else if (\",evaluated.result,\") ", flags.block_begin);
+                                inner_function.write(flags.elif_keyword, " ", condition, " ", flags.block_begin);
                                 break;
                             case AbstractOp::ELSE:
-                                inner_function.write("else ", flags.block_begin);
+                                inner_function.write(flags.else_keyword, " ", flags.block_begin);
                                 break;
                             case AbstractOp::LOOP_INFINITE:
-                                inner_function.write("for(;;) ", flags.block_begin);
+                                inner_function.write(flags.infinity_loop, " ", flags.block_begin);
                                 break;
                             case AbstractOp::LOOP_CONDITION:
-                                inner_function.write("while (\",evaluated.result,\") ", flags.block_begin);
+                                inner_function.write(flags.conditional_loop, " ", condition, " ", flags.block_begin);
                                 break;
                         }
                         inner_function.writeln("\");");

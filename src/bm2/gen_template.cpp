@@ -18,12 +18,27 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string comment_suffix = "*/";
     std::string int_type_placeholder = "std::int{}_t";
     std::string uint_type_placeholder = "std::uint{}_t";
+    std::string float_type_placeholder = "float{}_t";
+    std::string array_type_placeholder = "std::array<{}, {}>";
+    bool array_has_one_placeholder = false;
+    std::string vector_type_placeholder = "std::vector<{}>";
+    std::string bool_type = "bool";
+    std::string coder_return_type = "bool";
+    std::string property_setter_return_type = "bool";
     std::string end_of_statement = ";";
     std::string block_begin = "{";
     std::string block_end = "}";
     std::string block_end_type = "};";
     std::string keyword_file = "keyword.txt";
     std::string import_base_file = "import_base.txt";
+    std::string struct_keyword = "struct";
+    std::string enum_keyword = "enum";
+    std::string define_var_keyword = "";
+    std::string var_type_separator = " ";
+    std::string field_type_separator = " ";
+    std::string field_end = ";";
+    std::string enum_member_end = ",";
+
     bool prior_ident = false;
 
     std::string_view config_file = "config.json";
@@ -35,6 +50,13 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(comment_suffix, "comment_suffix");
         FROM_JSON_OPT(int_type_placeholder, "int_type");
         FROM_JSON_OPT(uint_type_placeholder, "uint_type");
+        FROM_JSON_OPT(float_type_placeholder, "float_type");
+        FROM_JSON_OPT(array_type_placeholder, "array_type");
+        FROM_JSON_OPT(array_has_one_placeholder, "array_has_one_placeholder");
+        FROM_JSON_OPT(vector_type_placeholder, "vector_type");
+        FROM_JSON_OPT(bool_type, "bool_type");
+        FROM_JSON_OPT(coder_return_type, "coder_return_type");
+        FROM_JSON_OPT(property_setter_return_type, "property_setter_return_type");
         FROM_JSON_OPT(end_of_statement, "end_of_statement");
         FROM_JSON_OPT(block_begin, "block_begin");
         FROM_JSON_OPT(block_end, "block_end");
@@ -42,6 +64,13 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(keyword_file, "keyword_file");
         FROM_JSON_OPT(import_base_file, "import_base_file");
         FROM_JSON_OPT(prior_ident, "prior_ident");
+        FROM_JSON_OPT(struct_keyword, "struct_keyword");
+        FROM_JSON_OPT(enum_keyword, "enum_keyword");
+        FROM_JSON_OPT(define_var_keyword, "define_var_keyword");
+        FROM_JSON_OPT(var_type_separator, "var_type_separator");
+        FROM_JSON_OPT(field_type_separator, "field_type_separator");
+        FROM_JSON_OPT(field_end, "field_end");
+        FROM_JSON_OPT(enum_member_end, "enum_member_end");
         JSON_PARAM_END()
     }
 
@@ -62,6 +91,20 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString(&block_begin, "block-begin", "block begin", "BEGIN");
         ctx.VarString(&block_end, "block-end", "block end", "END");
         ctx.VarString(&block_end_type, "block-end-type", "block end of type definition", "END_TYPE");
+        ctx.VarString(&struct_keyword, "struct-keyword", "struct keyword", "KEYWORD");
+        ctx.VarString(&enum_keyword, "enum-keyword", "enum keyword", "KEYWORD");
+        ctx.VarString(&float_type_placeholder, "float-type", "float type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
+        ctx.VarString(&array_type_placeholder, "array-type", "array type placeholder ({} will be replaced with element type, {} will be replaced with size)", "PLACEHOLDER");
+        ctx.VarBool(&array_has_one_placeholder, "array-has-one-placeholder", "array type has one placeholder");
+        ctx.VarString(&vector_type_placeholder, "vector-type", "vector type placeholder ({} will be replaced with element type)", "PLACEHOLDER");
+        ctx.VarString(&bool_type, "bool-type", "bool type", "TYPE");
+        ctx.VarString(&coder_return_type, "coder-return-type", "coder return type", "TYPE");
+        ctx.VarString(&property_setter_return_type, "property-setter-return-type", "property setter return type", "TYPE");
+        ctx.VarString(&define_var_keyword, "define-var-keyword", "define variable keyword", "KEYWORD");
+        ctx.VarString(&var_type_separator, "var-type-separator", "variable type separator", "SEPARATOR");
+        ctx.VarString(&field_type_separator, "field-type-separator", "field type separator", "SEPARATOR");
+        ctx.VarString(&field_end, "field-end", "field end", "END");
+        ctx.VarString(&enum_member_end, "enum-member-end", "enum member end", "END");
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
     }
 
@@ -78,6 +121,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
         if (is_valid_placeholder(int_type_placeholder)) {
             return std::vformat(int_type_placeholder, std::make_format_args(bit_size));
         }
+        else if (!int_type_placeholder.contains("{") && !int_type_placeholder.contains("}")) {
+            return int_type_placeholder;
+        }
         return std::format("/* invalid placeholder: {} */", int_type_placeholder);
     }
 
@@ -85,7 +131,20 @@ struct Flags : futils::cmdline::templ::HelpOption {
         if (is_valid_placeholder(uint_type_placeholder)) {
             return std::vformat(uint_type_placeholder, std::make_format_args(bit_size));
         }
+        else if (!uint_type_placeholder.contains("{") && !uint_type_placeholder.contains("}")) {
+            return uint_type_placeholder;
+        }
         return std::format("/* invalid placeholder: {} */", uint_type_placeholder);
+    }
+
+    std::string wrap_float(size_t bit_size) {
+        if (is_valid_placeholder(float_type_placeholder)) {
+            return std::vformat(float_type_placeholder, std::make_format_args(bit_size));
+        }
+        else if (!float_type_placeholder.contains("{") && !float_type_placeholder.contains("}")) {
+            return float_type_placeholder;
+        }
+        return std::format("/* invalid placeholder: {} */", float_type_placeholder);
     }
 
     std::string wrap_comment(const std::string& comment) {
@@ -99,6 +158,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
 };
 namespace rebgn {
     void write_impl_template(bm2::TmpCodeWriter& w, Flags& flags) {
+        auto unimplemented_comment = [&](const std::string& op) {
+            return "std::format(\"{}{}{}\",\"" + flags.comment_prefix + "\",to_string(" + op + "),\"" + flags.comment_suffix + "\")";
+        };
+
         bm2::TmpCodeWriter type_to_string;
 
         type_to_string.writeln("std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {");
@@ -118,7 +181,7 @@ namespace rebgn {
             if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
                 type_to_string.writeln("auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);");
             }
-            if (type == StorageType::UINT || type == StorageType::INT) {
+            if (type == StorageType::UINT || type == StorageType::INT || type == StorageType::FLOAT) {
                 type_to_string.writeln("auto size = storage.size().value().value();");
                 type_to_string.writeln("if (bit_size) {");
                 auto if_block_size = type_to_string.indent_scope();
@@ -147,7 +210,7 @@ namespace rebgn {
                     if_block_size_64.execute();
                     type_to_string.writeln("}");
                 }
-                else {
+                else if (type == StorageType::INT) {
                     type_to_string.writeln("if (size <= 8) {");
                     auto if_block_size_8 = type_to_string.indent_scope();
                     type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
@@ -169,7 +232,20 @@ namespace rebgn {
                     if_block_size_64.execute();
                     type_to_string.writeln("}");
                 }
+                else {
+                    type_to_string.writeln("if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
             }
+
             else if (type == StorageType::STRUCT_REF) {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
@@ -181,7 +257,7 @@ namespace rebgn {
                 type_to_string.writeln("return std::format(\"{}*\", ident);");
             }
             else if (type == StorageType::BOOL) {
-                type_to_string.writeln("return \"bool\";");
+                type_to_string.writeln("return \"", flags.bool_type, "\";");
             }
             else if (type == StorageType::ENUM) {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
@@ -192,24 +268,35 @@ namespace rebgn {
                 type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
             }
             else if (type == StorageType::CODER_RETURN) {
-                type_to_string.writeln("return \"bool\";");
+                type_to_string.writeln("return \"", flags.coder_return_type, "\";");
             }
             else if (type == StorageType::PROPERTY_SETTER_RETURN) {
-                type_to_string.writeln("return \"bool\";");
+                type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
             }
             else if (type == StorageType::PTR) {
                 type_to_string.writeln("return std::format(\"{}*\", base_type);");
             }
-
-            else {
-                type_to_string.writeln(std::format("return \"{}\";", flags.wrap_comment("Unimplemented " + std::string(to_string(type)))));
+            else if (type == StorageType::ARRAY) {
+                if (flags.array_has_one_placeholder) {
+                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type);");
+                }
+                else {
+                    type_to_string.writeln("auto length = storage.size().value().value();");
+                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type,length);");
+                }
+            }
+            else if (type == StorageType::VECTOR) {
+                type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
+            }
+            else if (type == StorageType::OPTIONAL) {
+                type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented OPTIONAL"), "\";");
             }
             scope_type.execute();
             type_to_string.writeln("}");
         }
         type_to_string.writeln("default: {");
         auto if_block_type_default = type_to_string.indent_scope();
-        type_to_string.writeln("return std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(storage.type));");
+        type_to_string.writeln("return ", unimplemented_comment("storage.type"), ";");
         if_block_type_default.execute();
         type_to_string.writeln("}");
         switch_scope.execute();
@@ -304,27 +391,32 @@ namespace rebgn {
                 }
                 else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    inner_block.indent_writeln("w.writeln(\"struct \", ident, \" ", flags.block_begin, "\");");
+                    inner_block.indent_writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
                     inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
                 }
                 else if (op == AbstractOp::DEFINE_ENUM) {
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    inner_block.indent_writeln("w.writeln(\"enum \", ident, \" ", flags.block_begin, "\");");
+                    inner_block.indent_writeln("w.writeln(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
                     inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
                 }
                 else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
                     inner_block.indent_writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
-                    inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.result, \",\");");
+                    inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
                 }
                 else if (op == AbstractOp::DEFINE_FIELD) {
+                    inner_block.indent_writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
+                    auto scope = inner_block.indent_scope();
+                    inner_block.indent_writeln("break;");
+                    scope.execute();
+                    inner_block.indent_writeln("}");
                     inner_block.indent_writeln("auto type = type_to_string(ctx, code.type().value());");
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
                     if (flags.prior_ident) {
-                        inner_block.indent_writeln("w.writeln(ident, \" \", type, \";\");");
+                        inner_block.indent_writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
                     }
                     else {
-                        inner_block.indent_writeln("w.writeln(type, \" \", ident, \";\");");
+                        inner_block.indent_writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
                     }
                 }
                 else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE) {
@@ -562,10 +654,10 @@ namespace rebgn {
                     inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
                     // inner_function.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
                     if (flags.prior_ident) {
-                        inner_function.writeln("w.writeln(std::format(\"{} {} = {}", flags.end_of_statement, "\", ident, type, evaluated.result));");
+                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} = {}", flags.end_of_statement, "\", ident, type, evaluated.result));");
                     }
                     else {
-                        inner_function.writeln("w.writeln(std::format(\"{} {} = {}", flags.end_of_statement, "\",type, ident, evaluated.result));");
+                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} = {}", flags.end_of_statement, "\",type, ident, evaluated.result));");
                     }
                     // inner_function.writeln("auto evaluated = eval(code, ctx);");
                     // inner_function.writeln("w.writeln(evaluated[evaluated.size() - 2]);");
@@ -730,7 +822,7 @@ namespace rebgn {
         inner_block.writeln("default: {");
         auto if_block = inner_block.indent_scope();
         inner_block.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
-        inner_block.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
+        inner_block.indent_writeln("w.writeln(", unimplemented_comment("code.op"), ");");
         inner_block.writeln("}");
         inner_block.writeln("break;");
         if_block.execute();
@@ -743,7 +835,7 @@ namespace rebgn {
 
         field_accessor.writeln("default: {");
         auto if_block_field_accessor = field_accessor.indent_scope();
-        field_accessor.writeln("result = make_eval_result(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
+        field_accessor.writeln("result = make_eval_result(", unimplemented_comment("code.op"), ");");
         field_accessor.writeln("break;");
         if_block_field_accessor.execute();
         field_accessor.writeln("}");  // close default
@@ -755,7 +847,7 @@ namespace rebgn {
         inner_function.writeln("default: {");
         auto if_function = inner_function.indent_scope();
         inner_function.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
-        inner_function.indent_writeln("w.writeln(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
+        inner_function.indent_writeln("w.writeln(", unimplemented_comment("code.op"), ");");
         inner_function.writeln("}");
         inner_function.writeln("break;");
         if_function.execute();
@@ -767,7 +859,7 @@ namespace rebgn {
         inner_function.writeln("}");  // close function
 
         eval.writeln("default: {");
-        eval.indent_writeln("result = make_eval_result(std::format(\"", flags.wrap_comment("Unimplemented {}"), "\", to_string(code.op)));");
+        eval.indent_writeln("result = make_eval_result(", unimplemented_comment("code.op"), ");");
         eval.indent_writeln("break;");
         eval.writeln("}");
         eval.write("}");  // close switch

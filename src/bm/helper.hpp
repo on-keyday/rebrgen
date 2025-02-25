@@ -138,6 +138,8 @@ namespace rebgn {
             case AbstractOp::DEFINE_ENCODER:
             case AbstractOp::DEFINE_DECODER:
             case AbstractOp::NOT_PREV_THEN:
+            case AbstractOp::DEFINE_FALLBACK:
+            case AbstractOp::END_FALLBACK:
                 return true;
             default:
                 return false;

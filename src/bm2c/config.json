@@ -1,0 +1,14 @@
+{
+    "lang": "c",
+    "comment_prefix": "/*",
+    "comment_suffix": "*/",
+    "int_type": "int{}_t",
+    "uint_type": "uint{}_t",
+    "end_of_statement": ";",
+    "block_begin": "{",
+    "block_end": "}",
+    "block_end_type": "};",
+    "keyword_file": "src/bm2c/keyword.txt",
+    "import_base_file": "src/bm2c/import_base.txt",
+    "prior_ident": false
+}

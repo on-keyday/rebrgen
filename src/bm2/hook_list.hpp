@@ -15,11 +15,47 @@
 namespace bm2 {
     enum class HookFile {
         keyword = 0,
+        file_top = 1,
+        file_bottom = 2,
+        bm_context = 3,
+        flags = 4,
+        func_def = 5,
+        inner_function_start = 6,
+        inner_function_each_code = 7,
+        inner_block_start = 8,
+        inner_block_each_code = 9,
+        inner_function_op = 10,
+        inner_block_op = 11,
+        eval_op = 12,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
             case HookFile::keyword:
                 return "keywords.txt";
+            case HookFile::file_top:
+                return "file_top.txt";
+            case HookFile::file_bottom:
+                return "file_bottom.txt";
+            case HookFile::bm_context:
+                return "bm_context.txt";
+            case HookFile::flags:
+                return "flags.txt";
+            case HookFile::func_def:
+                return "func_def.txt";
+            case HookFile::inner_function_start:
+                return "inner_function_start.txt";
+            case HookFile::inner_function_each_code:
+                return "inner_function_each_code.txt";
+            case HookFile::inner_block_start:
+                return "inner_block_start.txt";
+            case HookFile::inner_block_each_code:
+                return "inner_block_each_code.txt";
+            case HookFile::inner_function_op:
+                return "func_{}.txt";
+            case HookFile::inner_block_op:
+                return "block_{}.txt";
+            case HookFile::eval_op:
+                return "eval_{}.txt";
         }
         return "";
     }
@@ -30,6 +66,42 @@ namespace bm2 {
         }
         if (str == "keywords.txt") {
             return HookFile::keyword;
+        }
+        if (str == "file_top.txt") {
+            return HookFile::file_top;
+        }
+        if (str == "file_bottom.txt") {
+            return HookFile::file_bottom;
+        }
+        if (str == "bm_context.txt") {
+            return HookFile::bm_context;
+        }
+        if (str == "flags.txt") {
+            return HookFile::flags;
+        }
+        if (str == "func_def.txt") {
+            return HookFile::func_def;
+        }
+        if (str == "inner_function_start.txt") {
+            return HookFile::inner_function_start;
+        }
+        if (str == "inner_function_each_code.txt") {
+            return HookFile::inner_function_each_code;
+        }
+        if (str == "inner_block_start.txt") {
+            return HookFile::inner_block_start;
+        }
+        if (str == "inner_block_each_code.txt") {
+            return HookFile::inner_block_each_code;
+        }
+        if (str == "func_{}.txt") {
+            return HookFile::inner_function_op;
+        }
+        if (str == "block_{}.txt") {
+            return HookFile::inner_block_op;
+        }
+        if (str == "eval_{}.txt") {
+            return HookFile::eval_op;
         }
         return std::nullopt;
     }

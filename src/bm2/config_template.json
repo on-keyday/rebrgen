@@ -9,6 +9,8 @@
     "array_has_one_placeholder": false,
     "vector_type": "std::vector<{}>",
     "bool_type": "bool",
+    "true_literal": "true",
+    "false_literal": "false",
     "coder_return_type": "bool",
     "property_setter_return_type": "bool",
     "end_of_statement": ";",

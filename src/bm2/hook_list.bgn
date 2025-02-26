@@ -1,3 +1,17 @@
 config.cpp.namespace = "bm2"
 enum HookFile:
-    keyword = "keywords.txt"
+    keyword = "keywords.txt" # escape keywords
+    file_top = "file_top.txt" # generated file top
+    file_bottom = "file_bottom.txt" # generated file bottom
+    bm_context = "bm_context.txt" # bm2xx::Context definitions
+    flags = "flags.txt" # command line flags definitions
+
+    func_def = "func_def.txt" # function definition
+    inner_function_start = "inner_function_start.txt" # inner function start
+    inner_function_each_code = "inner_function_each_code.txt" # inner function each code
+    inner_block_start = "inner_block_start.txt" # inner block start
+    inner_block_each_code = "inner_block_each_code.txt" # inner block each code
+
+    inner_function_op = "func_{}.txt" # inner function operation
+    inner_block_op = "block_{}.txt" # inner block operation
+    eval_op = "eval_{}.txt" # eval operation

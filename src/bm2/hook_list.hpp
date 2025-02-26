@@ -19,14 +19,13 @@ namespace bm2 {
         file_bottom = 2,
         bm_context = 3,
         flags = 4,
-        func_def = 5,
-        inner_function_start = 6,
-        inner_function_each_code = 7,
-        inner_block_start = 8,
-        inner_block_each_code = 9,
-        inner_function_op = 10,
-        inner_block_op = 11,
-        eval_op = 12,
+        inner_function_start = 5,
+        inner_function_each_code = 6,
+        inner_block_start = 7,
+        inner_block_each_code = 8,
+        inner_function_op = 9,
+        inner_block_op = 10,
+        eval_op = 11,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -40,8 +39,6 @@ namespace bm2 {
                 return "bm_context.txt";
             case HookFile::flags:
                 return "flags.txt";
-            case HookFile::func_def:
-                return "func_def.txt";
             case HookFile::inner_function_start:
                 return "inner_function_start.txt";
             case HookFile::inner_function_each_code:
@@ -78,9 +75,6 @@ namespace bm2 {
         }
         if (str == "flags.txt") {
             return HookFile::flags;
-        }
-        if (str == "func_def.txt") {
-            return HookFile::func_def;
         }
         if (str == "inner_function_start.txt") {
             return HookFile::inner_function_start;

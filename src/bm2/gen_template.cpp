@@ -8,12 +8,14 @@
 #include <file/file_view.h>
 #include <json/convert_json.h>
 #include <json/json_export.h>
+#include "hook_list.hpp"
 
 struct Flags : futils::cmdline::templ::HelpOption {
     bool is_header = false;
     bool is_main = false;
     bool is_cmake = false;
     std::string_view config_file = "config.json";
+    std::string_view hook_file_dir = "hook";
 
     // json options
     std::string lang_name;
@@ -50,7 +52,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string else_keyword = "else";
     std::string infinity_loop = "for(;;)";
     std::string conditional_loop = "while";
+    std::string self_ident = "(*this)";
+    std::string param_type_separator = " ";
     bool condition_has_parentheses = true;
+    bool explicit_self = false;
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -89,6 +94,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(infinity_loop, "infinity_loop");
         FROM_JSON_OPT(conditional_loop, "conditional_loop");
         FROM_JSON_OPT(condition_has_parentheses, "condition_has_parentheses");
+        FROM_JSON_OPT(self_ident, "self_ident");
+        FROM_JSON_OPT(param_type_separator, "param_type_separator");
+        FROM_JSON_OPT(explicit_self, "explicit_self");
         JSON_PARAM_END()
     }
 
@@ -98,6 +106,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_header, "header", "generate header file");
         ctx.VarBool(&is_main, "main", "generate main file");
         ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
+        /*
         ctx.VarBool(&prior_ident, "prior-ident", "prioritize identifier than type when defining field or parameter or variable");
         ctx.VarString(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
         ctx.VarString(&comment_suffix, "comment-suffix", "comment suffix", "SUFFIX");
@@ -132,6 +141,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString(&infinity_loop, "infinity-loop", "infinity loop", "LOOP");
         ctx.VarString(&conditional_loop, "conditional-loop", "conditional loop", "LOOP");
         ctx.VarBool(&condition_has_parentheses, "condition-has-parentheses", "condition has parentheses");
+        ctx.VarString(&self_ident, "self-name", "self name", "NAME");
+        ctx.VarString(&param_type_separator, "param-type-separator", "parameter type separator", "SEPARATOR");
+        ctx.VarBool(&explicit_self, "explicit-self", "explicit self");
+        */
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
     }
 
@@ -184,6 +197,23 @@ struct Flags : futils::cmdline::templ::HelpOption {
     }
 };
 namespace rebgn {
+    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, bool as_code) {
+        auto hook_file = futils::strutil::concat<std::string>(flags.hook_file_dir, "/", to_string(hook));
+        futils::file::View view;
+        if (auto res = view.open(hook_file); !res) {
+            return false;
+        }
+        if (!view.data()) {
+            return false;
+        }
+        auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
+        if (as_code) {
+            for (auto& line : lines) {
+                w.writeln(line);
+            }
+        }
+    }
+
     void write_impl_template(bm2::TmpCodeWriter& w, Flags& flags) {
         auto unimplemented_comment = [&](const std::string& op) {
             return "std::format(\"{}{}{}\",\"" + flags.comment_prefix + "\",to_string(" + op + "),\"" + flags.comment_suffix + "\")";
@@ -342,6 +372,11 @@ namespace rebgn {
         add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_parameter = add_parameter.indent_scope();
         add_parameter.writeln("size_t params = 0;");
+        if (flags.explicit_self) {
+            add_parameter.writeln("auto belong = ctx.bm.code[range.start].belong().value();");
+            add_parameter.writeln("if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {");
+            auto if_block_belong = add_parameter.indent_scope();
+        }
         add_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_add_parameter = add_parameter.indent_scope();
         add_parameter.writeln("auto& code = ctx.bm.code[i];");
@@ -621,10 +656,10 @@ namespace rebgn {
                         }
                         add_parameter.indent_writeln("auto ident = ctx.ident(ref);");
                         if (flags.prior_ident) {
-                            add_parameter.indent_writeln("w.write(ident, \" \", type);");
+                            add_parameter.indent_writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
                         }
                         else {
-                            add_parameter.indent_writeln("w.write(type, \" \", ident);");
+                            add_parameter.indent_writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
                         }
                     }
                     else {
@@ -1012,7 +1047,7 @@ namespace rebgn {
         w.writeln("using TmpCodeWriter = bm2::TmpCodeWriter;");
         w.writeln("struct Context : bm2::Context {");
         auto scope_context = w.indent_scope();
-        w.writeln("Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,\"r\",\"w\",\"(*this)\", std::move(escape_ident)} {}");
+        w.writeln("Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,\"r\",\"w\",\"", flags.self_ident, "\", std::move(escape_ident)} {}");
         scope_context.execute();
         w.writeln("};");
 

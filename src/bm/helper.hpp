@@ -140,6 +140,7 @@ namespace rebgn {
             case AbstractOp::NOT_PREV_THEN:
             case AbstractOp::DEFINE_FALLBACK:
             case AbstractOp::END_FALLBACK:
+            case AbstractOp::PROPERTY_FUNCTION:
                 return true;
             default:
                 return false;

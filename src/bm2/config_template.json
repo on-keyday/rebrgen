@@ -33,5 +33,8 @@
     "else_keyword": "else",
     "infinity_loop": "for(;;)",
     "conditional_loop": "while",
-    "condition_has_parentheses": true
+    "condition_has_parentheses": true,
+    "self_name": "(*this)",
+    "param_type_separator": " ",
+    "explicit_self": false
 }

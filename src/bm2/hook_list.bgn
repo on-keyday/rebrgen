@@ -1,0 +1,3 @@
+config.cpp.namespace = "bm2"
+enum HookFile:
+    keyword = "keywords.txt"

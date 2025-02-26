@@ -1,0 +1,10 @@
+#license
+cmake_minimum_required(VERSION 3.25)
+project(bm2py)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
+add_executable(bm2py main.cpp bm2py.cpp)
+target_link_libraries(bm2py futils)
+install(TARGETS bm2py DESTINATION tool)
+if ("$ENV{BUILD_MODE}" STREQUAL "web")
+  install(FILES "${CMAKE_BINARY_DIR}/tool/bm2py.wasm" DESTINATION tool)
+endif()

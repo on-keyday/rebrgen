@@ -8,7 +8,6 @@ tool\bmgen -p -i save/sample.json --print-only-op > save/save_op.txt
 tool\bm2cpp -i save/save.bin > save/save.hpp
 tool\bm2rust -i save/save.bin --copy-on-write > save/save/src/save.rs
 tool\bm2rust -i save/save.bin --async --copy-on-write > save/save/src/save_async.rs
-tool\bm2c -i save/save.bin > save/save.c
 cd save/save
 cargo build  2> ../cargo_build.txt
 cargo fmt

@@ -162,3 +162,19 @@
 
 #define BM_GET_ENDIAN(id_name, endian, is_signed) \
     BM_ERROR_WRAP(id_name, error, (m.get_endian(Endian(endian), is_signed)))
+
+#define BM_BEGIN_COND_BLOCK(op, base_codes, cond_block, loc) \
+    BM_NEW_ID(cond_block, error, loc);                       \
+    op(AbstractOp::DEFINE_COND_BLOCK, [&](Code& c) {         \
+        c.ident(cond_block);                                 \
+    });                                                      \
+    auto tmp_index__##cond_block##__ = base_codes.size() - 1;
+
+#define BM_END_COND_BLOCK(op, base_codes, cond_block, cond) \
+    base_codes[tmp_index__##cond_block##__].ref(cond);      \
+    op(AbstractOp::END_COND_BLOCK);
+
+#define BM_COND_IN_BLOCK(op, base_codes, cond_block, cond)       \
+    BM_BEGIN_COND_BLOCK(op, base_codes, cond_block, &cond->loc); \
+    BM_GET_EXPR(cond_expr##cond_block, m, cond);                 \
+    BM_END_COND_BLOCK(op, base_codes, cond_block, cond_expr##cond_block);

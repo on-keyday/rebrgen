@@ -266,6 +266,9 @@ enum AbstractOp:
     DEFINE_FALLBACK
     END_FALLBACK
 
+    DEFINE_COND_BLOCK
+    END_COND_BLOCK
+
 
 enum SubRangeType:
     :u8
@@ -836,6 +839,9 @@ format Code:
             ident :Varint
         AbstractOp.DEFINE_FALLBACK:
             ident :Varint
+        AbstractOp.DEFINE_COND_BLOCK:
+            ident :Varint
+            ref :Varint # ref to condition expr
 
 
 format StringRefs:

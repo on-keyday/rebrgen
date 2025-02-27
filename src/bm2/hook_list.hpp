@@ -33,6 +33,7 @@ namespace bm2 {
         type_op = 16,
         param_op = 17,
         call_param_op = 18,
+        field_accessor_op = 19,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -74,6 +75,8 @@ namespace bm2 {
                 return "param_{}.txt";
             case HookFile::call_param_op:
                 return "call_param_{}.txt";
+            case HookFile::field_accessor_op:
+                return "field_accessor_{}.txt";
         }
         return "";
     }
@@ -138,6 +141,83 @@ namespace bm2 {
         }
         if (str == "call_param_{}.txt") {
             return HookFile::call_param_op;
+        }
+        if (str == "field_accessor_{}.txt") {
+            return HookFile::field_accessor_op;
+        }
+        return std::nullopt;
+    }
+    enum class HookFileSub {
+        main = 0,
+        op = 1,
+        empty = 2,
+        value = 3,
+        self = 4,
+        field = 5,
+        fallback = 6,
+        no_fallback = 7,
+        before = 8,
+        after = 9,
+    };
+    constexpr const char* to_string(HookFileSub e) {
+        switch (e) {
+            case HookFileSub::main:
+                return "";
+            case HookFileSub::op:
+                return "_op";
+            case HookFileSub::empty:
+                return "_empty";
+            case HookFileSub::value:
+                return "_value";
+            case HookFileSub::self:
+                return "_self";
+            case HookFileSub::field:
+                return "_field";
+            case HookFileSub::fallback:
+                return "_fallback";
+            case HookFileSub::no_fallback:
+                return "_no_fallback";
+            case HookFileSub::before:
+                return "_before";
+            case HookFileSub::after:
+                return "_after";
+        }
+        return "";
+    }
+
+    constexpr std::optional<HookFileSub> HookFileSub_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "") {
+            return HookFileSub::main;
+        }
+        if (str == "_op") {
+            return HookFileSub::op;
+        }
+        if (str == "_empty") {
+            return HookFileSub::empty;
+        }
+        if (str == "_value") {
+            return HookFileSub::value;
+        }
+        if (str == "_self") {
+            return HookFileSub::self;
+        }
+        if (str == "_field") {
+            return HookFileSub::field;
+        }
+        if (str == "_fallback") {
+            return HookFileSub::fallback;
+        }
+        if (str == "_no_fallback") {
+            return HookFileSub::no_fallback;
+        }
+        if (str == "_before") {
+            return HookFileSub::before;
+        }
+        if (str == "_after") {
+            return HookFileSub::after;
         }
         return std::nullopt;
     }

@@ -129,7 +129,8 @@ namespace bm2haskell {
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
             auto belong = code.belong().value();
-            if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
             }
@@ -140,7 +141,8 @@ namespace bm2haskell {
         }
         case rebgn::AbstractOp::DEFINE_UNION: {
             auto belong = code.belong().value();
-            if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
             }
@@ -151,7 +153,8 @@ namespace bm2haskell {
         }
         case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
             auto belong = code.belong().value();
-            if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
             }
@@ -166,7 +169,8 @@ namespace bm2haskell {
         }
         case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
             auto belong = code.belong().value();
-            if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
             }
@@ -684,19 +688,47 @@ namespace bm2haskell {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
-                w.writeln("{-Unimplemented BEGIN_ENCODE_PACKED_OPERATION-} ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto range = ctx.range(fallback);
+                    inner_function(ctx, w, range);
+                }
+                else {
+                    w.writeln("{-Unimplemented BEGIN_ENCODE_PACKED_OPERATION-} ");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
-                w.writeln("{-Unimplemented END_ENCODE_PACKED_OPERATION-} ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto range = ctx.range(fallback);
+                    inner_function(ctx, w, range);
+                }
+                else {
+                    w.writeln("{-Unimplemented END_ENCODE_PACKED_OPERATION-} ");
+                }
                 break;
             }
             case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
-                w.writeln("{-Unimplemented BEGIN_DECODE_PACKED_OPERATION-} ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto range = ctx.range(fallback);
+                    inner_function(ctx, w, range);
+                }
+                else {
+                    w.writeln("{-Unimplemented BEGIN_DECODE_PACKED_OPERATION-} ");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION: {
-                w.writeln("{-Unimplemented END_DECODE_PACKED_OPERATION-} ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto range = ctx.range(fallback);
+                    inner_function(ctx, w, range);
+                }
+                else {
+                    w.writeln("{-Unimplemented END_DECODE_PACKED_OPERATION-} ");
+                }
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT: {
@@ -875,10 +907,11 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 auto ident = ctx.ident(code.ident().value());
-                auto ref = code.ref().value();
-                auto type = type_to_string(ctx,code.type().value());
-                auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln(std::format("{} :: {} = {}",type, ident, evaluated.result));
+                auto init_ref = code.ref().value();
+                auto type_ref = code.type().value();
+                auto type = type_to_string(ctx,type_ref);
+                auto init = eval(ctx.ref(init_ref), ctx);
+                w.writeln(std::format("{} :: {} = {}",type, ident, init.result));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -924,6 +957,7 @@ namespace bm2haskell {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 w.writeln(evaluated.result, "+= 1");
+                break;
             }
             case rebgn::AbstractOp::RET: {
                 auto ref = code.ref().value();

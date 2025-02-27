@@ -15,9 +15,26 @@ enum HookFile:
     call_param_start = "call_param_start.txt" # call param start
     call_param_each_code = "call_param_each_code.txt" # call param each code
 
-    inner_function_op = "func_{}.txt" # inner function operation ({} contains lower case AbstractOp name)
+    inner_function_op = "func_{}.txt" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
     inner_block_op = "block_{}.txt" # inner block operation ({} contains lower case AbstractOp name)
     eval_op = "eval_{}.txt" # eval operation ({} contains lower case AbstractOp name)
-    type_op = "type_{}.txt" # type operation ({} contains lower case StorageType name)
+    type_op = "type_{}.txt" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
     param_op = "param_{}.txt" # param operation ({} contains lower case AbstractOp name)
     call_param_op = "call_param_{}.txt" # call param operation ({} contains lower case AbstractOp name)
+    field_accessor_op = "field_accessor_{}.txt" # field accessor operation ({} contains lower case AbstractOp name)
+
+
+# this is used with {} placeholder in HookFile
+# for example, AbstractOp::BINARY,
+# HookFile.eval_op + HookFileSub.op -> "eval_binary_op.txt"
+enum HookFileSub:
+    main = "" # main hook
+    op = "_op" # binary or unary operator modification hook
+    empty = "_empty" # empty case (e.g. return;)
+    value = "_value" # value case (e.g. return value;)
+    self = "_self" # self case (e.g. field available condition of self)
+    field = "_field" # field case (e.g. field available condition of field)
+    fallback = "_fallback" # fallback case (e.g. fallback condition)
+    no_fallback = "_no_fallback" # no fallback case (e.g. no fallback condition)
+    before = "_before" # before case (e.g. before AbstractOp)
+    after = "_after" # after case (e.g. after AbstractOp)

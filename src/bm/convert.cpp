@@ -893,23 +893,22 @@ namespace rebgn {
             }
             bool prev = false;
             auto err = handle_union_type(m, ast::cast_to<ast::UnionType>(node->target->expr_type), [&](Varint, Varint cond, std::shared_ptr<ast::Field>& field) {
-                auto id = m.new_node_id(node);
-                if (!id) {
-                    return id.error();
-                }
+                BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, &node->loc);
+                BM_NEW_NODE_ID(id, error, node);
                 m.op(AbstractOp::FIELD_AVAILABLE, [&](Code& c) {
-                    c.ident(*id);
+                    c.ident(id);
                     c.left_ref(base_expr);
                     c.right_ref(cond);
                 });
+                BM_END_COND_BLOCK(m.op, m.code, cond_block, id);
                 if (prev) {
-                    m.next_phi_candidate(id->value());
+                    m.next_phi_candidate(cond_block.value());
                 }
                 else {
-                    m.init_phi_stack(id->value());
+                    m.init_phi_stack(cond_block.value());
                 }
                 m.op(prev ? AbstractOp::ELIF : AbstractOp::IF, [&](Code& c) {
-                    c.ref(*id);
+                    c.ref(cond_block);
                 });
                 if (field) {
                     auto err = do_assign(m, nullptr, nullptr, *tmp_var, *imm_true);
@@ -1460,10 +1459,10 @@ namespace rebgn {
         if (!target_type) {
             return target_type.error();
         }
-        BM_GET_EXPR(cond, m, node->cond);
-        m.init_phi_stack(cond.value());
+        BM_COND_IN_BLOCK(m.op, m.code, cond_block, node->cond);
+        m.init_phi_stack(cond_block.value());
         m.op(AbstractOp::IF, [&](Code& c) {
-            c.ref(cond);
+            c.ref(cond_block);
         });
         BM_GET_EXPR(then, m, node->then);
         auto then_type = may_get_type(m, node->then->expr_type);

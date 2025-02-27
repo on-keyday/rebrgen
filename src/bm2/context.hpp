@@ -136,6 +136,59 @@ namespace bm2 {
             }
             return std::nullopt;
         }
+
+        friend size_t find_next_else_or_end_if(Context& ctx, size_t start, bool include_else = false) {
+            size_t nested = 0;
+            for (size_t i = start + 1;; i++) {
+                if (i >= ctx.bm.code.size()) {
+                    return ctx.bm.code.size();
+                }
+                auto& code = ctx.bm.code[i];
+                if (nested) {
+                    if (code.op == rebgn::AbstractOp::END_IF) {
+                        nested--;
+                    }
+                }
+                else {
+                    if (!include_else) {
+                        if (code.op == rebgn::AbstractOp::END_IF) {
+                            return i;
+                        }
+                    }
+                    else {
+                        if (code.op == rebgn::AbstractOp::ELIF || code.op == rebgn::AbstractOp::ELSE || code.op == rebgn::AbstractOp::END_IF) {
+                            return i;
+                        }
+                    }
+                }
+                if (code.op == rebgn::AbstractOp::IF) {
+                    nested++;
+                }
+            }
+        }
+
+        friend size_t find_next_end_loop(Context& ctx, size_t start) {
+            size_t nested = 0;
+            for (size_t i = start + 1;; i++) {
+                if (i >= ctx.bm.code.size()) {
+                    return ctx.bm.code.size();
+                }
+                auto& code = ctx.bm.code[i];
+                if (nested) {
+                    if (code.op == rebgn::AbstractOp::END_LOOP) {
+                        nested--;
+                    }
+                }
+                else {
+                    if (code.op == rebgn::AbstractOp::END_LOOP) {
+                        return i;
+                    }
+                }
+                if (code.op == rebgn::AbstractOp::LOOP_INFINITE || code.op == rebgn::AbstractOp::LOOP_CONDITION) {
+                    nested++;
+                }
+            }
+        }
     };
 
     constexpr std::uint64_t null_ref = 0;

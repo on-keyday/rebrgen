@@ -17,6 +17,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool is_cmake = false;
     std::string_view config_file = "config.json";
     std::string_view hook_file_dir = "hook";
+    bool debug = false;
 
     // json options
     std::string lang_name;
@@ -37,8 +38,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string block_begin = "{";
     std::string block_end = "}";
     std::string block_end_type = "};";
-    std::string keyword_file = "keyword.txt";
-    std::string import_base_file = "import_base.txt";
     std::string struct_keyword = "struct";
     std::string enum_keyword = "enum";
     std::string define_var_keyword = "";
@@ -80,8 +79,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(block_begin, "block_begin");
         FROM_JSON_OPT(block_end, "block_end");
         FROM_JSON_OPT(block_end_type, "block_end_type");
-        FROM_JSON_OPT(keyword_file, "keyword_file");
-        FROM_JSON_OPT(import_base_file, "import_base_file");
         FROM_JSON_OPT(prior_ident, "prior_ident");
         FROM_JSON_OPT(struct_keyword, "struct_keyword");
         FROM_JSON_OPT(enum_keyword, "enum_keyword");
@@ -111,6 +108,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_header, "header", "generate header file");
         ctx.VarBool(&is_main, "main", "generate main file");
         ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
+        ctx.VarBool(&debug, "debug", "debug mode (print hook call on stderr)");
         /*
         ctx.VarBool(&prior_ident, "prior-ident", "prioritize identifier than type when defining field or parameter or variable");
         ctx.VarString(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
@@ -212,6 +210,9 @@ namespace rebgn {
             return false;
         }
         auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
+        if (flags.debug) {
+            futils::wrap::cerr_wrap() << "hook: " << hook_file.generic_u8string() << '\n';
+        }
         for (auto i = 0; i < lines.size(); i++) {
             per_line(i, lines[i]);
         }
@@ -223,6 +224,18 @@ namespace rebgn {
     }
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, AbstractOp op, const char* add = "") {
+        auto op_name = to_string(op);
+        auto concat = std::format("{}{}", op_name, add);
+        // to lower
+        for (auto& c : concat) {
+            c = std::tolower(c);
+        }
+        return may_write_from_hook(w, flags, std::vformat(to_string(hook), std::make_format_args(concat)), [&](size_t i, futils::view::rvec& line) {
+            w.writeln(line);
+        });
+    }
+
+    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, rebgn::StorageType op, const char* add = "") {
         auto op_name = to_string(op);
         auto concat = std::format("{}{}", op_name, add);
         // to lower
@@ -273,9 +286,16 @@ namespace rebgn {
         type_to_string.writeln("}");
         type_to_string.writeln("auto& storage = s.storages[index];");
         type_to_string.writeln("switch (storage.type) {");
+
         auto switch_scope = type_to_string.indent_scope();
         for (size_t i = 0; to_string(StorageType(i))[0] != 0; i++) {
             auto type = StorageType(i);
+            auto type_hook = [&](auto&& default_action) {
+                if (may_write_from_hook(w, flags, bm2::HookFile::type_op, type)) {
+                    return;
+                }
+                default_action();
+            };
             type_to_string.writeln(std::format("case rebgn::StorageType::{}: {{", to_string(type)));
             auto scope_type = type_to_string.indent_scope();
             if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
@@ -288,108 +308,131 @@ namespace rebgn {
                 type_to_string.writeln("*bit_size = size;");
                 if_block_size.execute();
                 type_to_string.writeln("}");
-                if (type == StorageType::UINT) {
-                    type_to_string.writeln("if (size <= 8) {");
-                    auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
-                    if_block_size_8.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 16) {");
-                    auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
-                    if_block_size_16.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
-                }
-                else if (type == StorageType::INT) {
-                    type_to_string.writeln("if (size <= 8) {");
-                    auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
-                    if_block_size_8.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 16) {");
-                    auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
-                    if_block_size_16.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
-                }
-                else {
-                    type_to_string.writeln("if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
-                }
+                type_hook([&] {
+                    if (type == StorageType::UINT) {
+                        type_to_string.writeln("if (size <= 8) {");
+                        auto if_block_size_8 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
+                        if_block_size_8.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else if (size <= 16) {");
+                        auto if_block_size_16 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
+                        if_block_size_16.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else if (size <= 32) {");
+                        auto if_block_size_32 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
+                        if_block_size_32.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else {");
+                        auto if_block_size_64 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
+                        if_block_size_64.execute();
+                        type_to_string.writeln("}");
+                    }
+                    else if (type == StorageType::INT) {
+                        type_to_string.writeln("if (size <= 8) {");
+                        auto if_block_size_8 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
+                        if_block_size_8.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else if (size <= 16) {");
+                        auto if_block_size_16 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
+                        if_block_size_16.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else if (size <= 32) {");
+                        auto if_block_size_32 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
+                        if_block_size_32.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else {");
+                        auto if_block_size_64 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
+                        if_block_size_64.execute();
+                        type_to_string.writeln("}");
+                    }
+                    else {
+                        type_to_string.writeln("if (size <= 32) {");
+                        auto if_block_size_32 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
+                        if_block_size_32.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("else {");
+                        auto if_block_size_64 = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
+                        if_block_size_64.execute();
+                        type_to_string.writeln("}");
+                    }
+                });
             }
-
             else if (type == StorageType::STRUCT_REF) {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_to_string.writeln("return ident;");
+                type_hook([&] {
+                    type_to_string.writeln("return ident;");
+                });
             }
             else if (type == StorageType::RECURSIVE_STRUCT_REF) {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_to_string.writeln("return std::format(\"{}*\", ident);");
+                type_hook([&] {
+                    type_to_string.writeln("return std::format(\"{}*\", ident);");
+                });
             }
             else if (type == StorageType::BOOL) {
-                type_to_string.writeln("return \"", flags.bool_type, "\";");
+                type_hook([&] {
+                    type_to_string.writeln("return \"", flags.bool_type, "\";");
+                });
             }
             else if (type == StorageType::ENUM) {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_to_string.writeln("return ident;");
+                type_hook([&] {
+                    type_to_string.writeln("return ident;");
+                });
             }
             else if (type == StorageType::VARIANT) {
-                type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
+                type_hook([&] {
+                    type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
+                });
             }
             else if (type == StorageType::CODER_RETURN) {
-                type_to_string.writeln("return \"", flags.coder_return_type, "\";");
+                type_hook([&] {
+                    type_to_string.writeln("return \"", flags.coder_return_type, "\";");
+                });
             }
             else if (type == StorageType::PROPERTY_SETTER_RETURN) {
-                type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
+                type_hook([&] {
+                    type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
+                });
             }
             else if (type == StorageType::PTR) {
-                type_to_string.writeln("return std::format(\"{}*\", base_type);");
+                type_hook([&] {
+                    type_to_string.writeln("return std::format(\"{}*\", base_type);");
+                });
             }
             else if (type == StorageType::ARRAY) {
-                if (flags.array_has_one_placeholder) {
-                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type);");
-                }
-                else {
-                    type_to_string.writeln("auto length = storage.size().value().value();");
-                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type,length);");
-                }
+                type_to_string.writeln("auto length = storage.size().value().value();");
+                type_hook([&] {
+                    if (flags.array_has_one_placeholder) {
+                        type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type);");
+                    }
+                    else {
+                        type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type,length);");
+                    }
+                });
             }
             else if (type == StorageType::VECTOR) {
-                type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
+                type_hook([&] {
+                    type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
+                });
             }
             else if (type == StorageType::OPTIONAL) {
-                type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented OPTIONAL"), "\";");
+                type_hook([&] {
+                    type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented OPTIONAL"), "\";");
+                });
             }
             scope_type.execute();
             type_to_string.writeln("}");

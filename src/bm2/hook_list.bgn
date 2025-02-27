@@ -11,7 +11,7 @@ enum HookFile:
     inner_block_start = "inner_block_start.txt" # inner block start
     inner_block_each_code = "inner_block_each_code.txt" # inner block each code
 
-    inner_function_op = "func_{}.txt" # inner function operation
-    inner_block_op = "block_{}.txt" # inner block operation
-    eval_op = "eval_{}.txt" # eval operation
-    type_op = "type_{}.txt" # type operation
+    inner_function_op = "func_{}.txt" # inner function operation ({} contains lower case AbstractOp name)
+    inner_block_op = "block_{}.txt" # inner block operation ({} contains lower case AbstractOp name)
+    eval_op = "eval_{}.txt" # eval operation ({} contains lower case AbstractOp name)
+    type_op = "type_{}.txt" # type operation ({} contains lower case StorageType name)

@@ -26,6 +26,7 @@ namespace bm2 {
         inner_function_op = 9,
         inner_block_op = 10,
         eval_op = 11,
+        type_op = 12,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -53,6 +54,8 @@ namespace bm2 {
                 return "block_{}.txt";
             case HookFile::eval_op:
                 return "eval_{}.txt";
+            case HookFile::type_op:
+                return "type_{}.txt";
         }
         return "";
     }
@@ -96,6 +99,9 @@ namespace bm2 {
         }
         if (str == "eval_{}.txt") {
             return HookFile::eval_op;
+        }
+        if (str == "type_{}.txt") {
+            return HookFile::type_op;
         }
         return std::nullopt;
     }

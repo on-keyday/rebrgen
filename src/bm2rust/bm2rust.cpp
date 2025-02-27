@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <format>
-#include <bm/helper.hpp>
+#include <bmgen/helper.hpp>
 #include <algorithm>
 #include <unicode/utf/convert.h>
 #include <span>

@@ -1,3 +1,4 @@
+config.cpp.hpp_name = "binary_module.hpp"
 config.cpp.namespace = "rebgn"
 config.cpp.bytes_type = "std::string"
 config.cpp.sys_include = "string"

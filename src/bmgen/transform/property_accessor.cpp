@@ -1,5 +1,5 @@
 /*license*/
-#include <bm/internal.hpp>
+#include <bmgen/internal.hpp>
 
 namespace rebgn {
     std::string property_name_suffix(Module& m, const Storages& s) {

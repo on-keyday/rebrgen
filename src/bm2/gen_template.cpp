@@ -2,7 +2,7 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <bm2/context.hpp>
-#include <bm/helper.hpp>
+#include <bmgen/helper.hpp>
 #include <wrap/cout.h>
 #include <strutil/splits.h>
 #include <file/file_view.h>
@@ -50,6 +50,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string field_end = ";";
     std::string enum_member_end = ",";
     std::string func_keyword = "";
+    std::string func_brace_ident_separator = "";
     std::string func_type_separator = " ";
     std::string func_void_return_type = "void";
     bool prior_ident = false;
@@ -99,6 +100,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(field_end, "field_end");
         FROM_JSON_OPT(enum_member_end, "enum_member_end");
         FROM_JSON_OPT(func_keyword, "func_keyword");
+        FROM_JSON_OPT(func_brace_ident_separator, "func_brace_ident_separator");
         FROM_JSON_OPT(func_type_separator, "func_type_separator");
         FROM_JSON_OPT(func_void_return_type, "func_void_return_type");
         FROM_JSON_OPT(if_keyword, "if_keyword");
@@ -411,6 +413,7 @@ namespace rebgn {
                 });
             }
             else if (type == StorageType::VARIANT) {
+                type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_hook([&] {
                     type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
                 });
@@ -574,7 +577,16 @@ namespace rebgn {
                         inner_block.indent_writeln("inner_block(ctx, w, range);");
                     });
                 }
-                else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
+                else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
+                    inner_block.indent_writeln("auto ref = code.ref().value();");
+                    inner_block.indent_writeln("auto range = ctx.range(ref);");
+                    block_hook([&] {
+                        inner_block.indent_writeln("TmpCodeWriter inner_w;");
+                        inner_block.indent_writeln("inner_block(ctx, inner_w, range);");
+                        inner_block.indent_writeln("ctx.cw.write_unformatted(inner_w.out());");
+                    });
+                }
+                else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
                     block_hook([&] {
                         inner_block.indent_writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
@@ -612,7 +624,8 @@ namespace rebgn {
                         }
                     });
                 }
-                else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE) {
+                else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE ||
+                         op == AbstractOp::END_UNION_MEMBER) {
                     block_hook([&] {
                         inner_block.indent_writeln("defer.pop_back();");
                         inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
@@ -1068,7 +1081,7 @@ namespace rebgn {
                             else {
                                 inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
                             }
-                            inner_function.writeln("w.write(\" \", ident, \"(\");");
+                            inner_function.writeln("w.write(\" \", ident, \"", flags.func_brace_ident_separator, "(\");");
                             inner_function.writeln("add_parameter(ctx, w, range);");
                             inner_function.writeln("w.write(\") \");");
                             if (flags.func_keyword.size()) {
@@ -1390,7 +1403,7 @@ namespace rebgn {
         w.writeln("project(bm2", flags.lang_name, ")");
         w.writeln("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)");
         w.writeln("add_executable(bm2", flags.lang_name, " main.cpp bm2", flags.lang_name, ".cpp)");
-        w.writeln("target_link_libraries(bm2", flags.lang_name, " futils)");
+        w.writeln("target_link_libraries(bm2", flags.lang_name, " futils bm)");
         w.writeln("install(TARGETS bm2", flags.lang_name, " DESTINATION tool)");
         w.writeln("if (\"$ENV{BUILD_MODE}\" STREQUAL \"web\")");
         w.writeln("  install(FILES \"${CMAKE_BINARY_DIR}/tool/bm2", flags.lang_name, ".wasm\" DESTINATION tool)");
@@ -1431,7 +1444,7 @@ namespace rebgn {
 
         w.writeln("/*license*/");
         w.writeln("#include <bm2/context.hpp>");
-        w.writeln("#include <bm/helper.hpp>");
+        w.writeln("#include <bmgen/helper.hpp>");
         w.writeln("#include \"bm2", flags.lang_name, ".hpp\"");
         w.writeln("namespace bm2", flags.lang_name, " {");
         auto scope = w.indent_scope();

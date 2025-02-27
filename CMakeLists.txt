@@ -17,24 +17,27 @@ include_directories("src")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
+add_library(bm STATIC "src/bm/binary_module.cpp")
+
 add_executable(bmgen
-    "src/bm/main.cpp" 
-    "src/bm/convert.cpp" 
-    "src/bm/encode.cpp"
-    "src/bm/load_json.cpp" 
-    "src/bm/save_module.cpp"
-    "src/bm/transform.cpp"
-    "src/bm/transform/bind_coder.cpp"
-    "src/bm/transform/bit_field_size.cpp"
-    "src/bm/transform/control_flow_graph.cpp"
-    "src/bm/transform/flatten.cpp"
-    "src/bm/transform/merge_conditional.cpp"
-    "src/bm/transform/property_accessor.cpp"
-    "src/bm/transform/sort_formats.cpp"
-    "src/bm/transform/fallback/bit_op.cpp"
-    "src/bm/transform/fallback/encode.cpp"
-    "src/bm/transform/fallback/endian.cpp"
+    "src/bmgen/main.cpp" 
+    "src/bmgen/convert.cpp" 
+    "src/bmgen/encode.cpp"
+    "src/bmgen/load_json.cpp" 
+    "src/bmgen/save_module.cpp"
+    "src/bmgen/transform.cpp"
+    "src/bmgen/transform/bind_coder.cpp"
+    "src/bmgen/transform/bit_field_size.cpp"
+    "src/bmgen/transform/control_flow_graph.cpp"
+    "src/bmgen/transform/flatten.cpp"
+    "src/bmgen/transform/merge_conditional.cpp"
+    "src/bmgen/transform/property_accessor.cpp"
+    "src/bmgen/transform/sort_formats.cpp"
+    "src/bmgen/transform/fallback/bit_op.cpp"
+    "src/bmgen/transform/fallback/encode.cpp"
+    "src/bmgen/transform/fallback/endian.cpp"
 )
+
 
 add_executable(bm2cpp
     "src/bm2cpp/main.cpp"
@@ -52,9 +55,9 @@ add_executable(gen_template
 
 add_subdirectory("src")
 
-target_link_libraries(bmgen futils)
-target_link_libraries(bm2cpp futils)
-target_link_libraries(bm2rust futils)
+target_link_libraries(bmgen futils bm)
+target_link_libraries(bm2cpp futils bm)
+target_link_libraries(bm2rust futils bm)
 target_link_libraries(gen_template futils)
 
 install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)

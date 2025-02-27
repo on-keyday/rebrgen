@@ -1,5 +1,5 @@
 /*license*/
-#include <bm/internal.hpp>
+#include <bmgen/internal.hpp>
 
 namespace rebgn {
     void write_cfg(futils::binary::writer& w, Module& m) {

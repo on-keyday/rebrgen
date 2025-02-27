@@ -1,5 +1,5 @@
 /*license*/
-#include <bm/internal.hpp>
+#include <bmgen/internal.hpp>
 
 namespace rebgn {
     // this function binds encoder and decoder to format

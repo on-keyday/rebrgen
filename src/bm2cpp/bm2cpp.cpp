@@ -3,7 +3,7 @@
 #include <code/code_writer.h>
 #include <unordered_map>
 #include <format>
-#include <bm/helper.hpp>
+#include <bmgen/helper.hpp>
 #include <algorithm>
 #include <unicode/utf/convert.h>
 #include <span>

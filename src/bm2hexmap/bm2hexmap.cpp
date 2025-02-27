@@ -1,6 +1,6 @@
 /*license*/
 #include <bm2/context.hpp>
-#include <bm/helper.hpp>
+#include <bmgen/helper.hpp>
 #include "bm2hexmap.hpp"
 #include <json/json_export.h>
 #include <json/to_string.h>

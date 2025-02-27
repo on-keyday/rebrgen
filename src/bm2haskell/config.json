@@ -22,5 +22,7 @@
     "coder_return_type": "Bool",
     "property_setter_return_type": "Bool",
     "define_var_keyword": "",
-    "var_type_separator": ":: "
+    "var_type_separator": ":: ",
+    "func_type_separator": "->",
+    "func_brace_ident_separator": " :: "
 }

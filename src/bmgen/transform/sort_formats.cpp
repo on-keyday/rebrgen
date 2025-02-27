@@ -1,5 +1,5 @@
 /*license*/
-#include <bm/internal.hpp>
+#include <bmgen/internal.hpp>
 #include <core/ast/tool/sort.h>
 
 namespace rebgn {

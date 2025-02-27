@@ -1,8 +1,8 @@
 /*license*/
 #include <bm/binary_module.hpp>
-#include <bm/common.hpp>
-#include <bm/convert.hpp>
-#include <bm/internal.hpp>
+#include <bmgen/common.hpp>
+#include <bmgen/convert.hpp>
+#include <bmgen/internal.hpp>
 
 namespace rebgn {
 

@@ -1,6 +1,6 @@
 /*license*/
 #pragma once
-#include "binary_module.hpp"
+#include <bm/binary_module.hpp>
 #include <format>
 
 namespace rebgn {

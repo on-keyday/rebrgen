@@ -17,7 +17,7 @@ include_directories("src")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
-add_library(bm STATIC "src/bm/binary_module.cpp")
+add_library(bm SHARED "src/bm/binary_module.cpp")
 
 add_executable(bmgen
     "src/bmgen/main.cpp" 
@@ -60,7 +60,7 @@ target_link_libraries(bm2cpp futils bm)
 target_link_libraries(bm2rust futils bm)
 target_link_libraries(gen_template futils)
 
-install(TARGETS bmgen bm2cpp bm2rust DESTINATION tool)
+install(TARGETS bmgen bm2cpp bm2rust bm DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory

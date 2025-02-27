@@ -13,6 +13,13 @@
 #include <binary/number.h>
 #include <error/error.h>
 #include <string>
+#ifndef BM_API
+#ifdef _WIN32
+#define BM_API __declspec(dllimport)
+#else
+#define BM_API
+#endif
+#endif
 namespace rebgn {
     enum class BinaryOp : std::uint8_t {
         mul = 0,
@@ -1432,7 +1439,7 @@ namespace rebgn {
     struct DebugInfo;
     struct Code;
     struct BinaryModule;
-    struct Varint{
+    struct BM_API Varint{
         ::futils::binary::flags_t<std::uint64_t,2,62> flags_1_;
         bits_flag_alias_method(flags_1_,0,prefix);
         bits_flag_alias_method(flags_1_,1,value);
@@ -1440,7 +1447,7 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 0;
     };
-    struct DecodeParamFlags{
+    struct BM_API DecodeParamFlags{
         ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 1, 1, 1, 2> flags_2_;
         bits_flag_alias_method(flags_2_,0,has_seek);
         bits_flag_alias_method(flags_2_,1,has_peek);
@@ -1453,7 +1460,7 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct EncodeParamFlags{
+    struct BM_API EncodeParamFlags{
         ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 5> flags_3_;
         bits_flag_alias_method(flags_3_,0,has_seek);
         bits_flag_alias_method(flags_3_,1,has_sub_range);
@@ -1463,50 +1470,50 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct Range{
+    struct BM_API Range{
         std::uint64_t start = 0;
         std::uint64_t end = 0;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 16;
     };
-    struct String{
+    struct BM_API String{
         Varint length;
         std::string data;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct IdentIndex{
+    struct BM_API IdentIndex{
         Varint ident;
         Varint index;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Storage{
+    struct BM_API Storage{
         StorageType type{};
-        struct union_struct_6{
+        struct BM_API union_struct_6{
             Varint size;
         };
-        struct union_struct_7{
+        struct BM_API union_struct_7{
             Varint size;
         };
-        struct union_struct_8{
+        struct BM_API union_struct_8{
             Varint size;
         };
-        struct union_struct_9{
+        struct BM_API union_struct_9{
             Varint size;
             Varint ref;
         };
-        struct union_struct_10{
+        struct BM_API union_struct_10{
             Varint ref;
         };
-        struct union_struct_11{
+        struct BM_API union_struct_11{
             Varint ref;
         };
-        struct union_struct_12{
+        struct BM_API union_struct_12{
             Varint size;
         };
-        struct union_struct_13{
+        struct BM_API union_struct_13{
             Varint ref;
             Varint size;
         };
@@ -1521,26 +1528,26 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct Metadata{
+    struct BM_API Metadata{
         Varint name;
         Varint len;
         std::vector<Varint> refs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Param{
+    struct BM_API Param{
         Varint len;
         std::vector<Varint> refs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct PhiParam{
+    struct BM_API PhiParam{
         Varint condition;
         Varint assign;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EndianExpr{
+    struct BM_API EndianExpr{
         ::futils::binary::flags_t<std::uint8_t, 3, 1, 4> flags_14_;
         bits_flag_alias_method_with_enum(flags_14_,0,endian,Endian);
         bits_flag_alias_method(flags_14_,1,sign);
@@ -1550,18 +1557,18 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct StorageRef{
+    struct BM_API StorageRef{
         Varint ref;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct RangePacked{
+    struct BM_API RangePacked{
         Varint start;
         Varint end;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Loc{
+    struct BM_API Loc{
         Varint ident;
         Varint file_id;
         Varint line;
@@ -1571,67 +1578,67 @@ namespace rebgn {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct StringRef{
+    struct BM_API StringRef{
         Varint code;
         String string;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Storages{
+    struct BM_API Storages{
         Varint length;
         std::vector<Storage> storages;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct PhiParams{
+    struct BM_API PhiParams{
         Varint length;
         std::vector<PhiParam> params;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct StorageRefMap{
+    struct BM_API StorageRefMap{
         Varint code;
         Storages storage;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct StorageRefMaps{
+    struct BM_API StorageRefMaps{
         Varint length;
         std::vector<StorageRefMap> maps;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct StringRefs{
+    struct BM_API StringRefs{
         Varint refs_length;
         std::vector<StringRef> refs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct IdentIndexs{
+    struct BM_API IdentIndexs{
         Varint refs_length;
         std::vector<IdentIndex> refs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Ranges{
+    struct BM_API Ranges{
         Varint length;
         std::vector<RangePacked> ranges;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct IdentRange{
+    struct BM_API IdentRange{
         Varint ident;
         RangePacked range;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct IdentRanges{
+    struct BM_API IdentRanges{
         Varint length;
         std::vector<IdentRange> ranges;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct DebugInfo{
+    struct BM_API DebugInfo{
         Varint len_files;
         std::vector<String> files;
         Varint len_locs;
@@ -1639,196 +1646,196 @@ namespace rebgn {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct Code{
+    struct BM_API Code{
         AbstractOp op{};
-        struct union_struct_17{
+        struct BM_API union_struct_17{
             Metadata metadata;
         };
-        struct union_struct_18{
+        struct BM_API union_struct_18{
             Varint ident;
         };
-        struct union_struct_19{
+        struct BM_API union_struct_19{
             Varint ident;
             Varint ref;
         };
-        struct union_struct_20{
+        struct BM_API union_struct_20{
             Varint ident;
             Varint int_value;
         };
-        struct union_struct_21{
+        struct BM_API union_struct_21{
             Varint ident;
             Varint int_value;
         };
-        struct union_struct_22{
+        struct BM_API union_struct_22{
             Varint ident;
             std::uint64_t int_value64 = 0;
         };
-        struct union_struct_23{
+        struct BM_API union_struct_23{
             Varint ident;
         };
-        struct union_struct_24{
+        struct BM_API union_struct_24{
             Varint ident;
         };
-        struct union_struct_25{
+        struct BM_API union_struct_25{
             Varint ident;
         };
-        struct union_struct_26{
+        struct BM_API union_struct_26{
             Varint ident;
             StorageRef type;
         };
-        struct union_struct_27{
+        struct BM_API union_struct_27{
             Varint ident;
         };
-        struct union_struct_28{
+        struct BM_API union_struct_28{
             Varint ident;
         };
-        struct union_struct_29{
+        struct BM_API union_struct_29{
             Varint ident;
             Varint belong;
             StorageRef type;
         };
-        struct union_struct_30{
+        struct BM_API union_struct_30{
             Varint ident;
             Varint belong;
         };
-        struct union_struct_31{
+        struct BM_API union_struct_31{
             Varint ident;
             StorageRef type;
         };
-        struct union_struct_32{
+        struct BM_API union_struct_32{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_33{
+        struct BM_API union_struct_33{
             Varint ident;
             Varint belong;
             FunctionType func_type{};
         };
-        struct union_struct_34{
+        struct BM_API union_struct_34{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_35{
+        struct BM_API union_struct_35{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_36{
+        struct BM_API union_struct_36{
             Varint ident;
             Varint belong;
         };
-        struct union_struct_37{
+        struct BM_API union_struct_37{
             Varint ident;
             Varint ref;
             StorageRef type;
         };
-        struct union_struct_38{
+        struct BM_API union_struct_38{
             Varint ident;
             Varint ref;
         };
-        struct union_struct_39{
+        struct BM_API union_struct_39{
             Varint ident;
             Varint ref;
             StorageRef type;
         };
-        struct union_struct_40{
+        struct BM_API union_struct_40{
             Varint ref;
         };
-        struct union_struct_41{
+        struct BM_API union_struct_41{
             Varint ident;
             Varint belong;
             StorageRef type;
         };
-        struct union_struct_42{
+        struct BM_API union_struct_42{
             Varint ident;
             Varint belong;
         };
-        struct union_struct_43{
+        struct BM_API union_struct_43{
             StorageRef type;
         };
-        struct union_struct_44{
+        struct BM_API union_struct_44{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_45{
+        struct BM_API union_struct_45{
             Varint ident;
             BinaryOp bop{};
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_46{
+        struct BM_API union_struct_46{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_47{
+        struct BM_API union_struct_47{
             Varint ident;
             UnaryOp uop{};
             Varint ref;
         };
-        struct union_struct_48{
+        struct BM_API union_struct_48{
             Varint ref;
         };
-        struct union_struct_49{
+        struct BM_API union_struct_49{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_50{
+        struct BM_API union_struct_50{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_51{
+        struct BM_API union_struct_51{
             Varint ident;
             Varint ref;
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_52{
+        struct BM_API union_struct_52{
             Varint ident;
             Varint ref;
             PhiParams phi_params;
         };
-        struct union_struct_53{
+        struct BM_API union_struct_53{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_54{
+        struct BM_API union_struct_54{
             Varint ident;
             Varint ref;
         };
-        struct union_struct_55{
+        struct BM_API union_struct_55{
             Varint ident;
             Varint ref;
             StorageRef type;
         };
-        struct union_struct_56{
+        struct BM_API union_struct_56{
             Varint ident;
         };
-        struct union_struct_57{
+        struct BM_API union_struct_57{
             Varint ident;
         };
-        struct union_struct_58{
+        struct BM_API union_struct_58{
             Varint ref;
         };
-        struct union_struct_59{
+        struct BM_API union_struct_59{
             Varint ref;
         };
-        struct union_struct_60{
+        struct BM_API union_struct_60{
             Varint ident;
             Varint ref;
             Varint fallback;
         };
-        struct union_struct_61{
+        struct BM_API union_struct_61{
             Varint ref;
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
             Varint fallback;
         };
-        struct union_struct_62{
+        struct BM_API union_struct_62{
             Varint left_ref;
             Varint right_ref;
             EndianExpr endian;
@@ -1836,7 +1843,7 @@ namespace rebgn {
             Varint belong;
             Varint fallback;
         };
-        struct union_struct_63{
+        struct BM_API union_struct_63{
             Varint left_ref;
             Varint right_ref;
             EndianExpr endian;
@@ -1845,7 +1852,7 @@ namespace rebgn {
             Varint array_length;
             Varint fallback;
         };
-        struct union_struct_64{
+        struct BM_API union_struct_64{
             Varint left_ref;
             Varint right_ref;
             EndianExpr endian;
@@ -1853,7 +1860,7 @@ namespace rebgn {
             Varint belong;
             Varint fallback;
         };
-        struct union_struct_65{
+        struct BM_API union_struct_65{
             Varint left_ref;
             Varint right_ref;
             EndianExpr endian;
@@ -1862,141 +1869,141 @@ namespace rebgn {
             Varint array_length;
             Varint fallback;
         };
-        struct union_struct_66{
+        struct BM_API union_struct_66{
             Varint ref;
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
             Varint fallback;
         };
-        struct union_struct_67{
+        struct BM_API union_struct_67{
             Varint ref;
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
             Varint fallback;
         };
-        struct union_struct_68{
+        struct BM_API union_struct_68{
             Varint left_ref;
             Varint right_ref;
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
         };
-        struct union_struct_69{
+        struct BM_API union_struct_69{
             Varint ident;
             Varint ref;
             StorageRef type;
             StorageRef from_type;
             CastType cast_type{};
         };
-        struct union_struct_70{
+        struct BM_API union_struct_70{
             Varint ident;
             StorageRef type;
             Param param;
         };
-        struct union_struct_71{
+        struct BM_API union_struct_71{
             Varint left_ref;
             Varint right_ref;
             Varint bit_size_plus;
         };
-        struct union_struct_72{
+        struct BM_API union_struct_72{
             Varint left_ref;
             Varint right_ref;
             Varint bit_size_plus;
         };
-        struct union_struct_73{
+        struct BM_API union_struct_73{
             Varint ref;
         };
-        struct union_struct_74{
+        struct BM_API union_struct_74{
             Varint ref;
         };
-        struct union_struct_75{
+        struct BM_API union_struct_75{
             Varint ident;
             StorageRef type;
         };
-        struct union_struct_76{
+        struct BM_API union_struct_76{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_77{
+        struct BM_API union_struct_77{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_78{
+        struct BM_API union_struct_78{
             Varint ref;
             Varint belong;
         };
-        struct union_struct_79{
+        struct BM_API union_struct_79{
             Varint left_ref;
             Varint right_ref;
             Varint belong;
         };
-        struct union_struct_80{
+        struct BM_API union_struct_80{
             Varint ref;
         };
-        struct union_struct_81{
+        struct BM_API union_struct_81{
             Varint ref;
         };
-        struct union_struct_82{
+        struct BM_API union_struct_82{
             Varint ref;
         };
-        struct union_struct_83{
+        struct BM_API union_struct_83{
             Varint ref;
         };
-        struct union_struct_84{
+        struct BM_API union_struct_84{
             Varint ref;
         };
-        struct union_struct_85{
+        struct BM_API union_struct_85{
             Varint ref;
         };
-        struct union_struct_86{
+        struct BM_API union_struct_86{
             Varint ref;
         };
-        struct union_struct_87{
+        struct BM_API union_struct_87{
             Varint ref;
         };
-        struct union_struct_88{
+        struct BM_API union_struct_88{
             Varint ref;
         };
-        struct union_struct_89{
+        struct BM_API union_struct_89{
             Varint ref;
         };
-        struct union_struct_90{
+        struct BM_API union_struct_90{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
             Varint belong;
         };
-        struct union_struct_91{
+        struct BM_API union_struct_91{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
             Varint belong;
         };
-        struct union_struct_92{
+        struct BM_API union_struct_92{
             Varint ident;
             StorageRef type;
             Param param;
             Varint belong;
             MergeMode merge_mode{};
         };
-        struct union_struct_93{
+        struct BM_API union_struct_93{
             Varint ref;
         };
-        struct union_struct_94{
+        struct BM_API union_struct_94{
             Varint ref;
         };
-        struct union_struct_95{
+        struct BM_API union_struct_95{
             Varint ident;
             Varint belong;
             StorageRef type;
         };
-        struct union_struct_96{
+        struct BM_API union_struct_96{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_97{
+        struct BM_API union_struct_97{
             Varint ident;
             Varint belong;
             PackedOpType packed_op_type{};
@@ -2004,10 +2011,10 @@ namespace rebgn {
             Varint bit_size;
             Varint fallback;
         };
-        struct union_struct_98{
+        struct BM_API union_struct_98{
             Varint fallback;
         };
-        struct union_struct_99{
+        struct BM_API union_struct_99{
             Varint ident;
             Varint belong;
             PackedOpType packed_op_type{};
@@ -2015,128 +2022,128 @@ namespace rebgn {
             Varint bit_size;
             Varint fallback;
         };
-        struct union_struct_100{
+        struct BM_API union_struct_100{
             Varint fallback;
         };
-        struct union_struct_101{
+        struct BM_API union_struct_101{
             Varint ref;
         };
-        struct union_struct_102{
+        struct BM_API union_struct_102{
             Varint ref;
             UnionCheckAt check_at{};
         };
-        struct union_struct_103{
+        struct BM_API union_struct_103{
             Varint belong;
             Varint ref;
         };
-        struct union_struct_104{
+        struct BM_API union_struct_104{
             Varint belong;
         };
-        struct union_struct_105{
+        struct BM_API union_struct_105{
             Varint belong;
         };
-        struct union_struct_106{
+        struct BM_API union_struct_106{
             Varint belong;
         };
-        struct union_struct_107{
+        struct BM_API union_struct_107{
             Varint ref;
         };
-        struct union_struct_108{
+        struct BM_API union_struct_108{
             Varint ref;
         };
-        struct union_struct_109{
+        struct BM_API union_struct_109{
             Varint left_ref;
             Varint right_ref;
             EncodeParamFlags encode_flags;
         };
-        struct union_struct_110{
+        struct BM_API union_struct_110{
             Varint left_ref;
             Varint right_ref;
             DecodeParamFlags decode_flags;
         };
-        struct union_struct_111{
+        struct BM_API union_struct_111{
             Varint ident;
             Varint left_ref;
             Varint right_ref;
             StorageRef type;
         };
-        struct union_struct_112{
+        struct BM_API union_struct_112{
             Varint ref;
         };
-        struct union_struct_113{
+        struct BM_API union_struct_113{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_114{
+        struct BM_API union_struct_114{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_115{
+        struct BM_API union_struct_115{
             Varint ref;
         };
-        struct union_struct_116{
+        struct BM_API union_struct_116{
             Param param;
             Varint belong;
         };
-        struct union_struct_117{
+        struct BM_API union_struct_117{
             Varint ident;
             Varint ref;
             Param param;
         };
-        struct union_struct_118{
+        struct BM_API union_struct_118{
             Varint ident;
         };
-        struct union_struct_119{
+        struct BM_API union_struct_119{
             Varint ident;
         };
-        struct union_struct_120{
+        struct BM_API union_struct_120{
             Varint ident;
         };
-        struct union_struct_121{
+        struct BM_API union_struct_121{
             Varint ident;
         };
-        struct union_struct_122{
+        struct BM_API union_struct_122{
             Varint ident;
             Varint ref;
         };
-        struct union_struct_123{
+        struct BM_API union_struct_123{
             Varint left_ref;
             Varint right_ref;
         };
-        struct union_struct_124{
+        struct BM_API union_struct_124{
             SubRangeType sub_range_type{};
             Varint ref;
             Varint belong;
         };
-        struct union_struct_125{
+        struct BM_API union_struct_125{
             SubRangeType sub_range_type{};
             Varint ref;
             Varint belong;
         };
-        struct union_struct_126{
+        struct BM_API union_struct_126{
             Varint ref;
             Varint belong;
         };
-        struct union_struct_127{
+        struct BM_API union_struct_127{
             Varint ref;
             Varint belong;
         };
-        struct union_struct_128{
+        struct BM_API union_struct_128{
             Varint ident;
             Varint belong;
         };
-        struct union_struct_129{
+        struct BM_API union_struct_129{
             Varint ident;
             Varint ref;
             Varint fallback;
         };
-        struct union_struct_130{
+        struct BM_API union_struct_130{
             Varint ident;
         };
-        struct union_struct_131{
+        struct BM_API union_struct_131{
             Varint ident;
         };
-        struct union_struct_132{
+        struct BM_API union_struct_132{
             Varint ident;
             Varint ref;
         };
@@ -2226,7 +2233,7 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct BinaryModule{
+    struct BM_API BinaryModule{
         //"RBGM" (4 bytes)
         Varint max_id;
         StringRefs metadata;
@@ -2239,7 +2246,7 @@ namespace rebgn {
         ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_133_;
         bits_flag_alias_method(flags_133_,0,has_debug_info);
         bits_flag_alias_method(flags_133_,1,reserved);
-        struct union_struct_136{
+        struct BM_API union_struct_136{
             DebugInfo debug_info;
         };
         std::variant<std::monostate, union_struct_136> union_variant_135;

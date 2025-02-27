@@ -10,8 +10,14 @@ enum HookFile:
     inner_function_each_code = "inner_function_each_code.txt" # inner function each code
     inner_block_start = "inner_block_start.txt" # inner block start
     inner_block_each_code = "inner_block_each_code.txt" # inner block each code
+    param_start = "param_start.txt" # param start
+    param_each_code = "param_each_code.txt" # param each code
+    call_param_start = "call_param_start.txt" # call param start
+    call_param_each_code = "call_param_each_code.txt" # call param each code
 
     inner_function_op = "func_{}.txt" # inner function operation ({} contains lower case AbstractOp name)
     inner_block_op = "block_{}.txt" # inner block operation ({} contains lower case AbstractOp name)
     eval_op = "eval_{}.txt" # eval operation ({} contains lower case AbstractOp name)
     type_op = "type_{}.txt" # type operation ({} contains lower case StorageType name)
+    param_op = "param_{}.txt" # param operation ({} contains lower case AbstractOp name)
+    call_param_op = "call_param_{}.txt" # call param operation ({} contains lower case AbstractOp name)

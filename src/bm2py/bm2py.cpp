@@ -87,6 +87,7 @@ namespace bm2py {
             }
             case rebgn::StorageType::ARRAY: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                auto length = storage.size().value().value();
                 return std::format("list[{}]", base_type);
             }
             case rebgn::StorageType::VECTOR: {
@@ -104,11 +105,11 @@ namespace bm2py {
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return "\"\"\"Unimplemented OPTIONAL\"\"\"";
+                return std::format("Optional[{}]", base_type);
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return std::format("{}*", base_type);
+                return std::format("Optional[{}]", base_type);
             }
             default: {
                 return std::format("{}{}{}","\"\"\"",to_string(storage.type),"\"\"\"");
@@ -226,10 +227,11 @@ namespace bm2py {
         }
         case rebgn::AbstractOp::CAST: {
             auto type = code.type().value();
+            auto from_type = code.from_type().value();
             auto ref = code.ref().value();
             auto type_str = type_to_string(ctx, type);
             auto evaluated = eval(ctx.ref(ref), ctx);
-            result = make_eval_result(std::format("({}){}", type_str, evaluated.result));
+            result = make_eval_result(std::format("{}({})", type_str, evaluated.result));
             break;
         }
         case rebgn::AbstractOp::CALL_CAST: {
@@ -278,6 +280,12 @@ namespace bm2py {
             auto left_eval = eval(ctx.ref(left_ref), ctx);
             auto right_eval = eval(ctx.ref(right_ref), ctx);
             auto opstr = to_string(op);
+            if(op == rebgn::BinaryOp::logical_or) {
+                opstr = "or";
+            }
+            else if(op == rebgn::BinaryOp::logical_and) {
+                opstr = "and";
+            }
             result = make_eval_result(std::format("({} {} {})", left_eval.result, opstr, right_eval.result));
             break;
         }
@@ -314,24 +322,26 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_TRUE: {
-            result = make_eval_result("true");
+            result = make_eval_result("True");
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_FALSE: {
-            result = make_eval_result("false");
+            result = make_eval_result("False");
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT: {
-            result = make_eval_result(std::format("{}", code.int_value()->value()));
+            auto value = code.int_value()->value();
+            result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT64: {
-            result = make_eval_result(std::format("{}", *code.int_value64()));
+            auto value = *code.int_value64();
+            result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_CHAR: {
             auto char_code = code.int_value()->value();
-            result = make_eval_result("\"\"\"Unimplemented IMMEDIATE_CHAR\"\"\"");
+            result = make_eval_result(std::format("'{}'", char_code));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
@@ -386,6 +396,12 @@ namespace bm2py {
     }
     void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
         size_t params = 0;
+        auto belong = ctx.bm.code[range.start].belong().value();
+        auto is_member = belong.value() != 0 && ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            w.write("self");
+            params++;
+        }
         for(size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
@@ -404,7 +420,7 @@ namespace bm2py {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("\"\"\"Unimplemented ENCODER_PARAMETER\"\"\" ");
+                    w.write("w :IO[bytes]");
                     params++;
                     break;
                 }
@@ -412,7 +428,7 @@ namespace bm2py {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("\"\"\"Unimplemented DECODER_PARAMETER\"\"\" ");
+                    w.write("r :IO[bytes]");
                     params++;
                     break;
                 }
@@ -527,7 +543,7 @@ namespace bm2py {
                 }
                 auto type = type_to_string(ctx, code.type().value());
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln(ident, " :", type, ";");
+                w.writeln(ident, " :", type, "");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -550,8 +566,8 @@ namespace bm2py {
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("class ", ident, " :");
-                defer.push_back(w.indent_scope_ex());
+            w.writeln("class ",ident,"(Enum):");
+            defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
@@ -651,21 +667,25 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
-                    auto ident = ctx.ident(code.ident().value());
-                    auto range = ctx.range(code.ident().value());
-                    auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                    w.write("def ");
-                    w.write(" ", ident, "(");
-                    add_parameter(ctx, w, range);
-                    w.write(") ");
-                    if(!found_type_pos) {
+                auto ident = ctx.ident(code.ident().value());
+                auto range = ctx.range(code.ident().value());
+                auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> type;
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    type = type_to_string(ctx,type_ref);
+                }
+                w.write("def ");
+                w.write(" ", ident, "(");
+                add_parameter(ctx, w, range);
+                w.write(") ");
+                if(type) {
+                    w.write("->", *type);
+                }
+                else {
                     w.write("");
-                    }
-                    else {
-                    auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());
-                    w.write("->",type);
-                    }
-                    w.writeln(":");
+                }
+                w.writeln(":");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -788,14 +808,14 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
-                    w.writeln("while True :");
+                w.writeln("while True :");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::LOOP_CONDITION: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("while ",evaluated.result," :");
+                w.writeln("while ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -815,7 +835,7 @@ namespace bm2py {
             case rebgn::AbstractOp::IF: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("if ",evaluated.result," :");
+                w.writeln("if ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -823,15 +843,15 @@ namespace bm2py {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 defer.pop_back();
-                    w.writeln("");
-                    w.writeln("elif ",evaluated.result," :");
+                w.writeln("");
+                w.writeln("elif ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELSE: {
                 defer.pop_back();
-                    w.writeln("");
-                    w.writeln("else :");
+                w.writeln("");
+                w.writeln("else :");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -890,7 +910,7 @@ namespace bm2py {
             }
             case rebgn::AbstractOp::ASSERT: {
                 auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
-                w.writeln("\"\"\"Unimplemented ASSERT\"\"\"");
+                w.writeln("assert(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -900,7 +920,7 @@ namespace bm2py {
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
                 auto param = code.param().value();
                 auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
-                w.writeln("\"\"\"Unimplemented EXPLICIT_ERROR\"\"\"");
+                w.writeln("throw std::runtime_error(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::APPEND: {
@@ -908,7 +928,7 @@ namespace bm2py {
                 auto new_element_ref = code.right_ref().value();
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
-                w.writeln("\"\"\"Unimplemented APPEND\"\"\"");
+                w.writeln("", vector_eval.result, ".push_back(", new_element_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::INC: {
@@ -928,15 +948,15 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::RET_SUCCESS: {
-                w.writeln("return true");
+                w.writeln("return True");
                 break;
             }
             case rebgn::AbstractOp::RET_PROPERTY_SETTER_OK: {
-                w.writeln("return true");
+                w.writeln("return True");
                 break;
             }
             case rebgn::AbstractOp::RET_PROPERTY_SETTER_FAIL: {
-                w.writeln("return false");
+                w.writeln("return False");
                 break;
             }
             case rebgn::AbstractOp::INIT_RECURSIVE_STRUCT: {
@@ -997,7 +1017,7 @@ namespace bm2py {
         }
     }
     std::string escape_py_keyword(const std::string& str) {
-        if (str == "False" || str == "None" || str == "True" || str == "and" || str == "as" || str == "assert" || str == "async" || str == "await" || str == "break" || str == "class" || str == "continue" || str == "def" || str == "del" || str == "elif" || str == "else" || str == "except" || str == "finally" || str == "for" || str == "from" || str == "global" || str == "if" || str == "import" || str == "in" || str == "is" || str == "lambda" || str == "nonlocal" || str == "not" || str == "or" || str == "pass" || str == "raise" || str == "return" || str == "try" || str == "while" || str == "with" || str == "yield") {
+        if (str == "False"||str == "None"||str == "True"||str == "and"||str == "as"||str == "assert"||str == "async"||str == "await"||str == "break"||str == "class"||str == "continue"||str == "def"||str == "del"||str == "elif"||str == "else"||str == "except"||str == "finally"||str == "for"||str == "from"||str == "global"||str == "if"||str == "import"||str == "in"||str == "is"||str == "lambda"||str == "nonlocal"||str == "not"||str == "or"||str == "pass"||str == "raise"||str == "return"||str == "try"||str == "while"||str == "with"||str == "yield") {
             return str + "_";
         }
         return str;
@@ -1020,7 +1040,13 @@ namespace bm2py {
                 }
             }
         }
-        ctx.cw.writeln("# Code generated by bm2py of https://github.com/on-keyday/rebrgen");
+        {
+            auto& w = ctx.cw;
+            w.writeln("# Code generated by bm2py of https://github.com/on-keyday/rebrgen");
+            w.writeln("from typing import IO");
+            w.writeln("from enum import Enum");
+            w.writeln("");
+        }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */
             TmpCodeWriter w;

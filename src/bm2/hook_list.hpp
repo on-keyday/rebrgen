@@ -23,10 +23,16 @@ namespace bm2 {
         inner_function_each_code = 6,
         inner_block_start = 7,
         inner_block_each_code = 8,
-        inner_function_op = 9,
-        inner_block_op = 10,
-        eval_op = 11,
-        type_op = 12,
+        param_start = 9,
+        param_each_code = 10,
+        call_param_start = 11,
+        call_param_each_code = 12,
+        inner_function_op = 13,
+        inner_block_op = 14,
+        eval_op = 15,
+        type_op = 16,
+        param_op = 17,
+        call_param_op = 18,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -48,6 +54,14 @@ namespace bm2 {
                 return "inner_block_start.txt";
             case HookFile::inner_block_each_code:
                 return "inner_block_each_code.txt";
+            case HookFile::param_start:
+                return "param_start.txt";
+            case HookFile::param_each_code:
+                return "param_each_code.txt";
+            case HookFile::call_param_start:
+                return "call_param_start.txt";
+            case HookFile::call_param_each_code:
+                return "call_param_each_code.txt";
             case HookFile::inner_function_op:
                 return "func_{}.txt";
             case HookFile::inner_block_op:
@@ -56,6 +70,10 @@ namespace bm2 {
                 return "eval_{}.txt";
             case HookFile::type_op:
                 return "type_{}.txt";
+            case HookFile::param_op:
+                return "param_{}.txt";
+            case HookFile::call_param_op:
+                return "call_param_{}.txt";
         }
         return "";
     }
@@ -91,6 +109,18 @@ namespace bm2 {
         if (str == "inner_block_each_code.txt") {
             return HookFile::inner_block_each_code;
         }
+        if (str == "param_start.txt") {
+            return HookFile::param_start;
+        }
+        if (str == "param_each_code.txt") {
+            return HookFile::param_each_code;
+        }
+        if (str == "call_param_start.txt") {
+            return HookFile::call_param_start;
+        }
+        if (str == "call_param_each_code.txt") {
+            return HookFile::call_param_each_code;
+        }
         if (str == "func_{}.txt") {
             return HookFile::inner_function_op;
         }
@@ -102,6 +132,12 @@ namespace bm2 {
         }
         if (str == "type_{}.txt") {
             return HookFile::type_op;
+        }
+        if (str == "param_{}.txt") {
+            return HookFile::param_op;
+        }
+        if (str == "call_param_{}.txt") {
+            return HookFile::call_param_op;
         }
         return std::nullopt;
     }

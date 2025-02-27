@@ -8,8 +8,6 @@
     "block_begin": "{",
     "block_end": "}",
     "block_end_type": "};",
-    "keyword_file": "src/bm2c/keyword.txt",
-    "import_base_file": "src/bm2c/import_base.txt",
     "prior_ident": false,
     "struct_keyword": "struct",
     "enum_keyword": "enum",

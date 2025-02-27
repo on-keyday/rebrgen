@@ -29,6 +29,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string array_type_placeholder = "std::array<{}, {}>";
     bool array_has_one_placeholder = false;
     std::string vector_type_placeholder = "std::vector<{}>";
+    std::string optional_type_placeholder = "std::optional<{}>";
+    std::string pointer_type_placeholder = "{}*";
     std::string bool_type = "bool";
     std::string true_literal = "true";
     std::string false_literal = "false";
@@ -57,7 +59,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string self_ident = "(*this)";
     std::string param_type_separator = " ";
     bool condition_has_parentheses = true;
-    bool explicit_self = false;
+    std::string self_param = "";
+    std::string encoder_param = "Encoder& w";
+    std::string decoder_param = "Decoder& w";
+    bool func_style_cast = false;
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -70,6 +75,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(array_type_placeholder, "array_type");
         FROM_JSON_OPT(array_has_one_placeholder, "array_has_one_placeholder");
         FROM_JSON_OPT(vector_type_placeholder, "vector_type");
+        FROM_JSON_OPT(optional_type_placeholder, "optional_type");
+        FROM_JSON_OPT(pointer_type_placeholder, "pointer_type");
         FROM_JSON_OPT(bool_type, "bool_type");
         FROM_JSON_OPT(true_literal, "true_literal");
         FROM_JSON_OPT(false_literal, "false_literal");
@@ -98,7 +105,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(condition_has_parentheses, "condition_has_parentheses");
         FROM_JSON_OPT(self_ident, "self_ident");
         FROM_JSON_OPT(param_type_separator, "param_type_separator");
-        FROM_JSON_OPT(explicit_self, "explicit_self");
+        FROM_JSON_OPT(self_param, "self_param");
+        FROM_JSON_OPT(encoder_param, "encoder_param");
+        FROM_JSON_OPT(decoder_param, "decoder_param");
+        FROM_JSON_OPT(func_style_cast, "func_style_cast");
         JSON_PARAM_END()
     }
 
@@ -149,6 +159,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&explicit_self, "explicit-self", "explicit self");
         */
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
+        ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
     }
 
     bool is_valid_placeholder(std::string_view placeholder) {
@@ -202,6 +213,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
 namespace rebgn {
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, auto&& file_name, auto&& per_line) {
         auto hook_file = std::filesystem::path(flags.hook_file_dir) / file_name;
+        if (flags.debug) {
+            futils::wrap::cerr_wrap() << "try hook: " << hook_file.generic_u8string() << '\n';
+        }
         futils::file::View view;
         if (auto res = view.open(hook_file.generic_u8string()); !res) {
             return false;
@@ -210,9 +224,7 @@ namespace rebgn {
             return false;
         }
         auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
-        if (flags.debug) {
-            futils::wrap::cerr_wrap() << "hook: " << hook_file.generic_u8string() << '\n';
-        }
+        futils::wrap::cerr_wrap() << "hit hook: " << hook_file.generic_u8string() << '\n';
         for (auto i = 0; i < lines.size(); i++) {
             per_line(i, lines[i]);
         }
@@ -251,7 +263,7 @@ namespace rebgn {
         return may_write_from_hook(w, flags, hook, [&](size_t i, futils::view::rvec& line) {
             if (as_code) {
                 if (!futils::strutil::contains(line, "\"") && !futils::strutil::contains(line, "\\")) {
-                    w.writeln(line);
+                    w.writeln("w.writeln(\"", line, "\");");
                 }
                 else {
                     std::string escaped_line;
@@ -261,7 +273,7 @@ namespace rebgn {
                         }
                         escaped_line.push_back(c);
                     }
-                    w.writeln("w.writeln(\"", escaped_line, "\")");
+                    w.writeln("w.writeln(\"", escaped_line, "\");");
                 }
             }
             else {
@@ -410,7 +422,7 @@ namespace rebgn {
             }
             else if (type == StorageType::PTR) {
                 type_hook([&] {
-                    type_to_string.writeln("return std::format(\"{}*\", base_type);");
+                    type_to_string.writeln("return std::format(\"", flags.pointer_type_placeholder, "\", base_type);");
                 });
             }
             else if (type == StorageType::ARRAY) {
@@ -431,7 +443,7 @@ namespace rebgn {
             }
             else if (type == StorageType::OPTIONAL) {
                 type_hook([&] {
-                    type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented OPTIONAL"), "\";");
+                    type_to_string.writeln("return std::format(\"", flags.optional_type_placeholder, "\", base_type);");
                 });
             }
             scope_type.execute();
@@ -458,10 +470,17 @@ namespace rebgn {
         add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_parameter = add_parameter.indent_scope();
         add_parameter.writeln("size_t params = 0;");
-        if (flags.explicit_self) {
-            add_parameter.writeln("auto belong = ctx.bm.code[range.start].belong().value();");
-            add_parameter.writeln("if(belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM) {");
-            auto if_block_belong = add_parameter.indent_scope();
+        add_parameter.writeln("auto belong = ctx.bm.code[range.start].belong().value();");
+        add_parameter.writeln("auto is_member = belong.value() != 0 && ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
+        if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_start, false)) {
+            if (flags.self_param.size()) {
+                add_parameter.writeln("if(is_member) {");
+                auto if_block_belong = add_parameter.indent_scope();
+                add_parameter.writeln("w.write(\"", flags.self_param, "\");");
+                add_parameter.writeln("params++;");
+                if_block_belong.execute();
+                add_parameter.writeln("}");
+            }
         }
         add_parameter.writeln("for(size_t i = range.start; i < range.end; i++) {");
         auto scope_nest_add_parameter = add_parameter.indent_scope();
@@ -650,6 +669,7 @@ namespace rebgn {
                     // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
                     eval.writeln("auto opstr = to_string(op);");
                     eval_hook([&] {
+                        eval_hook([&] {}, "_op");
                         eval.writeln("result = make_eval_result(std::format(\"({} {} {})\", left_eval.result, opstr, right_eval.result));");
                     });
                 }
@@ -659,6 +679,7 @@ namespace rebgn {
                     eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
                     eval.writeln("auto opstr = to_string(op);");
                     eval_hook([&] {
+                        eval_hook([&] {}, "_op");
                         eval.writeln("result = make_eval_result(std::format(\"({}{})\", opstr, target.result));");
                     });
                 }
@@ -749,7 +770,12 @@ namespace rebgn {
                     eval.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
                     // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
                     eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"({}){}\", type_str, evaluated.result));");
+                        if (flags.func_style_cast) {
+                            eval.writeln("result = make_eval_result(std::format(\"{}({})\", type_str, evaluated.result));");
+                        }
+                        else {
+                            eval.writeln("result = make_eval_result(std::format(\"({}){}\", type_str, evaluated.result));");
+                        }
                     });
                 }
                 else if (op == AbstractOp::FIELD_AVAILABLE) {
@@ -792,52 +818,88 @@ namespace rebgn {
                 if (op != AbstractOp::RETURN_TYPE) {
                     add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
                     auto scope = add_parameter.indent_scope();
-                    add_parameter.writeln("if(params > 0) {");
-                    add_parameter.indent_writeln("w.write(\", \");");
-                    add_parameter.writeln("}");
-                    scope.execute();
+                    auto param_hook = [&](auto&& inner, const char* stage = "") {
+                        if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_op, op, stage)) {
+                            inner();
+                        }
+                    };
+                    if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_each_code, false)) {
+                        add_parameter.writeln("if(params > 0) {");
+                        add_parameter.indent_writeln("w.write(\", \");");
+                        add_parameter.writeln("}");
+                    }
                     if (op == AbstractOp::PROPERTY_INPUT_PARAMETER ||
                         op == AbstractOp::DEFINE_PARAMETER ||
                         op == AbstractOp::STATE_VARIABLE_PARAMETER) {
                         if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
-                            add_parameter.indent_writeln("auto ref = code.ref().value();");
-                            add_parameter.indent_writeln("auto type = type_to_string(ctx,ctx.ref(ref).type().value());");
+                            add_parameter.writeln("auto ref = code.ref().value();");
+                            add_parameter.writeln("auto type = type_to_string(ctx,ctx.ref(ref).type().value());");
                         }
                         else {
-                            add_parameter.indent_writeln("auto ref = code.ident().value();");
-                            add_parameter.indent_writeln("auto type = type_to_string(ctx,code.type().value());");
+                            add_parameter.writeln("auto ref = code.ident().value();");
+                            add_parameter.writeln("auto type = type_to_string(ctx,code.type().value());");
                         }
-                        add_parameter.indent_writeln("auto ident = ctx.ident(ref);");
-                        if (flags.prior_ident) {
-                            add_parameter.indent_writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
-                        }
-                        else {
-                            add_parameter.indent_writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
-                        }
+                        add_parameter.writeln("auto ident = ctx.ident(ref);");
+                        param_hook([&] {
+                            if (flags.prior_ident) {
+                                add_parameter.writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
+                            }
+                            else {
+                                add_parameter.writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
+                            }
+                            add_parameter.writeln("params++;");
+                        });
+                    }
+                    else if (op == AbstractOp::ENCODER_PARAMETER) {
+                        param_hook([&] {
+                            add_parameter.writeln("w.write(\"", flags.encoder_param, "\");");
+                            add_parameter.writeln("params++;");
+                        });
+                    }
+                    else if (op == AbstractOp::DECODER_PARAMETER) {
+                        param_hook([&] {
+                            add_parameter.writeln("w.write(\"", flags.decoder_param, "\");");
+                            add_parameter.writeln("params++;");
+                        });
                     }
                     else {
-                        add_parameter.indent_writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                        param_hook([&] {
+                            add_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                            add_parameter.writeln("params++;");
+                        });
                     }
-                    add_parameter.indent_writeln("params++;");
-                    add_parameter.indent_writeln("break;");
+                    add_parameter.writeln("break;");
+                    scope.execute();
                     add_parameter.writeln("}");
 
                     add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
                     auto scope_call = add_call_parameter.indent_scope();
-                    add_call_parameter.writeln("if(params > 0) {");
-                    add_call_parameter.indent_writeln("w.write(\", \");");
-                    add_call_parameter.writeln("}");
-                    scope_call.execute();
+                    auto call_param_hook = [&](auto&& inner, const char* stage = "") {
+                        if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_op, op, stage)) {
+                            inner();
+                        }
+                    };
+                    if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_each_code, false)) {
+                        add_call_parameter.writeln("if(params > 0) {");
+                        add_call_parameter.indent_writeln("w.write(\", \");");
+                        add_call_parameter.writeln("}");
+                    }
                     if (op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
-                        add_call_parameter.indent_writeln("auto ref = code.ident().value();");
-                        add_call_parameter.indent_writeln("auto ident = ctx.ident(ref);");
-                        add_call_parameter.indent_writeln("w.write(ident);");
+                        add_call_parameter.writeln("auto ref = code.ident().value();");
+                        add_call_parameter.writeln("auto ident = ctx.ident(ref);");
+                        call_param_hook([&] {
+                            add_call_parameter.writeln("w.write(ident);");
+                            add_call_parameter.writeln("params++;");
+                        });
                     }
                     else {
-                        add_call_parameter.indent_writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                        call_param_hook([&] {
+                            add_call_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                            add_call_parameter.writeln("params++;");
+                        });
                     }
-                    add_call_parameter.indent_writeln("params++;");
-                    add_call_parameter.indent_writeln("break;");
+                    add_call_parameter.writeln("break;");
+                    scope_call.execute();
                     add_call_parameter.writeln("}");
                 }
             }
@@ -914,7 +976,6 @@ namespace rebgn {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         inner_function.writeln("defer.pop_back();");
                     }
-                    auto indent = inner_function.indent_scope();
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
                     }
@@ -924,16 +985,19 @@ namespace rebgn {
                         inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
                         inner_function.writeln("std::optional<std::string> type;");
                         inner_function.writeln("if(found_type_pos) {");
-                        inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].ref().value();");
-                        inner_function.writeln("type = type_to_string(ctx, ctx.bm.code[type_ref].type().value());");
+                        {
+                            auto inner_scope = inner_function.indent_scope();
+                            inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].type().value();");
+                            inner_function.writeln("type = type_to_string(ctx,type_ref);");
+                        }
                         inner_function.writeln("}");
                         func_hook([&] {
                             if (!flags.func_keyword.size()) {
                                 inner_function.writeln("if(type) {");
-                                inner_function.writeln("w.write(*type);");
+                                inner_function.indent_writeln("w.write(*type);");
                                 inner_function.writeln("}");
                                 inner_function.writeln("else {");
-                                inner_function.writeln("w.write(\"", flags.func_void_return_type, "\");");
+                                inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
                                 inner_function.writeln("}");
                             }
                             else {
@@ -944,10 +1008,10 @@ namespace rebgn {
                             inner_function.writeln("w.write(\") \");");
                             if (flags.func_keyword.size()) {
                                 inner_function.writeln("if(type) {");
-                                inner_function.writeln("w.write(\"", flags.func_type_separator, "\", *type);");
+                                inner_function.indent_writeln("w.write(\"", flags.func_type_separator, "\", *type);");
                                 inner_function.writeln("}");
                                 inner_function.writeln("else {");
-                                inner_function.writeln("w.write(\"", flags.func_void_return_type, "\");");
+                                inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
                                 inner_function.writeln("}");
                             }
                         });
@@ -980,7 +1044,6 @@ namespace rebgn {
                             inner_function.writeln("\");");
                         });
                     }
-                    indent.execute();
                     inner_function.writeln("defer.push_back(w.indent_scope_ex());");
                     inner_function.writeln("break;");
                 }
@@ -1027,13 +1090,13 @@ namespace rebgn {
                 }
                 else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
                     func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return true", flags.end_of_statement, "\");");
+                        inner_function.writeln("w.writeln(\"return ", flags.true_literal, flags.end_of_statement, "\");");
                     });
                     inner_function.writeln("break;");
                 }
                 else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
                     func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return false", flags.end_of_statement, "\");");
+                        inner_function.writeln("w.writeln(\"return ", flags.false_literal, flags.end_of_statement, "\");");
                     });
                     inner_function.writeln("break;");
                 }

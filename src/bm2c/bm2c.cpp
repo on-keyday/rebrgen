@@ -105,7 +105,7 @@ namespace bm2c {
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return "/*Unimplemented OPTIONAL*/";
+                return std::format("std::optional<{}>", base_type);
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
@@ -227,6 +227,7 @@ namespace bm2c {
         }
         case rebgn::AbstractOp::CAST: {
             auto type = code.type().value();
+            auto from_type = code.from_type().value();
             auto ref = code.ref().value();
             auto type_str = type_to_string(ctx, type);
             auto evaluated = eval(ctx.ref(ref), ctx);
@@ -323,16 +324,18 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT: {
-            result = make_eval_result(std::format("{}", code.int_value()->value()));
+            auto value = code.int_value()->value();
+            result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT64: {
-            result = make_eval_result(std::format("{}", *code.int_value64()));
+            auto value = *code.int_value64();
+            result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_CHAR: {
             auto char_code = code.int_value()->value();
-            result = make_eval_result("/*Unimplemented IMMEDIATE_CHAR*/");
+            result = make_eval_result(std::format("'{}'", char_code));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
@@ -387,6 +390,8 @@ namespace bm2c {
     }
     void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {
         size_t params = 0;
+        auto belong = ctx.bm.code[range.start].belong().value();
+        auto is_member = belong.value() != 0 && ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
         for(size_t i = range.start; i < range.end; i++) {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
@@ -405,7 +410,7 @@ namespace bm2c {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("/*Unimplemented ENCODER_PARAMETER*/ ");
+                    w.write("Encoder& w");
                     params++;
                     break;
                 }
@@ -413,7 +418,7 @@ namespace bm2c {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("/*Unimplemented DECODER_PARAMETER*/ ");
+                    w.write("Decoder& w");
                     params++;
                     break;
                 }
@@ -652,20 +657,24 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
-                    auto ident = ctx.ident(code.ident().value());
-                    auto range = ctx.range(code.ident().value());
-                    auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                    if(!found_type_pos) {
+                auto ident = ctx.ident(code.ident().value());
+                auto range = ctx.range(code.ident().value());
+                auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> type;
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    type = type_to_string(ctx,type_ref);
+                }
+                if(type) {
+                    w.write(*type);
+                }
+                else {
                     w.write("void");
-                    }
-                    else {
-                    auto type = type_to_string(ctx, ctx.bm.code[*found_type_pos].type().value());
-                    w.write(type);
-                    }
-                    w.write(" ", ident, "(");
-                    add_parameter(ctx, w, range);
-                    w.write(") ");
-                    w.writeln("{");
+                }
+                w.write(" ", ident, "(");
+                add_parameter(ctx, w, range);
+                w.write(") ");
+                w.writeln("{");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -788,14 +797,14 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
-                    w.writeln("for(;;) {");
+                w.writeln("for(;;) {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::LOOP_CONDITION: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("while (",evaluated.result,") {");
+                w.writeln("while (",evaluated.result,") {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -815,7 +824,7 @@ namespace bm2c {
             case rebgn::AbstractOp::IF: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("if (",evaluated.result,") {");
+                w.writeln("if (",evaluated.result,") {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -823,15 +832,15 @@ namespace bm2c {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 defer.pop_back();
-                    w.writeln("}");
-                    w.writeln("else if (",evaluated.result,") {");
+                w.writeln("}");
+                w.writeln("else if (",evaluated.result,") {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELSE: {
                 defer.pop_back();
-                    w.writeln("}");
-                    w.writeln("else {");
+                w.writeln("}");
+                w.writeln("else {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -890,7 +899,7 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::ASSERT: {
                 auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
-                w.writeln("/*Unimplemented ASSERT*/");
+                w.writeln("assert(", evaluated.result, ");");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -900,7 +909,7 @@ namespace bm2c {
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
                 auto param = code.param().value();
                 auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
-                w.writeln("/*Unimplemented EXPLICIT_ERROR*/");
+                w.writeln("throw std::runtime_error(", evaluated.result, ");");
                 break;
             }
             case rebgn::AbstractOp::APPEND: {
@@ -908,7 +917,7 @@ namespace bm2c {
                 auto new_element_ref = code.right_ref().value();
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
-                w.writeln("/*Unimplemented APPEND*/");
+                w.writeln("", vector_eval.result, ".push_back(", new_element_eval.result, ");");
                 break;
             }
             case rebgn::AbstractOp::INC: {
@@ -997,7 +1006,7 @@ namespace bm2c {
         }
     }
     std::string escape_c_keyword(const std::string& str) {
-        if (str == "auto" || str == "break" || str == "case" || str == "char" || str == "const" || str == "continue" || str == "default" || str == "do" || str == "double" || str == "else" || str == "enum" || str == "extern" || str == "float" || str == "for" || str == "goto" || str == "if" || str == "inline" || str == "int" || str == "long" || str == "register" || str == "restrict" || str == "return" || str == "short" || str == "signed" || str == "sizeof" || str == "static" || str == "struct" || str == "switch" || str == "typedef" || str == "union" || str == "unsigned" || str == "void" || str == "volatile" || str == "while" || str == "_Alignas" || str == "_Alignof" || str == "_Atomic" || str == "_Bool" || str == "_Complex" || str == "_Generic" || str == "_Imaginary" || str == "_Noreturn" || str == "_Static_assert" || str == "_Thread_local") {
+        if (str == "auto"||str == "break"||str == "case"||str == "char"||str == "const"||str == "continue"||str == "default"||str == "do"||str == "double"||str == "else"||str == "enum"||str == "extern"||str == "float"||str == "for"||str == "goto"||str == "if"||str == "inline"||str == "int"||str == "long"||str == "register"||str == "restrict"||str == "return"||str == "short"||str == "signed"||str == "sizeof"||str == "static"||str == "struct"||str == "switch"||str == "typedef"||str == "union"||str == "unsigned"||str == "void"||str == "volatile"||str == "while"||str == "_Alignas"||str == "_Alignof"||str == "_Atomic"||str == "_Bool"||str == "_Complex"||str == "_Generic"||str == "_Imaginary"||str == "_Noreturn"||str == "_Static_assert"||str == "_Thread_local") {
             return str + "_";
         }
         return str;
@@ -1020,10 +1029,13 @@ namespace bm2c {
                 }
             }
         }
-        ctx.cw.writeln("// Code generated by bm2c of https://github.com/on-keyday/rebrgen");
-        ctx.cw.writeln("#include <stdint.h>");
-        ctx.cw.writeln("#include <stddef.h>");
-        ctx.cw.writeln("");
+        {
+            auto& w = ctx.cw;
+            w.writeln("// Code generated by bm2c of https://github.com/on-keyday/rebrgen");
+            w.writeln("#include <stdint.h>");
+            w.writeln("#include <stddef.h>");
+            w.writeln("");
+        }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */
             TmpCodeWriter w;

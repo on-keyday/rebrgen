@@ -1054,9 +1054,7 @@ namespace rebgn {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         inner_function.writeln("defer.pop_back();");
                     }
-                    if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
-                    }
+
                     if (op == AbstractOp::DEFINE_FUNCTION) {
                         inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
                         inner_function.writeln("auto range = ctx.range(code.ident().value());");
@@ -1097,6 +1095,9 @@ namespace rebgn {
                     }
                     else {
                         func_hook([&] {
+                            if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                            }
                             inner_function.write("w.writeln(\"");
                             std::string condition = "\",evaluated.result,\"";
                             if (flags.condition_has_parentheses) {

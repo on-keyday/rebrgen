@@ -381,7 +381,7 @@ namespace bm2py {
         case rebgn::AbstractOp::ARRAY_SIZE: {
             auto vector_ref = code.ref().value();
             auto vector_eval = eval(ctx.ref(vector_ref), ctx);
-            result = make_eval_result(std::format("{}.size()", vector_eval.result));
+            result = make_eval_result(std::format("len({})", vector_eval.result));
             break;
         }
         case rebgn::AbstractOp::FIELD_AVAILABLE: {

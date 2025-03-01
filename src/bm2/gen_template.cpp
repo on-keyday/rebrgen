@@ -70,6 +70,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool func_style_cast = false;
     std::string empty_pointer = "nullptr";
     std::string empty_optional = "std::nullopt";
+    std::string size_method = "size";
+    bool surrounded_size_method = false;  // if true, <size_method>(<expr>) will be used
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -122,6 +124,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(func_style_cast, "func_style_cast");
         FROM_JSON_OPT(empty_pointer, "empty_pointer");
         FROM_JSON_OPT(empty_optional, "empty_optional");
+        FROM_JSON_OPT(size_method, "size_method");
+        FROM_JSON_OPT(surrounded_size_method, "surrounded_size_method");
         JSON_PARAM_END()
     }
 
@@ -895,7 +899,12 @@ namespace rebgn {
                     eval.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
                     // eval.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
                     eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}.size()\", vector_eval.result));");
+                        if (flags.surrounded_size_method) {
+                            eval.writeln("result = make_eval_result(std::format(\"", flags.size_method, "({})\", vector_eval.result));");
+                        }
+                        else {
+                            eval.writeln("result = make_eval_result(std::format(\"{}.", flags.size_method, "()\", vector_eval.result));");
+                        }
                     });
                 }
                 else if (op == AbstractOp::DEFINE_FIELD) {

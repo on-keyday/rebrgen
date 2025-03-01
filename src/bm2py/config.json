@@ -39,5 +39,7 @@
     "true_literal": "True",
     "false_literal": "False",
     "empty_pointer": "None",
-    "empty_optional": "None"
+    "empty_optional": "None",
+    "size_method": "len",
+    "surrounded_size_method": true
 }

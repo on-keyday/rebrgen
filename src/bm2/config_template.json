@@ -41,5 +41,7 @@
     "explicit_self": false,
     "func_style_cast": false,
     "empty_pointer": "nullptr",
-    "empty_optional": "std::nullopt"
+    "empty_optional": "std::nullopt",
+    "size_method": "size",
+    "surrounded_size_method": false
 }

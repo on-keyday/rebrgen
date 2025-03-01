@@ -92,6 +92,7 @@ namespace bm2c {
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
                 return std::format("std::vector<{}>", base_type);
             }
             case rebgn::StorageType::VARIANT: {
@@ -383,6 +384,11 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::PHI: {
+            auto ref=code.ref().value();
+            return eval(ctx.ref(ref), ctx);
+            break;
+        }
+        case rebgn::AbstractOp::BEGIN_COND_BLOCK: {
             auto ref=code.ref().value();
             return eval(ctx.ref(ref), ctx);
             break;
@@ -1040,10 +1046,6 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::SEEK_DECODER: {
                 w.writeln("/*Unimplemented SEEK_DECODER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::DEFINE_COND_BLOCK: {
-                w.writeln("/*Unimplemented DEFINE_COND_BLOCK*/ ");
                 break;
             }
             case rebgn::AbstractOp::END_COND_BLOCK: {

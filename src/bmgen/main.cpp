@@ -169,6 +169,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::END_ENCODE_SUB_RANGE:
                 case rebgn::AbstractOp::END_DECODE_SUB_RANGE:
                 case rebgn::AbstractOp::END_FALLBACK:
+                case rebgn::AbstractOp::END_COND_BLOCK:
                     nest.resize(nest.size() - 2);
                     break;
                 default:
@@ -358,6 +359,7 @@ namespace rebgn {
                 case rebgn::AbstractOp::BEGIN_ENCODE_SUB_RANGE:
                 case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE:
                 case rebgn::AbstractOp::DEFINE_FALLBACK:
+                case rebgn::AbstractOp::BEGIN_COND_BLOCK:
                     nest += "  ";
                     break;
                 default:

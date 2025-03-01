@@ -10033,7 +10033,7 @@ namespace rebgn {
         }
         return std::get<115>((*this).union_variant_16).ident;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
         if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
             return std::nullopt;
         }
@@ -10607,7 +10607,7 @@ namespace rebgn {
             std::get<115>((*this).union_variant_16).ident = v;
             return true;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 union_variant_16 = union_struct_132();
             }
@@ -11182,7 +11182,7 @@ namespace rebgn {
             std::get<115>((*this).union_variant_16).ident = std::move(v);
             return true;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 union_variant_16 = union_struct_132();
             }
@@ -15936,7 +15936,7 @@ namespace rebgn {
         if (AbstractOp::DEFINE_FALLBACK==(*this).op) {
         return std::nullopt;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
         if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
             return std::nullopt;
         }
@@ -16478,7 +16478,7 @@ namespace rebgn {
         if (AbstractOp::DEFINE_FALLBACK==(*this).op) {
             return false;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 union_variant_16 = union_struct_132();
             }
@@ -17021,7 +17021,7 @@ namespace rebgn {
         if (AbstractOp::DEFINE_FALLBACK==(*this).op) {
             return false;
         }
-        if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 union_variant_16 = union_struct_132();
             }
@@ -22875,7 +22875,7 @@ namespace rebgn {
                 return err;
             }
         }
-        else if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        else if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 return ::futils::error::Error<>("encode: Code: union_variant_16 variant alternative union_struct_132 is not set",::futils::error::Category::lib);
             }
@@ -24284,7 +24284,7 @@ namespace rebgn {
                 return err;
             }
         }
-        else if (AbstractOp::DEFINE_COND_BLOCK==(*this).op) {
+        else if (AbstractOp::BEGIN_COND_BLOCK==(*this).op) {
             if(!std::holds_alternative<union_struct_132>(union_variant_16)) {
                 union_variant_16 = union_struct_132();
             }

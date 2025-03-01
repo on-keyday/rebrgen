@@ -421,13 +421,13 @@ namespace rebgn {
                                 return err;
                             }
                             err = counter_loop(m, *imm, [&](Varint i) {
+                                BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, nullptr);
                                 BM_INDEX(m.op, index_str, *str_ref, i);
                                 BM_INDEX(m.op, index_peek, *temporary_read_holder, i);
                                 BM_BINARY(m.op, cmp, BinaryOp::not_equal, index_str, index_peek);
+                                BM_END_COND_BLOCK(m.op, m.code, cond_block, cmp);
                                 m.init_phi_stack(cmp.value());
-                                m.op(AbstractOp::IF, [&](Code& c) {
-                                    c.ref(cmp);
-                                });
+                                BM_REF(m.op, AbstractOp::IF, cond_block);
                                 err = do_assign(m, nullptr, nullptr, isOK, *immFalse);
                                 m.op(AbstractOp::BREAK);
                                 m.op(AbstractOp::END_IF);
@@ -436,9 +436,7 @@ namespace rebgn {
                             if (err) {
                                 return err;
                             }
-                            m.op(AbstractOp::IF, [&](Code& c) {
-                                c.ref(isOK);
-                            });
+                            BM_REF(m.op, AbstractOp::IF, isOK);
                             m.op(AbstractOp::BREAK);
                             m.op(AbstractOp::END_IF);
                             err = undelying_decoder();

@@ -165,7 +165,7 @@
 
 #define BM_BEGIN_COND_BLOCK(op, base_codes, cond_block, loc) \
     BM_NEW_ID(cond_block, error, loc);                       \
-    op(AbstractOp::DEFINE_COND_BLOCK, [&](Code& c) {         \
+    op(AbstractOp::BEGIN_COND_BLOCK, [&](Code& c) {          \
         c.ident(cond_block);                                 \
     });                                                      \
     auto tmp_index__##cond_block##__ = base_codes.size() - 1;

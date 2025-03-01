@@ -479,7 +479,7 @@ namespace rebgn {
         PROPERTY_FUNCTION = 133,
         DEFINE_FALLBACK = 134,
         END_FALLBACK = 135,
-        DEFINE_COND_BLOCK = 136,
+        BEGIN_COND_BLOCK = 136,
         END_COND_BLOCK = 137,
     };
     constexpr const char* to_string(AbstractOp e) {
@@ -620,7 +620,7 @@ namespace rebgn {
             case AbstractOp::PROPERTY_FUNCTION: return "PROPERTY_FUNCTION";
             case AbstractOp::DEFINE_FALLBACK: return "DEFINE_FALLBACK";
             case AbstractOp::END_FALLBACK: return "END_FALLBACK";
-            case AbstractOp::DEFINE_COND_BLOCK: return "DEFINE_COND_BLOCK";
+            case AbstractOp::BEGIN_COND_BLOCK: return "BEGIN_COND_BLOCK";
             case AbstractOp::END_COND_BLOCK: return "END_COND_BLOCK";
         }
         return "";
@@ -1038,8 +1038,8 @@ namespace rebgn {
         if (str == "END_FALLBACK") {
             return AbstractOp::END_FALLBACK;
         }
-        if (str == "DEFINE_COND_BLOCK") {
-            return AbstractOp::DEFINE_COND_BLOCK;
+        if (str == "BEGIN_COND_BLOCK") {
+            return AbstractOp::BEGIN_COND_BLOCK;
         }
         if (str == "END_COND_BLOCK") {
             return AbstractOp::END_COND_BLOCK;

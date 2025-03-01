@@ -617,6 +617,12 @@ namespace bm2rust {
                 res = eval(ctx.bm.code[idx], ctx);
                 break;
             }
+            case rebgn::AbstractOp::BEGIN_COND_BLOCK: {
+                auto ref = code.ref().value().value();
+                auto idx = ctx.ident_index_table[ref];
+                res = eval(ctx.bm.code[idx], ctx);
+                break;
+            }
             case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
                 auto value = code.ident().value().value();
                 res.push_back(std::format("param{}", value));

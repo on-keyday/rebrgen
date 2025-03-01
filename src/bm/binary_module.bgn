@@ -268,7 +268,7 @@ enum AbstractOp:
     DEFINE_FALLBACK
     END_FALLBACK
 
-    DEFINE_COND_BLOCK
+    BEGIN_COND_BLOCK # marker for conditional block
     END_COND_BLOCK
 
 
@@ -841,7 +841,7 @@ format Code:
             ident :Varint
         AbstractOp.DEFINE_FALLBACK:
             ident :Varint
-        AbstractOp.DEFINE_COND_BLOCK:
+        AbstractOp.BEGIN_COND_BLOCK:
             ident :Varint
             ref :Varint # ref to condition expr
 

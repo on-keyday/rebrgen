@@ -170,6 +170,13 @@ namespace rebgn {
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
                 break;  // TODO(on-keyday): check constant origin
             }
+            case rebgn::AbstractOp::BEGIN_COND_BLOCK: {
+                auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
+                if (err) {
+                    return err;
+                }
+                break;
+            }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
                 auto err = retrieve_var(m, op, m.code[m.ident_index_table[code.ref().value().value()]], variables);
                 if (err) {

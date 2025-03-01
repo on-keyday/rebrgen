@@ -236,14 +236,9 @@ namespace rebgn {
         }
         auto yield_value_postproc = make_yield_value_post_proc(m, yield_value, yield_storage);
         auto yield_value_finalproc = make_yield_value_final_proc(m, yield_value);
-        auto cond = get_expr(m, node->cond->expr);
-        if (!cond) {
-            return cond.error();
-        }
-        m.init_phi_stack(cond->value());
-        m.op(AbstractOp::IF, [&](Code& c) {
-            c.ref(*cond);
-        });
+        BM_COND_IN_BLOCK(m.op, m.code, cond_block, node->cond->expr);
+        m.init_phi_stack(cond_block.value());
+        BM_REF(m.op, AbstractOp::IF, cond_block);
         add_switch_union(m, node->then->struct_type);
         std::shared_ptr<ast::Node> last = nullptr;
         auto err = foreach_node(m, node->then->elements, [&](auto& n) {
@@ -478,6 +473,7 @@ namespace rebgn {
             else {
                 auto range = ast::as<ast::Range>(c->cond->expr);
                 Varint origCond;
+                BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, &c->loc);
                 if (range) {
                     if (!base_expr) {
                         return error("Invalid match branch; range condition is not allowed without base condition");
@@ -502,18 +498,15 @@ namespace rebgn {
                         origCond = cond;
                     }
                 }
+                BM_END_COND_BLOCK(m.op, m.code, cond_block, origCond);
                 if (!last) {
-                    m.init_phi_stack(origCond.value());
-                    m.op(AbstractOp::IF, [&](Code& c) {
-                        c.ref(origCond);
-                    });
+                    m.init_phi_stack(cond_block.value());
+                    BM_REF(m.op, AbstractOp::IF, cond_block);
                     last = c;
                 }
                 else {
-                    m.next_phi_candidate(origCond.value());
-                    m.op(AbstractOp::ELIF, [&](Code& c) {
-                        c.ref(origCond);
-                    });
+                    m.next_phi_candidate(cond_block.value());
+                    BM_REF(m.op, AbstractOp::ELIF, cond_block);
                     last = c;
                 }
             }

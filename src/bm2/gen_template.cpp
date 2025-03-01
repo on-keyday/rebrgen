@@ -31,6 +31,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string vector_type_placeholder = "std::vector<{}>";
     std::string optional_type_placeholder = "std::optional<{}>";
     std::string pointer_type_placeholder = "{}*";
+    std::string recursive_struct_type_placeholder = "{}*";
+    std::string byte_vector_type = "";
     std::string bool_type = "bool";
     std::string true_literal = "true";
     std::string false_literal = "false";
@@ -80,6 +82,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(vector_type_placeholder, "vector_type");
         FROM_JSON_OPT(optional_type_placeholder, "optional_type");
         FROM_JSON_OPT(pointer_type_placeholder, "pointer_type");
+        FROM_JSON_OPT(recursive_struct_type_placeholder, "recursive_struct_type");
         FROM_JSON_OPT(bool_type, "bool_type");
         FROM_JSON_OPT(true_literal, "true_literal");
         FROM_JSON_OPT(false_literal, "false_literal");
@@ -397,7 +400,7 @@ namespace rebgn {
                 type_to_string.writeln("auto ref = storage.ref().value().value();");
                 type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
                 type_hook([&] {
-                    type_to_string.writeln("return std::format(\"{}*\", ident);");
+                    type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
                 });
             }
             else if (type == StorageType::BOOL) {
@@ -445,7 +448,15 @@ namespace rebgn {
                 });
             }
             else if (type == StorageType::VECTOR) {
+                type_to_string.writeln("bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;");
                 type_hook([&] {
+                    if (flags.byte_vector_type.size()) {
+                        type_to_string.writeln("if (is_byte_vector) {");
+                        auto if_block_byte_vector = type_to_string.indent_scope();
+                        type_to_string.writeln("return \"", flags.byte_vector_type, "\";");
+                        if_block_byte_vector.execute();
+                        type_to_string.writeln("}");
+                    }
                     type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
                 });
             }
@@ -759,7 +770,8 @@ namespace rebgn {
                     });
                 }
                 else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
-                         op == AbstractOp::DEFINE_VARIABLE_REF) {
+                         op == AbstractOp::DEFINE_VARIABLE_REF ||
+                         op == AbstractOp::BEGIN_COND_BLOCK) {
                     eval.writeln("auto ref=code.ref().value();");
                     eval_hook([&] {
                         eval.writeln("return eval(ctx.ref(ref), ctx);");

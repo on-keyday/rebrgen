@@ -84,7 +84,7 @@ namespace rebgn {
             case AbstractOp::CALL:
             case AbstractOp::INDEX:
             case AbstractOp::ACCESS:
-
+            case AbstractOp::BEGIN_COND_BLOCK:
             case AbstractOp::DEFINE_PARAMETER:
             case AbstractOp::PROPERTY_INPUT_PARAMETER:
                 return true;
@@ -141,6 +141,7 @@ namespace rebgn {
             case AbstractOp::DEFINE_FALLBACK:
             case AbstractOp::END_FALLBACK:
             case AbstractOp::PROPERTY_FUNCTION:
+            case AbstractOp::END_COND_BLOCK:
                 return true;
             default:
                 return false;

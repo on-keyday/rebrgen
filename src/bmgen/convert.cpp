@@ -907,9 +907,7 @@ namespace rebgn {
                 else {
                     m.init_phi_stack(cond_block.value());
                 }
-                m.op(prev ? AbstractOp::ELIF : AbstractOp::IF, [&](Code& c) {
-                    c.ref(cond_block);
-                });
+                BM_REF(m.op, prev ? AbstractOp::ELIF : AbstractOp::IF, cond_block);
                 if (field) {
                     auto err = do_assign(m, nullptr, nullptr, *tmp_var, *imm_true);
                     if (err) {
@@ -1461,9 +1459,7 @@ namespace rebgn {
         }
         BM_COND_IN_BLOCK(m.op, m.code, cond_block, node->cond);
         m.init_phi_stack(cond_block.value());
-        m.op(AbstractOp::IF, [&](Code& c) {
-            c.ref(cond_block);
-        });
+        BM_REF(m.op, AbstractOp::IF, cond_block);
         BM_GET_EXPR(then, m, node->then);
         auto then_type = may_get_type(m, node->then->expr_type);
         if (!then_type) {

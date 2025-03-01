@@ -14,9 +14,7 @@ namespace rebgn {
                 m.ident(*is_little);
                 m.ref(endian.dynamic_ref);  // dynamic endian or null for native
             });
-            op(AbstractOp::IF, [&](Code& m) {
-                m.ref(*is_little);
-            });
+            BM_REF(op, AbstractOp::IF, *is_little);
         }
         if (endian.endian() == Endian::little || is_native_or_dynamic) {
             auto err = on_little_endian();

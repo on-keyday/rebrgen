@@ -9,6 +9,7 @@
     "vector_type": "list[{}]",
     "optional_type": "Optional[{}]",
     "pointer_type": "Optional[{}]",
+    "recursive_struct_type": "{}",
     "end_of_statement": "",
     "block_begin": ":",
     "block_end": "",

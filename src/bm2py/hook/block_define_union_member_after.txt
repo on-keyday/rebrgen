@@ -1,0 +1,3 @@
+if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
+    w.writeln("pass");
+}

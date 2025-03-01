@@ -7,13 +7,20 @@ namespace bm2py {
     struct Context : bm2::Context {
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","self", std::move(escape_ident)} {}
     };
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
+    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
+    void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
     struct EvalResult {
         std::string result;
     };
     EvalResult make_eval_result(std::string result) {
         return EvalResult{std::move(result)};
     }
-    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
+    EvalResult field_accessor(const rebgn::Code& code, Context& ctx);
+    EvalResult eval(const rebgn::Code& code, Context& ctx);
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {
         if (s.storages.size() <= index) {
             return "\"\"\"type index overflow\"\"\"";
         }
@@ -200,7 +207,8 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::DEFINE_PARAMETER: {
-            result = make_eval_result("\"\"\"Unimplemented DEFINE_PARAMETER\"\"\"");
+            auto ident = ctx.ident(code.ident().value());
+            result = make_eval_result(ident);
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
@@ -253,11 +261,11 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {
-            result = make_eval_result("\"\"\"Unimplemented EMPTY_PTR\"\"\"");
+            result = make_eval_result("None");
             break;
         }
         case rebgn::AbstractOp::EMPTY_OPTIONAL: {
-            result = make_eval_result("\"\"\"Unimplemented EMPTY_OPTIONAL\"\"\"");
+            result = make_eval_result("None");
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE: {
@@ -347,7 +355,7 @@ namespace bm2py {
         }
         case rebgn::AbstractOp::IMMEDIATE_CHAR: {
             auto char_code = code.int_value()->value();
-            result = make_eval_result(std::format("'{}'", char_code));
+            result = make_eval_result(std::format("{}", char_code));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
@@ -360,7 +368,9 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::NEW_OBJECT: {
-            result = make_eval_result("\"\"\"Unimplemented NEW_OBJECT\"\"\"");
+            auto type_ref = code.type().value();
+            auto type = type_to_string(ctx, type_ref);
+            result = make_eval_result(std::format("{}()", type));
             break;
         }
         case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
@@ -558,11 +568,9 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
-                w.writeln("\"\"\"Unimplemented DEFINE_PROPERTY\"\"\" ");
                 break;
             }
             case rebgn::AbstractOp::END_PROPERTY: {
-                w.writeln("\"\"\"Unimplemented END_PROPERTY\"\"\" ");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
@@ -572,7 +580,9 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
-                w.writeln("\"\"\"Unimplemented DECLARE_FUNCTION\"\"\" ");
+                auto ref = code.ref().value();
+                auto range = ctx.range(ref);
+            inner_function(ctx,w,range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -618,6 +628,9 @@ namespace bm2py {
                 auto ident = ctx.ident(code.ident().value());
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
+            if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
+                w.writeln("pass");
+            }
                 break;
             }
             case rebgn::AbstractOp::END_UNION_MEMBER: {
@@ -888,7 +901,7 @@ namespace bm2py {
                 w.writeln("if ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 auto next = find_next_else_or_end_if(ctx,i,true);
-                if(next == i +1) {
+                if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
                     w.writeln("pass");
                 }
                 break;
@@ -911,6 +924,10 @@ namespace bm2py {
                 w.writeln("");
                 w.writeln("else :");
                 defer.push_back(w.indent_scope_ex());
+                auto next = find_next_else_or_end_if(ctx,i,true);
+                if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
+                    w.writeln("pass");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_IF: {
@@ -953,6 +970,15 @@ namespace bm2py {
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
                 w.writeln("\"\"\"Unimplemented DEFINE_CONSTANT\"\"\" ");
+                break;
+            }
+            case rebgn::AbstractOp::DECLARE_VARIABLE: {
+                auto ident = ctx.ident(code.ref().value());
+                auto init_ref = ctx.ref(code.ref().value()).ref().value();
+                auto type_ref = ctx.ref(code.ref().value()).type().value();
+                auto type = type_to_string(ctx,type_ref);
+                auto init = eval(ctx.ref(init_ref), ctx);
+                w.writeln(std::format("{} :{} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {
@@ -1067,10 +1093,6 @@ namespace bm2py {
                 w.writeln("\"\"\"Unimplemented SEEK_DECODER\"\"\" ");
                 break;
             }
-            case rebgn::AbstractOp::END_COND_BLOCK: {
-                w.writeln("\"\"\"Unimplemented END_COND_BLOCK\"\"\" ");
-                break;
-            }
             default: {
                 if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {
                     w.writeln(std::format("{}{}{}","\"\"\"",to_string(code.op),"\"\"\""));
@@ -1127,6 +1149,9 @@ namespace bm2py {
                 continue;
             }
             TmpCodeWriter w;
+            if(code.func_type().value() != rebgn::FunctionType::FREE) {
+                continue;
+            }
             inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});
             ctx.cw.write_unformatted(w.out());
         }

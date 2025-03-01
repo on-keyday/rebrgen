@@ -1,4 +1,4 @@
 auto next = find_next_else_or_end_if(ctx,i,true);
-if(next == i +1) {
+if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
     w.writeln("pass");
 }

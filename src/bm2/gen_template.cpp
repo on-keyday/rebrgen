@@ -68,6 +68,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string encoder_param = "Encoder& w";
     std::string decoder_param = "Decoder& w";
     bool func_style_cast = false;
+    std::string empty_pointer = "nullptr";
+    std::string empty_optional = "std::nullopt";
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -118,6 +120,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(encoder_param, "encoder_param");
         FROM_JSON_OPT(decoder_param, "decoder_param");
         FROM_JSON_OPT(func_style_cast, "func_style_cast");
+        FROM_JSON_OPT(empty_pointer, "empty_pointer");
+        FROM_JSON_OPT(empty_optional, "empty_optional");
         JSON_PARAM_END()
     }
 
@@ -220,22 +224,80 @@ struct Flags : futils::cmdline::templ::HelpOption {
     }
 };
 namespace rebgn {
-    bool may_write_from_hook(Flags& flags, auto&& file_name, auto&& per_line) {
+
+    bool include_stack(Flags& flags, size_t& line, std::vector<std::filesystem::path>& stack, auto&& file_name, auto&& per_line) {
         auto hook_file = std::filesystem::path(flags.hook_file_dir) / file_name;
+        auto name = hook_file.generic_u8string();
         if (flags.debug) {
-            futils::wrap::cerr_wrap() << "try hook: " << hook_file.generic_u8string() << '\n';
+            futils::wrap::cerr_wrap() << "try hook via include: " << name << '\n';
         }
+        for (auto& parents : stack) {
+            std::error_code ec;
+            if (std::filesystem::equivalent(parents, hook_file, ec)) {
+                futils::wrap::cerr_wrap() << "circular include: " << name << '\n';
+                return false;
+            }
+        }
+        stack.push_back(hook_file);
         futils::file::View view;
-        if (auto res = view.open(hook_file.generic_u8string()); !res) {
+        if (auto res = view.open(name); !res) {
             return false;
         }
         if (!view.data()) {
             return false;
         }
         auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
-        futils::wrap::cerr_wrap() << "hit hook: " << hook_file.generic_u8string() << '\n';
+        futils::wrap::cerr_wrap() << "hit hook via include: " << name << '\n';
         for (auto i = 0; i < lines.size(); i++) {
-            per_line(i, lines[i]);
+            if (futils::strutil::starts_with(lines[i], "!@include ")) {
+                auto split = futils::strutil::split(lines[i], " ", 2);
+                if (split.size() == 2) {
+                    include_stack(flags, line, stack, split[1], per_line);
+                }
+                else {
+                    futils::wrap::cerr_wrap() << "invalid include: " << lines[i] << '\n';
+                }
+                continue;
+            }
+            per_line(line, lines[i]);
+            line++;
+        }
+        stack.pop_back();
+        return true;
+    }
+
+    bool may_write_from_hook(Flags& flags, auto&& file_name, auto&& per_line) {
+        auto hook_file = std::filesystem::path(flags.hook_file_dir) / file_name;
+        auto name = hook_file.generic_u8string() + u8".txt";
+        if (flags.debug) {
+            futils::wrap::cerr_wrap() << "try hook: " << name << '\n';
+        }
+        futils::file::View view;
+        if (auto res = view.open(name); !res) {
+            return false;
+        }
+        if (!view.data()) {
+            return false;
+        }
+        auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
+        futils::wrap::cerr_wrap() << "hit hook: " << name << '\n';
+        size_t line = 0;
+        for (auto i = 0; i < lines.size(); i++) {
+            if (futils::strutil::starts_with(lines[i], "!@include ")) {
+                auto split = futils::strutil::split(lines[i], " ", 2);
+                if (split.size() == 2) {
+                    std::vector<std::filesystem::path> stack;
+                    stack.reserve(10);
+                    stack.push_back(hook_file);
+                    include_stack(flags, line, stack, split[1], per_line);
+                }
+                else {
+                    futils::wrap::cerr_wrap() << "invalid include: " << lines[i] << '\n';
+                }
+                continue;
+            }
+            per_line(line, lines[i]);
+            line++;
         }
         return true;
     }
@@ -298,7 +360,8 @@ namespace rebgn {
 
         bm2::TmpCodeWriter type_to_string;
 
-        type_to_string.writeln("std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {");
+        w.writeln("std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);");
+        type_to_string.writeln("std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {");
         auto scope_type_to_string = type_to_string.indent_scope();
         type_to_string.writeln("if (s.storages.size() <= index) {");
         auto if_block_type = type_to_string.indent_scope();
@@ -479,6 +542,7 @@ namespace rebgn {
         scope_type_to_string.execute();
         type_to_string.writeln("}");
 
+        w.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);");
         type_to_string.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref) {");
         auto scope_type_to_string_ref = type_to_string.indent_scope();
         type_to_string.writeln("auto& storage = ctx.storage_table[ref.ref.value()];");
@@ -487,6 +551,7 @@ namespace rebgn {
         type_to_string.writeln("}");
 
         bm2::TmpCodeWriter add_parameter;
+        w.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_parameter = add_parameter.indent_scope();
         add_parameter.writeln("size_t params = 0;");
@@ -509,6 +574,7 @@ namespace rebgn {
         auto scope_switch_add_parameter = add_parameter.indent_scope();
 
         bm2::TmpCodeWriter add_call_parameter;
+        w.write("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         add_call_parameter.writeln("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_call_parameter = add_call_parameter.indent_scope();
         add_call_parameter.writeln("size_t params = 0;");
@@ -519,6 +585,7 @@ namespace rebgn {
         auto scope_switch_add_call_parameter = add_call_parameter.indent_scope();
 
         bm2::TmpCodeWriter inner_block;
+        w.writeln("void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         inner_block.writeln("void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_block = inner_block.indent_scope();
         inner_block.writeln("std::vector<futils::helper::DynDefer> defer;");
@@ -530,6 +597,7 @@ namespace rebgn {
         inner_block.writeln("switch(code.op) {");
 
         bm2::TmpCodeWriter inner_function;
+        w.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         inner_function.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_function = inner_function.indent_scope();
         inner_function.writeln("std::vector<futils::helper::DynDefer> defer;");
@@ -540,17 +608,12 @@ namespace rebgn {
         may_write_from_hook(inner_function, flags, bm2::HookFile::inner_function_each_code, false);
         inner_function.writeln("switch(code.op) {");
 
-        bm2::TmpCodeWriter field_accessor;
-        field_accessor.writeln("EvalResult field_accessor(const rebgn::Code& code, Context& ctx) {");
-        auto scope_field_accessor = field_accessor.indent_scope();
-        field_accessor.writeln("EvalResult result;");
-        field_accessor.writeln("switch(code.op) {");
-
         bm2::TmpCodeWriter eval_result;
         eval_result.writeln("struct EvalResult {");
         {
             auto scope = eval_result.indent_scope();
             eval_result.writeln("std::string result;");
+            may_write_from_hook(eval_result, flags, bm2::HookFile::eval_result, false);
         }
         eval_result.writeln("};");
 
@@ -560,8 +623,17 @@ namespace rebgn {
         scope_make_eval_result.execute();
         eval_result.writeln("}");
 
-        bm2::TmpCodeWriter eval;
+        w.write_unformatted(eval_result.out());
 
+        bm2::TmpCodeWriter field_accessor;
+        w.writeln("EvalResult field_accessor(const rebgn::Code& code, Context& ctx);");
+        field_accessor.writeln("EvalResult field_accessor(const rebgn::Code& code, Context& ctx) {");
+        auto scope_field_accessor = field_accessor.indent_scope();
+        field_accessor.writeln("EvalResult result;");
+        field_accessor.writeln("switch(code.op) {");
+
+        bm2::TmpCodeWriter eval;
+        w.writeln("EvalResult eval(const rebgn::Code& code, Context& ctx);");
         eval.writeln("EvalResult eval(const rebgn::Code& code, Context& ctx) {");
         auto scope_eval = eval.indent_scope();
         eval.writeln("EvalResult result;");
@@ -581,12 +653,22 @@ namespace rebgn {
                 };
                 block_hook([&] {}, bm2::HookFileSub::before);
                 if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
-                    op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY) {
+                    op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
+                    op == AbstractOp::DECLARE_FUNCTION) {
                     inner_block.indent_writeln("auto ref = code.ref().value();");
                     inner_block.indent_writeln("auto range = ctx.range(ref);");
-                    block_hook([&] {
-                        inner_block.indent_writeln("inner_block(ctx, w, range);");
-                    });
+                    if (op == AbstractOp::DECLARE_FUNCTION) {
+                        block_hook([&] {});  // do nothing
+                    }
+                    else {
+                        block_hook([&] {
+                            inner_block.indent_writeln("inner_block(ctx, w, range);");
+                        });
+                    }
+                }
+                else if (op == AbstractOp::DEFINE_PROPERTY ||
+                         op == AbstractOp::END_PROPERTY) {
+                    block_hook([&] {});  // do nothing
                 }
                 else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
                     inner_block.indent_writeln("auto ref = code.ref().value();");
@@ -766,7 +848,17 @@ namespace rebgn {
                 else if (op == AbstractOp::IMMEDIATE_CHAR) {
                     eval.writeln("auto char_code = code.int_value()->value();");
                     eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"'{}'\", char_code));");
+                        eval.writeln("result = make_eval_result(std::format(\"{}\", char_code));");
+                    });
+                }
+                else if (op == AbstractOp::EMPTY_PTR) {
+                    eval_hook([&] {
+                        eval.writeln("result = make_eval_result(\"", flags.empty_pointer, "\");");
+                    });
+                }
+                else if (op == AbstractOp::EMPTY_OPTIONAL) {
+                    eval_hook([&] {
+                        eval.writeln("result = make_eval_result(\"", flags.empty_optional, "\");");
                     });
                 }
                 else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
@@ -809,10 +901,19 @@ namespace rebgn {
                 else if (op == AbstractOp::DEFINE_FIELD) {
                     eval.writeln("result = field_accessor(code, ctx);");
                 }
-                else if (op == AbstractOp::DEFINE_VARIABLE || op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
+                else if (op == AbstractOp::DEFINE_VARIABLE ||
+                         op == AbstractOp::DEFINE_PARAMETER ||
+                         op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
                     eval.writeln("auto ident = ctx.ident(code.ident().value());");
                     eval_hook([&] {
                         eval.writeln("result = make_eval_result(ident);");
+                    });
+                }
+                else if (op == AbstractOp::NEW_OBJECT) {
+                    eval.writeln("auto type_ref = code.type().value();");
+                    eval.writeln("auto type = type_to_string(ctx, type_ref);");
+                    eval_hook([&] {
+                        eval.writeln("result = make_eval_result(std::format(\"{}()\", type));");
                     });
                 }
                 else if (op == AbstractOp::CAST) {
@@ -1298,7 +1399,6 @@ namespace rebgn {
         scope_eval.execute();
         eval.writeln("}");  // close function
 
-        w.write_unformatted(eval_result.out());
         w.write_unformatted(type_to_string.out());
         w.write_unformatted(field_accessor.out());
         w.write_unformatted(eval.out());
@@ -1531,10 +1631,13 @@ namespace rebgn {
         }
 
         w.writeln("for (size_t j = 0; j < bm.programs.ranges.size(); j++) {");
-        w.indent_writeln("/* exclude DEFINE_PROGRAM and END_PROGRAM */");
-        w.indent_writeln("TmpCodeWriter w;");
-        w.indent_writeln("inner_block(ctx, w, rebgn::Range{.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});");
-        w.indent_writeln("ctx.cw.write_unformatted(w.out());");
+        auto scope1 = w.indent_scope();
+        w.writeln("/* exclude DEFINE_PROGRAM and END_PROGRAM */");
+        w.writeln("TmpCodeWriter w;");
+        may_write_from_hook(w, flags, bm2::HookFile::each_inner_block, false);
+        w.writeln("inner_block(ctx, w, rebgn::Range{.start = bm.programs.ranges[j].start.value() + 1, .end = bm.programs.ranges[j].end.value() - 1});");
+        w.writeln("ctx.cw.write_unformatted(w.out());");
+        scope1.execute();
         w.writeln("}");
 
         w.writeln("for (auto& def : ctx.on_functions) {");
@@ -1549,6 +1652,7 @@ namespace rebgn {
         w.indent_writeln("continue;");
         w.writeln("}");
         w.writeln("TmpCodeWriter w;");
+        may_write_from_hook(w, flags, bm2::HookFile::each_inner_function, false);
         w.writeln("inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});");
         w.writeln("ctx.cw.write_unformatted(w.out());");
         _scope.execute();

@@ -40,6 +40,7 @@ namespace rebgn {
             case AbstractOp::DEFINE_VARIABLE:
             case AbstractOp::DEFINE_CONSTANT:
             case AbstractOp::ASSIGN:
+            case AbstractOp::DECLARE_VARIABLE:
                 return true;
             default:
                 return false;

@@ -19,64 +19,73 @@ namespace bm2 {
         file_bottom = 2,
         bm_context = 3,
         flags = 4,
-        inner_function_start = 5,
-        inner_function_each_code = 6,
-        inner_block_start = 7,
-        inner_block_each_code = 8,
-        param_start = 9,
-        param_each_code = 10,
-        call_param_start = 11,
-        call_param_each_code = 12,
-        inner_function_op = 13,
-        inner_block_op = 14,
-        eval_op = 15,
-        type_op = 16,
-        param_op = 17,
-        call_param_op = 18,
-        field_accessor_op = 19,
+        eval_result = 5,
+        each_inner_block = 6,
+        each_inner_function = 7,
+        inner_function_start = 8,
+        inner_function_each_code = 9,
+        inner_block_start = 10,
+        inner_block_each_code = 11,
+        param_start = 12,
+        param_each_code = 13,
+        call_param_start = 14,
+        call_param_each_code = 15,
+        inner_function_op = 16,
+        inner_block_op = 17,
+        eval_op = 18,
+        type_op = 19,
+        param_op = 20,
+        call_param_op = 21,
+        field_accessor_op = 22,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
             case HookFile::keyword:
-                return "keywords.txt";
+                return "keywords";
             case HookFile::file_top:
-                return "file_top.txt";
+                return "file_top";
             case HookFile::file_bottom:
-                return "file_bottom.txt";
+                return "file_bottom";
             case HookFile::bm_context:
-                return "bm_context.txt";
+                return "bm_context";
             case HookFile::flags:
-                return "flags.txt";
+                return "flags";
+            case HookFile::eval_result:
+                return "eval_result";
+            case HookFile::each_inner_block:
+                return "each_inner_block";
+            case HookFile::each_inner_function:
+                return "each_inner_function";
             case HookFile::inner_function_start:
-                return "inner_function_start.txt";
+                return "inner_function_start";
             case HookFile::inner_function_each_code:
-                return "inner_function_each_code.txt";
+                return "inner_function_each_code";
             case HookFile::inner_block_start:
-                return "inner_block_start.txt";
+                return "inner_block_start";
             case HookFile::inner_block_each_code:
-                return "inner_block_each_code.txt";
+                return "inner_block_each_code";
             case HookFile::param_start:
-                return "param_start.txt";
+                return "param_start";
             case HookFile::param_each_code:
-                return "param_each_code.txt";
+                return "param_each_code";
             case HookFile::call_param_start:
-                return "call_param_start.txt";
+                return "call_param_start";
             case HookFile::call_param_each_code:
-                return "call_param_each_code.txt";
+                return "call_param_each_code";
             case HookFile::inner_function_op:
-                return "func_{}.txt";
+                return "func_{}";
             case HookFile::inner_block_op:
-                return "block_{}.txt";
+                return "block_{}";
             case HookFile::eval_op:
-                return "eval_{}.txt";
+                return "eval_{}";
             case HookFile::type_op:
-                return "type_{}.txt";
+                return "type_{}";
             case HookFile::param_op:
-                return "param_{}.txt";
+                return "param_{}";
             case HookFile::call_param_op:
-                return "call_param_{}.txt";
+                return "call_param_{}";
             case HookFile::field_accessor_op:
-                return "field_accessor_{}.txt";
+                return "field_accessor_{}";
         }
         return "";
     }
@@ -85,64 +94,73 @@ namespace bm2 {
         if (str.empty()) {
             return std::nullopt;
         }
-        if (str == "keywords.txt") {
+        if (str == "keywords") {
             return HookFile::keyword;
         }
-        if (str == "file_top.txt") {
+        if (str == "file_top") {
             return HookFile::file_top;
         }
-        if (str == "file_bottom.txt") {
+        if (str == "file_bottom") {
             return HookFile::file_bottom;
         }
-        if (str == "bm_context.txt") {
+        if (str == "bm_context") {
             return HookFile::bm_context;
         }
-        if (str == "flags.txt") {
+        if (str == "flags") {
             return HookFile::flags;
         }
-        if (str == "inner_function_start.txt") {
+        if (str == "eval_result") {
+            return HookFile::eval_result;
+        }
+        if (str == "each_inner_block") {
+            return HookFile::each_inner_block;
+        }
+        if (str == "each_inner_function") {
+            return HookFile::each_inner_function;
+        }
+        if (str == "inner_function_start") {
             return HookFile::inner_function_start;
         }
-        if (str == "inner_function_each_code.txt") {
+        if (str == "inner_function_each_code") {
             return HookFile::inner_function_each_code;
         }
-        if (str == "inner_block_start.txt") {
+        if (str == "inner_block_start") {
             return HookFile::inner_block_start;
         }
-        if (str == "inner_block_each_code.txt") {
+        if (str == "inner_block_each_code") {
             return HookFile::inner_block_each_code;
         }
-        if (str == "param_start.txt") {
+        if (str == "param_start") {
             return HookFile::param_start;
         }
-        if (str == "param_each_code.txt") {
+        if (str == "param_each_code") {
             return HookFile::param_each_code;
         }
-        if (str == "call_param_start.txt") {
+        if (str == "call_param_start") {
             return HookFile::call_param_start;
         }
-        if (str == "call_param_each_code.txt") {
+        if (str == "call_param_each_code") {
             return HookFile::call_param_each_code;
         }
-        if (str == "func_{}.txt") {
+        if (str == "func_{}") {
             return HookFile::inner_function_op;
         }
-        if (str == "block_{}.txt") {
+        if (str == "block_{}") {
             return HookFile::inner_block_op;
         }
-        if (str == "eval_{}.txt") {
+        if (str == "eval_{}") {
             return HookFile::eval_op;
         }
-        if (str == "type_{}.txt") {
+        if (str == "type_{}") {
             return HookFile::type_op;
         }
-        if (str == "param_{}.txt") {
+        if (str == "param_{}") {
             return HookFile::param_op;
         }
-        if (str == "call_param_{}.txt") {
+        if (str == "call_param_{}") {
             return HookFile::call_param_op;
         }
-        if (str == "field_accessor_{}.txt") {
+        if (str == "field_accessor_{}") {
             return HookFile::field_accessor_op;
         }
         return std::nullopt;

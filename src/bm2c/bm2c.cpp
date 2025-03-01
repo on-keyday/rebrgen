@@ -7,13 +7,20 @@ namespace bm2c {
     struct Context : bm2::Context {
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","(*this)", std::move(escape_ident)} {}
     };
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
+    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
+    void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
     struct EvalResult {
         std::string result;
     };
     EvalResult make_eval_result(std::string result) {
         return EvalResult{std::move(result)};
     }
-    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
+    EvalResult field_accessor(const rebgn::Code& code, Context& ctx);
+    EvalResult eval(const rebgn::Code& code, Context& ctx);
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {
         if (s.storages.size() <= index) {
             return "/*type index overflow*/";
         }
@@ -200,7 +207,8 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::DEFINE_PARAMETER: {
-            result = make_eval_result("/*Unimplemented DEFINE_PARAMETER*/");
+            auto ident = ctx.ident(code.ident().value());
+            result = make_eval_result(ident);
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
@@ -253,11 +261,11 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {
-            result = make_eval_result("/*Unimplemented EMPTY_PTR*/");
+            result = make_eval_result("nullptr");
             break;
         }
         case rebgn::AbstractOp::EMPTY_OPTIONAL: {
-            result = make_eval_result("/*Unimplemented EMPTY_OPTIONAL*/");
+            result = make_eval_result("std::nullopt");
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE: {
@@ -341,7 +349,7 @@ namespace bm2c {
         }
         case rebgn::AbstractOp::IMMEDIATE_CHAR: {
             auto char_code = code.int_value()->value();
-            result = make_eval_result(std::format("'{}'", char_code));
+            result = make_eval_result(std::format("{}", char_code));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
@@ -354,7 +362,9 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::NEW_OBJECT: {
-            result = make_eval_result("/*Unimplemented NEW_OBJECT*/");
+            auto type_ref = code.type().value();
+            auto type = type_to_string(ctx, type_ref);
+            result = make_eval_result(std::format("{}()", type));
             break;
         }
         case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
@@ -548,11 +558,9 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
-                w.writeln("/*Unimplemented DEFINE_PROPERTY*/ ");
                 break;
             }
             case rebgn::AbstractOp::END_PROPERTY: {
-                w.writeln("/*Unimplemented END_PROPERTY*/ ");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
@@ -562,7 +570,8 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
-                w.writeln("/*Unimplemented DECLARE_FUNCTION*/ ");
+                auto ref = code.ref().value();
+                auto range = ctx.range(ref);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -936,6 +945,15 @@ namespace bm2c {
                 w.writeln("/*Unimplemented DEFINE_CONSTANT*/ ");
                 break;
             }
+            case rebgn::AbstractOp::DECLARE_VARIABLE: {
+                auto ident = ctx.ident(code.ref().value());
+                auto init_ref = ctx.ref(code.ref().value()).ref().value();
+                auto type_ref = ctx.ref(code.ref().value()).type().value();
+                auto type = type_to_string(ctx,type_ref);
+                auto init = eval(ctx.ref(init_ref), ctx);
+                w.writeln(std::format("{} {} = {};",type, ident, init.result));
+                break;
+            }
             case rebgn::AbstractOp::ASSIGN: {
                 auto left_ref = code.left_ref().value();
                 auto right_ref = code.right_ref().value();
@@ -1046,10 +1064,6 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::SEEK_DECODER: {
                 w.writeln("/*Unimplemented SEEK_DECODER*/ ");
-                break;
-            }
-            case rebgn::AbstractOp::END_COND_BLOCK: {
-                w.writeln("/*Unimplemented END_COND_BLOCK*/ ");
                 break;
             }
             default: {

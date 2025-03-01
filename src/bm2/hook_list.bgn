@@ -1,32 +1,35 @@
 config.cpp.namespace = "bm2"
 enum HookFile:
-    keyword = "keywords.txt" # escape keywords
-    file_top = "file_top.txt" # generated file top
-    file_bottom = "file_bottom.txt" # generated file bottom
-    bm_context = "bm_context.txt" # bm2xx::Context definitions
-    flags = "flags.txt" # command line flags definitions
+    keyword = "keywords" # escape keywords
+    file_top = "file_top" # generated file top
+    file_bottom = "file_bottom" # generated file bottom
+    bm_context = "bm_context" # bm2xx::Context definitions
+    flags = "flags" # command line flags definitions
+    eval_result = "eval_result" # bm2xx::EvalResult definitions
 
-    inner_function_start = "inner_function_start.txt" # inner function start
-    inner_function_each_code = "inner_function_each_code.txt" # inner function each code
-    inner_block_start = "inner_block_start.txt" # inner block start
-    inner_block_each_code = "inner_block_each_code.txt" # inner block each code
-    param_start = "param_start.txt" # param start
-    param_each_code = "param_each_code.txt" # param each code
-    call_param_start = "call_param_start.txt" # call param start
-    call_param_each_code = "call_param_each_code.txt" # call param each code
+    each_inner_block = "each_inner_block" # each inner block
+    each_inner_function = "each_inner_function" # each inner function
+    inner_function_start = "inner_function_start" # inner function start
+    inner_function_each_code = "inner_function_each_code" # inner function each code
+    inner_block_start = "inner_block_start" # inner block start
+    inner_block_each_code = "inner_block_each_code" # inner block each code
+    param_start = "param_start" # param start
+    param_each_code = "param_each_code" # param each code
+    call_param_start = "call_param_start" # call param start
+    call_param_each_code = "call_param_each_code" # call param each code
 
-    inner_function_op = "func_{}.txt" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
-    inner_block_op = "block_{}.txt" # inner block operation ({} contains lower case AbstractOp name)
-    eval_op = "eval_{}.txt" # eval operation ({} contains lower case AbstractOp name)
-    type_op = "type_{}.txt" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
-    param_op = "param_{}.txt" # param operation ({} contains lower case AbstractOp name)
-    call_param_op = "call_param_{}.txt" # call param operation ({} contains lower case AbstractOp name)
-    field_accessor_op = "field_accessor_{}.txt" # field accessor operation ({} contains lower case AbstractOp name)
+    inner_function_op = "func_{}" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
+    inner_block_op = "block_{}" # inner block operation ({} contains lower case AbstractOp name)
+    eval_op = "eval_{}" # eval operation ({} contains lower case AbstractOp name)
+    type_op = "type_{}" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
+    param_op = "param_{}" # param operation ({} contains lower case AbstractOp name)
+    call_param_op = "call_param_{}" # call param operation ({} contains lower case AbstractOp name)
+    field_accessor_op = "field_accessor_{}" # field accessor operation ({} contains lower case AbstractOp name)
 
 
 # this is used with {} placeholder in HookFile
 # for example, AbstractOp::BINARY,
-# HookFile.eval_op + HookFileSub.op -> "eval_binary_op.txt"
+# HookFile.eval_op + HookFileSub.op -> "eval_binary_op"
 enum HookFileSub:
     main = "" # main hook
     op = "_op" # binary or unary operator modification hook

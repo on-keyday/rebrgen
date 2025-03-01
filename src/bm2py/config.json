@@ -37,5 +37,7 @@
     "encoder_param": "w :IO[bytes]",
     "decoder_param": "r :IO[bytes]",
     "true_literal": "True",
-    "false_literal": "False"
+    "false_literal": "False",
+    "empty_pointer": "None",
+    "empty_optional": "None"
 }

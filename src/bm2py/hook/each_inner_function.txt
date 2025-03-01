@@ -1,0 +1,3 @@
+if(code.func_type().value() != rebgn::FunctionType::FREE) {
+    continue;
+}

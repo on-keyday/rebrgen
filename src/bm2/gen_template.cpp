@@ -44,6 +44,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string block_end_type = "};";
     std::string struct_keyword = "struct";
     std::string enum_keyword = "enum";
+    std::string union_keyword = "union";
     std::string define_var_keyword = "";
     std::string var_type_separator = " ";
     std::string define_var_assign = "=";
@@ -72,6 +73,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string empty_optional = "std::nullopt";
     std::string size_method = "size";
     bool surrounded_size_method = false;  // if true, <size_method>(<expr>) will be used
+    std::string append_method = "push_back";
+    bool surrounded_append_method = false;  // if true, <base> = <append_method>(<base>,<expr>) will be used
+    std::string variant_mode = "union";     // union or algebraic
+    std::string algebraic_variant_separator = "|";
+    std::string algebraic_variant_placeholder = "{}";
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -126,6 +132,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(empty_optional, "empty_optional");
         FROM_JSON_OPT(size_method, "size_method");
         FROM_JSON_OPT(surrounded_size_method, "surrounded_size_method");
+        FROM_JSON_OPT(append_method, "append_method");
+        FROM_JSON_OPT(surrounded_append_method, "surrounded_append_method");
+        FROM_JSON_OPT(variant_mode, "variant_mode");
+        FROM_JSON_OPT(algebraic_variant_separator, "algebraic_variant_separator");
+        FROM_JSON_OPT(algebraic_variant_placeholder, "algebraic_variant_type");
         JSON_PARAM_END()
     }
 
@@ -483,9 +494,32 @@ namespace rebgn {
                 });
             }
             else if (type == StorageType::VARIANT) {
-                type_to_string.writeln("auto ref = storage.ref().value().value();");
+                type_to_string.writeln("auto ref = storage.ref().value();");
+                type_to_string.writeln("std::vector<std::string> types;");
+                type_to_string.writeln("for (size_t i = index + 1; i < s.storages.size(); i++) {");
+                auto scope_variant = type_to_string.indent_scope();
+                type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
+                scope_variant.execute();
+                type_to_string.writeln("}");
+                type_to_string.writeln("auto ident = ctx.ident(ref);");
                 type_hook([&] {
-                    type_to_string.writeln("return \"", flags.wrap_comment("Unimplemented VARIANT"), "\";");
+                    if (flags.variant_mode == "union") {
+                        type_to_string.writeln("return ident;");
+                    }
+                    else if (flags.variant_mode == "algebraic") {
+                        type_to_string.writeln("std::string result;");
+                        type_to_string.writeln("for (size_t i = 0; i < types.size(); i++) {");
+                        auto scope_variant_algebraic = type_to_string.indent_scope();
+                        type_to_string.writeln("if (i != 0) {");
+                        auto if_block_variant_algebraic = type_to_string.indent_scope();
+                        type_to_string.writeln("result += \" ", flags.algebraic_variant_separator, " \";");
+                        if_block_variant_algebraic.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("result += types[i];");
+                        scope_variant_algebraic.execute();
+                        type_to_string.writeln("}");
+                        type_to_string.writeln("return std::format(\"", flags.algebraic_variant_placeholder, "\", result);");
+                    }
                 });
             }
             else if (type == StorageType::CODER_RETURN) {
@@ -690,6 +724,14 @@ namespace rebgn {
                         inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
                     });
                 }
+                else if (op == AbstractOp::DEFINE_UNION) {
+                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+                    block_hook([&] {
+                        if (flags.variant_mode == "union") {
+                            inner_block.indent_writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
+                        }
+                    });
+                }
                 else if (op == AbstractOp::DEFINE_ENUM) {
                     inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
                     block_hook([&] {
@@ -825,6 +867,12 @@ namespace rebgn {
                     eval.writeln("auto value = code.int_value()->value();");
                     eval_hook([&] {
                         eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
+                    });
+                }
+                else if (op == AbstractOp::IMMEDIATE_STRING) {
+                    eval.writeln("auto str = ctx.string_table[code.ident().value().value()];");
+                    eval_hook([&] {
+                        eval.writeln("result = make_eval_result(std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));");
                     });
                 }
                 else if (op == AbstractOp::IMMEDIATE_TRUE) {
@@ -1088,7 +1136,12 @@ namespace rebgn {
                     inner_function.writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
                     // inner_function.writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
                     func_hook([&] {
-                        inner_function.writeln("w.writeln(\"\", vector_eval.result, \".push_back(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                        if (flags.surrounded_append_method) {
+                            inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                        }
+                        else {
+                            inner_function.writeln("w.writeln(vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                        }
                     });
                 }
                 else if (op == AbstractOp::ASSIGN) {
@@ -1567,6 +1620,8 @@ namespace rebgn {
         w.writeln("/*license*/");
         w.writeln("#include <bm2/context.hpp>");
         w.writeln("#include <bmgen/helper.hpp>");
+        w.writeln("#include <escape/escape.h>");
+        may_write_from_hook(w, flags, bm2::HookFile::generator_top, true);
         w.writeln("#include \"bm2", flags.lang_name, ".hpp\"");
         w.writeln("namespace bm2", flags.lang_name, " {");
         auto scope = w.indent_scope();

@@ -41,5 +41,9 @@
     "empty_pointer": "None",
     "empty_optional": "None",
     "size_method": "len",
-    "surrounded_size_method": true
+    "surrounded_size_method": true,
+    "append_method": "append",
+    "variant_mode": "algebraic",
+    "algebraic_variant_type": "Union[{}]",
+    "algebraic_variant_separator": ","
 }

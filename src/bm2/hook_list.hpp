@@ -15,33 +15,36 @@
 namespace bm2 {
     enum class HookFile {
         keyword = 0,
-        file_top = 1,
-        file_bottom = 2,
-        bm_context = 3,
-        flags = 4,
-        eval_result = 5,
-        each_inner_block = 6,
-        each_inner_function = 7,
-        inner_function_start = 8,
-        inner_function_each_code = 9,
-        inner_block_start = 10,
-        inner_block_each_code = 11,
-        param_start = 12,
-        param_each_code = 13,
-        call_param_start = 14,
-        call_param_each_code = 15,
-        inner_function_op = 16,
-        inner_block_op = 17,
-        eval_op = 18,
-        type_op = 19,
-        param_op = 20,
-        call_param_op = 21,
-        field_accessor_op = 22,
+        generator_top = 1,
+        file_top = 2,
+        file_bottom = 3,
+        bm_context = 4,
+        flags = 5,
+        eval_result = 6,
+        each_inner_block = 7,
+        each_inner_function = 8,
+        inner_function_start = 9,
+        inner_function_each_code = 10,
+        inner_block_start = 11,
+        inner_block_each_code = 12,
+        param_start = 13,
+        param_each_code = 14,
+        call_param_start = 15,
+        call_param_each_code = 16,
+        inner_function_op = 17,
+        inner_block_op = 18,
+        eval_op = 19,
+        type_op = 20,
+        param_op = 21,
+        call_param_op = 22,
+        field_accessor_op = 23,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
             case HookFile::keyword:
                 return "keywords";
+            case HookFile::generator_top:
+                return "generator_top";
             case HookFile::file_top:
                 return "file_top";
             case HookFile::file_bottom:
@@ -96,6 +99,9 @@ namespace bm2 {
         }
         if (str == "keywords") {
             return HookFile::keyword;
+        }
+        if (str == "generator_top") {
+            return HookFile::generator_top;
         }
         if (str == "file_top") {
             return HookFile::file_top;

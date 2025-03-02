@@ -1,6 +1,7 @@
 config.cpp.namespace = "bm2"
 enum HookFile:
     keyword = "keywords" # escape keywords
+    generator_top = "generator_top" # generator top
     file_top = "file_top" # generated file top
     file_bottom = "file_bottom" # generated file bottom
     bm_context = "bm_context" # bm2xx::Context definitions

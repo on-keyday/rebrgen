@@ -1,5 +1,6 @@
 {
     "lang": "",
+    "suffix": "",
     "comment_prefix": "/*",
     "comment_suffix": "*/",
     "int_type": "std::int{}_t",
@@ -43,5 +44,8 @@
     "empty_pointer": "nullptr",
     "empty_optional": "std::nullopt",
     "size_method": "size",
-    "surrounded_size_method": false
+    "surrounded_size_method": false,
+    "variant_mode": "algebraic",
+    "algebraic_variant_type": "std::variant<{}>",
+    "algebraic_variant_separator": ","
 }

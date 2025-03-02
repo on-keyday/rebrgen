@@ -1,6 +1,7 @@
 /*license*/
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
+#include <escape/escape.h>
 #include "bm2haskell.hpp"
 namespace bm2haskell {
     using TmpCodeWriter = bm2::TmpCodeWriter;
@@ -103,8 +104,13 @@ namespace bm2haskell {
                 return std::format("Vector {}", base_type);
             }
             case rebgn::StorageType::VARIANT: {
-                auto ref = storage.ref().value().value();
-                return "{-Unimplemented VARIANT-}";
+                auto ref = storage.ref().value();
+                std::vector<std::string> types;
+                for (size_t i = index + 1; i < s.storages.size(); i++) {
+                    types.push_back(type_to_string_impl(ctx, s, bit_size, i));
+                }
+                auto ident = ctx.ident(ref);
+                return ident;
             }
             case rebgn::StorageType::CODER_RETURN: {
                 return "Bool";
@@ -353,7 +359,8 @@ namespace bm2haskell {
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
-            result = make_eval_result("{-Unimplemented IMMEDIATE_STRING-}");
+            auto str = ctx.string_table[code.ident().value().value()];
+            result = make_eval_result(std::format("\"{}\"", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_TYPE: {
@@ -598,7 +605,8 @@ namespace bm2haskell {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
-                w.writeln("{-Unimplemented DEFINE_UNION-} ");
+                auto ident = ctx.ident(code.ident().value());
+                w.writeln("union ",ident, " ");
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
@@ -986,7 +994,7 @@ namespace bm2haskell {
                 auto new_element_ref = code.right_ref().value();
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
-                w.writeln("", vector_eval.result, ".push_back(", new_element_eval.result, ")");
+                w.writeln(vector_eval.result, ".push_back(", new_element_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::INC: {

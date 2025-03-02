@@ -12,7 +12,7 @@ This project is a C++-based code generator that automatically creates structures
 
 ### src/bmgen
 
-This directory contains the logic for converting brgen's AST into an intermediate representation defined in `src/bmgen/binary_module.bgn`. This intermediate representation is designed to be easily transformed by the code generators.
+This directory contains the logic for converting brgen's AST into an intermediate representation defined in `src/bm/binary_module.bgn`. This intermediate representation is designed to be easily transformed by the code generators.
 
 ### src/bm2
 

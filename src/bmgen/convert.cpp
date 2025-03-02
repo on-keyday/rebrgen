@@ -1192,7 +1192,7 @@ namespace rebgn {
                 c.func_type(is_encoder ? FunctionType::ENCODE : FunctionType::DECODE);
             }
             else {
-                if (parent.value() == null_id) {
+                if (parent.value() == null_id || m.code[m.ident_index_table[parent.value()]].op == rebgn::AbstractOp::DEFINE_PROGRAM) {
                     c.func_type(FunctionType::FREE);
                 }
                 else {

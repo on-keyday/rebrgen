@@ -1,0 +1,4 @@
+if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER||
+   code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+    w.writeln("@property");
+}

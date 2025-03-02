@@ -36,6 +36,10 @@
     "else_keyword": "else",
     "infinity_loop": "for(;;)",
     "conditional_loop": "while",
+    "match_keyword": "switch",
+    "match_case_keyword": "case",
+    "match_case_separator": ":",
+    "match_default_keyword": "default",
     "condition_has_parentheses": true,
     "self_name": "(*this)",
     "param_type_separator": " ",
@@ -47,5 +51,8 @@
     "surrounded_size_method": false,
     "variant_mode": "algebraic",
     "algebraic_variant_type": "std::variant<{}>",
-    "algebraic_variant_separator": ","
+    "algebraic_variant_separator": ",",
+    "check_union_condition": "std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
+    "check_union_fail_return_value": "false",
+    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()"
 }

@@ -1404,7 +1404,7 @@ namespace rebgn {
                     inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value().value();");
                     inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
                     inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
-                    inner_function.writeln("auto union_field_ident = eval(union_field_ref,ctx);");
+                    inner_function.writeln("auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);");
                     func_hook([&] {
                         std::map<std::string, std::string> map{
                             {"MEMBER_IDENT", "\",union_member_ident,\""},
@@ -1413,12 +1413,12 @@ namespace rebgn {
                             {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
                         };
                         auto escaped = env_escape(flags.check_union_condition, map);
-                        inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : "",
+                        inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
                                                escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
                         inner_function.writeln("auto scope = w.indent_scope_ex();");
                         if (op == AbstractOp::CHECK_UNION) {
                             auto ret = env_escape(flags.check_union_fail_return_value, map);
-                            inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\")");
+                            inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
                         }
                         else {
                             auto switch_union = env_escape(flags.switch_union, map);

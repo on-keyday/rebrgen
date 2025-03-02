@@ -1050,11 +1050,33 @@ namespace bm2haskell {
                 break;
             }
             case rebgn::AbstractOp::SWITCH_UNION: {
-                w.writeln("{-Unimplemented SWITCH_UNION-} ");
+                auto union_member_ref = code.ref().value();
+                auto union_ref = ctx.ref(union_member_ref).belong().value();
+                auto union_field_ref = ctx.ref(union_ref).belong().value();
+                auto union_member_index = ctx.ref(union_member_ref).int_value().value();
+                auto union_member_ident = ctx.ident(union_member_ref);
+                auto union_ident = ctx.ident(union_ref);
+                auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
+                w.writeln("if() ");
+                auto scope = w.indent_scope_ex();
+                w.writeln("");
+                scope.execute();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::CHECK_UNION: {
-                w.writeln("{-Unimplemented CHECK_UNION-} ");
+                auto union_member_ref = code.ref().value();
+                auto union_ref = ctx.ref(union_member_ref).belong().value();
+                auto union_field_ref = ctx.ref(union_ref).belong().value();
+                auto union_member_index = ctx.ref(union_member_ref).int_value().value();
+                auto union_member_ident = ctx.ident(union_member_ref);
+                auto union_ident = ctx.ident(union_ref);
+                auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
+                w.writeln("if() ");
+                auto scope = w.indent_scope_ex();
+                w.writeln("return false");
+                scope.execute();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::EVAL_EXPR: {

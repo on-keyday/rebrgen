@@ -2,6 +2,10 @@
 set -e
 
 LANG_NAME=$1
+if [ -z "$LANG_NAME" ]; then
+    echo "Usage: $0 <lang_name>"
+    exit 1
+fi
 FUTILS_DIR=${FUTILS_DIR:-C:/workspace/utils_backup}
 cmake --build ./built/native/Debug --target gen_template
 cmake --install ./built/native/Debug --component gen_template

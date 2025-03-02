@@ -9,6 +9,8 @@ def collect_cmake_files(root_dir):
         for file in files:
             if root == root_dir:
                 continue
+            if root == "src/bm2" or root == "src/bmgen":
+                continue
             if file == "CMakeLists.txt":
                 obj = {
                     "name": pl.Path(os.path.join(root)).relative_to("src").as_posix()
@@ -30,6 +32,9 @@ def collect_cmake_files(root_dir):
 
 src = collect_cmake_files("src")
 
+#print(json.dumps(src))
+#exit(0)
+
 output = "src/CMakeLists.txt"
 
 with open(output, "w") as f:
@@ -42,6 +47,8 @@ with open(output, "w") as f:
     f.write("@echo off\n")
     f.write("setlocal\n")
     f.write("call build.bat\n")
+    f.write("tool\\bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n")
+    f.write("tool\\bmgen -p -i save/sample.json --print-only-op > save/save_op.txt\n")
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently
@@ -52,6 +59,10 @@ output = "./run_generated.sh"
 with open(output, "wb") as f:
     f.write("#!/bin/bash\n".encode())
     f.write("./build.sh\n".encode())
+    f.write(
+        "tool/bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n".encode()
+    )
+    f.write("tool/bmgen -p -i save/sample.json --print-only-op > save/save_op.txt\n".encode())
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently

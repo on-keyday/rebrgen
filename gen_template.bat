@@ -2,6 +2,10 @@
 setlocal
 
 set LANG_NAME=%1
+if "%LANG_NAME%" == "" (
+    echo Usage: %0 LANG_NAME
+    exit /b 1
+)
 set FUTILS_DIR=C:/workspace/utils_backup
 
 cmake --build ./built/native/Debug --target gen_template

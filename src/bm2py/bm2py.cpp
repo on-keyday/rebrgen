@@ -619,7 +619,7 @@ namespace bm2py {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
                 auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
-                w.writeln(ident, " = ", evaluated.result, ",");
+                w.writeln(ident, " = ", evaluated.result, "");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
@@ -627,15 +627,12 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
-                w.writeln("\"\"\"Unimplemented END_UNION\"\"\" ");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value();
                 auto range = ctx.range(ref);
-                TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, range);
-                ctx.cw.write_unformatted(inner_w.out());
+            inner_block(ctx,w,range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
@@ -655,9 +652,7 @@ namespace bm2py {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value();
                 auto range = ctx.range(ref);
-                TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, range);
-                ctx.cw.write_unformatted(inner_w.out());
+            inner_block(ctx,w,range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
@@ -954,27 +949,39 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::MATCH: {
-                w.writeln("\"\"\"Unimplemented MATCH\"\"\" ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("match ",evaluated.result," :");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
-                w.writeln("\"\"\"Unimplemented EXHAUSTIVE_MATCH\"\"\" ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("match ",evaluated.result," :");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CASE: {
-                w.writeln("\"\"\"Unimplemented CASE\"\"\" ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("case ",evaluated.result," :");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_CASE: {
-                w.writeln("\"\"\"Unimplemented END_CASE\"\"\" ");
+                defer.pop_back();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DEFAULT_CASE: {
-                w.writeln("\"\"\"Unimplemented DEFAULT_CASE\"\"\" ");
+                w.writeln("case _ :");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_MATCH: {
-                w.writeln("\"\"\"Unimplemented END_MATCH\"\"\" ");
+                defer.pop_back();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {

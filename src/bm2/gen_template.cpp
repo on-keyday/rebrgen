@@ -10,6 +10,7 @@
 #include <json/json_export.h>
 #include "hook_list.hpp"
 #include <filesystem>
+#include <env/env.h>
 
 struct Flags : futils::cmdline::templ::HelpOption {
     bool is_header = false;
@@ -53,6 +54,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string field_end = ";";
     std::string enum_member_end = ",";
     std::string func_keyword = "";
+    bool trailing_return_type = false;
     std::string func_brace_ident_separator = "";
     std::string func_type_separator = " ";
     std::string func_void_return_type = "void";
@@ -62,6 +64,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string else_keyword = "else";
     std::string infinity_loop = "for(;;)";
     std::string conditional_loop = "while";
+    std::string match_keyword = "switch";
+    std::string match_case_keyword = "case";
+    std::string match_case_separator = ":";
+    std::string match_default_keyword = "default";
     std::string self_ident = "(*this)";
     std::string param_type_separator = " ";
     bool condition_has_parentheses = true;
@@ -78,6 +84,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string variant_mode = "union";     // union or algebraic
     std::string algebraic_variant_separator = "|";
     std::string algebraic_variant_placeholder = "{}";
+    std::string check_union_condition = "";
+    std::string check_union_fail_return_value = "false";
+    std::string switch_union = "";
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -113,6 +122,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(field_end, "field_end");
         FROM_JSON_OPT(enum_member_end, "enum_member_end");
         FROM_JSON_OPT(func_keyword, "func_keyword");
+        FROM_JSON_OPT(trailing_return_type, "trailing_return_type");
         FROM_JSON_OPT(func_brace_ident_separator, "func_brace_ident_separator");
         FROM_JSON_OPT(func_type_separator, "func_type_separator");
         FROM_JSON_OPT(func_void_return_type, "func_void_return_type");
@@ -121,6 +131,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(else_keyword, "else_keyword");
         FROM_JSON_OPT(infinity_loop, "infinity_loop");
         FROM_JSON_OPT(conditional_loop, "conditional_loop");
+        FROM_JSON_OPT(match_keyword, "match_keyword");
+        FROM_JSON_OPT(match_case_keyword, "match_case_keyword");
+        FROM_JSON_OPT(match_case_separator, "match_case_separator");
+        FROM_JSON_OPT(match_default_keyword, "match_default_keyword");
         FROM_JSON_OPT(condition_has_parentheses, "condition_has_parentheses");
         FROM_JSON_OPT(self_ident, "self_ident");
         FROM_JSON_OPT(param_type_separator, "param_type_separator");
@@ -137,6 +151,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(variant_mode, "variant_mode");
         FROM_JSON_OPT(algebraic_variant_separator, "algebraic_variant_separator");
         FROM_JSON_OPT(algebraic_variant_placeholder, "algebraic_variant_type");
+        FROM_JSON_OPT(check_union_condition, "check_union_condition");
+        FROM_JSON_OPT(check_union_fail_return_value, "check_union_fail_return_value");
+        FROM_JSON_OPT(switch_union, "switch_union");
         JSON_PARAM_END()
     }
 
@@ -239,6 +256,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     }
 };
 namespace rebgn {
+
+    std::string env_escape(std::string_view str, std::map<std::string, std::string>& map) {
+        return futils::env::expand<std::string>(str, futils::env::expand_map<std::string>(map), true);
+    }
 
     bool include_stack(Flags& flags, size_t& line, std::vector<std::filesystem::path>& stack, auto&& file_name, auto&& per_line) {
         auto hook_file = std::filesystem::path(flags.hook_file_dir) / file_name;
@@ -729,6 +750,15 @@ namespace rebgn {
                     block_hook([&] {
                         if (flags.variant_mode == "union") {
                             inner_block.indent_writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
+                            inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                        }
+                    });
+                }
+                else if (op == AbstractOp::END_UNION) {
+                    block_hook([&] {
+                        if (flags.variant_mode == "union") {
+                            inner_block.indent_writeln("defer.pop_back();");
+                            inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
                         }
                     });
                 }
@@ -1221,8 +1251,12 @@ namespace rebgn {
                 }
                 else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
                          op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
-                         op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION) {
-                    if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION) {
+                         op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION ||
+                         op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
+                         op == AbstractOp::CASE || op == AbstractOp::DEFAULT_CASE) {
+                    if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION ||
+                        op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
+                        op == AbstractOp::CASE) {
                         inner_function.writeln("auto ref = code.ref().value();");
                         inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
                     }
@@ -1243,7 +1277,8 @@ namespace rebgn {
                         }
                         inner_function.writeln("}");
                         func_hook([&] {
-                            if (!flags.func_keyword.size()) {
+                            inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
+                            if (!flags.trailing_return_type) {
                                 inner_function.writeln("if(type) {");
                                 inner_function.indent_writeln("w.write(*type);");
                                 inner_function.writeln("}");
@@ -1251,13 +1286,10 @@ namespace rebgn {
                                 inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
                                 inner_function.writeln("}");
                             }
-                            else {
-                                inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
-                            }
                             inner_function.writeln("w.write(\" \", ident, \"", flags.func_brace_ident_separator, "(\");");
                             inner_function.writeln("add_parameter(ctx, w, range);");
                             inner_function.writeln("w.write(\") \");");
-                            if (flags.func_keyword.size()) {
+                            if (flags.trailing_return_type) {
                                 inner_function.writeln("if(type) {");
                                 inner_function.indent_writeln("w.write(\"", flags.func_type_separator, "\", *type);");
                                 inner_function.writeln("}");
@@ -1294,6 +1326,16 @@ namespace rebgn {
                                 case AbstractOp::LOOP_CONDITION:
                                     inner_function.write(flags.conditional_loop, " ", condition, " ", flags.block_begin);
                                     break;
+                                case AbstractOp::MATCH:
+                                case AbstractOp::EXHAUSTIVE_MATCH:
+                                    inner_function.write(flags.match_keyword, " ", condition, " ", flags.block_begin);
+                                    break;
+                                case AbstractOp::CASE:
+                                    inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.block_begin);
+                                    break;
+                                case AbstractOp::DEFAULT_CASE:
+                                    inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
+                                    break;
                             }
                             inner_function.writeln("\");");
                         });
@@ -1301,7 +1343,8 @@ namespace rebgn {
                     inner_function.writeln("defer.push_back(w.indent_scope_ex());");
                 }
                 else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
-                         op == AbstractOp::END_FUNCTION) {
+                         op == AbstractOp::END_FUNCTION || op == AbstractOp::END_MATCH ||
+                         op == AbstractOp::END_CASE) {
                     inner_function.writeln("defer.pop_back();");
                     func_hook([&] {
                         inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
@@ -1352,6 +1395,37 @@ namespace rebgn {
                     inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
                     func_hook([&] {
                         inner_function.writeln("w.writeln(evaluated.result, \"+= 1", flags.end_of_statement, "\");");
+                    });
+                }
+                else if (op == AbstractOp::CHECK_UNION || op == AbstractOp::SWITCH_UNION) {
+                    inner_function.writeln("auto union_member_ref = code.ref().value();");
+                    inner_function.writeln("auto union_ref = ctx.ref(union_member_ref).belong().value();");
+                    inner_function.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
+                    inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value().value();");
+                    inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
+                    inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
+                    inner_function.writeln("auto union_field_ident = eval(union_field_ref,ctx);");
+                    func_hook([&] {
+                        std::map<std::string, std::string> map{
+                            {"MEMBER_IDENT", "\",union_member_ident,\""},
+                            {"UNION_IDENT", "\",union_ident,\""},
+                            {"FIELD_IDENT", "\",union_field_ident.result,\""},
+                            {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
+                        };
+                        auto escaped = env_escape(flags.check_union_condition, map);
+                        inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : "",
+                                               escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
+                        inner_function.writeln("auto scope = w.indent_scope_ex();");
+                        if (op == AbstractOp::CHECK_UNION) {
+                            auto ret = env_escape(flags.check_union_fail_return_value, map);
+                            inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\")");
+                        }
+                        else {
+                            auto switch_union = env_escape(flags.switch_union, map);
+                            inner_function.writeln("w.writeln(\"", switch_union, flags.end_of_statement, "\");");
+                        }
+                        inner_function.writeln("scope.execute();");
+                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
                     });
                 }
                 else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
@@ -1585,20 +1659,27 @@ namespace rebgn {
         w.writeln("endif()");
     }
 
-    void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+    bool may_load_config(Flags& flags) {
         if (!flags.config_file.empty()) {
             futils::file::View config_file;
             if (auto res = config_file.open(flags.config_file); res) {
                 auto parsed = futils::json::parse<futils::json::JSON>(config_file, true);
                 if (parsed.is_undef()) {
                     futils::wrap::cerr_wrap() << "failed to parse json\n";
-                    return;
+                    return false;
                 }
                 if (!futils::json::convert_from_json(parsed, flags)) {
                     futils::wrap::cerr_wrap() << "failed to convert json to flags\n";
-                    return;
+                    return false;
                 }
             }
+        }
+        return true;
+    }
+
+    void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+        if (!may_load_config(flags)) {
+            return;
         }
         if (flags.lang_name.empty()) {
             futils::wrap::cerr_wrap() << "--lang option is required\n";
@@ -1722,7 +1803,7 @@ namespace rebgn {
         _scope.execute();
         w.writeln("}");
 
-        if (may_write_from_hook(w, flags, bm2::HookFile::file_bottom, true)) {
+        if (may_write_from_hook(tmp, flags, bm2::HookFile::file_bottom, true)) {
             w.writeln("{");
             auto scope = w.indent_scope();
             w.writeln("auto& w = ctx.cw;");

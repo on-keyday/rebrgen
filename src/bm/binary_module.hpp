@@ -1748,6 +1748,7 @@ namespace rebgn {
         };
         struct BM_API union_struct_42{
             Varint ident;
+            Varint int_value;
             Varint belong;
         };
         struct BM_API union_struct_43{

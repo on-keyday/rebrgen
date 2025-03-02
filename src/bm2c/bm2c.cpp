@@ -607,10 +607,12 @@ namespace bm2c {
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident = ctx.ident(code.ident().value());
                 w.writeln("union ",ident, " {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
-                w.writeln("/*Unimplemented END_UNION*/ ");
+                defer.pop_back();
+                w.writeln("};");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
@@ -704,6 +706,7 @@ namespace bm2c {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
                 }
+                w.write(" ");
                 if(type) {
                     w.write(*type);
                 }
@@ -917,27 +920,39 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::MATCH: {
-                w.writeln("/*Unimplemented MATCH*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("switch (",evaluated.result,") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
-                w.writeln("/*Unimplemented EXHAUSTIVE_MATCH*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("switch (",evaluated.result,") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CASE: {
-                w.writeln("/*Unimplemented CASE*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("case (",evaluated.result,") {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_CASE: {
-                w.writeln("/*Unimplemented END_CASE*/ ");
+                defer.pop_back();
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DEFAULT_CASE: {
-                w.writeln("/*Unimplemented DEFAULT_CASE*/ ");
+                w.writeln("default {");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_MATCH: {
-                w.writeln("/*Unimplemented END_MATCH*/ ");
+                defer.pop_back();
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {

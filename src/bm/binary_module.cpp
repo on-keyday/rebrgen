@@ -11213,6 +11213,72 @@ namespace rebgn {
         }
         return std::get<5>((*this).union_variant_16).int_value;
         }
+        if (AbstractOp::IMMEDIATE_INT64==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_STRING==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FORMAT==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_STATE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FIELD==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PROPERTY==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_ENCODER==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_DECODER==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_VARIABLE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_VARIABLE_REF==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_CONSTANT==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DECLARE_VARIABLE==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_PARAMETER==(*this).op) {
+        return std::nullopt;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER==(*this).op) {
+        if(!std::holds_alternative<union_struct_42>(union_variant_16)) {
+            return std::nullopt;
+        }
+        return std::get<26>((*this).union_variant_16).int_value;
+        }
         return std::nullopt;
     }
     bool Code::int_value(const Varint& v) {
@@ -11239,6 +11305,73 @@ namespace rebgn {
             std::get<5>((*this).union_variant_16).int_value = v;
             return true;
         }
+        if (AbstractOp::IMMEDIATE_INT64==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_STATE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE_REF==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_CONSTANT==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_VARIABLE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PARAMETER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER==(*this).op) {
+            if(!std::holds_alternative<union_struct_42>(union_variant_16)) {
+                union_variant_16 = union_struct_42();
+            }
+            std::get<26>((*this).union_variant_16).int_value = v;
+            return true;
+        }
         return false;
     }
     bool Code::int_value(Varint&& v) {
@@ -11263,6 +11396,73 @@ namespace rebgn {
                 union_variant_16 = union_struct_21();
             }
             std::get<5>((*this).union_variant_16).int_value = std::move(v);
+            return true;
+        }
+        if (AbstractOp::IMMEDIATE_INT64==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_STRING==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TRUE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_FALSE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::IMMEDIATE_TYPE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FORMAT==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_STATE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FIELD==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PROPERTY==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_ENCODER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_DECODER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_VARIABLE_REF==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_CONSTANT==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DECLARE_VARIABLE==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_PARAMETER==(*this).op) {
+            return false;
+        }
+        if (AbstractOp::DEFINE_UNION_MEMBER==(*this).op) {
+            if(!std::holds_alternative<union_struct_42>(union_variant_16)) {
+                union_variant_16 = union_struct_42();
+            }
+            std::get<26>((*this).union_variant_16).int_value = std::move(v);
             return true;
         }
         return false;
@@ -21772,6 +21972,9 @@ namespace rebgn {
             if (auto err = std::get<26>((*this).union_variant_16).ident.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<26>((*this).union_variant_16).int_value.encode(w)) {
+                return err;
+            }
             if (auto err = std::get<26>((*this).union_variant_16).belong.encode(w)) {
                 return err;
             }
@@ -23170,6 +23373,9 @@ namespace rebgn {
                 union_variant_16 = union_struct_42();
             }
             if (auto err = std::get<26>((*this).union_variant_16).ident.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<26>((*this).union_variant_16).int_value.decode(r)) {
                 return err;
             }
             if (auto err = std::get<26>((*this).union_variant_16).belong.decode(r)) {

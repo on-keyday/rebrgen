@@ -584,13 +584,19 @@ namespace rebgn {
             c.ident(*union_ident);
             c.belong(field_id);
         });
+        size_t index = 0;
         for (auto& st : su->structs) {
             auto ident = m.new_node_id(st);
             if (!ident) {
                 return ident;
             }
+            auto idx = varint(index);
+            if (!idx) {
+                return idx;
+            }
             m.op(AbstractOp::DEFINE_UNION_MEMBER, [&](Code& c) {
                 c.ident(*ident);
+                c.int_value(*idx);
                 c.belong(*union_ident);
             });
             m.map_struct(st, ident->value());

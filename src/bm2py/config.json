@@ -21,6 +21,8 @@
     "var_type_separator": ":",
     "field_type_separator": ":",
     "func_keyword": "def",
+    "trailing_return_type": true,
+    "enum_member_end": "",
     "func_type_separator": "->",
     "func_void_return_type": "",
     "if_keyword": "if",
@@ -45,5 +47,8 @@
     "append_method": "append",
     "variant_mode": "algebraic",
     "algebraic_variant_type": "Union[{}]",
-    "algebraic_variant_separator": ","
+    "algebraic_variant_separator": ",",
+    "match_keyword": "match",
+    "match_case_keyword": "case",
+    "match_default_keyword": "case _"
 }

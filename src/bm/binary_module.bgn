@@ -535,6 +535,7 @@ format Code:
             type :StorageRef
         AbstractOp.DEFINE_UNION_MEMBER:
             ident :Varint
+            int_value :Varint # index of union member (0-based, order in union)
             belong :Varint # belong to union
         AbstractOp.RETURN_TYPE:
             type :StorageRef

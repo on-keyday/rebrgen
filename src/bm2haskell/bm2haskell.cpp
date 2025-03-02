@@ -430,7 +430,7 @@ namespace bm2haskell {
                     auto ref = code.ident().value();
                     auto type = type_to_string(ctx,code.type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -457,7 +457,7 @@ namespace bm2haskell {
                     auto ref = code.ref().value();
                     auto type = type_to_string(ctx,ctx.ref(ref).type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -468,7 +468,7 @@ namespace bm2haskell {
                     auto ref = code.ident().value();
                     auto type = type_to_string(ctx,code.type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -561,7 +561,7 @@ namespace bm2haskell {
                 }
                 auto type = type_to_string(ctx, code.type().value());
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln(type, "  ", ident, ";");
+                w.writeln(ident, "  ", type, ";");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -607,10 +607,12 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident = ctx.ident(code.ident().value());
                 w.writeln("union ",ident, " ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
-                w.writeln("{-Unimplemented END_UNION-} ");
+                defer.pop_back();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
@@ -704,15 +706,16 @@ namespace bm2haskell {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
                 }
+                w.write(" ");
+                w.write(" ", ident, " :: (");
+                add_parameter(ctx, w, range);
+                w.write(") ");
                 if(type) {
-                    w.write(*type);
+                    w.write("->", *type);
                 }
                 else {
                     w.write("void");
                 }
-                w.write(" ", ident, " :: (");
-                add_parameter(ctx, w, range);
-                w.write(") ");
                 w.writeln("");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -917,27 +920,39 @@ namespace bm2haskell {
                 break;
             }
             case rebgn::AbstractOp::MATCH: {
-                w.writeln("{-Unimplemented MATCH-} ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("switch (",evaluated.result,") ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
-                w.writeln("{-Unimplemented EXHAUSTIVE_MATCH-} ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("switch (",evaluated.result,") ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CASE: {
-                w.writeln("{-Unimplemented CASE-} ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref), ctx);
+                w.writeln("case (",evaluated.result,") ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_CASE: {
-                w.writeln("{-Unimplemented END_CASE-} ");
+                defer.pop_back();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DEFAULT_CASE: {
-                w.writeln("{-Unimplemented DEFAULT_CASE-} ");
+                w.writeln("default ");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_MATCH: {
-                w.writeln("{-Unimplemented END_MATCH-} ");
+                defer.pop_back();
+                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
@@ -946,7 +961,7 @@ namespace bm2haskell {
                 auto type_ref = code.type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("{} :: {} = {}",type, ident, init.result));
+                w.writeln(std::format("{} :: {} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -959,7 +974,7 @@ namespace bm2haskell {
                 auto type_ref = ctx.ref(code.ref().value()).type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("{} :: {} = {}",type, ident, init.result));
+                w.writeln(std::format("{} :: {} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {

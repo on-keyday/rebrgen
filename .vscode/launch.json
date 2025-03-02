@@ -67,6 +67,21 @@
             //"symbolSearchPath": "lib\\"
         },
         {
+            "name": "Debug bm2py",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/bm2py",
+            "args": [
+                "-i","${workspaceRoot}/save/save.bin",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
             "name": "Debug bm2hexmap",
             "type": "cppvsdbg",
             "request": "launch",

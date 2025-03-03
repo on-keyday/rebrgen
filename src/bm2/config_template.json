@@ -53,6 +53,6 @@
     "algebraic_variant_type": "std::variant<{}>",
     "algebraic_variant_separator": ",",
     "check_union_condition": "std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
-    "check_union_fail_return_value": "false",
+    "check_union_fail_return_at_encoder": "false",
     "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()"
 }

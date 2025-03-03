@@ -120,6 +120,8 @@ namespace rebgn {
             case AbstractOp::DEFINE_PROPERTY:
             case AbstractOp::DECLARE_PROPERTY:
             case AbstractOp::END_PROPERTY:
+            case AbstractOp::DEFINE_PROPERTY_GETTER:
+            case AbstractOp::DEFINE_PROPERTY_SETTER:
                 return true;
             default:
                 return false;
@@ -131,8 +133,6 @@ namespace rebgn {
             case AbstractOp::DEFINE_PROGRAM:
             case AbstractOp::END_PROGRAM:
             case AbstractOp::DECLARE_PROGRAM:
-            case AbstractOp::DEFINE_PROPERTY_GETTER:
-            case AbstractOp::DEFINE_PROPERTY_SETTER:
             case AbstractOp::CONDITIONAL_FIELD:
             case AbstractOp::CONDITIONAL_PROPERTY:
             case AbstractOp::MERGED_CONDITIONAL_FIELD:

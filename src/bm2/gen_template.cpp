@@ -402,9 +402,7 @@ namespace rebgn {
             inner_function.writeln("auto vector_ref = code.left_ref().value();");
             inner_function.writeln("auto new_element_ref = code.right_ref().value();");
             inner_function.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
-            // inner_function.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
             inner_function.writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
-            // inner_function.writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
             func_hook([&] {
                 if (flags.surrounded_append_method) {
                     inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
@@ -436,7 +434,6 @@ namespace rebgn {
             }
             inner_function.writeln("auto type = type_to_string(ctx,type_ref);");
             inner_function.writeln("auto init = eval(ctx.ref(init_ref), ctx);");
-            // inner_function.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
             func_hook([&] {
                 if (flags.omit_type_on_define_var) {
                     inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, init.result));");
@@ -450,8 +447,6 @@ namespace rebgn {
                     }
                 }
             });
-            // inner_function.writeln("auto evaluated = eval(code, ctx);");
-            // inner_function.writeln("w.writeln(evaluated[evaluated.size() - 2]);");
         }
         else if (op == AbstractOp::BEGIN_ENCODE_PACKED_OPERATION || op == AbstractOp::BEGIN_DECODE_PACKED_OPERATION ||
                  op == AbstractOp::END_ENCODE_PACKED_OPERATION || op == AbstractOp::END_DECODE_PACKED_OPERATION) {
@@ -645,10 +640,15 @@ namespace rebgn {
             inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
             inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
             inner_function.writeln("auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);");
+            if (op == AbstractOp::CHECK_UNION) {
+                inner_function.writeln("auto check_type = code.check_at().value();");
+            }
             func_hook([&] {
                 std::map<std::string, std::string> map{
                     {"MEMBER_IDENT", "\",union_member_ident,\""},
+                    {"MEMBER_FULL_IDENT", "\",type_accessor(ctx.ref(union_member_ref),ctx),\""},
                     {"UNION_IDENT", "\",union_ident,\""},
+                    {"UNION_FULL_IDENT", "\",type_accessor(ctx.ref(union_ref),ctx),\""},
                     {"FIELD_IDENT", "\",union_field_ident.result,\""},
                     {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
                 };
@@ -657,8 +657,22 @@ namespace rebgn {
                                        escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
                 inner_function.writeln("auto scope = w.indent_scope_ex();");
                 if (op == AbstractOp::CHECK_UNION) {
+                    inner_function.writeln("if(check_type == rebgn::UnionCheckAt::ENCODER) {");
+                    auto encoder_scope = inner_function.indent_scope();
                     auto ret = env_escape(flags.check_union_fail_return_value, map);
                     inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
+                    encoder_scope.execute();
+                    inner_function.writeln("}");
+                    inner_function.writeln("else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_PTR) {");
+                    auto property_getter_ptr_scope = inner_function.indent_scope();
+                    inner_function.writeln("w.writeln(\"return ", flags.empty_pointer, flags.end_of_statement, "\");");
+                    property_getter_ptr_scope.execute();
+                    inner_function.writeln("}");
+                    inner_function.writeln("else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {");
+                    auto property_getter_optional_scope = inner_function.indent_scope();
+                    inner_function.writeln("w.writeln(\"return ", flags.empty_optional, flags.end_of_statement, "\");");
+                    property_getter_optional_scope.execute();
+                    inner_function.writeln("}");
                 }
                 else {
                     auto switch_union = env_escape(flags.switch_union, map);
@@ -753,14 +767,21 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_UNION || op == AbstractOp::DEFINE_UNION_MEMBER ||
                  op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_BIT_FIELD) {
             add_start([&] {
+                field_accessor.writeln("auto ident = ctx.ident(code.ident().value());");
                 field_accessor.writeln("auto belong = code.belong().value();");
                 field_accessor.writeln("auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
+                if (op == AbstractOp::DEFINE_UNION_MEMBER) {
+                    field_accessor.writeln("auto union_member_ref = code.ident().value();");
+                    field_accessor.writeln("auto union_ref = belong;");
+                    field_accessor.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
+                    field_accessor.writeln("auto union_field_belong = ctx.ref(union_field_ref).belong().value();");
+                }
                 field_accessor_hook([&] {
                     field_accessor.writeln("if(is_member) {");
                     auto scope = field_accessor.indent_scope();
                     field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
                     field_accessor_hook([&] {
-                        field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ctx.ident(code.ident().value())));");
+                        field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ident));");
                     },
                                         bm2::HookFileSub::field);
                     scope.execute();
@@ -768,7 +789,7 @@ namespace rebgn {
                     field_accessor.writeln("else {");
                     auto scope2 = field_accessor.indent_scope();
                     field_accessor_hook([&] {
-                        field_accessor.writeln("result = make_eval_result(ctx.ident(code.ident().value()));");
+                        field_accessor.writeln("result = make_eval_result(ident);");
                     },
                                         bm2::HookFileSub::self);
                     scope2.execute();
@@ -776,25 +797,34 @@ namespace rebgn {
                 });
             });
             add_type_start([&] {
+                type_accessor.writeln("auto ident = ctx.ident(code.ident().value());");
                 type_accessor.writeln("auto belong = code.belong().value();");
                 type_accessor.writeln("auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
-                type_accessor.writeln("if(is_member) {");
-                auto scope = type_accessor.indent_scope();
-                type_accessor.writeln("auto belong_eval = type_accessor(ctx.ref(belong), ctx);");
+                if (op == AbstractOp::DEFINE_UNION_MEMBER) {
+                    type_accessor.writeln("auto union_member_ref = code.ident().value();");
+                    type_accessor.writeln("auto union_ref = belong;");
+                    type_accessor.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
+                    type_accessor.writeln("auto union_field_belong = ctx.ref(union_field_ref).belong().value();");
+                }
                 type_accessor_hook([&] {
-                    type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ctx.ident(code.ident().value()));");
-                },
-                                   bm2::HookFileSub::field);
-                scope.execute();
-                type_accessor.writeln("}");
-                type_accessor.writeln("else {");
-                auto scope2 = type_accessor.indent_scope();
-                type_accessor_hook([&] {
-                    type_accessor.writeln("result = ctx.ident(code.ident().value());");
-                },
-                                   bm2::HookFileSub::self);
-                scope2.execute();
-                type_accessor.writeln("}");
+                    type_accessor.writeln("if(is_member) {");
+                    auto scope = type_accessor.indent_scope();
+                    type_accessor.writeln("auto belong_eval = type_accessor(ctx.ref(belong), ctx);");
+                    type_accessor_hook([&] {
+                        type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ident);");
+                    },
+                                       bm2::HookFileSub::field);
+                    scope.execute();
+                    type_accessor.writeln("}");
+                    type_accessor.writeln("else {");
+                    auto scope2 = type_accessor.indent_scope();
+                    type_accessor_hook([&] {
+                        type_accessor.writeln("result = ident;");
+                    },
+                                       bm2::HookFileSub::self);
+                    scope2.execute();
+                    type_accessor.writeln("}");
+                });
             });
         }
     }
@@ -896,6 +926,11 @@ namespace rebgn {
                 inner_block.indent_writeln("defer.pop_back();");
                 inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
             });
+        }
+        else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
+            inner_block.writeln("auto func = code.right_ref().value();");
+            inner_block.writeln("auto func_range = ctx.range(func);");
+            block_hook([&] {});
         }
         else {
             block_hook([&] {
@@ -1596,6 +1631,7 @@ namespace rebgn {
         type_accessor.writeln("}");  // close default
         type_accessor.writeln("}");  // close switch
         scope_type_accessor.execute();
+        type_accessor.writeln("return result;");
         type_accessor.writeln("}");  // close function
 
         inner_function.writeln("default: {");
@@ -1825,6 +1861,8 @@ namespace rebgn {
         auto scope_to_xxx = w.indent_scope();
         w.writeln("Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
         auto scope_escape_key_ident = w.indent_scope();
+        w.writeln("auto& code = ctx.ref(rebgn::Varint{id});");
+        may_write_from_hook(w, flags, bm2::HookFile::escape_ident, false);
         w.writeln("return escape_", flags.lang_name, "_keyword(str);");
         scope_escape_key_ident.execute();
         w.writeln("}};");

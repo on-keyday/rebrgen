@@ -1,0 +1,2 @@
+auto belong_type = type_accessor(ctx.ref(union_field_belong),ctx);
+result = std::format("{}.{}",belong_type,ident);

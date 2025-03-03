@@ -7,6 +7,7 @@ enum HookFile:
     bm_context = "bm_context" # bm2xx::Context definitions
     flags = "flags" # command line flags definitions
     eval_result = "eval_result" # bm2xx::EvalResult definitions
+    escape_ident = "escape_ident" # escape identifier
 
     each_inner_block = "each_inner_block" # each inner block
     each_inner_function = "each_inner_function" # each inner function
@@ -31,7 +32,7 @@ enum HookFile:
 
 # this is used with {} placeholder in HookFile
 # for example, AbstractOp::BINARY,
-# HookFile.eval_op + HookFileSub.op -> "eval_binary_op"
+# HookFile.eval_op + AbstractOp.BINARY + HookFileSub.op -> "eval_binary_op"
 enum HookFileSub:
     main = "" # main hook
     op = "_op" # binary or unary operator modification hook

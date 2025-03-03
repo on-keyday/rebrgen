@@ -51,7 +51,7 @@
     "match_keyword": "match",
     "match_case_keyword": "case",
     "match_default_keyword": "case _",
-    "check_union_condition": "not isinstance($FIELD_IDENT, $MEMBER_IDENT)",
+    "check_union_condition": "not isinstance($FIELD_IDENT, $MEMBER_FULL_IDENT)",
     "check_union_fail_return_value": "False",
-    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()"
+    "switch_union": "$FIELD_IDENT = $MEMBER_FULL_IDENT()"
 }

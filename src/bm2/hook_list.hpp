@@ -21,24 +21,25 @@ namespace bm2 {
         bm_context = 4,
         flags = 5,
         eval_result = 6,
-        each_inner_block = 7,
-        each_inner_function = 8,
-        inner_function_start = 9,
-        inner_function_each_code = 10,
-        inner_block_start = 11,
-        inner_block_each_code = 12,
-        param_start = 13,
-        param_each_code = 14,
-        call_param_start = 15,
-        call_param_each_code = 16,
-        inner_function_op = 17,
-        inner_block_op = 18,
-        eval_op = 19,
-        type_op = 20,
-        param_op = 21,
-        call_param_op = 22,
-        field_accessor_op = 23,
-        type_accessor_op = 24,
+        escape_ident = 7,
+        each_inner_block = 8,
+        each_inner_function = 9,
+        inner_function_start = 10,
+        inner_function_each_code = 11,
+        inner_block_start = 12,
+        inner_block_each_code = 13,
+        param_start = 14,
+        param_each_code = 15,
+        call_param_start = 16,
+        call_param_each_code = 17,
+        inner_function_op = 18,
+        inner_block_op = 19,
+        eval_op = 20,
+        type_op = 21,
+        param_op = 22,
+        call_param_op = 23,
+        field_accessor_op = 24,
+        type_accessor_op = 25,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -56,6 +57,8 @@ namespace bm2 {
                 return "flags";
             case HookFile::eval_result:
                 return "eval_result";
+            case HookFile::escape_ident:
+                return "escape_ident";
             case HookFile::each_inner_block:
                 return "each_inner_block";
             case HookFile::each_inner_function:
@@ -120,6 +123,9 @@ namespace bm2 {
         }
         if (str == "eval_result") {
             return HookFile::eval_result;
+        }
+        if (str == "escape_ident") {
+            return HookFile::escape_ident;
         }
         if (str == "each_inner_block") {
             return HookFile::each_inner_block;

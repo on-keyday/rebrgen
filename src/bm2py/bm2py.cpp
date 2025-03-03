@@ -20,6 +20,7 @@ namespace bm2py {
         return EvalResult{std::move(result)};
     }
     EvalResult field_accessor(const rebgn::Code& code, Context& ctx);
+    std::string type_accessor(const rebgn::Code& code, Context& ctx);
     EvalResult eval(const rebgn::Code& code, Context& ctx);
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {
         if (s.storages.size() <= index) {
@@ -150,39 +151,40 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
+            auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
             if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
-                result = make_eval_result(ctx.ident(code.ident().value()));
+                result = make_eval_result(ident);
             }
             break;
         }
         case rebgn::AbstractOp::DEFINE_UNION: {
+            auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
             if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
-                result = make_eval_result(ctx.ident(code.ident().value()));
+                result = make_eval_result(ident);
             }
             break;
         }
         case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
+            auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-            if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
-            }
-            else {
-                result = make_eval_result(ctx.ident(code.ident().value()));
-            }
+            auto union_member_ref = code.ident().value();
+            auto union_ref = belong;
+            auto union_field_ref = ctx.ref(union_ref).belong().value();
+            auto union_field_belong = ctx.ref(union_field_ref).belong().value();
+            result = field_accessor(ctx.ref(union_field_ref),ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
@@ -190,20 +192,91 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+            auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
             if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ctx.ident(code.ident().value())));
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
-                result = make_eval_result(ctx.ident(code.ident().value()));
+                result = make_eval_result(ident);
             }
             break;
         }
         default: {
             result = make_eval_result(std::format("{}{}{}","\"\"\"",to_string(code.op),"\"\"\""));
             break;
+        }
+        }
+    return result;
+    }
+    std::string type_accessor(const rebgn::Code& code, Context& ctx) {
+        std::string result;
+        switch(code.op) {
+        case rebgn::AbstractOp::DEFINE_FORMAT: {
+        auto ident = ctx.ident(code.ident().value());
+        result = ident;
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_FIELD: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            result = std::format("{}.{}", belong_eval, ident);
+        }
+        else {
+            result = ident;
+        }
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_UNION: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            result = std::format("{}.{}", belong_eval, ident);
+        }
+        else {
+            result = ident;
+        }
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        auto union_member_ref = code.ident().value();
+        auto union_ref = belong;
+        auto union_field_ref = ctx.ref(union_ref).belong().value();
+        auto union_field_belong = ctx.ref(union_field_ref).belong().value();
+        auto belong_type = type_accessor(ctx.ref(union_field_belong),ctx);
+        result = std::format("{}.{}",belong_type,ident);
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_STATE: {
+        auto ident = ctx.ident(code.ident().value());
+        result = ident;
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            result = std::format("{}.{}", belong_eval, ident);
+        }
+        else {
+            result = ident;
+        }
+        break;
+        }
+        default: {
+            return std::format("{}{}{}","\"\"\"",to_string(code.op),"\"\"\"");
         }
         }
     return result;
@@ -591,6 +664,18 @@ namespace bm2py {
                 auto ref = code.ref().value();
                 auto range = ctx.range(ref);
                 inner_block(ctx, w, range);
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
+            auto func = code.right_ref().value();
+            auto func_range = ctx.range(func);
+            inner_function(ctx,w,func_range);
+                break;
+            }
+            case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
+            auto func = code.right_ref().value();
+            auto func_range = ctx.range(func);
+            inner_function(ctx,w,func_range);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
@@ -1086,9 +1171,9 @@ namespace bm2py {
                 auto union_member_ident = ctx.ident(union_member_ref);
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
-                w.writeln("if isinstance(",union_field_ident.result,", ",union_member_ident,") :");
+                w.writeln("if not isinstance(",union_field_ident.result,", ",type_accessor(ctx.ref(union_member_ref),ctx),") :");
                 auto scope = w.indent_scope_ex();
-                w.writeln("",union_field_ident.result," = ",union_member_ident,"()");
+                w.writeln("",union_field_ident.result," = ",type_accessor(ctx.ref(union_member_ref),ctx),"()");
                 scope.execute();
                 w.writeln("");
                 break;
@@ -1101,9 +1186,18 @@ namespace bm2py {
                 auto union_member_ident = ctx.ident(union_member_ref);
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
-                w.writeln("if isinstance(",union_field_ident.result,", ",union_member_ident,") :");
+                auto check_type = code.check_at().value();
+                w.writeln("if not isinstance(",union_field_ident.result,", ",type_accessor(ctx.ref(union_member_ref),ctx),") :");
                 auto scope = w.indent_scope_ex();
-                w.writeln("return False");
+                if(check_type == rebgn::UnionCheckAt::ENCODER) {
+                    w.writeln("return False");
+                }
+                else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_PTR) {
+                    w.writeln("return None");
+                }
+                else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {
+                    w.writeln("return None");
+                }
                 scope.execute();
                 w.writeln("");
                 break;
@@ -1157,6 +1251,7 @@ namespace bm2py {
     }
     void to_py(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+            auto& code = ctx.ref(rebgn::Varint{id});
             return escape_py_keyword(str);
         }};
         // search metadata

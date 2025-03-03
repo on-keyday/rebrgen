@@ -389,6 +389,1000 @@ namespace rebgn {
         });
     }
 
+    void write_inner_function(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
+        inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+        auto scope = inner_function.indent_scope();
+        auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (!may_write_from_hook(inner_function, flags, bm2::HookFile::inner_function_op, op, stage)) {
+                inner();
+            }
+        };
+        func_hook([&] {}, bm2::HookFileSub::before);
+        if (op == AbstractOp::APPEND) {
+            inner_function.writeln("auto vector_ref = code.left_ref().value();");
+            inner_function.writeln("auto new_element_ref = code.right_ref().value();");
+            inner_function.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
+            // inner_function.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
+            inner_function.writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
+            // inner_function.writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
+            func_hook([&] {
+                if (flags.surrounded_append_method) {
+                    inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                }
+                else {
+                    inner_function.writeln("w.writeln(vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                }
+            });
+        }
+        else if (op == AbstractOp::ASSIGN) {
+            inner_function.writeln("auto left_ref = code.left_ref().value();");
+            inner_function.writeln("auto right_ref = code.right_ref().value();");
+            inner_function.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+            inner_function.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"\", left_eval.result, \" = \", right_eval.result, \"", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_VARIABLE || op == AbstractOp::DECLARE_VARIABLE) {
+            if (op == AbstractOp::DECLARE_VARIABLE) {
+                inner_function.writeln("auto ident = ctx.ident(code.ref().value());");
+                inner_function.writeln("auto init_ref = ctx.ref(code.ref().value()).ref().value();");
+                inner_function.writeln("auto type_ref = ctx.ref(code.ref().value()).type().value();");
+            }
+            else {
+                inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
+                inner_function.writeln("auto init_ref = code.ref().value();");
+                inner_function.writeln("auto type_ref = code.type().value();");
+            }
+            inner_function.writeln("auto type = type_to_string(ctx,type_ref);");
+            inner_function.writeln("auto init = eval(ctx.ref(init_ref), ctx);");
+            // inner_function.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
+            func_hook([&] {
+                if (flags.omit_type_on_define_var) {
+                    inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, init.result));");
+                }
+                else {
+                    if (flags.prior_ident) {
+                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, type, init.result));");
+                    }
+                    else {
+                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\",type, ident, init.result));");
+                    }
+                }
+            });
+            // inner_function.writeln("auto evaluated = eval(code, ctx);");
+            // inner_function.writeln("w.writeln(evaluated[evaluated.size() - 2]);");
+        }
+        else if (op == AbstractOp::BEGIN_ENCODE_PACKED_OPERATION || op == AbstractOp::BEGIN_DECODE_PACKED_OPERATION ||
+                 op == AbstractOp::END_ENCODE_PACKED_OPERATION || op == AbstractOp::END_DECODE_PACKED_OPERATION) {
+            inner_function.writeln("auto fallback = ctx.bm.code[i].fallback().value();");
+            func_hook([&] {
+                inner_function.writeln("if(fallback.value() != 0) {");
+                auto scope = inner_function.indent_scope();
+                inner_function.writeln("auto range = ctx.range(fallback);");
+                func_hook([&] {
+                    inner_function.writeln("inner_function(ctx, w, range);");
+                },
+                          bm2::HookFileSub::fallback);
+                scope.execute();
+                inner_function.writeln("}");
+                inner_function.writeln("else {");
+                auto scope2 = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                },
+                          bm2::HookFileSub::no_fallback);
+                scope2.execute();
+                inner_function.writeln("}");
+            });
+        }
+        else if (op == AbstractOp::ASSERT) {
+            inner_function.writeln("auto evaluated = eval(ctx.ref(code.ref().value()), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"assert(\", evaluated.result, \")", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::EXPLICIT_ERROR) {
+            inner_function.writeln("auto param = code.param().value();");
+            inner_function.writeln("auto evaluated = eval(ctx.ref(param.refs[0]), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"throw std::runtime_error(\", evaluated.result, \")", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
+                 op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
+                 op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION ||
+                 op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
+                 op == AbstractOp::CASE || op == AbstractOp::DEFAULT_CASE) {
+            if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION ||
+                op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
+                op == AbstractOp::CASE) {
+                inner_function.writeln("auto ref = code.ref().value();");
+                inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+            }
+            if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                inner_function.writeln("defer.pop_back();");
+            }
+
+            if (op == AbstractOp::DEFINE_FUNCTION) {
+                inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
+                inner_function.writeln("auto range = ctx.range(code.ident().value());");
+                inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
+                inner_function.writeln("std::optional<std::string> type;");
+                inner_function.writeln("if(found_type_pos) {");
+                {
+                    auto inner_scope = inner_function.indent_scope();
+                    inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].type().value();");
+                    inner_function.writeln("type = type_to_string(ctx,type_ref);");
+                }
+                inner_function.writeln("}");
+                func_hook([&] {
+                    inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
+                    if (!flags.trailing_return_type) {
+                        inner_function.writeln("if(type) {");
+                        inner_function.indent_writeln("w.write(*type);");
+                        inner_function.writeln("}");
+                        inner_function.writeln("else {");
+                        inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
+                        inner_function.writeln("}");
+                    }
+                    inner_function.writeln("w.write(\" \", ident, \"", flags.func_brace_ident_separator, "(\");");
+                    inner_function.writeln("add_parameter(ctx, w, range);");
+                    inner_function.writeln("w.write(\") \");");
+                    if (flags.trailing_return_type) {
+                        inner_function.writeln("if(type) {");
+                        inner_function.indent_writeln("w.write(\"", flags.func_type_separator, "\", *type);");
+                        inner_function.writeln("}");
+                        inner_function.writeln("else {");
+                        inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
+                        inner_function.writeln("}");
+                    }
+                });
+                inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
+            }
+            else {
+                func_hook([&] {
+                    if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                    }
+                    inner_function.write("w.writeln(\"");
+                    std::string condition = "\",evaluated.result,\"";
+                    if (flags.condition_has_parentheses) {
+                        condition = "(" + condition + ")";
+                    }
+                    switch (op) {
+                        case AbstractOp::IF:
+                            inner_function.write(flags.if_keyword, " ", condition, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::ELIF:
+                            inner_function.write(flags.elif_keyword, " ", condition, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::ELSE:
+                            inner_function.write(flags.else_keyword, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::LOOP_INFINITE:
+                            inner_function.write(flags.infinity_loop, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::LOOP_CONDITION:
+                            inner_function.write(flags.conditional_loop, " ", condition, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::MATCH:
+                        case AbstractOp::EXHAUSTIVE_MATCH:
+                            inner_function.write(flags.match_keyword, " ", condition, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::CASE:
+                            inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.block_begin);
+                            break;
+                        case AbstractOp::DEFAULT_CASE:
+                            inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
+                            break;
+                    }
+                    inner_function.writeln("\");");
+                });
+            }
+            inner_function.writeln("defer.push_back(w.indent_scope_ex());");
+        }
+        else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
+                 op == AbstractOp::END_FUNCTION || op == AbstractOp::END_MATCH ||
+                 op == AbstractOp::END_CASE) {
+            inner_function.writeln("defer.pop_back();");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+            });
+        }
+        else if (op == AbstractOp::CONTINUE) {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"continue", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::BREAK) {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"break", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::RET) {
+            inner_function.writeln("auto ref = code.ref().value();");
+            inner_function.writeln("if(ref.value() != 0) {");
+            auto scope = inner_function.indent_scope();
+            inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"return \", evaluated.result, \"", flags.end_of_statement, "\");");
+            },
+                      bm2::HookFileSub::value);
+            scope.execute();
+            inner_function.writeln("}");
+            inner_function.writeln("else {");
+            auto else_scope = inner_function.indent_scope();
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"return", flags.end_of_statement, "\");");
+            },
+                      bm2::HookFileSub::empty);
+            else_scope.execute();
+            inner_function.writeln("}");
+        }
+        else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"return ", flags.true_literal, flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"return ", flags.false_literal, flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::INC) {
+            inner_function.writeln("auto ref = code.ref().value();");
+            inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(evaluated.result, \"+= 1", flags.end_of_statement, "\");");
+            });
+        }
+        else if (op == AbstractOp::CHECK_UNION || op == AbstractOp::SWITCH_UNION) {
+            inner_function.writeln("auto union_member_ref = code.ref().value();");
+            inner_function.writeln("auto union_ref = ctx.ref(union_member_ref).belong().value();");
+            inner_function.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
+            inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value().value();");
+            inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
+            inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
+            inner_function.writeln("auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);");
+            func_hook([&] {
+                std::map<std::string, std::string> map{
+                    {"MEMBER_IDENT", "\",union_member_ident,\""},
+                    {"UNION_IDENT", "\",union_ident,\""},
+                    {"FIELD_IDENT", "\",union_field_ident.result,\""},
+                    {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
+                };
+                auto escaped = env_escape(flags.check_union_condition, map);
+                inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
+                                       escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
+                inner_function.writeln("auto scope = w.indent_scope_ex();");
+                if (op == AbstractOp::CHECK_UNION) {
+                    auto ret = env_escape(flags.check_union_fail_return_value, map);
+                    inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
+                }
+                else {
+                    auto switch_union = env_escape(flags.switch_union, map);
+                    inner_function.writeln("w.writeln(\"", switch_union, flags.end_of_statement, "\");");
+                }
+                inner_function.writeln("scope.execute();");
+                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+            });
+        }
+        else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
+                 op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
+                 op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
+                 op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
+            inner_function.writeln("auto fallback = code.fallback().value();");
+            func_hook([&] {
+                inner_function.writeln("if(fallback.value() != 0) {");
+                auto indent = inner_function.indent_scope();
+                inner_function.writeln("auto range = ctx.range(fallback);");
+                func_hook([&] {
+                    inner_function.writeln("inner_function(ctx, w, range);");
+                },
+                          bm2::HookFileSub::fallback);
+                indent.execute();
+                inner_function.writeln("}");
+                inner_function.writeln("else {");
+                auto indent2 = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                },
+                          bm2::HookFileSub::no_fallback);
+                indent2.execute();
+                inner_function.writeln("}");
+            });
+        }
+        else {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+            });
+        }
+        func_hook([&] {}, bm2::HookFileSub::after);
+        inner_function.writeln("break;");
+        scope.execute();
+        inner_function.writeln("}");
+    }
+
+    void write_field_accessor(bm2::TmpCodeWriter& field_accessor, bm2::TmpCodeWriter& type_accessor, AbstractOp op, Flags& flags) {
+        auto field_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (!may_write_from_hook(field_accessor, flags, bm2::HookFile::field_accessor_op, op, stage)) {
+                inner();
+            }
+        };
+
+        auto add_start = [&](auto&& inner) {
+            field_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+            auto scope = field_accessor.indent_scope();
+            field_accessor_hook([&] {}, bm2::HookFileSub::before);
+            inner();
+            field_accessor_hook([&] {}, bm2::HookFileSub::after);
+            field_accessor.writeln("break;");
+            scope.execute();
+            field_accessor.writeln("}");
+        };
+
+        auto type_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (!may_write_from_hook(type_accessor, flags, bm2::HookFile::type_accessor_op, op, stage)) {
+                inner();
+            }
+        };
+        auto add_type_start = [&](auto&& inner) {
+            type_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+            auto scope = field_accessor.indent_scope();
+            type_accessor_hook([&] {}, bm2::HookFileSub::before);
+            inner();
+            type_accessor_hook([&] {}, bm2::HookFileSub::after);
+            type_accessor.writeln("break;");
+            scope.execute();
+            type_accessor.writeln("}");
+        };
+        if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
+            add_start([&] {
+                field_accessor_hook([&] {
+                    field_accessor.writeln("result = make_eval_result(ctx.this_());");
+                });
+            });
+            add_type_start([&] {
+                type_accessor.writeln("auto ident = ctx.ident(code.ident().value());");
+                type_accessor_hook([&] {
+                    type_accessor.writeln("result = ident;");
+                });
+            });
+        }
+        else if (op == AbstractOp::DEFINE_UNION || op == AbstractOp::DEFINE_UNION_MEMBER ||
+                 op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_BIT_FIELD) {
+            add_start([&] {
+                field_accessor.writeln("auto belong = code.belong().value();");
+                field_accessor.writeln("auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
+                field_accessor_hook([&] {
+                    field_accessor.writeln("if(is_member) {");
+                    auto scope = field_accessor.indent_scope();
+                    field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
+                    field_accessor_hook([&] {
+                        field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ctx.ident(code.ident().value())));");
+                    },
+                                        bm2::HookFileSub::field);
+                    scope.execute();
+                    field_accessor.writeln("}");
+                    field_accessor.writeln("else {");
+                    auto scope2 = field_accessor.indent_scope();
+                    field_accessor_hook([&] {
+                        field_accessor.writeln("result = make_eval_result(ctx.ident(code.ident().value()));");
+                    },
+                                        bm2::HookFileSub::self);
+                    scope2.execute();
+                    field_accessor.writeln("}");
+                });
+            });
+            add_type_start([&] {
+                type_accessor.writeln("auto belong = code.belong().value();");
+                type_accessor.writeln("auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
+                type_accessor.writeln("if(is_member) {");
+                auto scope = type_accessor.indent_scope();
+                type_accessor.writeln("auto belong_eval = type_accessor(ctx.ref(belong), ctx);");
+                type_accessor_hook([&] {
+                    type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ctx.ident(code.ident().value()));");
+                },
+                                   bm2::HookFileSub::field);
+                scope.execute();
+                type_accessor.writeln("}");
+                type_accessor.writeln("else {");
+                auto scope2 = type_accessor.indent_scope();
+                type_accessor_hook([&] {
+                    type_accessor.writeln("result = ctx.ident(code.ident().value());");
+                },
+                                   bm2::HookFileSub::self);
+                scope2.execute();
+                type_accessor.writeln("}");
+            });
+        }
+    }
+
+    void write_inner_block(bm2::TmpCodeWriter& inner_block,
+                           AbstractOp op, Flags& flags) {
+        inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+        auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (!may_write_from_hook(inner_block, flags, bm2::HookFile::inner_block_op, op, stage)) {
+                inner();
+            }
+        };
+        block_hook([&] {}, bm2::HookFileSub::before);
+        if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
+            op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
+            op == AbstractOp::DECLARE_FUNCTION) {
+            inner_block.indent_writeln("auto ref = code.ref().value();");
+            inner_block.indent_writeln("auto range = ctx.range(ref);");
+            if (op == AbstractOp::DECLARE_FUNCTION) {
+                block_hook([&] {});  // do nothing
+            }
+            else {
+                block_hook([&] {
+                    inner_block.indent_writeln("inner_block(ctx, w, range);");
+                });
+            }
+        }
+        else if (op == AbstractOp::DEFINE_PROPERTY ||
+                 op == AbstractOp::END_PROPERTY) {
+            block_hook([&] {});  // do nothing
+        }
+        else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
+            inner_block.indent_writeln("auto ref = code.ref().value();");
+            inner_block.indent_writeln("auto range = ctx.range(ref);");
+            block_hook([&] {
+                inner_block.indent_writeln("TmpCodeWriter inner_w;");
+                inner_block.indent_writeln("inner_block(ctx, inner_w, range);");
+                inner_block.indent_writeln("ctx.cw.write_unformatted(inner_w.out());");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {
+            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            block_hook([&] {
+                inner_block.indent_writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_UNION) {
+            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            block_hook([&] {
+                if (flags.variant_mode == "union") {
+                    inner_block.indent_writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
+                    inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                }
+            });
+        }
+        else if (op == AbstractOp::END_UNION) {
+            block_hook([&] {
+                if (flags.variant_mode == "union") {
+                    inner_block.indent_writeln("defer.pop_back();");
+                    inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
+                }
+            });
+        }
+        else if (op == AbstractOp::DEFINE_ENUM) {
+            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            block_hook([&] {
+                inner_block.indent_writeln("w.writeln(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
+            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.indent_writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
+            block_hook([&] {
+                inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_FIELD) {
+            inner_block.indent_writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
+            auto scope = inner_block.indent_scope();
+            inner_block.indent_writeln("break;");
+            scope.execute();
+            inner_block.indent_writeln("}");
+            inner_block.indent_writeln("auto type = type_to_string(ctx, code.type().value());");
+            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            block_hook([&] {
+                if (flags.prior_ident) {
+                    inner_block.indent_writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
+                }
+                else {
+                    inner_block.indent_writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                }
+            });
+        }
+        else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE ||
+                 op == AbstractOp::END_UNION_MEMBER) {
+            block_hook([&] {
+                inner_block.indent_writeln("defer.pop_back();");
+                inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
+            });
+        }
+        else {
+            block_hook([&] {
+                inner_block.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+            });
+        }
+        block_hook([&] {}, bm2::HookFileSub::after);
+        inner_block.indent_writeln("break;");
+        inner_block.writeln("}");
+    }
+
+    void write_eval(bm2::TmpCodeWriter& eval, AbstractOp op, Flags& flags) {
+        eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+        auto scope = eval.indent_scope();
+        auto eval_hook = [&](auto&& default_action, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (!may_write_from_hook(eval, flags, bm2::HookFile::eval_op, op, stage)) {
+                default_action();
+            }
+        };
+        eval_hook([&] {}, bm2::HookFileSub::before);
+        if (op == AbstractOp::BINARY) {
+            eval.writeln("auto op = code.bop().value();");
+            eval.writeln("auto left_ref = code.left_ref().value();");
+            eval.writeln("auto right_ref = code.right_ref().value();");
+            eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+            eval.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+            eval.writeln("auto opstr = to_string(op);");
+            eval_hook([&] {
+                eval_hook([&] {}, bm2::HookFileSub::op);
+                eval.writeln("result = make_eval_result(std::format(\"({} {} {})\", left_eval.result, opstr, right_eval.result));");
+            });
+        }
+        else if (op == AbstractOp::UNARY) {
+            eval.writeln("auto op = code.uop().value();");
+            eval.writeln("auto ref = code.ref().value();");
+            eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
+            eval.writeln("auto opstr = to_string(op);");
+            eval_hook([&] {
+                eval_hook([&] {}, bm2::HookFileSub::op);
+                eval.writeln("result = make_eval_result(std::format(\"({}{})\", opstr, target.result));");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_INT) {
+            eval.writeln("auto value = code.int_value()->value();");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_STRING) {
+            eval.writeln("auto str = ctx.string_table[code.ident().value().value()];");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_TRUE) {
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(\"", flags.true_literal, "\");");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_FALSE) {
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(\"", flags.false_literal, "\");");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_INT64) {
+            eval.writeln("auto value = *code.int_value64();");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_TYPE) {
+            eval.writeln("auto type = code.type().value();");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(type_to_string(ctx, type));");
+            });
+        }
+        else if (op == AbstractOp::IMMEDIATE_CHAR) {
+            eval.writeln("auto char_code = code.int_value()->value();");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}\", char_code));");
+            });
+        }
+        else if (op == AbstractOp::EMPTY_PTR) {
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(\"", flags.empty_pointer, "\");");
+            });
+        }
+        else if (op == AbstractOp::EMPTY_OPTIONAL) {
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(\"", flags.empty_optional, "\");");
+            });
+        }
+        else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
+                 op == AbstractOp::DEFINE_VARIABLE_REF ||
+                 op == AbstractOp::BEGIN_COND_BLOCK) {
+            eval.writeln("auto ref=code.ref().value();");
+            eval_hook([&] {
+                eval.writeln("return eval(ctx.ref(ref), ctx);");
+            });
+        }
+        else if (op == AbstractOp::ACCESS) {
+            eval.writeln("auto left_ref = code.left_ref().value();");
+            eval.writeln("auto right_ref = code.right_ref().value();");
+            eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+            eval.writeln("auto right_ident = ctx.ident(right_ref);");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}.{}\", left_eval.result, right_ident));");
+            });
+        }
+        else if (op == AbstractOp::INDEX) {
+            eval.writeln("auto left_ref = code.left_ref().value();");
+            eval.writeln("auto right_ref = code.right_ref().value();");
+            eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+            eval.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}[{}]\", left_eval.result, right_eval.result));");
+            });
+        }
+        else if (op == AbstractOp::ARRAY_SIZE) {
+            eval.writeln("auto vector_ref = code.ref().value();");
+            eval.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
+            eval_hook([&] {
+                if (flags.surrounded_size_method) {
+                    eval.writeln("result = make_eval_result(std::format(\"", flags.size_method, "({})\", vector_eval.result));");
+                }
+                else {
+                    eval.writeln("result = make_eval_result(std::format(\"{}.", flags.size_method, "()\", vector_eval.result));");
+                }
+            });
+        }
+        else if (op == AbstractOp::DEFINE_FIELD) {
+            eval.writeln("result = field_accessor(code, ctx);");
+        }
+        else if (op == AbstractOp::DEFINE_VARIABLE ||
+                 op == AbstractOp::DEFINE_PARAMETER ||
+                 op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
+            eval.writeln("auto ident = ctx.ident(code.ident().value());");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(ident);");
+            });
+        }
+        else if (op == AbstractOp::NEW_OBJECT) {
+            eval.writeln("auto type_ref = code.type().value();");
+            eval.writeln("auto type = type_to_string(ctx, type_ref);");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"{}()\", type));");
+            });
+        }
+        else if (op == AbstractOp::CAST) {
+            eval.writeln("auto type = code.type().value();");
+            eval.writeln("auto from_type = code.from_type().value();");
+            eval.writeln("auto ref = code.ref().value();");
+            eval.writeln("auto type_str = type_to_string(ctx, type);");
+            eval.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+            // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
+            eval_hook([&] {
+                if (flags.func_style_cast) {
+                    eval.writeln("result = make_eval_result(std::format(\"{}({})\", type_str, evaluated.result));");
+                }
+                else {
+                    eval.writeln("result = make_eval_result(std::format(\"({}){}\", type_str, evaluated.result));");
+                }
+            });
+        }
+        else if (op == AbstractOp::FIELD_AVAILABLE) {
+            eval.writeln("auto left_ref = code.left_ref().value();");
+            eval.writeln("if(left_ref.value() == 0) {");
+            auto scope_1 = eval.indent_scope();
+            eval.writeln("auto right_ref = code.right_ref().value();");
+            eval_hook([&] {
+                eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
+            },
+                      bm2::HookFileSub::self);
+            // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
+            scope_1.execute();
+            eval.writeln("}");
+            eval.writeln("else {");
+            auto scope_2 = eval.indent_scope();
+            eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
+            // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
+            eval.writeln("ctx.this_as.push_back(left_eval.result);");
+            eval.writeln("auto right_ref = code.right_ref().value();");
+            eval_hook([&] {
+                eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
+            },
+                      bm2::HookFileSub::field);
+            // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
+            eval.writeln("ctx.this_as.pop_back();");
+            scope_2.execute();
+            eval.writeln("}");
+        }
+        else {
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+            });
+        }
+        eval_hook([&] {}, bm2::HookFileSub::after);
+        eval.writeln("break;");
+        scope.execute();
+        eval.writeln("}");
+    }
+
+    void write_add_parameter(bm2::TmpCodeWriter& add_parameter,
+                             bm2::TmpCodeWriter& add_call_parameter,
+                             AbstractOp op, Flags& flags) {
+        if (op != AbstractOp::RETURN_TYPE) {
+            add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+            auto scope = add_parameter.indent_scope();
+            auto param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+                if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_op, op, stage)) {
+                    inner();
+                }
+            };
+            param_hook([&] {}, bm2::HookFileSub::before);
+            if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_each_code, false)) {
+                add_parameter.writeln("if(params > 0) {");
+                add_parameter.indent_writeln("w.write(\", \");");
+                add_parameter.writeln("}");
+            }
+            if (op == AbstractOp::PROPERTY_INPUT_PARAMETER ||
+                op == AbstractOp::DEFINE_PARAMETER ||
+                op == AbstractOp::STATE_VARIABLE_PARAMETER) {
+                if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
+                    add_parameter.writeln("auto ref = code.ref().value();");
+                    add_parameter.writeln("auto type = type_to_string(ctx,ctx.ref(ref).type().value());");
+                }
+                else {
+                    add_parameter.writeln("auto ref = code.ident().value();");
+                    add_parameter.writeln("auto type = type_to_string(ctx,code.type().value());");
+                }
+                add_parameter.writeln("auto ident = ctx.ident(ref);");
+                param_hook([&] {
+                    if (flags.prior_ident) {
+                        add_parameter.writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
+                    }
+                    else {
+                        add_parameter.writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
+                    }
+                    add_parameter.writeln("params++;");
+                });
+            }
+            else if (op == AbstractOp::ENCODER_PARAMETER) {
+                param_hook([&] {
+                    add_parameter.writeln("w.write(\"", flags.encoder_param, "\");");
+                    add_parameter.writeln("params++;");
+                });
+            }
+            else if (op == AbstractOp::DECODER_PARAMETER) {
+                param_hook([&] {
+                    add_parameter.writeln("w.write(\"", flags.decoder_param, "\");");
+                    add_parameter.writeln("params++;");
+                });
+            }
+            else {
+                param_hook([&] {
+                    add_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_parameter.writeln("params++;");
+                });
+            }
+            param_hook([&] {}, bm2::HookFileSub::after);
+            add_parameter.writeln("break;");
+            scope.execute();
+            add_parameter.writeln("}");
+
+            add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+            auto scope_call = add_call_parameter.indent_scope();
+            auto call_param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+                if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_op, op, stage)) {
+                    inner();
+                }
+            };
+            call_param_hook([&] {}, bm2::HookFileSub::before);
+            if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_each_code, false)) {
+                add_call_parameter.writeln("if(params > 0) {");
+                add_call_parameter.indent_writeln("w.write(\", \");");
+                add_call_parameter.writeln("}");
+            }
+            if (op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
+                add_call_parameter.writeln("auto ref = code.ident().value();");
+                add_call_parameter.writeln("auto ident = ctx.ident(ref);");
+                call_param_hook([&] {
+                    add_call_parameter.writeln("w.write(ident);");
+                    add_call_parameter.writeln("params++;");
+                });
+            }
+            else {
+                call_param_hook([&] {
+                    add_call_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                    add_call_parameter.writeln("params++;");
+                });
+            }
+            call_param_hook([&] {}, bm2::HookFileSub::after);
+            add_call_parameter.writeln("break;");
+            scope_call.execute();
+            add_call_parameter.writeln("}");
+        }
+    }
+
+    void write_type_to_string(bm2::TmpCodeWriter& type_to_string, StorageType type, Flags& flags) {
+        auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
+            if (may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, sub)) {
+                return;
+            }
+            default_action();
+        };
+        type_to_string.writeln(std::format("case rebgn::StorageType::{}: {{", to_string(type)));
+        auto scope_type = type_to_string.indent_scope();
+        type_hook([&] {}, bm2::HookFileSub::before);
+        if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
+            type_to_string.writeln("auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);");
+        }
+        if (type == StorageType::UINT || type == StorageType::INT || type == StorageType::FLOAT) {
+            type_to_string.writeln("auto size = storage.size().value().value();");
+            type_to_string.writeln("if (bit_size) {");
+            auto if_block_size = type_to_string.indent_scope();
+            type_to_string.writeln("*bit_size = size;");
+            if_block_size.execute();
+            type_to_string.writeln("}");
+            type_hook([&] {
+                if (type == StorageType::UINT) {
+                    type_to_string.writeln("if (size <= 8) {");
+                    auto if_block_size_8 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
+                    if_block_size_8.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 16) {");
+                    auto if_block_size_16 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
+                    if_block_size_16.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
+                else if (type == StorageType::INT) {
+                    type_to_string.writeln("if (size <= 8) {");
+                    auto if_block_size_8 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
+                    if_block_size_8.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 16) {");
+                    auto if_block_size_16 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
+                    if_block_size_16.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
+                else {
+                    type_to_string.writeln("if (size <= 32) {");
+                    auto if_block_size_32 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
+                    if_block_size_32.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("else {");
+                    auto if_block_size_64 = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
+                    if_block_size_64.execute();
+                    type_to_string.writeln("}");
+                }
+            });
+        }
+        else if (type == StorageType::STRUCT_REF) {
+            type_to_string.writeln("auto ref = storage.ref().value().value();");
+            type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+            type_hook([&] {
+                type_to_string.writeln("return ident;");
+            });
+        }
+        else if (type == StorageType::RECURSIVE_STRUCT_REF) {
+            type_to_string.writeln("auto ref = storage.ref().value().value();");
+            type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+            type_hook([&] {
+                type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
+            });
+        }
+        else if (type == StorageType::BOOL) {
+            type_hook([&] {
+                type_to_string.writeln("return \"", flags.bool_type, "\";");
+            });
+        }
+        else if (type == StorageType::ENUM) {
+            type_to_string.writeln("auto ref = storage.ref().value().value();");
+            type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
+            type_hook([&] {
+                type_to_string.writeln("return ident;");
+            });
+        }
+        else if (type == StorageType::VARIANT) {
+            type_to_string.writeln("auto ref = storage.ref().value();");
+            type_to_string.writeln("std::vector<std::string> types;");
+            type_to_string.writeln("for (size_t i = index + 1; i < s.storages.size(); i++) {");
+            auto scope_variant = type_to_string.indent_scope();
+            type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
+            scope_variant.execute();
+            type_to_string.writeln("}");
+            type_to_string.writeln("auto ident = ctx.ident(ref);");
+            type_hook([&] {
+                if (flags.variant_mode == "union") {
+                    type_to_string.writeln("return ident;");
+                }
+                else if (flags.variant_mode == "algebraic") {
+                    type_to_string.writeln("std::string result;");
+                    type_to_string.writeln("for (size_t i = 0; i < types.size(); i++) {");
+                    auto scope_variant_algebraic = type_to_string.indent_scope();
+                    type_to_string.writeln("if (i != 0) {");
+                    auto if_block_variant_algebraic = type_to_string.indent_scope();
+                    type_to_string.writeln("result += \" ", flags.algebraic_variant_separator, " \";");
+                    if_block_variant_algebraic.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("result += types[i];");
+                    scope_variant_algebraic.execute();
+                    type_to_string.writeln("}");
+                    type_to_string.writeln("return std::format(\"", flags.algebraic_variant_placeholder, "\", result);");
+                }
+            });
+        }
+        else if (type == StorageType::CODER_RETURN) {
+            type_hook([&] {
+                type_to_string.writeln("return \"", flags.coder_return_type, "\";");
+            });
+        }
+        else if (type == StorageType::PROPERTY_SETTER_RETURN) {
+            type_hook([&] {
+                type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
+            });
+        }
+        else if (type == StorageType::PTR) {
+            type_hook([&] {
+                type_to_string.writeln("return std::format(\"", flags.pointer_type_placeholder, "\", base_type);");
+            });
+        }
+        else if (type == StorageType::ARRAY) {
+            type_to_string.writeln("auto length = storage.size().value().value();");
+            type_hook([&] {
+                if (flags.array_has_one_placeholder) {
+                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type);");
+                }
+                else {
+                    type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type,length);");
+                }
+            });
+        }
+        else if (type == StorageType::VECTOR) {
+            type_to_string.writeln("bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;");
+            type_hook([&] {
+                if (flags.byte_vector_type.size()) {
+                    type_to_string.writeln("if (is_byte_vector) {");
+                    auto if_block_byte_vector = type_to_string.indent_scope();
+                    type_to_string.writeln("return \"", flags.byte_vector_type, "\";");
+                    if_block_byte_vector.execute();
+                    type_to_string.writeln("}");
+                }
+                type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
+            });
+        }
+        else if (type == StorageType::OPTIONAL) {
+            type_hook([&] {
+                type_to_string.writeln("return std::format(\"", flags.optional_type_placeholder, "\", base_type);");
+            });
+        }
+        type_hook([&] {}, bm2::HookFileSub::after);
+        scope_type.execute();
+        type_to_string.writeln("}");
+    }
+
     void write_impl_template(bm2::TmpCodeWriter& w, Flags& flags) {
         auto unimplemented_comment = [&](const std::string& op) {
             return "std::format(\"{}{}{}\",\"" + flags.comment_prefix + "\",to_string(" + op + "),\"" + flags.comment_suffix + "\")";
@@ -410,186 +1404,7 @@ namespace rebgn {
         auto switch_scope = type_to_string.indent_scope();
         for (size_t i = 0; to_string(StorageType(i))[0] != 0; i++) {
             auto type = StorageType(i);
-            auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
-                if (may_write_from_hook(w, flags, bm2::HookFile::type_op, type, sub)) {
-                    return;
-                }
-                default_action();
-            };
-            type_to_string.writeln(std::format("case rebgn::StorageType::{}: {{", to_string(type)));
-            auto scope_type = type_to_string.indent_scope();
-            type_hook([&] {}, bm2::HookFileSub::before);
-            if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
-                type_to_string.writeln("auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);");
-            }
-            if (type == StorageType::UINT || type == StorageType::INT || type == StorageType::FLOAT) {
-                type_to_string.writeln("auto size = storage.size().value().value();");
-                type_to_string.writeln("if (bit_size) {");
-                auto if_block_size = type_to_string.indent_scope();
-                type_to_string.writeln("*bit_size = size;");
-                if_block_size.execute();
-                type_to_string.writeln("}");
-                type_hook([&] {
-                    if (type == StorageType::UINT) {
-                        type_to_string.writeln("if (size <= 8) {");
-                        auto if_block_size_8 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
-                        if_block_size_8.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else if (size <= 16) {");
-                        auto if_block_size_16 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
-                        if_block_size_16.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else if (size <= 32) {");
-                        auto if_block_size_32 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
-                        if_block_size_32.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else {");
-                        auto if_block_size_64 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
-                        if_block_size_64.execute();
-                        type_to_string.writeln("}");
-                    }
-                    else if (type == StorageType::INT) {
-                        type_to_string.writeln("if (size <= 8) {");
-                        auto if_block_size_8 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
-                        if_block_size_8.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else if (size <= 16) {");
-                        auto if_block_size_16 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
-                        if_block_size_16.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else if (size <= 32) {");
-                        auto if_block_size_32 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
-                        if_block_size_32.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else {");
-                        auto if_block_size_64 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
-                        if_block_size_64.execute();
-                        type_to_string.writeln("}");
-                    }
-                    else {
-                        type_to_string.writeln("if (size <= 32) {");
-                        auto if_block_size_32 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
-                        if_block_size_32.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("else {");
-                        auto if_block_size_64 = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
-                        if_block_size_64.execute();
-                        type_to_string.writeln("}");
-                    }
-                });
-            }
-            else if (type == StorageType::STRUCT_REF) {
-                type_to_string.writeln("auto ref = storage.ref().value().value();");
-                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_hook([&] {
-                    type_to_string.writeln("return ident;");
-                });
-            }
-            else if (type == StorageType::RECURSIVE_STRUCT_REF) {
-                type_to_string.writeln("auto ref = storage.ref().value().value();");
-                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_hook([&] {
-                    type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
-                });
-            }
-            else if (type == StorageType::BOOL) {
-                type_hook([&] {
-                    type_to_string.writeln("return \"", flags.bool_type, "\";");
-                });
-            }
-            else if (type == StorageType::ENUM) {
-                type_to_string.writeln("auto ref = storage.ref().value().value();");
-                type_to_string.writeln("auto& ident = ctx.ident_table[ref];");
-                type_hook([&] {
-                    type_to_string.writeln("return ident;");
-                });
-            }
-            else if (type == StorageType::VARIANT) {
-                type_to_string.writeln("auto ref = storage.ref().value();");
-                type_to_string.writeln("std::vector<std::string> types;");
-                type_to_string.writeln("for (size_t i = index + 1; i < s.storages.size(); i++) {");
-                auto scope_variant = type_to_string.indent_scope();
-                type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
-                scope_variant.execute();
-                type_to_string.writeln("}");
-                type_to_string.writeln("auto ident = ctx.ident(ref);");
-                type_hook([&] {
-                    if (flags.variant_mode == "union") {
-                        type_to_string.writeln("return ident;");
-                    }
-                    else if (flags.variant_mode == "algebraic") {
-                        type_to_string.writeln("std::string result;");
-                        type_to_string.writeln("for (size_t i = 0; i < types.size(); i++) {");
-                        auto scope_variant_algebraic = type_to_string.indent_scope();
-                        type_to_string.writeln("if (i != 0) {");
-                        auto if_block_variant_algebraic = type_to_string.indent_scope();
-                        type_to_string.writeln("result += \" ", flags.algebraic_variant_separator, " \";");
-                        if_block_variant_algebraic.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("result += types[i];");
-                        scope_variant_algebraic.execute();
-                        type_to_string.writeln("}");
-                        type_to_string.writeln("return std::format(\"", flags.algebraic_variant_placeholder, "\", result);");
-                    }
-                });
-            }
-            else if (type == StorageType::CODER_RETURN) {
-                type_hook([&] {
-                    type_to_string.writeln("return \"", flags.coder_return_type, "\";");
-                });
-            }
-            else if (type == StorageType::PROPERTY_SETTER_RETURN) {
-                type_hook([&] {
-                    type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
-                });
-            }
-            else if (type == StorageType::PTR) {
-                type_hook([&] {
-                    type_to_string.writeln("return std::format(\"", flags.pointer_type_placeholder, "\", base_type);");
-                });
-            }
-            else if (type == StorageType::ARRAY) {
-                type_to_string.writeln("auto length = storage.size().value().value();");
-                type_hook([&] {
-                    if (flags.array_has_one_placeholder) {
-                        type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type);");
-                    }
-                    else {
-                        type_to_string.writeln("return std::format(\"", flags.array_type_placeholder, "\", base_type,length);");
-                    }
-                });
-            }
-            else if (type == StorageType::VECTOR) {
-                type_to_string.writeln("bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;");
-                type_hook([&] {
-                    if (flags.byte_vector_type.size()) {
-                        type_to_string.writeln("if (is_byte_vector) {");
-                        auto if_block_byte_vector = type_to_string.indent_scope();
-                        type_to_string.writeln("return \"", flags.byte_vector_type, "\";");
-                        if_block_byte_vector.execute();
-                        type_to_string.writeln("}");
-                    }
-                    type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
-                });
-            }
-            else if (type == StorageType::OPTIONAL) {
-                type_hook([&] {
-                    type_to_string.writeln("return std::format(\"", flags.optional_type_placeholder, "\", base_type);");
-                });
-            }
-            type_hook([&] {}, bm2::HookFileSub::after);
-            scope_type.execute();
-            type_to_string.writeln("}");
+            write_type_to_string(type_to_string, type, flags);
         }
         type_to_string.writeln("default: {");
         auto if_block_type_default = type_to_string.indent_scope();
@@ -691,6 +1506,13 @@ namespace rebgn {
         field_accessor.writeln("EvalResult result;");
         field_accessor.writeln("switch(code.op) {");
 
+        bm2::TmpCodeWriter type_accessor;
+        w.writeln("std::string type_accessor(const rebgn::Code& code, Context& ctx);");
+        type_accessor.writeln("std::string type_accessor(const rebgn::Code& code, Context& ctx) {");
+        auto scope_type_accessor = type_accessor.indent_scope();
+        type_accessor.writeln("std::string result;");
+        type_accessor.writeln("switch(code.op) {");
+
         bm2::TmpCodeWriter eval;
         w.writeln("EvalResult eval(const rebgn::Code& code, Context& ctx);");
         eval.writeln("EvalResult eval(const rebgn::Code& code, Context& ctx) {");
@@ -704,764 +1526,19 @@ namespace rebgn {
                 continue;
             }
             if (is_struct_define_related(op)) {
-                inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                    if (!may_write_from_hook(inner_block, flags, bm2::HookFile::inner_block_op, op, stage)) {
-                        inner();
-                    }
-                };
-                block_hook([&] {}, bm2::HookFileSub::before);
-                if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
-                    op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
-                    op == AbstractOp::DECLARE_FUNCTION) {
-                    inner_block.indent_writeln("auto ref = code.ref().value();");
-                    inner_block.indent_writeln("auto range = ctx.range(ref);");
-                    if (op == AbstractOp::DECLARE_FUNCTION) {
-                        block_hook([&] {});  // do nothing
-                    }
-                    else {
-                        block_hook([&] {
-                            inner_block.indent_writeln("inner_block(ctx, w, range);");
-                        });
-                    }
-                }
-                else if (op == AbstractOp::DEFINE_PROPERTY ||
-                         op == AbstractOp::END_PROPERTY) {
-                    block_hook([&] {});  // do nothing
-                }
-                else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
-                    inner_block.indent_writeln("auto ref = code.ref().value();");
-                    inner_block.indent_writeln("auto range = ctx.range(ref);");
-                    block_hook([&] {
-                        inner_block.indent_writeln("TmpCodeWriter inner_w;");
-                        inner_block.indent_writeln("inner_block(ctx, inner_w, range);");
-                        inner_block.indent_writeln("ctx.cw.write_unformatted(inner_w.out());");
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {
-                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    block_hook([&] {
-                        inner_block.indent_writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
-                        inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_UNION) {
-                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    block_hook([&] {
-                        if (flags.variant_mode == "union") {
-                            inner_block.indent_writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
-                            inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::END_UNION) {
-                    block_hook([&] {
-                        if (flags.variant_mode == "union") {
-                            inner_block.indent_writeln("defer.pop_back();");
-                            inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_ENUM) {
-                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    block_hook([&] {
-                        inner_block.indent_writeln("w.writeln(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
-                        inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
-                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    inner_block.indent_writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
-                    block_hook([&] {
-                        inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_FIELD) {
-                    inner_block.indent_writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
-                    auto scope = inner_block.indent_scope();
-                    inner_block.indent_writeln("break;");
-                    scope.execute();
-                    inner_block.indent_writeln("}");
-                    inner_block.indent_writeln("auto type = type_to_string(ctx, code.type().value());");
-                    inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-                    block_hook([&] {
-                        if (flags.prior_ident) {
-                            inner_block.indent_writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
-                        }
-                        else {
-                            inner_block.indent_writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE ||
-                         op == AbstractOp::END_UNION_MEMBER) {
-                    block_hook([&] {
-                        inner_block.indent_writeln("defer.pop_back();");
-                        inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
-                    });
-                }
-                else {
-                    block_hook([&] {
-                        inner_block.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                    });
-                }
-                block_hook([&] {}, bm2::HookFileSub::after);
-                inner_block.indent_writeln("break;");
-                inner_block.writeln("}");
-
-                auto field_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                    if (!may_write_from_hook(field_accessor, flags, bm2::HookFile::field_accessor_op, op, stage)) {
-                        inner();
-                    }
-                };
-
-                auto add_start = [&](auto&& inner) {
-                    field_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    auto scope = field_accessor.indent_scope();
-                    field_accessor_hook([&] {}, bm2::HookFileSub::before);
-                    inner();
-                    field_accessor_hook([&] {}, bm2::HookFileSub::after);
-                    field_accessor.writeln("break;");
-                    scope.execute();
-                    field_accessor.writeln("}");
-                };
-                if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
-                    add_start([&] {
-                        field_accessor_hook([&] {
-                            field_accessor.writeln("result = make_eval_result(ctx.this_());");
-                        });
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_UNION || op == AbstractOp::DEFINE_UNION_MEMBER ||
-                         op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_BIT_FIELD) {
-                    add_start([&] {
-                        field_accessor.writeln("auto belong = code.belong().value();");
-                        field_accessor.writeln("auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
-                        field_accessor_hook([&] {
-                            field_accessor.writeln("if(is_member) {");
-                            auto scope = field_accessor.indent_scope();
-                            field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
-                            field_accessor_hook([&] {
-                                field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ctx.ident(code.ident().value())));");
-                            },
-                                                bm2::HookFileSub::field);
-                            scope.execute();
-                            field_accessor.writeln("}");
-                            field_accessor.writeln("else {");
-                            auto scope2 = field_accessor.indent_scope();
-                            field_accessor_hook([&] {
-                                field_accessor.writeln("result = make_eval_result(ctx.ident(code.ident().value()));");
-                            },
-                                                bm2::HookFileSub::self);
-                            scope2.execute();
-                            field_accessor.writeln("}");
-                        });
-                    });
-                }
+                write_inner_block(inner_block, op, flags);
+                write_field_accessor(field_accessor, type_accessor, op, flags);
             }
 
             if (is_expr(op)) {
-                eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                auto scope = eval.indent_scope();
-                auto eval_hook = [&](auto&& default_action, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                    if (!may_write_from_hook(eval, flags, bm2::HookFile::eval_op, op, stage)) {
-                        default_action();
-                    }
-                };
-                eval_hook([&] {}, bm2::HookFileSub::before);
-                if (op == AbstractOp::BINARY) {
-                    eval.writeln("auto op = code.bop().value();");
-                    eval.writeln("auto left_ref = code.left_ref().value();");
-                    eval.writeln("auto right_ref = code.right_ref().value();");
-                    eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                    eval.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
-                    eval.writeln("auto opstr = to_string(op);");
-                    eval_hook([&] {
-                        eval_hook([&] {}, bm2::HookFileSub::op);
-                        eval.writeln("result = make_eval_result(std::format(\"({} {} {})\", left_eval.result, opstr, right_eval.result));");
-                    });
-                }
-                else if (op == AbstractOp::UNARY) {
-                    eval.writeln("auto op = code.uop().value();");
-                    eval.writeln("auto ref = code.ref().value();");
-                    eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
-                    eval.writeln("auto opstr = to_string(op);");
-                    eval_hook([&] {
-                        eval_hook([&] {}, bm2::HookFileSub::op);
-                        eval.writeln("result = make_eval_result(std::format(\"({}{})\", opstr, target.result));");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_INT) {
-                    eval.writeln("auto value = code.int_value()->value();");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_STRING) {
-                    eval.writeln("auto str = ctx.string_table[code.ident().value().value()];");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_TRUE) {
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(\"", flags.true_literal, "\");");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_FALSE) {
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(\"", flags.false_literal, "\");");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_INT64) {
-                    eval.writeln("auto value = *code.int_value64();");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_TYPE) {
-                    eval.writeln("auto type = code.type().value();");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(type_to_string(ctx, type));");
-                    });
-                }
-                else if (op == AbstractOp::IMMEDIATE_CHAR) {
-                    eval.writeln("auto char_code = code.int_value()->value();");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}\", char_code));");
-                    });
-                }
-                else if (op == AbstractOp::EMPTY_PTR) {
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(\"", flags.empty_pointer, "\");");
-                    });
-                }
-                else if (op == AbstractOp::EMPTY_OPTIONAL) {
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(\"", flags.empty_optional, "\");");
-                    });
-                }
-                else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
-                         op == AbstractOp::DEFINE_VARIABLE_REF ||
-                         op == AbstractOp::BEGIN_COND_BLOCK) {
-                    eval.writeln("auto ref=code.ref().value();");
-                    eval_hook([&] {
-                        eval.writeln("return eval(ctx.ref(ref), ctx);");
-                    });
-                }
-                else if (op == AbstractOp::ACCESS) {
-                    eval.writeln("auto left_ref = code.left_ref().value();");
-                    eval.writeln("auto right_ref = code.right_ref().value();");
-                    eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                    eval.writeln("auto right_ident = ctx.ident(right_ref);");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}.{}\", left_eval.result, right_ident));");
-                    });
-                }
-                else if (op == AbstractOp::INDEX) {
-                    eval.writeln("auto left_ref = code.left_ref().value();");
-                    eval.writeln("auto right_ref = code.right_ref().value();");
-                    eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                    eval.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}[{}]\", left_eval.result, right_eval.result));");
-                    });
-                }
-                else if (op == AbstractOp::ARRAY_SIZE) {
-                    eval.writeln("auto vector_ref = code.ref().value();");
-                    eval.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
-                    eval_hook([&] {
-                        if (flags.surrounded_size_method) {
-                            eval.writeln("result = make_eval_result(std::format(\"", flags.size_method, "({})\", vector_eval.result));");
-                        }
-                        else {
-                            eval.writeln("result = make_eval_result(std::format(\"{}.", flags.size_method, "()\", vector_eval.result));");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_FIELD) {
-                    eval.writeln("result = field_accessor(code, ctx);");
-                }
-                else if (op == AbstractOp::DEFINE_VARIABLE ||
-                         op == AbstractOp::DEFINE_PARAMETER ||
-                         op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
-                    eval.writeln("auto ident = ctx.ident(code.ident().value());");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(ident);");
-                    });
-                }
-                else if (op == AbstractOp::NEW_OBJECT) {
-                    eval.writeln("auto type_ref = code.type().value();");
-                    eval.writeln("auto type = type_to_string(ctx, type_ref);");
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(std::format(\"{}()\", type));");
-                    });
-                }
-                else if (op == AbstractOp::CAST) {
-                    eval.writeln("auto type = code.type().value();");
-                    eval.writeln("auto from_type = code.from_type().value();");
-                    eval.writeln("auto ref = code.ref().value();");
-                    eval.writeln("auto type_str = type_to_string(ctx, type);");
-                    eval.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
-                    eval_hook([&] {
-                        if (flags.func_style_cast) {
-                            eval.writeln("result = make_eval_result(std::format(\"{}({})\", type_str, evaluated.result));");
-                        }
-                        else {
-                            eval.writeln("result = make_eval_result(std::format(\"({}){}\", type_str, evaluated.result));");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::FIELD_AVAILABLE) {
-                    eval.writeln("auto left_ref = code.left_ref().value();");
-                    eval.writeln("if(left_ref.value() == 0) {");
-                    auto scope_1 = eval.indent_scope();
-                    eval.writeln("auto right_ref = code.right_ref().value();");
-                    eval_hook([&] {
-                        eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
-                    },
-                              bm2::HookFileSub::self);
-                    // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
-                    scope_1.execute();
-                    eval.writeln("}");
-                    eval.writeln("else {");
-                    auto scope_2 = eval.indent_scope();
-                    eval.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                    // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
-                    eval.writeln("ctx.this_as.push_back(left_eval.result);");
-                    eval.writeln("auto right_ref = code.right_ref().value();");
-                    eval_hook([&] {
-                        eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
-                    },
-                              bm2::HookFileSub::field);
-                    // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
-                    eval.writeln("ctx.this_as.pop_back();");
-                    scope_2.execute();
-                    eval.writeln("}");
-                }
-                else {
-                    eval_hook([&] {
-                        eval.writeln("result = make_eval_result(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                    });
-                }
-                eval_hook([&] {}, bm2::HookFileSub::after);
-                eval.writeln("break;");
-                scope.execute();
-                eval.writeln("}");
+                write_eval(eval, op, flags);
             }
-            if (is_parameter_related(op)) {
-                if (op != AbstractOp::RETURN_TYPE) {
-                    add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    auto scope = add_parameter.indent_scope();
-                    auto param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                        if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_op, op, stage)) {
-                            inner();
-                        }
-                    };
-                    param_hook([&] {}, bm2::HookFileSub::before);
-                    if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_each_code, false)) {
-                        add_parameter.writeln("if(params > 0) {");
-                        add_parameter.indent_writeln("w.write(\", \");");
-                        add_parameter.writeln("}");
-                    }
-                    if (op == AbstractOp::PROPERTY_INPUT_PARAMETER ||
-                        op == AbstractOp::DEFINE_PARAMETER ||
-                        op == AbstractOp::STATE_VARIABLE_PARAMETER) {
-                        if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
-                            add_parameter.writeln("auto ref = code.ref().value();");
-                            add_parameter.writeln("auto type = type_to_string(ctx,ctx.ref(ref).type().value());");
-                        }
-                        else {
-                            add_parameter.writeln("auto ref = code.ident().value();");
-                            add_parameter.writeln("auto type = type_to_string(ctx,code.type().value());");
-                        }
-                        add_parameter.writeln("auto ident = ctx.ident(ref);");
-                        param_hook([&] {
-                            if (flags.prior_ident) {
-                                add_parameter.writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
-                            }
-                            else {
-                                add_parameter.writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
-                            }
-                            add_parameter.writeln("params++;");
-                        });
-                    }
-                    else if (op == AbstractOp::ENCODER_PARAMETER) {
-                        param_hook([&] {
-                            add_parameter.writeln("w.write(\"", flags.encoder_param, "\");");
-                            add_parameter.writeln("params++;");
-                        });
-                    }
-                    else if (op == AbstractOp::DECODER_PARAMETER) {
-                        param_hook([&] {
-                            add_parameter.writeln("w.write(\"", flags.decoder_param, "\");");
-                            add_parameter.writeln("params++;");
-                        });
-                    }
-                    else {
-                        param_hook([&] {
-                            add_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                            add_parameter.writeln("params++;");
-                        });
-                    }
-                    param_hook([&] {}, bm2::HookFileSub::after);
-                    add_parameter.writeln("break;");
-                    scope.execute();
-                    add_parameter.writeln("}");
 
-                    add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                    auto scope_call = add_call_parameter.indent_scope();
-                    auto call_param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                        if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_op, op, stage)) {
-                            inner();
-                        }
-                    };
-                    call_param_hook([&] {}, bm2::HookFileSub::before);
-                    if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_each_code, false)) {
-                        add_call_parameter.writeln("if(params > 0) {");
-                        add_call_parameter.indent_writeln("w.write(\", \");");
-                        add_call_parameter.writeln("}");
-                    }
-                    if (op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
-                        add_call_parameter.writeln("auto ref = code.ident().value();");
-                        add_call_parameter.writeln("auto ident = ctx.ident(ref);");
-                        call_param_hook([&] {
-                            add_call_parameter.writeln("w.write(ident);");
-                            add_call_parameter.writeln("params++;");
-                        });
-                    }
-                    else {
-                        call_param_hook([&] {
-                            add_call_parameter.writeln("w.write(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                            add_call_parameter.writeln("params++;");
-                        });
-                    }
-                    call_param_hook([&] {}, bm2::HookFileSub::after);
-                    add_call_parameter.writeln("break;");
-                    scope_call.execute();
-                    add_call_parameter.writeln("}");
-                }
+            if (is_parameter_related(op)) {
+                write_add_parameter(add_parameter, add_call_parameter, op, flags);
             }
             if ((!is_expr(op) && !is_struct_define_related(op) && !is_parameter_related(op)) || is_both_expr_and_def(op)) {
-                inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-                auto scope = inner_function.indent_scope();
-                auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
-                    if (!may_write_from_hook(inner_function, flags, bm2::HookFile::inner_function_op, op, stage)) {
-                        inner();
-                    }
-                };
-                func_hook([&] {}, bm2::HookFileSub::before);
-                if (op == AbstractOp::APPEND) {
-                    inner_function.writeln("auto vector_ref = code.left_ref().value();");
-                    inner_function.writeln("auto new_element_ref = code.right_ref().value();");
-                    inner_function.writeln("auto vector_eval = eval(ctx.ref(vector_ref), ctx);");
-                    // inner_function.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
-                    inner_function.writeln("auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);");
-                    // inner_function.writeln("result.insert(result.end(), new_element_eval.begin(), new_element_eval.end());");
-                    func_hook([&] {
-                        if (flags.surrounded_append_method) {
-                            inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
-                        }
-                        else {
-                            inner_function.writeln("w.writeln(vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
-                        }
-                    });
-                }
-                else if (op == AbstractOp::ASSIGN) {
-                    inner_function.writeln("auto left_ref = code.left_ref().value();");
-                    inner_function.writeln("auto right_ref = code.right_ref().value();");
-                    inner_function.writeln("auto left_eval = eval(ctx.ref(left_ref), ctx);");
-                    inner_function.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"\", left_eval.result, \" = \", right_eval.result, \"", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::DEFINE_VARIABLE || op == AbstractOp::DECLARE_VARIABLE) {
-                    if (op == AbstractOp::DECLARE_VARIABLE) {
-                        inner_function.writeln("auto ident = ctx.ident(code.ref().value());");
-                        inner_function.writeln("auto init_ref = ctx.ref(code.ref().value()).ref().value();");
-                        inner_function.writeln("auto type_ref = ctx.ref(code.ref().value()).type().value();");
-                    }
-                    else {
-                        inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
-                        inner_function.writeln("auto init_ref = code.ref().value();");
-                        inner_function.writeln("auto type_ref = code.type().value();");
-                    }
-                    inner_function.writeln("auto type = type_to_string(ctx,type_ref);");
-                    inner_function.writeln("auto init = eval(ctx.ref(init_ref), ctx);");
-                    // inner_function.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
-                    func_hook([&] {
-                        if (flags.omit_type_on_define_var) {
-                            inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, init.result));");
-                        }
-                        else {
-                            if (flags.prior_ident) {
-                                inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, type, init.result));");
-                            }
-                            else {
-                                inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\",type, ident, init.result));");
-                            }
-                        }
-                    });
-                    // inner_function.writeln("auto evaluated = eval(code, ctx);");
-                    // inner_function.writeln("w.writeln(evaluated[evaluated.size() - 2]);");
-                }
-                else if (op == AbstractOp::BEGIN_ENCODE_PACKED_OPERATION || op == AbstractOp::BEGIN_DECODE_PACKED_OPERATION ||
-                         op == AbstractOp::END_ENCODE_PACKED_OPERATION || op == AbstractOp::END_DECODE_PACKED_OPERATION) {
-                    inner_function.writeln("auto fallback = ctx.bm.code[i].fallback().value();");
-                    func_hook([&] {
-                        inner_function.writeln("if(fallback.value() != 0) {");
-                        auto scope = inner_function.indent_scope();
-                        inner_function.writeln("auto range = ctx.range(fallback);");
-                        func_hook([&] {
-                            inner_function.writeln("inner_function(ctx, w, range);");
-                        },
-                                  bm2::HookFileSub::fallback);
-                        scope.execute();
-                        inner_function.writeln("}");
-                        inner_function.writeln("else {");
-                        auto scope2 = inner_function.indent_scope();
-                        func_hook([&] {
-                            inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                        },
-                                  bm2::HookFileSub::no_fallback);
-                        scope2.execute();
-                        inner_function.writeln("}");
-                    });
-                }
-                else if (op == AbstractOp::ASSERT) {
-                    inner_function.writeln("auto evaluated = eval(ctx.ref(code.ref().value()), ctx);");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"assert(\", evaluated.result, \")", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::EXPLICIT_ERROR) {
-                    inner_function.writeln("auto param = code.param().value();");
-                    inner_function.writeln("auto evaluated = eval(ctx.ref(param.refs[0]), ctx);");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"throw std::runtime_error(\", evaluated.result, \")", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
-                         op == AbstractOp::ELSE || op == AbstractOp::LOOP_INFINITE ||
-                         op == AbstractOp::LOOP_CONDITION || op == AbstractOp::DEFINE_FUNCTION ||
-                         op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
-                         op == AbstractOp::CASE || op == AbstractOp::DEFAULT_CASE) {
-                    if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::LOOP_CONDITION ||
-                        op == AbstractOp::MATCH || op == AbstractOp::EXHAUSTIVE_MATCH ||
-                        op == AbstractOp::CASE) {
-                        inner_function.writeln("auto ref = code.ref().value();");
-                        inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
-                    }
-                    if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                        inner_function.writeln("defer.pop_back();");
-                    }
-
-                    if (op == AbstractOp::DEFINE_FUNCTION) {
-                        inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
-                        inner_function.writeln("auto range = ctx.range(code.ident().value());");
-                        inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
-                        inner_function.writeln("std::optional<std::string> type;");
-                        inner_function.writeln("if(found_type_pos) {");
-                        {
-                            auto inner_scope = inner_function.indent_scope();
-                            inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].type().value();");
-                            inner_function.writeln("type = type_to_string(ctx,type_ref);");
-                        }
-                        inner_function.writeln("}");
-                        func_hook([&] {
-                            inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
-                            if (!flags.trailing_return_type) {
-                                inner_function.writeln("if(type) {");
-                                inner_function.indent_writeln("w.write(*type);");
-                                inner_function.writeln("}");
-                                inner_function.writeln("else {");
-                                inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
-                                inner_function.writeln("}");
-                            }
-                            inner_function.writeln("w.write(\" \", ident, \"", flags.func_brace_ident_separator, "(\");");
-                            inner_function.writeln("add_parameter(ctx, w, range);");
-                            inner_function.writeln("w.write(\") \");");
-                            if (flags.trailing_return_type) {
-                                inner_function.writeln("if(type) {");
-                                inner_function.indent_writeln("w.write(\"", flags.func_type_separator, "\", *type);");
-                                inner_function.writeln("}");
-                                inner_function.writeln("else {");
-                                inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
-                                inner_function.writeln("}");
-                            }
-                        });
-                        inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
-                    }
-                    else {
-                        func_hook([&] {
-                            if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
-                            }
-                            inner_function.write("w.writeln(\"");
-                            std::string condition = "\",evaluated.result,\"";
-                            if (flags.condition_has_parentheses) {
-                                condition = "(" + condition + ")";
-                            }
-                            switch (op) {
-                                case AbstractOp::IF:
-                                    inner_function.write(flags.if_keyword, " ", condition, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::ELIF:
-                                    inner_function.write(flags.elif_keyword, " ", condition, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::ELSE:
-                                    inner_function.write(flags.else_keyword, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::LOOP_INFINITE:
-                                    inner_function.write(flags.infinity_loop, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::LOOP_CONDITION:
-                                    inner_function.write(flags.conditional_loop, " ", condition, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::MATCH:
-                                case AbstractOp::EXHAUSTIVE_MATCH:
-                                    inner_function.write(flags.match_keyword, " ", condition, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::CASE:
-                                    inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.block_begin);
-                                    break;
-                                case AbstractOp::DEFAULT_CASE:
-                                    inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
-                                    break;
-                            }
-                            inner_function.writeln("\");");
-                        });
-                    }
-                    inner_function.writeln("defer.push_back(w.indent_scope_ex());");
-                }
-                else if (op == AbstractOp::END_IF || op == AbstractOp::END_LOOP ||
-                         op == AbstractOp::END_FUNCTION || op == AbstractOp::END_MATCH ||
-                         op == AbstractOp::END_CASE) {
-                    inner_function.writeln("defer.pop_back();");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
-                    });
-                }
-                else if (op == AbstractOp::CONTINUE) {
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"continue", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::BREAK) {
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"break", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::RET) {
-                    inner_function.writeln("auto ref = code.ref().value();");
-                    inner_function.writeln("if(ref.value() != 0) {");
-                    auto scope = inner_function.indent_scope();
-                    inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return \", evaluated.result, \"", flags.end_of_statement, "\");");
-                    },
-                              bm2::HookFileSub::value);
-                    scope.execute();
-                    inner_function.writeln("}");
-                    inner_function.writeln("else {");
-                    auto else_scope = inner_function.indent_scope();
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return", flags.end_of_statement, "\");");
-                    },
-                              bm2::HookFileSub::empty);
-                    else_scope.execute();
-                    inner_function.writeln("}");
-                }
-                else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return ", flags.true_literal, flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"return ", flags.false_literal, flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::INC) {
-                    inner_function.writeln("auto ref = code.ref().value();");
-                    inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(evaluated.result, \"+= 1", flags.end_of_statement, "\");");
-                    });
-                }
-                else if (op == AbstractOp::CHECK_UNION || op == AbstractOp::SWITCH_UNION) {
-                    inner_function.writeln("auto union_member_ref = code.ref().value();");
-                    inner_function.writeln("auto union_ref = ctx.ref(union_member_ref).belong().value();");
-                    inner_function.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
-                    inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value().value();");
-                    inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
-                    inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
-                    inner_function.writeln("auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);");
-                    func_hook([&] {
-                        std::map<std::string, std::string> map{
-                            {"MEMBER_IDENT", "\",union_member_ident,\""},
-                            {"UNION_IDENT", "\",union_ident,\""},
-                            {"FIELD_IDENT", "\",union_field_ident.result,\""},
-                            {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
-                        };
-                        auto escaped = env_escape(flags.check_union_condition, map);
-                        inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
-                                               escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
-                        inner_function.writeln("auto scope = w.indent_scope_ex();");
-                        if (op == AbstractOp::CHECK_UNION) {
-                            auto ret = env_escape(flags.check_union_fail_return_value, map);
-                            inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
-                        }
-                        else {
-                            auto switch_union = env_escape(flags.switch_union, map);
-                            inner_function.writeln("w.writeln(\"", switch_union, flags.end_of_statement, "\");");
-                        }
-                        inner_function.writeln("scope.execute();");
-                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
-                    });
-                }
-                else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
-                         op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
-                         op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
-                         op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
-                    inner_function.writeln("auto fallback = code.fallback().value();");
-                    func_hook([&] {
-                        inner_function.writeln("if(fallback.value() != 0) {");
-                        auto indent = inner_function.indent_scope();
-                        inner_function.writeln("auto range = ctx.range(fallback);");
-                        func_hook([&] {
-                            inner_function.writeln("inner_function(ctx, w, range);");
-                        },
-                                  bm2::HookFileSub::fallback);
-                        indent.execute();
-                        inner_function.writeln("}");
-                        inner_function.writeln("else {");
-                        auto indent2 = inner_function.indent_scope();
-                        func_hook([&] {
-                            inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                        },
-                                  bm2::HookFileSub::no_fallback);
-                        indent2.execute();
-                        inner_function.writeln("}");
-                    });
-                }
-                else {
-                    func_hook([&] {
-                        inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
-                    });
-                }
-                func_hook([&] {}, bm2::HookFileSub::after);
-                inner_function.writeln("break;");
-                scope.execute();
-                inner_function.writeln("}");
+                write_inner_function(inner_function, op, flags);
             }
         }
 
@@ -1512,6 +1589,15 @@ namespace rebgn {
         field_accessor.writeln("return result;");
         field_accessor.writeln("}");  // close function
 
+        type_accessor.writeln("default: {");
+        auto if_block_type_accessor = type_accessor.indent_scope();
+        type_accessor.writeln("return ", unimplemented_comment("code.op"), ";");
+        if_block_type_accessor.execute();
+        type_accessor.writeln("}");  // close default
+        type_accessor.writeln("}");  // close switch
+        scope_type_accessor.execute();
+        type_accessor.writeln("}");  // close function
+
         inner_function.writeln("default: {");
         auto if_function = inner_function.indent_scope();
         inner_function.writeln("if (!rebgn::is_marker(code.op)&&!rebgn::is_struct_define_related(code.op)&&!rebgn::is_expr(code.op)&&!rebgn::is_parameter_related(code.op)) {");
@@ -1537,6 +1623,7 @@ namespace rebgn {
 
         w.write_unformatted(type_to_string.out());
         w.write_unformatted(field_accessor.out());
+        w.write_unformatted(type_accessor.out());
         w.write_unformatted(eval.out());
         w.write_unformatted(add_parameter.out());
         w.write_unformatted(add_call_parameter.out());

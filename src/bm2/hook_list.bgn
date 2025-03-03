@@ -26,6 +26,7 @@ enum HookFile:
     param_op = "param_{}" # param operation ({} contains lower case AbstractOp name)
     call_param_op = "call_param_{}" # call param operation ({} contains lower case AbstractOp name)
     field_accessor_op = "field_accessor_{}" # field accessor operation ({} contains lower case AbstractOp name)
+    type_accessor_op = "type_accessor_{}" # type accessor operation ({} contains lower case AbstractOp name)
 
 
 # this is used with {} placeholder in HookFile

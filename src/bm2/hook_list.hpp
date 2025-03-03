@@ -38,6 +38,7 @@ namespace bm2 {
         param_op = 21,
         call_param_op = 22,
         field_accessor_op = 23,
+        type_accessor_op = 24,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -89,6 +90,8 @@ namespace bm2 {
                 return "call_param_{}";
             case HookFile::field_accessor_op:
                 return "field_accessor_{}";
+            case HookFile::type_accessor_op:
+                return "type_accessor_{}";
         }
         return "";
     }
@@ -168,6 +171,9 @@ namespace bm2 {
         }
         if (str == "field_accessor_{}") {
             return HookFile::field_accessor_op;
+        }
+        if (str == "type_accessor_{}") {
+            return HookFile::type_accessor_op;
         }
         return std::nullopt;
     }

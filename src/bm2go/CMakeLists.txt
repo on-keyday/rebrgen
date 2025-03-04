@@ -1,4 +1,4 @@
-﻿#license
+#license
 cmake_minimum_required(VERSION 3.25)
 project(bm2go)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)

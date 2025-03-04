@@ -1,5 +1,6 @@
 {
     "lang": "py",
+    "suffix": "py",
     "comment_prefix": "\\\"\\\"\\\"",
     "comment_suffix": "\\\"\\\"\\\"",
     "int_type": "int",
@@ -55,5 +56,8 @@
     "check_union_fail_return_value": "False",
     "switch_union": "$FIELD_IDENT = $MEMBER_FULL_IDENT()",
     "address_of_placeholder": "{}",
-    "optional_of_placeholder": "{}"
+    "optional_of_placeholder": "{}",
+    "decode_bytes_op": "$VALUE = $DECODER.read($LEN)",
+    "encode_bytes_op": "w.write($VALUE[:$LEN])",
+    "decode_bytes_until_eof_op": "$VALUE = $DECODER.read()"
 }

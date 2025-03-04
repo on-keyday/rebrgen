@@ -45,6 +45,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string end_of_statement = ";";
     std::string block_begin = "{";
     std::string block_end = "}";
+    bool otbs_on_block_end = false;  // like golang else style
     std::string block_end_type = "};";
     std::string struct_keyword = "struct";
     std::string enum_keyword = "enum";
@@ -92,6 +93,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string switch_union = "$FIELD_IDENT = $MEMBER_IDENT()";
     std::string address_of_placeholder = "&{}";
     std::string optional_of_placeholder = "{}";
+    std::string decode_bytes_op = "$VALUE = $DECODER.decode_bytes($LEN)";
+    std::string encode_bytes_op = "$ENCODER.encode_bytes($VALUE)";
+    std::string decode_bytes_until_eof_op = "$VALUE = $DECODER.decode_bytes_until_eof()";
 
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
@@ -115,6 +119,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(end_of_statement, "end_of_statement")                           \
     MACRO_NAME(block_begin, "block_begin")                                     \
     MACRO_NAME(block_end, "block_end")                                         \
+    MACRO_NAME(otbs_on_block_end, "otbs_on_block_end")                         \
     MACRO_NAME(block_end_type, "block_end_type")                               \
     MACRO_NAME(prior_ident, "prior_ident")                                     \
     MACRO_NAME(struct_keyword, "struct_keyword")                               \
@@ -160,7 +165,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(check_union_fail_return_value, "check_union_fail_return_value") \
     MACRO_NAME(switch_union, "switch_union")                                   \
     MACRO_NAME(address_of_placeholder, "address_of_placeholder")               \
-    MACRO_NAME(optional_of_placeholder, "optional_of_placeholder")
+    MACRO_NAME(optional_of_placeholder, "optional_of_placeholder")             \
+    MACRO_NAME(decode_bytes_op, "decode_bytes_op")                             \
+    MACRO_NAME(encode_bytes_op, "encode_bytes_op")                             \
+    MACRO_NAME(decode_bytes_until_eof_op, "decode_bytes_until_eof_op")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -476,9 +484,9 @@ namespace rebgn {
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
                 auto scope = inner_function.indent_scope();
-                inner_function.writeln("auto range = ctx.range(fallback);");
+                inner_function.writeln("auto inner_range = ctx.range(fallback);");
                 func_hook([&] {
-                    inner_function.writeln("inner_function(ctx, w, range);");
+                    inner_function.writeln("inner_function(ctx, w, inner_range);");
                 },
                           bm2::HookFileSub::fallback);
                 scope.execute();
@@ -560,7 +568,12 @@ namespace rebgn {
             else {
                 func_hook([&] {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                        inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                        if (flags.otbs_on_block_end) {
+                            inner_function.writeln("w.write(\"", flags.block_end, "\")");
+                        }
+                        else {
+                            inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                        }
                     }
                     inner_function.write("w.writeln(\"");
                     std::string condition = "\",evaluated.result,\"";
@@ -704,6 +717,19 @@ namespace rebgn {
                 inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
             });
         }
+        else if (op == AbstractOp::CALL_ENCODE || op == AbstractOp::CALL_DECODE) {
+            inner_function.writeln("auto func_ref = code.left_ref().value();");
+            inner_function.writeln("auto func_belong = ctx.ref(func_ref).belong().value();");
+            inner_function.writeln("auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx);");
+            inner_function.writeln("auto func_name = ctx.ident(func_ref);");
+            inner_function.writeln("auto obj_ref = code.right_ref().value();");
+            inner_function.writeln("auto obj_eval = eval(ctx.ref(obj_ref), ctx);");
+            func_hook([&] {
+                inner_function.writeln("w.write(obj_eval.result, \".\", func_name, \"(\");");
+                inner_function.writeln("add_call_parameter(ctx, w,range);");
+                inner_function.writeln("w.writeln(\")", flags.end_of_statement, "\");");
+            });
+        }
         else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
                  op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
                  op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
@@ -712,17 +738,67 @@ namespace rebgn {
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
                 auto indent = inner_function.indent_scope();
-                inner_function.writeln("auto range = ctx.range(fallback);");
+                inner_function.writeln("auto inner_range = ctx.range(fallback);");
                 func_hook([&] {
-                    inner_function.writeln("inner_function(ctx, w, range);");
+                    inner_function.writeln("inner_function(ctx, w, inner_range);");
                 },
                           bm2::HookFileSub::fallback);
                 indent.execute();
                 inner_function.writeln("}");
                 inner_function.writeln("else {");
                 auto indent2 = inner_function.indent_scope();
+                inner_function.writeln("auto bit_size = code.bit_size()->value();");
+                inner_function.writeln("auto endian = code.endian().value();");
+                if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
+                    op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
+                    inner_function.writeln("auto ref = code.ref().value();");
+                    inner_function.writeln("auto evaluated = eval(ctx.ref(ref), ctx);");
+                }
+                else {
+                    inner_function.writeln("auto vector_ref = code.left_ref().value();");
+                    inner_function.writeln("auto vector_value = eval(ctx.ref(vector_ref), ctx);");
+                    inner_function.writeln("auto size_ref = code.right_ref().value();");
+                    inner_function.writeln("auto size_value = eval(ctx.ref(size_ref), ctx);");
+                }
                 func_hook([&] {
+                    inner_function.writeln("if(bit_size == 8) {");
+                    auto indent3 = inner_function.indent_scope();
+                    if (op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::ENCODE_INT_VECTOR_FIXED) {
+                        std::map<std::string, std::string> map{
+                            {"ENCODER", "\",ctx.w(),\""},
+                            {"LEN", "\",size_value.result,\""},
+                            {"VALUE", "\",vector_value.result,\""},
+                        };
+                        auto escaped = env_escape(flags.encode_bytes_op, map);
+                        inner_function.writeln("w.writeln(\"", escaped, "\");");
+                    }
+                    else if (op == AbstractOp::DECODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR_FIXED) {
+                        std::map<std::string, std::string> map{
+                            {"DECODER", "\",ctx.r(),\""},
+                            {"LEN", "\",size_value.result,\""},
+                            {"VALUE", "\",vector_value.result,\""},
+                        };
+                        auto escaped = env_escape(flags.decode_bytes_op, map);
+                        inner_function.writeln("w.writeln(\"", escaped, "\");");
+                    }
+                    else if (op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
+                        std::map<std::string, std::string> map{
+                            {"DECODER", "\",ctx.r(),\""},
+                            {"VALUE", "\",evaluated.result,\""},
+                        };
+                        auto escaped = env_escape(flags.decode_bytes_until_eof_op, map);
+                        inner_function.writeln("w.writeln(\"", escaped, "\");");
+                    }
+                    else {
+                        inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    }
+                    indent3.execute();
+                    inner_function.writeln("}");
+                    inner_function.writeln("else {");
+                    auto indent4 = inner_function.indent_scope();
                     inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                    indent4.execute();
+                    inner_function.writeln("}");
                 },
                           bm2::HookFileSub::no_fallback);
                 indent2.execute();
@@ -864,13 +940,13 @@ namespace rebgn {
             op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
             op == AbstractOp::DECLARE_FUNCTION) {
             inner_block.indent_writeln("auto ref = code.ref().value();");
-            inner_block.indent_writeln("auto range = ctx.range(ref);");
+            inner_block.indent_writeln("auto inner_range = ctx.range(ref);");
             if (op == AbstractOp::DECLARE_FUNCTION) {
                 block_hook([&] {});  // do nothing
             }
             else {
                 block_hook([&] {
-                    inner_block.indent_writeln("inner_block(ctx, w, range);");
+                    inner_block.indent_writeln("inner_block(ctx, w, inner_range);");
                 });
             }
         }
@@ -878,12 +954,17 @@ namespace rebgn {
                  op == AbstractOp::END_PROPERTY) {
             block_hook([&] {});  // do nothing
         }
+        else if (op == AbstractOp::LENGTH_CHECK) {
+            block_hook([&] {
+
+            });
+        }
         else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
             inner_block.indent_writeln("auto ref = code.ref().value();");
-            inner_block.indent_writeln("auto range = ctx.range(ref);");
+            inner_block.indent_writeln("auto inner_range = ctx.range(ref);");
             block_hook([&] {
                 inner_block.indent_writeln("TmpCodeWriter inner_w;");
-                inner_block.indent_writeln("inner_block(ctx, inner_w, range);");
+                inner_block.indent_writeln("inner_block(ctx, inner_w, inner_range);");
                 inner_block.indent_writeln("ctx.cw.write_unformatted(inner_w.out());");
             });
         }
@@ -1256,6 +1337,27 @@ namespace rebgn {
                 add_call_parameter.writeln("auto ident = ctx.ident(ref);");
                 call_param_hook([&] {
                     add_call_parameter.writeln("w.write(ident);");
+                    add_call_parameter.writeln("params++;");
+                });
+            }
+            else if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
+                add_call_parameter.writeln("auto ref = code.ref().value();");
+                add_call_parameter.writeln("auto ident = ctx.ident(ref);");
+                call_param_hook([&] {
+                    add_call_parameter.writeln("w.write(ident);");
+                    add_call_parameter.writeln("params++;");
+                });
+            }
+            else if (op == AbstractOp::ENCODER_PARAMETER) {
+                call_param_hook([&] {
+                    add_call_parameter.writeln(
+                        "w.write(ctx.w());");
+                    add_call_parameter.writeln("params++;");
+                });
+            }
+            else if (op == AbstractOp::DECODER_PARAMETER) {
+                call_param_hook([&] {
+                    add_call_parameter.writeln("w.write(ctx.r());");
                     add_call_parameter.writeln("params++;");
                 });
             }

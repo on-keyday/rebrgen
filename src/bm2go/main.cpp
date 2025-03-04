@@ -1,4 +1,4 @@
-﻿/*license*/
+/*license*/
 #include "bm2go.hpp"
 #include <bm2/entry.hpp>
 struct Flags : bm2::Flags {

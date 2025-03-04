@@ -1,5 +1,6 @@
 {
     "lang": "c",
+    "suffix": "c",
     "comment_prefix": "/*",
     "comment_suffix": "*/",
     "int_type": "int{}_t",

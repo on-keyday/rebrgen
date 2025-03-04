@@ -1,4 +1,4 @@
-﻿/*license*/
+/*license*/
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
 #include <escape/escape.h>
@@ -585,7 +585,7 @@ namespace bm2haskell {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("{-Unimplemented ENCODER_PARAMETER-} ");
+                    w.write(ctx.w());
                     params++;
                     break;
                 }
@@ -593,7 +593,7 @@ namespace bm2haskell {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("{-Unimplemented DECODER_PARAMETER-} ");
+                    w.write(ctx.r());
                     params++;
                     break;
                 }
@@ -601,7 +601,9 @@ namespace bm2haskell {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("{-Unimplemented STATE_VARIABLE_PARAMETER-} ");
+                    auto ref = code.ref().value();
+                    auto ident = ctx.ident(ref);
+                    w.write(ident);
                     params++;
                     break;
                 }
@@ -640,8 +642,8 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_FORMAT: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
-                inner_block(ctx, w, range);
+                auto inner_range = ctx.range(ref);
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FIELD: {
@@ -661,8 +663,8 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
-                inner_block(ctx, w, range);
+                auto inner_range = ctx.range(ref);
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
@@ -677,7 +679,7 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
+                auto inner_range = ctx.range(ref);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -693,8 +695,8 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_ENUM: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
-                inner_block(ctx, w, range);
+                auto inner_range = ctx.range(ref);
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
@@ -716,9 +718,9 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
+                auto inner_range = ctx.range(ref);
                 TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, range);
+                inner_block(ctx, inner_w, inner_range);
                 ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
@@ -735,9 +737,9 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
+                auto inner_range = ctx.range(ref);
                 TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, range);
+                inner_block(ctx, inner_w, inner_range);
                 ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
@@ -754,8 +756,8 @@ namespace bm2haskell {
             }
             case rebgn::AbstractOp::DECLARE_STATE: {
                 auto ref = code.ref().value();
-                auto range = ctx.range(ref);
-                inner_block(ctx, w, range);
+                auto inner_range = ctx.range(ref);
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
@@ -827,8 +829,8 @@ namespace bm2haskell {
             case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
                 auto fallback = ctx.bm.code[i].fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
                     w.writeln("{-Unimplemented BEGIN_ENCODE_PACKED_OPERATION-} ");
@@ -838,8 +840,8 @@ namespace bm2haskell {
             case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
                 auto fallback = ctx.bm.code[i].fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
                     w.writeln("{-Unimplemented END_ENCODE_PACKED_OPERATION-} ");
@@ -849,8 +851,8 @@ namespace bm2haskell {
             case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
                 auto fallback = ctx.bm.code[i].fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
                     w.writeln("{-Unimplemented BEGIN_DECODE_PACKED_OPERATION-} ");
@@ -860,8 +862,8 @@ namespace bm2haskell {
             case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION: {
                 auto fallback = ctx.bm.code[i].fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
                     w.writeln("{-Unimplemented END_DECODE_PACKED_OPERATION-} ");
@@ -871,77 +873,148 @@ namespace bm2haskell {
             case rebgn::AbstractOp::ENCODE_INT: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented ENCODE_INT-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto ref = code.ref().value();
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("{-Unimplemented ENCODE_INT-}");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented ENCODE_INT-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented DECODE_INT-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto ref = code.ref().value();
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("{-Unimplemented DECODE_INT-}");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented DECODE_INT-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented ENCODE_INT_VECTOR-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto vector_ref = code.left_ref().value();
+                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
+                    auto size_ref = code.right_ref().value();
+                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented ENCODE_INT_VECTOR-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT_VECTOR_FIXED: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented ENCODE_INT_VECTOR_FIXED-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto vector_ref = code.left_ref().value();
+                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
+                    auto size_ref = code.right_ref().value();
+                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented ENCODE_INT_VECTOR_FIXED-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented DECODE_INT_VECTOR-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto vector_ref = code.left_ref().value();
+                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
+                    auto size_ref = code.right_ref().value();
+                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented DECODE_INT_VECTOR-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented DECODE_INT_VECTOR_UNTIL_EOF-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto ref = code.ref().value();
+                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("",evaluated.result," = ",ctx.r(),".decode_bytes_until_eof()");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented DECODE_INT_VECTOR_UNTIL_EOF-}");
+                    }
                 }
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
                 auto fallback = code.fallback().value();
                 if(fallback.value() != 0) {
-                    auto range = ctx.range(fallback);
-                    inner_function(ctx, w, range);
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
                 }
                 else {
-                    w.writeln("{-Unimplemented DECODE_INT_VECTOR_FIXED-}");
+                    auto bit_size = code.bit_size()->value();
+                    auto endian = code.endian().value();
+                    auto vector_ref = code.left_ref().value();
+                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
+                    auto size_ref = code.right_ref().value();
+                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    if(bit_size == 8) {
+                        w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
+                    }
+                    else {
+                        w.writeln("{-Unimplemented DECODE_INT_VECTOR_FIXED-}");
+                    }
                 }
                 break;
             }
@@ -958,11 +1031,27 @@ namespace bm2haskell {
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
-                w.writeln("{-Unimplemented CALL_ENCODE-} ");
+                auto func_ref = code.left_ref().value();
+                auto func_belong = ctx.ref(func_ref).belong().value();
+                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx);
+                auto func_name = ctx.ident(func_ref);
+                auto obj_ref = code.right_ref().value();
+                auto obj_eval = eval(ctx.ref(obj_ref), ctx);
+                w.write(obj_eval.result, ".", func_name, "(");
+                add_call_parameter(ctx, w,range);
+                w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::CALL_DECODE: {
-                w.writeln("{-Unimplemented CALL_DECODE-} ");
+                auto func_ref = code.left_ref().value();
+                auto func_belong = ctx.ref(func_ref).belong().value();
+                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx);
+                auto func_name = ctx.ident(func_ref);
+                auto obj_ref = code.right_ref().value();
+                auto obj_eval = eval(ctx.ref(obj_ref), ctx);
+                w.write(obj_eval.result, ".", func_name, "(");
+                add_call_parameter(ctx, w,range);
+                w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {

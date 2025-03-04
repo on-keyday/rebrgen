@@ -19,6 +19,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view config_file = "config.json";
     std::string_view hook_file_dir = "hook";
     bool debug = false;
+    bool print_hooks = false;
 
     // json options
     std::string lang_name;
@@ -87,6 +88,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string check_union_condition = "";
     std::string check_union_fail_return_value = "false";
     std::string switch_union = "";
+    std::string address_of_placeholder = "&{}";
+    std::string optional_of_placeholder = "{}";
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -154,6 +157,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
         FROM_JSON_OPT(check_union_condition, "check_union_condition");
         FROM_JSON_OPT(check_union_fail_return_value, "check_union_fail_return_value");
         FROM_JSON_OPT(switch_union, "switch_union");
+        FROM_JSON_OPT(address_of_placeholder, "address_of_placeholder");
+        FROM_JSON_OPT(optional_of_placeholder, "optional_of_placeholder");
         JSON_PARAM_END()
     }
 
@@ -164,6 +169,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_main, "main", "generate main file");
         ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
         ctx.VarBool(&debug, "debug", "debug mode (print hook call on stderr)");
+        ctx.VarBool(&print_hooks, "print-hooks", "print hooks");
         /*
         ctx.VarBool(&prior_ident, "prior-ident", "prioritize identifier than type when defining field or parameter or variable");
         ctx.VarString(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
@@ -264,7 +270,7 @@ namespace rebgn {
     bool include_stack(Flags& flags, size_t& line, std::vector<std::filesystem::path>& stack, auto&& file_name, auto&& per_line) {
         auto hook_file = std::filesystem::path(flags.hook_file_dir) / file_name;
         auto name = hook_file.generic_u8string();
-        if (flags.debug) {
+        if (flags.debug || flags.print_hooks) {
             futils::wrap::cerr_wrap() << "try hook via include: " << name << '\n';
         }
         for (auto& parents : stack) {
@@ -307,6 +313,9 @@ namespace rebgn {
         auto name = hook_file.generic_u8string() + u8".txt";
         if (flags.debug) {
             futils::wrap::cerr_wrap() << "try hook: " << name << '\n';
+        }
+        else if (flags.print_hooks) {
+            futils::wrap::cerr_wrap() << "hook: " << name << '\n';
         }
         futils::file::View view;
         if (auto res = view.open(name); !res) {
@@ -973,6 +982,21 @@ namespace rebgn {
             eval_hook([&] {
                 eval_hook([&] {}, bm2::HookFileSub::op);
                 eval.writeln("result = make_eval_result(std::format(\"({}{})\", opstr, target.result));");
+            });
+        }
+        else if (op == AbstractOp::ADDRESS_OF) {
+            eval.writeln("auto ref = code.ref().value();");
+            eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"", flags.address_of_placeholder, "\", target.result));");
+            });
+        }
+        else if (op == AbstractOp::OPTIONAL_OF) {
+            eval.writeln("auto ref = code.ref().value();");
+            eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
+            eval.writeln("auto type = type_to_string(ctx, code.type().value());");
+            eval_hook([&] {
+                eval.writeln("result = make_eval_result(std::format(\"", flags.optional_of_placeholder, "\", target.result));");
             });
         }
         else if (op == AbstractOp::IMMEDIATE_INT) {
@@ -1804,9 +1828,11 @@ namespace rebgn {
         if (!may_load_config(flags)) {
             return;
         }
-        if (flags.lang_name.empty()) {
-            futils::wrap::cerr_wrap() << "--lang option is required\n";
-            return;
+        if (!flags.print_hooks) {
+            if (flags.lang_name.empty()) {
+                futils::wrap::cerr_wrap() << "--lang option is required\n";
+                return;
+            }
         }
         if (flags.is_header) {
             code_header(w, flags);
@@ -1950,7 +1976,9 @@ auto& cout = futils::wrap::cout_wrap();
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     bm2::TmpCodeWriter w;
     rebgn::code_template(w, flags);
-    cout << w.out();
+    if (!flags.print_hooks) {
+        cout << w.out();
+    }
     return 0;
 }
 

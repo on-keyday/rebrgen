@@ -1,4 +1,4 @@
-/*license*/
+﻿/*license*/
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
 #include <escape/escape.h>
@@ -339,11 +339,16 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::ADDRESS_OF: {
-            result = make_eval_result("\"\"\"Unimplemented ADDRESS_OF\"\"\"");
+            auto ref = code.ref().value();
+            auto target = eval(ctx.ref(ref), ctx);
+            result = make_eval_result(std::format("{}", target.result));
             break;
         }
         case rebgn::AbstractOp::OPTIONAL_OF: {
-            result = make_eval_result("\"\"\"Unimplemented OPTIONAL_OF\"\"\"");
+            auto ref = code.ref().value();
+            auto target = eval(ctx.ref(ref), ctx);
+            auto type = type_to_string(ctx, code.type().value());
+            result = make_eval_result(std::format("{}", target.result));
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {
@@ -796,9 +801,11 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
-                if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER||
-                   code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+                if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
                     w.writeln("@property");
+                }
+                else if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+                    w.writeln("@",ctx.ident(code.ident().value()),".setter");
                 }
                 auto ident = ctx.ident(code.ident().value());
                 auto range = ctx.range(code.ident().value());

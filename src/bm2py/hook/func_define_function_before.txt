@@ -1,4 +1,6 @@
-if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER||
-   code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
     w.writeln("@property");
+}
+else if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+    w.writeln("@",ctx.ident(code.ident().value()),".setter");
 }

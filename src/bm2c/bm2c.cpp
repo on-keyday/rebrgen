@@ -1,4 +1,4 @@
-/*license*/
+﻿/*license*/
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
 #include <escape/escape.h>
@@ -343,11 +343,16 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::ADDRESS_OF: {
-            result = make_eval_result("/*Unimplemented ADDRESS_OF*/");
+            auto ref = code.ref().value();
+            auto target = eval(ctx.ref(ref), ctx);
+            result = make_eval_result(std::format("&{}", target.result));
             break;
         }
         case rebgn::AbstractOp::OPTIONAL_OF: {
-            result = make_eval_result("/*Unimplemented OPTIONAL_OF*/");
+            auto ref = code.ref().value();
+            auto target = eval(ctx.ref(ref), ctx);
+            auto type = type_to_string(ctx, code.type().value());
+            result = make_eval_result(std::format("{}", target.result));
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {

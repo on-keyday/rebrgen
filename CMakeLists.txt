@@ -40,16 +40,6 @@ add_executable(bmgen
 )
 
 
-add_executable(bm2cpp
-    "src/bm2cpp/main.cpp"
-    "src/bm2cpp/bm2cpp.cpp"
-)
-
-add_executable(bm2rust
-    "src/bm2rust/main.cpp"
-    "src/bm2rust/bm2rust.cpp"
-)   
-
 add_executable(gen_template 
     "src/bm2/gen_template.cpp"
 )
@@ -57,17 +47,13 @@ add_executable(gen_template
 add_subdirectory("src")
 
 target_link_libraries(bmgen futils bm)
-target_link_libraries(bm2cpp futils bm)
-target_link_libraries(bm2rust futils bm)
 target_link_libraries(gen_template futils)
 
-install(TARGETS bmgen bm2cpp bm2rust bm DESTINATION tool)
+install(TARGETS bmgen bm DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)
-install(FILES "${CMAKE_BINARY_DIR}/tool/bm2cpp.wasm" DESTINATION tool)
-install(FILES "${CMAKE_BINARY_DIR}/tool/bm2rust.wasm" DESTINATION tool)
 endif()

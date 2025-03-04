@@ -41,12 +41,12 @@ with open(output, "w") as f:
     for file in src:
         f.write(f'add_subdirectory("{file["name"]}")\n')
 
-output = "./run_generated.bat"
+output = "script/run_generated.bat"
 
 with open(output, "w") as f:
     f.write("@echo off\n")
     f.write("setlocal\n")
-    f.write("call build.bat\n")
+    f.write("call script\\build.bat\n")
     f.write("tool\\bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n")
     f.write("tool\\bmgen -p -i save/sample.json --print-only-op > save/save_op.txt\n")
     for file in src:
@@ -54,11 +54,11 @@ with open(output, "w") as f:
             continue  # skip this currently
         f.write(f"tool\\{file["name"]} -i save/save.bin > save/save.{file["suffix"]}\n")
 
-output = "./run_generated.sh"
+output = "script/run_generated.sh"
 
 with open(output, "wb") as f:
     f.write("#!/bin/bash\n".encode())
-    f.write("./build.sh\n".encode())
+    f.write("./script/build.sh\n".encode())
     f.write(
         "tool/bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n".encode()
     )
@@ -68,4 +68,20 @@ with open(output, "wb") as f:
             continue  # skip this currently
         f.write(
             f"tool/{file["name"]} -i save/save.bin > save/save.{file["suffix"]}\n".encode()
+        )
+
+output = "script/run_generated.ps1"
+
+with open(output, "w") as f:
+    f.write("$ErrorActionPreference = 'Stop'\n")
+    f.write(".\\script\\build.ps1\n")
+    f.write(
+        ".\\tool\\bmgen -p -i save\\sample.json -o save\\save.bin -c save\\save.dot > save\\save.txt\n"
+    )
+    f.write(".\\tool\\bmgen -p -i save\\sample.json --print-only-op > save\\save_op.txt\n")
+    for file in src:
+        if file["lang"] == "hexmap":
+            continue  # skip this currently
+        f.write(
+            f".\\tool\\{file["name"]} -i save\\save.bin > save\\save.{file["suffix"]}\n"
         )

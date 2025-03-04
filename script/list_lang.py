@@ -10,8 +10,15 @@ def collect_langs(root_dir):
             if d != "bm2" and str(d).startswith("bm2"):
                 if d == "bm2hexmap":
                     continue
-                cmake_files.append(d[3:])
+                cmake_files.append(
+                    {
+                        "name": d[3:],
+                        "can_generate": pl.Path(
+                            os.path.join(root, d, "CMakeLists.txt")
+                        ).exists(),
+                    }
+                )
     return cmake_files
 
 
-print("\n".join(collect_langs("src")))
+print(json.dumps(collect_langs("src")))

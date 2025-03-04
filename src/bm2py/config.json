@@ -53,5 +53,7 @@
     "match_default_keyword": "case _",
     "check_union_condition": "not isinstance($FIELD_IDENT, $MEMBER_FULL_IDENT)",
     "check_union_fail_return_value": "False",
-    "switch_union": "$FIELD_IDENT = $MEMBER_FULL_IDENT()"
+    "switch_union": "$FIELD_IDENT = $MEMBER_FULL_IDENT()",
+    "address_of_placeholder": "{}",
+    "optional_of_placeholder": "{}"
 }

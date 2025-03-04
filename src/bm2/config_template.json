@@ -54,5 +54,7 @@
     "algebraic_variant_separator": ",",
     "check_union_condition": "std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
     "check_union_fail_return_at_encoder": "false",
-    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()"
+    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()",
+    "address_of_placeholder": "&{}",
+    "optional_of_placeholder": "{}"
 }

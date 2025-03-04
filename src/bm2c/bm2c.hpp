@@ -1,4 +1,4 @@
-/*license*/
+﻿/*license*/
 #pragma once
 #include <binary/writer.h>
 #include <bm/binary_module.hpp>

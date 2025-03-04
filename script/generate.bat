@@ -4,3 +4,4 @@ call .\script\gen_template.bat c
 call .\script\gen_template.bat py
 call .\script\gen_template.bat haskell
 call .\script\gen_template.bat go
+python script/collect_cmake.py

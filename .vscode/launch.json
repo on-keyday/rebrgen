@@ -99,6 +99,21 @@
             //"symbolSearchPath": "lib\\"
         },
         {
+            "name": "Debug gen_template",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/gen_template",
+            "args": [
+                "--config",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
             "name": "Attach",
             "type": "cppvsdbg",
             "request": "attach",

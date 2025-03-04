@@ -16,9 +16,11 @@ def collect_cmake_files(root_dir):
                     "name": pl.Path(os.path.join(root)).relative_to("src").as_posix()
                 }
                 obj["lang"] = obj["name"][3:]
-                obj["has_config"] = pl.Path(os.path.join(root, "config.json")).exists()
+                configPath = os.path.join(root, "config.json")
+                obj["has_config"] = pl.Path(configPath).exists()
                 if obj["has_config"]:
-                    with open(os.path.join(root, "config.json"), "r") as f:
+                    with open(configPath, "r") as f:
+                        print(f"Loading config: {configPath}")
                         obj["config"] = json.load(f)
                         if obj["config"].get("suffix") is not None:
                             obj["suffix"] = obj["config"]["suffix"]

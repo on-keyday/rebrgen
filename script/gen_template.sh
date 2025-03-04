@@ -15,4 +15,3 @@ DEBUG_OPTION=
 ./tool/gen_template --lang $LANG_NAME --hook-dir src/bm2$LANG_NAME/hook "$DEBUG_OPTION" > src/bm2$LANG_NAME/bm2$LANG_NAME.cpp
 ./tool/gen_template --lang $LANG_NAME --main --hook-dir src/bm2$LANG_NAME/hook "$DEBUG_OPTION" > src/bm2$LANG_NAME/main.cpp
 ./tool/gen_template --lang $LANG_NAME --cmake --hook-dir src/bm2$LANG_NAME/hook "$DEBUG_OPTION" > src/bm2$LANG_NAME/CMakeLists.txt
-python script/collect_cmake.py

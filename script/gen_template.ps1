@@ -20,4 +20,4 @@ $DEBUG_OPTION = ""
 & "./tool/gen_template" --config-file "src/bm2$LANG_NAME/config.json" --hook-dir "src/bm2$LANG_NAME/hook" $DEBUG_OPTION | Out-File "src/bm2$LANG_NAME/bm2$LANG_NAME.cpp" -Encoding utf8
 & "./tool/gen_template" --lang $LANG_NAME --main --hook-dir "src/bm2$LANG_NAME/hook" $DEBUG_OPTION | Out-File "src/bm2$LANG_NAME/main.cpp" -Encoding utf8
 & "./tool/gen_template" --lang $LANG_NAME --cmake --hook-dir "src/bm2$LANG_NAME/hook" $DEBUG_OPTION | Out-File "src/bm2$LANG_NAME/CMakeLists.txt" -Encoding utf8
-python script/collect_cmake.py
+

@@ -1152,13 +1152,13 @@ namespace bm2haskell {
                 auto union_member_ref = code.ref().value();
                 auto union_ref = ctx.ref(union_member_ref).belong().value();
                 auto union_field_ref = ctx.ref(union_ref).belong().value();
-                auto union_member_index = ctx.ref(union_member_ref).int_value().value();
+                auto union_member_index = ctx.ref(union_member_ref).int_value()->value();
                 auto union_member_ident = ctx.ident(union_member_ref);
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
-                w.writeln("if() ");
+                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) ");
                 auto scope = w.indent_scope_ex();
-                w.writeln("");
+                w.writeln("",union_field_ident.result," = ",union_member_ident,"()");
                 scope.execute();
                 w.writeln("");
                 break;
@@ -1167,12 +1167,12 @@ namespace bm2haskell {
                 auto union_member_ref = code.ref().value();
                 auto union_ref = ctx.ref(union_member_ref).belong().value();
                 auto union_field_ref = ctx.ref(union_ref).belong().value();
-                auto union_member_index = ctx.ref(union_member_ref).int_value().value();
+                auto union_member_index = ctx.ref(union_member_ref).int_value()->value();
                 auto union_member_ident = ctx.ident(union_member_ref);
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
                 auto check_type = code.check_at().value();
-                w.writeln("if() ");
+                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) ");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {
                     w.writeln("return false");

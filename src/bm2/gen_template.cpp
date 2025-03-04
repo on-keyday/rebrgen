@@ -87,9 +87,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string variant_mode = "union";     // union or algebraic
     std::string algebraic_variant_separator = "|";
     std::string algebraic_variant_placeholder = "{}";
-    std::string check_union_condition = "";
+    std::string check_union_condition = "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)";
     std::string check_union_fail_return_value = "false";
-    std::string switch_union = "";
+    std::string switch_union = "$FIELD_IDENT = $MEMBER_IDENT()";
     std::string address_of_placeholder = "&{}";
     std::string optional_of_placeholder = "{}";
 
@@ -168,7 +168,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         JSON_PARAM_END()
     }
 
-    bool to_json(futils::json::JSON& js) const {
+    bool to_json(auto&& js) const {
         JSON_PARAM_BEGIN(*this, js)
         MAP_TO_MACRO(TO_JSON_PARAM)
         JSON_PARAM_END()
@@ -658,7 +658,7 @@ namespace rebgn {
             inner_function.writeln("auto union_member_ref = code.ref().value();");
             inner_function.writeln("auto union_ref = ctx.ref(union_member_ref).belong().value();");
             inner_function.writeln("auto union_field_ref = ctx.ref(union_ref).belong().value();");
-            inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value().value();");
+            inner_function.writeln("auto union_member_index = ctx.ref(union_member_ref).int_value()->value();");
             inner_function.writeln("auto union_member_ident = ctx.ident(union_member_ref);");
             inner_function.writeln("auto union_ident = ctx.ident(union_ref);");
             inner_function.writeln("auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);");
@@ -672,7 +672,7 @@ namespace rebgn {
                     {"UNION_IDENT", "\",union_ident,\""},
                     {"UNION_FULL_IDENT", "\",type_accessor(ctx.ref(union_ref),ctx),\""},
                     {"FIELD_IDENT", "\",union_field_ident.result,\""},
-                    {"MEMBER_INDEX", "\",std::to_string(union_member_index),\""},
+                    {"MEMBER_INDEX", "\",futils::number::to_string<std::string>(union_member_index),\""},
                 };
                 auto escaped = env_escape(flags.check_union_condition, map);
                 inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
@@ -1820,7 +1820,7 @@ namespace rebgn {
     }
 
     void code_config(bm2::TmpCodeWriter& w, Flags& flags) {
-        auto js = futils::json::convert_to_json<futils::json::JSON>(flags);
+        auto js = futils::json::convert_to_json<futils::json::OrderedJSON>(flags);
         auto out = futils::json::to_string<std::string>(js);
         w.writeln(out);
     }

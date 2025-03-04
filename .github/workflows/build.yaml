@@ -58,8 +58,8 @@ jobs:
           cd ..
       - name: Build
         run: |
-          chmod +x build.sh
-          EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./build.sh web Release
+          chmod +x script/build.sh
+          EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./script/build.sh web Release
           cp README.md web/
           cp LICENSE web/
       - name: Upload Artifact

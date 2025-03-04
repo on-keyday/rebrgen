@@ -16,6 +16,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool is_header = false;
     bool is_main = false;
     bool is_cmake = false;
+    bool is_config = false;
     std::string_view config_file = "config.json";
     std::string_view hook_file_dir = "hook";
     bool debug = false;
@@ -23,6 +24,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
 
     // json options
     std::string lang_name;
+    std::string file_suffix = "";
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
     std::string int_type_placeholder = "std::int{}_t";
@@ -91,74 +93,84 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string address_of_placeholder = "&{}";
     std::string optional_of_placeholder = "{}";
 
+#define MAP_TO_MACRO(MACRO_NAME)                                               \
+    MACRO_NAME(lang_name, "lang")                                              \
+    MACRO_NAME(file_suffix, "suffix")                                          \
+    MACRO_NAME(comment_prefix, "comment_prefix")                               \
+    MACRO_NAME(comment_suffix, "comment_suffix")                               \
+    MACRO_NAME(int_type_placeholder, "int_type")                               \
+    MACRO_NAME(uint_type_placeholder, "uint_type")                             \
+    MACRO_NAME(float_type_placeholder, "float_type")                           \
+    MACRO_NAME(array_type_placeholder, "array_type")                           \
+    MACRO_NAME(array_has_one_placeholder, "array_has_one_placeholder")         \
+    MACRO_NAME(vector_type_placeholder, "vector_type")                         \
+    MACRO_NAME(optional_type_placeholder, "optional_type")                     \
+    MACRO_NAME(pointer_type_placeholder, "pointer_type")                       \
+    MACRO_NAME(recursive_struct_type_placeholder, "recursive_struct_type")     \
+    MACRO_NAME(bool_type, "bool_type")                                         \
+    MACRO_NAME(true_literal, "true_literal")                                   \
+    MACRO_NAME(false_literal, "false_literal")                                 \
+    MACRO_NAME(coder_return_type, "coder_return_type")                         \
+    MACRO_NAME(property_setter_return_type, "property_setter_return_type")     \
+    MACRO_NAME(end_of_statement, "end_of_statement")                           \
+    MACRO_NAME(block_begin, "block_begin")                                     \
+    MACRO_NAME(block_end, "block_end")                                         \
+    MACRO_NAME(block_end_type, "block_end_type")                               \
+    MACRO_NAME(prior_ident, "prior_ident")                                     \
+    MACRO_NAME(struct_keyword, "struct_keyword")                               \
+    MACRO_NAME(enum_keyword, "enum_keyword")                                   \
+    MACRO_NAME(define_var_keyword, "define_var_keyword")                       \
+    MACRO_NAME(var_type_separator, "var_type_separator")                       \
+    MACRO_NAME(define_var_assign, "define_var_assign")                         \
+    MACRO_NAME(omit_type_on_define_var, "omit_type_on_define_var")             \
+    MACRO_NAME(field_type_separator, "field_type_separator")                   \
+    MACRO_NAME(field_end, "field_end")                                         \
+    MACRO_NAME(enum_member_end, "enum_member_end")                             \
+    MACRO_NAME(func_keyword, "func_keyword")                                   \
+    MACRO_NAME(trailing_return_type, "trailing_return_type")                   \
+    MACRO_NAME(func_brace_ident_separator, "func_brace_ident_separator")       \
+    MACRO_NAME(func_type_separator, "func_type_separator")                     \
+    MACRO_NAME(func_void_return_type, "func_void_return_type")                 \
+    MACRO_NAME(if_keyword, "if_keyword")                                       \
+    MACRO_NAME(elif_keyword, "elif_keyword")                                   \
+    MACRO_NAME(else_keyword, "else_keyword")                                   \
+    MACRO_NAME(infinity_loop, "infinity_loop")                                 \
+    MACRO_NAME(conditional_loop, "conditional_loop")                           \
+    MACRO_NAME(match_keyword, "match_keyword")                                 \
+    MACRO_NAME(match_case_keyword, "match_case_keyword")                       \
+    MACRO_NAME(match_case_separator, "match_case_separator")                   \
+    MACRO_NAME(match_default_keyword, "match_default_keyword")                 \
+    MACRO_NAME(condition_has_parentheses, "condition_has_parentheses")         \
+    MACRO_NAME(self_ident, "self_ident")                                       \
+    MACRO_NAME(param_type_separator, "param_type_separator")                   \
+    MACRO_NAME(self_param, "self_param")                                       \
+    MACRO_NAME(encoder_param, "encoder_param")                                 \
+    MACRO_NAME(decoder_param, "decoder_param")                                 \
+    MACRO_NAME(func_style_cast, "func_style_cast")                             \
+    MACRO_NAME(empty_pointer, "empty_pointer")                                 \
+    MACRO_NAME(empty_optional, "empty_optional")                               \
+    MACRO_NAME(size_method, "size_method")                                     \
+    MACRO_NAME(surrounded_size_method, "surrounded_size_method")               \
+    MACRO_NAME(append_method, "append_method")                                 \
+    MACRO_NAME(surrounded_append_method, "surrounded_append_method")           \
+    MACRO_NAME(variant_mode, "variant_mode")                                   \
+    MACRO_NAME(algebraic_variant_separator, "algebraic_variant_separator")     \
+    MACRO_NAME(algebraic_variant_placeholder, "algebraic_variant_type")        \
+    MACRO_NAME(check_union_condition, "check_union_condition")                 \
+    MACRO_NAME(check_union_fail_return_value, "check_union_fail_return_value") \
+    MACRO_NAME(switch_union, "switch_union")                                   \
+    MACRO_NAME(address_of_placeholder, "address_of_placeholder")               \
+    MACRO_NAME(optional_of_placeholder, "optional_of_placeholder")
+
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
-        FROM_JSON_OPT(lang_name, "lang");
-        FROM_JSON_OPT(comment_prefix, "comment_prefix");
-        FROM_JSON_OPT(comment_suffix, "comment_suffix");
-        FROM_JSON_OPT(int_type_placeholder, "int_type");
-        FROM_JSON_OPT(uint_type_placeholder, "uint_type");
-        FROM_JSON_OPT(float_type_placeholder, "float_type");
-        FROM_JSON_OPT(array_type_placeholder, "array_type");
-        FROM_JSON_OPT(array_has_one_placeholder, "array_has_one_placeholder");
-        FROM_JSON_OPT(vector_type_placeholder, "vector_type");
-        FROM_JSON_OPT(optional_type_placeholder, "optional_type");
-        FROM_JSON_OPT(pointer_type_placeholder, "pointer_type");
-        FROM_JSON_OPT(recursive_struct_type_placeholder, "recursive_struct_type");
-        FROM_JSON_OPT(bool_type, "bool_type");
-        FROM_JSON_OPT(true_literal, "true_literal");
-        FROM_JSON_OPT(false_literal, "false_literal");
-        FROM_JSON_OPT(coder_return_type, "coder_return_type");
-        FROM_JSON_OPT(property_setter_return_type, "property_setter_return_type");
-        FROM_JSON_OPT(end_of_statement, "end_of_statement");
-        FROM_JSON_OPT(block_begin, "block_begin");
-        FROM_JSON_OPT(block_end, "block_end");
-        FROM_JSON_OPT(block_end_type, "block_end_type");
-        FROM_JSON_OPT(prior_ident, "prior_ident");
-        FROM_JSON_OPT(struct_keyword, "struct_keyword");
-        FROM_JSON_OPT(enum_keyword, "enum_keyword");
-        FROM_JSON_OPT(define_var_keyword, "define_var_keyword");
-        FROM_JSON_OPT(var_type_separator, "var_type_separator");
-        FROM_JSON_OPT(define_var_assign, "define_var_assign");
-        FROM_JSON_OPT(omit_type_on_define_var, "omit_type_on_define_var");
-        FROM_JSON_OPT(field_type_separator, "field_type_separator");
-        FROM_JSON_OPT(field_end, "field_end");
-        FROM_JSON_OPT(enum_member_end, "enum_member_end");
-        FROM_JSON_OPT(func_keyword, "func_keyword");
-        FROM_JSON_OPT(trailing_return_type, "trailing_return_type");
-        FROM_JSON_OPT(func_brace_ident_separator, "func_brace_ident_separator");
-        FROM_JSON_OPT(func_type_separator, "func_type_separator");
-        FROM_JSON_OPT(func_void_return_type, "func_void_return_type");
-        FROM_JSON_OPT(if_keyword, "if_keyword");
-        FROM_JSON_OPT(elif_keyword, "elif_keyword");
-        FROM_JSON_OPT(else_keyword, "else_keyword");
-        FROM_JSON_OPT(infinity_loop, "infinity_loop");
-        FROM_JSON_OPT(conditional_loop, "conditional_loop");
-        FROM_JSON_OPT(match_keyword, "match_keyword");
-        FROM_JSON_OPT(match_case_keyword, "match_case_keyword");
-        FROM_JSON_OPT(match_case_separator, "match_case_separator");
-        FROM_JSON_OPT(match_default_keyword, "match_default_keyword");
-        FROM_JSON_OPT(condition_has_parentheses, "condition_has_parentheses");
-        FROM_JSON_OPT(self_ident, "self_ident");
-        FROM_JSON_OPT(param_type_separator, "param_type_separator");
-        FROM_JSON_OPT(self_param, "self_param");
-        FROM_JSON_OPT(encoder_param, "encoder_param");
-        FROM_JSON_OPT(decoder_param, "decoder_param");
-        FROM_JSON_OPT(func_style_cast, "func_style_cast");
-        FROM_JSON_OPT(empty_pointer, "empty_pointer");
-        FROM_JSON_OPT(empty_optional, "empty_optional");
-        FROM_JSON_OPT(size_method, "size_method");
-        FROM_JSON_OPT(surrounded_size_method, "surrounded_size_method");
-        FROM_JSON_OPT(append_method, "append_method");
-        FROM_JSON_OPT(surrounded_append_method, "surrounded_append_method");
-        FROM_JSON_OPT(variant_mode, "variant_mode");
-        FROM_JSON_OPT(algebraic_variant_separator, "algebraic_variant_separator");
-        FROM_JSON_OPT(algebraic_variant_placeholder, "algebraic_variant_type");
-        FROM_JSON_OPT(check_union_condition, "check_union_condition");
-        FROM_JSON_OPT(check_union_fail_return_value, "check_union_fail_return_value");
-        FROM_JSON_OPT(switch_union, "switch_union");
-        FROM_JSON_OPT(address_of_placeholder, "address_of_placeholder");
-        FROM_JSON_OPT(optional_of_placeholder, "optional_of_placeholder");
+        MAP_TO_MACRO(FROM_JSON_OPT)
+        JSON_PARAM_END()
+    }
+
+    bool to_json(futils::json::JSON& js) const {
+        JSON_PARAM_BEGIN(*this, js)
+        MAP_TO_MACRO(TO_JSON_PARAM)
         JSON_PARAM_END()
     }
 
@@ -168,6 +180,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_header, "header", "generate header file");
         ctx.VarBool(&is_main, "main", "generate main file");
         ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
+        ctx.VarBool(&is_config, "config", "generate config file");
         ctx.VarBool(&debug, "debug", "debug mode (print hook call on stderr)");
         ctx.VarBool(&print_hooks, "print-hooks", "print hooks");
         /*
@@ -1806,6 +1819,12 @@ namespace rebgn {
         w.writeln("endif()");
     }
 
+    void code_config(bm2::TmpCodeWriter& w, Flags& flags) {
+        auto js = futils::json::convert_to_json<futils::json::JSON>(flags);
+        auto out = futils::json::to_string<std::string>(js);
+        w.writeln(out);
+    }
+
     bool may_load_config(Flags& flags) {
         if (!flags.config_file.empty()) {
             futils::file::View config_file;
@@ -1826,6 +1845,10 @@ namespace rebgn {
 
     void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
         if (!may_load_config(flags)) {
+            return;
+        }
+        if (flags.is_config) {
+            code_config(w, flags);
             return;
         }
         if (!flags.print_hooks) {

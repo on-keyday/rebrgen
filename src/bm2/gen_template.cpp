@@ -102,6 +102,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string encode_backward = "$ENCODER.backward($OFFSET)";
     std::string decode_backward = "$DECODER.backward($OFFSET)";
     std::string is_little_endian = "std::endian::native == std::endian::little";
+    std::string default_enum_base = "";  // if empty, omit the base type
+    std::string enum_base_separator = " : ";
 
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
@@ -181,7 +183,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(decode_offset, "decode_offset")                                 \
     MACRO_NAME(encode_backward, "encode_backward")                             \
     MACRO_NAME(decode_backward, "decode_backward")                             \
-    MACRO_NAME(is_little_endian, "is_little_endian_expr")
+    MACRO_NAME(is_little_endian, "is_little_endian_expr")                      \
+    MACRO_NAME(default_enum_base, "default_enum_base")                         \
+    MACRO_NAME(enum_base_separator, "enum_base_separator")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -633,7 +637,7 @@ namespace rebgn {
                 func_hook([&] {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         if (flags.otbs_on_block_end) {
-                            inner_function.writeln("w.write(\"", flags.block_end, "\")");
+                            inner_function.writeln("w.write(\"", flags.block_end, "\");");
                         }
                         else {
                             inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
@@ -1010,6 +1014,7 @@ namespace rebgn {
     void write_inner_block(bm2::TmpCodeWriter& inner_block,
                            AbstractOp op, Flags& flags) {
         inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
+        auto scope = inner_block.indent_scope();
         auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
             if (stage == bm2::HookFileSub::main) {
                 may_write_from_hook(inner_block, flags, bm2::HookFile::inner_block_op, op, bm2::HookFileSub::pre_main);
@@ -1022,14 +1027,14 @@ namespace rebgn {
         if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
             op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
             op == AbstractOp::DECLARE_FUNCTION) {
-            inner_block.indent_writeln("auto ref = code.ref().value();");
-            inner_block.indent_writeln("auto inner_range = ctx.range(ref);");
+            inner_block.writeln("auto ref = code.ref().value();");
+            inner_block.writeln("auto inner_range = ctx.range(ref);");
             if (op == AbstractOp::DECLARE_FUNCTION) {
                 block_hook([&] {});  // do nothing
             }
             else {
                 block_hook([&] {
-                    inner_block.indent_writeln("inner_block(ctx, w, inner_range);");
+                    inner_block.writeln("inner_block(ctx, w, inner_range);");
                 });
             }
         }
@@ -1038,7 +1043,7 @@ namespace rebgn {
             block_hook([&] {});  // do nothing
         }
         else if (op == AbstractOp::DECLARE_BIT_FIELD) {
-            inner_block.indent_writeln("auto ref=code.ref().value();");
+            inner_block.writeln("auto ref=code.ref().value();");
             inner_block.writeln("auto ident = ctx.ident(ref);");
             inner_block.writeln("auto inner_range = ctx.range(ref);");
             inner_block.writeln("auto type_ref = ctx.ref(ref).type().value();");
@@ -1048,74 +1053,89 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
-            inner_block.indent_writeln("auto ref = code.ref().value();");
-            inner_block.indent_writeln("auto inner_range = ctx.range(ref);");
+            inner_block.writeln("auto ref = code.ref().value();");
+            inner_block.writeln("auto inner_range = ctx.range(ref);");
             block_hook([&] {
-                inner_block.indent_writeln("TmpCodeWriter inner_w;");
-                inner_block.indent_writeln("inner_block(ctx, inner_w, inner_range);");
-                inner_block.indent_writeln("ctx.cw.write_unformatted(inner_w.out());");
+                inner_block.writeln("TmpCodeWriter inner_w;");
+                inner_block.writeln("inner_block(ctx, inner_w, inner_range);");
+                inner_block.writeln("ctx.cw.write_unformatted(inner_w.out());");
             });
         }
         else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {
-            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
             block_hook([&] {
-                inner_block.indent_writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
-                inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                inner_block.writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.writeln("defer.push_back(w.indent_scope_ex());");
             });
         }
         else if (op == AbstractOp::DEFINE_UNION) {
-            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
             block_hook([&] {
                 if (flags.variant_mode == "union") {
-                    inner_block.indent_writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
-                    inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                    inner_block.writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
+                    inner_block.writeln("defer.push_back(w.indent_scope_ex());");
                 }
             });
         }
         else if (op == AbstractOp::END_UNION) {
             block_hook([&] {
                 if (flags.variant_mode == "union") {
-                    inner_block.indent_writeln("defer.pop_back();");
-                    inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
+                    inner_block.writeln("defer.pop_back();");
+                    inner_block.writeln("w.writeln(\"", flags.block_end_type, "\");");
                 }
             });
         }
         else if (op == AbstractOp::DEFINE_ENUM) {
-            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("auto base_type_ref = code.type().value();");
+            inner_block.writeln("std::optional<std::string> base_type;");
+            inner_block.writeln("if(base_type_ref.value() != 0) {");
+            auto scope = inner_block.indent_scope();
+            inner_block.writeln("base_type = type_to_string(ctx,base_type_ref);");
+            scope.execute();
+            inner_block.writeln("}");
+            if (flags.default_enum_base.size()) {
+                inner_block.writeln("else {");
+                inner_block.indent_writeln("base_type = \"", flags.default_enum_base, "\";");
+                inner_block.writeln("}");
+            }
             block_hook([&] {
-                inner_block.indent_writeln("w.writeln(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
-                inner_block.indent_writeln("defer.push_back(w.indent_scope_ex());");
+                inner_block.writeln("w.write(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.writeln("if(base_type) {");
+                inner_block.indent_writeln("w.write(\" ", flags.enum_base_separator, " \", *base_type);");
+                inner_block.writeln("}");
+                inner_block.writeln("defer.push_back(w.indent_scope_ex());");
             });
         }
         else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
-            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
-            inner_block.indent_writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
+            inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
             block_hook([&] {
-                inner_block.indent_writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
+                inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
             });
         }
         else if (op == AbstractOp::DEFINE_FIELD) {
-            inner_block.indent_writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
+            inner_block.writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
             auto scope = inner_block.indent_scope();
-            inner_block.indent_writeln("break;");
+            inner_block.writeln("break;");
             scope.execute();
-            inner_block.indent_writeln("}");
-            inner_block.indent_writeln("auto type = type_to_string(ctx, code.type().value());");
-            inner_block.indent_writeln("auto ident = ctx.ident(code.ident().value());");
+            inner_block.writeln("}");
+            inner_block.writeln("auto type = type_to_string(ctx, code.type().value());");
+            inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
             block_hook([&] {
                 if (flags.prior_ident) {
-                    inner_block.indent_writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
+                    inner_block.writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
                 }
                 else {
-                    inner_block.indent_writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                    inner_block.writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
                 }
             });
         }
         else if (op == AbstractOp::END_FORMAT || op == AbstractOp::END_ENUM || op == AbstractOp::END_STATE ||
                  op == AbstractOp::END_UNION_MEMBER) {
             block_hook([&] {
-                inner_block.indent_writeln("defer.pop_back();");
-                inner_block.indent_writeln("w.writeln(\"", flags.block_end_type, "\");");
+                inner_block.writeln("defer.pop_back();");
+                inner_block.writeln("w.writeln(\"", flags.block_end_type, "\");");
             });
         }
         else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
@@ -1125,11 +1145,12 @@ namespace rebgn {
         }
         else {
             block_hook([&] {
-                inner_block.indent_writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                inner_block.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
             });
         }
         block_hook([&] {}, bm2::HookFileSub::after);
-        inner_block.indent_writeln("break;");
+        inner_block.writeln("break;");
+        scope.execute();
         inner_block.writeln("}");
     }
 

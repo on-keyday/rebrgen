@@ -6,7 +6,7 @@
 namespace bm2go {
     using TmpCodeWriter = bm2::TmpCodeWriter;
     struct Context : bm2::Context {
-        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","(*this)", std::move(escape_ident)} {}
+        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","this_", std::move(escape_ident)} {}
     };
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
     std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
@@ -34,16 +34,16 @@ namespace bm2go {
                     *bit_size = size;
                 }
                 if (size <= 8) {
-                    return "std::int8_t";
+                    return "int8";
                 }
                 else if (size <= 16) {
-                    return "std::int16_t";
+                    return "int16";
                 }
                 else if (size <= 32) {
-                    return "std::int32_t";
+                    return "int32";
                 }
                 else {
-                    return "std::int64_t";
+                    return "int64";
                 }
             }
             case rebgn::StorageType::UINT: {
@@ -52,16 +52,16 @@ namespace bm2go {
                     *bit_size = size;
                 }
                 if (size <= 8) {
-                    return "std::uint8_t";
+                    return "uint8";
                 }
                 else if (size <= 16) {
-                    return "std::uint16_t";
+                    return "uint16";
                 }
                 else if (size <= 32) {
-                    return "std::uint32_t";
+                    return "uint32";
                 }
                 else {
-                    return "std::uint64_t";
+                    return "uint64";
                 }
             }
             case rebgn::StorageType::FLOAT: {
@@ -70,10 +70,10 @@ namespace bm2go {
                     *bit_size = size;
                 }
                 if (size <= 32) {
-                    return "float32_t";
+                    return "float32";
                 }
                 else {
-                    return "float64_t";
+                    return "float64";
                 }
             }
             case rebgn::StorageType::STRUCT_REF: {
@@ -84,7 +84,7 @@ namespace bm2go {
             case rebgn::StorageType::RECURSIVE_STRUCT_REF: {
                 auto ref = storage.ref().value().value();
                 auto& ident = ctx.ident_table[ref];
-                return std::format("{}*", ident);
+                return std::format("*{}", ident);
             }
             case rebgn::StorageType::BOOL: {
                 return "bool";
@@ -98,12 +98,12 @@ namespace bm2go {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
                 auto length = storage.size().value().value();
-                return futils::strutil::concat<std::string>("std::array<{}, {}>");
+                return futils::strutil::concat<std::string>("[]",base_type,"");
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
-                return std::format("std::vector<{}>", base_type);
+                return std::format("[]{}", base_type);
             }
             case rebgn::StorageType::VARIANT: {
                 auto ref = storage.ref().value();
@@ -122,11 +122,11 @@ namespace bm2go {
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return std::format("std::optional<{}>", base_type);
+                return std::format("*{}", base_type);
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                return std::format("{}*", base_type);
+                return std::format("*{}", base_type);
             }
             default: {
                 return std::format("{}{}{}","/*",to_string(storage.type),"*/");
@@ -389,7 +389,7 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {
-            result = make_eval_result("nullptr");
+            result = make_eval_result("nil");
             break;
         }
         case rebgn::AbstractOp::EMPTY_OPTIONAL: {
@@ -560,7 +560,7 @@ namespace bm2go {
                     auto ref = code.ident().value();
                     auto type = type_to_string(ctx,code.type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -587,7 +587,7 @@ namespace bm2go {
                     auto ref = code.ref().value();
                     auto type = type_to_string(ctx,ctx.ref(ref).type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -598,7 +598,7 @@ namespace bm2go {
                     auto ref = code.ident().value();
                     auto type = type_to_string(ctx,code.type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(type, "  ", ident);
+                    w.write(ident, "  ", type);
                     params++;
                     break;
                 }
@@ -672,13 +672,13 @@ namespace bm2go {
             switch(code.op) {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("struct ", ident, " {");
+                w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_FORMAT: {
                 defer.pop_back();
-                w.writeln("};");
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FORMAT: {
@@ -693,7 +693,7 @@ namespace bm2go {
                 }
                 auto type = type_to_string(ctx, code.type().value());
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln(type, "  ", ident, ";");
+                w.writeln(ident, "  ", type, "");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -709,13 +709,13 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
@@ -725,13 +725,18 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("enum ", ident, " {");
+                auto base_type_ref = code.type().value();
+                std::optional<std::string> base_type;
+                if(base_type_ref.value() != 0) {
+                    base_type = type_to_string(ctx,base_type_ref);
+                }
+                w.writeln("type ",ident," ");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
                 defer.pop_back();
-                w.writeln("};");
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_ENUM: {
@@ -748,13 +753,13 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("union ",ident, " {");
+                w.writeln("type ",ident," interface {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
                 defer.pop_back();
-                w.writeln("};");
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
@@ -767,13 +772,13 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("struct ", ident, " {");
+                w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION_MEMBER: {
                 defer.pop_back();
-                w.writeln("};");
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
@@ -786,13 +791,13 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("struct ", ident, " {");
+                w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_STATE: {
                 defer.pop_back();
-                w.writeln("};");
+                w.writeln("}");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_STATE: {
@@ -811,11 +816,11 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
                 auto ref=code.ref().value();
-            auto ident = ctx.ident(ref);
-            auto inner_range = ctx.range(ref);
-            auto type_ref = ctx.ref(ref).type().value();
-            auto type = type_to_string(ctx, type_ref);
-            inner_block(ctx,w,inner_range);
+                auto ident = ctx.ident(ref);
+                auto inner_range = ctx.range(ref);
+                auto type_ref = ctx.ref(ref).type().value();
+                auto type = type_to_string(ctx, type_ref);
+                inner_block(ctx,w,inner_range);
                 break;
             }
             default: {
@@ -859,16 +864,16 @@ namespace bm2go {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
                 }
-                w.write(" ");
+                w.write("func ");
+                w.write(" ", ident, "(");
+                add_parameter(ctx, w, range);
+                w.write(") ");
                 if(type) {
-                    w.write(*type);
+                    w.write(" ", *type);
                 }
                 else {
                     w.write("void");
                 }
-                w.write(" ", ident, "(");
-                add_parameter(ctx, w, range);
-                w.write(") ");
                 w.writeln("{");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1164,14 +1169,14 @@ namespace bm2go {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 defer.pop_back();
-                w.writeln("}");
+                w.write("}");
                 w.writeln("else if (",evaluated.result,") {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELSE: {
                 defer.pop_back();
-                w.writeln("}");
+                w.write("}");
                 w.writeln("else {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1223,7 +1228,7 @@ namespace bm2go {
                 auto type_ref = code.type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("{}  {} = {};",type, ident, init.result));
+                w.writeln(std::format("var{} = {};", ident, init.result));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1236,7 +1241,7 @@ namespace bm2go {
                 auto type_ref = ctx.ref(code.ref().value()).type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("{}  {} = {};",type, ident, init.result));
+                w.writeln(std::format("var{} = {};", ident, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {
@@ -1345,7 +1350,7 @@ namespace bm2go {
                     w.writeln("return false;");
                 }
                 else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_PTR) {
-                    w.writeln("return nullptr;");
+                    w.writeln("return nil;");
                 }
                 else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {
                     w.writeln("return std::nullopt;");
@@ -1405,9 +1410,18 @@ namespace bm2go {
     void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {
+                auto copy = str;
+                copy[0] = std::toupper(copy[0]);
+                return copy;
+            }
             return escape_go_keyword(str);
         }};
         // search metadata
+        {
+            auto& w = ctx.cw;
+            w.writeln("package main");
+        }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */
             TmpCodeWriter w;

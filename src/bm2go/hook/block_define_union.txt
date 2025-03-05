@@ -1,0 +1,2 @@
+w.writeln("type ",ident," interface {");
+defer.push_back(w.indent_scope_ex());

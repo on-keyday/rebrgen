@@ -709,13 +709,13 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
@@ -725,7 +725,15 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
                 auto ident = ctx.ident(code.ident().value());
-                w.writeln("enum ", ident, " {");
+                auto base_type_ref = code.type().value();
+                std::optional<std::string> base_type;
+                if(base_type_ref.value() != 0) {
+                    base_type = type_to_string(ctx,base_type_ref);
+                }
+                w.write("enum ", ident, " {");
+                if(base_type) {
+                    w.write("  :  ", *base_type);
+                }
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -811,11 +819,11 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
                 auto ref=code.ref().value();
-            auto ident = ctx.ident(ref);
-            auto inner_range = ctx.range(ref);
-            auto type_ref = ctx.ref(ref).type().value();
-            auto type = type_to_string(ctx, type_ref);
-            inner_block(ctx,w,inner_range);
+                auto ident = ctx.ident(ref);
+                auto inner_range = ctx.range(ref);
+                auto type_ref = ctx.ref(ref).type().value();
+                auto type = type_to_string(ctx, type_ref);
+                inner_block(ctx,w,inner_range);
                 break;
             }
             default: {

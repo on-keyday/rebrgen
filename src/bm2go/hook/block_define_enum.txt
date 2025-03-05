@@ -1,0 +1,2 @@
+w.writeln("type ",ident, *base_type);
+defer.push_back(w.indent_scope_ex());

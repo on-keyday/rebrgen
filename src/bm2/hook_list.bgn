@@ -21,19 +21,19 @@ enum HookFile:
     call_param_start = "call_param_start" # call param start
     call_param_each_code = "call_param_each_code" # call param each code
 
-    first_scan = "first_scan" # first scan
-    tree_scan = "tree_scan" # tree scan
-    inner_function_op = "func" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
-    inner_block_op = "block" # inner block operation ({} contains lower case AbstractOp name)
-    eval_op = "eval" # eval operation ({} contains lower case AbstractOp name)
-    type_op = "type" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
-    param_op = "param" # param operation ({} contains lower case AbstractOp name)
-    call_param_op = "call_param" # call param operation ({} contains lower case AbstractOp name)
-    field_accessor_op = "field_accessor" # field accessor operation ({} contains lower case AbstractOp name)
-    type_accessor_op = "type_accessor" # type accessor operation ({} contains lower case AbstractOp name)
+    first_scan = "first_scan" # first scan (followed by lower case AbstractOp name(see binary_module.bgn for detail))
+    tree_scan = "tree_scan" # tree scan (followed by lower case AbstractOp name(see binary_module.bgn for detail))
+    inner_function_op = "func" # inner function operation (followed by lower case AbstractOp name(see binary_module.bgn for detail))
+    inner_block_op = "block" # inner block operation (followed by lower case AbstractOp name)
+    eval_op = "eval" # eval operation (followed by lower case AbstractOp name)
+    type_op = "type" # type operation (followed by lower case StorageType name (see binary_module.bgn for detail))
+    param_op = "param" # param operation (followed by lower case AbstractOp name)
+    call_param_op = "call_param" # call param operation (followed by lower case AbstractOp name)
+    field_accessor_op = "field_accessor" # field accessor operation (followed by lower case AbstractOp name)
+    type_accessor_op = "type_accessor" # type accessor operation (followed by lower case AbstractOp name)
 
 
-# this is used with {} placeholder in HookFile
+# this is used with  HookFile
 # for example, AbstractOp::BINARY,
 # HookFile.eval_op + AbstractOp.BINARY + HookFileSub.op -> "eval_binary_op"
 enum HookFileSub:

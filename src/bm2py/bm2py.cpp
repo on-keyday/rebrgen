@@ -709,27 +709,32 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
-            inner_function(ctx,w,inner_range);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
+                inner_function(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
-            auto func = code.right_ref().value();
-            auto inner_range = ctx.range(func);
-            inner_function(ctx,w,inner_range);
+                auto func = code.right_ref().value();
+                auto inner_range = ctx.range(func);
+                inner_function(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value();
                 auto inner_range = ctx.range(ref);
-            inner_function(ctx,w,inner_range);
+                inner_function(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
                 auto ident = ctx.ident(code.ident().value());
-            w.writeln("class ",ident,"(Enum):");
-            defer.push_back(w.indent_scope_ex());
+                auto base_type_ref = code.type().value();
+                std::optional<std::string> base_type;
+                if(base_type_ref.value() != 0) {
+                    base_type = type_to_string(ctx,base_type_ref);
+                }
+                w.writeln("class ",ident,"(Enum):");
+                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
@@ -759,16 +764,16 @@ namespace bm2py {
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value();
                 auto inner_range = ctx.range(ref);
-            inner_block(ctx,w,inner_range);
+                inner_block(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
-            if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
-                w.writeln("pass");
-            }
+                if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
+                    w.writeln("pass");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_UNION_MEMBER: {
@@ -779,7 +784,7 @@ namespace bm2py {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value();
                 auto inner_range = ctx.range(ref);
-            inner_block(ctx,w,inner_range);
+                inner_block(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
@@ -809,11 +814,11 @@ namespace bm2py {
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
                 auto ref=code.ref().value();
-            auto ident = ctx.ident(ref);
-            auto inner_range = ctx.range(ref);
-            auto type_ref = ctx.ref(ref).type().value();
-            auto type = type_to_string(ctx, type_ref);
-            inner_block(ctx,w,inner_range);
+                auto ident = ctx.ident(ref);
+                auto inner_range = ctx.range(ref);
+                auto type_ref = ctx.ref(ref).type().value();
+                auto type = type_to_string(ctx, type_ref);
+                inner_block(ctx,w,inner_range);
                 break;
             }
             default: {

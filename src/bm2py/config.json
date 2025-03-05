@@ -62,5 +62,7 @@
     "encode_bytes_op": "w.write($VALUE[:$LEN])",
     "decode_bytes_until_eof_op": "$VALUE = $DECODER.read()",
     "encode_offset": "$ENCODER.tell()",
-    "decode_offset": "$DECODER.tell()"
+    "decode_offset": "$DECODER.tell()",
+    "is_little_endian_expr": "sys.byteorder == 'little'",
+    "peek_bytes_op": "$VALUE = $DECODER.peek($LEN)"
 }

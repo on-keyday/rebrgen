@@ -18,29 +18,30 @@ namespace bm2 {
         generator_top = 1,
         file_top = 2,
         file_bottom = 3,
-        first_scan = 4,
-        bm_context = 5,
-        flags = 6,
-        eval_result = 7,
-        escape_ident = 8,
-        each_inner_block = 9,
-        each_inner_function = 10,
-        inner_function_start = 11,
-        inner_function_each_code = 12,
-        inner_block_start = 13,
-        inner_block_each_code = 14,
-        param_start = 15,
-        param_each_code = 16,
-        call_param_start = 17,
-        call_param_each_code = 18,
-        inner_function_op = 19,
-        inner_block_op = 20,
-        eval_op = 21,
-        type_op = 22,
-        param_op = 23,
-        call_param_op = 24,
-        field_accessor_op = 25,
-        type_accessor_op = 26,
+        bm_context = 4,
+        flags = 5,
+        eval_result = 6,
+        escape_ident = 7,
+        each_inner_block = 8,
+        each_inner_function = 9,
+        inner_function_start = 10,
+        inner_function_each_code = 11,
+        inner_block_start = 12,
+        inner_block_each_code = 13,
+        param_start = 14,
+        param_each_code = 15,
+        call_param_start = 16,
+        call_param_each_code = 17,
+        first_scan = 18,
+        tree_scan = 19,
+        inner_function_op = 20,
+        inner_block_op = 21,
+        eval_op = 22,
+        type_op = 23,
+        param_op = 24,
+        call_param_op = 25,
+        field_accessor_op = 26,
+        type_accessor_op = 27,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -52,8 +53,6 @@ namespace bm2 {
                 return "file_top";
             case HookFile::file_bottom:
                 return "file_bottom";
-            case HookFile::first_scan:
-                return "first_scan";
             case HookFile::bm_context:
                 return "bm_context";
             case HookFile::flags:
@@ -82,22 +81,26 @@ namespace bm2 {
                 return "call_param_start";
             case HookFile::call_param_each_code:
                 return "call_param_each_code";
+            case HookFile::first_scan:
+                return "first_scan";
+            case HookFile::tree_scan:
+                return "tree_scan";
             case HookFile::inner_function_op:
-                return "func_{}";
+                return "func";
             case HookFile::inner_block_op:
-                return "block_{}";
+                return "block";
             case HookFile::eval_op:
-                return "eval_{}";
+                return "eval";
             case HookFile::type_op:
-                return "type_{}";
+                return "type";
             case HookFile::param_op:
-                return "param_{}";
+                return "param";
             case HookFile::call_param_op:
-                return "call_param_{}";
+                return "call_param";
             case HookFile::field_accessor_op:
-                return "field_accessor_{}";
+                return "field_accessor";
             case HookFile::type_accessor_op:
-                return "type_accessor_{}";
+                return "type_accessor";
         }
         return "";
     }
@@ -117,9 +120,6 @@ namespace bm2 {
         }
         if (str == "file_bottom") {
             return HookFile::file_bottom;
-        }
-        if (str == "first_scan") {
-            return HookFile::first_scan;
         }
         if (str == "bm_context") {
             return HookFile::bm_context;
@@ -163,48 +163,57 @@ namespace bm2 {
         if (str == "call_param_each_code") {
             return HookFile::call_param_each_code;
         }
-        if (str == "func_{}") {
+        if (str == "first_scan") {
+            return HookFile::first_scan;
+        }
+        if (str == "tree_scan") {
+            return HookFile::tree_scan;
+        }
+        if (str == "func") {
             return HookFile::inner_function_op;
         }
-        if (str == "block_{}") {
+        if (str == "block") {
             return HookFile::inner_block_op;
         }
-        if (str == "eval_{}") {
+        if (str == "eval") {
             return HookFile::eval_op;
         }
-        if (str == "type_{}") {
+        if (str == "type") {
             return HookFile::type_op;
         }
-        if (str == "param_{}") {
+        if (str == "param") {
             return HookFile::param_op;
         }
-        if (str == "call_param_{}") {
+        if (str == "call_param") {
             return HookFile::call_param_op;
         }
-        if (str == "field_accessor_{}") {
+        if (str == "field_accessor") {
             return HookFile::field_accessor_op;
         }
-        if (str == "type_accessor_{}") {
+        if (str == "type_accessor") {
             return HookFile::type_accessor_op;
         }
         return std::nullopt;
     }
     enum class HookFileSub {
         main = 0,
-        op = 1,
-        empty = 2,
-        value = 3,
-        self = 4,
-        field = 5,
-        fallback = 6,
-        no_fallback = 7,
-        before = 8,
-        after = 9,
+        pre_main = 1,
+        op = 2,
+        empty = 3,
+        value = 4,
+        self = 5,
+        field = 6,
+        fallback = 7,
+        no_fallback = 8,
+        before = 9,
+        after = 10,
     };
     constexpr const char* to_string(HookFileSub e) {
         switch (e) {
             case HookFileSub::main:
                 return "";
+            case HookFileSub::pre_main:
+                return "_pre_main";
             case HookFileSub::op:
                 return "_op";
             case HookFileSub::empty:
@@ -233,6 +242,9 @@ namespace bm2 {
         }
         if (str == "") {
             return HookFileSub::main;
+        }
+        if (str == "_pre_main") {
+            return HookFileSub::pre_main;
         }
         if (str == "_op") {
             return HookFileSub::op;

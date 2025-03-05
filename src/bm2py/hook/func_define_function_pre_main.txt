@@ -6,6 +6,6 @@ if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
 }
 else if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
     if(params.size() == 1) {
-        w.writeln("@",ctx.ident(code.ident().value()),".setter");
+        w.writeln("@",ident,".setter");
     }
 }

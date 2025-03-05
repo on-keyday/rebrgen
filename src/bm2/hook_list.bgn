@@ -4,7 +4,7 @@ enum HookFile:
     generator_top = "generator_top" # generator top
     file_top = "file_top" # generated file top
     file_bottom = "file_bottom" # generated file bottom
-    first_scan = "first_scan" # first scan
+
     bm_context = "bm_context" # bm2xx::Context definitions
     flags = "flags" # command line flags definitions
     eval_result = "eval_result" # bm2xx::EvalResult definitions
@@ -21,14 +21,16 @@ enum HookFile:
     call_param_start = "call_param_start" # call param start
     call_param_each_code = "call_param_each_code" # call param each code
 
-    inner_function_op = "func_{}" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
-    inner_block_op = "block_{}" # inner block operation ({} contains lower case AbstractOp name)
-    eval_op = "eval_{}" # eval operation ({} contains lower case AbstractOp name)
-    type_op = "type_{}" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
-    param_op = "param_{}" # param operation ({} contains lower case AbstractOp name)
-    call_param_op = "call_param_{}" # call param operation ({} contains lower case AbstractOp name)
-    field_accessor_op = "field_accessor_{}" # field accessor operation ({} contains lower case AbstractOp name)
-    type_accessor_op = "type_accessor_{}" # type accessor operation ({} contains lower case AbstractOp name)
+    first_scan = "first_scan" # first scan
+    tree_scan = "tree_scan" # tree scan
+    inner_function_op = "func" # inner function operation ({} contains lower case AbstractOp name(see binary_module.bgn for detail))
+    inner_block_op = "block" # inner block operation ({} contains lower case AbstractOp name)
+    eval_op = "eval" # eval operation ({} contains lower case AbstractOp name)
+    type_op = "type" # type operation ({} contains lower case StorageType name (see binary_module.bgn for detail))
+    param_op = "param" # param operation ({} contains lower case AbstractOp name)
+    call_param_op = "call_param" # call param operation ({} contains lower case AbstractOp name)
+    field_accessor_op = "field_accessor" # field accessor operation ({} contains lower case AbstractOp name)
+    type_accessor_op = "type_accessor" # type accessor operation ({} contains lower case AbstractOp name)
 
 
 # this is used with {} placeholder in HookFile
@@ -36,6 +38,7 @@ enum HookFile:
 # HookFile.eval_op + AbstractOp.BINARY + HookFileSub.op -> "eval_binary_op"
 enum HookFileSub:
     main = "" # main hook
+    pre_main = "_pre_main" # pre main hook (after 'before' hook and common initialization, before 'main' hook)
     op = "_op" # binary or unary operator modification hook
     empty = "_empty" # empty case (e.g. return;)
     value = "_value" # value case (e.g. return value;)

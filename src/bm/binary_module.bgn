@@ -651,6 +651,7 @@ format Code:
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.peek())
+            fallback :Varint # ref to fallback block (currently, not used)
         AbstractOp.CAST:
             ident: Varint
             ref :Varint # ref to object

@@ -96,6 +96,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string decode_bytes_op = "$VALUE = $DECODER.decode_bytes($LEN)";
     std::string encode_bytes_op = "$ENCODER.encode_bytes($VALUE)";
     std::string decode_bytes_until_eof_op = "$VALUE = $DECODER.decode_bytes_until_eof()";
+    std::string peek_bytes_op = "$VALUE = $DECODER.peek_bytes($LEN)";
     std::string encode_offset = "$ENCODER.offset()";
     std::string decode_offset = "$DECODER.offset()";
     std::string encode_backward = "$ENCODER.backward($OFFSET)";
@@ -175,6 +176,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(decode_bytes_op, "decode_bytes_op")                             \
     MACRO_NAME(encode_bytes_op, "encode_bytes_op")                             \
     MACRO_NAME(decode_bytes_until_eof_op, "decode_bytes_until_eof_op")         \
+    MACRO_NAME(peek_bytes_op, "peek_bytes_op")                                 \
     MACRO_NAME(encode_offset, "encode_offset")                                 \
     MACRO_NAME(decode_offset, "decode_offset")                                 \
     MACRO_NAME(encode_backward, "encode_backward")                             \
@@ -389,31 +391,31 @@ namespace rebgn {
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, std::vformat(to_string(hook), std::make_format_args(concat)), [&](size_t i, futils::view::rvec& line) {
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
             w.writeln(line);
         });
     }
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, AbstractOp op, bm2::HookFileSub sub = bm2::HookFileSub::main) {
         auto op_name = to_string(op);
-        auto concat = std::format("{}{}", op_name, to_string(sub));
+        auto concat = std::format("{}_{}{}", to_string(hook), op_name, to_string(sub));
         // to lower
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, std::vformat(to_string(hook), std::make_format_args(concat)), [&](size_t i, futils::view::rvec& line) {
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
             w.writeln(line);
         });
     }
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, rebgn::StorageType op, bm2::HookFileSub sub = bm2::HookFileSub::main) {
         auto op_name = to_string(op);
-        auto concat = std::format("{}{}", op_name, to_string(sub));
+        auto concat = std::format("{}_{}{}", to_string(hook), op_name, to_string(sub));
         // to lower
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, std::vformat(to_string(hook), std::make_format_args(concat)), [&](size_t i, futils::view::rvec& line) {
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
             w.writeln(line);
         });
     }
@@ -445,6 +447,9 @@ namespace rebgn {
         inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_function.indent_scope();
         auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (stage == bm2::HookFileSub::main) {
+                may_write_from_hook(inner_function, flags, bm2::HookFile::inner_function_op, op, bm2::HookFileSub::pre_main);
+            }
             if (!may_write_from_hook(inner_function, flags, bm2::HookFile::inner_function_op, op, stage)) {
                 inner();
             }
@@ -590,7 +595,7 @@ namespace rebgn {
 
             if (op == AbstractOp::DEFINE_FUNCTION) {
                 inner_function.writeln("auto ident = ctx.ident(code.ident().value());");
-                inner_function.writeln("auto range = ctx.range(code.ident().value());");
+                // inner_function.writeln("auto range = ctx.range(code.ident().value());");
                 inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
                 inner_function.writeln("std::optional<std::string> type;");
                 inner_function.writeln("if(found_type_pos) {");
@@ -792,7 +797,7 @@ namespace rebgn {
         else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
                  op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
                  op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
-                 op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
+                 op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF || op == AbstractOp::PEEK_INT_VECTOR) {
             inner_function.writeln("auto fallback = code.fallback().value();");
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
@@ -848,6 +853,15 @@ namespace rebgn {
                         auto escaped = env_escape(flags.decode_bytes_until_eof_op, map);
                         inner_function.writeln("w.writeln(\"", escaped, "\");");
                     }
+                    else if (op == AbstractOp::PEEK_INT_VECTOR) {
+                        std::map<std::string, std::string> map{
+                            {"DECODER", "\",ctx.r(),\""},
+                            {"LEN", "\",size_value.result,\""},
+                            {"VALUE", "\",vector_value.result,\""},
+                        };
+                        auto escaped = env_escape(flags.peek_bytes_op, map);
+                        inner_function.writeln("w.writeln(\"", escaped, "\");");
+                    }
                     else {
                         inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
                     }
@@ -877,6 +891,9 @@ namespace rebgn {
 
     void write_field_accessor(bm2::TmpCodeWriter& field_accessor, bm2::TmpCodeWriter& type_accessor, AbstractOp op, Flags& flags) {
         auto field_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (stage == bm2::HookFileSub::main) {
+                may_write_from_hook(field_accessor, flags, bm2::HookFile::field_accessor_op, op, bm2::HookFileSub::pre_main);
+            }
             if (!may_write_from_hook(field_accessor, flags, bm2::HookFile::field_accessor_op, op, stage)) {
                 inner();
             }
@@ -894,6 +911,9 @@ namespace rebgn {
         };
 
         auto type_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (stage == bm2::HookFileSub::main) {
+                may_write_from_hook(type_accessor, flags, bm2::HookFile::type_accessor_op, op, bm2::HookFileSub::pre_main);
+            }
             if (!may_write_from_hook(type_accessor, flags, bm2::HookFile::type_accessor_op, op, stage)) {
                 inner();
             }
@@ -991,6 +1011,9 @@ namespace rebgn {
                            AbstractOp op, Flags& flags) {
         inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (stage == bm2::HookFileSub::main) {
+                may_write_from_hook(inner_block, flags, bm2::HookFile::inner_block_op, op, bm2::HookFileSub::pre_main);
+            }
             if (!may_write_from_hook(inner_block, flags, bm2::HookFile::inner_block_op, op, stage)) {
                 inner();
             }
@@ -1114,6 +1137,9 @@ namespace rebgn {
         eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = eval.indent_scope();
         auto eval_hook = [&](auto&& default_action, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+            if (stage == bm2::HookFileSub::main) {
+                may_write_from_hook(eval, flags, bm2::HookFile::eval_op, op, bm2::HookFileSub::pre_main);
+            }
             if (!may_write_from_hook(eval, flags, bm2::HookFile::eval_op, op, stage)) {
                 default_action();
             }
@@ -1385,6 +1411,9 @@ namespace rebgn {
             add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = add_parameter.indent_scope();
             auto param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+                if (stage == bm2::HookFileSub::main) {
+                    may_write_from_hook(add_parameter, flags, bm2::HookFile::param_op, op, bm2::HookFileSub::pre_main);
+                }
                 if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_op, op, stage)) {
                     inner();
                 }
@@ -1443,6 +1472,9 @@ namespace rebgn {
             add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope_call = add_call_parameter.indent_scope();
             auto call_param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
+                if (stage == bm2::HookFileSub::main) {
+                    may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_op, op, bm2::HookFileSub::pre_main);
+                }
                 if (!may_write_from_hook(add_call_parameter, flags, bm2::HookFile::call_param_op, op, stage)) {
                     inner();
                 }
@@ -1497,6 +1529,9 @@ namespace rebgn {
 
     void write_type_to_string(bm2::TmpCodeWriter& type_to_string, StorageType type, Flags& flags) {
         auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
+            if (sub == bm2::HookFileSub::main) {
+                may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, bm2::HookFileSub::pre_main);
+            }
             if (may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, sub)) {
                 return;
             }
@@ -2148,48 +2183,89 @@ namespace rebgn {
         scope_escape_key_ident.execute();
         w.writeln("}};");
         w.writeln("// search metadata");
+        futils::helper::DynDefer first_scan;
+        auto add_first_scan = [&] {
+            if (first_scan) {
+                return;
+            }
+            w.writeln("for (size_t i = 0; i < bm.code.size(); i++) {");
+            auto nest_scope = w.indent_scope();
+            w.writeln("auto& code = bm.code[i];");
+            w.writeln("switch (code.op) {");
+            auto nest_scope2 = w.indent_scope();
+            first_scan = [&w, nest_scope = std::move(nest_scope), nest_scope2 = std::move(nest_scope2)]() mutable {
+                w.writeln("default: {}");
+                nest_scope2.execute();
+                w.writeln("}");
+                nest_scope.execute();
+                w.writeln("}");
+                w.writeln("OUT_FIRST_SCAN:;");
+            };
+        };
         may_write_from_hook(w, flags, bm2::HookFile::first_scan, bm2::HookFileSub::before);
-        w.writeln("for (size_t j = 0; j < bm.programs.ranges.size(); j++) {");
-        auto nest_scope = w.indent_scope();
-        w.writeln("for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {");
-        auto nest_scope2 = w.indent_scope();
-        w.writeln("auto& code = bm.code[i];");
-        w.writeln("switch (code.op) {");
-        auto nest_scope3 = w.indent_scope();
         for (size_t i = 0; to_string(AbstractOp(i))[0] != 0; i++) {
             auto op = AbstractOp(i);
-            if (op == AbstractOp::METADATA) {
+            bm2::TmpCodeWriter tmp2;
+            if (may_write_from_hook(tmp2, flags, bm2::HookFile::first_scan, op)) {
+                add_first_scan();
                 w.writeln("case rebgn::AbstractOp::", to_string(op), ": {");
-                auto nest_scope3 = w.indent_scope();
-                if (!may_write_from_hook(w, flags, bm2::HookFile::first_scan, op)) {
+                auto scope = w.indent_scope();
+                if (op == AbstractOp::METADATA) {
                     w.writeln("auto meta = code.metadata();");
-                    w.writeln("auto str = ctx.metadata_table[meta->name.value()];");
-                    w.writeln("// handle metadata...");
+                    w.writeln("auto name = ctx.metadata_table[meta->name.value()];");
                 }
+                w.write_unformatted(tmp2.out());
                 w.writeln("break;");
-                nest_scope3.execute();
+                scope.execute();
                 w.writeln("}");
             }
-            else {
-                bm2::TmpCodeWriter tmp2;
-                if (may_write_from_hook(tmp2, flags, bm2::HookFile::first_scan, op)) {
-                    w.writeln("case rebgn::AbstractOp::", to_string(op), ": {");
-                    auto scope = w.indent_scope();
-                    w.write_unformatted(tmp2.out());
-                    w.writeln("break;");
-                    scope.execute();
-                    w.writeln("}");
+        }
+        first_scan.execute();
+        may_write_from_hook(w, flags, bm2::HookFile::first_scan, bm2::HookFileSub::after);
+        may_write_from_hook(w, flags, bm2::HookFile::tree_scan, bm2::HookFileSub::before);
+        futils::helper::DynDefer tree_scan_start;
+        auto add_tree_scan_start = [&] {
+            if (tree_scan_start) {
+                return;
+            }
+            w.writeln("for (size_t j = 0; j < bm.programs.ranges.size(); j++) {");
+            auto nest_scope = w.indent_scope();
+            w.writeln("rebgn::Range range{.start = bm.programs.ranges[j].start.value(), .end = bm.programs.ranges[j].end.value()};");
+            w.writeln("for (size_t i = range.start + 1; i < range.end - 1; i++) {");
+            auto nest_scope2 = w.indent_scope();
+            w.writeln("auto& code = bm.code[i];");
+            w.writeln("switch (code.op) {");
+            auto nest_scope3 = w.indent_scope();
+            tree_scan_start = [&w, nest_scope = std::move(nest_scope), nest_scope2 = std::move(nest_scope2), nest_scope3 = std::move(nest_scope3)]() mutable {
+                w.writeln("default: {}");
+                nest_scope3.execute();
+                nest_scope2.execute();
+                w.writeln("}");
+                nest_scope.execute();
+                w.writeln("}");
+                w.writeln("OUT_TREE_SCAN:;");
+            };
+        };
+
+        for (size_t i = 0; to_string(AbstractOp(i))[0] != 0; i++) {
+            auto op = AbstractOp(i);
+            bm2::TmpCodeWriter tmp2;
+            if (may_write_from_hook(tmp2, flags, bm2::HookFile::tree_scan, op)) {
+                add_tree_scan_start();
+                w.writeln("case rebgn::AbstractOp::", to_string(op), ": {");
+                auto scope = w.indent_scope();
+                if (op == AbstractOp::METADATA) {
+                    w.writeln("auto meta = code.metadata();");
+                    w.writeln("auto name = ctx.metadata_table[meta->name.value()];");
                 }
+                w.write_unformatted(tmp2.out());
+                w.writeln("break;");
+                scope.execute();
+                w.writeln("}");
             }
         }
-        w.writeln("default: {}");
-        nest_scope3.execute();
-        w.writeln("}");
-        nest_scope2.execute();
-        w.writeln("}");
-        nest_scope.execute();
-        w.writeln("}");
-        may_write_from_hook(w, flags, bm2::HookFile::first_scan, bm2::HookFileSub::after);
+        tree_scan_start.execute();
+        may_write_from_hook(w, flags, bm2::HookFile::tree_scan, bm2::HookFileSub::after);
 
         bm2::TmpCodeWriter tmp;
         may_write_from_hook(w, flags, bm2::HookFile::file_top, bm2::HookFileSub::before);

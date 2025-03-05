@@ -7862,7 +7862,10 @@ namespace rebgn {
         return std::get<51>((*this).union_variant_16).fallback;
         }
         if (AbstractOp::PEEK_INT_VECTOR==(*this).op) {
-        return std::nullopt;
+        if(!std::holds_alternative<union_struct_68>(union_variant_16)) {
+            return std::nullopt;
+        }
+        return std::get<52>((*this).union_variant_16).fallback;
         }
         if (AbstractOp::CAST==(*this).op) {
         return std::nullopt;
@@ -8251,7 +8254,11 @@ namespace rebgn {
             return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR==(*this).op) {
-            return false;
+            if(!std::holds_alternative<union_struct_68>(union_variant_16)) {
+                union_variant_16 = union_struct_68();
+            }
+            std::get<52>((*this).union_variant_16).fallback = v;
+            return true;
         }
         if (AbstractOp::CAST==(*this).op) {
             return false;
@@ -8645,7 +8652,11 @@ namespace rebgn {
             return true;
         }
         if (AbstractOp::PEEK_INT_VECTOR==(*this).op) {
-            return false;
+            if(!std::holds_alternative<union_struct_68>(union_variant_16)) {
+                union_variant_16 = union_struct_68();
+            }
+            std::get<52>((*this).union_variant_16).fallback = std::move(v);
+            return true;
         }
         if (AbstractOp::CAST==(*this).op) {
             return false;
@@ -22374,6 +22385,9 @@ namespace rebgn {
             if (auto err = std::get<52>((*this).union_variant_16).belong.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<52>((*this).union_variant_16).fallback.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::CAST==(*this).op) {
             if(!std::holds_alternative<union_struct_69>(union_variant_16)) {
@@ -23777,6 +23791,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<52>((*this).union_variant_16).belong.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<52>((*this).union_variant_16).fallback.decode(r)) {
                 return err;
             }
         }

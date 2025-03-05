@@ -1890,6 +1890,7 @@ namespace rebgn {
             EndianExpr endian;
             Varint bit_size;
             Varint belong;
+            Varint fallback;
         };
         struct BM_API union_struct_69{
             Varint ident;

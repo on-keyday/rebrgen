@@ -96,12 +96,19 @@ namespace bm2py {
             }
             case rebgn::StorageType::ARRAY: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
                 auto length = storage.size().value().value();
-                return std::format("list[{}]", base_type);
+                if (is_byte_vector) {
+                    return futils::strutil::concat<std::string>("bytearray");
+                }
+                return futils::strutil::concat<std::string>("list[",base_type,"]");
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
                 bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
+                if (is_byte_vector) {
+                    return "bytearray";
+                }
                 return std::format("list[{}]", base_type);
             }
             case rebgn::StorageType::VARIANT: {
@@ -163,6 +170,19 @@ namespace bm2py {
             }
             break;
         }
+        case rebgn::AbstractOp::DEFINE_PROPERTY: {
+            auto ident = ctx.ident(code.ident().value());
+            auto belong = code.belong().value();
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+            }
+            else {
+                result = make_eval_result(ident);
+            }
+            break;
+        }
         case rebgn::AbstractOp::DEFINE_UNION: {
             auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
@@ -195,13 +215,7 @@ namespace bm2py {
             auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-            if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
-            }
-            else {
-                result = make_eval_result(ident);
-            }
+            result = field_accessor(ctx.ref(belong),ctx);
             break;
         }
         default: {
@@ -220,6 +234,19 @@ namespace bm2py {
         break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            result = std::format("{}.{}", belong_eval, ident);
+        }
+        else {
+            result = ident;
+        }
+        break;
+        }
+        case rebgn::AbstractOp::DEFINE_PROPERTY: {
         auto ident = ctx.ident(code.ident().value());
         auto belong = code.belong().value();
         auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
@@ -266,13 +293,7 @@ namespace bm2py {
         auto ident = ctx.ident(code.ident().value());
         auto belong = code.belong().value();
         auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
+        result = type_accessor(ctx.ref(belong),ctx);
         break;
         }
         default: {
@@ -289,7 +310,7 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-            result = make_eval_result("\"\"\"Unimplemented DEFINE_PROPERTY\"\"\"");
+            result = field_accessor(code, ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_PARAMETER: {
@@ -298,11 +319,11 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
-            result = make_eval_result("\"\"\"Unimplemented INPUT_BYTE_OFFSET\"\"\"");
+            result = make_eval_result(futils::strutil::concat<std::string>("",ctx.r(),".tell()"));
             break;
         }
         case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
-            result = make_eval_result("\"\"\"Unimplemented OUTPUT_BYTE_OFFSET\"\"\"");
+            result = make_eval_result(futils::strutil::concat<std::string>("",ctx.w(),".tell()"));
             break;
         }
         case rebgn::AbstractOp::INPUT_BIT_OFFSET: {
@@ -322,7 +343,13 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
-            result = make_eval_result("\"\"\"Unimplemented IS_LITTLE_ENDIAN\"\"\"");
+            auto fallback = code.fallback().value();
+            if(fallback.value() != 0) {
+                result = eval(ctx.ref(fallback), ctx);
+            }
+            else {
+                result = make_eval_result("std::endian::native == std::endian::little");
+            }
             break;
         }
         case rebgn::AbstractOp::CAST: {
@@ -403,7 +430,15 @@ namespace bm2py {
             break;
         }
         case rebgn::AbstractOp::ASSIGN: {
-            result = make_eval_result("\"\"\"Unimplemented ASSIGN\"\"\"");
+            auto left_ref = code.left_ref().value();
+            auto ref = code.ref().value();
+            auto right_ref = code.right_ref().value();
+            if(ref.value() != 0) {
+                result = eval(ctx.ref(ref), ctx);
+            }
+            else {
+                result = eval(ctx.ref(left_ref), ctx);
+            }
             break;
         }
         case rebgn::AbstractOp::ACCESS: {
@@ -473,7 +508,7 @@ namespace bm2py {
         case rebgn::AbstractOp::ARRAY_SIZE: {
             auto vector_ref = code.ref().value();
             auto vector_eval = eval(ctx.ref(vector_ref), ctx);
-            result = make_eval_result(std::format("len({})", vector_eval.result));
+            result = make_eval_result(std::format("__builtins__.len({})", vector_eval.result));
             break;
         }
         case rebgn::AbstractOp::FIELD_AVAILABLE: {
@@ -675,14 +710,14 @@ namespace bm2py {
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
             auto func = code.right_ref().value();
-            auto func_range = ctx.range(func);
-            inner_function(ctx,w,func_range);
+            auto inner_range = ctx.range(func);
+            inner_function(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
             auto func = code.right_ref().value();
-            auto func_range = ctx.range(func);
-            inner_function(ctx,w,func_range);
+            auto inner_range = ctx.range(func);
+            inner_function(ctx,w,inner_range);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
@@ -773,7 +808,12 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
-                w.writeln("\"\"\"Unimplemented DECLARE_BIT_FIELD\"\"\" ");
+                auto ref=code.ref().value();
+            auto ident = ctx.ident(ref);
+            auto inner_range = ctx.range(ref);
+            auto type_ref = ctx.ref(ref).type().value();
+            auto type = type_to_string(ctx, type_ref);
+            inner_block(ctx,w,inner_range);
                 break;
             }
             default: {
@@ -799,15 +839,27 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::DYNAMIC_ENDIAN: {
-                w.writeln("\"\"\"Unimplemented DYNAMIC_ENDIAN\"\"\" ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
+                }
+                else {
+                    w.writeln("\"\"\"Unimplemented DYNAMIC_ENDIAN\"\"\" ");
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
+                auto params = get_parameters(ctx,range);
                 if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
-                    w.writeln("@property");
+                    if(params.size() == 0) {
+                        w.writeln("@property");
+                    }
                 }
                 else if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
-                    w.writeln("@",ctx.ident(code.ident().value()),".setter");
+                    if(params.size() == 1) {
+                        w.writeln("@",ctx.ident(code.ident().value()),".setter");
+                    }
                 }
                 auto ident = ctx.ident(code.ident().value());
                 auto range = ctx.range(code.ident().value());
@@ -1033,11 +1085,15 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_INPUT: {
-                w.writeln("\"\"\"Unimplemented BACKWARD_INPUT\"\"\" ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref),ctx);
+                w.writeln("",ctx.r(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_OUTPUT: {
-                w.writeln("\"\"\"Unimplemented BACKWARD_OUTPUT\"\"\" ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref),ctx);
+                w.writeln("",ctx.w(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
@@ -1219,7 +1275,11 @@ namespace bm2py {
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
-                w.writeln("\"\"\"Unimplemented LENGTH_CHECK\"\"\" ");
+                auto vector_ref = code.left_ref().value();
+                auto vector_eval = eval(ctx.ref(vector_ref), ctx);
+                auto size_ref = code.right_ref().value();
+                auto size_eval = eval(ctx.ref(size_ref), ctx);
+                w.writeln("assert(__builtins__.len(",vector_eval.result,") == ", size_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
@@ -1362,6 +1422,19 @@ namespace bm2py {
     void to_py(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
+                auto func_type = code.func_type().value();
+                auto func_range = ctx.range(code.ident().value());
+                if(func_type == rebgn::FunctionType::UNION_SETTER) {
+                    auto params = get_parameters(ctx,func_range);
+                    if(params.size() != 1) {
+                        return "set_" + str;
+                    }
+                }
+                if(func_type== rebgn::FunctionType::VECTOR_SETTER) {
+                    return "set_" + str;
+                }
+            }
             return escape_py_keyword(str);
         }};
         // search metadata
@@ -1375,6 +1448,7 @@ namespace bm2py {
                         // handle metadata...
                         break;
                     }
+                    default: {}
                 }
             }
         }

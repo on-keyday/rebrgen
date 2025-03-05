@@ -18,28 +18,29 @@ namespace bm2 {
         generator_top = 1,
         file_top = 2,
         file_bottom = 3,
-        bm_context = 4,
-        flags = 5,
-        eval_result = 6,
-        escape_ident = 7,
-        each_inner_block = 8,
-        each_inner_function = 9,
-        inner_function_start = 10,
-        inner_function_each_code = 11,
-        inner_block_start = 12,
-        inner_block_each_code = 13,
-        param_start = 14,
-        param_each_code = 15,
-        call_param_start = 16,
-        call_param_each_code = 17,
-        inner_function_op = 18,
-        inner_block_op = 19,
-        eval_op = 20,
-        type_op = 21,
-        param_op = 22,
-        call_param_op = 23,
-        field_accessor_op = 24,
-        type_accessor_op = 25,
+        first_scan = 4,
+        bm_context = 5,
+        flags = 6,
+        eval_result = 7,
+        escape_ident = 8,
+        each_inner_block = 9,
+        each_inner_function = 10,
+        inner_function_start = 11,
+        inner_function_each_code = 12,
+        inner_block_start = 13,
+        inner_block_each_code = 14,
+        param_start = 15,
+        param_each_code = 16,
+        call_param_start = 17,
+        call_param_each_code = 18,
+        inner_function_op = 19,
+        inner_block_op = 20,
+        eval_op = 21,
+        type_op = 22,
+        param_op = 23,
+        call_param_op = 24,
+        field_accessor_op = 25,
+        type_accessor_op = 26,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -51,6 +52,8 @@ namespace bm2 {
                 return "file_top";
             case HookFile::file_bottom:
                 return "file_bottom";
+            case HookFile::first_scan:
+                return "first_scan";
             case HookFile::bm_context:
                 return "bm_context";
             case HookFile::flags:
@@ -114,6 +117,9 @@ namespace bm2 {
         }
         if (str == "file_bottom") {
             return HookFile::file_bottom;
+        }
+        if (str == "first_scan") {
+            return HookFile::first_scan;
         }
         if (str == "bm_context") {
             return HookFile::bm_context;

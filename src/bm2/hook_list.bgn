@@ -4,6 +4,7 @@ enum HookFile:
     generator_top = "generator_top" # generator top
     file_top = "file_top" # generated file top
     file_bottom = "file_bottom" # generated file bottom
+    first_scan = "first_scan" # first scan
     bm_context = "bm_context" # bm2xx::Context definitions
     flags = "flags" # command line flags definitions
     eval_result = "eval_result" # bm2xx::EvalResult definitions

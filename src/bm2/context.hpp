@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <bm/binary_module.hpp>
 #include <format>
+#include <bmgen/helper.hpp>
 
 namespace bm2 {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -188,6 +189,18 @@ namespace bm2 {
                     nested++;
                 }
             }
+        }
+
+        friend std::vector<size_t> get_parameters(Context& ctx, rebgn::Range func_range) {
+            std::vector<size_t> res;
+            for (size_t i = func_range.start; i < func_range.end; i++) {
+                auto& code = ctx.bm.code[i];
+                if (code.op != rebgn::AbstractOp::RETURN_TYPE &&
+                    rebgn::is_parameter_related(code.op)) {
+                    res.push_back(i);
+                }
+            }
+            return res;
         }
     };
 

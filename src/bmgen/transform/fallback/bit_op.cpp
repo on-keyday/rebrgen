@@ -14,15 +14,16 @@ namespace rebgn {
         std::optional<StorageRef> u8_typ;
 
         auto get_nbit_typ = nbit_type_getter(m, u8_typ);
-        // target = target | (target_type(value) << shift_index)
-        auto assign_to_target = [&](Varint ref, Varint shift_index, auto&& src_type, auto&& src_type_storage) {
+        // target = target | ((target_type(value) & src_type_bits) << shift_index)
+        auto assign_to_target = [&](Varint ref, Varint mask, Varint shift_index, auto&& src_type, auto&& src_type_storage) {
             // cast to target type
             BM_ERROR_WRAP(dst_storage, error, (m.get_storage(target_type)));
             auto casted = add_assign_cast(m, op, &dst_storage, &src_type_storage, ref);
             if (!casted) {
                 return casted.error();
             }
-            BM_BINARY(op, shift, BinaryOp::left_logical_shift, casted ? **casted : ref, shift_index);
+            BM_BINARY(op, and_, BinaryOp::bit_and, casted ? **casted : ref, mask);
+            BM_BINARY(op, shift, BinaryOp::left_logical_shift, and_, shift_index);
             BM_BINARY(op, bit_or, BinaryOp::bit_or, target, shift);
             BM_ASSIGN(op, assign, target, bit_or, null_varint, nullptr);
             return none;
@@ -199,6 +200,7 @@ namespace rebgn {
                 auto enc_endian = code.endian().value();
                 BM_ERROR_WRAP(src_type, error, (get_nbit_typ(enc_bit_size, enc_endian.sign())));
                 BM_ERROR_WRAP(src_type_storage, error, (m.get_storage(src_type)));
+                BM_IMMEDIATE(op, bit_mask, (1 << enc_bit_size) - 1);
 
                 // on little endian:
                 //   // fill from lsb
@@ -213,7 +215,7 @@ namespace rebgn {
                 auto err = add_endian_specific(
                     m, endian, op,
                     [&]() {
-                        auto err = assign_to_target(code.ref().value(), counter, src_type, src_type_storage);
+                        auto err = assign_to_target(code.ref().value(), bit_mask, counter, src_type, src_type_storage);
                         if (err) {
                             return err;
                         }
@@ -226,7 +228,7 @@ namespace rebgn {
                         }
                         BM_IMMEDIATE(op, bit_size_, bit_size);
                         BM_BINARY(op, sub, BinaryOp::sub, bit_size_, counter);
-                        return assign_to_target(code.ref().value(), sub, src_type, src_type_storage);
+                        return assign_to_target(code.ref().value(), bit_mask, sub, src_type, src_type_storage);
                     });
                 if (err) {
                     return err;
@@ -280,17 +282,18 @@ namespace rebgn {
                             BM_DECODE_INT(op, array_index, endian, 8, code.ref().value());
                             BM_ERROR_WRAP(u8_typ, error, (get_nbit_typ(8, false)));
                             BM_ERROR_WRAP(u8_typ_storage, error, (m.get_storage(u8_typ)));
+                            BM_IMMEDIATE(op, bit_mask, 0xff);
                             auto err = add_endian_specific(
                                 m, endian, op,
                                 [&]() {
                                     BM_BINARY(op, mul, BinaryOp::mul, i_, imm8);
-                                    return assign_to_target(array_index, mul, u8_typ, u8_typ_storage);
+                                    return assign_to_target(array_index, bit_mask, mul, u8_typ, u8_typ_storage);
                                 },
                                 [&]() {
                                     BM_IMMEDIATE(op, bit_size_div_8_minus_1, bit_size / 8 - 1);
                                     BM_BINARY(op, sub, BinaryOp::sub, bit_size_div_8_minus_1, i_);
                                     BM_BINARY(op, mul, BinaryOp::mul, sub, imm8);
-                                    return assign_to_target(array_index, mul, u8_typ, u8_typ_storage);
+                                    return assign_to_target(array_index, bit_mask, mul, u8_typ, u8_typ_storage);
                                 });
                             BM_REF(op, AbstractOp::INC, i_);
                         }

@@ -5,8 +5,9 @@
     "comment_suffix": "\\\"\\\"\\\"",
     "int_type": "int",
     "uint_type": "int",
-    "array_type": "list[{}]",
-    "array_has_one_placeholder": true,
+    "array_type": "list[$TYPE]",
+    "byte_array_type": "bytearray",
+    "byte_vector_type": "bytearray",
     "vector_type": "list[{}]",
     "optional_type": "Optional[{}]",
     "pointer_type": "Optional[{}]",
@@ -43,7 +44,7 @@
     "false_literal": "False",
     "empty_pointer": "None",
     "empty_optional": "None",
-    "size_method": "len",
+    "size_method": "__builtins__.len",
     "surrounded_size_method": true,
     "append_method": "append",
     "variant_mode": "algebraic",
@@ -59,5 +60,7 @@
     "optional_of_placeholder": "{}",
     "decode_bytes_op": "$VALUE = $DECODER.read($LEN)",
     "encode_bytes_op": "w.write($VALUE[:$LEN])",
-    "decode_bytes_until_eof_op": "$VALUE = $DECODER.read()"
+    "decode_bytes_until_eof_op": "$VALUE = $DECODER.read()",
+    "encode_offset": "$ENCODER.tell()",
+    "decode_offset": "$DECODER.tell()"
 }

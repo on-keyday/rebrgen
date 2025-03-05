@@ -96,8 +96,9 @@ namespace bm2c {
             }
             case rebgn::StorageType::ARRAY: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
                 auto length = storage.size().value().value();
-                return std::format("std::array<{}, {}>", base_type,length);
+                return futils::strutil::concat<std::string>("std::array<",base_type,", >");
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
@@ -144,6 +145,19 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
+            auto ident = ctx.ident(code.ident().value());
+            auto belong = code.belong().value();
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            if(is_member) {
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+            }
+            else {
+                result = make_eval_result(ident);
+            }
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_PROPERTY: {
             auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
@@ -231,6 +245,19 @@ namespace bm2c {
         }
         break;
         }
+        case rebgn::AbstractOp::DEFINE_PROPERTY: {
+        auto ident = ctx.ident(code.ident().value());
+        auto belong = code.belong().value();
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        if(is_member) {
+            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            result = std::format("{}.{}", belong_eval, ident);
+        }
+        else {
+            result = ident;
+        }
+        break;
+        }
         case rebgn::AbstractOp::DEFINE_UNION: {
         auto ident = ctx.ident(code.ident().value());
         auto belong = code.belong().value();
@@ -293,7 +320,7 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-            result = make_eval_result("/*Unimplemented DEFINE_PROPERTY*/");
+            result = field_accessor(code, ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_PARAMETER: {
@@ -302,11 +329,11 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
-            result = make_eval_result("/*Unimplemented INPUT_BYTE_OFFSET*/");
+            result = make_eval_result(futils::strutil::concat<std::string>("",ctx.r(),".offset()"));
             break;
         }
         case rebgn::AbstractOp::OUTPUT_BYTE_OFFSET: {
-            result = make_eval_result("/*Unimplemented OUTPUT_BYTE_OFFSET*/");
+            result = make_eval_result(futils::strutil::concat<std::string>("",ctx.w(),".offset()"));
             break;
         }
         case rebgn::AbstractOp::INPUT_BIT_OFFSET: {
@@ -326,7 +353,13 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
-            result = make_eval_result("/*Unimplemented IS_LITTLE_ENDIAN*/");
+            auto fallback = code.fallback().value();
+            if(fallback.value() != 0) {
+                result = eval(ctx.ref(fallback), ctx);
+            }
+            else {
+                result = make_eval_result("std::endian::native == std::endian::little");
+            }
             break;
         }
         case rebgn::AbstractOp::CAST: {
@@ -401,7 +434,15 @@ namespace bm2c {
             break;
         }
         case rebgn::AbstractOp::ASSIGN: {
-            result = make_eval_result("/*Unimplemented ASSIGN*/");
+            auto left_ref = code.left_ref().value();
+            auto ref = code.ref().value();
+            auto right_ref = code.right_ref().value();
+            if(ref.value() != 0) {
+                result = eval(ctx.ref(ref), ctx);
+            }
+            else {
+                result = eval(ctx.ref(left_ref), ctx);
+            }
             break;
         }
         case rebgn::AbstractOp::ACCESS: {
@@ -669,12 +710,12 @@ namespace bm2c {
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
             auto func = code.right_ref().value();
-            auto func_range = ctx.range(func);
+            auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
             auto func = code.right_ref().value();
-            auto func_range = ctx.range(func);
+            auto inner_range = ctx.range(func);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
@@ -769,7 +810,12 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
-                w.writeln("/*Unimplemented DECLARE_BIT_FIELD*/ ");
+                auto ref=code.ref().value();
+            auto ident = ctx.ident(ref);
+            auto inner_range = ctx.range(ref);
+            auto type_ref = ctx.ref(ref).type().value();
+            auto type = type_to_string(ctx, type_ref);
+            inner_block(ctx,w,inner_range);
                 break;
             }
             default: {
@@ -795,7 +841,14 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DYNAMIC_ENDIAN: {
-                w.writeln("/*Unimplemented DYNAMIC_ENDIAN*/ ");
+                auto fallback = ctx.bm.code[i].fallback().value();
+                if(fallback.value() != 0) {
+                    auto inner_range = ctx.range(fallback);
+                    inner_function(ctx, w, inner_range);
+                }
+                else {
+                    w.writeln("/*Unimplemented DYNAMIC_ENDIAN*/ ");
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
@@ -1023,11 +1076,15 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_INPUT: {
-                w.writeln("/*Unimplemented BACKWARD_INPUT*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref),ctx);
+                w.writeln("",ctx.r(),".backward(",evaluated.result,");");
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_OUTPUT: {
-                w.writeln("/*Unimplemented BACKWARD_OUTPUT*/ ");
+                auto ref = code.ref().value();
+                auto evaluated = eval(ctx.ref(ref),ctx);
+                w.writeln("",ctx.w(),".backward(",evaluated.result,");");
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
@@ -1183,7 +1240,11 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
-                w.writeln("/*Unimplemented LENGTH_CHECK*/ ");
+                auto vector_ref = code.left_ref().value();
+                auto vector_eval = eval(ctx.ref(vector_ref), ctx);
+                auto size_ref = code.right_ref().value();
+                auto size_eval = eval(ctx.ref(size_ref), ctx);
+                w.writeln("assert(", vector_eval.result, ".size() == ", size_eval.result, ");");
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
@@ -1339,6 +1400,7 @@ namespace bm2c {
                         // handle metadata...
                         break;
                     }
+                    default: {}
                 }
             }
         }

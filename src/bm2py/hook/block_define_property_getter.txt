@@ -1,1 +1,1 @@
-inner_function(ctx,w,func_range);
+!@include block_declare_function.txt

@@ -1,1 +1,1 @@
-!@include block_define_property_getter.txt
+!@include block_declare_function.txt

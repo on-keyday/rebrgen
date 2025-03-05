@@ -47,7 +47,7 @@
     "match_case_keyword": "case",
     "match_case_separator": ":",
     "match_default_keyword": "default",
-    "condition_has_parentheses": true,
+    "condition_has_parentheses": false,
     "self_ident": "this_",
     "param_type_separator": " ",
     "self_param": "",

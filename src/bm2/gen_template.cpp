@@ -1089,7 +1089,7 @@ namespace rebgn {
             inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
             inner_block.writeln("auto base_type_ref = code.type().value();");
             inner_block.writeln("std::optional<std::string> base_type;");
-            inner_block.writeln("if(base_type_ref.value() != 0) {");
+            inner_block.writeln("if(base_type_ref.ref.value() != 0) {");
             auto scope = inner_block.indent_scope();
             inner_block.writeln("base_type = type_to_string(ctx,base_type_ref);");
             scope.execute();

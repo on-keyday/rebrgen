@@ -727,7 +727,7 @@ namespace bm2haskell {
                 auto ident = ctx.ident(code.ident().value());
                 auto base_type_ref = code.type().value();
                 std::optional<std::string> base_type;
-                if(base_type_ref.value() != 0) {
+                if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
                 w.write("data ", ident, " ");

@@ -727,10 +727,13 @@ namespace bm2go {
                 auto ident = ctx.ident(code.ident().value());
                 auto base_type_ref = code.type().value();
                 std::optional<std::string> base_type;
-                if(base_type_ref.value() != 0) {
+                if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
-                w.writeln("type ",ident," ");
+                else {
+                    base_type = "int";
+                }
+                w.writeln("type ",ident, *base_type);
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1134,14 +1137,14 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
-                w.writeln("for(;;) {");
+                w.writeln("for {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::LOOP_CONDITION: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("while (",evaluated.result,") {");
+                w.writeln("for ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1161,7 +1164,7 @@ namespace bm2go {
             case rebgn::AbstractOp::IF: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("if (",evaluated.result,") {");
+                w.writeln("if ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1170,7 +1173,7 @@ namespace bm2go {
                 auto evaluated = eval(ctx.ref(ref), ctx);
                 defer.pop_back();
                 w.write("}");
-                w.writeln("else if (",evaluated.result,") {");
+                w.writeln("else if ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1189,21 +1192,21 @@ namespace bm2go {
             case rebgn::AbstractOp::MATCH: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("switch (",evaluated.result,") {");
+                w.writeln("switch ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("switch (",evaluated.result,") {");
+                w.writeln("switch ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CASE: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("case (",evaluated.result,") {");
+                w.writeln("case ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1328,7 +1331,7 @@ namespace bm2go {
                 auto union_member_ident = ctx.ident(union_member_ref);
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
-                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) {");
+                w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
                 w.writeln("",union_field_ident.result," = ",union_member_ident,"();");
                 scope.execute();
@@ -1344,7 +1347,7 @@ namespace bm2go {
                 auto union_ident = ctx.ident(union_ref);
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
                 auto check_type = code.check_at().value();
-                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) {");
+                w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {
                     w.writeln("return false;");

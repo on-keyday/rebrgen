@@ -676,7 +676,7 @@ namespace rebgn {
                             inner_function.write(flags.match_keyword, " ", condition, " ", flags.block_begin);
                             break;
                         case AbstractOp::CASE:
-                            inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.block_begin);
+                            inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.match_case_separator, flags.block_begin);
                             break;
                         case AbstractOp::DEFAULT_CASE:
                             inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
@@ -966,23 +966,31 @@ namespace rebgn {
                     field_accessor.writeln("auto union_field_belong = ctx.ref(union_field_ref).belong().value();");
                 }
                 field_accessor_hook([&] {
-                    field_accessor.writeln("if(is_member) {");
-                    auto scope = field_accessor.indent_scope();
-                    field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
-                    field_accessor_hook([&] {
-                        field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ident));");
-                    },
-                                        bm2::HookFileSub::field);
-                    scope.execute();
-                    field_accessor.writeln("}");
-                    field_accessor.writeln("else {");
-                    auto scope2 = field_accessor.indent_scope();
-                    field_accessor_hook([&] {
-                        field_accessor.writeln("result = make_eval_result(ident);");
-                    },
-                                        bm2::HookFileSub::self);
-                    scope2.execute();
-                    field_accessor.writeln("}");
+                    if (op == AbstractOp::DEFINE_UNION_MEMBER) {
+                        field_accessor.writeln("result = field_accessor(ctx.ref(union_field_ref),ctx);");
+                    }
+                    else if (op == AbstractOp::DEFINE_BIT_FIELD) {
+                        field_accessor.writeln("result = field_accessor(ctx.ref(belong),ctx);");
+                    }
+                    else {
+                        field_accessor.writeln("if(is_member) {");
+                        auto scope = field_accessor.indent_scope();
+                        field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
+                        field_accessor_hook([&] {
+                            field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ident));");
+                        },
+                                            bm2::HookFileSub::field);
+                        scope.execute();
+                        field_accessor.writeln("}");
+                        field_accessor.writeln("else {");
+                        auto scope2 = field_accessor.indent_scope();
+                        field_accessor_hook([&] {
+                            field_accessor.writeln("result = make_eval_result(ident);");
+                        },
+                                            bm2::HookFileSub::self);
+                        scope2.execute();
+                        field_accessor.writeln("}");
+                    }
                 });
             });
             add_type_start([&] {

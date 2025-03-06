@@ -191,13 +191,7 @@ namespace bm2go {
             auto union_ref = belong;
             auto union_field_ref = ctx.ref(union_ref).belong().value();
             auto union_field_belong = ctx.ref(union_field_ref).belong().value();
-            if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
-            }
-            else {
-                result = make_eval_result(ident);
-            }
+            result = field_accessor(ctx.ref(union_field_ref),ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
@@ -208,13 +202,7 @@ namespace bm2go {
             auto ident = ctx.ident(code.ident().value());
             auto belong = code.belong().value();
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-            if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
-            }
-            else {
-                result = make_eval_result(ident);
-            }
+            result = field_accessor(ctx.ref(belong),ctx);
             break;
         }
         default: {
@@ -568,7 +556,7 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Encoder& w");
+                    w.write("w io.Writer");
                     params++;
                     break;
                 }
@@ -576,7 +564,7 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Decoder& w");
+                    w.write("r io.Reader");
                     params++;
                     break;
                 }
@@ -1214,7 +1202,7 @@ namespace bm2go {
             case rebgn::AbstractOp::CASE: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln("case ",evaluated.result," {");
+                w.writeln("case ",evaluated.result," :{");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1239,7 +1227,7 @@ namespace bm2go {
                 auto type_ref = code.type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("var{} = {}", ident, init.result));
+                w.writeln(std::format("var {}  {} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1252,7 +1240,7 @@ namespace bm2go {
                 auto type_ref = ctx.ref(code.ref().value()).type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("var{} = {}", ident, init.result));
+                w.writeln(std::format("var {}  {} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {

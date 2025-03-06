@@ -609,6 +609,13 @@ namespace rebgn {
                     inner_function.writeln("type = type_to_string(ctx,type_ref);");
                 }
                 inner_function.writeln("}");
+                inner_function.writeln("std::optional<std::string> belong_name;");
+                inner_function.writeln("if(auto belong = code.belong();belong&&belong->value()!=0) {");
+                {
+                    auto inner_scope = inner_function.indent_scope();
+                    inner_function.writeln("belong_name = ctx.ident(belong.value());");
+                }
+                inner_function.writeln("}");
                 func_hook([&] {
                     inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
                     if (!flags.trailing_return_type) {
@@ -630,8 +637,8 @@ namespace rebgn {
                         inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
                         inner_function.writeln("}");
                     }
+                    inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
                 });
-                inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
             }
             else {
                 func_hook([&] {
@@ -1110,6 +1117,8 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
             inner_block.writeln("auto ident = ctx.ident(code.ident().value());");
             inner_block.writeln("auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);");
+            inner_block.writeln("auto belong = code.belong().value();");
+            inner_block.writeln("auto enum_ident = ctx.ident(belong);");
             block_hook([&] {
                 inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
             });

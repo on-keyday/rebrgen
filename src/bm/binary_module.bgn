@@ -503,6 +503,7 @@ format Code:
             ident :Varint
             left_ref :Varint # ref to init expr
             right_ref :Varint # ref to string representation or null
+            belong :Varint # belong to enum
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
             belong :Varint # belong to format or null

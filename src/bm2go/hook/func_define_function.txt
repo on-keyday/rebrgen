@@ -1,0 +1,12 @@
+w.write("func ");
+if(belong_name) {
+    w.write("(this_ *",*belong_name,") ");
+}
+w.write(ident);
+w.write("(");
+add_parameter(ctx,w,range);
+w.write(") ");
+if(type) {
+    w.write(*type);
+}
+w.writeln("{");

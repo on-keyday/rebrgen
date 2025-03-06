@@ -1401,7 +1401,7 @@ namespace rebgn {
             c.type(base_type);
         });
         for (auto& me : node->members) {
-            BM_LOOKUP_IDENT(ident, m, me->ident);
+            BM_LOOKUP_IDENT(mident, m, me->ident);
             BM_GET_EXPR(ref, m, me->value);
             Varint str_ref;
             if (me->str_literal) {
@@ -1412,9 +1412,10 @@ namespace rebgn {
                 str_ref = *st;
             }
             m.op(AbstractOp::DEFINE_ENUM_MEMBER, [&](Code& c) {
-                c.ident(ident);
+                c.ident(mident);
                 c.left_ref(ref);
                 c.right_ref(str_ref);
+                c.belong(ident);
             });
         }
         m.op(AbstractOp::END_ENUM);

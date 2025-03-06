@@ -751,6 +751,8 @@ namespace bm2c {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
                 auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
+                auto belong = code.belong().value();
+                auto enum_ident = ctx.ident(belong);
                 w.writeln(ident, " = ", evaluated.result, ",");
                 break;
             }
@@ -866,6 +868,10 @@ namespace bm2c {
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name;
+                if(auto belong = code.belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
                 }
                 w.write(" ");
                 if(type) {

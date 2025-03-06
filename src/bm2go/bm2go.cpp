@@ -368,7 +368,7 @@ namespace bm2go {
             auto ref = code.ref().value();
             auto type_str = type_to_string(ctx, type);
             auto evaluated = eval(ctx.ref(ref), ctx);
-            result = make_eval_result(std::format("({}){}", type_str, evaluated.result));
+            result = make_eval_result(std::format("{}({})", type_str, evaluated.result));
             break;
         }
         case rebgn::AbstractOp::CALL_CAST: {
@@ -587,7 +587,7 @@ namespace bm2go {
                     auto ref = code.ref().value();
                     auto type = type_to_string(ctx,ctx.ref(ref).type().value());
                     auto ident = ctx.ident(ref);
-                    w.write(ident, "  ", type);
+                    w.write(ident," *",type);
                     params++;
                     break;
                 }
@@ -733,13 +733,14 @@ namespace bm2go {
                 else {
                     base_type = "int";
                 }
-                w.writeln("type ",ident, *base_type);
+                w.writeln("type ",ident," ", *base_type);
+                w.writeln("const (");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
                 defer.pop_back();
-                w.writeln("}");
+                w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_ENUM: {
@@ -751,7 +752,9 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
                 auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
-                w.writeln(ident, " = ", evaluated.result, ",");
+                auto belong = code.belong().value();
+                auto enum_ident = ctx.ident(belong);
+                w.writeln(ident," ",enum_ident," = ",evaluated.result);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
@@ -867,15 +870,20 @@ namespace bm2go {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
                 }
+                std::optional<std::string> belong_name;
+                if(auto belong = code.belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 w.write("func ");
-                w.write(" ", ident, "(");
-                add_parameter(ctx, w, range);
+                if(belong_name) {
+                    w.write("(this_ *",*belong_name,") ");
+                }
+                w.write(ident);
+                w.write("(");
+                add_parameter(ctx,w,range);
                 w.write(") ");
                 if(type) {
-                    w.write(" ", *type);
-                }
-                else {
-                    w.write("void");
+                    w.write(*type);
                 }
                 w.writeln("{");
                 defer.push_back(w.indent_scope_ex());
@@ -1103,13 +1111,13 @@ namespace bm2go {
             case rebgn::AbstractOp::BACKWARD_INPUT: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref),ctx);
-                w.writeln("",ctx.r(),".backward(",evaluated.result,");");
+                w.writeln("",ctx.r(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_OUTPUT: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref),ctx);
-                w.writeln("",ctx.w(),".backward(",evaluated.result,");");
+                w.writeln("",ctx.w(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
@@ -1121,7 +1129,7 @@ namespace bm2go {
                 auto obj_eval = eval(ctx.ref(obj_ref), ctx);
                 w.write(obj_eval.result, ".", func_name, "(");
                 add_call_parameter(ctx, w,range);
-                w.writeln(");");
+                w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::CALL_DECODE: {
@@ -1133,7 +1141,7 @@ namespace bm2go {
                 auto obj_eval = eval(ctx.ref(obj_ref), ctx);
                 w.write(obj_eval.result, ".", func_name, "(");
                 add_call_parameter(ctx, w,range);
-                w.writeln(");");
+                w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
@@ -1149,11 +1157,11 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::CONTINUE: {
-                w.writeln("continue;");
+                w.writeln("continue");
                 break;
             }
             case rebgn::AbstractOp::BREAK: {
-                w.writeln("break;");
+                w.writeln("break");
                 break;
             }
             case rebgn::AbstractOp::END_LOOP: {
@@ -1231,7 +1239,7 @@ namespace bm2go {
                 auto type_ref = code.type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("var{} = {};", ident, init.result));
+                w.writeln(std::format("var{} = {}", ident, init.result));
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1244,7 +1252,7 @@ namespace bm2go {
                 auto type_ref = ctx.ref(code.ref().value()).type().value();
                 auto type = type_to_string(ctx,type_ref);
                 auto init = eval(ctx.ref(init_ref), ctx);
-                w.writeln(std::format("var{} = {};", ident, init.result));
+                w.writeln(std::format("var{} = {}", ident, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {
@@ -1252,7 +1260,7 @@ namespace bm2go {
                 auto right_ref = code.right_ref().value();
                 auto left_eval = eval(ctx.ref(left_ref), ctx);
                 auto right_eval = eval(ctx.ref(right_ref), ctx);
-                w.writeln("", left_eval.result, " = ", right_eval.result, ";");
+                w.writeln("", left_eval.result, " = ", right_eval.result, "");
                 break;
             }
             case rebgn::AbstractOp::PROPERTY_ASSIGN: {
@@ -1261,7 +1269,7 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::ASSERT: {
                 auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
-                w.writeln("assert(", evaluated.result, ");");
+                w.writeln("assert(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -1269,13 +1277,13 @@ namespace bm2go {
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 auto size_ref = code.right_ref().value();
                 auto size_eval = eval(ctx.ref(size_ref), ctx);
-                w.writeln("assert(", vector_eval.result, ".size() == ", size_eval.result, ");");
+                w.writeln("assert(", vector_eval.result, ".size() == ", size_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
                 auto param = code.param().value();
                 auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
-                w.writeln("throw std::runtime_error(", evaluated.result, ");");
+                w.writeln("throw std::runtime_error(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::APPEND: {
@@ -1283,36 +1291,36 @@ namespace bm2go {
                 auto new_element_ref = code.right_ref().value();
                 auto vector_eval = eval(ctx.ref(vector_ref), ctx);
                 auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
-                w.writeln(vector_eval.result, ".push_back(", new_element_eval.result, ");");
+                w.writeln(vector_eval.result, ".push_back(", new_element_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::INC: {
                 auto ref = code.ref().value();
                 auto evaluated = eval(ctx.ref(ref), ctx);
-                w.writeln(evaluated.result, "+= 1;");
+                w.writeln(evaluated.result, "+= 1");
                 break;
             }
             case rebgn::AbstractOp::RET: {
                 auto ref = code.ref().value();
                 if(ref.value() != 0) {
                     auto evaluated = eval(ctx.ref(ref), ctx);
-                    w.writeln("return ", evaluated.result, ";");
+                    w.writeln("return ", evaluated.result, "");
                 }
                 else {
-                    w.writeln("return;");
+                    w.writeln("return");
                 }
                 break;
             }
             case rebgn::AbstractOp::RET_SUCCESS: {
-                w.writeln("return true;");
+                w.writeln("return true");
                 break;
             }
             case rebgn::AbstractOp::RET_PROPERTY_SETTER_OK: {
-                w.writeln("return true;");
+                w.writeln("return true");
                 break;
             }
             case rebgn::AbstractOp::RET_PROPERTY_SETTER_FAIL: {
-                w.writeln("return false;");
+                w.writeln("return false");
                 break;
             }
             case rebgn::AbstractOp::INIT_RECURSIVE_STRUCT: {
@@ -1333,7 +1341,7 @@ namespace bm2go {
                 auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
                 w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
-                w.writeln("",union_field_ident.result," = ",union_member_ident,"();");
+                w.writeln("",union_field_ident.result," = ",union_member_ident,"()");
                 scope.execute();
                 w.writeln("}");
                 break;
@@ -1350,13 +1358,13 @@ namespace bm2go {
                 w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {
-                    w.writeln("return false;");
+                    w.writeln("return false");
                 }
                 else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_PTR) {
-                    w.writeln("return nil;");
+                    w.writeln("return nil");
                 }
                 else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {
-                    w.writeln("return std::nullopt;");
+                    w.writeln("return std::nullopt");
                 }
                 scope.execute();
                 w.writeln("}");

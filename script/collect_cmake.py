@@ -54,7 +54,8 @@ with open(output, "w") as f:
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently
-        f.write(f"tool\\{file["name"]} -i save/save.bin > save/save.{file["suffix"]}\n")
+        f.write("mkdir -p save\\%s\n" % file["lang"])
+        f.write(f"tool\\{file["name"]} -i save/save.bin > save/{file["lang"]}/save.{file["suffix"]}\n")
 
 output = "script/run_generated.sh"
 
@@ -68,8 +69,9 @@ with open(output, "wb") as f:
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently
+        f.write(f"mkdir -p save/{file["lang"]}\n".encode())
         f.write(
-            f"tool/{file["name"]} -i save/save.bin > save/save.{file["suffix"]}\n".encode()
+            f"tool/{file["name"]} -i save/save.bin > save/{file["lang"]}/save.{file["suffix"]}\n".encode()
         )
 
 output = "script/run_generated.ps1"
@@ -84,6 +86,7 @@ with open(output, "w") as f:
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently
+        f.write(f"mkdir -Force save\\{file["lang"]}\n")
         f.write(
-            f".\\tool\\{file["name"]} -i save\\save.bin > save\\save.{file["suffix"]}\n"
+            f".\\tool\\{file["name"]} -i save\\save.bin > save\\{file["lang"]}\\save.{file["suffix"]}\n"
         )

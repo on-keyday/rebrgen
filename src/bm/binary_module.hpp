@@ -1706,6 +1706,7 @@ namespace rebgn {
             Varint ident;
             Varint left_ref;
             Varint right_ref;
+            Varint belong;
         };
         struct BM_API union_struct_33{
             Varint ident;

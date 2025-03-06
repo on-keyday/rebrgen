@@ -2,8 +2,8 @@
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
 #include <escape/escape.h>
-#include "bm2py.hpp"
-namespace bm2py {
+#include "bm2python.hpp"
+namespace bm2python {
     using TmpCodeWriter = bm2::TmpCodeWriter;
     struct Context : bm2::Context {
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","self", std::move(escape_ident)} {}
@@ -751,6 +751,8 @@ namespace bm2py {
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
                 auto ident = ctx.ident(code.ident().value());
                 auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
+                auto belong = code.belong().value();
+                auto enum_ident = ctx.ident(belong);
                 w.writeln(ident, " = ", evaluated.result, "");
                 break;
             }
@@ -861,6 +863,10 @@ namespace bm2py {
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name;
+                if(auto belong = code.belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
                 }
                 auto params = get_parameters(ctx,range);
                 if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
@@ -1435,13 +1441,13 @@ namespace bm2py {
             }
         }
     }
-    std::string escape_py_keyword(const std::string& str) {
+    std::string escape_python_keyword(const std::string& str) {
         if (str == "False"||str == "None"||str == "True"||str == "and"||str == "as"||str == "assert"||str == "async"||str == "await"||str == "break"||str == "class"||str == "continue"||str == "def"||str == "del"||str == "elif"||str == "else"||str == "except"||str == "finally"||str == "for"||str == "from"||str == "global"||str == "if"||str == "import"||str == "in"||str == "is"||str == "lambda"||str == "nonlocal"||str == "not"||str == "or"||str == "pass"||str == "raise"||str == "return"||str == "try"||str == "while"||str == "with"||str == "yield") {
             return str + "_";
         }
         return str;
     }
-    void to_py(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
+    void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
@@ -1457,7 +1463,7 @@ namespace bm2py {
                     return "set_" + str;
                 }
             }
-            return escape_py_keyword(str);
+            return escape_python_keyword(str);
         }};
         // search metadata
         bool has_is_little_endian = false;
@@ -1504,4 +1510,4 @@ namespace bm2py {
             ctx.cw.write_unformatted(w.out());
         }
     }
-}  // namespace bm2py
+}  // namespace bm2python

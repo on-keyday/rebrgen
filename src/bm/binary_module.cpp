@@ -805,7 +805,10 @@ namespace rebgn {
         return std::nullopt;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
-        return std::nullopt;
+        if(!std::holds_alternative<union_struct_32>(union_variant_16)) {
+            return std::nullopt;
+        }
+        return std::get<16>((*this).union_variant_16).belong;
         }
         if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
         if(!std::holds_alternative<union_struct_33>(union_variant_16)) {
@@ -1242,7 +1245,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
-            return false;
+            if(!std::holds_alternative<union_struct_32>(union_variant_16)) {
+                union_variant_16 = union_struct_32();
+            }
+            std::get<16>((*this).union_variant_16).belong = v;
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
             if(!std::holds_alternative<union_struct_33>(union_variant_16)) {
@@ -1709,7 +1716,11 @@ namespace rebgn {
             return false;
         }
         if (AbstractOp::DEFINE_ENUM_MEMBER==(*this).op) {
-            return false;
+            if(!std::holds_alternative<union_struct_32>(union_variant_16)) {
+                union_variant_16 = union_struct_32();
+            }
+            std::get<16>((*this).union_variant_16).belong = std::move(v);
+            return true;
         }
         if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
             if(!std::holds_alternative<union_struct_33>(union_variant_16)) {
@@ -21866,6 +21877,9 @@ namespace rebgn {
             if (auto err = std::get<16>((*this).union_variant_16).right_ref.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<16>((*this).union_variant_16).belong.encode(w)) {
+                return err;
+            }
         }
         else if (AbstractOp::DEFINE_FUNCTION==(*this).op) {
             if(!std::holds_alternative<union_struct_33>(union_variant_16)) {
@@ -23269,6 +23283,9 @@ namespace rebgn {
                 return err;
             }
             if (auto err = std::get<16>((*this).union_variant_16).right_ref.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<16>((*this).union_variant_16).belong.decode(r)) {
                 return err;
             }
         }

@@ -213,45 +213,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&is_config, "config", "generate config file");
         ctx.VarBool(&debug, "debug", "debug mode (print hook call on stderr)");
         ctx.VarBool(&print_hooks, "print-hooks", "print hooks");
-        /*
-        ctx.VarBool(&prior_ident, "prior-ident", "prioritize identifier than type when defining field or parameter or variable");
-        ctx.VarString(&comment_prefix, "comment-prefix", "comment prefix", "PREFIX");
-        ctx.VarString(&comment_suffix, "comment-suffix", "comment suffix", "SUFFIX");
-        ctx.VarString(&int_type_placeholder, "int-type", "int type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
-        ctx.VarString(&uint_type_placeholder, "uint-type", "uint type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
-        ctx.VarString(&keyword_file, "keyword-file", "keyword file", "FILE");
-        ctx.VarString(&import_base_file, "import-base-file", "import base file", "FILE");
-        ctx.VarString(&end_of_statement, "end-of-statement", "end of statement", "EOS");
-        ctx.VarString(&block_begin, "block-begin", "block begin", "BEGIN");
-        ctx.VarString(&block_end, "block-end", "block end", "END");
-        ctx.VarString(&block_end_type, "block-end-type", "block end of type definition", "END_TYPE");
-        ctx.VarString(&struct_keyword, "struct-keyword", "struct keyword", "KEYWORD");
-        ctx.VarString(&enum_keyword, "enum-keyword", "enum keyword", "KEYWORD");
-        ctx.VarString(&float_type_placeholder, "float-type", "float type placeholder ({} will be replaced with bit size)", "PLACEHOLDER");
-        ctx.VarString(&array_type_placeholder, "array-type", "array type placeholder ({} will be replaced with element type, {} will be replaced with size)", "PLACEHOLDER");
-        ctx.VarBool(&array_has_one_placeholder, "array-has-one-placeholder", "array type has one placeholder");
-        ctx.VarString(&vector_type_placeholder, "vector-type", "vector type placeholder ({} will be replaced with element type)", "PLACEHOLDER");
-        ctx.VarString(&bool_type, "bool-type", "bool type", "TYPE");
-        ctx.VarString(&coder_return_type, "coder-return-type", "coder return type", "TYPE");
-        ctx.VarString(&property_setter_return_type, "property-setter-return-type", "property setter return type", "TYPE");
-        ctx.VarString(&define_var_keyword, "define-var-keyword", "define variable keyword", "KEYWORD");
-        ctx.VarString(&var_type_separator, "var-type-separator", "variable type separator", "SEPARATOR");
-        ctx.VarString(&field_type_separator, "field-type-separator", "field type separator", "SEPARATOR");
-        ctx.VarString(&field_end, "field-end", "field end", "END");
-        ctx.VarString(&enum_member_end, "enum-member-end", "enum member end", "END");
-        ctx.VarString(&func_keyword, "func-keyword", "function keyword", "KEYWORD");
-        ctx.VarString(&func_type_separator, "func-type-separator", "function type separator", "SEPARATOR");
-        ctx.VarString(&func_void_return_type, "func-void-return-type", "function void return type", "TYPE");
-        ctx.VarString(&if_keyword, "if-keyword", "if keyword", "KEYWORD");
-        ctx.VarString(&elif_keyword, "elif-keyword", "elif keyword", "KEYWORD");
-        ctx.VarString(&else_keyword, "else-keyword", "else keyword", "KEYWORD");
-        ctx.VarString(&infinity_loop, "infinity-loop", "infinity loop", "LOOP");
-        ctx.VarString(&conditional_loop, "conditional-loop", "conditional loop", "LOOP");
-        ctx.VarBool(&condition_has_parentheses, "condition-has-parentheses", "condition has parentheses");
-        ctx.VarString(&self_ident, "self-name", "self name", "NAME");
-        ctx.VarString(&param_type_separator, "param-type-separator", "parameter type separator", "SEPARATOR");
-        ctx.VarBool(&explicit_self, "explicit-self", "explicit self");
-        */
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
         ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
     }

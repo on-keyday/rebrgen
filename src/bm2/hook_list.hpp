@@ -275,4 +275,66 @@ namespace bm2 {
         }
         return std::nullopt;
     }
+    enum class FuncName {
+        eval = 0,
+        inner_function = 1,
+        inner_block = 2,
+        add_parameter = 3,
+        add_call_parameter = 4,
+        type_to_string = 5,
+        field_accessor = 6,
+        type_accessor = 7,
+    };
+    constexpr const char* to_string(FuncName e) {
+        switch (e) {
+            case FuncName::eval:
+                return "eval";
+            case FuncName::inner_function:
+                return "inner_function";
+            case FuncName::inner_block:
+                return "inner_block";
+            case FuncName::add_parameter:
+                return "add_parameter";
+            case FuncName::add_call_parameter:
+                return "add_call_parameter";
+            case FuncName::type_to_string:
+                return "type_to_string";
+            case FuncName::field_accessor:
+                return "field_accessor";
+            case FuncName::type_accessor:
+                return "type_accessor";
+        }
+        return "";
+    }
+
+    constexpr std::optional<FuncName> FuncName_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "eval") {
+            return FuncName::eval;
+        }
+        if (str == "inner_function") {
+            return FuncName::inner_function;
+        }
+        if (str == "inner_block") {
+            return FuncName::inner_block;
+        }
+        if (str == "add_parameter") {
+            return FuncName::add_parameter;
+        }
+        if (str == "add_call_parameter") {
+            return FuncName::add_call_parameter;
+        }
+        if (str == "type_to_string") {
+            return FuncName::type_to_string;
+        }
+        if (str == "field_accessor") {
+            return FuncName::field_accessor;
+        }
+        if (str == "type_accessor") {
+            return FuncName::type_accessor;
+        }
+        return std::nullopt;
+    }
 }  // namespace bm2

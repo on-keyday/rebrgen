@@ -12,11 +12,30 @@
 #include <filesystem>
 #include <env/env.h>
 
+struct Content {
+    std::string var_name;
+    std::string type;
+    std::string description;
+    std::string initial_value;
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     bool is_header = false;
     bool is_main = false;
     bool is_cmake = false;
     bool is_config = false;
+    std::string_view is_template_docs = "";
+    std::map<bm2::FuncName, std::map<std::string, std::vector<Content>>> content;
+    bm2::FuncName func_name = bm2::FuncName::eval;
+
+    bool requires_lang_option() const {
+        return !print_hooks && is_template_docs.empty();
+    }
+
+    void set_func_name(bm2::FuncName func_name) {
+        this->func_name = func_name;
+    }
+
     std::string_view config_file = "config.json";
     std::string_view hook_file_dir = "hook";
     bool debug = false;
@@ -108,89 +127,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string eval_result_text = "$RESULT = make_eval_result($TEXT);";
     std::string eval_result_passthrough = "$RESULT = $TEXT;";
 
-#define MAP_TO_MACRO(MACRO_NAME)                                               \
-    MACRO_NAME(lang_name, "lang")                                              \
-    MACRO_NAME(file_suffix, "suffix")                                          \
-    MACRO_NAME(comment_prefix, "comment_prefix")                               \
-    MACRO_NAME(comment_suffix, "comment_suffix")                               \
-    MACRO_NAME(int_type_placeholder, "int_type")                               \
-    MACRO_NAME(uint_type_placeholder, "uint_type")                             \
-    MACRO_NAME(float_type_placeholder, "float_type")                           \
-    MACRO_NAME(array_type_placeholder, "array_type")                           \
-    MACRO_NAME(vector_type_placeholder, "vector_type")                         \
-    MACRO_NAME(byte_vector_type, "byte_vector_type")                           \
-    MACRO_NAME(byte_array_type, "byte_array_type")                             \
-    MACRO_NAME(optional_type_placeholder, "optional_type")                     \
-    MACRO_NAME(pointer_type_placeholder, "pointer_type")                       \
-    MACRO_NAME(recursive_struct_type_placeholder, "recursive_struct_type")     \
-    MACRO_NAME(bool_type, "bool_type")                                         \
-    MACRO_NAME(true_literal, "true_literal")                                   \
-    MACRO_NAME(false_literal, "false_literal")                                 \
-    MACRO_NAME(coder_return_type, "coder_return_type")                         \
-    MACRO_NAME(property_setter_return_type, "property_setter_return_type")     \
-    MACRO_NAME(end_of_statement, "end_of_statement")                           \
-    MACRO_NAME(block_begin, "block_begin")                                     \
-    MACRO_NAME(block_end, "block_end")                                         \
-    MACRO_NAME(otbs_on_block_end, "otbs_on_block_end")                         \
-    MACRO_NAME(block_end_type, "block_end_type")                               \
-    MACRO_NAME(prior_ident, "prior_ident")                                     \
-    MACRO_NAME(struct_keyword, "struct_keyword")                               \
-    MACRO_NAME(enum_keyword, "enum_keyword")                                   \
-    MACRO_NAME(define_var_keyword, "define_var_keyword")                       \
-    MACRO_NAME(var_type_separator, "var_type_separator")                       \
-    MACRO_NAME(define_var_assign, "define_var_assign")                         \
-    MACRO_NAME(omit_type_on_define_var, "omit_type_on_define_var")             \
-    MACRO_NAME(field_type_separator, "field_type_separator")                   \
-    MACRO_NAME(field_end, "field_end")                                         \
-    MACRO_NAME(enum_member_end, "enum_member_end")                             \
-    MACRO_NAME(func_keyword, "func_keyword")                                   \
-    MACRO_NAME(trailing_return_type, "trailing_return_type")                   \
-    MACRO_NAME(func_brace_ident_separator, "func_brace_ident_separator")       \
-    MACRO_NAME(func_type_separator, "func_type_separator")                     \
-    MACRO_NAME(func_void_return_type, "func_void_return_type")                 \
-    MACRO_NAME(if_keyword, "if_keyword")                                       \
-    MACRO_NAME(elif_keyword, "elif_keyword")                                   \
-    MACRO_NAME(else_keyword, "else_keyword")                                   \
-    MACRO_NAME(infinity_loop, "infinity_loop")                                 \
-    MACRO_NAME(conditional_loop, "conditional_loop")                           \
-    MACRO_NAME(match_keyword, "match_keyword")                                 \
-    MACRO_NAME(match_case_keyword, "match_case_keyword")                       \
-    MACRO_NAME(match_case_separator, "match_case_separator")                   \
-    MACRO_NAME(match_default_keyword, "match_default_keyword")                 \
-    MACRO_NAME(condition_has_parentheses, "condition_has_parentheses")         \
-    MACRO_NAME(self_ident, "self_ident")                                       \
-    MACRO_NAME(param_type_separator, "param_type_separator")                   \
-    MACRO_NAME(self_param, "self_param")                                       \
-    MACRO_NAME(encoder_param, "encoder_param")                                 \
-    MACRO_NAME(decoder_param, "decoder_param")                                 \
-    MACRO_NAME(func_style_cast, "func_style_cast")                             \
-    MACRO_NAME(empty_pointer, "empty_pointer")                                 \
-    MACRO_NAME(empty_optional, "empty_optional")                               \
-    MACRO_NAME(size_method, "size_method")                                     \
-    MACRO_NAME(surrounded_size_method, "surrounded_size_method")               \
-    MACRO_NAME(append_method, "append_method")                                 \
-    MACRO_NAME(surrounded_append_method, "surrounded_append_method")           \
-    MACRO_NAME(variant_mode, "variant_mode")                                   \
-    MACRO_NAME(algebraic_variant_separator, "algebraic_variant_separator")     \
-    MACRO_NAME(algebraic_variant_placeholder, "algebraic_variant_type")        \
-    MACRO_NAME(check_union_condition, "check_union_condition")                 \
-    MACRO_NAME(check_union_fail_return_value, "check_union_fail_return_value") \
-    MACRO_NAME(switch_union, "switch_union")                                   \
-    MACRO_NAME(address_of_placeholder, "address_of_placeholder")               \
-    MACRO_NAME(optional_of_placeholder, "optional_of_placeholder")             \
-    MACRO_NAME(decode_bytes_op, "decode_bytes_op")                             \
-    MACRO_NAME(encode_bytes_op, "encode_bytes_op")                             \
-    MACRO_NAME(decode_bytes_until_eof_op, "decode_bytes_until_eof_op")         \
-    MACRO_NAME(peek_bytes_op, "peek_bytes_op")                                 \
-    MACRO_NAME(encode_offset, "encode_offset")                                 \
-    MACRO_NAME(decode_offset, "decode_offset")                                 \
-    MACRO_NAME(encode_backward, "encode_backward")                             \
-    MACRO_NAME(decode_backward, "decode_backward")                             \
-    MACRO_NAME(is_little_endian, "is_little_endian_expr")                      \
-    MACRO_NAME(default_enum_base, "default_enum_base")                         \
-    MACRO_NAME(enum_base_separator, "enum_base_separator")                     \
-    MACRO_NAME(eval_result_text, "eval_result_text")                           \
-    MACRO_NAME(eval_result_passthrough, "eval_result_passthrough")
+#include "map_macro.hpp"
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -215,6 +152,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&print_hooks, "print-hooks", "print hooks");
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
         ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
+        ctx.VarMap<std::string, std::string_view, std::map>(&is_template_docs, "template-docs", "template docs (output format: json,markdown)", "FORMAT", std::map<std::string, std::string_view>{{"json", "json"}, {"markdown", "markdown"}, {"md", "markdown"}});
     }
 
     bool is_valid_placeholder(std::string_view placeholder) {
@@ -271,12 +209,20 @@ namespace rebgn {
         return futils::env::expand<std::string>(str, futils::env::expand_map<std::string>(map), true);
     }
 
-    void do_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
-        w.writeln("auto ", var_name, " = ", init_expr, "; //", description);
+    void may_add_doc_content(Flags& flags, auto op, std::string_view var_name, std::string_view type, std::string_view description, std::string_view init_expr) {
+        if (!flags.is_template_docs.empty()) {
+            flags.content[flags.func_name][to_string(op)].push_back(Content{std::string(var_name), std::string(type), std::string(description), std::string(init_expr)});
+        }
     }
 
-    void do_typed_variable_definition(bm2::TmpCodeWriter& w, Flags& flags,auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
+    void do_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
+        w.writeln("auto ", var_name, " = ", init_expr, "; //", description);
+        may_add_doc_content(flags, op, var_name, type, description, init_expr);
+    }
+
+    void do_typed_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
         w.writeln(type, " ", var_name, " = ", init_expr, "; //", description);
+        may_add_doc_content(flags, op, var_name, type, description, init_expr);
     }
 
     std::string code_ref(Flags& flags, std::string_view ref_name, std::string_view base = "code") {
@@ -297,7 +243,7 @@ namespace rebgn {
 
     void define_range(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description) {
         auto range_var = std::format("ctx.range({})", ref);
-        do_variable_definition(w, flags, op, var_name,range_var, "string", std::format("range of {}", description));
+        do_variable_definition(w, flags, op, var_name, range_var, "string", std::format("range of {}", description));
     }
 
     void define_uint(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description) {
@@ -308,8 +254,8 @@ namespace rebgn {
         do_variable_definition(w, flags, op, var_name, ref, "bool", description);
     }
 
-    void define_ident(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description,bool direct_ref=false) {
-        if(direct_ref) {
+    void define_ident(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
+        if (direct_ref) {
             do_variable_definition(w, flags, op, var_name, ref, "string", std::format("identifier of {}", description));
         }
         else {
@@ -320,8 +266,8 @@ namespace rebgn {
         }
     }
 
-    void define_eval(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description,bool direct_ref=false) {
-        if(direct_ref) {
+    void define_eval(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
+        if (direct_ref) {
             do_variable_definition(w, flags, op, var_name, ref, "EvalResult", description);
         }
         else {
@@ -332,8 +278,8 @@ namespace rebgn {
         }
     }
 
-    void define_type(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description,bool direct_ref=false) {
-        if(direct_ref) {
+    void define_type(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
+        if (direct_ref) {
             do_variable_definition(w, flags, op, var_name, ref, "string", description);
         }
         else {
@@ -453,7 +399,7 @@ namespace rebgn {
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, AbstractOp op, bm2::HookFileSub sub, auto sub_sub) {
         auto op_name = to_string(op);
-        auto concat = std::format("{}_{}{}_{}", to_string(hook), op_name, to_string(sub), sub_sub);
+        auto concat = std::format("{}_{}{}_{}", to_string(hook), op_name, to_string(sub), to_string(sub_sub));
         // to lower
         for (auto& c : concat) {
             c = std::tolower(c);
@@ -499,6 +445,7 @@ namespace rebgn {
     }
 
     void write_inner_function(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
+        flags.set_func_name(bm2::FuncName::inner_function);
         inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_function.indent_scope();
         auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
@@ -523,14 +470,14 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::ASSIGN) {
-            define_eval(inner_function, flags, op, "left_eval", code_ref(flags,"left_ref"), "assignment target");
-            define_eval(inner_function, flags, op, "right_eval", code_ref(flags,"right_ref"), "assignment source");
+            define_eval(inner_function, flags, op, "left_eval", code_ref(flags, "left_ref"), "assignment target");
+            define_eval(inner_function, flags, op, "right_eval", code_ref(flags, "right_ref"), "assignment source");
             func_hook([&] {
                 inner_function.writeln("w.writeln(\"\", left_eval.result, \" = \", right_eval.result, \"", flags.end_of_statement, "\");");
             });
         }
         else if (op == AbstractOp::BACKWARD_INPUT || op == AbstractOp::BACKWARD_OUTPUT) {
-            define_eval(inner_function, flags, op, "evaluated", code_ref(flags,"ref"), "backward offset to move (in byte)");
+            define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "backward offset to move (in byte)");
             func_hook([&] {
                 if (op == AbstractOp::BACKWARD_INPUT) {
                     std::map<std::string, std::string> map{
@@ -551,7 +498,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::LENGTH_CHECK) {
-            define_eval(inner_function,flags,op,"vector_eval",code_ref(flags,"left_ref"),"vector to check");
+            define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector to check");
             define_eval(inner_function, flags, op, "size_eval", code_ref(flags, "right_ref"), "size to check");
             func_hook([&] {
                 if (flags.surrounded_size_method) {
@@ -565,8 +512,8 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_VARIABLE || op == AbstractOp::DECLARE_VARIABLE) {
             if (op == AbstractOp::DECLARE_VARIABLE) {
                 define_ident(inner_function, flags, op, "ident", code_ref(flags, "ref"), "variable");
-                define_eval(inner_function, flags, op, "init", code_ref(flags, "ref",ctx_ref(flags, code_ref(flags, "ref"))), "variable initialization");
-                define_type(inner_function, flags, op, "type", code_ref(flags, "type",ctx_ref(flags, code_ref(flags, "ref"))), "variable");
+                define_eval(inner_function, flags, op, "init", code_ref(flags, "ref", ctx_ref(flags, code_ref(flags, "ref"))), "variable initialization");
+                define_type(inner_function, flags, op, "type", code_ref(flags, "type", ctx_ref(flags, code_ref(flags, "ref"))), "variable");
             }
             else {
                 define_ident(inner_function, flags, op, "ident", code_ref(flags, "ident"), "variable");
@@ -618,8 +565,8 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::EXPLICIT_ERROR) {
-            do_variable_definition(inner_function, flags, op, "param", code_ref(flags, "param"),"Param", "error message parameters");
-            define_eval(inner_function, flags, op, "evaluated", "param.refs[0]", "error message",true);
+            do_variable_definition(inner_function, flags, op, "param", code_ref(flags, "param"), "Param", "error message parameters");
+            define_eval(inner_function, flags, op, "evaluated", "param.refs[0]", "error message", true);
             func_hook([&] {
                 inner_function.writeln("w.writeln(\"throw std::runtime_error(\", evaluated.result, \")", flags.end_of_statement, "\");");
             });
@@ -747,10 +694,10 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::RET) {
-            define_ref(inner_function, flags, op, "ref", code_ref(flags,"ref"), "return value");
+            define_ref(inner_function, flags, op, "ref", code_ref(flags, "ref"), "return value");
             inner_function.writeln("if(ref.value() != 0) {");
             auto scope = inner_function.indent_scope();
-            define_eval(inner_function, flags, op, "evaluated", "ref", "return value",true);
+            define_eval(inner_function, flags, op, "evaluated", "ref", "return value", true);
             func_hook([&] {
                 inner_function.writeln("w.writeln(\"return \", evaluated.result, \"", flags.end_of_statement, "\");");
             },
@@ -787,9 +734,9 @@ namespace rebgn {
             define_ref(inner_function, flags, op, "union_ref", "ctx.ref(union_member_ref).belong().value()", "union");
             define_ref(inner_function, flags, op, "union_field_ref", "ctx.ref(union_ref).belong().value()", "union field");
             define_uint(inner_function, flags, op, "union_member_index", "ctx.ref(union_member_ref).int_value()->value()", "current union member index");
-            define_ident(inner_function, flags, op, "union_member_ident", "union_member_ref", "union member",true);
-            define_ident(inner_function, flags, op, "union_ident", "union_ref", "union",true);
-            define_ident(inner_function, flags, op, "union_field_ident", "union_field_ref", "union field",true);
+            define_ident(inner_function, flags, op, "union_member_ident", "union_member_ref", "union member", true);
+            define_ident(inner_function, flags, op, "union_ident", "union_ref", "union", true);
+            define_ident(inner_function, flags, op, "union_field_ident", "union_field_ref", "union field", true);
             if (op == AbstractOp::CHECK_UNION) {
                 do_variable_definition(inner_function, flags, op, "check_type", "code.check_at().value()", "rebgn::UnionCheckAt", "union check location");
             }
@@ -833,11 +780,11 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::CALL_ENCODE || op == AbstractOp::CALL_DECODE) {
-            define_ref(inner_function, flags, op, "func_ref", code_ref(flags,"left_ref"), "function");
+            define_ref(inner_function, flags, op, "func_ref", code_ref(flags, "left_ref"), "function");
             define_ref(inner_function, flags, op, "func_belong", "func_belong", "function belong");
-            do_variable_definition(inner_function,flags,op,"func_belong_name","type_accessor(ctx.ref(func_belong), ctx)","string","function belong name");
-            define_ident(inner_function, flags, op, "func_name", "func_ref", "function",true);
-            define_eval(inner_function, flags, op, "obj_eval",code_ref(flags,"right_ref"), "`this` object");
+            do_variable_definition(inner_function, flags, op, "func_belong_name", "type_accessor(ctx.ref(func_belong), ctx)", "string", "function belong name");
+            define_ident(inner_function, flags, op, "func_name", "func_ref", "function", true);
+            define_eval(inner_function, flags, op, "obj_eval", code_ref(flags, "right_ref"), "`this` object");
             define_range(inner_function, flags, op, "inner_range", "func_ref", "function call range");
             func_hook([&] {
                 inner_function.writeln("w.write(obj_eval.result, \".\", func_name, \"(\");");
@@ -849,7 +796,7 @@ namespace rebgn {
                  op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
                  op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
                  op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF || op == AbstractOp::PEEK_INT_VECTOR) {
-            define_ref(inner_function, flags, op, "fallback_ident",code_ref(flags,"fallback"), "fallback operation");
+            define_ref(inner_function, flags, op, "fallback_ident", code_ref(flags, "fallback"), "fallback operation");
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
                 auto indent = inner_function.indent_scope();
@@ -969,6 +916,7 @@ namespace rebgn {
         };
 
         auto add_start = [&](auto&& inner) {
+            flags.set_func_name(bm2::FuncName::field_accessor);
             field_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = field_accessor.indent_scope();
             field_accessor_hook([&] {}, bm2::HookFileSub::before);
@@ -988,6 +936,7 @@ namespace rebgn {
             }
         };
         auto add_type_start = [&](auto&& inner) {
+            flags.set_func_name(bm2::FuncName::type_accessor);
             type_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = field_accessor.indent_scope();
             type_accessor_hook([&] {}, bm2::HookFileSub::before);
@@ -1004,8 +953,8 @@ namespace rebgn {
                 });
             });
             add_type_start([&] {
-                std::string desc=to_string(op);
-                desc.erase(0,7); // remove "DEFINE_"
+                std::string desc = to_string(op);
+                desc.erase(0, 7);  // remove "DEFINE_"
                 define_ident(type_accessor, flags, op, "ident", code_ref(flags, "ident"), desc);
                 type_accessor_hook([&] {
                     type_accessor.writeln("result = ident;");
@@ -1015,13 +964,13 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_UNION || op == AbstractOp::DEFINE_UNION_MEMBER ||
                  op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_BIT_FIELD ||
                  op == AbstractOp::DEFINE_PROPERTY) {
-            std::string desc=to_string(op);
-            desc.erase(0,7); // remove "DEFINE_"
-            add_start([&] {       
+            std::string desc = to_string(op);
+            desc.erase(0, 7);  // remove "DEFINE_"
+            add_start([&] {
                 define_ident(field_accessor, flags, op, "ident", code_ref(flags, "ident"), desc);
                 define_ref(field_accessor, flags, op, "belong", code_ref(flags, "belong"), "belong");
                 define_bool(field_accessor, flags, op, "is_member", "belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM", "is member of a struct");
-                  if (op == AbstractOp::DEFINE_UNION_MEMBER) {
+                if (op == AbstractOp::DEFINE_UNION_MEMBER) {
                     define_ref(field_accessor, flags, op, "union_member_ref", "code.ident().value()", "union member");
                     define_ref(field_accessor, flags, op, "union_ref", "belong", "union");
                     define_ref(field_accessor, flags, op, "union_field_ref", "ctx.ref(union_ref).belong().value()", "union field");
@@ -1037,7 +986,7 @@ namespace rebgn {
                     else {
                         field_accessor.writeln("if(is_member) {");
                         auto scope = field_accessor.indent_scope();
-                        do_variable_definition(field_accessor,flags,op,"belong_eval","field_accessor(ctx.ref(belong), ctx)","string","belong eval");
+                        do_variable_definition(field_accessor, flags, op, "belong_eval", "field_accessor(ctx.ref(belong), ctx)", "string", "belong eval");
                         field_accessor_hook([&] {
                             do_make_eval_result(field_accessor, op, flags, "std::format(\"{}.{}\", belong_eval.result, ident)", EvalResultMode::TEXT);
                         },
@@ -1068,7 +1017,7 @@ namespace rebgn {
                 type_accessor_hook([&] {
                     type_accessor.writeln("if(is_member) {");
                     auto scope = type_accessor.indent_scope();
-                    do_variable_definition(type_accessor,flags,op,"belong_eval","type_accessor(ctx.ref(union_field_ref),ctx)","string","field accessor");
+                    do_variable_definition(type_accessor, flags, op, "belong_eval", "type_accessor(ctx.ref(union_field_ref),ctx)", "string", "field accessor");
                     type_accessor_hook([&] {
                         type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ident);");
                     },
@@ -1090,6 +1039,7 @@ namespace rebgn {
 
     void write_inner_block(bm2::TmpCodeWriter& inner_block,
                            AbstractOp op, Flags& flags) {
+        flags.set_func_name(bm2::FuncName::inner_block);
         inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_block.indent_scope();
         auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
@@ -1101,18 +1051,18 @@ namespace rebgn {
             }
         };
         block_hook([&] {}, bm2::HookFileSub::before);
-        std::string desc=to_string(op);
-        if(desc.starts_with("DECLARE_")) {
-            desc.erase(0,8); // remove "DECLARE_"
+        std::string desc = to_string(op);
+        if (desc.starts_with("DECLARE_")) {
+            desc.erase(0, 8);  // remove "DECLARE_"
         }
-        if(desc.starts_with("DEFINE_")) {
-            desc.erase(0,7); // remove "DEFINE_"
+        if (desc.starts_with("DEFINE_")) {
+            desc.erase(0, 7);  // remove "DEFINE_"
         }
         if (op == AbstractOp::DECLARE_FORMAT || op == AbstractOp::DECLARE_ENUM ||
             op == AbstractOp::DECLARE_STATE || op == AbstractOp::DECLARE_PROPERTY ||
             op == AbstractOp::DECLARE_FUNCTION) {
-            define_ref(inner_block, flags, op, "ref", code_ref(flags,"ref"), desc);
-            define_range(inner_block, flags, op, "inner_range", code_ref(flags,"ref"), desc);
+            define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), desc);
+            define_range(inner_block, flags, op, "inner_range", code_ref(flags, "ref"), desc);
             if (op == AbstractOp::DECLARE_FUNCTION) {
                 block_hook([&] {});  // do nothing
             }
@@ -1127,17 +1077,17 @@ namespace rebgn {
             block_hook([&] {});  // do nothing
         }
         else if (op == AbstractOp::DECLARE_BIT_FIELD) {
-            define_ref(inner_block, flags, op, "ref", code_ref(flags,"ref"), "bit field");
-            define_ident(inner_block, flags, op, "ident", "ref", "bit field",true);
+            define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), "bit field");
+            define_ident(inner_block, flags, op, "ident", "ref", "bit field", true);
             define_range(inner_block, flags, op, "inner_range", "ref", "bit field");
             define_ref(inner_block, flags, op, "type_ref", "ctx.ref(ref).type().value()", "bit field type");
-            define_type(inner_block, flags, op, "type", "type_ref", "bit field type",true);
+            define_type(inner_block, flags, op, "type", "type_ref", "bit field type", true);
             block_hook([&] {
                 inner_block.writeln("inner_block(ctx,w,inner_range);");
             });
         }
         else if (op == AbstractOp::DECLARE_UNION || op == AbstractOp::DECLARE_UNION_MEMBER) {
-            define_ref(inner_block, flags, op, "ref", code_ref(flags,"ref"), desc);          
+            define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), desc);
             define_range(inner_block, flags, op, "inner_range", "ref", desc);
             block_hook([&] {
                 inner_block.writeln("TmpCodeWriter inner_w;");
@@ -1171,7 +1121,7 @@ namespace rebgn {
         }
         else if (op == AbstractOp::DEFINE_ENUM) {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "enum");
-            define_type_ref(inner_block, flags, op, "base_type_ref", code_ref(flags,"type"), "enum base type");
+            define_type_ref(inner_block, flags, op, "base_type_ref", code_ref(flags, "type"), "enum base type");
             do_typed_variable_definition(inner_block, flags, op, "base_type", "std::nullopt", "std::optional<std::string>", "enum base type");
             inner_block.writeln("if(base_type_ref.ref.value() != 0) {");
             auto scope = inner_block.indent_scope();
@@ -1192,10 +1142,10 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
-            define_ident(inner_block,flags,op,"ident",code_ref(flags,"ident"),"enum member");
-            define_eval(inner_block,flags,op,"evaluated",code_ref(flags,"left_ref"),"enum member value");
-            define_ref(inner_block, flags, op, "belong_ref", code_ref(flags,"belong"), "enum");
-            define_ident(inner_block, flags, op, "enum_ident", "belong", "enum",true);
+            define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "enum member");
+            define_eval(inner_block, flags, op, "evaluated", code_ref(flags, "left_ref"), "enum member value");
+            define_ref(inner_block, flags, op, "belong_ref", code_ref(flags, "belong"), "enum");
+            define_ident(inner_block, flags, op, "enum_ident", "belong", "enum", true);
             block_hook([&] {
                 inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
             });
@@ -1206,7 +1156,7 @@ namespace rebgn {
             inner_block.writeln("break;");
             scope.execute();
             inner_block.writeln("}");
-            define_type(inner_block, flags, op, "type", code_ref(flags, "type"), "field type",true);
+            define_type(inner_block, flags, op, "type", code_ref(flags, "type"), "field type", true);
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "field");
             block_hook([&] {
                 if (flags.prior_ident) {
@@ -1225,7 +1175,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
-            define_ref(inner_block,flags,op,"func",code_ref(flags,"right_ref"),"function");
+            define_ref(inner_block, flags, op, "func", code_ref(flags, "right_ref"), "function");
             define_range(inner_block, flags, op, "inner_range", "func", "function");
             block_hook([&] {});
         }
@@ -1241,6 +1191,7 @@ namespace rebgn {
     }
 
     void write_eval(bm2::TmpCodeWriter& eval, AbstractOp op, Flags& flags) {
+        flags.set_func_name(bm2::FuncName::eval);
         eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = eval.indent_scope();
         auto eval_hook = [&](auto&& default_action, bm2::HookFileSub stage = bm2::HookFileSub::main) {
@@ -1253,10 +1204,10 @@ namespace rebgn {
         };
         eval_hook([&] {}, bm2::HookFileSub::before);
         if (op == AbstractOp::BINARY) {
-            do_variable_definition(eval,flags,op,"op",code_ref(flags,"bop"),"rebgn::BinaryOp","binary operator");
-            define_eval(eval, flags, op, "left_eval", code_ref(flags,"left_ref"), "left operand");
-            define_eval(eval, flags, op, "right_eval", code_ref(flags,"right_ref"), "right operand");
-            do_variable_definition(eval,flags,op,"opstr","to_string(op)","string","binary operator string");
+            do_variable_definition(eval, flags, op, "op", code_ref(flags, "bop"), "rebgn::BinaryOp", "binary operator");
+            define_eval(eval, flags, op, "left_eval", code_ref(flags, "left_ref"), "left operand");
+            define_eval(eval, flags, op, "right_eval", code_ref(flags, "right_ref"), "right operand");
+            do_variable_definition(eval, flags, op, "opstr", "to_string(op)", "string", "binary operator string");
             eval_hook([&] {
                 eval_hook([&] {}, bm2::HookFileSub::op);
                 for (size_t b = 0; to_string(BinaryOp(b))[0] != '\0'; b++) {
@@ -1273,9 +1224,9 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::UNARY) {
-            do_variable_definition(eval,flags,op,"op",code_ref(flags,"uop"),"rebgn::UnaryOp","unary operator");
-            define_eval(eval, flags, op, "target", code_ref(flags,"ref"), "target");
-            do_variable_definition(eval,flags,op,"opstr","to_string(op)","string","unary operator string");
+            do_variable_definition(eval, flags, op, "op", code_ref(flags, "uop"), "rebgn::UnaryOp", "unary operator");
+            define_eval(eval, flags, op, "target", code_ref(flags, "ref"), "target");
+            do_variable_definition(eval, flags, op, "opstr", "to_string(op)", "string", "unary operator string");
             eval_hook([&] {
                 eval_hook([&] {}, bm2::HookFileSub::op);
                 for (size_t b = 0; to_string(UnaryOp(b))[0] != '\0'; b++) {
@@ -1292,7 +1243,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::IS_LITTLE_ENDIAN) {
-            define_ref(eval, flags, op, "fallback",code_ref(flags,"fallback"),"fallback expression");
+            define_ref(eval, flags, op, "fallback", code_ref(flags, "fallback"), "fallback expression");
             eval_hook([&] {
                 eval.writeln("if(fallback.value() != 0) {");
                 auto scope = eval.indent_scope();
@@ -1313,14 +1264,14 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::ADDRESS_OF) {
-            define_eval(eval, flags, op, "target", code_ref(flags,"ref"), "target object");
+            define_eval(eval, flags, op, "target", code_ref(flags, "ref"), "target object");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"" + flags.address_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::OPTIONAL_OF) {
             define_eval(eval, flags, op, "target", "target", "target object");
-            define_type(eval, flags, op, "type", code_ref(flags,"type"), "type of optional (not include optional)");
+            define_type(eval, flags, op, "type", code_ref(flags, "type"), "type of optional (not include optional)");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"" + flags.optional_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
             });
@@ -1350,7 +1301,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::IMMEDIATE_STRING) {
-            do_variable_definition(eval,flags,op,"str","ctx.string_table[code.ident().value().value()]","string","immediate string");
+            do_variable_definition(eval, flags, op, "str", "ctx.string_table[code.ident().value().value()]", "string", "immediate string");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all()))", EvalResultMode::TEXT);
             });
@@ -1372,7 +1323,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::IMMEDIATE_TYPE) {
-            define_type(eval, flags, op, "type", code_ref(flags,"type"), "immediate type");
+            define_type(eval, flags, op, "type", code_ref(flags, "type"), "immediate type");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "type_to_string(ctx, type)", EvalResultMode::TEXT);
             });
@@ -1419,21 +1370,21 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::ACCESS) {
-            define_eval(eval, flags, op, "left_eval",code_ref(flags,"left_ref"),"left operand");
-            define_ident(eval, flags, op, "right_ident", code_ref(flags,"right_ref"), "right operand");
+            define_eval(eval, flags, op, "left_eval", code_ref(flags, "left_ref"), "left operand");
+            define_ident(eval, flags, op, "right_ident", code_ref(flags, "right_ref"), "right operand");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"{}.{}\", left_eval.result, right_ident)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::INDEX) {
-            define_eval(eval, flags, op, "left_eval", code_ref(flags,"left_ref"), "indexed object");
-            define_eval(eval, flags, op, "right_eval", code_ref(flags,"right_ref"), "index");
+            define_eval(eval, flags, op, "left_eval", code_ref(flags, "left_ref"), "indexed object");
+            define_eval(eval, flags, op, "right_eval", code_ref(flags, "right_ref"), "index");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"{}[{}]\", left_eval.result, right_eval.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::ARRAY_SIZE) {
-            define_eval(eval,flags,op,"vector_eval",code_ref(flags,"ref"),"array");
+            define_eval(eval, flags, op, "vector_eval", code_ref(flags, "ref"), "array");
             eval_hook([&] {
                 if (flags.surrounded_size_method) {
                     do_make_eval_result(eval, op, flags, "std::format(\"" + flags.size_method + "({})\", vector_eval.result)", EvalResultMode::TEXT);
@@ -1449,7 +1400,7 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_VARIABLE ||
                  op == AbstractOp::DEFINE_PARAMETER ||
                  op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
-            define_ident(eval, flags, op, "ident", code_ref(flags,"ident"), "variable value");
+            define_ident(eval, flags, op, "ident", code_ref(flags, "ident"), "variable value");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "ident", EvalResultMode::TEXT);
             });
@@ -1461,9 +1412,9 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::CAST) {
-            define_type(eval,flags,op,"type",code_ref(flags,"type"),"cast target type");
-            define_ref(eval,flags,op,"from_type_ref",code_ref(flags,"from_type"),"cast source type");
-            define_eval(eval,flags,op,"evaluated",code_ref(flags,"ref"),"cast source value");
+            define_type(eval, flags, op, "type", code_ref(flags, "type"), "cast target type");
+            define_ref(eval, flags, op, "from_type_ref", code_ref(flags, "from_type"), "cast source type");
+            define_eval(eval, flags, op, "evaluated", code_ref(flags, "ref"), "cast source value");
             // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
             eval_hook([&] {
                 if (flags.func_style_cast) {
@@ -1475,10 +1426,10 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::FIELD_AVAILABLE) {
-            define_ref(eval, flags, op, "left_ref",code_ref(flags,"left_ref"),"field (maybe null)");
+            define_ref(eval, flags, op, "left_ref", code_ref(flags, "left_ref"), "field (maybe null)");
             eval.writeln("if(left_ref.value() == 0) {");
             auto scope_1 = eval.indent_scope();
-            define_ref(eval,flags,op,"right_ref",code_ref(flags,"right_ref"),"condition");
+            define_ref(eval, flags, op, "right_ref", code_ref(flags, "right_ref"), "condition");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "eval(ctx.ref(right_ref), ctx)", EvalResultMode::PASSTHROUGH);
             },
@@ -1488,10 +1439,10 @@ namespace rebgn {
             eval.writeln("}");
             eval.writeln("else {");
             auto scope_2 = eval.indent_scope();
-            define_eval(eval, flags, op, "left_eval", "eval(ctx.ref(left_ref), ctx)", "field",true);
+            define_eval(eval, flags, op, "left_eval", "eval(ctx.ref(left_ref), ctx)", "field", true);
             // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
             eval.writeln("ctx.this_as.push_back(left_eval.result);");
-            define_ref(eval,flags,op,"right_ref",code_ref(flags,"right_ref"),"condition");
+            define_ref(eval, flags, op, "right_ref", code_ref(flags, "right_ref"), "condition");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "eval(ctx.ref(right_ref), ctx)", EvalResultMode::PASSTHROUGH);
             },
@@ -1515,6 +1466,7 @@ namespace rebgn {
     void write_add_parameter(bm2::TmpCodeWriter& add_parameter,
                              bm2::TmpCodeWriter& add_call_parameter,
                              AbstractOp op, Flags& flags) {
+        flags.set_func_name(bm2::FuncName::add_parameter);
         if (op != AbstractOp::RETURN_TYPE) {
             add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = add_parameter.indent_scope();
@@ -1536,12 +1488,12 @@ namespace rebgn {
                 op == AbstractOp::DEFINE_PARAMETER ||
                 op == AbstractOp::STATE_VARIABLE_PARAMETER) {
                 if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
-                    define_ident(add_parameter,flags,op,"ident",code_ref(flags,"ref"),"state variable");
+                    define_ident(add_parameter, flags, op, "ident", code_ref(flags, "ref"), "state variable");
                     define_type(add_parameter, flags, op, "type", "ctx.ref(ref).type().value()", "state variable type");
                 }
                 else {
-                    define_ident(add_parameter,flags,op,"ident",code_ref(flags,"ident"),"parameter");
-                    define_type(add_parameter, flags, op, "type", code_ref(flags,"type"), "parameter type");
+                    define_ident(add_parameter, flags, op, "ident", code_ref(flags, "ident"), "parameter");
+                    define_type(add_parameter, flags, op, "type", code_ref(flags, "type"), "parameter type");
                 }
                 add_parameter.writeln("auto ident = ctx.ident(ref);");
                 param_hook([&] {
@@ -1577,6 +1529,7 @@ namespace rebgn {
             scope.execute();
             add_parameter.writeln("}");
 
+            flags.set_func_name(bm2::FuncName::add_call_parameter);
             add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope_call = add_call_parameter.indent_scope();
             auto call_param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
@@ -1594,14 +1547,14 @@ namespace rebgn {
                 add_call_parameter.writeln("}");
             }
             if (op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
-                define_ident(add_call_parameter,flags,op,"ident",code_ref(flags,"ident"),"parameter");
+                define_ident(add_call_parameter, flags, op, "ident", code_ref(flags, "ident"), "parameter");
                 call_param_hook([&] {
                     add_call_parameter.writeln("w.write(ident);");
                     add_call_parameter.writeln("params++;");
                 });
             }
             else if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
-                define_ident(add_call_parameter,flags,op,"ident",code_ref(flags,"ref"),"state variable");
+                define_ident(add_call_parameter, flags, op, "ident", code_ref(flags, "ref"), "state variable");
                 call_param_hook([&] {
                     add_call_parameter.writeln("w.write(ident);");
                     add_call_parameter.writeln("params++;");
@@ -1634,6 +1587,7 @@ namespace rebgn {
     }
 
     void write_type_to_string(bm2::TmpCodeWriter& type_to_string, StorageType type, Flags& flags) {
+        flags.set_func_name(bm2::FuncName::type_to_string);
         auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
             if (sub == bm2::HookFileSub::main) {
                 may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, bm2::HookFileSub::pre_main);
@@ -1647,7 +1601,7 @@ namespace rebgn {
         auto scope_type = type_to_string.indent_scope();
         type_hook([&] {}, bm2::HookFileSub::before);
         if (type == StorageType::ARRAY || type == StorageType::VECTOR || type == StorageType::OPTIONAL || type == StorageType::PTR) {
-            do_variable_definition(type_to_string,flags,type,"base_type","type_to_string_impl(ctx, s, bit_size, index + 1)","string","base type");
+            do_variable_definition(type_to_string, flags, type, "base_type", "type_to_string_impl(ctx, s, bit_size, index + 1)", "string", "base type");
         }
         if (type == StorageType::UINT || type == StorageType::INT || type == StorageType::FLOAT) {
             define_uint(type_to_string, flags, type, "bit_size", "storage.size()->value()", "bit size");
@@ -1716,13 +1670,13 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::STRUCT_REF) {
-            define_ident(type_to_string,flags,type,"ident","storage.ref().value().value()","struct");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "struct");
             type_hook([&] {
                 type_to_string.writeln("return ident;");
             });
         }
         else if (type == StorageType::RECURSIVE_STRUCT_REF) {
-            define_ident(type_to_string,flags,type,"ident","storage.ref().value().value()","recursive struct");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "recursive struct");
             type_hook([&] {
                 type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
             });
@@ -1733,14 +1687,14 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::ENUM) {
-            define_ident(type_to_string,flags,type,"ident","storage.ref().value().value()","enum");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "enum");
             type_hook([&] {
                 type_to_string.writeln("return ident;");
             });
         }
         else if (type == StorageType::VARIANT) {
-            define_ident(type_to_string,flags,type,"ident","storage.ref().value()","variant");
-            do_typed_variable_definition(type_to_string,flags,type,"types","{}","std::vector<std::string>","variant types");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "variant");
+            do_typed_variable_definition(type_to_string, flags, type, "types", "{}", "std::vector<std::string>", "variant types");
             type_to_string.writeln("for (size_t i = index + 1; i < s.storages.size(); i++) {");
             auto scope_variant = type_to_string.indent_scope();
             type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
@@ -1782,8 +1736,8 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::ARRAY) {
-            define_bool(type_to_string,flags,type,"is_byte_vector","index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8","is byte vector");
-            define_uint(type_to_string,flags,type,"length","storage.size()->value()","array length");
+            define_bool(type_to_string, flags, type, "is_byte_vector", "index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8", "is byte vector");
+            define_uint(type_to_string, flags, type, "length", "storage.size()->value()", "array length");
             type_hook([&] {
                 std::map<std::string, std::string> map{
                     {"TYPE", "\",base_type,\""},
@@ -1802,7 +1756,7 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::VECTOR) {
-            define_bool(type_to_string,flags,type,"is_byte_vector","index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8","is byte vector");
+            define_bool(type_to_string, flags, type, "is_byte_vector", "index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8", "is byte vector");
             type_hook([&] {
                 if (flags.byte_vector_type.size()) {
                     type_to_string.writeln("if (is_byte_vector) {");
@@ -2151,7 +2105,7 @@ namespace rebgn {
         w.writeln("}");
     }
 
-    void code_header(bm2::TmpCodeWriter& w, Flags& flags) {
+    void write_code_header(bm2::TmpCodeWriter& w, Flags& flags) {
         w.writeln("/*license*/");
         w.writeln("#pragma once");
         w.writeln("#include <binary/writer.h>");
@@ -2175,7 +2129,7 @@ namespace rebgn {
         w.writeln("}  // namespace bm2", flags.lang_name);
     }
 
-    void code_cmake(bm2::TmpCodeWriter& w, Flags& flags) {
+    void write_code_cmake(bm2::TmpCodeWriter& w, Flags& flags) {
         w.writeln("#license");
         w.writeln("cmake_minimum_required(VERSION 3.25)");
         w.writeln("project(bm2", flags.lang_name, ")");
@@ -2188,7 +2142,7 @@ namespace rebgn {
         w.writeln("endif()");
     }
 
-    void code_config(bm2::TmpCodeWriter& w, Flags& flags) {
+    void write_code_config(bm2::TmpCodeWriter& w, Flags& flags) {
         auto js = futils::json::convert_to_json<futils::json::OrderedJSON>(flags);
         auto out = futils::json::to_string<std::string>(js);
         w.writeln(out);
@@ -2212,22 +2166,68 @@ namespace rebgn {
         return true;
     }
 
-    void code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+    void write_template_document(Flags& flags, bm2::TmpCodeWriter& w) {
+        if (flags.is_template_docs == "json") {
+            futils::json::Stringer s;
+            auto root = s.object();
+            for (auto& c : flags.content) {
+                root(to_string(c.first), [&](auto& s) {
+                    auto obj = s.object();
+                    for (auto& c2 : c.second) {
+                        obj(c2.first, [&](auto& s) {
+                            auto element = s.array();
+                            for (auto& c3 : c2.second) {
+                                element([&](auto& s) {
+                                    auto field = s.object();
+                                    field("var_name", c3.var_name);
+                                    field("type", c3.type);
+                                    field("initial_value", c3.initial_value);
+                                    field("description", c3.description);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            root.close();
+            w.write(s.out());
+        }
+        else if (flags.is_template_docs == "markdown") {
+            w.writeln("# Template Document");
+            for (auto& c : flags.content) {
+                w.writeln("## ", to_string(c.first));
+                for (auto& c2 : c.second) {
+                    w.writeln("### ", c2.first);
+                    for (auto& c3 : c2.second) {
+                        w.writeln("#### ", c3.var_name);
+                        w.writeln("Type: ", c3.type);
+                        w.writeln("Initial Value: ", c3.initial_value);
+                        w.writeln("Description: ", c3.description);
+                    }
+                }
+            }
+        }
+        else {
+            futils::wrap::cerr_wrap() << "invalid template docs format\n";
+        }
+    }
+
+    void write_code_template(bm2::TmpCodeWriter& w, Flags& flags) {
         if (!may_load_config(flags)) {
             return;
         }
         if (flags.is_config) {
-            code_config(w, flags);
+            write_code_config(w, flags);
             return;
         }
-        if (!flags.print_hooks) {
+        if (flags.requires_lang_option()) {
             if (flags.lang_name.empty()) {
                 futils::wrap::cerr_wrap() << "--lang option is required\n";
                 return;
             }
         }
         if (flags.is_header) {
-            code_header(w, flags);
+            write_code_header(w, flags);
             return;
         }
         if (flags.is_main) {
@@ -2235,7 +2235,7 @@ namespace rebgn {
             return;
         }
         if (flags.is_cmake) {
-            code_cmake(w, flags);
+            write_code_cmake(w, flags);
             return;
         }
 
@@ -2433,7 +2433,13 @@ auto& cout = futils::wrap::cout_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     bm2::TmpCodeWriter w;
-    rebgn::code_template(w, flags);
+    rebgn::write_code_template(w, flags);
+    if (flags.is_template_docs.size()) {
+        w.out().clear();
+        rebgn::write_template_document(flags, w);
+        cout << w.out();
+        return 0;
+    }
     if (!flags.print_hooks) {
         cout << w.out();
     }

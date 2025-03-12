@@ -10,7 +10,7 @@ $EMSDK_PATH = "C:\\workspace\\emsdk\\emsdk_env.ps1"
 cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -D CMAKE_BUILD_TYPE="$BUILD_TYPE" -S . -B "./built/$BUILD_MODE/$BUILD_TYPE"
 cmake --build "./built/$BUILD_MODE/$BUILD_TYPE"
 cmake --install "./built/$BUILD_MODE/$BUILD_TYPE" --component Unspecified
-
+cmake --install ./built/native/Debug --component gen_template
 return
 
 # Configure and build for web (using emsdk)

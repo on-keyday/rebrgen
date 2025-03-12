@@ -48,3 +48,13 @@ enum HookFileSub:
     no_fallback = "_no_fallback" # no fallback case (e.g. no fallback condition)
     before = "_before" # before case (e.g. before AbstractOp)
     after = "_after" # after case (e.g. after AbstractOp)
+
+enum FuncName:
+    eval
+    inner_function 
+    inner_block
+    add_parameter
+    add_call_parameter
+    type_to_string
+    field_accessor
+    type_accessor

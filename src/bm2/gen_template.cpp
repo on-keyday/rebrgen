@@ -105,6 +105,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string default_enum_base = "";  // if empty, omit the base type
     std::string enum_base_separator = " : ";
 
+    std::string eval_result_text = "$RESULT = make_eval_result($TEXT);";
+    std::string eval_result_passthrough = "$RESULT = $TEXT;";
+
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
     MACRO_NAME(file_suffix, "suffix")                                          \
@@ -185,7 +188,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(decode_backward, "decode_backward")                             \
     MACRO_NAME(is_little_endian, "is_little_endian_expr")                      \
     MACRO_NAME(default_enum_base, "default_enum_base")                         \
-    MACRO_NAME(enum_base_separator, "enum_base_separator")
+    MACRO_NAME(enum_base_separator, "enum_base_separator")                     \
+    MACRO_NAME(eval_result_text, "eval_result_text")                           \
+    MACRO_NAME(eval_result_passthrough, "eval_result_passthrough")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -403,6 +408,18 @@ namespace rebgn {
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, AbstractOp op, bm2::HookFileSub sub = bm2::HookFileSub::main) {
         auto op_name = to_string(op);
         auto concat = std::format("{}_{}{}", to_string(hook), op_name, to_string(sub));
+        // to lower
+        for (auto& c : concat) {
+            c = std::tolower(c);
+        }
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
+            w.writeln(line);
+        });
+    }
+
+    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, AbstractOp op, bm2::HookFileSub sub, auto sub_sub) {
+        auto op_name = to_string(op);
+        auto concat = std::format("{}_{}{}_{}", to_string(hook), op_name, to_string(sub), sub_sub);
         // to lower
         for (auto& c : concat) {
             c = std::tolower(c);
@@ -900,6 +917,18 @@ namespace rebgn {
         inner_function.writeln("}");
     }
 
+    enum class EvalResultMode {
+        TEXT,
+        PASSTHROUGH,
+    };
+
+    void do_make_eval_result(bm2::TmpCodeWriter& w, AbstractOp op, Flags& flags, const std::string& text, EvalResultMode mode) {
+        std::map<std::string, std::string> map{
+            {"RESULT", "result"},
+            {"TEXT", text},
+        };
+    }
+
     void write_field_accessor(bm2::TmpCodeWriter& field_accessor, bm2::TmpCodeWriter& type_accessor, AbstractOp op, Flags& flags) {
         auto field_accessor_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
             if (stage == bm2::HookFileSub::main) {
@@ -942,7 +971,7 @@ namespace rebgn {
         if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE) {
             add_start([&] {
                 field_accessor_hook([&] {
-                    field_accessor.writeln("result = make_eval_result(ctx.this_());");
+                    do_make_eval_result(field_accessor, op, flags, "ctx.this_()", EvalResultMode::TEXT);
                 });
             });
             add_type_start([&] {
@@ -967,17 +996,17 @@ namespace rebgn {
                 }
                 field_accessor_hook([&] {
                     if (op == AbstractOp::DEFINE_UNION_MEMBER) {
-                        field_accessor.writeln("result = field_accessor(ctx.ref(union_field_ref),ctx);");
+                        do_make_eval_result(field_accessor, op, flags, "field_accessor(ctx.ref(union_field_ref),ctx)", EvalResultMode::PASSTHROUGH);
                     }
                     else if (op == AbstractOp::DEFINE_BIT_FIELD) {
-                        field_accessor.writeln("result = field_accessor(ctx.ref(belong),ctx);");
+                        do_make_eval_result(field_accessor, op, flags, "field_accessor(ctx.ref(belong),ctx)", EvalResultMode::PASSTHROUGH);
                     }
                     else {
                         field_accessor.writeln("if(is_member) {");
                         auto scope = field_accessor.indent_scope();
                         field_accessor.writeln("auto belong_eval = field_accessor(ctx.ref(belong), ctx);");
                         field_accessor_hook([&] {
-                            field_accessor.writeln("result = make_eval_result(std::format(\"{}.{}\", belong_eval.result, ident));");
+                            do_make_eval_result(field_accessor, op, flags, "std::format(\"{}.{}\", belong_eval.result, ident)", EvalResultMode::TEXT);
                         },
                                             bm2::HookFileSub::field);
                         scope.execute();
@@ -985,7 +1014,7 @@ namespace rebgn {
                         field_accessor.writeln("else {");
                         auto scope2 = field_accessor.indent_scope();
                         field_accessor_hook([&] {
-                            field_accessor.writeln("result = make_eval_result(ident);");
+                            do_make_eval_result(field_accessor, op, flags, "ident", EvalResultMode::TEXT);
                         },
                                             bm2::HookFileSub::self);
                         scope2.execute();
@@ -1194,7 +1223,17 @@ namespace rebgn {
             eval.writeln("auto opstr = to_string(op);");
             eval_hook([&] {
                 eval_hook([&] {}, bm2::HookFileSub::op);
-                eval.writeln("result = make_eval_result(std::format(\"({} {} {})\", left_eval.result, opstr, right_eval.result));");
+                for (size_t b = 0; to_string(BinaryOp(b))[0] != '\0'; b++) {
+                    bm2::TmpCodeWriter inner_eval;
+                    if (may_write_from_hook(inner_eval, flags, bm2::HookFile::eval_op, op, bm2::HookFileSub::op, BinaryOp(b))) {
+                        eval.writeln("if(op == rebgn::BinaryOp::" + std::string(to_string(BinaryOp(b))) + ") {");
+                        auto scope = eval.indent_scope();
+                        eval.writeln(inner_eval.out());
+                        scope.execute();
+                        eval.writeln("}");
+                    }
+                }
+                do_make_eval_result(eval, op, flags, "std::format(\"({} {} {})\", left_eval.result, opstr, right_eval.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::UNARY) {
@@ -1204,7 +1243,17 @@ namespace rebgn {
             eval.writeln("auto opstr = to_string(op);");
             eval_hook([&] {
                 eval_hook([&] {}, bm2::HookFileSub::op);
-                eval.writeln("result = make_eval_result(std::format(\"({}{})\", opstr, target.result));");
+                for (size_t b = 0; to_string(UnaryOp(b))[0] != '\0'; b++) {
+                    bm2::TmpCodeWriter inner_eval;
+                    if (may_write_from_hook(inner_eval, flags, bm2::HookFile::eval_op, op, bm2::HookFileSub::op, UnaryOp(b))) {
+                        eval.writeln("if(op == rebgn::UnaryOp::" + std::string(to_string(UnaryOp(b))) + ") {");
+                        auto scope = eval.indent_scope();
+                        eval.writeln(inner_eval.out());
+                        scope.execute();
+                        eval.writeln("}");
+                    }
+                }
+                do_make_eval_result(eval, op, flags, "std::format(\"({}{})\", opstr, target.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IS_LITTLE_ENDIAN) {
@@ -1213,7 +1262,7 @@ namespace rebgn {
                 eval.writeln("if(fallback.value() != 0) {");
                 auto scope = eval.indent_scope();
                 eval_hook([&] {
-                    eval.writeln("result = eval(ctx.ref(fallback), ctx);");
+                    do_make_eval_result(eval, op, flags, "eval(ctx.ref(fallback), ctx)", EvalResultMode::PASSTHROUGH);
                 },
                           bm2::HookFileSub::fallback);
                 scope.execute();
@@ -1221,7 +1270,7 @@ namespace rebgn {
                 eval.writeln("else {");
                 auto scope2 = eval.indent_scope();
                 eval_hook([&] {
-                    eval.writeln("result = make_eval_result(\"", flags.is_little_endian, "\");");
+                    do_make_eval_result(eval, op, flags, "\"" + flags.is_little_endian + "\"", EvalResultMode::TEXT);
                 },
                           bm2::HookFileSub::no_fallback);
                 scope2.execute();
@@ -1232,7 +1281,7 @@ namespace rebgn {
             eval.writeln("auto ref = code.ref().value();");
             eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"", flags.address_of_placeholder, "\", target.result));");
+                do_make_eval_result(eval, op, flags, "std::format(\"" + flags.address_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::OPTIONAL_OF) {
@@ -1240,7 +1289,7 @@ namespace rebgn {
             eval.writeln("auto target = eval(ctx.ref(ref), ctx);");
             eval.writeln("auto type = type_to_string(ctx, code.type().value());");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"", flags.optional_of_placeholder, "\", target.result));");
+                do_make_eval_result(eval, op, flags, "std::format(\"" + flags.optional_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::INPUT_BYTE_OFFSET) {

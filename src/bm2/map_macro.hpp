@@ -1,6 +1,7 @@
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
     MACRO_NAME(file_suffix, "suffix")                                          \
+    MACRO_NAME(worker_request_name, "worker_request_name")                     \
     MACRO_NAME(comment_prefix, "comment_prefix")                               \
     MACRO_NAME(comment_suffix, "comment_suffix")                               \
     MACRO_NAME(int_type_placeholder, "int_type")                               \

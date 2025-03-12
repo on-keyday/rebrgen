@@ -27,6 +27,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view is_template_docs = "";
     std::map<bm2::FuncName, std::map<std::string, std::vector<Content>>> content;
     bm2::FuncName func_name = bm2::FuncName::eval;
+    std::string_view js_glue = "";
 
     bool requires_lang_option() const {
         return !print_hooks && is_template_docs.empty();
@@ -41,9 +42,17 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool debug = false;
     bool print_hooks = false;
 
+    const std::string& worker_name() {
+        if (worker_request_name.empty()) {
+            return lang_name;
+        }
+        return worker_request_name;
+    }
+
     // json options
     std::string lang_name;
     std::string file_suffix = "";
+    std::string worker_request_name = "";
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
     std::string int_type_placeholder = "std::int{}_t";
@@ -153,6 +162,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
         ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
         ctx.VarMap<std::string, std::string_view, std::map>(&is_template_docs, "template-docs", "template docs (output format: json,markdown)", "FORMAT", std::map<std::string, std::string_view>{{"json", "json"}, {"markdown", "markdown"}, {"md", "markdown"}});
+        ctx.VarMap<std::string, std::string_view, std::map>(&js_glue, "js-glue", "js glue code for playground (output target: ui,worker)", "TARGET", std::map<std::string, std::string_view>{
+                                                                                                                                                         {"ui", "ui"},
+                                                                                                                                                         {"worker", "worker"},
+                                                                                                                                                         {"ui-embed", "ui-embed"},
+                                                                                                                                                     });
     }
 
     bool is_valid_placeholder(std::string_view placeholder) {
@@ -2142,6 +2156,122 @@ namespace rebgn {
         w.writeln("endif()");
     }
 
+    void write_code_js_glue_worker(bm2::TmpCodeWriter& w, Flags& flags) {
+        w.writeln("import * as bmgen  from \"../../../lib/bmgen/bm2", flags.lang_name, ".js\";");
+        w.writeln("// import { JobRequest, RequestLanguage } from \"../../msg.js\";");
+        w.writeln("import { EmWorkContext } from \"../../em_work_ctx.js\";");
+        w.writeln("// import { MyEmscriptenModule } from \"../../emscripten_mod.js\";");
+        w.writeln("import { base64ToUint8Array } from \"./util.js\";");
+        w.writeln("const bmgenModule = bmgen.default as EmscriptenModuleFactory<MyEmscriptenModule>;");
+        std::string lang_name = flags.worker_request_name;
+        if (lang_name.empty()) {
+            lang_name = flags.lang_name;
+        }
+        w.write_unformatted(std::format(R"(
+const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
+    switch (e.lang as string) {{
+        case \"{}\":
+            const bm = base64ToUint8Array(e.sourceCode);
+            if(bm instanceof Error) {{
+                return bm;
+            }}
+            m.FS.writeFile("/editor.bm",  bm);
+            return ["bm2{}","-i", "/editor.bm"];
+        default:
+            return new Error("unknown message type");
+    }}
+}};
+
+const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
+    console.log("bm2{} worker is ready");
+}});
+)",
+                                        lang_name,
+                                        flags.lang_name, flags.lang_name));
+    }
+
+    void write_code_js_glue_ui_and_generator_call(bm2::TmpCodeWriter& w, Flags& flags) {
+        auto flag = get_flags(flags);
+        auto workerName = flags.worker_name();
+        auto upperWorkerName = workerName;
+        upperWorkerName[0] = std::toupper(upperWorkerName[0]);
+        if (flags.js_glue != "ui-embed") {
+            upperWorkerName = "";
+        }
+        w.writeln("const convert", upperWorkerName, "OptionToFlags = (opt) => {");
+        auto scope = w.indent_scope();
+        w.writeln("const flags = [];");
+        for (auto&& f : flag) {
+            if (f.type == "bool") {
+                w.writeln("if (opt.", f.bind_target, ") {");
+                auto if_block = w.indent_scope();
+                w.writeln("flags.push(\"--", f.option, "\");");
+                if_block.execute();
+                w.writeln("}");
+            }
+            else if (f.type == "string") {
+                w.writeln("if (opt.", f.bind_target, " !== \"", f.default_value, "\") {");
+                auto if_block = w.indent_scope();
+                w.writeln("flags.push(\"--", f.option, "\", opt.", f.bind_target, ");");
+                if_block.execute();
+                w.writeln("}");
+            }
+        }
+        w.writeln("return flags;");
+        scope.execute();
+        w.writeln("};");
+
+        if (upperWorkerName.empty()) {
+            w.writeln("export ");
+        }
+
+        w.writeln("const generate", upperWorkerName, " = async (factory,traceID,opt,sourceCode) => {");
+        auto scope_generate = w.indent_scope();
+        w.writeln("const worker_mgr = factory.getWorker(\"", workerName, "\");");
+        w.writeln("const req = worker_mgr.getRequest(traceID,\"", workerName, "\",sourceCode,flags);");
+        w.writeln("req.arguments = convert", workerName, "OptionToFlags(opt);");
+        w.writeln("return worker_mgr.doRequest(req);");
+        scope_generate.execute();
+        w.writeln("};");
+
+        if (upperWorkerName.empty()) {
+            w.writeln("export ");
+        }
+
+        w.writeln("const convert", upperWorkerName, "UIConfigToOption = (ui) => {");
+        auto scope_convert = w.indent_scope();
+        w.writeln("const opt = {};");
+        for (auto&& f : flag) {
+            w.writeln("opt.", f.bind_target, " = ui.getLanguageConfig(\"", workerName, "\",\"", f.bind_target, "\");");
+        }
+        w.writeln("return opt;");
+        scope_convert.execute();
+        w.writeln("};");
+
+        if (upperWorkerName.empty()) {
+            w.writeln("export ");
+        }
+
+        w.writeln("function set", upperWorkerName, "UIConfig(conf_map) {");
+        auto scope1 = w.indent_scope();
+        for (auto&& f : flag) {
+            w.writeln("conf_map.set(\"", f.bind_target, "\",{");
+            auto scope_flag = w.indent_scope();
+            if (f.type == "bool") {
+                w.writeln("type: \"checkbox\",");
+                w.writeln("value: ", f.default_value, ",");
+            }
+            else if (f.type == "string") {
+                w.writeln("type: \"text\",");
+                w.writeln("value: \"", f.default_value, "\",");
+            }
+            scope_flag.execute();
+            w.writeln("});");
+        }
+        scope1.execute();
+        w.writeln("}");
+    }
+
     void write_code_config(bm2::TmpCodeWriter& w, Flags& flags) {
         auto js = futils::json::convert_to_json<futils::json::OrderedJSON>(flags);
         auto out = futils::json::to_string<std::string>(js);
@@ -2236,6 +2366,14 @@ namespace rebgn {
         }
         if (flags.is_cmake) {
             write_code_cmake(w, flags);
+            return;
+        }
+        if (flags.js_glue == "worker") {
+            write_code_js_glue_worker(w, flags);
+            return;
+        }
+        if (flags.js_glue == "ui" || flags.js_glue == "ui-embed") {
+            write_code_js_glue_ui_and_generator_call(w, flags);
             return;
         }
 

@@ -920,6 +920,7 @@ namespace rebgn {
     enum class EvalResultMode {
         TEXT,
         PASSTHROUGH,
+        COMMENT,  // treat as TEXT but special handling for comment
     };
 
     void do_make_eval_result(bm2::TmpCodeWriter& w, AbstractOp op, Flags& flags, const std::string& text, EvalResultMode mode) {
@@ -927,6 +928,14 @@ namespace rebgn {
             {"RESULT", "result"},
             {"TEXT", text},
         };
+        if (mode == EvalResultMode::PASSTHROUGH) {
+            auto escaped = env_escape(flags.eval_result_passthrough, map);
+            w.writeln(escaped);
+        }
+        else {
+            auto escaped = env_escape(flags.eval_result_text, map);
+            w.writeln(escaped);
+        }
     }
 
     void write_field_accessor(bm2::TmpCodeWriter& field_accessor, bm2::TmpCodeWriter& type_accessor, AbstractOp op, Flags& flags) {
@@ -1298,7 +1307,7 @@ namespace rebgn {
                     {"DECODER", "\",ctx.r(),\""},
                 };
                 auto escaped = env_escape(flags.decode_offset, map);
-                eval.writeln("result = make_eval_result(futils::strutil::concat<std::string>(\"", escaped, "\"));");
+                do_make_eval_result(eval, op, flags, "futils::strutil::concat<std::string>(\"" + escaped + "\")", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::OUTPUT_BYTE_OFFSET) {
@@ -1307,57 +1316,57 @@ namespace rebgn {
                     {"ENCODER", "\",ctx.w(),\""},
                 };
                 auto escaped = env_escape(flags.encode_offset, map);
-                eval.writeln("result = make_eval_result(futils::strutil::concat<std::string>(\"", escaped, "\"));");
+                do_make_eval_result(eval, op, flags, "futils::strutil::concat<std::string>(\"" + escaped + "\")", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_INT) {
             eval.writeln("auto value = code.int_value()->value();");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}\", value)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_STRING) {
             eval.writeln("auto str = ctx.string_table[code.ident().value().value()];");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));");
+                do_make_eval_result(eval, op, flags, "std::format(\"\\\"{}\\\"\", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all()))", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_TRUE) {
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(\"", flags.true_literal, "\");");
+                do_make_eval_result(eval, op, flags, "\"" + flags.true_literal + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_FALSE) {
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(\"", flags.false_literal, "\");");
+                do_make_eval_result(eval, op, flags, "\"" + flags.false_literal + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_INT64) {
             eval.writeln("auto value = *code.int_value64();");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}\", value));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}\", value)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_TYPE) {
             eval.writeln("auto type = code.type().value();");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(type_to_string(ctx, type));");
+                do_make_eval_result(eval, op, flags, "type_to_string(ctx, type)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_CHAR) {
             eval.writeln("auto char_code = code.int_value()->value();");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}\", char_code));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}\", char_code)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::EMPTY_PTR) {
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(\"", flags.empty_pointer, "\");");
+                do_make_eval_result(eval, op, flags, "\"" + flags.empty_pointer + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::EMPTY_OPTIONAL) {
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(\"", flags.empty_optional, "\");");
+                do_make_eval_result(eval, op, flags, "\"" + flags.empty_optional + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
@@ -1365,7 +1374,7 @@ namespace rebgn {
                  op == AbstractOp::BEGIN_COND_BLOCK) {
             eval.writeln("auto ref=code.ref().value();");
             eval_hook([&] {
-                eval.writeln("return eval(ctx.ref(ref), ctx);");
+                do_make_eval_result(eval, op, flags, "eval(ctx.ref(ref), ctx)", EvalResultMode::PASSTHROUGH);
             });
         }
         else if (op == AbstractOp::ASSIGN) {
@@ -1375,12 +1384,12 @@ namespace rebgn {
             eval_hook([&] {
                 eval.writeln("if(ref.value() != 0) {");
                 auto scope = eval.indent_scope();
-                eval.writeln("result = eval(ctx.ref(ref), ctx);");
+                do_make_eval_result(eval, op, flags, "eval(ctx.ref(ref), ctx)", EvalResultMode::PASSTHROUGH);
                 scope.execute();
                 eval.writeln("}");
                 eval.writeln("else {");
                 auto scope2 = eval.indent_scope();
-                eval.writeln("result = eval(ctx.ref(left_ref), ctx);");
+                do_make_eval_result(eval, op, flags, "eval(ctx.ref(left_ref), ctx)", EvalResultMode::PASSTHROUGH);
                 scope2.execute();
                 eval.writeln("}");
             });
@@ -1392,7 +1401,7 @@ namespace rebgn {
             // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
             eval.writeln("auto right_ident = ctx.ident(right_ref);");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}.{}\", left_eval.result, right_ident));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}.{}\", left_eval.result, right_ident)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::INDEX) {
@@ -1403,7 +1412,7 @@ namespace rebgn {
             eval.writeln("auto right_eval = eval(ctx.ref(right_ref), ctx);");
             // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end() - 1);");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}[{}]\", left_eval.result, right_eval.result));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}[{}]\", left_eval.result, right_eval.result)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::ARRAY_SIZE) {
@@ -1412,29 +1421,29 @@ namespace rebgn {
             // eval.writeln("result.insert(result.end(), vector_eval.begin(), vector_eval.end() - 1);");
             eval_hook([&] {
                 if (flags.surrounded_size_method) {
-                    eval.writeln("result = make_eval_result(std::format(\"", flags.size_method, "({})\", vector_eval.result));");
+                    do_make_eval_result(eval, op, flags, "std::format(\"" + flags.size_method + "({})\", vector_eval.result)", EvalResultMode::TEXT);
                 }
                 else {
-                    eval.writeln("result = make_eval_result(std::format(\"{}.", flags.size_method, "()\", vector_eval.result));");
+                    do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", vector_eval.result, \"" + flags.size_method + "\")", EvalResultMode::TEXT);
                 }
             });
         }
         else if (op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_PROPERTY) {
-            eval.writeln("result = field_accessor(code, ctx);");
+            do_make_eval_result(eval, op, flags, "field_accessor(code,ctx)", EvalResultMode::PASSTHROUGH);
         }
         else if (op == AbstractOp::DEFINE_VARIABLE ||
                  op == AbstractOp::DEFINE_PARAMETER ||
                  op == AbstractOp::PROPERTY_INPUT_PARAMETER) {
             eval.writeln("auto ident = ctx.ident(code.ident().value());");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(ident);");
+                do_make_eval_result(eval, op, flags, "ident", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::NEW_OBJECT) {
             eval.writeln("auto type_ref = code.type().value();");
             eval.writeln("auto type = type_to_string(ctx, type_ref);");
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(std::format(\"{}()\", type));");
+                do_make_eval_result(eval, op, flags, "std::format(\"{}()\", type)", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::CAST) {
@@ -1446,10 +1455,10 @@ namespace rebgn {
             // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
             eval_hook([&] {
                 if (flags.func_style_cast) {
-                    eval.writeln("result = make_eval_result(std::format(\"{}({})\", type_str, evaluated.result));");
+                    do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", type_str, evaluated.result)", EvalResultMode::TEXT);
                 }
                 else {
-                    eval.writeln("result = make_eval_result(std::format(\"({}){}\", type_str, evaluated.result));");
+                    do_make_eval_result(eval, op, flags, "std::format(\"({}){}\", type_str, evaluated.result)", EvalResultMode::TEXT);
                 }
             });
         }
@@ -1459,7 +1468,7 @@ namespace rebgn {
             auto scope_1 = eval.indent_scope();
             eval.writeln("auto right_ref = code.right_ref().value();");
             eval_hook([&] {
-                eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
+                do_make_eval_result(eval, op, flags, "eval(ctx.ref(right_ref), ctx)", EvalResultMode::PASSTHROUGH);
             },
                       bm2::HookFileSub::self);
             // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
@@ -1472,7 +1481,7 @@ namespace rebgn {
             eval.writeln("ctx.this_as.push_back(left_eval.result);");
             eval.writeln("auto right_ref = code.right_ref().value();");
             eval_hook([&] {
-                eval.writeln("result = eval(ctx.ref(right_ref), ctx);");
+                do_make_eval_result(eval, op, flags, "eval(ctx.ref(right_ref), ctx)", EvalResultMode::PASSTHROUGH);
             },
                       bm2::HookFileSub::field);
             // eval.writeln("result.insert(result.end(), right_eval.begin(), right_eval.end());");
@@ -1482,7 +1491,7 @@ namespace rebgn {
         }
         else {
             eval_hook([&] {
-                eval.writeln("result = make_eval_result(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                do_make_eval_result(eval, op, flags, "\"" + flags.wrap_comment("Unimplemented " + std::string(to_string(op))) + "\"", EvalResultMode::COMMENT);
             });
         }
         eval_hook([&] {}, bm2::HookFileSub::after);
@@ -2006,7 +2015,7 @@ namespace rebgn {
 
         field_accessor.writeln("default: {");
         auto if_block_field_accessor = field_accessor.indent_scope();
-        field_accessor.writeln("result = make_eval_result(", unimplemented_comment("code.op"), ");");
+        do_make_eval_result(field_accessor, AbstractOp::DEFINE_PROGRAM, flags, unimplemented_comment("code.op"), EvalResultMode::COMMENT);
         field_accessor.writeln("break;");
         if_block_field_accessor.execute();
         field_accessor.writeln("}");  // close default

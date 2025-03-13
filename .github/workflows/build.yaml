@@ -56,6 +56,8 @@ jobs:
           cd utils
           . build wasm-em Release futils
           cd ..
+      - name: Install libc++-dev and libc++abi-dev
+        run: sudo apt-get install libc++-dev libc++abi-dev -y
       - name: Build
         run: |
           chmod +x script/build.sh

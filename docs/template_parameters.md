@@ -38,20 +38,20 @@ Description: array
 ### ASSIGN
 #### left_ref
 Type: Varint
-Initial Value: left_ref
+Initial Value: code.left_ref().value()
 Description: reference of assign target
 #### right_ref
 Type: Varint
-Initial Value: right_ref
+Initial Value: code.right_ref().value()
 Description: reference of assign source
 #### ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of previous assignment or phi or definition
 ### BEGIN_COND_BLOCK
 #### ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of expression
 ### BINARY
 #### op
@@ -102,7 +102,7 @@ Description: cast source value
 ### DECLARE_VARIABLE
 #### ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of expression
 ### DEFINE_PARAMETER
 #### ident_ref
@@ -125,7 +125,7 @@ Description: identifier of variable value
 ### DEFINE_VARIABLE_REF
 #### ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of expression
 ### FIELD_AVAILABLE
 #### left_ref
@@ -198,7 +198,7 @@ Description: reference of fallback expression
 ### NEW_OBJECT
 #### type_ref
 Type: Varint
-Initial Value: type_ref
+Initial Value: code.type().value()
 Description: reference of object type
 #### type
 Type: string
@@ -207,7 +207,7 @@ Description: object type
 ### OPTIONAL_OF
 #### target_ref
 Type: Varint
-Initial Value: target
+Initial Value: code.ref().value()
 Description: reference of target object
 #### target
 Type: EvalResult
@@ -224,7 +224,7 @@ Description: type of optional (not include optional)
 ### PHI
 #### ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of expression
 ### PROPERTY_INPUT_PARAMETER
 #### ident_ref
@@ -339,7 +339,7 @@ Initial Value: code.left_ref().value()
 Description: reference of function
 #### func_belong
 Type: Varint
-Initial Value: func_belong
+Initial Value: ctx.ref(func_ref).belong().value()
 Description: reference of function belong
 #### func_belong_name
 Type: string
@@ -347,7 +347,7 @@ Initial Value: type_accessor(ctx.ref(func_belong), ctx)
 Description: function belong name
 #### func_name
 Type: string
-Initial Value: func_ref
+Initial Value: ctx.ident(func_ref)
 Description: identifier of function
 #### obj_eval_ref
 Type: Varint
@@ -368,7 +368,7 @@ Initial Value: code.left_ref().value()
 Description: reference of function
 #### func_belong
 Type: Varint
-Initial Value: func_belong
+Initial Value: ctx.ref(func_ref).belong().value()
 Description: reference of function belong
 #### func_belong_name
 Type: string
@@ -376,7 +376,7 @@ Initial Value: type_accessor(ctx.ref(func_belong), ctx)
 Description: function belong name
 #### func_name
 Type: string
-Initial Value: func_ref
+Initial Value: ctx.ident(func_ref)
 Description: identifier of function
 #### obj_eval_ref
 Type: Varint
@@ -402,7 +402,7 @@ Description: condition
 ### CHECK_UNION
 #### union_member_ref
 Type: Varint
-Initial Value: union_member_ref
+Initial Value: code.ref().value()
 Description: reference of current union member
 #### union_ref
 Type: Varint
@@ -418,16 +418,16 @@ Initial Value: ctx.ref(union_member_ref).int_value()->value()
 Description: current union member index
 #### union_member_ident
 Type: string
-Initial Value: union_member_ref
+Initial Value: ctx.ident(union_member_ref)
 Description: identifier of union member
 #### union_ident
 Type: string
-Initial Value: union_ref
+Initial Value: ctx.ident(union_ref)
 Description: identifier of union
 #### union_field_ident
-Type: string
-Initial Value: union_field_ref
-Description: identifier of union field
+Type: EvalResult
+Initial Value: eval(ctx.ref(union_field_ref), ctx)
+Description: union field
 #### check_type
 Type: rebgn::UnionCheckAt
 Initial Value: code.check_at().value()
@@ -458,7 +458,7 @@ Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: variable
 ### DECODE_INT
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -472,18 +472,18 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### evaluated_ref
 Type: Varint
-Initial Value: evaluated
+Initial Value: code.ref().value()
 Description: reference of element
 #### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: element
 ### DECODE_INT_VECTOR
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -497,7 +497,7 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### vector_value_ref
 Type: Varint
@@ -516,7 +516,7 @@ Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
 ### DECODE_INT_VECTOR_FIXED
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -530,7 +530,7 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### vector_value_ref
 Type: Varint
@@ -549,7 +549,7 @@ Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
 ### DECODE_INT_VECTOR_UNTIL_EOF
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -563,11 +563,11 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### evaluated_ref
 Type: Varint
-Initial Value: evaluated
+Initial Value: code.ref().value()
 Description: reference of element
 #### evaluated
 Type: EvalResult
@@ -634,7 +634,7 @@ Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
 ### ENCODE_INT
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -648,18 +648,18 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### evaluated_ref
 Type: Varint
-Initial Value: evaluated
+Initial Value: code.ref().value()
 Description: reference of element
 #### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: element
 ### ENCODE_INT_VECTOR
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -673,7 +673,7 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### vector_value_ref
 Type: Varint
@@ -692,7 +692,7 @@ Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
 ### ENCODE_INT_VECTOR_FIXED
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -706,7 +706,7 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### vector_value_ref
 Type: Varint
@@ -758,7 +758,7 @@ Initial Value: code.param().value()
 Description: error message parameters
 #### evaluated
 Type: EvalResult
-Initial Value: param.refs[0]
+Initial Value: eval(ctx.ref(param.refs[0]), ctx)
 Description: error message
 ### IF
 #### evaluated_ref
@@ -772,7 +772,7 @@ Description: condition
 ### INC
 #### evaluated_ref
 Type: Varint
-Initial Value: ref
+Initial Value: code.ref().value()
 Description: reference of increment target
 #### evaluated
 Type: EvalResult
@@ -814,7 +814,7 @@ Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
 ### PEEK_INT_VECTOR
-#### fallback_ident
+#### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
@@ -828,7 +828,7 @@ Initial Value: code.bit_size()->value()
 Description: bit size of element
 #### endian
 Type: rebgn::Endian
-Initial Value: code.endian()->value()
+Initial Value: code.endian().value()
 Description: endian of element
 #### vector_value_ref
 Type: Varint
@@ -853,12 +853,12 @@ Initial Value: code.ref().value()
 Description: reference of return value
 #### evaluated
 Type: EvalResult
-Initial Value: ref
+Initial Value: eval(ctx.ref(ref), ctx)
 Description: return value
 ### SWITCH_UNION
 #### union_member_ref
 Type: Varint
-Initial Value: union_member_ref
+Initial Value: code.ref().value()
 Description: reference of current union member
 #### union_ref
 Type: Varint
@@ -874,16 +874,16 @@ Initial Value: ctx.ref(union_member_ref).int_value()->value()
 Description: current union member index
 #### union_member_ident
 Type: string
-Initial Value: union_member_ref
+Initial Value: ctx.ident(union_member_ref)
 Description: identifier of union member
 #### union_ident
 Type: string
-Initial Value: union_ref
+Initial Value: ctx.ident(union_ref)
 Description: identifier of union
 #### union_field_ident
-Type: string
-Initial Value: union_field_ref
-Description: identifier of union field
+Type: EvalResult
+Initial Value: eval(ctx.ref(union_field_ref), ctx)
+Description: union field
 ## inner_block
 ### DECLARE_BIT_FIELD
 #### ref
@@ -892,7 +892,7 @@ Initial Value: code.ref().value()
 Description: reference of bit field
 #### ident
 Type: string
-Initial Value: ref
+Initial Value: ctx.ident(ref)
 Description: identifier of bit field
 #### inner_range
 Type: string
@@ -1003,13 +1003,13 @@ Description: reference of enum member value
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: enum member value
-#### belong_ref
+#### enum_ident_ref
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of enum
 #### enum_ident
 Type: string
-Initial Value: belong
+Initial Value: ctx.ident(enum_ident_ref)
 Description: identifier of enum
 ### DEFINE_FIELD
 #### type
@@ -1124,7 +1124,7 @@ Initial Value: ctx.ident(ident_ref)
 Description: identifier of state variable
 #### type_ref
 Type: Varint
-Initial Value: ctx.ref(ref).type().value()
+Initial Value: ctx.ref(ident_ref).type().value()
 Description: reference of state variable type
 #### type
 Type: string
@@ -1166,19 +1166,19 @@ Description: array length
 ### ENUM
 #### ident_ref
 Type: Varint
-Initial Value: storage.ref().value().value()
+Initial Value: storage.ref().value()
 Description: reference of enum
 #### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of enum
 ### FLOAT
-#### bit_size
+#### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
 ### INT
-#### bit_size
+#### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
@@ -1195,7 +1195,7 @@ Description: base type
 ### RECURSIVE_STRUCT_REF
 #### ident_ref
 Type: Varint
-Initial Value: storage.ref().value().value()
+Initial Value: storage.ref().value()
 Description: reference of recursive struct
 #### ident
 Type: string
@@ -1204,14 +1204,14 @@ Description: identifier of recursive struct
 ### STRUCT_REF
 #### ident_ref
 Type: Varint
-Initial Value: storage.ref().value().value()
+Initial Value: storage.ref().value()
 Description: reference of struct
 #### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of struct
 ### UINT
-#### bit_size
+#### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
@@ -1369,10 +1369,6 @@ Description: reference of belong
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
-Type: string
-Initial Value: type_accessor(ctx.ref(union_field_ref),ctx)
-Description: field accessor
 ### DEFINE_FIELD
 #### ident_ref
 Type: Varint
@@ -1392,7 +1388,7 @@ Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DE
 Description: is member of a struct
 #### belong_eval
 Type: string
-Initial Value: type_accessor(ctx.ref(union_field_ref),ctx)
+Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
 ### DEFINE_FORMAT
 #### ident_ref
@@ -1422,7 +1418,7 @@ Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DE
 Description: is member of a struct
 #### belong_eval
 Type: string
-Initial Value: type_accessor(ctx.ref(union_field_ref),ctx)
+Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
 ### DEFINE_STATE
 #### ident_ref
@@ -1452,7 +1448,7 @@ Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DE
 Description: is member of a struct
 #### belong_eval
 Type: string
-Initial Value: type_accessor(ctx.ref(union_field_ref),ctx)
+Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
 ### DEFINE_UNION_MEMBER
 #### ident_ref
@@ -1489,5 +1485,5 @@ Initial Value: ctx.ref(union_field_ref).belong().value()
 Description: reference of union field belong
 #### belong_eval
 Type: string
-Initial Value: type_accessor(ctx.ref(union_field_ref),ctx)
+Initial Value: type_accessor(ctx.ref(union_field_belong),ctx)
 Description: field accessor

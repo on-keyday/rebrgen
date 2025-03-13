@@ -29,7 +29,7 @@ namespace bm2go {
         auto& storage = s.storages[index];
         switch (storage.type) {
             case rebgn::StorageType::INT: {
-                auto size = storage.size().value().value();
+                auto size = storage.size()->value(); //bit size
                 if (bit_size) {
                     *bit_size = size;
                 }
@@ -47,7 +47,7 @@ namespace bm2go {
                 }
             }
             case rebgn::StorageType::UINT: {
-                auto size = storage.size().value().value();
+                auto size = storage.size()->value(); //bit size
                 if (bit_size) {
                     *bit_size = size;
                 }
@@ -65,7 +65,7 @@ namespace bm2go {
                 }
             }
             case rebgn::StorageType::FLOAT: {
-                auto size = storage.size().value().value();
+                auto size = storage.size()->value(); //bit size
                 if (bit_size) {
                     *bit_size = size;
                 }
@@ -77,41 +77,41 @@ namespace bm2go {
                 }
             }
             case rebgn::StorageType::STRUCT_REF: {
-                auto ref = storage.ref().value().value();
-                auto& ident = ctx.ident_table[ref];
+                auto ident_ref = storage.ref().value(); //reference of struct
+                auto ident = ctx.ident(ident_ref); //identifier of struct
                 return ident;
             }
             case rebgn::StorageType::RECURSIVE_STRUCT_REF: {
-                auto ref = storage.ref().value().value();
-                auto& ident = ctx.ident_table[ref];
+                auto ident_ref = storage.ref().value(); //reference of recursive struct
+                auto ident = ctx.ident(ident_ref); //identifier of recursive struct
                 return std::format("*{}", ident);
             }
             case rebgn::StorageType::BOOL: {
                 return "bool";
             }
             case rebgn::StorageType::ENUM: {
-                auto ref = storage.ref().value().value();
-                auto& ident = ctx.ident_table[ref];
+                auto ident_ref = storage.ref().value(); //reference of enum
+                auto ident = ctx.ident(ident_ref); //identifier of enum
                 return ident;
             }
             case rebgn::StorageType::ARRAY: {
-                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
-                auto length = storage.size().value().value();
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
+                auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
+                auto length = storage.size()->value(); //array length
                 return futils::strutil::concat<std::string>("[]",base_type,"");
             }
             case rebgn::StorageType::VECTOR: {
-                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
-                bool is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8;
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
+                auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
                 return std::format("[]{}", base_type);
             }
             case rebgn::StorageType::VARIANT: {
-                auto ref = storage.ref().value();
-                std::vector<std::string> types;
+                auto ident_ref = storage.ref().value(); //reference of variant
+                auto ident = ctx.ident(ident_ref); //identifier of variant
+                std::vector<std::string> types = {}; //variant types
                 for (size_t i = index + 1; i < s.storages.size(); i++) {
                     types.push_back(type_to_string_impl(ctx, s, bit_size, i));
                 }
-                auto ident = ctx.ident(ref);
                 return ident;
             }
             case rebgn::StorageType::CODER_RETURN: {
@@ -121,11 +121,11 @@ namespace bm2go {
                 return "bool";
             }
             case rebgn::StorageType::OPTIONAL: {
-                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
                 return std::format("*{}", base_type);
             }
             case rebgn::StorageType::PTR: {
-                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1);
+                auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
                 return std::format("*{}", base_type);
             }
             default: {
@@ -145,11 +145,12 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
-            auto ident = ctx.ident(code.ident().value());
-            auto belong = code.belong().value();
-            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            auto ident_ref = code.ident().value(); //reference of FIELD
+            auto ident = ctx.ident(ident_ref); //identifier of FIELD
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
             if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
@@ -158,11 +159,12 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-            auto ident = ctx.ident(code.ident().value());
-            auto belong = code.belong().value();
-            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            auto ident_ref = code.ident().value(); //reference of PROPERTY
+            auto ident = ctx.ident(ident_ref); //identifier of PROPERTY
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
             if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
@@ -171,11 +173,12 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_UNION: {
-            auto ident = ctx.ident(code.ident().value());
-            auto belong = code.belong().value();
-            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            auto ident_ref = code.ident().value(); //reference of UNION
+            auto ident = ctx.ident(ident_ref); //identifier of UNION
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
             if(is_member) {
-                auto belong_eval = field_accessor(ctx.ref(belong), ctx);
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
             }
             else {
@@ -184,13 +187,14 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
-            auto ident = ctx.ident(code.ident().value());
-            auto belong = code.belong().value();
-            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-            auto union_member_ref = code.ident().value();
-            auto union_ref = belong;
-            auto union_field_ref = ctx.ref(union_ref).belong().value();
-            auto union_field_belong = ctx.ref(union_field_ref).belong().value();
+            auto ident_ref = code.ident().value(); //reference of UNION_MEMBER
+            auto ident = ctx.ident(ident_ref); //identifier of UNION_MEMBER
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            auto union_member_ref = code.ident().value(); //reference of union member
+            auto union_ref = belong; //reference of union
+            auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
+            auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
             result = field_accessor(ctx.ref(union_field_ref),ctx);
             break;
         }
@@ -199,9 +203,10 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-            auto ident = ctx.ident(code.ident().value());
-            auto belong = code.belong().value();
-            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+            auto ident_ref = code.ident().value(); //reference of BIT_FIELD
+            auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
             result = field_accessor(ctx.ref(belong),ctx);
             break;
         }
@@ -216,16 +221,18 @@ namespace bm2go {
         std::string result;
         switch(code.op) {
         case rebgn::AbstractOp::DEFINE_FORMAT: {
-        auto ident = ctx.ident(code.ident().value());
+        auto ident_ref = code.ident().value(); //reference of FORMAT
+        auto ident = ctx.ident(ident_ref); //identifier of FORMAT
         result = ident;
         break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
-        auto ident = ctx.ident(code.ident().value());
-        auto belong = code.belong().value();
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        auto ident_ref = code.ident().value(); //reference of FIELD
+        auto ident = ctx.ident(ident_ref); //identifier of FIELD
+        auto belong = code.belong().value(); //reference of belong
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
         if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
             result = std::format("{}.{}", belong_eval, ident);
         }
         else {
@@ -234,11 +241,12 @@ namespace bm2go {
         break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-        auto ident = ctx.ident(code.ident().value());
-        auto belong = code.belong().value();
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        auto ident_ref = code.ident().value(); //reference of PROPERTY
+        auto ident = ctx.ident(ident_ref); //identifier of PROPERTY
+        auto belong = code.belong().value(); //reference of belong
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
         if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
             result = std::format("{}.{}", belong_eval, ident);
         }
         else {
@@ -247,11 +255,12 @@ namespace bm2go {
         break;
         }
         case rebgn::AbstractOp::DEFINE_UNION: {
-        auto ident = ctx.ident(code.ident().value());
-        auto belong = code.belong().value();
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
+        auto ident_ref = code.ident().value(); //reference of UNION
+        auto ident = ctx.ident(ident_ref); //identifier of UNION
+        auto belong = code.belong().value(); //reference of belong
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
         if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
+            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
             result = std::format("{}.{}", belong_eval, ident);
         }
         else {
@@ -260,38 +269,30 @@ namespace bm2go {
         break;
         }
         case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
-        auto ident = ctx.ident(code.ident().value());
-        auto belong = code.belong().value();
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-        auto union_member_ref = code.ident().value();
-        auto union_ref = belong;
-        auto union_field_ref = ctx.ref(union_ref).belong().value();
-        auto union_field_belong = ctx.ref(union_field_ref).belong().value();
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
+        auto ident_ref = code.ident().value(); //reference of UNION_MEMBER
+        auto ident = ctx.ident(ident_ref); //identifier of UNION_MEMBER
+        auto belong = code.belong().value(); //reference of belong
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+        auto union_member_ref = code.ident().value(); //reference of union member
+        auto union_ref = belong; //reference of union
+        auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
+        auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
+        auto belong_eval = type_accessor(ctx.ref(union_field_belong),ctx); //field accessor
+        result = std::format("{}.{}", belong_eval, ident);
         break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
-        auto ident = ctx.ident(code.ident().value());
+        auto ident_ref = code.ident().value(); //reference of STATE
+        auto ident = ctx.ident(ident_ref); //identifier of STATE
         result = ident;
         break;
         }
         case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-        auto ident = ctx.ident(code.ident().value());
-        auto belong = code.belong().value();
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong), ctx);
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
+        auto ident_ref = code.ident().value(); //reference of BIT_FIELD
+        auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
+        auto belong = code.belong().value(); //reference of belong
+        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+        result = type_accessor(ctx.ref(belong),ctx);
         break;
         }
         default: {
@@ -304,15 +305,16 @@ namespace bm2go {
         EvalResult result;
         switch(code.op) {
         case rebgn::AbstractOp::DEFINE_FIELD: {
-            result = field_accessor(code, ctx);
+            result = field_accessor(code,ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-            result = field_accessor(code, ctx);
+            result = field_accessor(code,ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_PARAMETER: {
-            auto ident = ctx.ident(code.ident().value());
+            auto ident_ref = code.ident().value(); //reference of variable value
+            auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
             break;
         }
@@ -341,7 +343,7 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
-            auto fallback = code.fallback().value();
+            auto fallback = code.fallback().value(); //reference of fallback expression
             if(fallback.value() != 0) {
                 result = eval(ctx.ref(fallback), ctx);
             }
@@ -351,12 +353,12 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::CAST: {
-            auto type = code.type().value();
-            auto from_type = code.from_type().value();
-            auto ref = code.ref().value();
-            auto type_str = type_to_string(ctx, type);
-            auto evaluated = eval(ctx.ref(ref), ctx);
-            result = make_eval_result(std::format("{}({})", type_str, evaluated.result));
+            auto type_ref = code.type().value(); //reference of cast target type
+            auto type = type_to_string(ctx,type_ref); //cast target type
+            auto from_type_ref = code.from_type().value(); //reference of cast source type
+            auto evaluated_ref = code.ref().value(); //reference of cast source value
+            auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //cast source value
+            result = make_eval_result(std::format("{}({})", type, evaluated.result));
             break;
         }
         case rebgn::AbstractOp::CALL_CAST: {
@@ -364,15 +366,16 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::ADDRESS_OF: {
-            auto ref = code.ref().value();
-            auto target = eval(ctx.ref(ref), ctx);
+            auto target_ref = code.ref().value(); //reference of target object
+            auto target = eval(ctx.ref(target_ref), ctx); //target object
             result = make_eval_result(std::format("&{}", target.result));
             break;
         }
         case rebgn::AbstractOp::OPTIONAL_OF: {
-            auto ref = code.ref().value();
-            auto target = eval(ctx.ref(ref), ctx);
-            auto type = type_to_string(ctx, code.type().value());
+            auto target_ref = code.ref().value(); //reference of target object
+            auto target = eval(ctx.ref(target_ref), ctx); //target object
+            auto type_ref = code.type().value(); //reference of type of optional (not include optional)
+            auto type = type_to_string(ctx,type_ref); //type of optional (not include optional)
             result = make_eval_result(std::format("{}", target.result));
             break;
         }
@@ -385,13 +388,14 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE: {
-            auto ident = ctx.ident(code.ident().value());
+            auto ident_ref = code.ident().value(); //reference of variable value
+            auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE_REF: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
+            auto ref = code.ref().value(); //reference of expression
+            result = eval(ctx.ref(ref), ctx);
             break;
         }
         case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -399,32 +403,32 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::DECLARE_VARIABLE: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
+            auto ref = code.ref().value(); //reference of expression
+            result = eval(ctx.ref(ref), ctx);
             break;
         }
         case rebgn::AbstractOp::BINARY: {
-            auto op = code.bop().value();
-            auto left_ref = code.left_ref().value();
-            auto right_ref = code.right_ref().value();
-            auto left_eval = eval(ctx.ref(left_ref), ctx);
-            auto right_eval = eval(ctx.ref(right_ref), ctx);
-            auto opstr = to_string(op);
+            auto op = code.bop().value(); //binary operator
+            auto left_eval_ref = code.left_ref().value(); //reference of left operand
+            auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //left operand
+            auto right_eval_ref = code.right_ref().value(); //reference of right operand
+            auto right_eval = eval(ctx.ref(right_eval_ref), ctx); //right operand
+            auto opstr = to_string(op); //binary operator string
             result = make_eval_result(std::format("({} {} {})", left_eval.result, opstr, right_eval.result));
             break;
         }
         case rebgn::AbstractOp::UNARY: {
-            auto op = code.uop().value();
-            auto ref = code.ref().value();
-            auto target = eval(ctx.ref(ref), ctx);
-            auto opstr = to_string(op);
+            auto op = code.uop().value(); //unary operator
+            auto target_ref = code.ref().value(); //reference of target
+            auto target = eval(ctx.ref(target_ref), ctx); //target
+            auto opstr = to_string(op); //unary operator string
             result = make_eval_result(std::format("({}{})", opstr, target.result));
             break;
         }
         case rebgn::AbstractOp::ASSIGN: {
-            auto left_ref = code.left_ref().value();
-            auto ref = code.ref().value();
-            auto right_ref = code.right_ref().value();
+            auto left_ref = code.left_ref().value(); //reference of assign target
+            auto right_ref = code.right_ref().value(); //reference of assign source
+            auto ref = code.ref().value(); //reference of previous assignment or phi or definition
             if(ref.value() != 0) {
                 result = eval(ctx.ref(ref), ctx);
             }
@@ -434,18 +438,18 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::ACCESS: {
-            auto left_ref = code.left_ref().value();
-            auto right_ref = code.right_ref().value();
-            auto left_eval = eval(ctx.ref(left_ref), ctx);
-            auto right_ident = ctx.ident(right_ref);
+            auto left_eval_ref = code.left_ref().value(); //reference of left operand
+            auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //left operand
+            auto right_ident_ref = code.right_ref().value(); //reference of right operand
+            auto right_ident = ctx.ident(right_ident_ref); //identifier of right operand
             result = make_eval_result(std::format("{}.{}", left_eval.result, right_ident));
             break;
         }
         case rebgn::AbstractOp::INDEX: {
-            auto left_ref = code.left_ref().value();
-            auto right_ref = code.right_ref().value();
-            auto left_eval = eval(ctx.ref(left_ref), ctx);
-            auto right_eval = eval(ctx.ref(right_ref), ctx);
+            auto left_eval_ref = code.left_ref().value(); //reference of indexed object
+            auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //indexed object
+            auto right_eval_ref = code.right_ref().value(); //reference of index
+            auto right_eval = eval(ctx.ref(right_eval_ref), ctx); //index
             result = make_eval_result(std::format("{}[{}]", left_eval.result, right_eval.result));
             break;
         }
@@ -462,70 +466,72 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT: {
-            auto value = code.int_value()->value();
+            auto value = code.int_value()->value(); //immediate value
             result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_INT64: {
-            auto value = *code.int_value64();
+            auto value = *code.int_value64(); //immediate value
             result = make_eval_result(std::format("{}", value));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_CHAR: {
-            auto char_code = code.int_value()->value();
+            auto char_code = code.int_value()->value(); //immediate char code
             result = make_eval_result(std::format("{}", char_code));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_STRING: {
-            auto str = ctx.string_table[code.ident().value().value()];
+            auto str = ctx.string_table[code.ident().value().value()]; //immediate string
             result = make_eval_result(std::format("\"{}\"", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all())));
             break;
         }
         case rebgn::AbstractOp::IMMEDIATE_TYPE: {
-            auto type = code.type().value();
-            result = make_eval_result(type_to_string(ctx, type));
+            auto type_ref = code.type().value(); //reference of immediate type
+            auto type = type_to_string(ctx,type_ref); //immediate type
+            result = make_eval_result(type);
             break;
         }
         case rebgn::AbstractOp::NEW_OBJECT: {
-            auto type_ref = code.type().value();
-            auto type = type_to_string(ctx, type_ref);
+            auto type_ref = code.type().value(); //reference of object type
+            auto type = type_to_string(ctx,type_ref); //object type
             result = make_eval_result(std::format("{}()", type));
             break;
         }
         case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
-            auto ident = ctx.ident(code.ident().value());
+            auto ident_ref = code.ident().value(); //reference of variable value
+            auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
             break;
         }
         case rebgn::AbstractOp::ARRAY_SIZE: {
-            auto vector_ref = code.ref().value();
-            auto vector_eval = eval(ctx.ref(vector_ref), ctx);
-            result = make_eval_result(std::format("{}.size()", vector_eval.result));
+            auto vector_eval_ref = code.ref().value(); //reference of array
+            auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //array
+            result = make_eval_result(std::format("{}({})", vector_eval.result, "size"));
             break;
         }
         case rebgn::AbstractOp::FIELD_AVAILABLE: {
-            auto left_ref = code.left_ref().value();
+            auto left_ref = code.left_ref().value(); //reference of field (maybe null)
             if(left_ref.value() == 0) {
-                auto right_ref = code.right_ref().value();
+                auto right_ref = code.right_ref().value(); //reference of condition
                 result = eval(ctx.ref(right_ref), ctx);
             }
             else {
-                auto left_eval = eval(ctx.ref(left_ref), ctx);
+                auto left_eval = eval(ctx.ref(left_ref), ctx); //field
                 ctx.this_as.push_back(left_eval.result);
-                auto right_ref = code.right_ref().value();
+                auto right_ref = code.right_ref().value(); //reference of condition
                 result = eval(ctx.ref(right_ref), ctx);
                 ctx.this_as.pop_back();
             }
             break;
         }
         case rebgn::AbstractOp::PHI: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
+            auto ref = code.ref().value(); //reference of expression
+            result = eval(ctx.ref(ref), ctx);
             break;
         }
         case rebgn::AbstractOp::BEGIN_COND_BLOCK: {
-            auto ref=code.ref().value();
-            return eval(ctx.ref(ref), ctx);
+            auto ref = code.ref().value(); //reference of expression
+            result = eval(ctx.ref(ref), ctx);
             break;
         }
         default: {
@@ -545,9 +551,10 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ident().value();
-                    auto type = type_to_string(ctx,code.type().value());
-                    auto ident = ctx.ident(ref);
+                    auto ident_ref = code.ident().value(); //reference of parameter
+                    auto ident = ctx.ident(ident_ref); //identifier of parameter
+                    auto type_ref = code.type().value(); //reference of parameter type
+                    auto type = type_to_string(ctx,type_ref); //parameter type
                     w.write(ident, "  ", type);
                     params++;
                     break;
@@ -572,9 +579,10 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ref().value();
-                    auto type = type_to_string(ctx,ctx.ref(ref).type().value());
-                    auto ident = ctx.ident(ref);
+                    auto ident_ref = code.ref().value(); //reference of state variable
+                    auto ident = ctx.ident(ident_ref); //identifier of state variable
+                    auto type_ref = ctx.ref(ident_ref).type().value(); //reference of state variable type
+                    auto type = type_to_string(ctx,type_ref); //state variable type
                     w.write(ident," *",type);
                     params++;
                     break;
@@ -583,9 +591,10 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ident().value();
-                    auto type = type_to_string(ctx,code.type().value());
-                    auto ident = ctx.ident(ref);
+                    auto ident_ref = code.ident().value(); //reference of parameter
+                    auto ident = ctx.ident(ident_ref); //identifier of parameter
+                    auto type_ref = code.type().value(); //reference of parameter type
+                    auto type = type_to_string(ctx,type_ref); //parameter type
                     w.write(ident, "  ", type);
                     params++;
                     break;
@@ -630,8 +639,8 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ref().value();
-                    auto ident = ctx.ident(ref);
+                    auto ident_ref = code.ref().value(); //reference of state variable
+                    auto ident = ctx.ident(ident_ref); //identifier of state variable
                     w.write(ident);
                     params++;
                     break;
@@ -640,8 +649,8 @@ namespace bm2go {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    auto ref = code.ident().value();
-                    auto ident = ctx.ident(ref);
+                    auto ident_ref = code.ident().value(); //reference of parameter
+                    auto ident = ctx.ident(ident_ref); //identifier of parameter
                     w.write(ident);
                     params++;
                     break;
@@ -659,7 +668,8 @@ namespace bm2go {
             auto& code = ctx.bm.code[i];
             switch(code.op) {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
-                auto ident = ctx.ident(code.ident().value());
+                auto ident_ref = code.ident().value(); //reference of format
+                auto ident = ctx.ident(ident_ref); //identifier of format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -670,8 +680,8 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FORMAT: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of FORMAT
+                auto inner_range = ctx.range(code.ref().value()); //range of FORMAT
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -679,8 +689,9 @@ namespace bm2go {
                 if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {
                     break;
                 }
-                auto type = type_to_string(ctx, code.type().value());
-                auto ident = ctx.ident(code.ident().value());
+                auto type = code.type().value(); //field type
+                auto ident_ref = code.ident().value(); //reference of field
+                auto ident = ctx.ident(ident_ref); //identifier of field
                 w.writeln(ident, "  ", type, "");
                 break;
             }
@@ -691,30 +702,31 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of PROPERTY
+                auto inner_range = ctx.range(code.ref().value()); //range of PROPERTY
                 inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
-                auto func = code.right_ref().value();
-                auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value(); //reference of function
+                auto inner_range = ctx.range(func); //range of function
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
-                auto func = code.right_ref().value();
-                auto inner_range = ctx.range(func);
+                auto func = code.right_ref().value(); //reference of function
+                auto inner_range = ctx.range(func); //range of function
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of FUNCTION
+                auto inner_range = ctx.range(code.ref().value()); //range of FUNCTION
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
-                auto ident = ctx.ident(code.ident().value());
-                auto base_type_ref = code.type().value();
-                std::optional<std::string> base_type;
+                auto ident_ref = code.ident().value(); //reference of enum
+                auto ident = ctx.ident(ident_ref); //identifier of enum
+                auto base_type_ref = code.type().value(); //type reference of enum base type
+                std::optional<std::string> base_type = std::nullopt; //enum base type
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
@@ -732,21 +744,24 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_ENUM: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of ENUM
+                auto inner_range = ctx.range(code.ref().value()); //range of ENUM
                 inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
-                auto ident = ctx.ident(code.ident().value());
-                auto evaluated = eval(ctx.ref(code.left_ref().value()), ctx);
-                auto belong = code.belong().value();
-                auto enum_ident = ctx.ident(belong);
+                auto ident_ref = code.ident().value(); //reference of enum member
+                auto ident = ctx.ident(ident_ref); //identifier of enum member
+                auto evaluated_ref = code.left_ref().value(); //reference of enum member value
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //enum member value
+                auto enum_ident_ref = code.belong().value(); //reference of enum
+                auto enum_ident = ctx.ident(enum_ident_ref); //identifier of enum
                 w.writeln(ident," ",enum_ident," = ",evaluated.result);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
-                auto ident = ctx.ident(code.ident().value());
+                auto ident_ref = code.ident().value(); //reference of union
+                auto ident = ctx.ident(ident_ref); //identifier of union
                 w.writeln("type ",ident," interface {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -757,15 +772,16 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of UNION
+                auto inner_range = ctx.range(ref); //range of UNION
                 TmpCodeWriter inner_w;
                 inner_block(ctx, inner_w, inner_range);
                 ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
-                auto ident = ctx.ident(code.ident().value());
+                auto ident_ref = code.ident().value(); //reference of format
+                auto ident = ctx.ident(ident_ref); //identifier of format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -776,15 +792,16 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of UNION_MEMBER
+                auto inner_range = ctx.range(ref); //range of UNION_MEMBER
                 TmpCodeWriter inner_w;
                 inner_block(ctx, inner_w, inner_range);
                 ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
-                auto ident = ctx.ident(code.ident().value());
+                auto ident_ref = code.ident().value(); //reference of format
+                auto ident = ctx.ident(ident_ref); //identifier of format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -795,8 +812,8 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_STATE: {
-                auto ref = code.ref().value();
-                auto inner_range = ctx.range(ref);
+                auto ref = code.ref().value(); //reference of STATE
+                auto inner_range = ctx.range(code.ref().value()); //range of STATE
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -809,11 +826,11 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
-                auto ref=code.ref().value();
-                auto ident = ctx.ident(ref);
-                auto inner_range = ctx.range(ref);
-                auto type_ref = ctx.ref(ref).type().value();
-                auto type = type_to_string(ctx, type_ref);
+                auto ref = code.ref().value(); //reference of bit field
+                auto ident = ctx.ident(ref); //identifier of bit field
+                auto inner_range = ctx.range(ref); //range of bit field
+                auto type_ref = ctx.ref(ref).type().value(); //reference of bit field type
+                auto type = type_ref; //bit field type
                 inner_block(ctx,w,inner_range);
                 break;
             }
@@ -840,9 +857,9 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DYNAMIC_ENDIAN: {
-                auto fallback = ctx.bm.code[i].fallback().value();
+                auto fallback = code.ref().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(code.ref().value()); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
@@ -851,14 +868,15 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
-                auto ident = ctx.ident(code.ident().value());
+                auto ident_ref = code.ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
                 auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                std::optional<std::string> type;
+                std::optional<std::string> type = std::nullopt; //function return type
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
                     type = type_to_string(ctx,type_ref);
                 }
-                std::optional<std::string> belong_name;
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
@@ -883,9 +901,9 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: {
-                auto fallback = ctx.bm.code[i].fallback().value();
+                auto fallback = code.ref().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(code.ref().value()); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
@@ -894,9 +912,9 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::END_ENCODE_PACKED_OPERATION: {
-                auto fallback = ctx.bm.code[i].fallback().value();
+                auto fallback = code.ref().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(code.ref().value()); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
@@ -905,9 +923,9 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_DECODE_PACKED_OPERATION: {
-                auto fallback = ctx.bm.code[i].fallback().value();
+                auto fallback = code.ref().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(code.ref().value()); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
@@ -916,9 +934,9 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::END_DECODE_PACKED_OPERATION: {
-                auto fallback = ctx.bm.code[i].fallback().value();
+                auto fallback = code.ref().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(code.ref().value()); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
@@ -927,16 +945,16 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto ref = code.ref().value();
-                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto evaluated_ref = code.ref().value(); //reference of element
+                    auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //element
                     if(bit_size == 8) {
                         w.writeln("/*Unimplemented ENCODE_INT*/");
                     }
@@ -947,16 +965,16 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto ref = code.ref().value();
-                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto evaluated_ref = code.ref().value(); //reference of element
+                    auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //element
                     if(bit_size == 8) {
                         w.writeln("/*Unimplemented DECODE_INT*/");
                     }
@@ -967,18 +985,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT_VECTOR: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto vector_ref = code.left_ref().value();
-                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
-                    auto size_ref = code.right_ref().value();
-                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto vector_value_ref = code.left_ref().value(); //reference of vector
+                    auto vector_value = eval(ctx.ref(vector_value_ref), ctx); //vector
+                    auto size_value_ref = code.right_ref().value(); //reference of size
+                    auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
                         w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
                     }
@@ -989,18 +1007,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::ENCODE_INT_VECTOR_FIXED: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto vector_ref = code.left_ref().value();
-                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
-                    auto size_ref = code.right_ref().value();
-                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto vector_value_ref = code.left_ref().value(); //reference of vector
+                    auto vector_value = eval(ctx.ref(vector_value_ref), ctx); //vector
+                    auto size_value_ref = code.right_ref().value(); //reference of size
+                    auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
                         w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
                     }
@@ -1011,18 +1029,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto vector_ref = code.left_ref().value();
-                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
-                    auto size_ref = code.right_ref().value();
-                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto vector_value_ref = code.left_ref().value(); //reference of vector
+                    auto vector_value = eval(ctx.ref(vector_value_ref), ctx); //vector
+                    auto size_value_ref = code.right_ref().value(); //reference of size
+                    auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
                         w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
                     }
@@ -1033,16 +1051,16 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto ref = code.ref().value();
-                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto evaluated_ref = code.ref().value(); //reference of element
+                    auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //element
                     if(bit_size == 8) {
                         w.writeln("",evaluated.result," = ",ctx.r(),".decode_bytes_until_eof()");
                     }
@@ -1053,18 +1071,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECODE_INT_VECTOR_FIXED: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto vector_ref = code.left_ref().value();
-                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
-                    auto size_ref = code.right_ref().value();
-                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto vector_value_ref = code.left_ref().value(); //reference of vector
+                    auto vector_value = eval(ctx.ref(vector_value_ref), ctx); //vector
+                    auto size_value_ref = code.right_ref().value(); //reference of size
+                    auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
                         w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
                     }
@@ -1075,18 +1093,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::PEEK_INT_VECTOR: {
-                auto fallback = code.fallback().value();
+                auto fallback = code.fallback().value(); //reference of fallback operation
                 if(fallback.value() != 0) {
-                    auto inner_range = ctx.range(fallback);
+                    auto inner_range = ctx.range(fallback); //range of fallback operation
                     inner_function(ctx, w, inner_range);
                 }
                 else {
-                    auto bit_size = code.bit_size()->value();
-                    auto endian = code.endian().value();
-                    auto vector_ref = code.left_ref().value();
-                    auto vector_value = eval(ctx.ref(vector_ref), ctx);
-                    auto size_ref = code.right_ref().value();
-                    auto size_value = eval(ctx.ref(size_ref), ctx);
+                    auto bit_size = code.bit_size()->value(); //bit size of element
+                    auto endian = code.endian().value(); //endian of element
+                    auto vector_value_ref = code.left_ref().value(); //reference of vector
+                    auto vector_value = eval(ctx.ref(vector_value_ref), ctx); //vector
+                    auto size_value_ref = code.right_ref().value(); //reference of size
+                    auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
                         w.writeln("",vector_value.result," = ",ctx.r(),".peek_bytes(",size_value.result,")");
                     }
@@ -1097,38 +1115,40 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_INPUT: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref),ctx);
+                auto evaluated_ref = code.ref().value(); //reference of backward offset to move (in byte)
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //backward offset to move (in byte)
                 w.writeln("",ctx.r(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::BACKWARD_OUTPUT: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref),ctx);
+                auto evaluated_ref = code.ref().value(); //reference of backward offset to move (in byte)
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //backward offset to move (in byte)
                 w.writeln("",ctx.w(),".backward(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::CALL_ENCODE: {
-                auto func_ref = code.left_ref().value();
-                auto func_belong = ctx.ref(func_ref).belong().value();
-                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx);
-                auto func_name = ctx.ident(func_ref);
-                auto obj_ref = code.right_ref().value();
-                auto obj_eval = eval(ctx.ref(obj_ref), ctx);
+                auto func_ref = code.left_ref().value(); //reference of function
+                auto func_belong = ctx.ref(func_ref).belong().value(); //reference of function belong
+                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx); //function belong name
+                auto func_name = ctx.ident(func_ref); //identifier of function
+                auto obj_eval_ref = code.right_ref().value(); //reference of `this` object
+                auto obj_eval = eval(ctx.ref(obj_eval_ref), ctx); //`this` object
+                auto inner_range = ctx.range(func_ref); //range of function call range
                 w.write(obj_eval.result, ".", func_name, "(");
-                add_call_parameter(ctx, w,range);
+                add_call_parameter(ctx, w, inner_range);
                 w.writeln(")");
                 break;
             }
             case rebgn::AbstractOp::CALL_DECODE: {
-                auto func_ref = code.left_ref().value();
-                auto func_belong = ctx.ref(func_ref).belong().value();
-                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx);
-                auto func_name = ctx.ident(func_ref);
-                auto obj_ref = code.right_ref().value();
-                auto obj_eval = eval(ctx.ref(obj_ref), ctx);
+                auto func_ref = code.left_ref().value(); //reference of function
+                auto func_belong = ctx.ref(func_ref).belong().value(); //reference of function belong
+                auto func_belong_name = type_accessor(ctx.ref(func_belong), ctx); //function belong name
+                auto func_name = ctx.ident(func_ref); //identifier of function
+                auto obj_eval_ref = code.right_ref().value(); //reference of `this` object
+                auto obj_eval = eval(ctx.ref(obj_eval_ref), ctx); //`this` object
+                auto inner_range = ctx.range(func_ref); //range of function call range
                 w.write(obj_eval.result, ".", func_name, "(");
-                add_call_parameter(ctx, w,range);
+                add_call_parameter(ctx, w, inner_range);
                 w.writeln(")");
                 break;
             }
@@ -1138,8 +1158,8 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::LOOP_CONDITION: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("for ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1158,15 +1178,15 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::IF: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("if ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::ELIF: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 defer.pop_back();
                 w.write("}");
                 w.writeln("else if ",evaluated.result," {");
@@ -1186,22 +1206,22 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::MATCH: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("switch ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::EXHAUSTIVE_MATCH: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("switch ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::CASE: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("case ",evaluated.result," :{");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1222,11 +1242,12 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_VARIABLE: {
-                auto ident = ctx.ident(code.ident().value());
-                auto init_ref = code.ref().value();
-                auto type_ref = code.type().value();
-                auto type = type_to_string(ctx,type_ref);
-                auto init = eval(ctx.ref(init_ref), ctx);
+                auto ident_ref = code.ident().value(); //reference of variable
+                auto ident = ctx.ident(ident_ref); //identifier of variable
+                auto init_ref = code.ref().value(); //reference of variable initialization
+                auto init = eval(ctx.ref(init_ref), ctx); //variable initialization
+                auto type_ref = code.type().value(); //reference of variable
+                auto type = type_to_string(ctx,type_ref); //variable
                 w.writeln(std::format("var {}  {} = {}", ident, type, init.result));
                 break;
             }
@@ -1235,19 +1256,20 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::DECLARE_VARIABLE: {
-                auto ident = ctx.ident(code.ref().value());
-                auto init_ref = ctx.ref(code.ref().value()).ref().value();
-                auto type_ref = ctx.ref(code.ref().value()).type().value();
-                auto type = type_to_string(ctx,type_ref);
-                auto init = eval(ctx.ref(init_ref), ctx);
+                auto ident_ref = code.ref().value(); //reference of variable
+                auto ident = ctx.ident(ident_ref); //identifier of variable
+                auto init_ref = ctx.ref(code.ref().value()).ref().value(); //reference of variable initialization
+                auto init = eval(ctx.ref(init_ref), ctx); //variable initialization
+                auto type_ref = ctx.ref(code.ref().value()).type().value(); //reference of variable
+                auto type = type_to_string(ctx,type_ref); //variable
                 w.writeln(std::format("var {}  {} = {}", ident, type, init.result));
                 break;
             }
             case rebgn::AbstractOp::ASSIGN: {
-                auto left_ref = code.left_ref().value();
-                auto right_ref = code.right_ref().value();
-                auto left_eval = eval(ctx.ref(left_ref), ctx);
-                auto right_eval = eval(ctx.ref(right_ref), ctx);
+                auto left_eval_ref = code.left_ref().value(); //reference of assignment target
+                auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //assignment target
+                auto right_eval_ref = code.right_ref().value(); //reference of assignment source
+                auto right_eval = eval(ctx.ref(right_eval_ref), ctx); //assignment source
                 w.writeln("", left_eval.result, " = ", right_eval.result, "");
                 break;
             }
@@ -1256,42 +1278,43 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::ASSERT: {
-                auto evaluated = eval(ctx.ref(code.ref().value()), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of assertion condition
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //assertion condition
                 w.writeln("assert(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
-                auto vector_ref = code.left_ref().value();
-                auto vector_eval = eval(ctx.ref(vector_ref), ctx);
-                auto size_ref = code.right_ref().value();
-                auto size_eval = eval(ctx.ref(size_ref), ctx);
+                auto vector_eval_ref = code.left_ref().value(); //reference of vector to check
+                auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector to check
+                auto size_eval_ref = code.right_ref().value(); //reference of size to check
+                auto size_eval = eval(ctx.ref(size_eval_ref), ctx); //size to check
                 w.writeln("assert(", vector_eval.result, ".size() == ", size_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
-                auto param = code.param().value();
-                auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
+                auto param = code.param().value(); //error message parameters
+                auto evaluated = eval(ctx.ref(param.refs[0]), ctx); //error message
                 w.writeln("throw std::runtime_error(", evaluated.result, ")");
                 break;
             }
             case rebgn::AbstractOp::APPEND: {
-                auto vector_ref = code.left_ref().value();
-                auto new_element_ref = code.right_ref().value();
-                auto vector_eval = eval(ctx.ref(vector_ref), ctx);
-                auto new_element_eval = eval(ctx.ref(new_element_ref), ctx);
+                auto vector_eval_ref = code.left_ref().value(); //reference of vector (not temporary)
+                auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector (not temporary)
+                auto new_element_eval_ref = code.right_ref().value(); //reference of new element
+                auto new_element_eval = eval(ctx.ref(new_element_eval_ref), ctx); //new element
                 w.writeln(vector_eval.result, ".push_back(", new_element_eval.result, ")");
                 break;
             }
             case rebgn::AbstractOp::INC: {
-                auto ref = code.ref().value();
-                auto evaluated = eval(ctx.ref(ref), ctx);
+                auto evaluated_ref = code.ref().value(); //reference of increment target
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //increment target
                 w.writeln(evaluated.result, "+= 1");
                 break;
             }
             case rebgn::AbstractOp::RET: {
-                auto ref = code.ref().value();
+                auto ref = code.ref().value(); //reference of return value
                 if(ref.value() != 0) {
-                    auto evaluated = eval(ctx.ref(ref), ctx);
+                    auto evaluated = eval(ctx.ref(ref), ctx); //return value
                     w.writeln("return ", evaluated.result, "");
                 }
                 else {
@@ -1320,13 +1343,13 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::SWITCH_UNION: {
-                auto union_member_ref = code.ref().value();
-                auto union_ref = ctx.ref(union_member_ref).belong().value();
-                auto union_field_ref = ctx.ref(union_ref).belong().value();
-                auto union_member_index = ctx.ref(union_member_ref).int_value()->value();
-                auto union_member_ident = ctx.ident(union_member_ref);
-                auto union_ident = ctx.ident(union_ref);
-                auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
+                auto union_member_ref = code.ref().value(); //reference of current union member
+                auto union_ref = ctx.ref(union_member_ref).belong().value(); //reference of union
+                auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
+                auto union_member_index = ctx.ref(union_member_ref).int_value()->value(); //current union member index
+                auto union_member_ident = ctx.ident(union_member_ref); //identifier of union member
+                auto union_ident = ctx.ident(union_ref); //identifier of union
+                auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
                 w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
                 w.writeln("",union_field_ident.result," = ",union_member_ident,"()");
@@ -1335,14 +1358,14 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::CHECK_UNION: {
-                auto union_member_ref = code.ref().value();
-                auto union_ref = ctx.ref(union_member_ref).belong().value();
-                auto union_field_ref = ctx.ref(union_ref).belong().value();
-                auto union_member_index = ctx.ref(union_member_ref).int_value()->value();
-                auto union_member_ident = ctx.ident(union_member_ref);
-                auto union_ident = ctx.ident(union_ref);
-                auto union_field_ident = eval(ctx.ref(union_field_ref),ctx);
-                auto check_type = code.check_at().value();
+                auto union_member_ref = code.ref().value(); //reference of current union member
+                auto union_ref = ctx.ref(union_member_ref).belong().value(); //reference of union
+                auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
+                auto union_member_index = ctx.ref(union_member_ref).int_value()->value(); //current union member index
+                auto union_member_ident = ctx.ident(union_member_ref); //identifier of union member
+                auto union_ident = ctx.ident(union_ref); //identifier of union
+                auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
+                auto check_type = code.check_at().value(); //union check location
                 w.writeln("if !std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,") {");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {

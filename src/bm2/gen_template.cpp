@@ -270,7 +270,8 @@ namespace rebgn {
 
     void define_ident(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
         if (direct_ref) {
-            do_variable_definition(w, flags, op, var_name, ref, "string", std::format("identifier of {}", description));
+            auto ref_var = std::format("ctx.ident({})", ref);
+            do_variable_definition(w, flags, op, var_name, ref_var, "string", std::format("identifier of {}", description));
         }
         else {
             auto ref_name = std::format("{}_ref", var_name);
@@ -282,7 +283,8 @@ namespace rebgn {
 
     void define_eval(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
         if (direct_ref) {
-            do_variable_definition(w, flags, op, var_name, ref, "EvalResult", description);
+            auto ref_var = std::format("eval(ctx.ref({}), ctx)", ref);
+            do_variable_definition(w, flags, op, var_name, ref_var, "EvalResult", description);
         }
         else {
             auto ref_name = std::format("{}_ref", var_name);
@@ -738,19 +740,19 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::INC) {
-            define_eval(inner_function, flags, op, "evaluated", "ref", "increment target");
+            define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "increment target");
             func_hook([&] {
                 inner_function.writeln("w.writeln(evaluated.result, \"+= 1", flags.end_of_statement, "\");");
             });
         }
         else if (op == AbstractOp::CHECK_UNION || op == AbstractOp::SWITCH_UNION) {
-            define_ref(inner_function, flags, op, "union_member_ref", "union_member_ref", "current union member");
+            define_ref(inner_function, flags, op, "union_member_ref", code_ref(flags, "ref"), "current union member");
             define_ref(inner_function, flags, op, "union_ref", "ctx.ref(union_member_ref).belong().value()", "union");
             define_ref(inner_function, flags, op, "union_field_ref", "ctx.ref(union_ref).belong().value()", "union field");
             define_uint(inner_function, flags, op, "union_member_index", "ctx.ref(union_member_ref).int_value()->value()", "current union member index");
             define_ident(inner_function, flags, op, "union_member_ident", "union_member_ref", "union member", true);
             define_ident(inner_function, flags, op, "union_ident", "union_ref", "union", true);
-            define_ident(inner_function, flags, op, "union_field_ident", "union_field_ref", "union field", true);
+            define_eval(inner_function, flags, op, "union_field_ident", "union_field_ref", "union field", true);
             if (op == AbstractOp::CHECK_UNION) {
                 do_variable_definition(inner_function, flags, op, "check_type", "code.check_at().value()", "rebgn::UnionCheckAt", "union check location");
             }
@@ -795,7 +797,7 @@ namespace rebgn {
         }
         else if (op == AbstractOp::CALL_ENCODE || op == AbstractOp::CALL_DECODE) {
             define_ref(inner_function, flags, op, "func_ref", code_ref(flags, "left_ref"), "function");
-            define_ref(inner_function, flags, op, "func_belong", "func_belong", "function belong");
+            define_ref(inner_function, flags, op, "func_belong", "ctx.ref(func_ref).belong().value()", "function belong");
             do_variable_definition(inner_function, flags, op, "func_belong_name", "type_accessor(ctx.ref(func_belong), ctx)", "string", "function belong name");
             define_ident(inner_function, flags, op, "func_name", "func_ref", "function", true);
             define_eval(inner_function, flags, op, "obj_eval", code_ref(flags, "right_ref"), "`this` object");
@@ -810,7 +812,7 @@ namespace rebgn {
                  op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR ||
                  op == AbstractOp::ENCODE_INT_VECTOR_FIXED || op == AbstractOp::DECODE_INT_VECTOR_FIXED ||
                  op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF || op == AbstractOp::PEEK_INT_VECTOR) {
-            define_ref(inner_function, flags, op, "fallback_ident", code_ref(flags, "fallback"), "fallback operation");
+            define_ref(inner_function, flags, op, "fallback", code_ref(flags, "fallback"), "fallback operation");
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
                 auto indent = inner_function.indent_scope();
@@ -824,10 +826,10 @@ namespace rebgn {
                 inner_function.writeln("else {");
                 auto indent2 = inner_function.indent_scope();
                 define_uint(inner_function, flags, op, "bit_size", "code.bit_size()->value()", "bit size of element");
-                do_variable_definition(inner_function, flags, op, "endian", "code.endian()->value()", "rebgn::Endian", "endian of element");
+                do_variable_definition(inner_function, flags, op, "endian", "code.endian().value()", "rebgn::Endian", "endian of element");
                 if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||
                     op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
-                    define_eval(inner_function, flags, op, "evaluated", "evaluated", "element");
+                    define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "element");
                 }
                 else {
                     define_eval(inner_function, flags, op, "vector_value", code_ref(flags, "left_ref"), "vector");
@@ -1029,23 +1031,38 @@ namespace rebgn {
                     define_ref(type_accessor, flags, op, "union_field_belong", "ctx.ref(union_field_ref).belong().value()", "union field belong");
                 }
                 type_accessor_hook([&] {
-                    type_accessor.writeln("if(is_member) {");
-                    auto scope = type_accessor.indent_scope();
-                    do_variable_definition(type_accessor, flags, op, "belong_eval", "type_accessor(ctx.ref(union_field_ref),ctx)", "string", "field accessor");
-                    type_accessor_hook([&] {
-                        type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ident);");
-                    },
-                                       bm2::HookFileSub::field);
-                    scope.execute();
-                    type_accessor.writeln("}");
-                    type_accessor.writeln("else {");
-                    auto scope2 = type_accessor.indent_scope();
-                    type_accessor_hook([&] {
-                        type_accessor.writeln("result = ident;");
-                    },
-                                       bm2::HookFileSub::self);
-                    scope2.execute();
-                    type_accessor.writeln("}");
+                    if (op == AbstractOp::DEFINE_UNION_MEMBER) {
+                        do_variable_definition(type_accessor, flags, op, "belong_eval", "type_accessor(ctx.ref(union_field_belong),ctx)", "string", "field accessor");
+                        type_accessor_hook([&] {
+                            type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ident);");
+                        },
+                                           bm2::HookFileSub::field);
+                    }
+                    else if (op == AbstractOp::DEFINE_BIT_FIELD) {
+                        type_accessor_hook([&] {
+                            type_accessor.writeln("result = type_accessor(ctx.ref(belong),ctx);");
+                        },
+                                           bm2::HookFileSub::field);
+                    }
+                    else {
+                        type_accessor.writeln("if(is_member) {");
+                        auto scope = type_accessor.indent_scope();
+                        do_variable_definition(type_accessor, flags, op, "belong_eval", "type_accessor(ctx.ref(belong),ctx)", "string", "field accessor");
+                        type_accessor_hook([&] {
+                            type_accessor.writeln("result = std::format(\"{}.{}\", belong_eval, ident);");
+                        },
+                                           bm2::HookFileSub::field);
+                        scope.execute();
+                        type_accessor.writeln("}");
+                        type_accessor.writeln("else {");
+                        auto scope2 = type_accessor.indent_scope();
+                        type_accessor_hook([&] {
+                            type_accessor.writeln("result = ident;");
+                        },
+                                           bm2::HookFileSub::self);
+                        scope2.execute();
+                        type_accessor.writeln("}");
+                    }
                 });
             });
         }
@@ -1158,8 +1175,7 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_ENUM_MEMBER) {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "enum member");
             define_eval(inner_block, flags, op, "evaluated", code_ref(flags, "left_ref"), "enum member value");
-            define_ref(inner_block, flags, op, "belong_ref", code_ref(flags, "belong"), "enum");
-            define_ident(inner_block, flags, op, "enum_ident", "belong", "enum", true);
+            define_ident(inner_block, flags, op, "enum_ident", code_ref(flags, "belong"), "enum");
             block_hook([&] {
                 inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
             });
@@ -1284,7 +1300,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::OPTIONAL_OF) {
-            define_eval(eval, flags, op, "target", "target", "target object");
+            define_eval(eval, flags, op, "target", code_ref(flags, "ref"), "target object");
             define_type(eval, flags, op, "type", code_ref(flags, "type"), "type of optional (not include optional)");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"" + flags.optional_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
@@ -1339,7 +1355,7 @@ namespace rebgn {
         else if (op == AbstractOp::IMMEDIATE_TYPE) {
             define_type(eval, flags, op, "type", code_ref(flags, "type"), "immediate type");
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "type_to_string(ctx, type)", EvalResultMode::TEXT);
+                do_make_eval_result(eval, op, flags, "type", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_CHAR) {
@@ -1361,15 +1377,15 @@ namespace rebgn {
         else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
                  op == AbstractOp::DEFINE_VARIABLE_REF ||
                  op == AbstractOp::BEGIN_COND_BLOCK) {
-            define_ref(eval, flags, op, "ref", "ref", "expression");
+            define_ref(eval, flags, op, "ref", code_ref(flags, "ref"), "expression");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "eval(ctx.ref(ref), ctx)", EvalResultMode::PASSTHROUGH);
             });
         }
         else if (op == AbstractOp::ASSIGN) {
-            define_ref(eval, flags, op, "left_ref", "left_ref", "assign target");
-            define_ref(eval, flags, op, "right_ref", "right_ref", "assign source");
-            define_ref(eval, flags, op, "ref", "ref", "previous assignment or phi or definition");
+            define_ref(eval, flags, op, "left_ref", code_ref(flags, "left_ref"), "assign target");
+            define_ref(eval, flags, op, "right_ref", code_ref(flags, "right_ref"), "assign source");
+            define_ref(eval, flags, op, "ref", code_ref(flags, "ref"), "previous assignment or phi or definition");
             eval_hook([&] {
                 eval.writeln("if(ref.value() != 0) {");
                 auto scope = eval.indent_scope();
@@ -1420,7 +1436,7 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::NEW_OBJECT) {
-            define_type(eval, flags, op, "type", "type_ref", "object type");
+            define_type(eval, flags, op, "type", code_ref(flags, "type"), "object type");
             eval_hook([&] {
                 do_make_eval_result(eval, op, flags, "std::format(\"{}()\", type)", EvalResultMode::TEXT);
             });
@@ -1453,7 +1469,7 @@ namespace rebgn {
             eval.writeln("}");
             eval.writeln("else {");
             auto scope_2 = eval.indent_scope();
-            define_eval(eval, flags, op, "left_eval", "eval(ctx.ref(left_ref), ctx)", "field", true);
+            define_eval(eval, flags, op, "left_eval", "left_ref", "field", true);
             // eval.writeln("result.insert(result.end(), left_eval.begin(), left_eval.end() - 1);");
             eval.writeln("ctx.this_as.push_back(left_eval.result);");
             define_ref(eval, flags, op, "right_ref", code_ref(flags, "right_ref"), "condition");
@@ -1503,13 +1519,12 @@ namespace rebgn {
                 op == AbstractOp::STATE_VARIABLE_PARAMETER) {
                 if (op == AbstractOp::STATE_VARIABLE_PARAMETER) {
                     define_ident(add_parameter, flags, op, "ident", code_ref(flags, "ref"), "state variable");
-                    define_type(add_parameter, flags, op, "type", "ctx.ref(ref).type().value()", "state variable type");
+                    define_type(add_parameter, flags, op, "type", "ctx.ref(ident_ref).type().value()", "state variable type");
                 }
                 else {
                     define_ident(add_parameter, flags, op, "ident", code_ref(flags, "ident"), "parameter");
                     define_type(add_parameter, flags, op, "type", code_ref(flags, "type"), "parameter type");
                 }
-                add_parameter.writeln("auto ident = ctx.ident(ref);");
                 param_hook([&] {
                     if (flags.prior_ident) {
                         add_parameter.writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
@@ -1618,7 +1633,7 @@ namespace rebgn {
             do_variable_definition(type_to_string, flags, type, "base_type", "type_to_string_impl(ctx, s, bit_size, index + 1)", "string", "base type");
         }
         if (type == StorageType::UINT || type == StorageType::INT || type == StorageType::FLOAT) {
-            define_uint(type_to_string, flags, type, "bit_size", "storage.size()->value()", "bit size");
+            define_uint(type_to_string, flags, type, "size", "storage.size()->value()", "bit size");
             type_to_string.writeln("if (bit_size) {");
             auto if_block_size = type_to_string.indent_scope();
             type_to_string.writeln("*bit_size = size;");
@@ -1684,13 +1699,13 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::STRUCT_REF) {
-            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "struct");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "struct");
             type_hook([&] {
                 type_to_string.writeln("return ident;");
             });
         }
         else if (type == StorageType::RECURSIVE_STRUCT_REF) {
-            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "recursive struct");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "recursive struct");
             type_hook([&] {
                 type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
             });
@@ -1701,7 +1716,7 @@ namespace rebgn {
             });
         }
         else if (type == StorageType::ENUM) {
-            define_ident(type_to_string, flags, type, "ident", "storage.ref().value().value()", "enum");
+            define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "enum");
             type_hook([&] {
                 type_to_string.writeln("return ident;");
             });

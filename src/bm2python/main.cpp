@@ -5,7 +5,7 @@ struct Flags : bm2::Flags {
     bm2python::Flags bm2python_flags;
     void bind(futils::cmdline::option::Context& ctx) {
         bm2::Flags::bind(ctx);
-        ctx.VarBool(&bm2python_flags.is_async, "async", "use async operation");
+        ctx.VarBool(&bm2python_flags.use_async, "async", "use async operation");
     }
 };
 DEFINE_ENTRY(Flags) {

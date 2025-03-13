@@ -2269,10 +2269,12 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("export ");
         }
 
-        w.writeln("function set", upperWorkerName, "UIConfig(conf_map) {");
+        w.writeln("function set", upperWorkerName, "UIConfig(setter) {");
         auto scope1 = w.indent_scope();
+        w.writeln("setter(\"", workerName, "\",(nest_setter) => {");
+        auto scope2 = w.indent_scope();
         for (auto&& f : flag) {
-            w.writeln("conf_map.set(\"", f.bind_target, "\",{");
+            w.writeln("nest_setter(\"", f.bind_target, "\",{");
             auto scope_flag = w.indent_scope();
             if (f.type == "bool") {
                 w.writeln("type: \"checkbox\",");
@@ -2285,6 +2287,8 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             scope_flag.execute();
             w.writeln("});");
         }
+        scope2.execute();
+        w.writeln("});");
         scope1.execute();
         w.writeln("}");
     }

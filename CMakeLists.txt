@@ -65,9 +65,9 @@ if("$ENV{BUILD_MODE}" STREQUAL "native")
 if(UNIX)
 add_custom_command(
 TARGET gen_template POST_BUILD
-COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_BINARY_DIR}/tool/libfutils.so"
+COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_SOURCE_DIR}/tool/libfutils.so"
 )
-install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool)
+# install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool)
 elseif(WIN32)
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
 endif()

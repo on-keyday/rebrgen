@@ -1,5 +1,19 @@
 # Template Document
-## eval
+This document describes the variables that can be used in the code generator-generator hooks.
+Code generator-generator hooks are pieces of C++ code that are inserted into the generator code.
+## Words
+### reference
+A reference to a several object in the binary module.
+They are represented as rebgn::Varint. they are not supposed to be used directly.
+### type reference
+A reference to a type in the binary module.
+They are represented as rebgn::StorageRef. they are not supposed to be used directly.
+### identifier
+An identifier of a several object (e.g. function, variable, types, etc.)
+They are represented as std::string. use them for generating code.
+### EvalResult
+result of eval() function. it contains the result of the expression evaluation.
+## function `eval`
 ### ACCESS
 #### left_eval_ref
 Type: Varint
@@ -252,7 +266,7 @@ Description: target
 Type: string
 Initial Value: to_string(op)
 Description: unary operator string
-## inner_function
+## function `inner_function`
 ### APPEND
 #### vector_eval_ref
 Type: Varint
@@ -317,20 +331,20 @@ Description: backward offset to move (in byte)
 ### BEGIN_DECODE_PACKED_OPERATION
 #### fallback
 Type: Varint
-Initial Value: code.ref().value()
+Initial Value: code.fallback().value()
 Description: reference of fallback operation
 #### inner_range
 Type: string
-Initial Value: ctx.range(code.ref().value())
+Initial Value: ctx.range(fallback)
 Description: range of fallback operation
 ### BEGIN_ENCODE_PACKED_OPERATION
 #### fallback
 Type: Varint
-Initial Value: code.ref().value()
+Initial Value: code.fallback().value()
 Description: reference of fallback operation
 #### inner_range
 Type: string
-Initial Value: ctx.range(code.ref().value())
+Initial Value: ctx.range(fallback)
 Description: range of fallback operation
 ### CALL_DECODE
 #### func_ref
@@ -618,11 +632,11 @@ Description: variable
 ### DYNAMIC_ENDIAN
 #### fallback
 Type: Varint
-Initial Value: code.ref().value()
+Initial Value: code.fallback().value()
 Description: reference of fallback operation
 #### inner_range
 Type: string
-Initial Value: ctx.range(code.ref().value())
+Initial Value: ctx.range(fallback)
 Description: range of fallback operation
 ### ELIF
 #### evaluated_ref
@@ -727,20 +741,20 @@ Description: size
 ### END_DECODE_PACKED_OPERATION
 #### fallback
 Type: Varint
-Initial Value: code.ref().value()
+Initial Value: code.fallback().value()
 Description: reference of fallback operation
 #### inner_range
 Type: string
-Initial Value: ctx.range(code.ref().value())
+Initial Value: ctx.range(fallback)
 Description: range of fallback operation
 ### END_ENCODE_PACKED_OPERATION
 #### fallback
 Type: Varint
-Initial Value: code.ref().value()
+Initial Value: code.fallback().value()
 Description: reference of fallback operation
 #### inner_range
 Type: string
-Initial Value: ctx.range(code.ref().value())
+Initial Value: ctx.range(fallback)
 Description: range of fallback operation
 ### EXHAUSTIVE_MATCH
 #### evaluated_ref
@@ -884,7 +898,7 @@ Description: identifier of union
 Type: EvalResult
 Initial Value: eval(ctx.ref(union_field_ref), ctx)
 Description: union field
-## inner_block
+## function `inner_block`
 ### DECLARE_BIT_FIELD
 #### ref
 Type: Varint
@@ -904,7 +918,7 @@ Initial Value: ctx.ref(ref).type().value()
 Description: reference of bit field type
 #### type
 Type: string
-Initial Value: type_ref
+Initial Value: type_to_string(ctx,type_ref)
 Description: bit field type
 ### DECLARE_ENUM
 #### ref
@@ -1014,7 +1028,7 @@ Description: identifier of enum
 ### DEFINE_FIELD
 #### type
 Type: string
-Initial Value: code.type().value()
+Initial Value: type_to_string(ctx,code.type().value())
 Description: field type
 #### ident_ref
 Type: Varint
@@ -1078,7 +1092,7 @@ Description: reference of format
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
-## add_parameter
+## function `add_parameter`
 ### DEFINE_PARAMETER
 #### ident_ref
 Type: Varint
@@ -1130,7 +1144,7 @@ Description: reference of state variable type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: state variable type
-## add_call_parameter
+## function `add_call_parameter`
 ### PROPERTY_INPUT_PARAMETER
 #### ident_ref
 Type: Varint
@@ -1149,7 +1163,7 @@ Description: reference of state variable
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of state variable
-## type_to_string
+## function `type_to_string`
 ### ARRAY
 #### base_type
 Type: string
@@ -1237,7 +1251,7 @@ Description: base type
 Type: bool
 Initial Value: index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8
 Description: is byte vector
-## field_accessor
+## function `field_accessor`
 ### DEFINE_BIT_FIELD
 #### ident_ref
 Type: Varint
@@ -1351,7 +1365,7 @@ Description: reference of union field
 Type: Varint
 Initial Value: ctx.ref(union_field_ref).belong().value()
 Description: reference of union field belong
-## type_accessor
+## function `type_accessor`
 ### DEFINE_BIT_FIELD
 #### ident_ref
 Type: Varint

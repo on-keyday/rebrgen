@@ -53,6 +53,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string lang_name;
     std::string file_suffix = "";
     std::string worker_request_name = "";
+    std::string worker_lsp_name = "";
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
     std::string int_type_placeholder = "std::int{}_t";
@@ -296,7 +297,8 @@ namespace rebgn {
 
     void define_type(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view ref, std::string_view description, bool direct_ref = false) {
         if (direct_ref) {
-            do_variable_definition(w, flags, op, var_name, ref, "string", description);
+            auto ref_var = std::format("type_to_string(ctx,{})", ref);
+            do_variable_definition(w, flags, op, var_name, ref_var, "string", description);
         }
         else {
             auto ref_name = std::format("{}_ref", var_name);
@@ -553,11 +555,11 @@ namespace rebgn {
         else if (op == AbstractOp::BEGIN_ENCODE_PACKED_OPERATION || op == AbstractOp::BEGIN_DECODE_PACKED_OPERATION ||
                  op == AbstractOp::END_ENCODE_PACKED_OPERATION || op == AbstractOp::END_DECODE_PACKED_OPERATION ||
                  op == AbstractOp::DYNAMIC_ENDIAN) {
-            define_ref(inner_function, flags, op, "fallback", code_ref(flags, "ref"), "fallback operation");
+            define_ref(inner_function, flags, op, "fallback", code_ref(flags, "fallback"), "fallback operation");
             func_hook([&] {
                 inner_function.writeln("if(fallback.value() != 0) {");
                 auto scope = inner_function.indent_scope();
-                define_range(inner_function, flags, op, "inner_range", code_ref(flags, "ref"), "fallback operation");
+                define_range(inner_function, flags, op, "inner_range", "fallback", "fallback operation");
                 func_hook([&] {
                     inner_function.writeln("inner_function(ctx, w, inner_range);");
                 },
@@ -2339,8 +2341,22 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
         }
         else if (flags.is_template_docs == "markdown") {
             w.writeln("# Template Document");
+            w.writeln("This document describes the variables that can be used in the code generator-generator hooks.");
+            w.writeln("Code generator-generator hooks are pieces of C++ code that are inserted into the generator code.");
+            w.writeln("## Words");
+            w.writeln("### reference");
+            w.writeln("A reference to a several object in the binary module.");
+            w.writeln("They are represented as rebgn::Varint. they are not supposed to be used directly.");
+            w.writeln("### type reference");
+            w.writeln("A reference to a type in the binary module.");
+            w.writeln("They are represented as rebgn::StorageRef. they are not supposed to be used directly.");
+            w.writeln("### identifier");
+            w.writeln("An identifier of a several object (e.g. function, variable, types, etc.)");
+            w.writeln("They are represented as std::string. use them for generating code.");
+            w.writeln("### EvalResult");
+            w.writeln("result of eval() function. it contains the result of the expression evaluation.");
             for (auto& c : flags.content) {
-                w.writeln("## ", to_string(c.first));
+                w.writeln("## function `", to_string(c.first), "`");
                 for (auto& c2 : c.second) {
                     w.writeln("### ", c2.first);
                     for (auto& c3 : c2.second) {

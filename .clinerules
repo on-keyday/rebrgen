@@ -53,6 +53,8 @@ Action order below is no matter. You can choose actions below as if you need
 - you can run `script/generate` for generate the code generators
 - you can run `script/run_generated` to run the generated code generators and save the result in `save/save.{language_specific_suffix}`
 
+- you can read document on `docs/template_parameters.md` for what kind of variable can you use for writing hook. to regenerate this document, use `tool\gen_template --template-docs=markdown`
+
 # Current Development Phase
 
 Now phase is early of project.

@@ -82,7 +82,7 @@ const factory = new (class {
     }
 })();
 """
-    with open(f"{output_dir}/ui_embed.js", "wb") as f:
+    with open(f"{output_dir}/bm_caller.js", "wb") as f:
         f.write(UI_GLUE)
         f.write(WORKER_FACTORY)
         f.write(

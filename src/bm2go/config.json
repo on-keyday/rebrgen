@@ -1,6 +1,7 @@
 {
     "lang": "go",
     "suffix": "go",
+    "worker_request_name": "go2",
     "comment_prefix": "/*",
     "comment_suffix": "*/",
     "int_type": "int{}",

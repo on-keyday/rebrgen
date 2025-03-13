@@ -67,7 +67,7 @@ add_custom_command(
 TARGET gen_template POST_BUILD
 COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_BINARY_DIR}/tool/libfutils.so"
 )
-install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool OPTIONAL)
+install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool)
 elseif(WIN32)
 install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
 endif()

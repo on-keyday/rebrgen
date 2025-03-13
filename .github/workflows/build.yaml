@@ -67,7 +67,7 @@ jobs:
           cd utils
           . build shared Release futils
           cd ..
-          FUTILS_DIR=./utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
+          BUILD_MODE=native FUTILS_DIR=./utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
           cmake --build ./built/native/Debug --target gen_template
           cmake --install ./built/native/Debug --component gen_template
           python script/generate_web_glue.py

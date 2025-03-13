@@ -4,6 +4,7 @@ import json
 
 
 def generate_web_glue(config_file):
+    hook_dir = os.path.join(os.path.dirname(config_file),"hook")
     CONFIG = dict[str, str](
         json.loads(
             sp.check_output(
@@ -17,16 +18,17 @@ def generate_web_glue(config_file):
         else CONFIG["lang"]
     )
     print(f"Generating web glue for {LANG_NAME} ({config_file})")
-    LANG_NAME = LANG_NAME[0].upper() + LANG_NAME[1:]
+    UPPER_LANG_NAME = LANG_NAME[0].upper() + LANG_NAME[1:]
     UI_CODE = sp.check_output(
-        ["tool/gen_template", "--config-file", config_file, "--js-glue", "ui-embed"]
+        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--js-glue", "ui-embed"]
     )
     WORKER_CODE = sp.check_output(
-        ["tool/gen_template", "--config-file", config_file, "--js-glue", "worker"]
+        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--js-glue", "worker"]
     )
-    CALL_WORKER_FUNC = "generate" + LANG_NAME
-    CALL_UI_FUNC = "set" + LANG_NAME + "UIConfig"
-    CALL_UI_TO_OPT_FUNC = "convert" + LANG_NAME + "UIConfigToOption"
+    CALL_WORKER_FUNC = "generate" + UPPER_LANG_NAME
+    CALL_UI_FUNC = "set" + UPPER_LANG_NAME + "UIConfig"
+    CALL_UI_TO_OPT_FUNC = "convert" + UPPER_LANG_NAME + "UIConfigToOption"
+    CALL_SET_UI_FUNC = "set" + UPPER_LANG_NAME + "UIConfig"
     return {
         "lang_name": LANG_NAME,
         "worker_name": "bm2" + CONFIG["lang"],
@@ -35,6 +37,7 @@ def generate_web_glue(config_file):
         "call_worker_func": CALL_WORKER_FUNC,
         "call_ui_func": CALL_UI_FUNC,
         "call_ui_to_opt_func": CALL_UI_TO_OPT_FUNC,
+        "call_set_ui_func": CALL_SET_UI_FUNC,
     }
 
 
@@ -51,24 +54,52 @@ def generate_web_glue_files(config_dir, output_dir):
     config_files = search_config_files(config_dir)
     UI_GLUE = b""
     UI_CALLS = b""
+    UI_SETS = b""
+    UI_CANDIDATES = b"export const BM_LANGUAGES = ["
+    WORKER_FACTORY = b"const workers = Object.freeze({\n"
     for config_file in config_files:
         web_glue = generate_web_glue(config_file)
         with open(f"{output_dir}/{web_glue['worker_name']}_worker.js", "wb") as f:
             f.write(web_glue["worker_code"])
         UI_GLUE += web_glue["ui_code"]
-        UI_CALLS += f"case {web_glue['lang_name']}: return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);".encode()
+        UI_CALLS += f"    case \"{web_glue['lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
+        UI_CANDIDATES += f"\"{web_glue['lang_name']}\", ".encode()
+        WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new Worker(new URL('{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
+        UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
+    UI_CANDIDATES += b"];\n"
+    WORKER_FACTORY += b"});\n"
+    WORKER_FACTORY += b"""
+const factory = new (class {
+    constructor() {
+        this.workers = {};
+    }
+
+    getWorker(lang) {
+        if (!this.workers[lang]) {
+            this.workers[lang] = workers[lang]();
+        }
+        return this.workers[lang];
+    }
+})();
+"""
     with open(f"{output_dir}/ui_embed.js", "wb") as f:
         f.write(UI_GLUE)
+        f.write(WORKER_FACTORY)
         f.write(
-            b"function (ui,traceID,lang,sourceCode) {"
-            + b"switch(lang) {"
+            b"export function generateBMCode(ui,traceID,lang,sourceCode) {"
+            + b" switch(lang) {\n"
             + UI_CALLS
-            + b"default: throw new Error('Unsupported language: ' + lang);"
-            + b"}"
-            + b"}"
-            + b"export {getWorker};"  # export the function
+            + b"    default: throw new Error('Unsupported language: ' + lang);\n"
+            + b"  }\n"
+            + b"}\n"
+        )
+        f.write(UI_CANDIDATES)
+        f.write(
+            b"export function setBMUIConfig(ui) {\n"
+            + UI_SETS
+            + b"}\n"
         )
 
 
 if __name__ == "__main__":
-    generate_web_glue_files("src", "web")
+    generate_web_glue_files("src", "web/tool")

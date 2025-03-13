@@ -2456,10 +2456,10 @@ namespace bm2rust {
         else {
             write_error_type(ctx, ctx.cw, "Error");
         }
-        if (flags.enable_async) {
+        if (flags.use_async) {
             ctx.enable_async();
         }
-        ctx.use_copy_on_write_vec = flags.use_copy_on_write;
+        ctx.use_copy_on_write_vec = flags.use_copy_on_write_vec;
         std::vector<futils::helper::DynDefer> defer;
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             for (size_t i = bm.programs.ranges[j].start.value() + 1; i < bm.programs.ranges[j].end.value() - 1; i++) {

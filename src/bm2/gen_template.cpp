@@ -2162,15 +2162,15 @@ namespace rebgn {
         w.writeln("import { EmWorkContext } from \"../../em_work_ctx.js\";");
         w.writeln("// import { MyEmscriptenModule } from \"../../emscripten_mod.js\";");
         w.writeln("import { base64ToUint8Array } from \"./util.js\";");
-        w.writeln("const bmgenModule = bmgen.default as EmscriptenModuleFactory<MyEmscriptenModule>;");
+        w.writeln("const bmgenModule = bmgen.default /*as EmscriptenModuleFactory<MyEmscriptenModule>*/;");
         std::string lang_name = flags.worker_request_name;
         if (lang_name.empty()) {
             lang_name = flags.lang_name;
         }
         w.write_unformatted(std::format(R"(
 const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
-    switch (e.lang as string) {{
-        case \"{}\":
+    switch (e.lang /*as string*/) {{
+        case "{}":
             const bm = base64ToUint8Array(e.sourceCode);
             if(bm instanceof Error) {{
                 return bm;
@@ -2229,7 +2229,7 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
         auto scope_generate = w.indent_scope();
         w.writeln("const worker_mgr = factory.getWorker(\"", workerName, "\");");
         w.writeln("const req = worker_mgr.getRequest(traceID,\"", workerName, "\",sourceCode,flags);");
-        w.writeln("req.arguments = convert", workerName, "OptionToFlags(opt);");
+        w.writeln("req.arguments = convert", upperWorkerName, "OptionToFlags(opt);");
         w.writeln("return worker_mgr.doRequest(req);");
         scope_generate.execute();
         w.writeln("};");

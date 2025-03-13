@@ -7,10 +7,10 @@ mkdir -Force save\c
 mkdir -Force save\cpp
 .\tool\bm2cpp -i save\save.bin > save\cpp\save.cpp
 mkdir -Force save\go
-.\tool\bm2go -i save\save.bin > save\go\save.
+.\tool\bm2go -i save\save.bin > save\go\save.go
 mkdir -Force save\haskell
-.\tool\bm2haskell -i save\save.bin > save\haskell\save.
+.\tool\bm2haskell -i save\save.bin > save\haskell\save.hs
 mkdir -Force save\python
-.\tool\bm2python -i save\save.bin > save\python\save.
+.\tool\bm2python -i save\save.bin > save\python\save.py
 mkdir -Force save\rust
 .\tool\bm2rust -i save\save.bin > save\rust\save.rs

@@ -17,6 +17,11 @@ def generate_web_glue(config_file):
         if CONFIG["worker_request_name"] != ""
         else CONFIG["lang"]
     )
+    LSP_LANG = str(
+        CONFIG["worker_lsp_name"]
+        if CONFIG["worker_lsp_name"] != ""
+        else CONFIG["lang"]
+    )
     print(f"Generating web glue for {LANG_NAME} ({config_file})")
     UPPER_LANG_NAME = LANG_NAME[0].upper() + LANG_NAME[1:]
     UI_CODE = sp.check_output(
@@ -38,6 +43,7 @@ def generate_web_glue(config_file):
         "call_ui_func": CALL_UI_FUNC,
         "call_ui_to_opt_func": CALL_UI_TO_OPT_FUNC,
         "call_set_ui_func": CALL_SET_UI_FUNC,
+        "lsp_lang": LSP_LANG,
     }
 
 
@@ -55,7 +61,8 @@ def generate_web_glue_files(config_dir, output_dir):
     UI_GLUE = b""
     UI_CALLS = b""
     UI_SETS = b""
-    UI_CANDIDATES = b"export const BM_LANGUAGES = ["
+    LSP_MAPPER = b"export const BM_LSP_LANGUAGES = Object.freeze({\n"
+    UI_CANDIDATES = b"export const BM_LANGUAGES = Object.freeze(["
     WORKER_FACTORY = b"const workers = Object.freeze({\n"
     for config_file in config_files:
         web_glue = generate_web_glue(config_file)
@@ -66,8 +73,10 @@ def generate_web_glue_files(config_dir, output_dir):
         UI_CANDIDATES += f"\"{web_glue['lang_name']}\", ".encode()
         WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new Worker(new URL('{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
-    UI_CANDIDATES += b"];\n"
+        LSP_MAPPER += f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
+    UI_CANDIDATES += b"]);\n"
     WORKER_FACTORY += b"});\n"
+    LSP_MAPPER += b"});\n"
     WORKER_FACTORY += b"""
 const factory = new (class {
     constructor() {
@@ -94,6 +103,7 @@ const factory = new (class {
             + b"}\n"
         )
         f.write(UI_CANDIDATES)
+        f.write(LSP_MAPPER)
         f.write(
             b"export function setBMUIConfig(ui) {\n"
             + UI_SETS

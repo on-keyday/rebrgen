@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "hook_load.hpp"
 
 namespace rebgn {

@@ -8,7 +8,7 @@ def generate_web_glue(config_file):
     CONFIG = dict[str, str](
         json.loads(
             sp.check_output(
-                ["tool/gen_template", "--config-file", config_file, "--config"]
+                ["tool/gen_template", "--config-file", config_file, "--mode","config"]
             )
         )
     )
@@ -25,10 +25,10 @@ def generate_web_glue(config_file):
     print(f"Generating web glue for {LANG_NAME} ({config_file})")
     UPPER_LANG_NAME = LANG_NAME[0].upper() + LANG_NAME[1:]
     UI_CODE = sp.check_output(
-        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--js-glue", "ui-embed"]
+        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--mode", "js-ui-embed"]
     )
     WORKER_CODE = sp.check_output(
-        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--js-glue", "worker"]
+        ["tool/gen_template", "--config-file", config_file,"--hook-dir",hook_dir, "--mode", "js-worker"]
     )
     CALL_WORKER_FUNC = "generate" + UPPER_LANG_NAME
     CALL_UI_FUNC = "set" + UPPER_LANG_NAME + "UIConfig"

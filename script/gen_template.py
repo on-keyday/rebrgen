@@ -11,7 +11,10 @@ DEFAULT_FUTILS_DIR = (
 
 
 def execute(command, env) -> bytes:
-    return sp.check_output(command, env=env, check=True, stderr=sys.stderr)
+    passEnv = os.environ.copy()
+    if env is not None:
+        passEnv.update(env)
+    return sp.check_output(command, env=passEnv, stderr=sys.stderr)
 
 
 execute(

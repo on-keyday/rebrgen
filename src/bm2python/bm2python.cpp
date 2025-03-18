@@ -8,20 +8,21 @@ namespace bm2python {
     struct Context : bm2::Context {
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","self", std::move(escape_ident)} {}
     };
-    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
-    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
-    void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
-    void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
-    void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
     struct EvalResult {
         std::string result;
     };
     EvalResult make_eval_result(std::string result) {
         return EvalResult{std::move(result)};
     }
+    void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void inner_block(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
+    void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);
     EvalResult field_accessor(const rebgn::Code& code, Context& ctx);
     std::string type_accessor(const rebgn::Code& code, Context& ctx);
     EvalResult eval(const rebgn::Code& code, Context& ctx);
+    std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
+    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {
         if (s.storages.size() <= index) {
             return "\"\"\"type index overflow\"\"\"";
@@ -1443,7 +1444,6 @@ namespace bm2python {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_SUB_RANGE: {
-                w.writeln("\"\"\"Unimplemented BEGIN_ENCODE_SUB_RANGE\"\"\" ");
                 break;
             }
             case rebgn::AbstractOp::END_ENCODE_SUB_RANGE: {
@@ -1451,7 +1451,6 @@ namespace bm2python {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE: {
-                w.writeln("\"\"\"Unimplemented BEGIN_DECODE_SUB_RANGE\"\"\" ");
                 break;
             }
             case rebgn::AbstractOp::END_DECODE_SUB_RANGE: {

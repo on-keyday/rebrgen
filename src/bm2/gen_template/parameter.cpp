@@ -153,7 +153,7 @@ namespace rebgn {
         add_parameter.writeln("switch(code.op) {");
         auto scope_switch_add_parameter = add_parameter.indent_scope();
 
-        w.write("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
+        w.writeln("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         add_call_parameter.writeln("void add_call_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_call_parameter = add_call_parameter.indent_scope();
         add_call_parameter.writeln("size_t params = 0;");

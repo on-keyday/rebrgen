@@ -302,9 +302,6 @@ namespace rebgn {
 
     void write_eval_result(bm2::TmpCodeWriter& eval_result, Flags& flags) {
         eval_result.writeln("struct EvalResult {");
-        auto scope = eval_result.indent_scope();
-        eval_result.writeln("std::string result;");
-        eval_result.writeln("struct EvalResult {");
         {
             auto scope = eval_result.indent_scope();
             eval_result.writeln("std::string result;");

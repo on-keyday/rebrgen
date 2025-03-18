@@ -58,3 +58,15 @@ enum FuncName:
     type_to_string
     field_accessor
     type_accessor
+
+enum GenerateMode:
+    generator = "generator"
+    config_ = "config"
+    cmake = "cmake"
+    header = "header"
+    main = "main"
+    js_worker = "js-worker"
+    js_ui = "js-ui"
+    js_ui_embed = "js-ui-embed"
+    docs_json = "docs-json"
+    docs_markdown = "docs-markdown"

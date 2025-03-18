@@ -86,7 +86,8 @@
         "unordered_set": "cpp",
         "regex": "cpp",
         "iostream": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "string_view": "cpp"
     },
     "editor.formatOnSave": true,
     "C_Cpp.clang_format_style": "file",

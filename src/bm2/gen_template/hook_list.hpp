@@ -11,7 +11,6 @@
 #include <binary/float.h>
 #include <view/iovec.h>
 #include <binary/number.h>
-#include <error/error.h>
 namespace bm2 {
     enum class HookFile {
         keyword = 0,
@@ -334,6 +333,80 @@ namespace bm2 {
         }
         if (str == "type_accessor") {
             return FuncName::type_accessor;
+        }
+        return std::nullopt;
+    }
+    enum class GenerateMode {
+        generator = 0,
+        config_ = 1,
+        cmake = 2,
+        header = 3,
+        main = 4,
+        js_worker = 5,
+        js_ui = 6,
+        js_ui_embed = 7,
+        docs_json = 8,
+        docs_markdown = 9,
+    };
+    constexpr const char* to_string(GenerateMode e) {
+        switch (e) {
+            case GenerateMode::generator:
+                return "generator";
+            case GenerateMode::config_:
+                return "config";
+            case GenerateMode::cmake:
+                return "cmake";
+            case GenerateMode::header:
+                return "header";
+            case GenerateMode::main:
+                return "main";
+            case GenerateMode::js_worker:
+                return "js-worker";
+            case GenerateMode::js_ui:
+                return "js-ui";
+            case GenerateMode::js_ui_embed:
+                return "js-ui-embed";
+            case GenerateMode::docs_json:
+                return "docs-json";
+            case GenerateMode::docs_markdown:
+                return "docs-markdown";
+        }
+        return "";
+    }
+
+    constexpr std::optional<GenerateMode> GenerateMode_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "generator") {
+            return GenerateMode::generator;
+        }
+        if (str == "config") {
+            return GenerateMode::config_;
+        }
+        if (str == "cmake") {
+            return GenerateMode::cmake;
+        }
+        if (str == "header") {
+            return GenerateMode::header;
+        }
+        if (str == "main") {
+            return GenerateMode::main;
+        }
+        if (str == "js-worker") {
+            return GenerateMode::js_worker;
+        }
+        if (str == "js-ui") {
+            return GenerateMode::js_ui;
+        }
+        if (str == "js-ui-embed") {
+            return GenerateMode::js_ui_embed;
+        }
+        if (str == "docs-json") {
+            return GenerateMode::docs_json;
+        }
+        if (str == "docs-markdown") {
+            return GenerateMode::docs_markdown;
         }
         return std::nullopt;
     }

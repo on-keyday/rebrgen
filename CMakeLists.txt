@@ -48,7 +48,7 @@ add_executable(bmgen
 
 
 add_executable(gen_template 
-    "src/bm2/gen_template.cpp"
+    "src/bm2/gen_template/main.cpp"
 )
 
 add_subdirectory("src")

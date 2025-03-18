@@ -5,7 +5,7 @@
 
 namespace rebgn {
     void may_add_doc_content(Flags& flags, auto op, std::string_view var_name, std::string_view type, std::string_view description, std::string_view init_expr) {
-        if (!flags.is_template_docs.empty()) {
+        if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
             flags.content[flags.func_name][to_string(op)].push_back(Content{std::string(var_name), std::string(type), std::string(description), std::string(init_expr)});
         }
     }
@@ -20,11 +20,11 @@ namespace rebgn {
         may_add_doc_content(flags, op, var_name, type, description, init_expr);
     }
 
-    std::string code_ref(Flags& flags, std::string_view ref_name, std::string_view base = "code") {
+    inline std::string code_ref(Flags& flags, std::string_view ref_name, std::string_view base = "code") {
         return std::format("{}.{}().value()", base, ref_name);
     }
 
-    std::string ctx_ref(Flags& flags, std::string_view ref_name) {
+    inline std::string ctx_ref(Flags& flags, std::string_view ref_name) {
         return std::format("ctx.ref({})", ref_name);
     }
 

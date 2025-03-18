@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "../context.hpp"
 #include "flags.hpp"
 #include "hook_load.hpp"
@@ -234,6 +233,7 @@ namespace rebgn {
                         case AbstractOp::DEFAULT_CASE:
                             inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
                             break;
+                        default:;
                     }
                     inner_function.writeln("\");");
                 });
@@ -450,7 +450,6 @@ namespace rebgn {
     }
 
     void write_inner_function_func(bm2::TmpCodeWriter& w, bm2::TmpCodeWriter& inner_function, Flags& flags) {
-        bm2::TmpCodeWriter inner_function;
         w.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         inner_function.writeln("void inner_function(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_function = inner_function.indent_scope();

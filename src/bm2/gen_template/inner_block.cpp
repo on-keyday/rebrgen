@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "../context.hpp"
 #include "flags.hpp"
 #include "hook_load.hpp"

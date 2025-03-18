@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "../context.hpp"
 #include "flags.hpp"
 #include "hook_load.hpp"
@@ -131,7 +130,7 @@ namespace rebgn {
 
     void write_parameter_func(bm2::TmpCodeWriter& w,
                               bm2::TmpCodeWriter& add_parameter,
-                              bm2::TmpCodeWriter add_call_parameter, Flags& flags) {
+                              bm2::TmpCodeWriter& add_call_parameter, Flags& flags) {
         w.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range);");
         add_parameter.writeln("void add_parameter(Context& ctx, TmpCodeWriter& w, rebgn::Range range) {");
         auto scope_add_parameter = add_parameter.indent_scope();

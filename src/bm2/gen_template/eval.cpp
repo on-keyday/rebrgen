@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "../context.hpp"
 #include "flags.hpp"
 #include "hook_load.hpp"
@@ -301,7 +300,7 @@ namespace rebgn {
         eval.writeln("}");
     }
 
-    void write_eval_result(bm2::TmpCodeWriter eval_result, Flags& flags) {
+    void write_eval_result(bm2::TmpCodeWriter& eval_result, Flags& flags) {
         eval_result.writeln("struct EvalResult {");
         auto scope = eval_result.indent_scope();
         eval_result.writeln("std::string result;");

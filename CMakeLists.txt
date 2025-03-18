@@ -49,6 +49,14 @@ add_executable(bmgen
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"
+    "src/bm2/gen_template/accessor.cpp"
+    "src/bm2/gen_template/eval.cpp"
+    "src/bm2/gen_template/glue_code.cpp"
+    "src/bm2/gen_template/inner_block.cpp"
+    "src/bm2/gen_template/inner_function.cpp"
+    "src/bm2/gen_template/parameter.cpp"
+    "src/bm2/gen_template/type.cpp"
+    "src/bm2/gen_template/hook_load.cpp"
 )
 
 add_subdirectory("src")

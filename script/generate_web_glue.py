@@ -64,6 +64,7 @@ def generate_web_glue_files(config_dir, output_dir):
     LSP_MAPPER = b"export const BM_LSP_LANGUAGES = Object.freeze({\n"
     UI_CANDIDATES = b"export const BM_LANGUAGES = Object.freeze(["
     WORKER_FACTORY = b"const workers = Object.freeze({\n"
+    COPY_WASM = b""
     for config_file in config_files:
         web_glue = generate_web_glue(config_file)
         with open(f"{output_dir}/{web_glue['worker_name']}_worker.js", "wb") as f:
@@ -74,6 +75,7 @@ def generate_web_glue_files(config_dir, output_dir):
         WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new Worker(new URL('{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
+        COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.wasm');\n".encode()
     UI_CANDIDATES += b"]);\n"
     WORKER_FACTORY += b"});\n"
     LSP_MAPPER += b"});\n"
@@ -109,6 +111,9 @@ const factory = new (class {
             + UI_SETS
             + b"}\n"
         )
+    
+    with open(f"{output_dir}/wasmCopy.js.txt", "wb") as f:
+        f.write(COPY_WASM)
 
 
 if __name__ == "__main__":

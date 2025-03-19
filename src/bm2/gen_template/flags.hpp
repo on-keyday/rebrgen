@@ -229,20 +229,10 @@ struct Flags : futils::cmdline::templ::HelpOption {
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString(&lang_name, "lang", "language name", "LANG");
-        // ctx.VarBool(&is_header, "header", "generate header file");
-        // ctx.VarBool(&is_main, "main", "generate main file");
-        // ctx.VarBool(&is_cmake, "cmake", "generate cmake file");
-        // ctx.VarBool(&is_config, "config", "generate config file");
         ctx.VarBool(&debug, "debug", "debug mode (print hook call on stderr)");
         ctx.VarBool(&print_hooks, "print-hooks", "print hooks");
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
         ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
-        // ctx.VarMap<std::string, std::string_view, std::map>(&is_template_docs, "template-docs", "template docs (output format: json,markdown)", "FORMAT", std::map<std::string, std::string_view>{{"json", "json"}, {"markdown", "markdown"}, {"md", "markdown"}});
-        // ctx.VarMap<std::string, std::string_view, std::map>(&js_glue, "js-glue", "js glue code for playground (output target: ui,worker)", "TARGET", std::map<std::string, std::string_view>{
-        //                                                                                                                                                  {"ui", "ui"},
-        //                                                                                                                                                  {"worker", "worker"},
-        //                                                                                                                                                  {"ui-embed", "ui-embed"},
-        //                                                                                                                                              });
         ctx.VarMap<std::string, bm2::GenerateMode, std::map>(
             &mode, "mode", "generate mode (generator,config,header,main,cmake,js-worker,js-ui,js-ui-embed,docs-json,docs-markdown)", "MODE",
             std::map<std::string, bm2::GenerateMode>{

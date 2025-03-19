@@ -97,6 +97,31 @@ namespace rebgn {
             });
         }
         else if (op == AbstractOp::BEGIN_ENCODE_SUB_RANGE || op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
+            define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "sub range length or vector expression");
+            do_variable_definition(inner_function, flags, op, "sub_range_type", code_ref(flags, "sub_range_type"), "SubRangeType", "sub range type (byte_len or replacement)");
+            func_hook([&] {
+                inner_function.writeln("if(sub_range_type == rebgn::SubRangeType::byte_length) {");
+                auto scope = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                },
+                          bm2::HookFileSub::byte_length);
+                scope.execute();
+                inner_function.writeln("}");
+                inner_function.writeln("else if(sub_range_type == rebgn::SubRangeType::replacement) {");
+                auto scope2 = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                },
+                          bm2::HookFileSub::replacement);
+                scope2.execute();
+                inner_function.writeln("}");
+                inner_function.writeln("else {");
+                auto scope3 = inner_function.indent_scope();
+                inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), " \");");
+                scope3.execute();
+                inner_function.writeln("}");
+            });
         }
         else if (op == AbstractOp::BEGIN_ENCODE_PACKED_OPERATION || op == AbstractOp::BEGIN_DECODE_PACKED_OPERATION ||
                  op == AbstractOp::END_ENCODE_PACKED_OPERATION || op == AbstractOp::END_DECODE_PACKED_OPERATION ||

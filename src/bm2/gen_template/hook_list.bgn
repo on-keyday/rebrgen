@@ -48,6 +48,8 @@ enum HookFileSub:
     no_fallback = "_no_fallback" # no fallback case (e.g. no fallback condition)
     before = "_before" # before case (e.g. before AbstractOp)
     after = "_after" # after case (e.g. after AbstractOp)
+    byte_length = "_byte_length" # byte length case (e.g. byte length of AbstractOp)
+    replacement = "_replacement" # replacement case (e.g. replacement of AbstractOp)
 
 enum FuncName:
     eval

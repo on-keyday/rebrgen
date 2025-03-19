@@ -206,6 +206,8 @@ namespace bm2 {
         no_fallback = 8,
         before = 9,
         after = 10,
+        byte_length = 11,
+        replacement = 12,
     };
     constexpr const char* to_string(HookFileSub e) {
         switch (e) {
@@ -231,6 +233,10 @@ namespace bm2 {
                 return "_before";
             case HookFileSub::after:
                 return "_after";
+            case HookFileSub::byte_length:
+                return "_byte_length";
+            case HookFileSub::replacement:
+                return "_replacement";
         }
         return "";
     }
@@ -271,6 +277,12 @@ namespace bm2 {
         }
         if (str == "_after") {
             return HookFileSub::after;
+        }
+        if (str == "_byte_length") {
+            return HookFileSub::byte_length;
+        }
+        if (str == "_replacement") {
+            return HookFileSub::replacement;
         }
         return std::nullopt;
     }

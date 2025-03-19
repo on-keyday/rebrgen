@@ -72,7 +72,7 @@ def generate_web_glue_files(config_dir, output_dir):
         UI_GLUE += web_glue["ui_code"]
         UI_CALLS += f"    case \"{web_glue['lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
         UI_CANDIDATES += f"\"{web_glue['lang_name']}\", ".encode()
-        WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
+        WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new JobManager(new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url))),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
         COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.js');\n".encode()
@@ -96,6 +96,7 @@ const factory = new (class {
 })();
 """
     with open(f"{output_dir}/bm_caller.js", "wb") as f:
+        f.write(b"import { JobManager } from '../../s2j/job_mgr.js';\n")
         f.write(UI_GLUE)
         f.write(WORKER_FACTORY)
         f.write(

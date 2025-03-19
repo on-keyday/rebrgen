@@ -75,6 +75,7 @@ def generate_web_glue_files(config_dir, output_dir):
         WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
+        COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.js');\n".encode()
         COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.wasm');\n".encode()
         COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}_worker.js');\n".encode() # also copy worker js
     UI_CANDIDATES += b"]);\n"

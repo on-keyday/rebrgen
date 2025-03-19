@@ -1,0 +1,3 @@
+w.writeln("type ",ident," ", *base_type);
+w.writeln("const (");
+defer.push_back(w.indent_scope_ex());

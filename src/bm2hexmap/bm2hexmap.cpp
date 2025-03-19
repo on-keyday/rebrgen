@@ -1,6 +1,6 @@
 /*license*/
 #include <bm2/context.hpp>
-#include <bm/helper.hpp>
+#include <bmgen/helper.hpp>
 #include "bm2hexmap.hpp"
 #include <json/json_export.h>
 #include <json/to_string.h>
@@ -1000,59 +1000,6 @@ namespace bm2hexmap {
         return false;
     }
 
-    size_t find_next_else_or_end_if(Context& ctx, size_t start, bool include_else = false) {
-        size_t nested = 0;
-        for (size_t i = start + 1;; i++) {
-            if (i >= ctx.bm.code.size()) {
-                return ctx.bm.code.size();
-            }
-            auto& code = ctx.bm.code[i];
-            if (nested) {
-                if (code.op == rebgn::AbstractOp::END_IF) {
-                    nested--;
-                }
-            }
-            else {
-                if (!include_else) {
-                    if (code.op == rebgn::AbstractOp::END_IF) {
-                        return i;
-                    }
-                }
-                else {
-                    if (code.op == rebgn::AbstractOp::ELIF || code.op == rebgn::AbstractOp::ELSE || code.op == rebgn::AbstractOp::END_IF) {
-                        return i;
-                    }
-                }
-            }
-            if (code.op == rebgn::AbstractOp::IF) {
-                nested++;
-            }
-        }
-    }
-
-    size_t find_next_end_loop(Context& ctx, size_t start) {
-        size_t nested = 0;
-        for (size_t i = start + 1;; i++) {
-            if (i >= ctx.bm.code.size()) {
-                return ctx.bm.code.size();
-            }
-            auto& code = ctx.bm.code[i];
-            if (nested) {
-                if (code.op == rebgn::AbstractOp::END_LOOP) {
-                    nested--;
-                }
-            }
-            else {
-                if (code.op == rebgn::AbstractOp::END_LOOP) {
-                    return i;
-                }
-            }
-            if (code.op == rebgn::AbstractOp::LOOP_INFINITE || code.op == rebgn::AbstractOp::LOOP_CONDITION) {
-                nested++;
-            }
-        }
-    }
-
     void inner_function(Context& ctx, futils::binary::reader& r, rebgn::Range range) {
         // std::vector<futils::helper::DynDefer> defer;
         bool from_if = false;
@@ -1501,7 +1448,7 @@ namespace bm2hexmap {
                 }
                 case rebgn::AbstractOp::EXPLICIT_ERROR: {
                     auto param = code.param().value();
-                    auto evaluated = eval(ctx.ref(param.expr_refs[0]), ctx);
+                    auto evaluated = eval(ctx.ref(param.refs[0]), ctx);
                     w.writeln("/*Unimplemented EXPLICIT_ERROR*/");
                     break;
                 }

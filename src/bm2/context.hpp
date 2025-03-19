@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <bm/binary_module.hpp>
 #include <format>
+#include <bmgen/helper.hpp>
 
 namespace bm2 {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -136,6 +137,73 @@ namespace bm2 {
             }
             return std::nullopt;
         }
+
+        friend size_t find_next_else_or_end_if(Context& ctx, size_t start, bool include_else = false) {
+            size_t nested = 0;
+            for (size_t i = start + 1;; i++) {
+                if (i >= ctx.bm.code.size()) {
+                    return ctx.bm.code.size();
+                }
+                auto& code = ctx.bm.code[i];
+                if (nested) {
+                    if (code.op == rebgn::AbstractOp::END_IF) {
+                        nested--;
+                    }
+                }
+                else {
+                    if (!include_else) {
+                        if (code.op == rebgn::AbstractOp::END_IF) {
+                            return i;
+                        }
+                    }
+                    else {
+                        if (code.op == rebgn::AbstractOp::ELIF || code.op == rebgn::AbstractOp::ELSE || code.op == rebgn::AbstractOp::END_IF) {
+                            return i;
+                        }
+                    }
+                }
+                if (code.op == rebgn::AbstractOp::IF) {
+                    nested++;
+                }
+            }
+        }
+
+        friend size_t find_next_end_loop(Context& ctx, size_t start) {
+            size_t nested = 0;
+            for (size_t i = start + 1;; i++) {
+                if (i >= ctx.bm.code.size()) {
+                    return ctx.bm.code.size();
+                }
+                auto& code = ctx.bm.code[i];
+                if (nested) {
+                    if (code.op == rebgn::AbstractOp::END_LOOP) {
+                        nested--;
+                    }
+                }
+                else {
+                    if (code.op == rebgn::AbstractOp::END_LOOP) {
+                        return i;
+                    }
+                }
+                if (code.op == rebgn::AbstractOp::LOOP_INFINITE || code.op == rebgn::AbstractOp::LOOP_CONDITION) {
+                    nested++;
+                }
+            }
+        }
+
+        friend std::vector<size_t> get_parameters(Context& ctx, rebgn::Range func_range) {
+            std::vector<size_t> res;
+            for (size_t i = func_range.start; i < func_range.end; i++) {
+                auto& code = ctx.bm.code[i];
+                if (code.op != rebgn::AbstractOp::RETURN_TYPE &&
+                    rebgn::is_parameter_related(code.op)) {
+                    res.push_back(i);
+                }
+            }
+            return res;
+        }
     };
+
+    constexpr std::uint64_t null_ref = 0;
 
 }  // namespace bm2

@@ -1,3 +1,5 @@
+config.cpp.export_macro = "BM_API"
+config.cpp.hpp_name = "binary_module.hpp"
 config.cpp.namespace = "rebgn"
 config.cpp.bytes_type = "std::string"
 config.cpp.sys_include = "string"
@@ -263,6 +265,12 @@ enum AbstractOp:
 
     PROPERTY_FUNCTION # marker for property function
 
+    DEFINE_FALLBACK
+    END_FALLBACK
+
+    BEGIN_COND_BLOCK # marker for conditional block
+    END_COND_BLOCK
+
 
 enum SubRangeType:
     :u8
@@ -402,12 +410,12 @@ format Storages:
 
 format Metadata:
     name :Varint
-    len_exprs :Varint
-    expr_refs :[len_exprs.value]Varint
+    len :Varint
+    refs :[len.value]Varint
 
 format Param:
-    len_exprs :Varint
-    expr_refs :[len_exprs.value]Varint
+    len :Varint
+    refs :[len.value]Varint
     
 format PhiParam:
     condition :Varint
@@ -425,10 +433,16 @@ format EndianExpr:
 
 enum FunctionType:
     :u8
+    FREE
+    MEMBER
+    ENCODE
+    DECODE
+    BIT_GETTER
+    BIT_SETTER
     UNION_GETTER
     UNION_SETTER
     VECTOR_SETTER # like [len]u8. set both vector itself and length
-    
+
 
 format StorageRef:
     ref :Varint
@@ -489,9 +503,11 @@ format Code:
             ident :Varint
             left_ref :Varint # ref to init expr
             right_ref :Varint # ref to string representation or null
+            belong :Varint # belong to enum
         AbstractOp.DEFINE_FUNCTION:
             ident :Varint
             belong :Varint # belong to format or null
+            func_type :FunctionType
         AbstractOp.DEFINE_ENCODER:
             left_ref :Varint # ref to format
             right_ref :Varint # ref to encoder
@@ -520,6 +536,7 @@ format Code:
             type :StorageRef
         AbstractOp.DEFINE_UNION_MEMBER:
             ident :Varint
+            int_value :Varint # index of union member (0-based, order in union)
             belong :Varint # belong to union
         AbstractOp.RETURN_TYPE:
             type :StorageRef
@@ -580,17 +597,20 @@ format Code:
         AbstractOp.DYNAMIC_ENDIAN:
             ident :Varint
             ref :Varint # ref to endian expr
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT:
             ref :Varint
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
+            fallback :Varint # ref to fallback block
         AbstractOp.ENCODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length (length may be less than array size)
@@ -598,12 +618,14 @@ format Code:
             bit_size :Varint
             belong :Varint # related field or null_id(for output.put())
             array_length :Varint # array length
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length 
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR_FIXED:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length (length may be less than array size)
@@ -611,22 +633,26 @@ format Code:
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
             array_length :Varint # array length
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT_VECTOR_UNTIL_EOF:
             ref :Varint # ref to vector
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.DECODE_INT:
             ref :Varint
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.get())
+            fallback :Varint # ref to fallback block
         AbstractOp.PEEK_INT_VECTOR:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to length
             endian :EndianExpr
             bit_size :Varint
             belong :Varint # related field or null_id(for input.peek())
+            fallback :Varint # ref to fallback block (currently, not used)
         AbstractOp.CAST:
             ident: Varint
             ref :Varint # ref to object
@@ -718,12 +744,18 @@ format Code:
             packed_op_type :PackedOpType
             endian :EndianExpr
             bit_size :Varint
+            fallback :Varint # ref to fallback block
+        AbstractOp.END_ENCODE_PACKED_OPERATION:
+            fallback :Varint # ref to fallback block
         AbstractOp.BEGIN_DECODE_PACKED_OPERATION:
             ident :Varint
             belong :Varint # ref to bit field
             packed_op_type :PackedOpType
             endian :EndianExpr
             bit_size :Varint
+            fallback :Varint # ref to fallback block
+        AbstractOp.END_DECODE_PACKED_OPERATION:
+            fallback :Varint # ref to fallback block
         AbstractOp.SWITCH_UNION:
             ref :Varint # ref to union_member
         AbstractOp.CHECK_UNION:
@@ -757,7 +789,7 @@ format Code:
             type :StorageRef
         AbstractOp.PROPERTY_FUNCTION:
             ref :Varint # ref to merged conditional field
-            func_type :FunctionType
+        #    func_type :FunctionType
         AbstractOp.DEFINE_PROPERTY_SETTER:
             left_ref :Varint # ref to merged conditional field
             right_ref :Varint # ref to function
@@ -807,8 +839,14 @@ format Code:
         AbstractOp.IS_LITTLE_ENDIAN:
             ident :Varint
             ref :Varint # ref to dynamic endian variable(dynamic) or null(platform)
+            fallback :Varint # ref to fallback boolean expr
         AbstractOp.REMAIN_BYTES:
             ident :Varint
+        AbstractOp.DEFINE_FALLBACK:
+            ident :Varint
+        AbstractOp.BEGIN_COND_BLOCK:
+            ident :Varint
+            ref :Varint # ref to condition expr
 
 
 format StringRefs:

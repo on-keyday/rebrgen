@@ -1,0 +1,2 @@
+w.writeln("type ",ident," struct {");
+defer.push_back(w.indent_scope_ex());

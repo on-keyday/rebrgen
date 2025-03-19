@@ -5,7 +5,6 @@ on:
   # Trigger the workflow every time you push to the main branch
   # Using a different branch name? Replace main with your branch’s name
   push:
-    branches: [main]
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
@@ -57,12 +56,23 @@ jobs:
           cd utils
           . build wasm-em Release futils
           cd ..
+      - name: Install libc++-dev and libc++abi-dev
+        run: sudo apt-get install libc++-dev libc++abi-dev -y
       - name: Build
         run: |
-          chmod +x build.sh
-          EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./build.sh web Release
+          chmod +x script/build.sh
+          EMSDK_PATH=./emsdk FUTILS_DIR=./utils ./script/build.sh web Release
           cp README.md web/
           cp LICENSE web/
+          cd utils
+          . build shared Release futils
+          cd ..
+          BUILD_MODE=native FUTILS_DIR=$(pwd)/utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
+          cmake --build ./built/native/Debug --target gen_template
+          cmake --install ./built/native/Debug --component gen_template
+          ldd ./tool/gen_template
+          ldd ./tool/libfutils.so
+          python script/generate_web_glue.py
       - name: Upload Artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:

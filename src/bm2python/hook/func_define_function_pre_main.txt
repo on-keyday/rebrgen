@@ -1,0 +1,11 @@
+auto params = get_parameters(ctx,range);
+if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
+    if(params.size() == 0) {
+        w.writeln("@property");
+    }
+}
+else if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER) {
+    if(params.size() == 1) {
+        w.writeln("@",ident,".setter");
+    }
+}

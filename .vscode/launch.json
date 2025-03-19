@@ -67,6 +67,21 @@
             //"symbolSearchPath": "lib\\"
         },
         {
+            "name": "Debug bm2py",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/bm2py",
+            "args": [
+                "-i","${workspaceRoot}/save/save.bin",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
             "name": "Debug bm2hexmap",
             "type": "cppvsdbg",
             "request": "launch",
@@ -75,6 +90,21 @@
                 "-i","${workspaceRoot}/save/save.bin",
                 "--binary","${workspaceRoot}/save/bridge_msg.bin",
                 "--start-format","NetLinkMessage"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "console": "integratedTerminal",
+            //"preLaunchTask": "build",
+            //"symbolSearchPath": "lib\\"
+        },
+        {
+            "name": "Debug gen_template",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/tool/gen_template",
+            "args": [
+                "--config",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

@@ -1,0 +1,5 @@
+if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {
+    auto copy = str;
+    copy[0] = std::toupper(copy[0]);
+    return copy;
+}

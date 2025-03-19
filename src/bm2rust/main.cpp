@@ -6,8 +6,8 @@ struct Flags : bm2::Flags {
 
     void bind(futils::cmdline::option::Context& ctx) {
         bm2::Flags::bind(ctx);
-        ctx.VarBool(&bm2rust_flags.enable_async, "async", "enable async");
-        ctx.VarBool(&bm2rust_flags.use_copy_on_write, "copy-on-write", "use copy-on-write vectors");
+        ctx.VarBool(&bm2rust_flags.use_async, "async", "enable async");
+        ctx.VarBool(&bm2rust_flags.use_copy_on_write_vec, "copy-on-write", "use copy-on-write vectors");
     }
 };
 

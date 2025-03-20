@@ -331,6 +331,7 @@ namespace rebgn {
         }
         APPLY_AND_REBIND(merge_conditional_field);
         APPLY_AND_REBIND(derive_property_functions);
+        APPLY_AND_REBIND(derive_bit_field_accessor_functions);
         analyze_encoder_decoder_traits(m);
         APPLY_AND_REBIND(expand_bit_operation);
         APPLY_AND_REBIND(apply_encode_fallback);

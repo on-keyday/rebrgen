@@ -39,6 +39,7 @@ add_executable(bmgen
     "src/bmgen/transform/flatten.cpp"
     "src/bmgen/transform/merge_conditional.cpp"
     "src/bmgen/transform/property_accessor.cpp"
+    "src/bmgen/transform/bit_accessor.cpp"
     "src/bmgen/transform/sort_formats.cpp"
     "src/bmgen/transform/sort_func_loc.cpp"
     "src/bmgen/transform/fallback/bit_op.cpp"

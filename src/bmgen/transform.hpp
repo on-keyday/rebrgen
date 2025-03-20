@@ -15,4 +15,5 @@ namespace rebgn {
     Error apply_encode_fallback(Module& m);
     Error apply_dynamic_endian_fallback(Module& m);
     Error sort_func_in_format(Module& m);
+    Error derive_bit_field_accessor_functions(Module& m);
 }  // namespace rebgn

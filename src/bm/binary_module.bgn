@@ -784,7 +784,7 @@ format Code:
             decode_flags :DecodeParamFlags
         AbstractOp.PROPERTY_INPUT_PARAMETER:
             ident :Varint
-            left_ref :Varint # ref to merged conditional field(for union) or field (for dynamic array)
+            left_ref :Varint # ref to merged conditional field(for union) or field (for dynamic array or bit field)
             right_ref :Varint # ref to function
             type :StorageRef
         AbstractOp.PROPERTY_FUNCTION:

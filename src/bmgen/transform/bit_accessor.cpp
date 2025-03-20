@@ -65,7 +65,7 @@ namespace rebgn {
             }
             if (target && c.op == AbstractOp::DEFINE_FIELD) {
                 BM_ERROR_WRAP(detailed_type, error, m.get_storage(c.type().value()));
-                auto n_bit = detailed_type.storages[0].size()->value();
+                BM_ERROR_WRAP(n_bit, error, bit_size(detailed_type));
 
                 std::uint64_t max_mask = (std::uint64_t(1) << n_bit) - 1;
 
@@ -73,14 +73,14 @@ namespace rebgn {
                 BM_IMMEDIATE(op, shift_offset, offset);
                 BM_IMMEDIATE(op, mask, max_mask);
                 {
-                    op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-                        c.ident(getter_id);
-                        c.belong(c.belong().value());
-                        c.func_type(FunctionType::BIT_GETTER);
+                    op(AbstractOp::DEFINE_FUNCTION, [&](Code& r) {
+                        r.ident(getter_id);
+                        r.belong(c.belong().value());
+                        r.func_type(FunctionType::BIT_GETTER);
                     });
 
-                    op(AbstractOp::RETURN_TYPE, [&](Code& c) {
-                        c.type(c.type().value());
+                    op(AbstractOp::RETURN_TYPE, [&](Code& r) {
+                        r.type(c.type().value());
                     });
 
                     // target_type((bit_fields >> offset) & max(n bit))
@@ -99,10 +99,10 @@ namespace rebgn {
                 }
                 {
                     BM_NEW_ID(setter_id, error, nullptr);
-                    op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-                        c.ident(setter_id);
-                        c.belong(c.belong().value());
-                        c.func_type(FunctionType::BIT_SETTER);
+                    op(AbstractOp::DEFINE_FUNCTION, [&](Code& r) {
+                        r.ident(setter_id);
+                        r.belong(c.belong().value());
+                        r.func_type(FunctionType::BIT_SETTER);
                     });
 
                     auto ret_type_ref = m.get_storage_ref(
@@ -120,22 +120,18 @@ namespace rebgn {
                     });
 
                     BM_NEW_ID(prop_input, error, nullptr);
-                    op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& c) {
-                        c.ident(prop_input);
-                        c.left_ref(c.ident().value());
-                        c.right_ref(setter_id);
-                        c.type(c.type().value());
+                    op(AbstractOp::PROPERTY_INPUT_PARAMETER, [&](Code& r) {
+                        r.ident(prop_input);
+                        r.left_ref(c.ident().value());
+                        r.right_ref(setter_id);
+                        r.type(c.type().value());
                     });
 
-                    auto size = bit_size(*detailed_field_type);
-                    if (!size) {
-                        return size.error();
-                    }
                     auto n_bit_type = Storages{
                         .length = *varint(1),
                         .storages = {Storage{.type = StorageType::UINT}},
                     };
-                    n_bit_type.storages[0].size(*varint(size.value()));
+                    n_bit_type.storages[0].size(*varint(n_bit));
                     auto n_bit_type_ref = m.get_storage_ref(
                         n_bit_type,
                         nullptr);

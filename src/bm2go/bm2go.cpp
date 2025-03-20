@@ -1391,6 +1391,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_SUB_RANGE: {
+                auto evaluated_ref = code.ref().value(); //reference of sub range length or vector expression
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //sub range length or vector expression
+                auto sub_range_type = code.sub_range_type().value(); //sub range type (byte_len or replacement)
+                if(sub_range_type == rebgn::SubRangeType::byte_len) {
+                    w.writeln("/*Unimplemented BEGIN_ENCODE_SUB_RANGE*/ ");
+                }
+                else if(sub_range_type == rebgn::SubRangeType::replacement) {
+                    w.writeln("/*Unimplemented BEGIN_ENCODE_SUB_RANGE*/ ");
+                }
+                else {
+                    w.writeln("/*Unimplemented BEGIN_ENCODE_SUB_RANGE*/ ");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_ENCODE_SUB_RANGE: {
@@ -1398,6 +1410,18 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::BEGIN_DECODE_SUB_RANGE: {
+                auto evaluated_ref = code.ref().value(); //reference of sub range length or vector expression
+                auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //sub range length or vector expression
+                auto sub_range_type = code.sub_range_type().value(); //sub range type (byte_len or replacement)
+                if(sub_range_type == rebgn::SubRangeType::byte_len) {
+                    w.writeln("/*Unimplemented BEGIN_DECODE_SUB_RANGE*/ ");
+                }
+                else if(sub_range_type == rebgn::SubRangeType::replacement) {
+                    w.writeln("/*Unimplemented BEGIN_DECODE_SUB_RANGE*/ ");
+                }
+                else {
+                    w.writeln("/*Unimplemented BEGIN_DECODE_SUB_RANGE*/ ");
+                }
                 break;
             }
             case rebgn::AbstractOp::END_DECODE_SUB_RANGE: {

@@ -7,6 +7,8 @@ rebrgen is as AST-to-VMCode-to-Code model
 
 This is aimed at improving flexibility and inter-language compatibility
 
+# How to add language
+
 # Current Status
 
 - Rust version is working (it potentially contains bug)

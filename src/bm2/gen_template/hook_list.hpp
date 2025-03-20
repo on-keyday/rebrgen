@@ -21,26 +21,27 @@ namespace bm2 {
         flags = 5,
         eval_result = 6,
         escape_ident = 7,
-        each_inner_block = 8,
-        each_inner_function = 9,
-        inner_function_start = 10,
-        inner_function_each_code = 11,
-        inner_block_start = 12,
-        inner_block_each_code = 13,
-        param_start = 14,
-        param_each_code = 15,
-        call_param_start = 16,
-        call_param_each_code = 17,
-        first_scan = 18,
-        tree_scan = 19,
-        inner_function_op = 20,
-        inner_block_op = 21,
-        eval_op = 22,
-        type_op = 23,
-        param_op = 24,
-        call_param_op = 25,
-        field_accessor_op = 26,
-        type_accessor_op = 27,
+        entry = 8,
+        each_inner_block = 9,
+        each_inner_function = 10,
+        inner_function_start = 11,
+        inner_function_each_code = 12,
+        inner_block_start = 13,
+        inner_block_each_code = 14,
+        param_start = 15,
+        param_each_code = 16,
+        call_param_start = 17,
+        call_param_each_code = 18,
+        first_scan = 19,
+        tree_scan = 20,
+        inner_function_op = 21,
+        inner_block_op = 22,
+        eval_op = 23,
+        type_op = 24,
+        param_op = 25,
+        call_param_op = 26,
+        field_accessor_op = 27,
+        type_accessor_op = 28,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -60,6 +61,8 @@ namespace bm2 {
                 return "eval_result";
             case HookFile::escape_ident:
                 return "escape_ident";
+            case HookFile::entry:
+                return "entry";
             case HookFile::each_inner_block:
                 return "each_inner_block";
             case HookFile::each_inner_function:
@@ -131,6 +134,9 @@ namespace bm2 {
         }
         if (str == "escape_ident") {
             return HookFile::escape_ident;
+        }
+        if (str == "entry") {
+            return HookFile::entry;
         }
         if (str == "each_inner_block") {
             return HookFile::each_inner_block;

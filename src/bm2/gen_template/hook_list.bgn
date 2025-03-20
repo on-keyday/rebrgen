@@ -9,6 +9,7 @@ enum HookFile:
     flags = "flags" # command line flags definitions
     eval_result = "eval_result" # bm2xx::EvalResult definitions
     escape_ident = "escape_ident" # escape identifier
+    entry = "entry" # entry point
 
     each_inner_block = "each_inner_block" # each inner block
     each_inner_function = "each_inner_function" # each inner function

@@ -70,7 +70,7 @@
             "name": "Debug bm2py",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/tool/bm2py",
+            "program": "${workspaceRoot}/tool/bm2python",
             "args": [
                 "-i","${workspaceRoot}/save/save.bin",
             ],

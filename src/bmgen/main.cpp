@@ -242,6 +242,9 @@ namespace rebgn {
             if (auto s = c.cast_type()) {
                 cout << " " << to_string(*s);
             }
+            if (auto r = c.reserve_type()) {
+                cout << " " << to_string(*r);
+            }
             if (auto s = c.sub_range_type()) {
                 cout << " " << to_string(*s);
             }

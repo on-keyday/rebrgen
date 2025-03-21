@@ -263,6 +263,11 @@ namespace rebgn {
                     BM_DECODE_INT_VEC_FIXED(m.op, base_ref, *imm, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
                     return none;
                 }
+                m.op(AbstractOp::RESERVE_SIZE, [&](Code& c) {
+                    c.left_ref(base_ref);
+                    c.right_ref(*imm);
+                    c.reserve_type(ReserveType::STATIC);
+                });
                 return counter_loop(m, *imm, [&](Varint i) {
                     BM_INDEX(m.op, index, base_ref, i);
                     return decode_type(m, arr->element_type, index, mapped_type, field, should_init_recursive);
@@ -294,6 +299,7 @@ namespace rebgn {
                             return req_size.error();
                         }
                         BM_GET_ENDIAN(endian, Endian::unspec, false);
+
                         BM_DECODE_INT_VEC_FIXED(m.op, base_ref, *req_size, endian, 8, (get_field_ref(m, field)), *field->arguments->alignment_value / 8 - 1);
                         return none;
                     }
@@ -483,6 +489,7 @@ namespace rebgn {
                 m.op(AbstractOp::RESERVE_SIZE, [&](Code& c) {
                     c.left_ref(base_ref);
                     c.right_ref(*len_ident);
+                    c.reserve_type(ReserveType::DYNAMIC);
                 });
                 return counter_loop(m, *len_ident, [&](Varint) {
                     return undelying_decoder();

@@ -176,6 +176,8 @@ namespace rebgn {
 
             if (op == AbstractOp::DEFINE_FUNCTION) {
                 define_ident(inner_function, flags, op, "ident", code_ref(flags, "ident"), "function");
+                do_variable_definition(inner_function, flags, op, "func_type", code_ref(flags, "func_type"), "rebgn::FunctionType", "function type");
+
                 // inner_function.writeln("auto range = ctx.range(code.ident().value());");
                 inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
                 do_typed_variable_definition(inner_function, flags, op, "type", "std::nullopt", "std::optional<std::string>", "function return type");

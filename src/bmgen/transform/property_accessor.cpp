@@ -1,5 +1,6 @@
 /*license*/
 #include <bmgen/internal.hpp>
+#include <bmgen/bit.hpp>
 
 namespace rebgn {
     std::string property_name_suffix(Module& m, const Storages& s) {
@@ -373,7 +374,7 @@ namespace rebgn {
         if (!bit_size) {
             return error("Invalid bit size");
         }
-        auto max_value = (std::uint64_t(1) << *bit_size) - 1;
+        auto max_value = safe_left_shift(1, *bit_size) - 1;
         BM_IMMEDIATE(op, value_id, max_value);
         BM_NEW_ID(length_id, error, nullptr);
         op(AbstractOp::ARRAY_SIZE, [&](Code& m) {

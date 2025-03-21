@@ -622,6 +622,10 @@ Description: reference of function
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of function
+#### func_type
+Type: rebgn::FunctionType
+Initial Value: code.func_type().value()
+Description: function type
 #### type
 Type: std::optional<std::string>
 Initial Value: std::nullopt
@@ -973,6 +977,10 @@ Description: reference of FUNCTION
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of FUNCTION
+#### func_type
+Type: rebgn::FunctionType
+Initial Value: ctx.ref(ref).func_type().value()
+Description: function type
 ### DECLARE_PROPERTY
 #### ref
 Type: Varint
@@ -1009,6 +1017,23 @@ Description: reference of UNION_MEMBER
 Type: string
 Initial Value: ctx.range(ref)
 Description: range of UNION_MEMBER
+### DEFINE_BIT_FIELD
+#### type
+Type: string
+Initial Value: type_to_string(ctx,code.type().value())
+Description: bit field type
+#### ident_ref
+Type: Varint
+Initial Value: code.ident().value()
+Description: reference of bit field
+#### ident
+Type: string
+Initial Value: ctx.ident(ident_ref)
+Description: identifier of bit field
+#### belong
+Type: Varint
+Initial Value: code.belong().value()
+Description: reference of belonging struct or bit field
 ### DEFINE_ENUM
 #### ident_ref
 Type: Varint
@@ -1064,6 +1089,14 @@ Description: reference of field
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of field
+#### belong
+Type: Varint
+Initial Value: code.belong().value()
+Description: reference of belonging struct or bit field
+#### is_bit_field
+Type: bool
+Initial Value: belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD
+Description: is part of bit field
 ### DEFINE_FORMAT
 #### ident_ref
 Type: Varint
@@ -1203,6 +1236,11 @@ Description: is byte vector
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: array length
+### DEFINE_FUNCTION
+#### func_type
+Type: rebgn::FunctionType
+Initial Value: code.func_type().value()
+Description: function type
 ### ENUM
 #### ident_ref
 Type: Varint

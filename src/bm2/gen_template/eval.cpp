@@ -231,7 +231,7 @@ namespace rebgn {
                 }
             });
         }
-        else if (op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_PROPERTY) {
+        else if (op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_PROPERTY || op == AbstractOp::DEFINE_BIT_FIELD) {
             do_make_eval_result(eval, op, flags, "field_accessor(code,ctx)", EvalResultMode::PASSTHROUGH);
         }
         else if (op == AbstractOp::DEFINE_VARIABLE ||

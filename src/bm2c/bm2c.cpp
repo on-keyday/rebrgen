@@ -22,7 +22,7 @@ namespace bm2c {
     std::string type_accessor(const rebgn::Code& code, Context& ctx);
     EvalResult eval(const rebgn::Code& code, Context& ctx);
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0);
-    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);
+    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref,size_t* bit_size = nullptr);
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size, size_t index) {
         if (s.storages.size() <= index) {
             return "/*type index overflow*/";
@@ -134,9 +134,9 @@ namespace bm2c {
             }
         }
     }
-    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref) {
+    std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref,size_t* bit_size) {
         auto& storage = ctx.storage_table[ref.ref.value()];
-        return type_to_string_impl(ctx, storage);
+        return type_to_string_impl(ctx, storage, bit_size);
     }
     EvalResult field_accessor(const rebgn::Code& code, Context& ctx) {
         EvalResult result;
@@ -693,6 +693,8 @@ namespace bm2c {
                 auto type = type_to_string(ctx,code.type().value()); //field type
                 auto ident_ref = code.ident().value(); //reference of field
                 auto ident = ctx.ident(ident_ref); //identifier of field
+                auto belong = code.belong().value(); //reference of belonging struct or bit field
+                auto is_bit_field = belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD; //is part of bit field
                 w.writeln(type, "  ", ident, ";");
                 break;
             }
@@ -721,6 +723,7 @@ namespace bm2c {
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value(); //reference of FUNCTION
                 auto inner_range = ctx.range(code.ref().value()); //range of FUNCTION
+                auto func_type = ctx.ref(ref).func_type().value(); //function type
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -818,11 +821,13 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-                w.writeln("/*Unimplemented DEFINE_BIT_FIELD*/ ");
+                auto type = type_to_string(ctx,code.type().value()); //bit field type
+                auto ident_ref = code.ident().value(); //reference of bit field
+                auto ident = ctx.ident(ident_ref); //identifier of bit field
+                auto belong = code.belong().value(); //reference of belonging struct or bit field
                 break;
             }
             case rebgn::AbstractOp::END_BIT_FIELD: {
-                w.writeln("/*Unimplemented END_BIT_FIELD*/ ");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_BIT_FIELD: {
@@ -870,6 +875,7 @@ namespace bm2c {
             case rebgn::AbstractOp::DEFINE_FUNCTION: {
                 auto ident_ref = code.ident().value(); //reference of function
                 auto ident = ctx.ident(ident_ref); //identifier of function
+                auto func_type = code.func_type().value(); //function type
                 auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
                 std::optional<std::string> type = std::nullopt; //function return type
                 if(found_type_pos) {
@@ -1478,6 +1484,11 @@ namespace bm2c {
                 continue;
             }
             TmpCodeWriter w;
+            auto func_type = code.func_type().value(); //function type
+            if (func_type == rebgn::FunctionType::BIT_GETTER ||
+                func_type == rebgn::FunctionType::BIT_SETTER) {
+                continue;
+            }
             inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});
             ctx.cw.write_unformatted(w.out());
         }

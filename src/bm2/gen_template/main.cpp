@@ -262,19 +262,31 @@ namespace rebgn {
         w.indent_writeln("def.execute();");
         w.writeln("}");
 
-        w.writeln("for (size_t i = 0; i < bm.ident_ranges.ranges.size(); i++) {");
-        auto _scope = w.indent_scope();
-        w.writeln("auto& range = bm.ident_ranges.ranges[i];");
-        w.writeln("auto& code = bm.code[range.range.start.value()];");
-        w.writeln("if (code.op != rebgn::AbstractOp::DEFINE_FUNCTION) {");
-        w.indent_writeln("continue;");
-        w.writeln("}");
-        w.writeln("TmpCodeWriter w;");
-        may_write_from_hook(w, flags, bm2::HookFile::each_inner_function, false);
-        w.writeln("inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});");
-        w.writeln("ctx.cw.write_unformatted(w.out());");
-        _scope.execute();
-        w.writeln("}");
+        if (!flags.format_nested_function) {
+            w.writeln("for (size_t i = 0; i < bm.ident_ranges.ranges.size(); i++) {");
+            auto _scope = w.indent_scope();
+            w.writeln("auto& range = bm.ident_ranges.ranges[i];");
+            w.writeln("auto& code = bm.code[range.range.start.value()];");
+            w.writeln("if (code.op != rebgn::AbstractOp::DEFINE_FUNCTION) {");
+            w.indent_writeln("continue;");
+            w.writeln("}");
+            w.writeln("TmpCodeWriter w;");
+            do_variable_definition(w, flags, AbstractOp::DEFINE_FUNCTION, "func_type", "code.func_type().value()", "rebgn::FunctionType", "function type");
+            if (!may_write_from_hook(w, flags, bm2::HookFile::each_inner_function, false)) {
+                if (!flags.compact_bit_field) {
+                    w.writeln("if (func_type == rebgn::FunctionType::BIT_GETTER ||");
+                    w.writeln("    func_type == rebgn::FunctionType::BIT_SETTER) {");
+                    auto scope = w.indent_scope();
+                    w.writeln("continue;");
+                    scope.execute();
+                    w.writeln("}");
+                }
+            }
+            w.writeln("inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});");
+            w.writeln("ctx.cw.write_unformatted(w.out());");
+            _scope.execute();
+            w.writeln("}");
+        }
 
         may_write_from_hook(w, flags, bm2::HookFile::file_bottom, bm2::HookFileSub::before);
         if (may_write_from_hook(tmp, flags, bm2::HookFile::file_bottom, true)) {

@@ -88,6 +88,7 @@ namespace rebgn {
             op(AbstractOp::RESERVE_SIZE, [&](auto& c__) {                                                                               \
                 c__.left_ref(*v);                                                                                                       \
                 c__.right_ref(len_ref);                                                                                                 \
+                c__.reserve_type(ReserveType::DYNAMIC);                                                                                 \
             });                                                                                                                         \
         }                                                                                                                               \
         return v;                                                                                                                       \

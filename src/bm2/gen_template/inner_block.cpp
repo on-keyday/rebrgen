@@ -33,7 +33,22 @@ namespace rebgn {
             define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), desc);
             define_range(inner_block, flags, op, "inner_range", code_ref(flags, "ref"), desc);
             if (op == AbstractOp::DECLARE_FUNCTION) {
-                block_hook([&] {});  // do nothing
+                do_variable_definition(inner_block, flags, op, "func_type", "ctx.ref(ref).func_type().value()", "rebgn::FunctionType", "function type");
+                block_hook([&] {
+                    if (flags.format_nested_function) {
+                        futils::helper::DynDefer indent2;
+                        if (!flags.compact_bit_field) {
+                            inner_block.writeln("if(func_type != rebgn::FunctionType::BIT_GETTER &&");
+                            inner_block.writeln("   func_type != rebgn::FunctionType::BIT_SETTER) {");
+                            indent2 = inner_block.indent_scope_ex();
+                        }
+                        inner_block.writeln("inner_function(ctx, w, inner_range);");
+                        if (!flags.compact_bit_field) {
+                            indent2.execute();
+                            inner_block.writeln("}");
+                        }
+                    }
+                });  // do nothing
             }
             else {
                 block_hook([&] {
@@ -118,6 +133,24 @@ namespace rebgn {
                 inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
             });
         }
+        else if (op == AbstractOp::DEFINE_BIT_FIELD) {
+            define_type(inner_block, flags, op, "type", code_ref(flags, "type"), "bit field type", true);
+            define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "bit field");
+            define_ref(inner_block, flags, op, "belong", code_ref(flags, "belong"), "belonging struct or bit field");
+            block_hook([&] {
+                if (flags.compact_bit_field) {
+                    if (flags.prior_ident) {
+                        inner_block.writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
+                    }
+                    else {
+                        inner_block.writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                    }
+                }
+            });
+        }
+        else if (op == AbstractOp::END_BIT_FIELD) {
+            block_hook([&] {});  // do nothing
+        }
         else if (op == AbstractOp::DEFINE_FIELD) {
             inner_block.writeln("if (ctx.ref(code.belong().value()).op == rebgn::AbstractOp::DEFINE_PROGRAM) {");
             auto scope = inner_block.indent_scope();
@@ -126,12 +159,28 @@ namespace rebgn {
             inner_block.writeln("}");
             define_type(inner_block, flags, op, "type", code_ref(flags, "type"), "field type", true);
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "field");
+            define_ref(inner_block, flags, op, "belong", code_ref(flags, "belong"), "belonging struct or bit field");
+            define_bool(inner_block, flags, op, "is_bit_field", "belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD", "is part of bit field");
             block_hook([&] {
+                futils::helper::DynDefer defer;
+                if (flags.compact_bit_field) {
+                    inner_block.writeln("if (!is_bit_field) {");
+                    defer = inner_block.indent_scope_ex();
+                }
                 if (flags.prior_ident) {
                     inner_block.writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
                 }
                 else {
                     inner_block.writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                }
+                if (flags.compact_bit_field) {
+                    defer.execute();
+                    inner_block.writeln("}");
+                    inner_block.writeln("else {");
+                    auto scope = inner_block.indent_scope();
+                    inner_block.writeln("w.writeln(\"", flags.wrap_comment("\",ident,\""), "\")");
+                    scope.execute();
+                    inner_block.writeln("}");
                 }
             });
         }
@@ -145,7 +194,11 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
             define_ref(inner_block, flags, op, "func", code_ref(flags, "right_ref"), "function");
             define_range(inner_block, flags, op, "inner_range", "func", "function");
-            block_hook([&] {});
+            block_hook([&] {
+                if (flags.format_nested_function) {
+                    inner_block.writeln("inner_function(ctx, w, inner_range);");
+                }
+            });
         }
         else {
             block_hook([&] {

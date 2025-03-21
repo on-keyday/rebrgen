@@ -128,6 +128,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string eval_result_text = "$RESULT = make_eval_result($TEXT);";
     std::string eval_result_passthrough = "$RESULT = $TEXT;";
 
+    bool compact_bit_field = false;
+    bool format_nested_function = false;
+
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
     MACRO_NAME(file_suffix, "suffix")                                          \
@@ -212,7 +215,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(default_enum_base, "default_enum_base")                         \
     MACRO_NAME(enum_base_separator, "enum_base_separator")                     \
     MACRO_NAME(eval_result_text, "eval_result_text")                           \
-    MACRO_NAME(eval_result_passthrough, "eval_result_passthrough")
+    MACRO_NAME(eval_result_passthrough, "eval_result_passthrough")             \
+    MACRO_NAME(compact_bit_field, "compact_bit_field")                         \
+    MACRO_NAME(format_nested_function, "format_nested_function")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)

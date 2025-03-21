@@ -226,11 +226,11 @@ namespace rebgn {
         scope_type_to_string.execute();
         type_to_string.writeln("}");
 
-        w.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref);");
-        type_to_string.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref) {");
+        w.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref,size_t* bit_size = nullptr);");
+        type_to_string.writeln("std::string type_to_string(Context& ctx, const rebgn::StorageRef& ref,size_t* bit_size) {");
         auto scope_type_to_string_ref = type_to_string.indent_scope();
         type_to_string.writeln("auto& storage = ctx.storage_table[ref.ref.value()];");
-        type_to_string.writeln("return type_to_string_impl(ctx, storage);");
+        type_to_string.writeln("return type_to_string_impl(ctx, storage, bit_size);");
         scope_type_to_string_ref.execute();
         type_to_string.writeln("}");
     }

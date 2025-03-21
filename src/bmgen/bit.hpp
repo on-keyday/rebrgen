@@ -4,6 +4,7 @@
 #include <binary/flags.h>
 
 namespace rebgn {
+    /*
     enum class BitDirection : std::uint8_t {
         MSB,
         LSB
@@ -166,4 +167,12 @@ namespace rebgn {
             }
         }
     };
+    */
+
+    constexpr std::uint64_t safe_left_shift(std::uint64_t x, std::uint64_t y) {
+        if (y >= 64) {
+            return 0;
+        }
+        return x << y;
+    }
 }  // namespace rebgn

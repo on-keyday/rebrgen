@@ -98,12 +98,12 @@
 
 #define BM_CAST_WITH_ERROR(op, id_name, error, dst_type, src_type, expr, cast_kind) \
     BM_NEW_ID(id_name, error, nullptr);                                             \
-    op(AbstractOp::CAST, [&](Code& c) {                                             \
-        c.ident(id_name);                                                           \
-        c.type(dst_type);                                                           \
-        c.from_type(src_type);                                                      \
-        c.ref(expr);                                                                \
-        c.cast_type(cast_kind);                                                     \
+    op(AbstractOp::CAST, [&](Code& c__) {                                           \
+        c__.ident(id_name);                                                         \
+        c__.type(dst_type);                                                         \
+        c__.from_type(src_type);                                                    \
+        c__.ref(expr);                                                              \
+        c__.cast_type(cast_kind);                                                   \
     })
 
 #define BM_CAST(op, id_name, dst_type, src_type, expr, cast_kind) \

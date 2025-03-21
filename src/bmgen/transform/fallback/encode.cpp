@@ -280,6 +280,7 @@ namespace rebgn {
         op(AbstractOp::RESERVE_SIZE, [&](Code& c) {
             c.left_ref(base_ref);
             c.right_ref(len_ref);
+            c.reserve_type(ReserveType::DYNAMIC);
         });
 
         BM_BINARY(op, cmp_id, BinaryOp::less, counter, len_ref);

@@ -1412,6 +1412,30 @@ namespace rebgn {
         }
         return std::nullopt;
     }
+    enum class ReserveType : std::uint8_t {
+        STATIC = 0,
+        DYNAMIC = 1,
+    };
+    constexpr const char* to_string(ReserveType e) {
+        switch(e) {
+            case ReserveType::STATIC: return "STATIC";
+            case ReserveType::DYNAMIC: return "DYNAMIC";
+        }
+        return "";
+    }
+    
+    constexpr std::optional<ReserveType> ReserveType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "STATIC") {
+            return ReserveType::STATIC;
+        }
+        if (str == "DYNAMIC") {
+            return ReserveType::DYNAMIC;
+        }
+        return std::nullopt;
+    }
     struct Varint;
     struct DecodeParamFlags;
     struct EncodeParamFlags;
@@ -2112,6 +2136,7 @@ namespace rebgn {
         struct BM_API union_struct_123{
             Varint left_ref;
             Varint right_ref;
+            ReserveType reserve_type{};
         };
         struct BM_API union_struct_124{
             SubRangeType sub_range_type{};
@@ -2220,6 +2245,9 @@ namespace rebgn {
         std::optional<Varint> ref() const;
         bool ref(Varint&& v);
         bool ref(const Varint& v);
+        std::optional<ReserveType> reserve_type() const;
+        bool reserve_type(ReserveType&& v);
+        bool reserve_type(const ReserveType& v);
         std::optional<Varint> right_ref() const;
         bool right_ref(Varint&& v);
         bool right_ref(const Varint& v);

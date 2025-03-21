@@ -443,6 +443,10 @@ enum FunctionType:
     UNION_SETTER
     VECTOR_SETTER # like [len]u8. set both vector itself and length
 
+enum ReserveType:
+    :u8
+    STATIC
+    DYNAMIC 
 
 format StorageRef:
     ref :Varint
@@ -819,6 +823,7 @@ format Code:
         AbstractOp.RESERVE_SIZE:
             left_ref :Varint # ref to vector
             right_ref :Varint # ref to size
+            reserve_type :ReserveType
         AbstractOp.BEGIN_ENCODE_SUB_RANGE:
             sub_range_type :SubRangeType
             ref :Varint # length of sub range or vector

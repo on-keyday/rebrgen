@@ -1,5 +1,6 @@
 /*license*/
 #include <bmgen/fallback.hpp>
+#include <bmgen/bit.hpp>
 
 namespace rebgn {
     Error expand_bit_operation(Module& m) {
@@ -316,7 +317,7 @@ namespace rebgn {
                 // on dynamic endian, dynamic variable dependent
                 auto assign_to_ref = [&](Varint shift_index) {
                     BM_BINARY(op, shift, BinaryOp::right_logical_shift, target, shift_index);
-                    BM_IMMEDIATE(op, mask, (std::uint64_t(1) << dec_bit_size) - 1);
+                    BM_IMMEDIATE(op, mask, (safe_left_shift(1, dec_bit_size) - 1));
                     BM_BINARY(op, and_, BinaryOp::bit_and, shift, mask);
                     auto target_type_storage = m.get_storage(target_type);
                     if (!target_type_storage) {

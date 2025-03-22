@@ -584,6 +584,7 @@ namespace bm2go {
                     auto ident = ctx.ident(ident_ref); //identifier of state variable
                     auto type_ref = ctx.ref(ident_ref).type().value(); //reference of state variable type
                     auto type = type_to_string(ctx,type_ref); //state variable type
+                    // load hook: param_state_variable_parameter
                     w.write(ident," *",type);
                     params++;
                     break;
@@ -671,6 +672,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                // load hook: block_define_format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -737,12 +739,14 @@ namespace bm2go {
                 else {
                     base_type = "int";
                 }
+                // load hook: block_define_enum
                 w.writeln("type ",ident," ", *base_type);
                 w.writeln("const (");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
+                // load hook: block_end_enum
                 defer.pop_back();
                 w.writeln(")");
                 break;
@@ -760,12 +764,14 @@ namespace bm2go {
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //enum member value
                 auto enum_ident_ref = code.belong().value(); //reference of enum
                 auto enum_ident = ctx.ident(enum_ident_ref); //identifier of enum
+                // load hook: block_define_enum_member
                 w.writeln(ident," ",enum_ident," = ",evaluated.result);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
+                // load hook: block_define_union
                 w.writeln("type ",ident," interface {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -786,6 +792,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                // load hook: block_define_union_member
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -806,6 +813,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                // load hook: block_define_state
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -887,6 +895,7 @@ namespace bm2go {
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
+                // load hook: func_define_function
                 w.write("func ");
                 if(belong_name) {
                     w.write("(this_ *",*belong_name,") ");
@@ -1461,6 +1470,7 @@ namespace bm2go {
     void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            // load hook: escape_ident
             if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {
                 auto copy = str;
                 copy[0] = std::toupper(copy[0]);
@@ -1471,6 +1481,7 @@ namespace bm2go {
         // search metadata
         {
             auto& w = ctx.cw;
+            // load hook: file_top
             w.writeln("package main");
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {

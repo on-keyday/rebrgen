@@ -104,6 +104,9 @@ namespace rebgn {
             c = std::tolower(c);
         }
         return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
+            if (i == 0) {
+                w.writeln("// load hook: ", concat);
+            }
             w.writeln(line);
         });
     }

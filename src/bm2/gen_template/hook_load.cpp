@@ -10,6 +10,9 @@ namespace rebgn {
             c = std::tolower(c);
         }
         return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
+            if (i == 0) {
+                w.writeln("// load hook: ", concat);
+            }
             w.writeln(line);
         });
     }
@@ -22,6 +25,9 @@ namespace rebgn {
             c = std::tolower(c);
         }
         return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
+            if (i == 0) {
+                w.writeln("// load hook: ", concat);
+            }
             w.writeln(line);
         });
     }
@@ -34,12 +40,18 @@ namespace rebgn {
             c = std::tolower(c);
         }
         return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
+            if (i == 0) {
+                w.writeln("// load hook: ", concat);
+            }
             w.writeln(line);
         });
     }
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, bool as_code) {
         return may_write_from_hook(flags, hook, [&](size_t i, futils::view::rvec& line) {
+            if (i == 0) {
+                w.writeln("// load hook: ", to_string(hook));
+            }
             if (as_code) {
                 if (!futils::strutil::contains(line, "\"") && !futils::strutil::contains(line, "\\")) {
                     w.writeln("w.writeln(\"", line, "\");");

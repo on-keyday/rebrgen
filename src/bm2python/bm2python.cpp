@@ -209,6 +209,7 @@ namespace bm2python {
             auto union_ref = belong; //reference of union
             auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
             auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
+            // load hook: field_accessor_define_union_member
             result = field_accessor(ctx.ref(union_field_ref),ctx);
             break;
         }
@@ -221,6 +222,7 @@ namespace bm2python {
             auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            // load hook: field_accessor_define_bit_field
             result = field_accessor(ctx.ref(belong),ctx);
             break;
         }
@@ -291,6 +293,7 @@ namespace bm2python {
         auto union_ref = belong; //reference of union
         auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
         auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
+        // load hook: type_accessor_define_union_member
         auto belong_type = type_accessor(ctx.ref(union_field_belong),ctx);
         result = std::format("{}.{}",belong_type,ident);
         break;
@@ -306,6 +309,7 @@ namespace bm2python {
         auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
         auto belong = code.belong().value(); //reference of belong
         auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+        // load hook: type_accessor_define_bit_field
         result = type_accessor(ctx.ref(belong),ctx);
         break;
         }
@@ -428,6 +432,7 @@ namespace bm2python {
             auto right_eval_ref = code.right_ref().value(); //reference of right operand
             auto right_eval = eval(ctx.ref(right_eval_ref), ctx); //right operand
             auto opstr = to_string(op); //binary operator string
+            // load hook: eval_binary_op
             if(op == rebgn::BinaryOp::logical_or) {
                 opstr = "or";
             }
@@ -763,6 +768,7 @@ namespace bm2python {
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
+                // load hook: block_define_enum
                 w.writeln("class ",ident,"(Enum):");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -799,6 +805,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value(); //reference of UNION
                 auto inner_range = ctx.range(ref); //range of UNION
+                // load hook: block_declare_union
                 inner_block(ctx,w,inner_range);
                 break;
             }
@@ -807,6 +814,7 @@ namespace bm2python {
                 auto ident = ctx.ident(ident_ref); //identifier of format
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
+                // load hook: block_define_union_member_after
                 if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
                     w.writeln("pass");
                 }
@@ -820,6 +828,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value(); //reference of UNION_MEMBER
                 auto inner_range = ctx.range(ref); //range of UNION_MEMBER
+                // load hook: block_declare_union_member
                 inner_block(ctx,w,inner_range);
                 break;
             }
@@ -907,6 +916,7 @@ namespace bm2python {
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
+                // load hook: func_define_function_pre_main
                 auto params = get_parameters(ctx,range);
                 if(code.func_type().value() == rebgn::FunctionType::UNION_GETTER) {
                     if(params.size() == 0) {
@@ -1171,6 +1181,7 @@ namespace bm2python {
                 auto obj_eval_ref = code.right_ref().value(); //reference of `this` object
                 auto obj_eval = eval(ctx.ref(obj_eval_ref), ctx); //`this` object
                 auto inner_range = ctx.range(func_ref); //range of function call range
+                // load hook: func_call_encode
                 w.writeln("if not isinstance(",obj_eval.result,",",func_belong_name,"):");
                 auto scope_2 = w.indent_scope();
                 w.writeln("return False");
@@ -1191,6 +1202,7 @@ namespace bm2python {
                 auto obj_eval_ref = code.right_ref().value(); //reference of `this` object
                 auto obj_eval = eval(ctx.ref(obj_eval_ref), ctx); //`this` object
                 auto inner_range = ctx.range(func_ref); //range of function call range
+                // load hook: func_call_decode
                 w.writeln("if not isinstance(",obj_eval.result,",",func_belong_name,"):");
                 auto scope_2 = w.indent_scope();
                 w.writeln(obj_eval.result,"=",func_belong_name,"()");
@@ -1233,6 +1245,7 @@ namespace bm2python {
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 w.writeln("if ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
+                // load hook: func_if_after
                 auto next = find_next_else_or_end_if(ctx,i,true);
                 if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
                     w.writeln("pass");
@@ -1246,6 +1259,7 @@ namespace bm2python {
                 w.writeln("");
                 w.writeln("elif ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
+                // load hook: func_elif_after
                 auto next = find_next_else_or_end_if(ctx,i,true);
                 if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
                     w.writeln("pass");
@@ -1257,6 +1271,7 @@ namespace bm2python {
                 w.writeln("");
                 w.writeln("else :");
                 defer.push_back(w.indent_scope_ex());
+                // load hook: func_else_after
                 auto next = find_next_else_or_end_if(ctx,i,true);
                 if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
                     w.writeln("pass");
@@ -1516,6 +1531,7 @@ namespace bm2python {
     void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
         Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            // load hook: escape_ident
             if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
                 auto func_type = code.func_type().value();
                 auto func_range = ctx.range(code.ident().value());
@@ -1532,11 +1548,13 @@ namespace bm2python {
             return escape_python_keyword(str);
         }};
         // search metadata
+        // load hook: first_scan_before
         bool has_is_little_endian = false;
         for (size_t i = 0; i < bm.code.size(); i++) {
             auto& code = bm.code[i];
             switch (code.op) {
                 case rebgn::AbstractOp::IS_LITTLE_ENDIAN: {
+                    // load hook: first_scan_is_little_endian
                     has_is_little_endian = true;
                     goto OUT_FIRST_SCAN;
                     break;
@@ -1547,11 +1565,13 @@ namespace bm2python {
         OUT_FIRST_SCAN:;
         {
             auto& w = ctx.cw;
+            // load hook: file_top
             w.writeln("# Code generated by bm2py of https://github.com/on-keyday/rebrgen");
             w.writeln("from typing import IO,Optional,Union");
             w.writeln("from enum import Enum");
             w.writeln("");
         }
+        // load hook: file_top_after
         if(has_is_little_endian) {
             ctx.cw.writeln("import sys");
         } 

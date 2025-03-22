@@ -58,6 +58,8 @@ Action order below is no matter. You can choose actions below as if you need
 
 - To add new languages, first edit `LANG_LIST` in `script/generate.py` and then run `script/generate`
 
+- you can find `// load hook: <hook name>` comment in `bm2{lang_name}/*.cpp`. This is good to find mapping between hook name and hook file.
+
 # Current Development Phase
 
 Now phase is early of project.

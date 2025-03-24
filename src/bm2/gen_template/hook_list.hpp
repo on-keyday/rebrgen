@@ -214,6 +214,8 @@ namespace bm2 {
         after = 10,
         byte_length = 11,
         replacement = 12,
+        static_ = 13,
+        dynamic = 14,
     };
     constexpr const char* to_string(HookFileSub e) {
         switch (e) {
@@ -243,6 +245,10 @@ namespace bm2 {
                 return "_byte_length";
             case HookFileSub::replacement:
                 return "_replacement";
+            case HookFileSub::static_:
+                return "_static";
+            case HookFileSub::dynamic:
+                return "_dynamic";
         }
         return "";
     }
@@ -289,6 +295,12 @@ namespace bm2 {
         }
         if (str == "_replacement") {
             return HookFileSub::replacement;
+        }
+        if (str == "_static") {
+            return HookFileSub::static_;
+        }
+        if (str == "_dynamic") {
+            return HookFileSub::dynamic;
         }
         return std::nullopt;
     }

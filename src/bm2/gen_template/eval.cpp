@@ -8,7 +8,10 @@
 
 namespace rebgn {
 
-    std::string env_escape(std::string_view str, std::map<std::string, std::string>& map) {
+    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
+        if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
+            flags.content[flags.func_name][std::string(action_at)].env_mappings.push_back({std::string(param_name), map});
+        }
         return futils::env::expand<std::string>(str, futils::env::expand_map<std::string>(map), true);
     }
 
@@ -18,11 +21,11 @@ namespace rebgn {
             {"TEXT", text},
         };
         if (mode == EvalResultMode::PASSTHROUGH) {
-            auto escaped = env_escape(flags.eval_result_passthrough, map);
+            auto escaped = env_escape(flags, op, ENV_FLAG(eval_result_passthrough), map);
             w.writeln(escaped);
         }
         else {
-            auto escaped = env_escape(flags.eval_result_text, map);
+            auto escaped = env_escape(flags, op, ENV_FLAG(eval_result_text), map);
             w.writeln(escaped);
         }
     }
@@ -118,7 +121,7 @@ namespace rebgn {
                 std::map<std::string, std::string> map{
                     {"DECODER", "\",ctx.r(),\""},
                 };
-                auto escaped = env_escape(flags.decode_offset, map);
+                auto escaped = env_escape(flags, op, ENV_FLAG(decode_offset), map);
                 do_make_eval_result(eval, op, flags, "futils::strutil::concat<std::string>(\"" + escaped + "\")", EvalResultMode::TEXT);
             });
         }
@@ -127,7 +130,7 @@ namespace rebgn {
                 std::map<std::string, std::string> map{
                     {"ENCODER", "\",ctx.w(),\""},
                 };
-                auto escaped = env_escape(flags.encode_offset, map);
+                auto escaped = env_escape(flags, op, ENV_FLAG(encode_offset), map);
                 do_make_eval_result(eval, op, flags, "futils::strutil::concat<std::string>(\"" + escaped + "\")", EvalResultMode::TEXT);
             });
         }

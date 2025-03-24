@@ -3,9 +3,20 @@
 #include <string>
 #include <string_view>
 #include <map>
+#include "flags.hpp"
 
 namespace rebgn {
-    std::string env_escape(std::string_view str, std::map<std::string, std::string>& map);
+    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map);
+
+    std::string env_escape(Flags& flags, auto op, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
+        return env_escape(flags, std::string_view(to_string(op)), param_name, str, map);
+    }
+
+    std::string env_escape_and_concat(Flags& flags, auto op, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
+        auto escaped = env_escape(flags, op, param_name, str, map);
+        return "futils::strutil::concat<std::string>(\"" + escaped + "\")";
+    }
+
     std::string unimplemented_comment(Flags& flags, const std::string& op);
     enum class EvalResultMode {
         TEXT,

@@ -31,62 +31,29 @@ namespace rebgn {
             type_to_string.writeln("*bit_size = size;");
             if_block_size.execute();
             type_to_string.writeln("}");
+            if (type == StorageType::FLOAT) {
+                define_uint(type_to_string, flags, type, "aligned_size", "size < 32 ? 32 : 64", "aligned bit size");
+            }
+            else {
+                define_uint(type_to_string, flags, type, "aligned_size", "size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64", "aligned bit size");
+            }
+
             type_hook([&] {
-                if (type == StorageType::UINT) {
-                    type_to_string.writeln("if (size <= 8) {");
-                    auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(8), "\";");
-                    if_block_size_8.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 16) {");
-                    auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(16), "\";");
-                    if_block_size_16.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_uint(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
+                std::map<std::string, std::string> map{
+                    {"BIT_SIZE", "\",futils::number::to_string<std::string>(size),\""},
+                    {"ALIGNED_BIT_SIZE", "\",futils::number::to_string<std::string>(aligned_size),\""},
+                };
+                if (type == StorageType::FLOAT) {
+                    auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(float_type), map);
+                    type_to_string.writeln("return ", escaped, ";");
                 }
                 else if (type == StorageType::INT) {
-                    type_to_string.writeln("if (size <= 8) {");
-                    auto if_block_size_8 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(8), "\";");
-                    if_block_size_8.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 16) {");
-                    auto if_block_size_16 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(16), "\";");
-                    if_block_size_16.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_int(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
+                    auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(int_type), map);
+                    type_to_string.writeln("return ", escaped, ";");
                 }
                 else {
-                    type_to_string.writeln("if (size <= 32) {");
-                    auto if_block_size_32 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_float(32), "\";");
-                    if_block_size_32.execute();
-                    type_to_string.writeln("}");
-                    type_to_string.writeln("else {");
-                    auto if_block_size_64 = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.wrap_float(64), "\";");
-                    if_block_size_64.execute();
-                    type_to_string.writeln("}");
+                    auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(uint_type), map);
+                    type_to_string.writeln("return ", escaped, ";");
                 }
             });
         }
@@ -99,7 +66,11 @@ namespace rebgn {
         else if (type == StorageType::RECURSIVE_STRUCT_REF) {
             define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "recursive struct");
             type_hook([&] {
-                type_to_string.writeln("return std::format(\"", flags.recursive_struct_type_placeholder, "\", ident);");
+                std::map<std::string, std::string> map{
+                    {"TYPE", "\",ident,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(recursive_struct_type), map);
+                type_to_string.writeln("return ", escaped, ";");
             });
         }
         else if (type == StorageType::BOOL) {
@@ -137,7 +108,12 @@ namespace rebgn {
                     type_to_string.writeln("result += types[i];");
                     scope_variant_algebraic.execute();
                     type_to_string.writeln("}");
-                    type_to_string.writeln("return std::format(\"", flags.algebraic_variant_placeholder, "\", result);");
+                    std::map<std::string, std::string> map{
+                        {"VARIANT", "\",ident,\""},
+                        {"TYPES", "\",result,\""},
+                    };
+                    auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(algebraic_variant_type), map);
+                    type_to_string.writeln("return ", escaped, ";");
                 }
             });
         }
@@ -153,7 +129,11 @@ namespace rebgn {
         }
         else if (type == StorageType::PTR) {
             type_hook([&] {
-                type_to_string.writeln("return std::format(\"", flags.pointer_type_placeholder, "\", base_type);");
+                std::map<std::string, std::string> map{
+                    {"TYPE", "\",base_type,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(pointer_type), map);
+                type_to_string.writeln("return ", escaped, ";");
             });
         }
         else if (type == StorageType::ARRAY) {
@@ -164,16 +144,16 @@ namespace rebgn {
                     {"TYPE", "\",base_type,\""},
                     {"LENGTH", "\",futils::number::to_string<std::string>(length),\""},
                 };
-                auto escaped = env_escape(flags.array_type_placeholder, map);
+                auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(array_type), map);
                 if (flags.byte_array_type.size()) {
                     type_to_string.writeln("if (is_byte_vector) {");
                     auto if_block_byte_vector = type_to_string.indent_scope();
-                    auto escaped2 = env_escape(flags.byte_array_type, map);
-                    type_to_string.writeln("return futils::strutil::concat<std::string>(\"", escaped2, "\");");
+                    auto escaped2 = env_escape_and_concat(flags, type, ENV_FLAG(byte_array_type), map);
+                    type_to_string.writeln("return ", escaped2, ";");
                     if_block_byte_vector.execute();
                     type_to_string.writeln("}");
                 }
-                type_to_string.writeln("return futils::strutil::concat<std::string>(\"", escaped, "\");");
+                type_to_string.writeln("return ", escaped, ";");
             });
         }
         else if (type == StorageType::VECTOR) {
@@ -186,12 +166,16 @@ namespace rebgn {
                     if_block_byte_vector.execute();
                     type_to_string.writeln("}");
                 }
-                type_to_string.writeln("return std::format(\"", flags.vector_type_placeholder, "\", base_type);");
+                std::map<std::string, std::string> map{
+                    {"TYPE", "\",base_type,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(vector_type), map);
+                type_to_string.writeln("return ", escaped, ";");
             });
         }
         else if (type == StorageType::OPTIONAL) {
             type_hook([&] {
-                type_to_string.writeln("return std::format(\"", flags.optional_type_placeholder, "\", base_type);");
+                type_to_string.writeln("return std::format(\"", flags.optional_type, "\", base_type);");
             });
         }
         type_hook([&] {}, bm2::HookFileSub::after);
@@ -235,4 +219,4 @@ namespace rebgn {
         type_to_string.writeln("}");
     }
 
-}
+}  // namespace rebgn

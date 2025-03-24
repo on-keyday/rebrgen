@@ -7,16 +7,25 @@
 #include <map>
 #include "hook_list.hpp"
 
-struct Content {
+struct VariableDesc {
     std::string var_name;
     std::string type;
     std::string description;
     std::string initial_value;
 };
 
+struct EnvMappingDesc {
+    std::string variable_name;
+    std::map<std::string, std::string> mapping;
+};
+struct Content {
+    std::vector<VariableDesc> variables;
+    std::vector<EnvMappingDesc> env_mappings;
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     bm2::GenerateMode mode = bm2::GenerateMode::generator;
-    std::map<bm2::FuncName, std::map<std::string, std::vector<Content>>> content;
+    std::map<bm2::FuncName, std::map<std::string, Content>> content;
     bm2::FuncName func_name = bm2::FuncName::eval;
 
     bool requires_lang_option() const {
@@ -47,16 +56,16 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string worker_lsp_name = "";
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
-    std::string int_type_placeholder = "std::int{}_t";
-    std::string uint_type_placeholder = "std::uint{}_t";
-    std::string float_type_placeholder = "float{}_t";
-    std::string array_type_placeholder = "std::array<$TYPE, $LEN>";
-    std::string vector_type_placeholder = "std::vector<{}>";
-    std::string optional_type_placeholder = "std::optional<{}>";
-    std::string pointer_type_placeholder = "{}*";
-    std::string recursive_struct_type_placeholder = "{}*";
-    std::string byte_vector_type = "";
-    std::string byte_array_type = "";
+    std::string int_type = "std::int${TYPE}_t";
+    std::string uint_type = "std::uint${TYPE}_t";
+    std::string float_type = "float${TYPE}_t";
+    std::string array_type = "std::array<$TYPE, $LEN>";
+    std::string vector_type = "std::vector<$TYPE>";
+    std::string optional_type = "std::optional<$TYPE>";
+    std::string pointer_type = "$TYPE*";
+    std::string recursive_struct_type = "$TYPE*";
+    std::string byte_vector_type = "std::vector<std::uint8_t>";
+    std::string byte_array_type = "std::array<std::uint8_t, $LEN>";
     std::string bool_type = "bool";
     std::string true_literal = "true";
     std::string false_literal = "false";
@@ -107,7 +116,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool surrounded_append_method = false;  // if true, <base> = <append_method>(<base>,<expr>) will be used
     std::string variant_mode = "union";     // union or algebraic
     std::string algebraic_variant_separator = "|";
-    std::string algebraic_variant_placeholder = "{}";
+    std::string algebraic_variant_type = "$TYPES";
     std::string check_union_condition = "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)";
     std::string check_union_fail_return_value = "false";
     std::string switch_union = "$FIELD_IDENT = $MEMBER_IDENT()";
@@ -124,12 +133,16 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string is_little_endian = "std::endian::native == std::endian::little";
     std::string default_enum_base = "";  // if empty, omit the base type
     std::string enum_base_separator = " : ";
+    std::string reserve_size_dynamic = "$VECTOR.reserve($SIZE)";
+    std::string reserve_size_static = "";
 
     std::string eval_result_text = "$RESULT = make_eval_result($TEXT);";
     std::string eval_result_passthrough = "$RESULT = $TEXT;";
 
     bool compact_bit_field = false;
     bool format_nested_function = false;
+
+#define ENV_FLAG(name) #name, flags.name
 
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \
@@ -138,16 +151,16 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(worker_lsp_name, "worker_lsp_name")                             \
     MACRO_NAME(comment_prefix, "comment_prefix")                               \
     MACRO_NAME(comment_suffix, "comment_suffix")                               \
-    MACRO_NAME(int_type_placeholder, "int_type")                               \
-    MACRO_NAME(uint_type_placeholder, "uint_type")                             \
-    MACRO_NAME(float_type_placeholder, "float_type")                           \
-    MACRO_NAME(array_type_placeholder, "array_type")                           \
-    MACRO_NAME(vector_type_placeholder, "vector_type")                         \
+    MACRO_NAME(int_type, "int_type")                                           \
+    MACRO_NAME(uint_type, "uint_type")                                         \
+    MACRO_NAME(float_type, "float_type")                                       \
+    MACRO_NAME(array_type, "array_type")                                       \
+    MACRO_NAME(vector_type, "vector_type")                                     \
     MACRO_NAME(byte_vector_type, "byte_vector_type")                           \
     MACRO_NAME(byte_array_type, "byte_array_type")                             \
-    MACRO_NAME(optional_type_placeholder, "optional_type")                     \
-    MACRO_NAME(pointer_type_placeholder, "pointer_type")                       \
-    MACRO_NAME(recursive_struct_type_placeholder, "recursive_struct_type")     \
+    MACRO_NAME(optional_type, "optional_type")                                 \
+    MACRO_NAME(pointer_type, "pointer_type")                                   \
+    MACRO_NAME(recursive_struct_type, "recursive_struct_type")                 \
     MACRO_NAME(bool_type, "bool_type")                                         \
     MACRO_NAME(true_literal, "true_literal")                                   \
     MACRO_NAME(false_literal, "false_literal")                                 \
@@ -197,7 +210,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(surrounded_append_method, "surrounded_append_method")           \
     MACRO_NAME(variant_mode, "variant_mode")                                   \
     MACRO_NAME(algebraic_variant_separator, "algebraic_variant_separator")     \
-    MACRO_NAME(algebraic_variant_placeholder, "algebraic_variant_type")        \
+    MACRO_NAME(algebraic_variant_type, "algebraic_variant_type")               \
     MACRO_NAME(check_union_condition, "check_union_condition")                 \
     MACRO_NAME(check_union_fail_return_value, "check_union_fail_return_value") \
     MACRO_NAME(switch_union, "switch_union")                                   \
@@ -217,7 +230,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(eval_result_text, "eval_result_text")                           \
     MACRO_NAME(eval_result_passthrough, "eval_result_passthrough")             \
     MACRO_NAME(compact_bit_field, "compact_bit_field")                         \
-    MACRO_NAME(format_nested_function, "format_nested_function")
+    MACRO_NAME(format_nested_function, "format_nested_function")               \
+    MACRO_NAME(reserve_size_dynamic, "reserve_size_dynamic")                   \
+    MACRO_NAME(reserve_size_static, "reserve_size_static")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)
@@ -263,24 +278,25 @@ struct Flags : futils::cmdline::templ::HelpOption {
         return second_found == std::string_view::npos;
     }
 
+    /*
     std::string wrap_int(size_t bit_size) {
-        if (is_valid_placeholder(int_type_placeholder)) {
-            return std::vformat(int_type_placeholder, std::make_format_args(bit_size));
+        if (is_valid_placeholder(int_type)) {
+            return std::vformat(int_type, std::make_format_args(bit_size));
         }
-        else if (!int_type_placeholder.contains("{") && !int_type_placeholder.contains("}")) {
-            return int_type_placeholder;
+        else if (!int_type.contains("{") && !int_type.contains("}")) {
+            return int_type;
         }
-        return std::format("/* invalid placeholder: {} */", int_type_placeholder);
+        return std::format("* invalid placeholder: {} *", int_type);
     }
 
     std::string wrap_uint(size_t bit_size) {
-        if (is_valid_placeholder(uint_type_placeholder)) {
-            return std::vformat(uint_type_placeholder, std::make_format_args(bit_size));
+        if (is_valid_placeholder(uint_type)) {
+            return std::vformat(uint_type, std::make_format_args(bit_size));
         }
-        else if (!uint_type_placeholder.contains("{") && !uint_type_placeholder.contains("}")) {
-            return uint_type_placeholder;
+        else if (!uint_type.contains("{") && !uint_type.contains("}")) {
+            return uint_type;
         }
-        return std::format("/* invalid placeholder: {} */", uint_type_placeholder);
+        return std::format("* invalid placeholder: {} *", uint_type);
     }
 
     std::string wrap_float(size_t bit_size) {
@@ -290,8 +306,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
         else if (!float_type_placeholder.contains("{") && !float_type_placeholder.contains("}")) {
             return float_type_placeholder;
         }
-        return std::format("/* invalid placeholder: {} */", float_type_placeholder);
+        return std::format("* invalid placeholder: {} *", float_type_placeholder);
     }
+    */
 
     std::string wrap_comment(const std::string& comment) {
         std::string result;

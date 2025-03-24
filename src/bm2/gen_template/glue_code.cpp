@@ -276,16 +276,28 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
                     auto obj = s.object();
                     for (auto& c2 : c.second) {
                         obj(c2.first, [&](auto& s) {
-                            auto element = s.array();
-                            for (auto& c3 : c2.second) {
-                                element([&](auto& s) {
-                                    auto field = s.object();
-                                    field("var_name", c3.var_name);
-                                    field("type", c3.type);
-                                    field("initial_value", c3.initial_value);
-                                    field("description", c3.description);
-                                });
-                            }
+                            obj("variables", [&](auto& s) {
+                                auto element = s.array();
+                                for (auto& c3 : c2.second.variables) {
+                                    element([&](auto& s) {
+                                        auto field = s.object();
+                                        field("var_name", c3.var_name);
+                                        field("type", c3.type);
+                                        field("initial_value", c3.initial_value);
+                                        field("description", c3.description);
+                                    });
+                                }
+                            });
+                            obj("env_mappings", [&](auto& s) {
+                                auto element = s.array();
+                                for (auto& c3 : c2.second.env_mappings) {
+                                    element([&](auto& s) {
+                                        auto field = s.object();
+                                        field("variable_name", c3.variable_name);
+                                        field("mapping", c3.mapping);
+                                    });
+                                }
+                            });
                         });
                     }
                 });
@@ -309,15 +321,28 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("They are represented as std::string. use them for generating code.");
             w.writeln("### EvalResult");
             w.writeln("result of eval() function. it contains the result of the expression evaluation.");
+            w.writeln("### env mapping");
+            w.writeln("in some case, code generator placeholder in `config.json` can be replaced with context specific value by envrionment variable like format.");
+            w.writeln("for example, if you have placeholder like `$VAR` or `${VAR}` in the placeholder, you can replace it with the value of `VAR` with described below.");
+
             for (auto& c : flags.content) {
                 w.writeln("## function `", to_string(c.first), "`");
                 for (auto& c2 : c.second) {
                     w.writeln("### ", c2.first);
-                    for (auto& c3 : c2.second) {
-                        w.writeln("#### ", c3.var_name);
+                    w.writeln("#### Variables: ");
+                    for (auto& c3 : c2.second.variables) {
+                        w.writeln("##### ", c3.var_name);
                         w.writeln("Type: ", c3.type);
                         w.writeln("Initial Value: ", c3.initial_value);
                         w.writeln("Description: ", c3.description);
+                    }
+                    w.writeln("#### Env Mappings: ");
+                    for (auto& c3 : c2.second.env_mappings) {
+                        w.writeln("##### ", c3.variable_name);
+                        for (auto& [k, v] : c3.mapping) {
+                            w.writeln("Name: ", k);
+                            w.writeln("Mapped Value: `", v, "`");
+                        }
                     }
                 }
             }

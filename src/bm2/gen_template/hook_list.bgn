@@ -51,6 +51,8 @@ enum HookFileSub:
     after = "_after" # after case (e.g. after AbstractOp)
     byte_length = "_byte_length" # byte length case (e.g. byte length of AbstractOp)
     replacement = "_replacement" # replacement case (e.g. replacement of AbstractOp)
+    static_ = "_static" # static case (e.g. static of AbstractOp)
+    dynamic = "_dynamic" # dynamic case (e.g. dynamic of AbstractOp)
 
 enum FuncName:
     eval

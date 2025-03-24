@@ -6,7 +6,7 @@
 namespace rebgn {
     void may_add_doc_content(Flags& flags, auto op, std::string_view var_name, std::string_view type, std::string_view description, std::string_view init_expr) {
         if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
-            flags.content[flags.func_name][to_string(op)].push_back(Content{std::string(var_name), std::string(type), std::string(description), std::string(init_expr)});
+            flags.content[flags.func_name][to_string(op)].variables.push_back(VariableDesc{std::string(var_name), std::string(type), std::string(description), std::string(init_expr)});
         }
     }
 

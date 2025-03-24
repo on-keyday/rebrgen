@@ -46,7 +46,7 @@ namespace rebgn {
                         {"DECODER", "\",ctx.r(),\""},
                         {"OFFSET", "\",evaluated.result,\""},
                     };
-                    auto escaped = env_escape(flags.decode_backward, map);
+                    auto escaped = env_escape(flags, op, ENV_FLAG(decode_backward), map);
                     inner_function.writeln("w.writeln(\"", escaped, flags.end_of_statement, "\");");
                 }
                 else {
@@ -54,7 +54,7 @@ namespace rebgn {
                         {"ENCODER", "\",ctx.w(),\""},
                         {"OFFSET", "\",evaluated.result,\""},
                     };
-                    auto escaped = env_escape(flags.encode_backward, map);
+                    auto escaped = env_escape(flags, op, ENV_FLAG(encode_backward), map);
                     inner_function.writeln("w.writeln(\"", escaped, flags.end_of_statement, "\");");
                 }
             });
@@ -94,6 +94,29 @@ namespace rebgn {
                         inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\",type, ident, init.result));");
                     }
                 }
+            });
+        }
+        else if (op == AbstractOp::RESERVE_SIZE) {
+            define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector");
+            define_eval(inner_function, flags, op, "size_eval", code_ref(flags, "right_ref"), "size");
+            do_variable_definition(inner_function, flags, op, "reserve_type", code_ref(flags, "reserve_type"), "rebgn::ReserveType", "reserve vector type");
+            func_hook([&] {
+                inner_function.writeln("if(reserve_type == rebgn::ReserveType::STATIC) {");
+                auto scope = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.reserve_size_static, "\");");
+                },
+                          bm2::HookFileSub::static_);
+                scope.execute();
+                inner_function.writeln("}");
+                inner_function.writeln("else if(reserve_type == rebgn::ReserveType::DYNAMIC) {");
+                auto scope2 = inner_function.indent_scope();
+                func_hook([&] {
+                    inner_function.writeln("w.writeln(\"", flags.reserve_size_dynamic, "\");");
+                },
+                          bm2::HookFileSub::dynamic);
+                scope2.execute();
+                inner_function.writeln("}");
             });
         }
         else if (op == AbstractOp::BEGIN_ENCODE_SUB_RANGE || op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
@@ -341,14 +364,14 @@ namespace rebgn {
                     {"FIELD_IDENT", "\",union_field_ident.result,\""},
                     {"MEMBER_INDEX", "\",futils::number::to_string<std::string>(union_member_index),\""},
                 };
-                auto escaped = env_escape(flags.check_union_condition, map);
+                auto escaped = env_escape(flags, op, ENV_FLAG(check_union_condition), map);
                 inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
                                        escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
                 inner_function.writeln("auto scope = w.indent_scope_ex();");
                 if (op == AbstractOp::CHECK_UNION) {
                     inner_function.writeln("if(check_type == rebgn::UnionCheckAt::ENCODER) {");
                     auto encoder_scope = inner_function.indent_scope();
-                    auto ret = env_escape(flags.check_union_fail_return_value, map);
+                    auto ret = env_escape(flags, op, ENV_FLAG(check_union_fail_return_value), map);
                     inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
                     encoder_scope.execute();
                     inner_function.writeln("}");
@@ -364,7 +387,7 @@ namespace rebgn {
                     inner_function.writeln("}");
                 }
                 else {
-                    auto switch_union = env_escape(flags.switch_union, map);
+                    auto switch_union = env_escape(flags, op, ENV_FLAG(switch_union), map);
                     inner_function.writeln("w.writeln(\"", switch_union, flags.end_of_statement, "\");");
                 }
                 inner_function.writeln("scope.execute();");
@@ -420,7 +443,7 @@ namespace rebgn {
                             {"LEN", "\",size_value.result,\""},
                             {"VALUE", "\",vector_value.result,\""},
                         };
-                        auto escaped = env_escape(flags.encode_bytes_op, map);
+                        auto escaped = env_escape(flags, op, ENV_FLAG(encode_bytes_op), map);
                         inner_function.writeln("w.writeln(\"", escaped, "\");");
                     }
                     else if (op == AbstractOp::DECODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR_FIXED) {
@@ -429,7 +452,7 @@ namespace rebgn {
                             {"LEN", "\",size_value.result,\""},
                             {"VALUE", "\",vector_value.result,\""},
                         };
-                        auto escaped = env_escape(flags.decode_bytes_op, map);
+                        auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_op), map);
                         inner_function.writeln("w.writeln(\"", escaped, "\");");
                     }
                     else if (op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
@@ -437,7 +460,7 @@ namespace rebgn {
                             {"DECODER", "\",ctx.r(),\""},
                             {"VALUE", "\",evaluated.result,\""},
                         };
-                        auto escaped = env_escape(flags.decode_bytes_until_eof_op, map);
+                        auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_until_eof_op), map);
                         inner_function.writeln("w.writeln(\"", escaped, "\");");
                     }
                     else if (op == AbstractOp::PEEK_INT_VECTOR) {
@@ -446,7 +469,7 @@ namespace rebgn {
                             {"LEN", "\",size_value.result,\""},
                             {"VALUE", "\",vector_value.result,\""},
                         };
-                        auto escaped = env_escape(flags.peek_bytes_op, map);
+                        auto escaped = env_escape(flags, op, ENV_FLAG(peek_bytes_op), map);
                         inner_function.writeln("w.writeln(\"", escaped, "\");");
                     }
                     else {

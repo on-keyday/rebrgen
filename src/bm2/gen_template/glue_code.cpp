@@ -321,9 +321,17 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("They are represented as std::string. use them for generating code.");
             w.writeln("### EvalResult");
             w.writeln("result of eval() function. it contains the result of the expression evaluation.");
-            w.writeln("### env mapping");
+            w.writeln("### placeholder");
             w.writeln("in some case, code generator placeholder in `config.json` can be replaced with context specific value by envrionment variable like format.");
-            w.writeln("for example, if you have placeholder like `$VAR` or `${VAR}` in the placeholder, you can replace it with the value of `VAR` with described below.");
+            w.writeln("for example, config name `int_type` can take two env map `BIT_SIZE` and `ALIGNED_BIT_SIZE`.");
+            w.writeln("and use like below:");
+            w.writeln("```json");
+            w.writeln("{");
+            w.writeln("    \"int_type\": \"std::int${ALIGNED_BIT_SIZE}_t\"");
+            w.writeln("}");
+            w.writeln("```");
+            w.writeln("and if you set `ALIGNED_BIT_SIZE` to 32, then `int_type` will be `std::int32_t`.");
+            w.writeln("specially, `$DOLLAR` or `${DOLLAR}` is reserved for `$` character.");
 
             for (auto& c : flags.content) {
                 w.writeln("## function `", to_string(c.first), "`");
@@ -336,7 +344,7 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
                         w.writeln("Initial Value: ", c3.initial_value);
                         w.writeln("Description: ", c3.description);
                     }
-                    w.writeln("#### Env Mappings: ");
+                    w.writeln("#### Placeholder Mappings: ");
                     for (auto& c3 : c2.second.env_mappings) {
                         w.writeln("##### ", c3.variable_name);
                         for (auto& [k, v] : c3.mapping) {

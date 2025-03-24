@@ -13,1555 +13,2288 @@ An identifier of a several object (e.g. function, variable, types, etc.)
 They are represented as std::string. use them for generating code.
 ### EvalResult
 result of eval() function. it contains the result of the expression evaluation.
+### placeholder
+in some case, code generator placeholder in `config.json` can be replaced with context specific value by envrionment variable like format.
+for example, config name `int_type` can take two env map `BIT_SIZE` and `ALIGNED_BIT_SIZE`.
+and use like below:
+```json
+{
+    "int_type": "std::int${ALIGNED_BIT_SIZE}_t"
+}
+```
+and if you set `ALIGNED_BIT_SIZE` to 32, then `int_type` will be `std::int32_t`.
+specially, `$DOLLAR` or `${DOLLAR}` is reserved for `$` character.
 ## function `eval`
 ### ACCESS
-#### left_eval_ref
+#### Variables: 
+##### left_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of left operand
-#### left_eval
+##### left_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(left_eval_ref), ctx)
 Description: left operand
-#### right_ident_ref
+##### right_ident_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of right operand
-#### right_ident
+##### right_ident
 Type: string
 Initial Value: ctx.ident(right_ident_ref)
 Description: identifier of right operand
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}.{}", left_eval.result, right_ident)`
 ### ADDRESS_OF
-#### target_ref
+#### Variables: 
+##### target_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of target object
-#### target
+##### target
 Type: EvalResult
 Initial Value: eval(ctx.ref(target_ref), ctx)
 Description: target object
+#### Placeholder Mappings: 
+##### address_of_placeholder
+Name: VALUE
+Mapped Value: `",target.result,"`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("&",target.result,"")`
 ### ARRAY_SIZE
-#### vector_eval_ref
+#### Variables: 
+##### vector_eval_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of array
-#### vector_eval
+##### vector_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_eval_ref), ctx)
 Description: array
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}({})", vector_eval.result, "size")`
 ### ASSIGN
-#### left_ref
+#### Variables: 
+##### left_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of assign target
-#### right_ref
+##### right_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of assign source
-#### ref
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of previous assignment or phi or definition
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(ref), ctx)`
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(left_ref), ctx)`
 ### BEGIN_COND_BLOCK
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of expression
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(ref), ctx)`
 ### BINARY
-#### op
+#### Variables: 
+##### op
 Type: rebgn::BinaryOp
 Initial Value: code.bop().value()
 Description: binary operator
-#### left_eval_ref
+##### left_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of left operand
-#### left_eval
+##### left_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(left_eval_ref), ctx)
 Description: left operand
-#### right_eval_ref
+##### right_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of right operand
-#### right_eval
+##### right_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(right_eval_ref), ctx)
 Description: right operand
-#### opstr
+##### opstr
 Type: string
 Initial Value: to_string(op)
 Description: binary operator string
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("({} {} {})", left_eval.result, opstr, right_eval.result)`
+### CALL
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented CALL*/"`
+### CALL_CAST
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented CALL_CAST*/"`
+### CAN_READ
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented CAN_READ*/"`
 ### CAST
-#### type_ref
+#### Variables: 
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of cast target type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: cast target type
-#### from_type_ref
+##### from_type_ref
 Type: Varint
 Initial Value: code.from_type().value()
 Description: reference of cast source type
-#### evaluated_ref
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of cast source value
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: cast source value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("({}){}", type, evaluated.result)`
 ### DECLARE_VARIABLE
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of expression
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(ref), ctx)`
+### DEFINE_CONSTANT
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented DEFINE_CONSTANT*/"`
+### DEFINE_FIELD
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `field_accessor(code,ctx)`
 ### DEFINE_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of variable value
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variable value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
+### DEFINE_PROPERTY
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `field_accessor(code,ctx)`
 ### DEFINE_VARIABLE
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of variable value
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variable value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
 ### DEFINE_VARIABLE_REF
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of expression
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(ref), ctx)`
+### EMPTY_OPTIONAL
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"std::nullopt"`
+### EMPTY_PTR
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"nullptr"`
 ### FIELD_AVAILABLE
-#### left_ref
+#### Variables: 
+##### left_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of field (maybe null)
-#### right_ref
+##### right_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of condition
-#### left_eval
+##### left_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(left_ref), ctx)
 Description: field
-#### right_ref
+##### right_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of condition
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(right_ref), ctx)`
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(right_ref), ctx)`
 ### IMMEDIATE_CHAR
-#### char_code
+#### Variables: 
+##### char_code
 Type: uint64_t
 Initial Value: code.int_value()->value()
 Description: immediate char code
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}", char_code)`
+### IMMEDIATE_FALSE
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"false"`
 ### IMMEDIATE_INT
-#### value
+#### Variables: 
+##### value
 Type: uint64_t
 Initial Value: code.int_value()->value()
 Description: immediate value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}", value)`
 ### IMMEDIATE_INT64
-#### value
+#### Variables: 
+##### value
 Type: uint64_t
 Initial Value: *code.int_value64()
 Description: immediate value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}", value)`
 ### IMMEDIATE_STRING
-#### str
+#### Variables: 
+##### str
 Type: string
 Initial Value: ctx.string_table[code.ident().value().value()]
 Description: immediate string
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("\"{}\"", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all()))`
+### IMMEDIATE_TRUE
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"true"`
 ### IMMEDIATE_TYPE
-#### type_ref
+#### Variables: 
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of immediate type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: immediate type
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `type`
 ### INDEX
-#### left_eval_ref
+#### Variables: 
+##### left_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of indexed object
-#### left_eval
+##### left_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(left_eval_ref), ctx)
 Description: indexed object
-#### right_eval_ref
+##### right_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of index
-#### right_eval
+##### right_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(right_eval_ref), ctx)
 Description: index
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}[{}]", left_eval.result, right_eval.result)`
+### INPUT_BIT_OFFSET
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented INPUT_BIT_OFFSET*/"`
+### INPUT_BYTE_OFFSET
+#### Variables: 
+#### Placeholder Mappings: 
+##### decode_offset
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("",ctx.r(),".offset()")`
 ### IS_LITTLE_ENDIAN
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback expression
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(fallback), ctx)`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"std::endian::native == std::endian::little"`
 ### NEW_OBJECT
-#### type_ref
+#### Variables: 
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of object type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: object type
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}()", type)`
 ### OPTIONAL_OF
-#### target_ref
+#### Variables: 
+##### target_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of target object
-#### target
+##### target
 Type: EvalResult
 Initial Value: eval(ctx.ref(target_ref), ctx)
 Description: target object
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of type of optional (not include optional)
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: type of optional (not include optional)
+#### Placeholder Mappings: 
+##### optional_of_placeholder
+Name: TYPE
+Mapped Value: `",type,"`
+Name: VALUE
+Mapped Value: `",target.result,"`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("",target.result,"")`
+### OUTPUT_BIT_OFFSET
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented OUTPUT_BIT_OFFSET*/"`
+### OUTPUT_BYTE_OFFSET
+#### Variables: 
+#### Placeholder Mappings: 
+##### encode_offset
+Name: ENCODER
+Mapped Value: `",ctx.w(),"`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("",ctx.w(),".offset()")`
 ### PHI
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of expression
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `eval(ctx.ref(ref), ctx)`
 ### PROPERTY_INPUT_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of variable value
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variable value
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
+### REMAIN_BYTES
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `"/*Unimplemented REMAIN_BYTES*/"`
 ### UNARY
-#### op
+#### Variables: 
+##### op
 Type: rebgn::UnaryOp
 Initial Value: code.uop().value()
 Description: unary operator
-#### target_ref
+##### target_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of target
-#### target
+##### target
 Type: EvalResult
 Initial Value: eval(ctx.ref(target_ref), ctx)
 Description: target
-#### opstr
+##### opstr
 Type: string
 Initial Value: to_string(op)
 Description: unary operator string
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("({}{})", opstr, target.result)`
 ## function `inner_function`
 ### APPEND
-#### vector_eval_ref
+#### Variables: 
+##### vector_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector (not temporary)
-#### vector_eval
+##### vector_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_eval_ref), ctx)
 Description: vector (not temporary)
-#### new_element_eval_ref
+##### new_element_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of new element
-#### new_element_eval
+##### new_element_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(new_element_eval_ref), ctx)
 Description: new element
+#### Placeholder Mappings: 
 ### ASSERT
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of assertion condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: assertion condition
+#### Placeholder Mappings: 
 ### ASSIGN
-#### left_eval_ref
+#### Variables: 
+##### left_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of assignment target
-#### left_eval
+##### left_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(left_eval_ref), ctx)
 Description: assignment target
-#### right_eval_ref
+##### right_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of assignment source
-#### right_eval
+##### right_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(right_eval_ref), ctx)
 Description: assignment source
+#### Placeholder Mappings: 
 ### BACKWARD_INPUT
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of backward offset to move (in byte)
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: backward offset to move (in byte)
+#### Placeholder Mappings: 
+##### decode_backward
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+Name: OFFSET
+Mapped Value: `",evaluated.result,"`
 ### BACKWARD_OUTPUT
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of backward offset to move (in byte)
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: backward offset to move (in byte)
+#### Placeholder Mappings: 
+##### encode_backward
+Name: ENCODER
+Mapped Value: `",ctx.w(),"`
+Name: OFFSET
+Mapped Value: `",evaluated.result,"`
 ### BEGIN_DECODE_PACKED_OPERATION
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
+#### Placeholder Mappings: 
 ### BEGIN_DECODE_SUB_RANGE
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of sub range length or vector expression
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: sub range length or vector expression
-#### sub_range_type
+##### sub_range_type
 Type: SubRangeType
 Initial Value: code.sub_range_type().value()
 Description: sub range type (byte_len or replacement)
+#### Placeholder Mappings: 
 ### BEGIN_ENCODE_PACKED_OPERATION
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
+#### Placeholder Mappings: 
 ### BEGIN_ENCODE_SUB_RANGE
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of sub range length or vector expression
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: sub range length or vector expression
-#### sub_range_type
+##### sub_range_type
 Type: SubRangeType
 Initial Value: code.sub_range_type().value()
 Description: sub range type (byte_len or replacement)
+#### Placeholder Mappings: 
 ### CALL_DECODE
-#### func_ref
+#### Variables: 
+##### func_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of function
-#### func_belong
+##### func_belong
 Type: Varint
 Initial Value: ctx.ref(func_ref).belong().value()
 Description: reference of function belong
-#### func_belong_name
+##### func_belong_name
 Type: string
 Initial Value: type_accessor(ctx.ref(func_belong), ctx)
 Description: function belong name
-#### func_name
+##### func_name
 Type: string
 Initial Value: ctx.ident(func_ref)
 Description: identifier of function
-#### obj_eval_ref
+##### obj_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of `this` object
-#### obj_eval
+##### obj_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(obj_eval_ref), ctx)
 Description: `this` object
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(func_ref)
 Description: range of function call range
+#### Placeholder Mappings: 
 ### CALL_ENCODE
-#### func_ref
+#### Variables: 
+##### func_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of function
-#### func_belong
+##### func_belong
 Type: Varint
 Initial Value: ctx.ref(func_ref).belong().value()
 Description: reference of function belong
-#### func_belong_name
+##### func_belong_name
 Type: string
 Initial Value: type_accessor(ctx.ref(func_belong), ctx)
 Description: function belong name
-#### func_name
+##### func_name
 Type: string
 Initial Value: ctx.ident(func_ref)
 Description: identifier of function
-#### obj_eval_ref
+##### obj_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of `this` object
-#### obj_eval
+##### obj_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(obj_eval_ref), ctx)
 Description: `this` object
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(func_ref)
 Description: range of function call range
+#### Placeholder Mappings: 
 ### CASE
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### CHECK_UNION
-#### union_member_ref
+#### Variables: 
+##### union_member_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of current union member
-#### union_ref
+##### union_ref
 Type: Varint
 Initial Value: ctx.ref(union_member_ref).belong().value()
 Description: reference of union
-#### union_field_ref
+##### union_field_ref
 Type: Varint
 Initial Value: ctx.ref(union_ref).belong().value()
 Description: reference of union field
-#### union_member_index
+##### union_member_index
 Type: uint64_t
 Initial Value: ctx.ref(union_member_ref).int_value()->value()
 Description: current union member index
-#### union_member_ident
+##### union_member_ident
 Type: string
 Initial Value: ctx.ident(union_member_ref)
 Description: identifier of union member
-#### union_ident
+##### union_ident
 Type: string
 Initial Value: ctx.ident(union_ref)
 Description: identifier of union
-#### union_field_ident
+##### union_field_ident
 Type: EvalResult
 Initial Value: eval(ctx.ref(union_field_ref), ctx)
 Description: union field
-#### check_type
+##### check_type
 Type: rebgn::UnionCheckAt
 Initial Value: code.check_at().value()
 Description: union check location
+#### Placeholder Mappings: 
+##### check_union_condition
+Name: FIELD_IDENT
+Mapped Value: `",union_field_ident.result,"`
+Name: MEMBER_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
+Name: MEMBER_IDENT
+Mapped Value: `",union_member_ident,"`
+Name: MEMBER_INDEX
+Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
+Name: UNION_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
+Name: UNION_IDENT
+Mapped Value: `",union_ident,"`
+##### check_union_fail_return_value
+Name: FIELD_IDENT
+Mapped Value: `",union_field_ident.result,"`
+Name: MEMBER_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
+Name: MEMBER_IDENT
+Mapped Value: `",union_member_ident,"`
+Name: MEMBER_INDEX
+Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
+Name: UNION_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
+Name: UNION_IDENT
+Mapped Value: `",union_ident,"`
 ### DECLARE_VARIABLE
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of variable
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variable
-#### init_ref
+##### init_ref
 Type: Varint
 Initial Value: ctx.ref(code.ref().value()).ref().value()
 Description: reference of variable initialization
-#### init
+##### init
 Type: EvalResult
 Initial Value: eval(ctx.ref(init_ref), ctx)
 Description: variable initialization
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: ctx.ref(code.ref().value()).type().value()
 Description: reference of variable
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: variable
+#### Placeholder Mappings: 
 ### DECODE_INT
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### evaluated_ref
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of element
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: element
+#### Placeholder Mappings: 
 ### DECODE_INT_VECTOR
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### vector_value_ref
+##### vector_value_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector
-#### vector_value
+##### vector_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_value_ref), ctx)
 Description: vector
-#### size_value_ref
+##### size_value_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size
-#### size_value
+##### size_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
+#### Placeholder Mappings: 
+##### decode_bytes_op
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+Name: LEN
+Mapped Value: `",size_value.result,"`
+Name: VALUE
+Mapped Value: `",vector_value.result,"`
 ### DECODE_INT_VECTOR_FIXED
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### vector_value_ref
+##### vector_value_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector
-#### vector_value
+##### vector_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_value_ref), ctx)
 Description: vector
-#### size_value_ref
+##### size_value_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size
-#### size_value
+##### size_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
+#### Placeholder Mappings: 
+##### decode_bytes_op
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+Name: LEN
+Mapped Value: `",size_value.result,"`
+Name: VALUE
+Mapped Value: `",vector_value.result,"`
 ### DECODE_INT_VECTOR_UNTIL_EOF
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### evaluated_ref
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of element
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: element
+#### Placeholder Mappings: 
+##### decode_bytes_until_eof_op
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+Name: VALUE
+Mapped Value: `",evaluated.result,"`
 ### DEFINE_FUNCTION
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of function
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of function
-#### func_type
+##### func_type
 Type: rebgn::FunctionType
 Initial Value: code.func_type().value()
 Description: function type
-#### type
+##### type
 Type: std::optional<std::string>
 Initial Value: std::nullopt
 Description: function return type
-#### belong_name
+##### belong_name
 Type: std::optional<std::string>
 Initial Value: std::nullopt
 Description: function belong name
+#### Placeholder Mappings: 
 ### DEFINE_VARIABLE
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of variable
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variable
-#### init_ref
+##### init_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of variable initialization
-#### init
+##### init
 Type: EvalResult
 Initial Value: eval(ctx.ref(init_ref), ctx)
 Description: variable initialization
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of variable
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: variable
+#### Placeholder Mappings: 
 ### DYNAMIC_ENDIAN
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
+#### Placeholder Mappings: 
 ### ELIF
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### ENCODE_INT
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### evaluated_ref
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of element
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: element
+#### Placeholder Mappings: 
 ### ENCODE_INT_VECTOR
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### vector_value_ref
+##### vector_value_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector
-#### vector_value
+##### vector_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_value_ref), ctx)
 Description: vector
-#### size_value_ref
+##### size_value_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size
-#### size_value
+##### size_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
+#### Placeholder Mappings: 
+##### encode_bytes_op
+Name: ENCODER
+Mapped Value: `",ctx.w(),"`
+Name: LEN
+Mapped Value: `",size_value.result,"`
+Name: VALUE
+Mapped Value: `",vector_value.result,"`
 ### ENCODE_INT_VECTOR_FIXED
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### vector_value_ref
+##### vector_value_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector
-#### vector_value
+##### vector_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_value_ref), ctx)
 Description: vector
-#### size_value_ref
+##### size_value_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size
-#### size_value
+##### size_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
+#### Placeholder Mappings: 
+##### encode_bytes_op
+Name: ENCODER
+Mapped Value: `",ctx.w(),"`
+Name: LEN
+Mapped Value: `",size_value.result,"`
+Name: VALUE
+Mapped Value: `",vector_value.result,"`
 ### END_DECODE_PACKED_OPERATION
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
+#### Placeholder Mappings: 
 ### END_ENCODE_PACKED_OPERATION
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
+#### Placeholder Mappings: 
 ### EXHAUSTIVE_MATCH
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### EXPLICIT_ERROR
-#### param
+#### Variables: 
+##### param
 Type: Param
 Initial Value: code.param().value()
 Description: error message parameters
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(param.refs[0]), ctx)
 Description: error message
+#### Placeholder Mappings: 
 ### IF
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### INC
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of increment target
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: increment target
+#### Placeholder Mappings: 
 ### LENGTH_CHECK
-#### vector_eval_ref
+#### Variables: 
+##### vector_eval_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector to check
-#### vector_eval
+##### vector_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_eval_ref), ctx)
 Description: vector to check
-#### size_eval_ref
+##### size_eval_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size to check
-#### size_eval
+##### size_eval
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_eval_ref), ctx)
 Description: size to check
+#### Placeholder Mappings: 
 ### LOOP_CONDITION
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### MATCH
-#### evaluated_ref
+#### Variables: 
+##### evaluated_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of condition
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+#### Placeholder Mappings: 
 ### PEEK_INT_VECTOR
-#### fallback
+#### Variables: 
+##### fallback
 Type: Varint
 Initial Value: code.fallback().value()
 Description: reference of fallback operation
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(fallback)
 Description: range of fallback operation
-#### bit_size
+##### bit_size
 Type: uint64_t
 Initial Value: code.bit_size()->value()
 Description: bit size of element
-#### endian
+##### endian
 Type: rebgn::Endian
 Initial Value: code.endian().value()
 Description: endian of element
-#### vector_value_ref
+##### vector_value_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of vector
-#### vector_value
+##### vector_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(vector_value_ref), ctx)
 Description: vector
-#### size_value_ref
+##### size_value_ref
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of size
-#### size_value
+##### size_value
 Type: EvalResult
 Initial Value: eval(ctx.ref(size_value_ref), ctx)
 Description: size
+#### Placeholder Mappings: 
+##### peek_bytes_op
+Name: DECODER
+Mapped Value: `",ctx.r(),"`
+Name: LEN
+Mapped Value: `",size_value.result,"`
+Name: VALUE
+Mapped Value: `",vector_value.result,"`
+### RESERVE_SIZE
+#### Variables: 
+##### vector_eval_ref
+Type: Varint
+Initial Value: code.left_ref().value()
+Description: reference of vector
+##### vector_eval
+Type: EvalResult
+Initial Value: eval(ctx.ref(vector_eval_ref), ctx)
+Description: vector
+##### size_eval_ref
+Type: Varint
+Initial Value: code.right_ref().value()
+Description: reference of size
+##### size_eval
+Type: EvalResult
+Initial Value: eval(ctx.ref(size_eval_ref), ctx)
+Description: size
+##### reserve_type
+Type: rebgn::ReserveType
+Initial Value: code.reserve_type().value()
+Description: reserve vector type
+#### Placeholder Mappings: 
 ### RET
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of return value
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(ref), ctx)
 Description: return value
+#### Placeholder Mappings: 
 ### SWITCH_UNION
-#### union_member_ref
+#### Variables: 
+##### union_member_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of current union member
-#### union_ref
+##### union_ref
 Type: Varint
 Initial Value: ctx.ref(union_member_ref).belong().value()
 Description: reference of union
-#### union_field_ref
+##### union_field_ref
 Type: Varint
 Initial Value: ctx.ref(union_ref).belong().value()
 Description: reference of union field
-#### union_member_index
+##### union_member_index
 Type: uint64_t
 Initial Value: ctx.ref(union_member_ref).int_value()->value()
 Description: current union member index
-#### union_member_ident
+##### union_member_ident
 Type: string
 Initial Value: ctx.ident(union_member_ref)
 Description: identifier of union member
-#### union_ident
+##### union_ident
 Type: string
 Initial Value: ctx.ident(union_ref)
 Description: identifier of union
-#### union_field_ident
+##### union_field_ident
 Type: EvalResult
 Initial Value: eval(ctx.ref(union_field_ref), ctx)
 Description: union field
+#### Placeholder Mappings: 
+##### check_union_condition
+Name: FIELD_IDENT
+Mapped Value: `",union_field_ident.result,"`
+Name: MEMBER_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
+Name: MEMBER_IDENT
+Mapped Value: `",union_member_ident,"`
+Name: MEMBER_INDEX
+Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
+Name: UNION_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
+Name: UNION_IDENT
+Mapped Value: `",union_ident,"`
+##### switch_union
+Name: FIELD_IDENT
+Mapped Value: `",union_field_ident.result,"`
+Name: MEMBER_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
+Name: MEMBER_IDENT
+Mapped Value: `",union_member_ident,"`
+Name: MEMBER_INDEX
+Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
+Name: UNION_FULL_IDENT
+Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
+Name: UNION_IDENT
+Mapped Value: `",union_ident,"`
 ## function `inner_block`
 ### DECLARE_BIT_FIELD
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of bit field
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ref)
 Description: identifier of bit field
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(ref)
 Description: range of bit field
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: ctx.ref(ref).type().value()
 Description: reference of bit field type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: bit field type
+#### Placeholder Mappings: 
 ### DECLARE_ENUM
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of ENUM
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of ENUM
+#### Placeholder Mappings: 
 ### DECLARE_FORMAT
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of FORMAT
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of FORMAT
+#### Placeholder Mappings: 
 ### DECLARE_FUNCTION
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of FUNCTION
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of FUNCTION
-#### func_type
+##### func_type
 Type: rebgn::FunctionType
 Initial Value: ctx.ref(ref).func_type().value()
 Description: function type
+#### Placeholder Mappings: 
 ### DECLARE_PROPERTY
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of PROPERTY
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of PROPERTY
+#### Placeholder Mappings: 
 ### DECLARE_STATE
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of STATE
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(code.ref().value())
 Description: range of STATE
+#### Placeholder Mappings: 
 ### DECLARE_UNION
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of UNION
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(ref)
 Description: range of UNION
+#### Placeholder Mappings: 
 ### DECLARE_UNION_MEMBER
-#### ref
+#### Variables: 
+##### ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of UNION_MEMBER
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(ref)
 Description: range of UNION_MEMBER
+#### Placeholder Mappings: 
 ### DEFINE_BIT_FIELD
-#### type
+#### Variables: 
+##### type
 Type: string
 Initial Value: type_to_string(ctx,code.type().value())
 Description: bit field type
-#### ident_ref
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of bit field
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of bit field
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belonging struct or bit field
+#### Placeholder Mappings: 
 ### DEFINE_ENUM
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of enum
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of enum
-#### base_type_ref
+##### base_type_ref
 Type: StorageRef
 Initial Value: code.type().value()
 Description: type reference of enum base type
-#### base_type
+##### base_type
 Type: std::optional<std::string>
 Initial Value: std::nullopt
 Description: enum base type
+#### Placeholder Mappings: 
 ### DEFINE_ENUM_MEMBER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of enum member
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of enum member
-#### evaluated_ref
+##### evaluated_ref
 Type: Varint
 Initial Value: code.left_ref().value()
 Description: reference of enum member value
-#### evaluated
+##### evaluated
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: enum member value
-#### enum_ident_ref
+##### enum_ident_ref
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of enum
-#### enum_ident
+##### enum_ident
 Type: string
 Initial Value: ctx.ident(enum_ident_ref)
 Description: identifier of enum
+#### Placeholder Mappings: 
 ### DEFINE_FIELD
-#### type
+#### Variables: 
+##### type
 Type: string
 Initial Value: type_to_string(ctx,code.type().value())
 Description: field type
-#### ident_ref
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of field
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of field
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belonging struct or bit field
-#### is_bit_field
+##### is_bit_field
 Type: bool
 Initial Value: belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD
 Description: is part of bit field
+#### Placeholder Mappings: 
 ### DEFINE_FORMAT
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of format
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+#### Placeholder Mappings: 
 ### DEFINE_PROPERTY_GETTER
-#### func
+#### Variables: 
+##### func
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of function
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(func)
 Description: range of function
+#### Placeholder Mappings: 
 ### DEFINE_PROPERTY_SETTER
-#### func
+#### Variables: 
+##### func
 Type: Varint
 Initial Value: code.right_ref().value()
 Description: reference of function
-#### inner_range
+##### inner_range
 Type: string
 Initial Value: ctx.range(func)
 Description: range of function
+#### Placeholder Mappings: 
 ### DEFINE_STATE
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of format
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+#### Placeholder Mappings: 
 ### DEFINE_UNION
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of union
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of union
+#### Placeholder Mappings: 
 ### DEFINE_UNION_MEMBER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of format
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+#### Placeholder Mappings: 
 ## function `add_parameter`
 ### DEFINE_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of parameter
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of parameter
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of parameter type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: parameter type
+#### Placeholder Mappings: 
 ### PROPERTY_INPUT_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of parameter
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of parameter
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: code.type().value()
 Description: reference of parameter type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: parameter type
+#### Placeholder Mappings: 
 ### STATE_VARIABLE_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of state variable
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of state variable
-#### type_ref
+##### type_ref
 Type: Varint
 Initial Value: ctx.ref(ident_ref).type().value()
 Description: reference of state variable type
-#### type
+##### type
 Type: string
 Initial Value: type_to_string(ctx,type_ref)
 Description: state variable type
+#### Placeholder Mappings: 
 ## function `add_call_parameter`
 ### PROPERTY_INPUT_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of parameter
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of parameter
+#### Placeholder Mappings: 
 ### STATE_VARIABLE_PARAMETER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ref().value()
 Description: reference of state variable
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of state variable
+#### Placeholder Mappings: 
 ## function `type_to_string`
 ### ARRAY
-#### base_type
+#### Variables: 
+##### base_type
 Type: string
 Initial Value: type_to_string_impl(ctx, s, bit_size, index + 1)
 Description: base type
-#### is_byte_vector
+##### is_byte_vector
 Type: bool
 Initial Value: index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8
 Description: is byte vector
-#### length
+##### length
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: array length
+#### Placeholder Mappings: 
+##### array_type
+Name: LENGTH
+Mapped Value: `",futils::number::to_string<std::string>(length),"`
+Name: TYPE
+Mapped Value: `",base_type,"`
+##### byte_array_type
+Name: LEN
+Mapped Value: ``
+Name: LENGTH
+Mapped Value: `",futils::number::to_string<std::string>(length),"`
+Name: TYPE
+Mapped Value: `",base_type,"`
 ### DEFINE_FUNCTION
-#### func_type
+#### Variables: 
+##### func_type
 Type: rebgn::FunctionType
 Initial Value: code.func_type().value()
 Description: function type
+#### Placeholder Mappings: 
 ### ENUM
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: storage.ref().value()
 Description: reference of enum
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of enum
+#### Placeholder Mappings: 
 ### FLOAT
-#### size
+#### Variables: 
+##### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
+##### aligned_size
+Type: uint64_t
+Initial Value: size < 32 ? 32 : 64
+Description: aligned bit size
+#### Placeholder Mappings: 
+##### float_type
+Name: ALIGNED_BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
+Name: BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(size),"`
 ### INT
-#### size
+#### Variables: 
+##### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
+##### aligned_size
+Type: uint64_t
+Initial Value: size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64
+Description: aligned bit size
+#### Placeholder Mappings: 
+##### int_type
+Name: ALIGNED_BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
+Name: BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(size),"`
 ### OPTIONAL
-#### base_type
+#### Variables: 
+##### base_type
 Type: string
 Initial Value: type_to_string_impl(ctx, s, bit_size, index + 1)
 Description: base type
+#### Placeholder Mappings: 
 ### PTR
-#### base_type
+#### Variables: 
+##### base_type
 Type: string
 Initial Value: type_to_string_impl(ctx, s, bit_size, index + 1)
 Description: base type
+#### Placeholder Mappings: 
+##### pointer_type
+Name: TYPE
+Mapped Value: `",base_type,"`
 ### RECURSIVE_STRUCT_REF
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: storage.ref().value()
 Description: reference of recursive struct
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of recursive struct
+#### Placeholder Mappings: 
+##### recursive_struct_type
+Name: TYPE
+Mapped Value: `",ident,"`
 ### STRUCT_REF
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: storage.ref().value()
 Description: reference of struct
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of struct
+#### Placeholder Mappings: 
 ### UINT
-#### size
+#### Variables: 
+##### size
 Type: uint64_t
 Initial Value: storage.size()->value()
 Description: bit size
+##### aligned_size
+Type: uint64_t
+Initial Value: size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64
+Description: aligned bit size
+#### Placeholder Mappings: 
+##### uint_type
+Name: ALIGNED_BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
+Name: BIT_SIZE
+Mapped Value: `",futils::number::to_string<std::string>(size),"`
 ### VARIANT
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: storage.ref().value()
 Description: reference of variant
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of variant
-#### types
+##### types
 Type: std::vector<std::string>
 Initial Value: {}
 Description: variant types
+#### Placeholder Mappings: 
 ### VECTOR
-#### base_type
+#### Variables: 
+##### base_type
 Type: string
 Initial Value: type_to_string_impl(ctx, s, bit_size, index + 1)
 Description: base type
-#### is_byte_vector
+##### is_byte_vector
 Type: bool
 Initial Value: index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8
 Description: is byte vector
+#### Placeholder Mappings: 
+##### vector_type
+Name: TYPE
+Mapped Value: `",base_type,"`
 ## function `field_accessor`
 ### DEFINE_BIT_FIELD
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of BIT_FIELD
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of BIT_FIELD
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `field_accessor(ctx.ref(belong),ctx)`
 ### DEFINE_FIELD
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of FIELD
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of FIELD
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: field_accessor(ctx.ref(belong), ctx)
 Description: belong eval
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
+### DEFINE_FORMAT
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ctx.this_()`
 ### DEFINE_PROPERTY
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of PROPERTY
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of PROPERTY
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: field_accessor(ctx.ref(belong), ctx)
 Description: belong eval
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
+### DEFINE_STATE
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ctx.this_()`
 ### DEFINE_UNION
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of UNION
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of UNION
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: field_accessor(ctx.ref(belong), ctx)
 Description: belong eval
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `ident`
 ### DEFINE_UNION_MEMBER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of UNION_MEMBER
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of UNION_MEMBER
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### union_member_ref
+##### union_member_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of union member
-#### union_ref
+##### union_ref
 Type: Varint
 Initial Value: belong
 Description: reference of union
-#### union_field_ref
+##### union_field_ref
 Type: Varint
 Initial Value: ctx.ref(union_ref).belong().value()
 Description: reference of union field
-#### union_field_belong
+##### union_field_belong
 Type: Varint
 Initial Value: ctx.ref(union_field_ref).belong().value()
 Description: reference of union field belong
+#### Placeholder Mappings: 
+##### eval_result_passthrough
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `field_accessor(ctx.ref(union_field_ref),ctx)`
 ## function `type_accessor`
 ### DEFINE_BIT_FIELD
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of BIT_FIELD
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of BIT_FIELD
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
+#### Placeholder Mappings: 
 ### DEFINE_FIELD
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of FIELD
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of FIELD
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
+#### Placeholder Mappings: 
 ### DEFINE_FORMAT
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of FORMAT
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of FORMAT
+#### Placeholder Mappings: 
+### DEFINE_PROGRAM
+#### Variables: 
+#### Placeholder Mappings: 
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `std::format("{}{}{}","/*",to_string(code.op),"*/")`
 ### DEFINE_PROPERTY
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of PROPERTY
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of PROPERTY
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
+#### Placeholder Mappings: 
 ### DEFINE_STATE
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of STATE
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of STATE
+#### Placeholder Mappings: 
 ### DEFINE_UNION
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of UNION
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of UNION
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: type_accessor(ctx.ref(belong),ctx)
 Description: field accessor
+#### Placeholder Mappings: 
 ### DEFINE_UNION_MEMBER
-#### ident_ref
+#### Variables: 
+##### ident_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of UNION_MEMBER
-#### ident
+##### ident
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of UNION_MEMBER
-#### belong
+##### belong
 Type: Varint
 Initial Value: code.belong().value()
 Description: reference of belong
-#### is_member
+##### is_member
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
-#### union_member_ref
+##### union_member_ref
 Type: Varint
 Initial Value: code.ident().value()
 Description: reference of union member
-#### union_ref
+##### union_ref
 Type: Varint
 Initial Value: belong
 Description: reference of union
-#### union_field_ref
+##### union_field_ref
 Type: Varint
 Initial Value: ctx.ref(union_ref).belong().value()
 Description: reference of union field
-#### union_field_belong
+##### union_field_belong
 Type: Varint
 Initial Value: ctx.ref(union_field_ref).belong().value()
 Description: reference of union field belong
-#### belong_eval
+##### belong_eval
 Type: string
 Initial Value: type_accessor(ctx.ref(union_field_belong),ctx)
 Description: field accessor
+#### Placeholder Mappings: 

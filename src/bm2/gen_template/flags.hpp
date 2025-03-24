@@ -56,9 +56,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string worker_lsp_name = "";
     std::string comment_prefix = "/*";
     std::string comment_suffix = "*/";
-    std::string int_type = "std::int${TYPE}_t";
-    std::string uint_type = "std::uint${TYPE}_t";
-    std::string float_type = "float${TYPE}_t";
+    std::string int_type = "std::int${ALIGNED_BIT_SIZE}_t";
+    std::string uint_type = "std::uint${ALIGNED_BIT_SIZE}_t";
+    std::string float_type = "std::float${ALIGNED_BIT_SIZE}_t";
     std::string array_type = "std::array<$TYPE, $LEN>";
     std::string vector_type = "std::vector<$TYPE>";
     std::string optional_type = "std::optional<$TYPE>";
@@ -120,8 +120,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string check_union_condition = "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)";
     std::string check_union_fail_return_value = "false";
     std::string switch_union = "$FIELD_IDENT = $MEMBER_IDENT()";
-    std::string address_of_placeholder = "&{}";
-    std::string optional_of_placeholder = "{}";
+    std::string address_of_placeholder = "&$VALUE";
+    std::string optional_of_placeholder = "$VALUE";
     std::string decode_bytes_op = "$VALUE = $DECODER.decode_bytes($LEN)";
     std::string encode_bytes_op = "$ENCODER.encode_bytes($VALUE)";
     std::string decode_bytes_until_eof_op = "$VALUE = $DECODER.decode_bytes_until_eof()";

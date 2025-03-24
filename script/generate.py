@@ -1,11 +1,22 @@
 import subprocess as sp
+import sys
 
 LANG_LIST = ["c", "python", "haskell", "go"]
 
 for lang in LANG_LIST:
-    sp.check_call(["python", "script/gen_template.py", lang])
+    sp.run(
+        ["python", "script/gen_template.py", lang],
+        check=True,
+        stdout=sys.stdout,
+        stderr=sys.stderr,
+    )
 
-sp.check_call(["python", "script/collect_cmake.py"])
+sp.run(
+    ["python", "script/collect_cmake.py"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)
 
 DOC = sp.check_output(["tool/gen_template", "--mode", "docs-markdown"])
 

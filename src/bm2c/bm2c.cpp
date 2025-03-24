@@ -34,48 +34,24 @@ namespace bm2c {
                 if (bit_size) {
                     *bit_size = size;
                 }
-                if (size <= 8) {
-                    return "std::int8_t";
-                }
-                else if (size <= 16) {
-                    return "std::int16_t";
-                }
-                else if (size <= 32) {
-                    return "std::int32_t";
-                }
-                else {
-                    return "std::int64_t";
-                }
+                auto aligned_size = size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64; //aligned bit size
+                return futils::strutil::concat<std::string>("std::int",futils::number::to_string<std::string>(aligned_size),"_t");
             }
             case rebgn::StorageType::UINT: {
                 auto size = storage.size()->value(); //bit size
                 if (bit_size) {
                     *bit_size = size;
                 }
-                if (size <= 8) {
-                    return "std::uint8_t";
-                }
-                else if (size <= 16) {
-                    return "std::uint16_t";
-                }
-                else if (size <= 32) {
-                    return "std::uint32_t";
-                }
-                else {
-                    return "std::uint64_t";
-                }
+                auto aligned_size = size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64; //aligned bit size
+                return futils::strutil::concat<std::string>("std::uint",futils::number::to_string<std::string>(aligned_size),"_t");
             }
             case rebgn::StorageType::FLOAT: {
                 auto size = storage.size()->value(); //bit size
                 if (bit_size) {
                     *bit_size = size;
                 }
-                if (size <= 32) {
-                    return "float32_t";
-                }
-                else {
-                    return "float64_t";
-                }
+                auto aligned_size = size < 32 ? 32 : 64; //aligned bit size
+                return futils::strutil::concat<std::string>("float",futils::number::to_string<std::string>(aligned_size),"_t");
             }
             case rebgn::StorageType::STRUCT_REF: {
                 auto ident_ref = storage.ref().value(); //reference of struct
@@ -85,7 +61,7 @@ namespace bm2c {
             case rebgn::StorageType::RECURSIVE_STRUCT_REF: {
                 auto ident_ref = storage.ref().value(); //reference of recursive struct
                 auto ident = ctx.ident(ident_ref); //identifier of recursive struct
-                return std::format("{}*", ident);
+                return futils::strutil::concat<std::string>("",ident,"*");
             }
             case rebgn::StorageType::BOOL: {
                 return "bool";
@@ -104,7 +80,7 @@ namespace bm2c {
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
                 auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
-                return std::format("std::vector<{}>", base_type);
+                return futils::strutil::concat<std::string>("std::vector<",base_type,">");
             }
             case rebgn::StorageType::VARIANT: {
                 auto ident_ref = storage.ref().value(); //reference of variant
@@ -123,11 +99,11 @@ namespace bm2c {
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
-                return std::format("std::optional<{}>", base_type);
+                return std::format("std::optional<$TYPE>", base_type);
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
-                return std::format("{}*", base_type);
+                return futils::strutil::concat<std::string>("",base_type,"*");
             }
             default: {
                 return std::format("{}{}{}","/*",to_string(storage.type),"*/");
@@ -369,7 +345,7 @@ namespace bm2c {
         case rebgn::AbstractOp::ADDRESS_OF: {
             auto target_ref = code.ref().value(); //reference of target object
             auto target = eval(ctx.ref(target_ref), ctx); //target object
-            result = make_eval_result(std::format("&{}", target.result));
+            result = make_eval_result(futils::strutil::concat<std::string>("&",target.result,""));
             break;
         }
         case rebgn::AbstractOp::OPTIONAL_OF: {
@@ -377,7 +353,7 @@ namespace bm2c {
             auto target = eval(ctx.ref(target_ref), ctx); //target object
             auto type_ref = code.type().value(); //reference of type of optional (not include optional)
             auto type = type_to_string(ctx,type_ref); //type of optional (not include optional)
-            result = make_eval_result(std::format("{}", target.result));
+            result = make_eval_result(futils::strutil::concat<std::string>("",target.result,""));
             break;
         }
         case rebgn::AbstractOp::EMPTY_PTR: {
@@ -1391,7 +1367,17 @@ namespace bm2c {
                 break;
             }
             case rebgn::AbstractOp::RESERVE_SIZE: {
-                w.writeln("/*Unimplemented RESERVE_SIZE*/ ");
+                auto vector_eval_ref = code.left_ref().value(); //reference of vector
+                auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector
+                auto size_eval_ref = code.right_ref().value(); //reference of size
+                auto size_eval = eval(ctx.ref(size_eval_ref), ctx); //size
+                auto reserve_type = code.reserve_type().value(); //reserve vector type
+                if(reserve_type == rebgn::ReserveType::STATIC) {
+                    w.writeln("");
+                }
+                else if(reserve_type == rebgn::ReserveType::DYNAMIC) {
+                    w.writeln("$VECTOR.reserve($SIZE)");
+                }
                 break;
             }
             case rebgn::AbstractOp::BEGIN_ENCODE_SUB_RANGE: {

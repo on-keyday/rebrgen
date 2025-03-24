@@ -9,9 +9,11 @@
 namespace rebgn {
 
     std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
+        map.erase("DOLLAR");
         if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
             flags.content[flags.func_name][std::string(action_at)].env_mappings.push_back({std::string(param_name), map});
         }
+        map["DOLLAR"] = "$";
         return futils::env::expand<std::string>(str, futils::env::expand_map<std::string>(map), true);
     }
 
@@ -106,14 +108,23 @@ namespace rebgn {
         else if (op == AbstractOp::ADDRESS_OF) {
             define_eval(eval, flags, op, "target", code_ref(flags, "ref"), "target object");
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "std::format(\"" + flags.address_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
+                std::map<std::string, std::string> map{
+                    {"VALUE", "\",target.result,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, op, ENV_FLAG(address_of_placeholder), map);
+                do_make_eval_result(eval, op, flags, escaped, EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::OPTIONAL_OF) {
             define_eval(eval, flags, op, "target", code_ref(flags, "ref"), "target object");
             define_type(eval, flags, op, "type", code_ref(flags, "type"), "type of optional (not include optional)");
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "std::format(\"" + flags.optional_of_placeholder + "\", target.result)", EvalResultMode::TEXT);
+                std::map<std::string, std::string> map{
+                    {"VALUE", "\",target.result,\""},
+                    {"TYPE", "\",type,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, op, ENV_FLAG(optional_of_placeholder), map);
+                do_make_eval_result(eval, op, flags, escaped, EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::INPUT_BYTE_OFFSET) {

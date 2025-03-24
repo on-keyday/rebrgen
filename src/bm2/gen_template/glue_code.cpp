@@ -9,7 +9,7 @@ namespace rebgn {
 
     std::vector<Flag> get_flags(Flags& flags) {
         std::vector<Flag> parsed_flag;
-        may_write_from_hook(flags, bm2::HookFile::flags, [&](size_t i, futils::view::rvec line) {
+        may_write_from_hook(flags, bm2::HookFile::flags, [&](size_t i, futils::view::rvec line, bool is_last) {
             auto split = futils::strutil::split<futils::view::rvec>(line, "|", 4);
             if (split.size() < 4) {
                 futils::wrap::cerr_wrap() << "invalid flag line: " << line << " at " << i << ":split count is " << split.size() << "\n";

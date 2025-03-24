@@ -126,7 +126,7 @@ namespace rebgn {
         w.writeln("std::string escape_", flags.lang_name, "_keyword(const std::string& str) {");
         auto scope_escape_ident = w.indent_scope();
         w.write("if (");
-        if (!may_write_from_hook(flags, bm2::HookFile::keyword, [&](size_t i, futils::view::rvec keyword) {
+        if (!may_write_from_hook(flags, bm2::HookFile::keyword, [&](size_t i, futils::view::rvec keyword, bool is_last) {
                 if (i != 0) {
                     w.write("||");
                 }

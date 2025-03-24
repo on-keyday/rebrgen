@@ -1468,6 +1468,7 @@ namespace bm2c {
             w.writeln("#include <stdint.h>");
             w.writeln("#include <stddef.h>");
             w.writeln("");
+            // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */

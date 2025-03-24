@@ -9,11 +9,8 @@ namespace rebgn {
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
-            if (i == 0) {
-                w.writeln("// load hook: ", concat);
-            }
-            w.writeln(line);
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line, bool is_last) {
+            with_hook_comment(w, flags, concat, line, i, is_last);
         });
     }
 
@@ -24,11 +21,8 @@ namespace rebgn {
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
-            if (i == 0) {
-                w.writeln("// load hook: ", concat);
-            }
-            w.writeln(line);
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line, bool is_last) {
+            with_hook_comment(w, flags, concat, line, i, is_last);
         });
     }
 
@@ -39,16 +33,13 @@ namespace rebgn {
         for (auto& c : concat) {
             c = std::tolower(c);
         }
-        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line) {
-            if (i == 0) {
-                w.writeln("// load hook: ", concat);
-            }
-            w.writeln(line);
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec& line, bool is_last) {
+            with_hook_comment(w, flags, concat, line, i, is_last);
         });
     }
 
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, bool as_code) {
-        return may_write_from_hook(flags, hook, [&](size_t i, futils::view::rvec& line) {
+        return may_write_from_hook(flags, hook, [&](size_t i, futils::view::rvec& line, bool is_last) {
             if (i == 0) {
                 w.writeln("// load hook: ", to_string(hook));
             }
@@ -69,6 +60,9 @@ namespace rebgn {
             }
             else {
                 w.writeln(line);
+            }
+            if (is_last) {
+                w.writeln("// end hook: ", to_string(hook));
             }
         });
     }

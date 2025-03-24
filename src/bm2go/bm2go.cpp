@@ -587,6 +587,7 @@ namespace bm2go {
                     // load hook: param_state_variable_parameter
                     w.write(ident," *",type);
                     params++;
+                    // end hook: param_state_variable_parameter
                     break;
                 }
                 case rebgn::AbstractOp::PROPERTY_INPUT_PARAMETER: {
@@ -675,6 +676,7 @@ namespace bm2go {
                 // load hook: block_define_format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_format
                 break;
             }
             case rebgn::AbstractOp::END_FORMAT: {
@@ -743,12 +745,14 @@ namespace bm2go {
                 w.writeln("type ",ident," ", *base_type);
                 w.writeln("const (");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_enum
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
                 // load hook: block_end_enum
                 defer.pop_back();
                 w.writeln(")");
+                // end hook: block_end_enum
                 break;
             }
             case rebgn::AbstractOp::DECLARE_ENUM: {
@@ -766,6 +770,7 @@ namespace bm2go {
                 auto enum_ident = ctx.ident(enum_ident_ref); //identifier of enum
                 // load hook: block_define_enum_member
                 w.writeln(ident," ",enum_ident," = ",evaluated.result);
+                // end hook: block_define_enum_member
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
@@ -774,6 +779,7 @@ namespace bm2go {
                 // load hook: block_define_union
                 w.writeln("type ",ident," interface {");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_union
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
@@ -795,6 +801,7 @@ namespace bm2go {
                 // load hook: block_define_union_member
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_union_member
                 break;
             }
             case rebgn::AbstractOp::END_UNION_MEMBER: {
@@ -816,6 +823,7 @@ namespace bm2go {
                 // load hook: block_define_state
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_state
                 break;
             }
             case rebgn::AbstractOp::END_STATE: {
@@ -908,6 +916,7 @@ namespace bm2go {
                     w.write(*type);
                 }
                 w.writeln("{");
+                // end hook: func_define_function
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -1476,6 +1485,7 @@ namespace bm2go {
                 copy[0] = std::toupper(copy[0]);
                 return copy;
             }
+            // end hook: escape_ident
             return escape_go_keyword(str);
         }};
         // search metadata
@@ -1483,6 +1493,7 @@ namespace bm2go {
             auto& w = ctx.cw;
             // load hook: file_top
             w.writeln("package main");
+            // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */

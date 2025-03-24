@@ -1469,6 +1469,7 @@ namespace bm2haskell {
             w.writeln("import Data.Word");
             w.writeln("import Data.Int");
             w.writeln("");
+            // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
             /* exclude DEFINE_PROGRAM and END_PROGRAM */

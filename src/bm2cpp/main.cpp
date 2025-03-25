@@ -5,6 +5,6 @@ struct Flags : bm2::Flags {
 };
 
 DEFINE_ENTRY(Flags) {
-    bm2cpp::to_cpp(w, bm);
+    bm2cpp::to_cpp(w, bm, output);
     return 0;
 }

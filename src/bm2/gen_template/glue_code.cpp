@@ -71,7 +71,7 @@ namespace rebgn {
         w.writeln("DEFINE_ENTRY(Flags) {");
         auto scope_entry = w.indent_scope();
         may_write_from_hook(w, flags, bm2::HookFile::entry, false);
-        w.writeln("bm2", flags.lang_name, "::to_", flags.lang_name, "(w, bm,flags.bm2", flags.lang_name, "_flags);");
+        w.writeln("bm2", flags.lang_name, "::to_", flags.lang_name, "(w, bm,flags.bm2", flags.lang_name, "_flags,output);");
         w.writeln("return 0;");
         scope_entry.execute();
         w.writeln("}");
@@ -82,6 +82,7 @@ namespace rebgn {
         w.writeln("#pragma once");
         w.writeln("#include <binary/writer.h>");
         w.writeln("#include <bm/binary_module.hpp>");
+        w.writeln("#include <bm2/output.hpp>");
         w.writeln("namespace bm2", flags.lang_name, " {");
         auto scope = w.indent_scope();
         auto parsed_flag = get_flags(flags);
@@ -96,7 +97,7 @@ namespace rebgn {
         scope_flags.execute();
         w.writeln("};");
 
-        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags);");
+        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output);");
         scope.execute();
         w.writeln("}  // namespace bm2", flags.lang_name);
     }

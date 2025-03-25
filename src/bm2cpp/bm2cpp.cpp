@@ -14,8 +14,8 @@ namespace bm2cpp {
     using TmpCodeWriter = bm2::TmpCodeWriter;
 
     struct Context : bm2::Context {
-        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape)
-            : bm2::Context(w, bm, "r", "w", "(*this)", escape) {
+        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, bm2::Output& output, auto&& escape)
+            : bm2::Context(w, bm, output, "r", "w", "(*this)", escape) {
         }
 
         std::string bytes_type = "::futils::view::rvec";
@@ -809,6 +809,9 @@ namespace bm2cpp {
                 case rebgn::AbstractOp::DEFINE_FORMAT:
                 case rebgn::AbstractOp::DEFINE_STATE: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
+                    if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
+                        ctx.output.struct_names.push_back(ident);
+                    }
                     ctx.cw.writeln("struct ", ident, " {");
                     defer.push_back(ctx.cw.indent_scope_ex());
                     break;
@@ -1361,8 +1364,8 @@ namespace bm2cpp {
         return keyword;
     }
 
-    void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm) {
-        Context ctx(w, bm, [&](auto&& ctx, auto&& code, auto&& str) {
+    void to_cpp(futils::binary::writer& w, const rebgn::BinaryModule& bm, bm2::Output& output) {
+        Context ctx(w, bm, output, [&](auto&& ctx, auto&& code, auto&& str) {
             if (auto range = ctx.ident_range_table.find(code); range != ctx.ident_range_table.end()) {
                 if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::DEFINE_FUNCTION)) {
                     if (ctx.bm.code[*f].func_type() == rebgn::FunctionType::VECTOR_SETTER) {

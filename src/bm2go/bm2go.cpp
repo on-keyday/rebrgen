@@ -6,7 +6,7 @@
 namespace bm2go {
     using TmpCodeWriter = bm2::TmpCodeWriter;
     struct Context : bm2::Context {
-        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,"r","w","this_", std::move(escape_ident)} {}
+        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm,bm2::Output& output, auto&& escape_ident) : bm2::Context{w, bm,output,"r","w","this_", std::move(escape_ident)} {}
     };
     struct EvalResult {
         std::string result;
@@ -654,6 +654,8 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                auto is_empty_block = range.start ==range.end -1; //is empty block
+                ctx.output.struct_names.push_back(ident);
                 // load hook: block_define_format
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
@@ -757,6 +759,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
+                auto is_empty_block = range.start ==range.end -1; //is empty block
                 // load hook: block_define_union
                 w.writeln("type ",ident," interface {");
                 defer.push_back(w.indent_scope_ex());
@@ -779,6 +782,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                auto is_empty_block = range.start ==range.end -1; //is empty block
                 // load hook: block_define_union_member
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
@@ -801,6 +805,7 @@ namespace bm2go {
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
+                auto is_empty_block = range.start ==range.end -1; //is empty block
                 // load hook: block_define_state
                 w.writeln("type ",ident," struct {");
                 defer.push_back(w.indent_scope_ex());
@@ -874,6 +879,7 @@ namespace bm2go {
                 auto ident_ref = code.ident().value(); //reference of function
                 auto ident = ctx.ident(ident_ref); //identifier of function
                 auto func_type = code.func_type().value(); //function type
+                auto is_empty_block = i + 1 < bm.code.size() && bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
                 auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
                 std::optional<std::string> type = std::nullopt; //function return type
                 if(found_type_pos) {
@@ -1159,6 +1165,7 @@ namespace bm2go {
                 break;
             }
             case rebgn::AbstractOp::LOOP_INFINITE: {
+                auto is_empty_block = find_next_end_loop(ctx, i) == i + 1; //empty block
                 w.writeln("for {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1166,6 +1173,7 @@ namespace bm2go {
             case rebgn::AbstractOp::LOOP_CONDITION: {
                 auto evaluated_ref = code.ref().value(); //reference of condition
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
+                auto is_empty_block = find_next_end_loop(ctx, i) == i + 1; //empty block
                 w.writeln("for ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1186,6 +1194,7 @@ namespace bm2go {
             case rebgn::AbstractOp::IF: {
                 auto evaluated_ref = code.ref().value(); //reference of condition
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
+                auto is_empty_block = find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK; //empty block
                 w.writeln("if ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1194,6 +1203,7 @@ namespace bm2go {
                 auto evaluated_ref = code.ref().value(); //reference of condition
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //condition
                 defer.pop_back();
+                auto is_empty_block = find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK; //empty block
                 w.write("}");
                 w.writeln("else if ",evaluated.result," {");
                 defer.push_back(w.indent_scope_ex());
@@ -1201,6 +1211,7 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::ELSE: {
                 defer.pop_back();
+                auto is_empty_block = find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK; //empty block
                 w.write("}");
                 w.writeln("else {");
                 defer.push_back(w.indent_scope_ex());
@@ -1471,8 +1482,8 @@ namespace bm2go {
         }
         return str;
     }
-    void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
-        Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+    void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident
             if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {

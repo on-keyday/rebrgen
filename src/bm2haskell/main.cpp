@@ -8,6 +8,6 @@ struct Flags : bm2::Flags {
     }
 };
 DEFINE_ENTRY(Flags) {
-    bm2haskell::to_haskell(w, bm,flags.bm2haskell_flags);
+    bm2haskell::to_haskell(w, bm,flags.bm2haskell_flags,output);
     return 0;
 }

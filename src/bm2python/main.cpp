@@ -9,6 +9,6 @@ struct Flags : bm2::Flags {
     }
 };
 DEFINE_ENTRY(Flags) {
-    bm2python::to_python(w, bm,flags.bm2python_flags);
+    bm2python::to_python(w, bm,flags.bm2python_flags,output);
     return 0;
 }

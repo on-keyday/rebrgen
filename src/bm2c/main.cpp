@@ -8,6 +8,6 @@ struct Flags : bm2::Flags {
     }
 };
 DEFINE_ENTRY(Flags) {
-    bm2c::to_c(w, bm,flags.bm2c_flags);
+    bm2c::to_c(w, bm,flags.bm2c_flags,output);
     return 0;
 }

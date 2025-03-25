@@ -10,6 +10,7 @@
 #include <emscripten.h>
 #include <tool/common/em_main.h>
 #endif
+#include "output.hpp"
 
 namespace bm2 {
     struct Flags : futils::cmdline::templ::HelpOption {
@@ -20,11 +21,14 @@ namespace bm2 {
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
 
+        std::string_view dump_struct_file;
+
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
             ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
             ctx.VarString<true>(&output, "o,output", "output file", "FILE");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
+            ctx.VarString(&dump_struct_file, "dump-struct", "dump struct file", "FILE");
         }
     };
     namespace internal {
@@ -54,21 +58,23 @@ namespace bm2 {
             }
             futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
             futils::binary::writer w{fs.get_direct_write_handler(), &fs};
-            return then(w, bm);
+            Output output;
+            int ret = then(w, bm, output);
+            return ret;
         }
     }  // namespace internal
 }  // namespace bm2
 
-#define DEFINE_ENTRY(FlagType)                                                                                                                                                        \
-    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, rebgn::BinaryModule& bm);                                                             \
-    int bm2_main(int argc, char** argv) {                                                                                                                                             \
-        FlagType flags;                                                                                                                                                               \
-        flags.program_name = argv[0];                                                                                                                                                 \
-        return futils::cmdline::templ::parse_or_err<std::string>(                                                                                                                     \
-            argc, argv, flags, [&](auto&& str, bool err) {  if(err){ futils::wrap::cerr_wrap()<< flags.program_name << ": " <<str; } else { futils::wrap::cout_wrap() << str;} },                                                                                                                         \
-            [](FlagType& flags, futils::cmdline::option::Context& ctx) { return bm2::internal::load_file(flags, ctx, [&](auto& w, auto& bm) { return Main(flags, ctx, w, bm); }); }); \
-    }                                                                                                                                                                                 \
-    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, rebgn::BinaryModule& bm)
+#define DEFINE_ENTRY(FlagType)                                                                                                                                                                              \
+    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, rebgn::BinaryModule& bm, bm2::Output& output);                                                              \
+    int bm2_main(int argc, char** argv) {                                                                                                                                                                   \
+        FlagType flags;                                                                                                                                                                                     \
+        flags.program_name = argv[0];                                                                                                                                                                       \
+        return futils::cmdline::templ::parse_or_err<std::string>(                                                                                                                                           \
+            argc, argv, flags, [&](auto&& str, bool err) {  if(err){ futils::wrap::cerr_wrap()<< flags.program_name << ": " <<str; } else { futils::wrap::cout_wrap() << str;} },                                                                                                                                               \
+            [](FlagType& flags, futils::cmdline::option::Context& ctx) { return bm2::internal::load_file(flags, ctx, [&](auto& w, auto& bm, auto& output) { return Main(flags, ctx, w, bm, output); }); }); \
+    }                                                                                                                                                                                                       \
+    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, rebgn::BinaryModule& bm, bm2::Output& output)
 
 int bm2_main(int argc, char** argv);
 #if defined(__EMSCRIPTEN__)

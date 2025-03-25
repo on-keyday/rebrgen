@@ -264,7 +264,7 @@ namespace rebgn {
                     define_bool(inner_function, flags, op, "is_empty_block", "find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK", "empty block");
                 }
                 else if (op == AbstractOp::LOOP_CONDITION || op == AbstractOp::LOOP_INFINITE) {
-                    define_bool(inner_function, flags, op, "is_empty_block", "find_next_end_loop(ctx, i, true) == i + 1", "empty block");
+                    define_bool(inner_function, flags, op, "is_empty_block", "find_next_end_loop(ctx, i) == i + 1", "empty block");
                 }
                 func_hook([&] {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {

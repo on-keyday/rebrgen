@@ -7,6 +7,7 @@
 #include <bm/binary_module.hpp>
 #include <format>
 #include <bmgen/helper.hpp>
+#include "output.hpp"
 
 namespace bm2 {
     using TmpCodeWriter = futils::code::CodeWriter<std::string>;
@@ -21,6 +22,7 @@ namespace bm2 {
     struct Context {
         futils::code::CodeWriter<futils::binary::writer&> cw;
         const rebgn::BinaryModule& bm;
+        Output& output;
         std::unordered_map<std::uint64_t, std::string> string_table;
         std::unordered_map<std::uint64_t, std::string> ident_table;
         std::unordered_map<std::uint64_t, std::uint64_t> ident_index_table;
@@ -28,7 +30,6 @@ namespace bm2 {
         std::unordered_map<std::uint64_t, std::string> metadata_table;
         std::unordered_map<std::uint64_t, rebgn::Storages> storage_table;
         std::string ptr_type;
-        std::vector<std::string> struct_names;
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
         std::vector<std::string> this_as;
@@ -80,9 +81,9 @@ namespace bm2 {
             return ident_range_table[ident.value()];
         }
 
-        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm,
+        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, bm2::Output& output,
                 std::string_view root_r, std::string_view root_w, std::string_view root_this, auto&& escape_ident)
-            : cw(w), bm(bm), root_r(root_r), root_w(root_w), root_this(root_this) {
+            : cw(w), bm(bm), output(output), root_r(root_r), root_w(root_w), root_this(root_this) {
             auto& ctx = *this;
             for (auto& sr : bm.strings.refs) {
                 ctx.string_table[sr.code.value()] = sr.string.data;

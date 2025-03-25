@@ -1073,6 +1073,10 @@ Description: identifier of function
 Type: rebgn::FunctionType
 Initial Value: code.func_type().value()
 Description: function type
+##### is_empty_block
+Type: bool
+Initial Value: i + 1 < bm.code.size() && bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION
+Description: empty block
 ##### type
 Type: std::optional<std::string>
 Initial Value: std::nullopt
@@ -1130,6 +1134,17 @@ Description: reference of condition
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+##### is_empty_block
+Type: bool
+Initial Value: find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK
+Description: empty block
+#### Placeholder Mappings: 
+### ELSE
+#### Variables: 
+##### is_empty_block
+Type: bool
+Initial Value: find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK
+Description: empty block
 #### Placeholder Mappings: 
 ### ENCODE_INT
 #### Variables: 
@@ -1296,6 +1311,10 @@ Description: reference of condition
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+##### is_empty_block
+Type: bool
+Initial Value: find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK
+Description: empty block
 #### Placeholder Mappings: 
 ### INC
 #### Variables: 
@@ -1337,6 +1356,17 @@ Description: reference of condition
 Type: EvalResult
 Initial Value: eval(ctx.ref(evaluated_ref), ctx)
 Description: condition
+##### is_empty_block
+Type: bool
+Initial Value: find_next_end_loop(ctx, i) == i + 1
+Description: empty block
+#### Placeholder Mappings: 
+### LOOP_INFINITE
+#### Variables: 
+##### is_empty_block
+Type: bool
+Initial Value: find_next_end_loop(ctx, i) == i + 1
+Description: empty block
 #### Placeholder Mappings: 
 ### MATCH
 #### Variables: 
@@ -1695,6 +1725,10 @@ Description: reference of format
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+##### is_empty_block
+Type: bool
+Initial Value: range.start ==range.end -1
+Description: is empty block
 #### Placeholder Mappings: 
 ### DEFINE_PROPERTY_GETTER
 #### Variables: 
@@ -1728,6 +1762,10 @@ Description: reference of format
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+##### is_empty_block
+Type: bool
+Initial Value: range.start ==range.end -1
+Description: is empty block
 #### Placeholder Mappings: 
 ### DEFINE_UNION
 #### Variables: 
@@ -1739,6 +1777,10 @@ Description: reference of union
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of union
+##### is_empty_block
+Type: bool
+Initial Value: range.start ==range.end -1
+Description: is empty block
 #### Placeholder Mappings: 
 ### DEFINE_UNION_MEMBER
 #### Variables: 
@@ -1750,6 +1792,10 @@ Description: reference of format
 Type: string
 Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
+##### is_empty_block
+Type: bool
+Initial Value: range.start ==range.end -1
+Description: is empty block
 #### Placeholder Mappings: 
 ## function `add_parameter`
 ### DEFINE_PARAMETER

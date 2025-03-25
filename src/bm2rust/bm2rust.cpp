@@ -1282,6 +1282,9 @@ namespace bm2rust {
                 case rebgn::AbstractOp::DEFINE_FORMAT:
                 case rebgn::AbstractOp::DEFINE_STATE: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
+                    if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
+                        ctx.struct_names.push_back(ident);
+                    }
                     w.writeln("#[derive(Debug,Default, Clone, PartialEq, Eq)]");
                     w.writeln("pub struct ", ident, may_get_lifetime(ctx), " {");
                     defer.push_back(w.indent_scope_ex());

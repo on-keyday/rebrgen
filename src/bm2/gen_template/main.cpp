@@ -121,7 +121,7 @@ namespace rebgn {
         w.writeln("struct Context : bm2::Context {");
         auto scope_context = w.indent_scope();
         may_write_from_hook(w, flags, bm2::HookFile::bm_context, false);
-        w.writeln("Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident) : bm2::Context{w, bm,\"r\",\"w\",\"", flags.self_ident, "\", std::move(escape_ident)} {}");
+        w.writeln("Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm,bm2::Output& output, auto&& escape_ident) : bm2::Context{w, bm,output,\"r\",\"w\",\"", flags.self_ident, "\", std::move(escape_ident)} {}");
         scope_context.execute();
         w.writeln("};");
 
@@ -145,9 +145,9 @@ namespace rebgn {
         scope_escape_ident.execute();
         w.writeln("}");
 
-        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {");
+        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {");
         auto scope_to_xxx = w.indent_scope();
-        w.writeln("Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
+        w.writeln("Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
         auto scope_escape_key_ident = w.indent_scope();
         w.writeln("auto& code = ctx.ref(rebgn::Varint{id});");
         may_write_from_hook(w, flags, bm2::HookFile::escape_ident, false);

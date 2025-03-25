@@ -81,9 +81,9 @@ namespace rebgn {
         }
         else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "format");
-            define_bool(inner_block, flags, op, "is_empty_block", "range.start.value()==range.end.value()-1", "is empty block");
+            define_bool(inner_block, flags, op, "is_empty_block", "range.start ==range.end -1", "is empty block");
             if (op == AbstractOp::DEFINE_FORMAT) {
-                inner_block.writeln("ctx.struct_names.push_back(ident);");
+                inner_block.writeln("ctx.output.struct_names.push_back(ident);");
             }
             block_hook([&] {
                 inner_block.writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
@@ -92,7 +92,7 @@ namespace rebgn {
         }
         else if (op == AbstractOp::DEFINE_UNION) {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "union");
-            define_bool(inner_block, flags, op, "is_empty_block", "range.start.value()==range.end.value()-1", "is empty block");
+            define_bool(inner_block, flags, op, "is_empty_block", "range.start ==range.end -1", "is empty block");
             block_hook([&] {
                 if (flags.variant_mode == "union") {
                     inner_block.writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");

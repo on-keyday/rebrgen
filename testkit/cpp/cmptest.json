@@ -1,0 +1,27 @@
+{
+    "suffix": "cpp",
+    "test_template": "./testkit/cpp/test_template.cpp",
+    "replace_file_name": "stub.cpp",
+    "replace_struct_name": "TEST_CLASS",
+    "build_output_name": "build_output",
+    "build_input_name": "main.cpp",
+    "build_command": [
+        "python",
+        "./testkit/cpp/setup.py",
+        "build",
+        "$INPUT",
+        "$OUTPUT",
+        "$ORIGIN",
+        "$TMPDIR",
+        "$DEBUG",
+        "$CONFIG"
+    ],
+    "run_command": [
+        "python",
+        "./testkit/cpp/setup.py",
+        "run",
+        "$EXEC",
+        "$INPUT",
+        "$OUTPUT"
+    ]
+}

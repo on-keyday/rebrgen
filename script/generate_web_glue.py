@@ -2,6 +2,14 @@ import subprocess as sp
 import os
 import json
 
+def search_config_files(root_dir):
+    config_files = []
+    for root, dirs, files in os.walk(root_dir):
+        for file in files:
+            if file == "config.json":
+                config_files.append(os.path.join(root, file))
+    return config_files
+
 
 def generate_web_glue(config_file):
     hook_dir = os.path.join(os.path.dirname(config_file),"hook")
@@ -47,13 +55,6 @@ def generate_web_glue(config_file):
     }
 
 
-def search_config_files(root_dir):
-    config_files = []
-    for root, dirs, files in os.walk(root_dir):
-        for file in files:
-            if file == "config.json":
-                config_files.append(os.path.join(root, file))
-    return config_files
 
 
 def generate_web_glue_files(config_dir, output_dir):

@@ -22,26 +22,28 @@ namespace bm2 {
         eval_result = 6,
         escape_ident = 7,
         entry = 8,
-        each_inner_block = 9,
-        each_inner_function = 10,
-        inner_function_start = 11,
-        inner_function_each_code = 12,
-        inner_block_start = 13,
-        inner_block_each_code = 14,
-        param_start = 15,
-        param_each_code = 16,
-        call_param_start = 17,
-        call_param_each_code = 18,
-        first_scan = 19,
-        tree_scan = 20,
-        inner_function_op = 21,
-        inner_block_op = 22,
-        eval_op = 23,
-        type_op = 24,
-        param_op = 25,
-        call_param_op = 26,
-        field_accessor_op = 27,
-        type_accessor_op = 28,
+        cmptest_build = 9,
+        cmptest_run = 10,
+        each_inner_block = 11,
+        each_inner_function = 12,
+        inner_function_start = 13,
+        inner_function_each_code = 14,
+        inner_block_start = 15,
+        inner_block_each_code = 16,
+        param_start = 17,
+        param_each_code = 18,
+        call_param_start = 19,
+        call_param_each_code = 20,
+        first_scan = 21,
+        tree_scan = 22,
+        inner_function_op = 23,
+        inner_block_op = 24,
+        eval_op = 25,
+        type_op = 26,
+        param_op = 27,
+        call_param_op = 28,
+        field_accessor_op = 29,
+        type_accessor_op = 30,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -63,6 +65,10 @@ namespace bm2 {
                 return "escape_ident";
             case HookFile::entry:
                 return "entry";
+            case HookFile::cmptest_build:
+                return "cmptest_build";
+            case HookFile::cmptest_run:
+                return "cmptest_run";
             case HookFile::each_inner_block:
                 return "each_inner_block";
             case HookFile::each_inner_function:
@@ -137,6 +143,12 @@ namespace bm2 {
         }
         if (str == "entry") {
             return HookFile::entry;
+        }
+        if (str == "cmptest_build") {
+            return HookFile::cmptest_build;
+        }
+        if (str == "cmptest_run") {
+            return HookFile::cmptest_run;
         }
         if (str == "each_inner_block") {
             return HookFile::each_inner_block;
@@ -377,6 +389,8 @@ namespace bm2 {
         js_ui_embed = 7,
         docs_json = 8,
         docs_markdown = 9,
+        cmptest_json = 10,
+        cmptest_build = 11,
     };
     constexpr const char* to_string(GenerateMode e) {
         switch (e) {
@@ -400,6 +414,10 @@ namespace bm2 {
                 return "docs-json";
             case GenerateMode::docs_markdown:
                 return "docs-markdown";
+            case GenerateMode::cmptest_json:
+                return "cmptest-json";
+            case GenerateMode::cmptest_build:
+                return "cmptest-build";
         }
         return "";
     }
@@ -437,6 +455,12 @@ namespace bm2 {
         }
         if (str == "docs-markdown") {
             return GenerateMode::docs_markdown;
+        }
+        if (str == "cmptest-json") {
+            return GenerateMode::cmptest_json;
+        }
+        if (str == "cmptest-build") {
+            return GenerateMode::cmptest_build;
         }
         return std::nullopt;
     }

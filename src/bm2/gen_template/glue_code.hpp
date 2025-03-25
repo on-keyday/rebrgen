@@ -23,4 +23,5 @@ namespace rebgn {
     void write_code_js_glue_ui_and_generator_call(bm2::TmpCodeWriter& w, Flags& flags);
     void write_code_config(bm2::TmpCodeWriter& w, Flags& flags);
     void write_template_document(Flags& flags, bm2::TmpCodeWriter& w);
+    void write_cmptest_config(Flags& flags, bm2::TmpCodeWriter& w);
 }  // namespace rebgn

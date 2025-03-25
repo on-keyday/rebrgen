@@ -1,0 +1,27 @@
+{
+    "suffix": "c",
+    "test_template": "./testkit/c/test_template.c",
+    "replace_file_name": "stub.c",
+    "replace_struct_name": "TEST_CLASS",
+    "build_output_name": "build_output",
+    "build_input_name": "main.c",
+    "build_command": [
+        "python",
+        "./testkit/c/setup.py",
+        "build",
+        "$INPUT",
+        "$OUTPUT",
+        "$ORIGIN",
+        "$TMPDIR",
+        "$DEBUG",
+        "$CONFIG"
+    ],
+    "run_command": [
+        "python",
+        "./testkit/c/setup.py",
+        "run",
+        "$EXEC",
+        "$INPUT",
+        "$OUTPUT"
+    ]
+}

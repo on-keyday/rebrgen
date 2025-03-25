@@ -2634,6 +2634,10 @@ namespace bm2rust {
             if (bm.code[range.start].op != rebgn::AbstractOp::DEFINE_FUNCTION) {
                 continue;
             }
+            if (auto ft = bm.code[range.start].func_type().value();
+                ft == rebgn::FunctionType::BIT_GETTER || ft == rebgn::FunctionType::BIT_SETTER) {
+                continue;
+            }
             if (is_bit_field_property(ctx, range)) {
                 continue;
             }

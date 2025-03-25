@@ -360,4 +360,92 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
         }
     }
 
+    void write_cmptest_config(Flags& flags, bm2::TmpCodeWriter& w) {
+        if (flags.mode == bm2::GenerateMode::cmptest_json) {
+            futils::json::Stringer s;
+            auto root = s.object();
+            root("suffix", flags.file_suffix);
+            root("test_template", "./testkit/" + flags.lang_name + "/test_template." + flags.file_suffix);
+            root("replace_file_name", "stub." + flags.file_suffix);
+            root("replace_struct_name", "TEST_CLASS");
+            root("build_output_name", "build_output");
+            root("build_input_name", "main." + flags.file_suffix);
+            root("build_command",
+                 std::vector<std::string>{
+                     "python",
+                     "./testkit/" + flags.lang_name + "/setup.py",
+                     "build",
+                     "$INPUT",
+                     "$OUTPUT",
+                     "$ORIGIN",
+                     "$TMPDIR",
+                     "$DEBUG",
+                     "$CONFIG"});
+            root("run_command",
+                 std::vector<std::string>{
+                     "python",
+                     "./testkit/" + flags.lang_name + "/setup.py",
+                     "run",
+                     "$EXEC",
+                     "$INPUT",
+                     "$OUTPUT",
+                 });
+            root.close();
+            w.write(s.out());
+        }
+        else if (flags.mode == bm2::GenerateMode::cmptest_build) {
+            w.writeln("import sys");
+            w.writeln("import os");
+            w.writeln("import subprocess");
+            w.writeln();
+            w.writeln("def run_command(args):");
+            auto scope_command = w.indent_scope();
+            w.writeln("print(\"run command: \", args)");
+            w.writeln("return subprocess.check_call(args,stdout = sys.stdout, stderr = sys.stderr)");
+            scope_command.execute();
+            w.writeln();
+            w.writeln("def capture_command(args):");
+            auto scope_capture = w.indent_scope();
+            w.writeln("print(\"run command with capture: \", args)");
+            w.writeln("return subprocess.check_output(args,stderr = sys.stderr)");
+            scope_capture.execute();
+            w.writeln();
+            w.writeln("if __name__ == \"__main__\":");
+            auto scope_main = w.indent_scope();
+            w.writeln("MODE = sys.argv[1]");
+            w.writeln("if MODE == \"build\":");
+            auto scope = w.indent_scope();
+            w.writeln("INPUT = sys.argv[2]");
+            w.writeln("OUTPUT = sys.argv[3]");
+            w.writeln("ORIGIN = sys.argv[4]");
+            w.writeln("TMPDIR = sys.argv[5]");
+            w.writeln("DEBUG = sys.argv[6]");
+            w.writeln("CONFIG = sys.argv[7]");
+            w.writeln("CONFIG_DIR = os.path.dirname(CONFIG)");
+            if (!may_write_from_hook(flags, bm2::HookFile::cmptest_build, [&](size_t i, futils::view::rvec line, bool is_last) {
+                    w.writeln(line);
+                })) {
+                w.writeln("print(\"You have to implement build command in hook/cmptest_build.txt\")");
+                w.writeln("exit(1)");
+            }
+            scope.execute();
+            w.writeln("elif MODE == \"run\":");
+            auto scope2 = w.indent_scope();
+            w.writeln("EXEC = sys.argv[2]");
+            w.writeln("INPUT = sys.argv[3]");
+            w.writeln("OUTPUT = sys.argv[4]");
+            if (!may_write_from_hook(flags, bm2::HookFile::cmptest_run, [&](size_t i, futils::view::rvec line, bool is_last) {
+                    w.writeln(line);
+                })) {
+                w.writeln("exit(run_command([EXEC,INPUT,OUTPUT]))");
+            }
+            scope2.execute();
+            w.writeln("else:");
+            auto scope3 = w.indent_scope();
+            w.writeln("print(\"invalid mode\")");
+            w.writeln("exit(1)");
+            scope3.execute();
+            w.writeln();
+        }
+    }
 }  // namespace rebgn

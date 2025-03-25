@@ -1,0 +1,27 @@
+{
+    "suffix": "py",
+    "test_template": "./testkit/python/test_template.py",
+    "replace_file_name": "stub.py",
+    "replace_struct_name": "TEST_CLASS",
+    "build_output_name": "build_output",
+    "build_input_name": "main.py",
+    "build_command": [
+        "python",
+        "./testkit/python/setup.py",
+        "build",
+        "$INPUT",
+        "$OUTPUT",
+        "$ORIGIN",
+        "$TMPDIR",
+        "$DEBUG",
+        "$CONFIG"
+    ],
+    "run_command": [
+        "python",
+        "./testkit/python/setup.py",
+        "run",
+        "$EXEC",
+        "$INPUT",
+        "$OUTPUT"
+    ]
+}

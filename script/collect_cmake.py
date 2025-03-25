@@ -59,7 +59,7 @@ with open(output, "w") as f:
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("save = sp.check_output(\n")
-    f.write(f"    [\"{SRC2JSON}\", {INPUT}],\n")
+    f.write(f"    [\"{SRC2JSON}\", \"{INPUT}\"],\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("with open(\"save/sample.json\", \"wb\") as f:\n")

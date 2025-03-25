@@ -9,6 +9,13 @@ sp.run(
     stderr=sys.stderr,
 )
 save = sp.check_output(
+    ["C:/workspace/shbrgen/brgen/tool/src2json", "src/test/test_cases.bgn"],
+    stderr=sys.stderr,
+)
+with open("save/sample.json", "wb") as f:
+    f.write(save)
+print("Generated: save/sample.json")
+save = sp.check_output(
     ["tool/bmgen", "-p", "-i", "save/sample.json", "-o", "save/save.bin", "-c", "save/save.dot"],
     stderr=sys.stderr,
 )

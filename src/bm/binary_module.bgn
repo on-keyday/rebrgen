@@ -230,6 +230,7 @@ enum AbstractOp:
     IMMEDIATE_CHAR
     IMMEDIATE_STRING
     IMMEDIATE_TYPE
+    IMMEDIATE_CONST
 
     NEW_OBJECT
     INIT_RECURSIVE_STRUCT
@@ -430,7 +431,6 @@ format EndianExpr:
     sign :u1 # 0 for unsigned, 1 for signed (for storage optimization)
     reserved :u4
     dynamic_ref :Varint # ref to dynamic endian or null
-
 enum FunctionType:
     :u8
     FREE

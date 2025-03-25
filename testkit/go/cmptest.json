@@ -1,0 +1,27 @@
+{
+    "suffix": "go",
+    "test_template": "./testkit/go/test_template.go",
+    "replace_file_name": "stub.go",
+    "replace_struct_name": "TEST_CLASS",
+    "build_output_name": "build_output",
+    "build_input_name": "main.go",
+    "build_command": [
+        "python",
+        "./testkit/go/setup.py",
+        "build",
+        "$INPUT",
+        "$OUTPUT",
+        "$ORIGIN",
+        "$TMPDIR",
+        "$DEBUG",
+        "$CONFIG"
+    ],
+    "run_command": [
+        "python",
+        "./testkit/go/setup.py",
+        "run",
+        "$EXEC",
+        "$INPUT",
+        "$OUTPUT"
+    ]
+}

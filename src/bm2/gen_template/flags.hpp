@@ -256,7 +256,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&config_file, "config-file", "config file", "FILE");
         ctx.VarString<true>(&hook_file_dir, "hook-dir", "hook file directory", "DIR");
         ctx.VarMap<std::string, bm2::GenerateMode, std::map>(
-            &mode, "mode", "generate mode (generator,config,header,main,cmake,js-worker,js-ui,js-ui-embed,docs-json,docs-markdown)", "MODE",
+            &mode, "mode", "generate mode (generator,config,header,main,cmake,js-worker,js-ui,js-ui-embed,docs-json,docs-markdown,cmptest-json,cmptest-build)", "MODE",
             std::map<std::string, bm2::GenerateMode>{
                 {"generator", bm2::GenerateMode::generator},
                 {"header", bm2::GenerateMode::header},
@@ -268,6 +268,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
                 {"docs-json", bm2::GenerateMode::docs_json},
                 {"docs-markdown", bm2::GenerateMode::docs_markdown},
                 {"config", bm2::GenerateMode::config_},
+                {"cmptest-json", bm2::GenerateMode::cmptest_json},
+                {"cmptest-build", bm2::GenerateMode::cmptest_build},
             });
     }
 

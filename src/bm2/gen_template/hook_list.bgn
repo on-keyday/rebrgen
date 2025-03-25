@@ -11,6 +11,9 @@ enum HookFile:
     escape_ident = "escape_ident" # escape identifier
     entry = "entry" # entry point
 
+    cmptest_build = "cmptest_build" # cmptest build
+    cmptest_run = "cmptest_run" # cmptest run
+
     each_inner_block = "each_inner_block" # each inner block
     each_inner_function = "each_inner_function" # each inner function
     inner_function_start = "inner_function_start" # inner function start
@@ -75,3 +78,5 @@ enum GenerateMode:
     js_ui_embed = "js-ui-embed"
     docs_json = "docs-json"
     docs_markdown = "docs-markdown"
+    cmptest_json = "cmptest-json"
+    cmptest_build = "cmptest-build"

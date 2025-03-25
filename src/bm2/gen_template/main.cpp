@@ -104,6 +104,10 @@ namespace rebgn {
             write_code_js_glue_ui_and_generator_call(w, flags);
             return;
         }
+        if (flags.mode == bm2::GenerateMode::cmptest_json || flags.mode == bm2::GenerateMode::cmptest_build) {
+            write_cmptest_config(flags, w);
+            return;
+        }
 
         w.writeln("/*license*/");
         w.writeln("#include <bm2/context.hpp>");

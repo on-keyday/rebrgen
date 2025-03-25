@@ -14,7 +14,7 @@ print("INSTALL_PREFIX:", INSTALL_PREFIX)
 print("FUTILS_DIR:", FUTILS_DIR)
 
 shell = os.getenv("SHELL")
-if shell:
+if os.name == "posix":
     EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.sh")
 elif os.name == "nt":
     EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.ps1")

@@ -28,6 +28,7 @@ namespace bm2 {
         std::unordered_map<std::uint64_t, std::string> metadata_table;
         std::unordered_map<std::uint64_t, rebgn::Storages> storage_table;
         std::string ptr_type;
+        std::vector<std::string> struct_names;
         rebgn::BMContext bm_ctx;
         std::vector<futils::helper::DynDefer> on_functions;
         std::vector<std::string> this_as;

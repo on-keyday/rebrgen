@@ -217,7 +217,7 @@ namespace rebgn {
             if (op == AbstractOp::DEFINE_FUNCTION) {
                 define_ident(inner_function, flags, op, "ident", code_ref(flags, "ident"), "function");
                 do_variable_definition(inner_function, flags, op, "func_type", code_ref(flags, "func_type"), "rebgn::FunctionType", "function type");
-
+                define_bool(inner_function, flags, op, "is_empty_block", "i + 1 < bm.code.size() && bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION", "empty block");
                 // inner_function.writeln("auto range = ctx.range(code.ident().value());");
                 inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
                 do_typed_variable_definition(inner_function, flags, op, "type", "std::nullopt", "std::optional<std::string>", "function return type");
@@ -260,6 +260,12 @@ namespace rebgn {
                 });
             }
             else {
+                if (op == AbstractOp::IF || op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
+                    define_bool(inner_function, flags, op, "is_empty_block", "find_next_else_or_end_if(ctx, i, true) == i + 1 || ctx.bm.code[i + 1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK", "empty block");
+                }
+                else if (op == AbstractOp::LOOP_CONDITION || op == AbstractOp::LOOP_INFINITE) {
+                    define_bool(inner_function, flags, op, "is_empty_block", "find_next_end_loop(ctx, i, true) == i + 1", "empty block");
+                }
                 func_hook([&] {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
                         if (flags.otbs_on_block_end) {

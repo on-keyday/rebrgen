@@ -2,6 +2,7 @@
 #include <bmgen/internal.hpp>
 #include <bmgen/fallback.hpp>
 #include <bmgen/bit.hpp>
+#include <algorithm>
 
 namespace rebgn {
     expected<size_t> bit_size(const Storages& s) {

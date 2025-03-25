@@ -23,6 +23,13 @@ sp.run(
     stderr=sys.stderr,
 )
 
+sp.run(
+    ["python", "script/generate_test_glue.py"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)
+
 DOC = sp.check_output(["tool/gen_template", "--mode", "docs-markdown"])
 
 with open("docs/template_parameters.md", "wb") as f:

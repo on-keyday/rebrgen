@@ -30,6 +30,7 @@ def collect_cmake_files(root_dir):
                         else:
                             obj["suffix"] = obj["lang"]
                 else:
+                    print("No config file found",obj["name"])
                     obj["suffix"] = obj["lang"]
                 cmake_files.append(obj)
     return cmake_files
@@ -69,6 +70,8 @@ with open(output, "w") as f:
     f.write("    [\"tool/bmgen\", \"-p\", \"-i\", \"save/sample.json\", \"-o\", \"save/save.bin\", \"-c\", \"save/save.dot\"],\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
+    f.write("print(\"Generated: save/save.bin\")\n")
+    f.write("print(\"Generated: save/save.dot\")\n")
     f.write("with open(\"save/save.txt\", \"wb\") as f:\n")
     f.write("    f.write(save)\n")
     f.write("print(\"Generated: save/save.txt\")\n")
@@ -85,7 +88,7 @@ with open(output, "w") as f:
         if file["lang"] == "hexmap":
             continue  # skip this currently
         f.write(f"src = sp.check_output(\n")
-        f.write(f"    [\"tool/{file["name"]}\", \"-i\", \"save/save.bin\"],\n")
+        f.write(f"    [\"tool/{file["name"]}\", \"-i\", \"save/save.bin\",\"--test-info\",\"save/{file["lang"]}/save.{file["suffix"]}.json\"],\n")
         f.write(f"    stderr=sys.stderr,\n")
         f.write(f")\n")
         f.write(f"with open(\"save/{file["lang"]}/save.{file["suffix"]}\", \"wb\") as f:\n")

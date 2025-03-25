@@ -1,6 +1,7 @@
 import subprocess as sp
 import os
 import json
+import pathlib as pl
 
 
 def search_config_files(root_dir):
@@ -60,6 +61,7 @@ def generate_cmptest_glue(config_file):
 def generate_cmptest_glue_files(config_dir, output_dir):
     config_files = search_config_files(config_dir)
     conf_names = []
+    test_info = []
     for config_file in config_files:
         LANG_NAME, CMPTEST_JSON, CMPTEST_PY = generate_cmptest_glue(config_file)
         os.makedirs(os.path.join(output_dir, LANG_NAME), exist_ok=True)
@@ -68,7 +70,23 @@ def generate_cmptest_glue_files(config_dir, output_dir):
             json.dump(CMPTEST_JSON, f, indent=4)
         with open(os.path.join(output_dir, LANG_NAME, f"setup.py"), "wb") as f:
             f.write(CMPTEST_PY)
+        conf_dir = pl.Path(conf_name).parent.as_posix()
+        conf_name = pl.Path(conf_name).as_posix()
         conf_names.append(conf_name)
+        test_info.append(
+            {
+                "dir": conf_dir,
+                "base": "save",
+                "suffix": CMPTEST_JSON["suffix"],
+            },
+        )
+        test_info.append(
+            {
+                "dir": conf_dir,
+                "base": "save." + CMPTEST_JSON["suffix"],
+                "suffix": "json",
+            },
+        )
     INPUTS = []
     if os.path.exists(os.path.join(output_dir, "inputs.json")):
         with open(os.path.join(output_dir, "inputs.json"), "r") as f:
@@ -79,6 +97,8 @@ def generate_cmptest_glue_files(config_dir, output_dir):
             f,
             indent=4,
         )
+    with open(os.path.join(output_dir, "test_info.json"), "w") as f:
+        json.dump(test_info, f, indent=4)
 
 
 generate_cmptest_glue_files("src", "testkit")

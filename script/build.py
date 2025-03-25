@@ -28,6 +28,7 @@ def source_emsdk():
             ["source", EMSDK_PATH, ">", "/dev/null", ";", "env"],
             shell=True,
             env=copyEnv,
+            stderr=sys.stderr,
         )
     elif os.name == "nt":
         ENV = subprocess.check_output(
@@ -47,6 +48,7 @@ def source_emsdk():
                 "$_.Name + '=' + $_.Value}",
             ],
             env=copyEnv,
+            stderr=sys.stderr,
         )
     else:
         print("Unsupported environment")

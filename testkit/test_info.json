@@ -1,0 +1,62 @@
+[
+    {
+        "dir": "testkit/c",
+        "base": "save",
+        "suffix": "c"
+    },
+    {
+        "dir": "testkit/c",
+        "base": "save.c",
+        "suffix": "json"
+    },
+    {
+        "dir": "testkit/cpp",
+        "base": "save",
+        "suffix": "cpp"
+    },
+    {
+        "dir": "testkit/cpp",
+        "base": "save.cpp",
+        "suffix": "json"
+    },
+    {
+        "dir": "testkit/go",
+        "base": "save",
+        "suffix": "go"
+    },
+    {
+        "dir": "testkit/go",
+        "base": "save.go",
+        "suffix": "json"
+    },
+    {
+        "dir": "testkit/haskell",
+        "base": "save",
+        "suffix": "hs"
+    },
+    {
+        "dir": "testkit/haskell",
+        "base": "save.hs",
+        "suffix": "json"
+    },
+    {
+        "dir": "testkit/python",
+        "base": "save",
+        "suffix": "py"
+    },
+    {
+        "dir": "testkit/python",
+        "base": "save.py",
+        "suffix": "json"
+    },
+    {
+        "dir": "testkit/rust",
+        "base": "save",
+        "suffix": "rs"
+    },
+    {
+        "dir": "testkit/rust",
+        "base": "save.rs",
+        "suffix": "json"
+    }
+]

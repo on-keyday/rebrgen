@@ -6,6 +6,7 @@
 #include <wrap/cout.h>
 #include <file/file_view.h>
 #include <file/file_stream.h>
+#include <json/stringer.h>
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <tool/common/em_main.h>
@@ -21,14 +22,14 @@ namespace bm2 {
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
 
-        std::string_view dump_struct_file;
+        std::string_view dump_test_file;
 
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
             ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
             ctx.VarString<true>(&output, "o,output", "output file", "FILE");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
-            ctx.VarString<true>(&dump_struct_file, "dump-struct", "dump struct file", "FILE");
+            ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
         }
     };
     namespace internal {
@@ -60,6 +61,21 @@ namespace bm2 {
             futils::binary::writer w{fs.get_direct_write_handler(), &fs};
             Output output;
             int ret = then(w, bm, output);
+            if (flags.dump_test_file.size()) {
+                auto file = futils::file::File::create(flags.dump_test_file);
+                if (!file) {
+                    cerr << flags.program_name << ": " << file.error().template error<std::string>() << '\n';
+                    return 1;
+                }
+                futils::file::FileStream<std::string> fs{*file};
+                futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+                futils::json::Stringer str;
+                auto obj = str.object();
+                obj("line_map", [&](auto& s) { auto _ = s.array(); });  // for future use
+                obj("structs", output.struct_names);
+                obj.close();
+                w.write(str.out());
+            }
             return ret;
         }
     }  // namespace internal

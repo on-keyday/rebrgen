@@ -1,0 +1,1 @@
+go build -o save/go/save save/go/save.go

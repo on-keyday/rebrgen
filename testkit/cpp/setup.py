@@ -20,7 +20,7 @@ if __name__ == "__main__":
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
-        print("You have to implement build command in hook/cmptest_build.txt")
+        print("You have to implement build command in hook/cmptest_build.txt. see also testkit/cpp/setup.py")
         exit(1)
     elif MODE == "run":
         EXEC = sys.argv[2]

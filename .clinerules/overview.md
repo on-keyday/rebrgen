@@ -77,20 +77,17 @@ The goal of test is to `PASS` the `script/run_cmptest`
 
 - **Add a test case**: Add a test case file in `src/test/{test_name}.bgn`.
 - **Run test case**: Execute the generated test case using `script/generate src/test/{test_name}.bgn`.
-- **Run generated generator test**: Use `script/run_cmptest` to execute unit tests for generated generator. you can change input by modifying `testkit/inputs.json`.
+- **Run generated generator test**: Use `script/run_cmptest` to execute unit tests for generated generator. you can change input by modifying `testkit/inputs.json`. You MUST NOT write to `setup.py` directly. write python code of `setup.py` into `hook/cmptest_build.txt` instead
 
 ## 5. Debugging and Maintenance
 
 - **Ignore `Unimplemented` in `src/bm2{lang_name}/bm2{lang_name}.cpp`**: Don't worry about `Unimplemented` unless it causes issues in `save/{lang_name}/save.{language_specific_suffix}`.
 - **Locate hook mappings**: Use the comments `// load hook: <hook name>` and `// end hook: <hook name>` in `bm2{lang_name}/*.cpp` to map hook names to hook files.
 
-## 6. Documentation
-
-- **Update `docs/cline`**: Summarize the changes made in the `docs/cline` directory.
-
-## 7. Execution Environment
+## 6. Execution Environment
 
 - **Use PowerShell or Bash**: Depending on the OS (Windows or Linux), use PowerShell or Bash for script execution.
+- **Read and Update `docs/cline`**: Before you act, you have to write previous `docs/cline`. write your plan and action each time when you found the important things to note at `docs/cline` directory.
 
 ## 8. Important Constraints
 

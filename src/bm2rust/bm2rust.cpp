@@ -24,8 +24,8 @@ namespace bm2rust {
             return "&mut " + current_r.back();
         }
 
-        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape)
-            : bm2::Context(w, bm, "r", "w", "self", escape) {
+        Context(futils::binary::writer& w, const rebgn::BinaryModule& bm, bm2::Output& output, auto&& escape)
+            : bm2::Context(w, bm, output, "r", "w", "self", escape) {
         }
 
         bool use_async = false;
@@ -1283,7 +1283,7 @@ namespace bm2rust {
                 case rebgn::AbstractOp::DEFINE_STATE: {
                     auto& ident = ctx.ident_table[code.ident().value().value()];
                     if (code.op == rebgn::AbstractOp::DEFINE_FORMAT) {
-                        ctx.struct_names.push_back(ident);
+                        ctx.output.struct_names.push_back(ident);
                     }
                     w.writeln("#[derive(Debug,Default, Clone, PartialEq, Eq)]");
                     w.writeln("pub struct ", ident, may_get_lifetime(ctx), " {");
@@ -2399,9 +2399,9 @@ namespace bm2rust {
         w.writeln("}");
     }
 
-    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
+    void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags, bm2::Output& output) {
         bool has_error = false;
-        Context ctx(w, bm, [&](auto&& _1, auto&& _2, auto&& str) {
+        Context ctx(w, bm, output, [&](auto&& _1, auto&& _2, auto&& str) {
             auto esc = escape_rust_keyword(str);
             if (esc == "Error") {
                 has_error = true;

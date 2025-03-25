@@ -129,8 +129,8 @@ namespace bm2hexmap {
 
         // map identifier to format name
         std::unordered_map<std::string, rebgn::Varint> format_table;
-        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, auto&& escape_ident)
-            : bm2::Context{w, bm, "r", "w", "(*this)", std::move(escape_ident)} {}
+        Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm, bm2::Output& output, auto&& escape_ident)
+            : bm2::Context{w, bm, output, "r", "w", "(*this)", std::move(escape_ident)} {}
 
         std::vector<size_t> op_step;
 
@@ -1686,8 +1686,8 @@ namespace bm2hexmap {
         json::to_string(ctx.output, s);
     }
 
-    void to_hexmap(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags) {
-        Context ctx{w, bm, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+    void to_hexmap(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags, bm2::Output& output) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
                         return str;
                     }};
         futils::binary::reader r{flags.input_binary};

@@ -1075,7 +1075,7 @@ Initial Value: code.func_type().value()
 Description: function type
 ##### is_empty_block
 Type: bool
-Initial Value: i + 1 < bm.code.size() && bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION
+Initial Value: i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION
 Description: empty block
 ##### type
 Type: std::optional<std::string>

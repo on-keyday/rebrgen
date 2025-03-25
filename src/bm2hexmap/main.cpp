@@ -21,6 +21,6 @@ DEFINE_ENTRY(Flags) {
         return 1;
     }
     flags.bm2hexmap_flags.input_binary = view;
-    bm2hexmap::to_hexmap(w, bm, flags.bm2hexmap_flags);
+    bm2hexmap::to_hexmap(w, bm, flags.bm2hexmap_flags, output);
     return 0;
 }

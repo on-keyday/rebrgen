@@ -28,7 +28,7 @@ namespace bm2 {
             ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
             ctx.VarString<true>(&output, "o,output", "output file", "FILE");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
-            ctx.VarString(&dump_struct_file, "dump-struct", "dump struct file", "FILE");
+            ctx.VarString<true>(&dump_struct_file, "dump-struct", "dump struct file", "FILE");
         }
     };
     namespace internal {

@@ -879,7 +879,7 @@ namespace bm2go {
                 auto ident_ref = code.ident().value(); //reference of function
                 auto ident = ctx.ident(ident_ref); //identifier of function
                 auto func_type = code.func_type().value(); //function type
-                auto is_empty_block = i + 1 < bm.code.size() && bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
+                auto is_empty_block = i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
                 auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
                 std::optional<std::string> type = std::nullopt; //function return type
                 if(found_type_pos) {

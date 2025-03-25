@@ -72,6 +72,7 @@ namespace rebgn {
         auto scope_entry = w.indent_scope();
         may_write_from_hook(w, flags, bm2::HookFile::entry, false);
         w.writeln("bm2", flags.lang_name, "::to_", flags.lang_name, "(w, bm,flags.bm2", flags.lang_name, "_flags,output);");
+        may_write_from_hook(w, flags, bm2::HookFile::entry, bm2::HookFileSub::after);
         w.writeln("return 0;");
         scope_entry.execute();
         w.writeln("}");

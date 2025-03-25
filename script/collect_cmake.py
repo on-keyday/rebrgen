@@ -43,50 +43,62 @@ with open(output, "w") as f:
     for file in src:
         f.write(f'add_subdirectory("{file["name"]}")\n')
 
+output = "script/run_generated.py"
+with open(output, "w") as f:
+    f.write("import os\n")
+    f.write("import subprocess as sp\n")
+    f.write("import sys\n")
+    f.write("\n")
+    f.write("sp.run(\n")
+    f.write("    [\"script/build\"],\n")
+    f.write("    check=True,\n")
+    f.write("    shell=True,\n")
+    f.write("    stdout=sys.stdout,\n")
+    f.write("    stderr=sys.stderr,\n")
+    f.write(")\n")
+    f.write("save = sp.check_output(\n")
+    f.write("    [\"tool/bmgen\", \"-p\", \"-i\", \"save/sample.json\", \"-o\", \"save/save.bin\", \"-c\", \"save/save.dot\"],\n")
+    f.write("    stdout=sys.stdout,\n")
+    f.write("    stderr=sys.stderr,\n")
+    f.write(")\n")
+    f.write("with open(\"save/save.txt\", \"wb\") as f:\n")
+    f.write("    f.write(save)\n")
+    f.write("save = sp.check_output(\n")
+    f.write("    [\"tool/bmgen\", \"-p\", \"-i\", \"save/sample.json\", \"--print-only-op\"],\n")
+    f.write("    stdout=sys.stdout,\n")
+    f.write("    stderr=sys.stderr,\n")
+    f.write(")\n")
+    f.write("with open(\"save/save_op.txt\", \"wb\") as f:\n")
+    f.write("    f.write(save)\n")
+    f.write("\n")
+    
+    for file in src:
+        if file["lang"] == "hexmap":
+            continue  # skip this currently
+        f.write(f"src = sp.check_output(\n")
+        f.write(f"    [\"tool/{file["name"]}\", \"-i\", \"save/save.bin\"],\n")
+        f.write(f"    stdout=sys.stdout,\n")
+        f.write(f"    stderr=sys.stderr,\n")
+        f.write(f")\n")
+        f.write(f"with open(\"save/{file["lang"]}/save.{file["suffix"]}\", \"wb\") as f:\n")
+        f.write(f"    f.write(src)\n")
+
+
 output = "script/run_generated.bat"
 
 with open(output, "w") as f:
     f.write("@echo off\n")
     f.write("setlocal\n")
-    f.write("call script\\build.bat\n")
-    f.write("tool\\bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n")
-    f.write("tool\\bmgen -p -i save/sample.json --print-only-op > save/save_op.txt\n")
-    for file in src:
-        if file["lang"] == "hexmap":
-            continue  # skip this currently
-        f.write("mkdir -p save\\%s\n" % file["lang"])
-        f.write(f"tool\\{file["name"]} -i save/save.bin > save/{file["lang"]}/save.{file["suffix"]}\n")
+    f.write("python script/run_generated.py\n")
 
 output = "script/run_generated.sh"
 
 with open(output, "wb") as f:
     f.write("#!/bin/bash\n".encode())
-    f.write("./script/build.sh\n".encode())
-    f.write(
-        "tool/bmgen -p -i save/sample.json -o save/save.bin -c save/save.dot > save/save.txt\n".encode()
-    )
-    f.write("tool/bmgen -p -i save/sample.json --print-only-op > save/save_op.txt\n".encode())
-    for file in src:
-        if file["lang"] == "hexmap":
-            continue  # skip this currently
-        f.write(f"mkdir -p save/{file["lang"]}\n".encode())
-        f.write(
-            f"tool/{file["name"]} -i save/save.bin > save/{file["lang"]}/save.{file["suffix"]}\n".encode()
-        )
-
+    f.write("python script/run_generated.py\n".encode())
 output = "script/run_generated.ps1"
 
 with open(output, "w") as f:
     f.write("$ErrorActionPreference = 'Stop'\n")
-    f.write(".\\script\\build.ps1\n")
-    f.write(
-        ".\\tool\\bmgen -p -i save\\sample.json -o save\\save.bin -c save\\save.dot > save\\save.txt\n"
-    )
-    f.write(".\\tool\\bmgen -p -i save\\sample.json --print-only-op > save\\save_op.txt\n")
-    for file in src:
-        if file["lang"] == "hexmap":
-            continue  # skip this currently
-        f.write(f"mkdir -Force save\\{file["lang"]}\n")
-        f.write(
-            f".\\tool\\{file["name"]} -i save\\save.bin > save\\{file["lang"]}\\save.{file["suffix"]}\n"
-        )
+    f.write("python script/run_generated.py\n")
+    

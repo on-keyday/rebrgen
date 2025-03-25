@@ -80,6 +80,9 @@ namespace bm2go {
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
                 auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
+                if (is_byte_vector) {
+                    return "[]byte";
+                }
                 return futils::strutil::concat<std::string>("[]",base_type,"");
             }
             case rebgn::StorageType::VARIANT: {
@@ -361,7 +364,7 @@ namespace bm2go {
             break;
         }
         case rebgn::AbstractOp::EMPTY_OPTIONAL: {
-            result = make_eval_result("std::nullopt");
+            result = make_eval_result("nil");
             break;
         }
         case rebgn::AbstractOp::DEFINE_VARIABLE: {
@@ -1376,7 +1379,7 @@ namespace bm2go {
                     w.writeln("return nil");
                 }
                 else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {
-                    w.writeln("return std::nullopt");
+                    w.writeln("return nil");
                 }
                 scope.execute();
                 w.writeln("}");

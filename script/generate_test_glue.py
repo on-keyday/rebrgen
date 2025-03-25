@@ -58,7 +58,7 @@ def generate_cmptest_glue(config_file):
     return LANG_NAME, CMPTEST_JSON, CMPTEST_PY
 
 
-def generate_cmptest_glue_files(config_dir, output_dir):
+def generate_cmptest_glue_files(config_dir, output_dir, save_dir_base):
     config_files = search_config_files(config_dir)
     conf_names = []
     test_info = []
@@ -70,21 +70,33 @@ def generate_cmptest_glue_files(config_dir, output_dir):
             json.dump(CMPTEST_JSON, f, indent=4)
         with open(os.path.join(output_dir, LANG_NAME, f"setup.py"), "wb") as f:
             f.write(CMPTEST_PY)
-        conf_dir = pl.Path(conf_name).parent.as_posix()
+        if not os.path.exists(
+            os.path.join(
+                output_dir, LANG_NAME, "test_template." + CMPTEST_JSON["suffix"]
+            )
+        ):
+            with open(
+                os.path.join(
+                    output_dir, LANG_NAME, "test_template." + CMPTEST_JSON["suffix"]
+                ),
+                "w",
+            ) as f:
+                f.write("You have to write test code here...")
+        save_dir = os.path.join(save_dir_base, LANG_NAME)
         conf_name = pl.Path(conf_name).as_posix()
         conf_names.append(conf_name)
         test_info.append(
             {
-                "dir": conf_dir,
+                "dir": save_dir,
                 "base": "save",
-                "suffix": CMPTEST_JSON["suffix"],
+                "suffix": "." + CMPTEST_JSON["suffix"],
             },
         )
         test_info.append(
             {
-                "dir": conf_dir,
+                "dir": save_dir,
                 "base": "save." + CMPTEST_JSON["suffix"],
-                "suffix": "json",
+                "suffix": ".json",
             },
         )
     INPUTS = []
@@ -98,7 +110,16 @@ def generate_cmptest_glue_files(config_dir, output_dir):
             indent=4,
         )
     with open(os.path.join(output_dir, "test_info.json"), "w") as f:
-        json.dump(test_info, f, indent=4)
+        json.dump(
+            {
+                "total_count": len(test_info),
+                "error_count": 0,
+                "time": "0s",
+                "generated_files": test_info,
+            },
+            f,
+            indent=4,
+        )
 
 
-generate_cmptest_glue_files("src", "testkit")
+generate_cmptest_glue_files("src", "testkit", "save")

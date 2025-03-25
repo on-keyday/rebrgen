@@ -1,3 +1,9 @@
 [
-    {}
+    {
+        "binary": "./binary_data/varint.dat",
+        "format_name": "Varint",
+        "file_base": "save",
+        "failure_case": false,
+        "hex": true
+    }
 ]

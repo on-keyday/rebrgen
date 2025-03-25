@@ -1,62 +1,67 @@
-[
-    {
-        "dir": "testkit/c",
-        "base": "save",
-        "suffix": "c"
-    },
-    {
-        "dir": "testkit/c",
-        "base": "save.c",
-        "suffix": "json"
-    },
-    {
-        "dir": "testkit/cpp",
-        "base": "save",
-        "suffix": "cpp"
-    },
-    {
-        "dir": "testkit/cpp",
-        "base": "save.cpp",
-        "suffix": "json"
-    },
-    {
-        "dir": "testkit/go",
-        "base": "save",
-        "suffix": "go"
-    },
-    {
-        "dir": "testkit/go",
-        "base": "save.go",
-        "suffix": "json"
-    },
-    {
-        "dir": "testkit/haskell",
-        "base": "save",
-        "suffix": "hs"
-    },
-    {
-        "dir": "testkit/haskell",
-        "base": "save.hs",
-        "suffix": "json"
-    },
-    {
-        "dir": "testkit/python",
-        "base": "save",
-        "suffix": "py"
-    },
-    {
-        "dir": "testkit/python",
-        "base": "save.py",
-        "suffix": "json"
-    },
-    {
-        "dir": "testkit/rust",
-        "base": "save",
-        "suffix": "rs"
-    },
-    {
-        "dir": "testkit/rust",
-        "base": "save.rs",
-        "suffix": "json"
-    }
-]
+{
+    "total_count": 12,
+    "error_count": 0,
+    "time": "0s",
+    "generated_files": [
+        {
+            "dir": "save\\c",
+            "base": "save",
+            "suffix": ".c"
+        },
+        {
+            "dir": "save\\c",
+            "base": "save.c",
+            "suffix": ".json"
+        },
+        {
+            "dir": "save\\cpp",
+            "base": "save",
+            "suffix": ".cpp"
+        },
+        {
+            "dir": "save\\cpp",
+            "base": "save.cpp",
+            "suffix": ".json"
+        },
+        {
+            "dir": "save\\go",
+            "base": "save",
+            "suffix": ".go"
+        },
+        {
+            "dir": "save\\go",
+            "base": "save.go",
+            "suffix": ".json"
+        },
+        {
+            "dir": "save\\haskell",
+            "base": "save",
+            "suffix": ".hs"
+        },
+        {
+            "dir": "save\\haskell",
+            "base": "save.hs",
+            "suffix": ".json"
+        },
+        {
+            "dir": "save\\python",
+            "base": "save",
+            "suffix": ".py"
+        },
+        {
+            "dir": "save\\python",
+            "base": "save.py",
+            "suffix": ".json"
+        },
+        {
+            "dir": "save\\rust",
+            "base": "save",
+            "suffix": ".rs"
+        },
+        {
+            "dir": "save\\rust",
+            "base": "save.rs",
+            "suffix": ".json"
+        }
+    ]
+}

@@ -112,7 +112,7 @@ namespace bm2python {
             }
             case rebgn::StorageType::OPTIONAL: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
-                return std::format("Optional[$TYPE]", base_type);
+                return futils::strutil::concat<std::string>("Optional[",base_type,"]");
             }
             case rebgn::StorageType::PTR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
@@ -397,7 +397,9 @@ namespace bm2python {
             break;
         }
         case rebgn::AbstractOp::DEFINE_CONSTANT: {
-            result = make_eval_result("\"\"\"Unimplemented DEFINE_CONSTANT\"\"\"");
+            auto ident_ref = code.ident().value(); //reference of constant name
+            auto ident = ctx.ident(ident_ref); //identifier of constant name
+            result = make_eval_result(ident);
             break;
         }
         case rebgn::AbstractOp::DECLARE_VARIABLE: {
@@ -1321,7 +1323,11 @@ namespace bm2python {
                 break;
             }
             case rebgn::AbstractOp::DEFINE_CONSTANT: {
-                w.writeln("\"\"\"Unimplemented DEFINE_CONSTANT\"\"\" ");
+                auto ident_ref = code.ident().value(); //reference of constant name
+                auto ident = ctx.ident(ident_ref); //identifier of constant name
+                auto init_ref = code.ref().value(); //reference of constant value
+                auto init = eval(ctx.ref(init_ref), ctx); //constant value
+                w.writeln("const", ident, " = ", init.result,"");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_VARIABLE: {
@@ -1464,7 +1470,7 @@ namespace bm2python {
                     w.writeln("");
                 }
                 else if(reserve_type == rebgn::ReserveType::DYNAMIC) {
-                    w.writeln("$VECTOR.reserve($SIZE)");
+                    w.writeln("",vector_eval.result,".reserve(",size_eval.result,")");
                 }
                 break;
             }

@@ -1,2 +1,2 @@
 # PowerShell equivalent of generate.bat
-python script/generate.py
+python script/generate.py @args

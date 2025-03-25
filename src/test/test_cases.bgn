@@ -733,3 +733,5 @@ format NativeBitField:
     msb_or_lsb :u1
     other :u6
     lsb_or_msb :u1
+
+CONSTANT ::= 0x12345678

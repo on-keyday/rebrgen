@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-python script/generate.py
+python script/generate.py "$@"

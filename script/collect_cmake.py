@@ -1,7 +1,10 @@
 import os
 import pathlib as pl
 import json
+import sys
 
+INPUT= "src/test/test_cases.bgn" if len(sys.argv) < 2 else sys.argv[1]
+SRC2JSON = "C:/workspace/shbrgen/brgen/tool/src2json" if len(sys.argv) < 3 else sys.argv[2]
 
 def collect_cmake_files(root_dir):
     cmake_files = []
@@ -50,26 +53,32 @@ with open(output, "w") as f:
     f.write("import sys\n")
     f.write("\n")
     f.write("sp.run(\n")
-    f.write("    [\"script/build\"],\n")
+    f.write("    [\"python\",\"script/build.py\"],\n")
     f.write("    check=True,\n")
-    f.write("    shell=True,\n")
     f.write("    stdout=sys.stdout,\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("save = sp.check_output(\n")
+    f.write(f"    [\"{SRC2JSON}\", {INPUT}],\n")
+    f.write("    stderr=sys.stderr,\n")
+    f.write(")\n")
+    f.write("with open(\"save/sample.json\", \"wb\") as f:\n")
+    f.write("    f.write(save)\n")
+    f.write("print(\"Generated: save/sample.json\")\n")
+    f.write("save = sp.check_output(\n")
     f.write("    [\"tool/bmgen\", \"-p\", \"-i\", \"save/sample.json\", \"-o\", \"save/save.bin\", \"-c\", \"save/save.dot\"],\n")
-    f.write("    stdout=sys.stdout,\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("with open(\"save/save.txt\", \"wb\") as f:\n")
     f.write("    f.write(save)\n")
+    f.write("print(\"Generated: save/save.txt\")\n")
     f.write("save = sp.check_output(\n")
     f.write("    [\"tool/bmgen\", \"-p\", \"-i\", \"save/sample.json\", \"--print-only-op\"],\n")
-    f.write("    stdout=sys.stdout,\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("with open(\"save/save_op.txt\", \"wb\") as f:\n")
     f.write("    f.write(save)\n")
+    f.write("print(\"Generated: save/save_op.txt\")\n")
     f.write("\n")
     
     for file in src:
@@ -77,12 +86,11 @@ with open(output, "w") as f:
             continue  # skip this currently
         f.write(f"src = sp.check_output(\n")
         f.write(f"    [\"tool/{file["name"]}\", \"-i\", \"save/save.bin\"],\n")
-        f.write(f"    stdout=sys.stdout,\n")
         f.write(f"    stderr=sys.stderr,\n")
         f.write(f")\n")
         f.write(f"with open(\"save/{file["lang"]}/save.{file["suffix"]}\", \"wb\") as f:\n")
         f.write(f"    f.write(src)\n")
-
+        f.write(f"print(f\"Generated: save/{file["lang"]}/save.{file["suffix"]}\")\n")
 
 output = "script/run_generated.bat"
 
@@ -101,4 +109,3 @@ output = "script/run_generated.ps1"
 with open(output, "w") as f:
     f.write("$ErrorActionPreference = 'Stop'\n")
     f.write("python script/run_generated.py\n")
-    

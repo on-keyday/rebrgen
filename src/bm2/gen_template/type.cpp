@@ -175,7 +175,11 @@ namespace rebgn {
         }
         else if (type == StorageType::OPTIONAL) {
             type_hook([&] {
-                type_to_string.writeln("return std::format(\"", flags.optional_type, "\", base_type);");
+                std::map<std::string, std::string> map{
+                    {"TYPE", "\",base_type,\""},
+                };
+                auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(optional_type), map);
+                type_to_string.writeln("return ", escaped, ";");
             });
         }
         type_hook([&] {}, bm2::HookFileSub::after);

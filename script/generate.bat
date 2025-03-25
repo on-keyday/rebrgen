@@ -1,3 +1,3 @@
 @echo off
 setlocal 
-python script/generate.py
+python script/generate.py %*

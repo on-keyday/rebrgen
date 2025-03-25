@@ -27,6 +27,7 @@
     "prior_ident": true,
     "struct_keyword": "struct",
     "enum_keyword": "enum",
+    "define_const_keyword": "const ",
     "define_var_keyword": "var ",
     "var_type_separator": " ",
     "define_var_assign": "=",

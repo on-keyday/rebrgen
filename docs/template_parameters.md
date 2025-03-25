@@ -219,12 +219,20 @@ Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
 ### DEFINE_CONSTANT
 #### Variables: 
+##### ident_ref
+Type: Varint
+Initial Value: code.ident().value()
+Description: reference of constant name
+##### ident
+Type: string
+Initial Value: ctx.ident(ident_ref)
+Description: identifier of constant name
 #### Placeholder Mappings: 
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
 Name: TEXT
-Mapped Value: `"/*Unimplemented DEFINE_CONSTANT*/"`
+Mapped Value: `ident`
 ### DEFINE_FIELD
 #### Variables: 
 #### Placeholder Mappings: 
@@ -1032,6 +1040,25 @@ Name: DECODER
 Mapped Value: `",ctx.r(),"`
 Name: VALUE
 Mapped Value: `",evaluated.result,"`
+### DEFINE_CONSTANT
+#### Variables: 
+##### ident_ref
+Type: Varint
+Initial Value: code.ident().value()
+Description: reference of constant name
+##### ident
+Type: string
+Initial Value: ctx.ident(ident_ref)
+Description: identifier of constant name
+##### init_ref
+Type: Varint
+Initial Value: code.ref().value()
+Description: reference of constant value
+##### init
+Type: EvalResult
+Initial Value: eval(ctx.ref(init_ref), ctx)
+Description: constant value
+#### Placeholder Mappings: 
 ### DEFINE_FUNCTION
 #### Variables: 
 ##### ident_ref
@@ -1387,6 +1414,16 @@ Type: rebgn::ReserveType
 Initial Value: code.reserve_type().value()
 Description: reserve vector type
 #### Placeholder Mappings: 
+##### reserve_size_static
+Name: SIZE
+Mapped Value: `",size_eval.result,"`
+Name: VECTOR
+Mapped Value: `",vector_eval.result,"`
+##### reserve_size_dynamic
+Name: SIZE
+Mapped Value: `",size_eval.result,"`
+Name: VECTOR
+Mapped Value: `",vector_eval.result,"`
 ### RET
 #### Variables: 
 ##### ref
@@ -1880,6 +1917,9 @@ Type: string
 Initial Value: type_to_string_impl(ctx, s, bit_size, index + 1)
 Description: base type
 #### Placeholder Mappings: 
+##### optional_type
+Name: TYPE
+Mapped Value: `",base_type,"`
 ### PTR
 #### Variables: 
 ##### base_type

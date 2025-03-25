@@ -1,6 +1,11 @@
 import subprocess as sp
 import sys
 
+INPUT = "src/test/test_cases.bgn" if len(sys.argv) < 2 else sys.argv[1]
+SRC2JSON = (
+    "C:/workspace/shbrgen/brgen/tool/src2json" if len(sys.argv) < 3 else sys.argv[2]
+)
+
 LANG_LIST = ["c", "python", "haskell", "go"]
 
 for lang in LANG_LIST:
@@ -12,7 +17,7 @@ for lang in LANG_LIST:
     )
 
 sp.run(
-    ["python", "script/collect_cmake.py"],
+    ["python", "script/collect_cmake.py", INPUT, SRC2JSON],
     check=True,
     stdout=sys.stdout,
     stderr=sys.stderr,

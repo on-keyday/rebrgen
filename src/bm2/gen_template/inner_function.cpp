@@ -104,7 +104,12 @@ namespace rebgn {
                 inner_function.writeln("if(reserve_type == rebgn::ReserveType::STATIC) {");
                 auto scope = inner_function.indent_scope();
                 func_hook([&] {
-                    inner_function.writeln("w.writeln(\"", flags.reserve_size_static, "\");");
+                    std::map<std::string, std::string> map{
+                        {"VECTOR", "\",vector_eval.result,\""},
+                        {"SIZE", "\",size_eval.result,\""},
+                    };
+                    auto escaped = env_escape(flags, op, ENV_FLAG(reserve_size_static), map);
+                    inner_function.writeln("w.writeln(\"", escaped, "\");");
                 },
                           bm2::HookFileSub::static_);
                 scope.execute();
@@ -112,11 +117,23 @@ namespace rebgn {
                 inner_function.writeln("else if(reserve_type == rebgn::ReserveType::DYNAMIC) {");
                 auto scope2 = inner_function.indent_scope();
                 func_hook([&] {
-                    inner_function.writeln("w.writeln(\"", flags.reserve_size_dynamic, "\");");
+                    std::map<std::string, std::string> map{
+                        {"VECTOR", "\",vector_eval.result,\""},
+                        {"SIZE", "\",size_eval.result,\""},
+                    };
+                    auto escaped = env_escape(flags, op, ENV_FLAG(reserve_size_dynamic), map);
+                    inner_function.writeln("w.writeln(\"", escaped, "\");");
                 },
                           bm2::HookFileSub::dynamic);
                 scope2.execute();
                 inner_function.writeln("}");
+            });
+        }
+        else if (op == AbstractOp::DEFINE_CONSTANT) {
+            define_ident(inner_function, flags, op, "ident", code_ref(flags, "ident"), "constant name");
+            define_eval(inner_function, flags, op, "init", code_ref(flags, "ref"), "constant value");
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"", flags.define_const_keyword, "\", ident, \" = \", init.result,\"", flags.end_of_statement, "\");");
             });
         }
         else if (op == AbstractOp::BEGIN_ENCODE_SUB_RANGE || op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {

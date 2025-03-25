@@ -262,6 +262,12 @@ namespace rebgn {
                 do_make_eval_result(eval, op, flags, "std::format(\"{}()\", type)", EvalResultMode::TEXT);
             });
         }
+        else if (op == AbstractOp::DEFINE_CONSTANT) {
+            define_ident(eval, flags, op, "ident", code_ref(flags, "ident"), "constant name");
+            eval_hook([&] {
+                do_make_eval_result(eval, op, flags, "ident", EvalResultMode::TEXT);
+            });
+        }
         else if (op == AbstractOp::CAST) {
             define_type(eval, flags, op, "type", code_ref(flags, "type"), "cast target type");
             define_ref(eval, flags, op, "from_type_ref", code_ref(flags, "from_type"), "cast source type");

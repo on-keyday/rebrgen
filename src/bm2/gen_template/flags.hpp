@@ -97,6 +97,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string else_keyword = "else";
     std::string infinity_loop = "for(;;)";
     std::string conditional_loop = "while";
+    std::string define_const_keyword = "const";
     std::string match_keyword = "switch";
     std::string match_case_keyword = "case";
     std::string match_case_separator = ":";
@@ -175,6 +176,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(struct_keyword, "struct_keyword")                               \
     MACRO_NAME(enum_keyword, "enum_keyword")                                   \
     MACRO_NAME(define_var_keyword, "define_var_keyword")                       \
+    MACRO_NAME(define_const_keyword, "define_const_keyword")                   \
     MACRO_NAME(var_type_separator, "var_type_separator")                       \
     MACRO_NAME(define_var_assign, "define_var_assign")                         \
     MACRO_NAME(omit_type_on_define_var, "omit_type_on_define_var")             \

@@ -1,2 +1,2 @@
 #!/bin/bash
-python script/run_generated.py "$@"
+python script/build.py "$@"

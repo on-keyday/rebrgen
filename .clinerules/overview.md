@@ -53,6 +53,11 @@ rebrgen is part of 2.
 
 Action order below is NO MATTER. You can choose actions below as if you need
 
+## 0. Important Constraints
+
+- **Do not edit `bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files to ensure consistency and maintainability.
+- **Read and Update `docs/cline`**: Before you act, you have to write previous `docs/cline`. write your plan and action each time when you found the important things to note at `docs/cline` directory.
+
 ## 1. Setup and Configuration
 
 - **Edit `bm2{lang_name}/config.json`**: Modify language-specific placeholders. Base templates are generated using `tool\gen_template --mode config`.
@@ -87,11 +92,6 @@ The goal of test is to `PASS` the `script/run_cmptest`
 ## 6. Execution Environment
 
 - **Use PowerShell or Bash**: Depending on the OS (Windows or Linux), use PowerShell or Bash for script execution.
-- **Read and Update `docs/cline`**: Before you act, you have to write previous `docs/cline`. write your plan and action each time when you found the important things to note at `docs/cline` directory.
-
-## 8. Important Constraints
-
-- **Do not edit `bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files to ensure consistency and maintainability.
 
 # Current Development Phase
 

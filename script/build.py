@@ -8,6 +8,11 @@ BUILD_MODE = sys.argv[1] if len(sys.argv) > 1 else "native"
 INSTALL_PREFIX = "."
 FUTILS_DIR = os.getenv("FUTILS_DIR", "C:/workspace/utils_backup")
 
+print("BUILD_TYPE:", BUILD_TYPE)
+print("BUILD_MODE:", BUILD_MODE)
+print("INSTALL_PREFIX:", INSTALL_PREFIX)
+print("FUTILS_DIR:", FUTILS_DIR)
+
 shell = os.getenv("SHELL")
 if shell:
     EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.sh")

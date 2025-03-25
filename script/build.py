@@ -121,6 +121,7 @@ if BUILD_MODE == "native":
     )
 elif BUILD_MODE == "web":
     source_emsdk()
+    sys.addaudithook(lambda *args: print(args))
     subprocess.run(
         [
             "emcmake",

@@ -28,7 +28,7 @@ os.environ["BUILD_MODE"] = BUILD_MODE
 def source_emsdk():
     copyEnv = os.environ.copy()
     copyEnv["EMSDK_QUIET"] = "1"
-    if shell:
+    if os.name == "posix":
         ENV = subprocess.check_output(
             ["source", EMSDK_PATH, ">", "/dev/null", ";", "env"],
             shell=True,

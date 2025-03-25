@@ -39,7 +39,11 @@ def source_emsdk():
         ENV = subprocess.check_output(
             [
                 "powershell",
-                "$OutputEncoding = [System.Text.Encoding]::UTF8",
+                "$PSDefaultParameterValues['*:Encoding'] = 'utf8'",
+                ";",
+                "$global:OutputEncoding = [System.Text.Encoding]::UTF8",
+                ";",
+                "[console]::OutputEncoding = [System.Text.Encoding]::UTF8",
                 ";",
                 ".",
                 EMSDK_PATH,

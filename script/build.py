@@ -30,7 +30,7 @@ def source_emsdk():
     copyEnv["EMSDK_QUIET"] = "1"
     if os.name == "posix":
         ENV = subprocess.check_output(
-            ["source", EMSDK_PATH, ">", "/dev/null", ";", "env"],
+            [".", EMSDK_PATH, ">", "/dev/null", ";", "env"],
             shell=True,
             env=copyEnv,
             stderr=sys.stderr,

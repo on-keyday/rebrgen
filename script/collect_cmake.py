@@ -94,13 +94,6 @@ with open(output, "w") as f:
         f.write(f"with open(\"save/{file["lang"]}/save.{file["suffix"]}\", \"wb\") as f:\n")
         f.write(f"    f.write(src)\n")
         f.write(f"print(f\"Generated: save/{file["lang"]}/save.{file["suffix"]}\")\n")
-    
-    f.write("sp.run(\n")
-    f.write("    [\"python\",\"script/run_cmptest.py\"],\n")
-    f.write("    check=True,\n")
-    f.write("    stdout=sys.stdout,\n")
-    f.write("    stderr=sys.stderr,\n")
-    f.write(")\n")
 
 output = "script/run_generated.bat"
 

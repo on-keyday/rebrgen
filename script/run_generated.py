@@ -74,9 +74,3 @@ src = sp.check_output(
 with open("save/rust/save.rs", "wb") as f:
     f.write(src)
 print(f"Generated: save/rust/save.rs")
-sp.run(
-    ["python","script/run_cmptest.py"],
-    check=True,
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-)

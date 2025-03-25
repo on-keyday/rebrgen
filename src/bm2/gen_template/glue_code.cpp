@@ -427,7 +427,7 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             if (!may_write_from_hook(flags, bm2::HookFile::cmptest_build, [&](size_t i, futils::view::rvec line, bool is_last) {
                     w.writeln(line);
                 })) {
-                w.writeln("print(\"You have to implement build command in hook/cmptest_build.txt\")");
+                w.writeln("print(\"You have to implement build command in hook/cmptest_build.txt. see also testkit/", flags.lang_name, "/setup.py\")");
                 w.writeln("exit(1)");
             }
             scope.execute();

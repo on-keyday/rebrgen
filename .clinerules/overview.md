@@ -70,12 +70,14 @@ Action order below is NO MATTER. You can choose actions below as if you need
 
 - **Generate code**: Use `script/generate` to generate code generators and also specify a DSL file with `script/generate {brgen DSL file}`.
 - **Run generated generator**: Use `script/run_generated` to execute generated code and save results in `save/{lang_name}/save.{language_specific_suffix}`.
-- **Run generated generator test**: Use `script/run_cmptest` to execute unit tests for generated code. you can change input by modifying `testkit/inputs.json`.
 
 ## 4. Testing
 
+The goal of test is to `PASS` the `script/run_cmptest`
+
 - **Add a test case**: Add a test case file in `src/test/{test_name}.bgn`.
 - **Run test case**: Execute the generated test case using `script/generate src/test/{test_name}.bgn`.
+- **Run generated generator test**: Use `script/run_cmptest` to execute unit tests for generated generator. you can change input by modifying `testkit/inputs.json`.
 
 ## 5. Debugging and Maintenance
 

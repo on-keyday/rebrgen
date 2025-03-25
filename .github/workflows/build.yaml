@@ -61,7 +61,7 @@ jobs:
       - name: Build
         run: |
           chmod +x script/build.sh
-          EMSDK_PATH=./emsdk/emsdk_env.sh FUTILS_DIR=./utils ./script/build.sh web Release
+          EMSDK_PATH=./emsdk/emsdk-main/emsdk_env.sh FUTILS_DIR=./utils ./script/build.sh web Release
           cp README.md web/
           cp LICENSE web/
           cd utils

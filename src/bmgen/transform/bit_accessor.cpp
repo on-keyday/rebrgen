@@ -26,7 +26,7 @@ namespace rebgn {
             return s.storages[index].size()->value() - 1;
         }
         if (s.storages[index].type == StorageType::VARIANT) {
-            size_t candidate = 0;
+            std::uint64_t candidate = 0;
             for (index++; index < s.storages.size(); index++) {
                 if (s.storages[index].type != StorageType::STRUCT_REF) {
                     return unexpect_error("Invalid storage type");

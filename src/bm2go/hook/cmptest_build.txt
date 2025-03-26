@@ -1,0 +1,1 @@
+run_command(["go", "build", "-o", f"{TMPDIR}/save", "save/go/save.go"])

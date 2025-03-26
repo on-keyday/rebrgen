@@ -30,7 +30,7 @@ namespace rebgn {
             return false;
         }
         auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
-        futils::wrap::cerr_wrap() << "hit hook via include: " << name << '\n';
+        futils::wrap::cerr_wrap() << "loaded hook via include: " << name << '\n';
         for (auto i = 0; i < lines.size(); i++) {
             if (futils::strutil::starts_with(lines[i], "!@include ")) {
                 auto split = futils::strutil::split(lines[i], " ", 2);
@@ -66,7 +66,7 @@ namespace rebgn {
             return false;
         }
         auto lines = futils::strutil::lines<futils::view::rvec>(futils::view::rvec(view));
-        futils::wrap::cerr_wrap() << "hit hook: " << name << '\n';
+        futils::wrap::cerr_wrap() << "loaded hook: " << name << '\n';
         size_t line = 0;
         for (auto i = 0; i < lines.size(); i++) {
             if (futils::strutil::starts_with(lines[i], "!@include ")) {

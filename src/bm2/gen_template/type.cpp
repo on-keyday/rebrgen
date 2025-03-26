@@ -32,10 +32,10 @@ namespace rebgn {
             if_block_size.execute();
             type_to_string.writeln("}");
             if (type == StorageType::FLOAT) {
-                define_uint(type_to_string, flags, type, "aligned_size", "size < 32 ? 32 : 64", "aligned bit size");
+                define_uint(type_to_string, flags, type, "aligned_size", "size <= 32 ? 32 : 64", "aligned bit size");
             }
             else {
-                define_uint(type_to_string, flags, type, "aligned_size", "size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64", "aligned bit size");
+                define_uint(type_to_string, flags, type, "aligned_size", "size <= 8 ? 8 : size <= 16 ? 16 : size <= 32 ? 32 : 64", "aligned bit size");
             }
 
             type_hook([&] {

@@ -55,7 +55,7 @@ Action order below is NO MATTER. You can choose actions below as if you need
 
 ## 0. Important Constraints
 
-- **Do not edit `bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files to ensure consistency and maintainability.
+- **Do not edit `bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files because they are auto generated file.
 - **Read and Update `docs/cline`**: Before you act, you have to write previous `docs/cline`. write your plan and action each time when you found the important things to note at `docs/cline` directory.
 
 ## 1. Setup and Configuration
@@ -67,7 +67,7 @@ Action order below is NO MATTER. You can choose actions below as if you need
 ## 2. Template and Hook Management
 
 - **Modify `src/bm2/gen_template/`**: For language-independent logic, you’ll need to modify these templates.
-- **Modify or add files in `src/bm2{lang_name}/hook/`**: For language-specific custom logic, edit these files based on the hook definitions.
+- **Modify or add files in `src/bm2{lang_name}/hook/`**: For language-specific custom logihook file is piece of C++ code thatc, edit these files based on the hook definitions. hook file is piece of C++ code that is not complete by itself. (some exception exists like flags.txt, cmptest_build.txt,cmptest_run.txt)
 - **Check hook definitions**: Use `tool\gen_template --print-hooks` to ensure the desired hook file exists before creating it.
 - **Read documentation**: `docs/template_parameters.md` for understanding placeholder usage in hooks and configuration files. Regenerate the documentation with `tool\gen_template --mode docs-markdown`.
 

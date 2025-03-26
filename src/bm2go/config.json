@@ -67,7 +67,7 @@
     "algebraic_variant_type": "$TYPES",
     "check_union_condition": "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
     "check_union_fail_return_value": "false",
-    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()",
+    "switch_union": "$FIELD_IDENT = $MEMBER_IDENT{}",
     "address_of_placeholder": "&$VALUE",
     "optional_of_placeholder": "$VALUE",
     "decode_bytes_op": "$VALUE = $DECODER.decode_bytes($LEN)",

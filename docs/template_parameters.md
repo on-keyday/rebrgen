@@ -1932,7 +1932,7 @@ Initial Value: storage.size()->value()
 Description: bit size
 ##### aligned_size
 Type: uint64_t
-Initial Value: size < 32 ? 32 : 64
+Initial Value: size <= 32 ? 32 : 64
 Description: aligned bit size
 #### Placeholder Mappings: 
 ##### float_type
@@ -1948,7 +1948,7 @@ Initial Value: storage.size()->value()
 Description: bit size
 ##### aligned_size
 Type: uint64_t
-Initial Value: size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64
+Initial Value: size <= 8 ? 8 : size <= 16 ? 16 : size <= 32 ? 32 : 64
 Description: aligned bit size
 #### Placeholder Mappings: 
 ##### int_type
@@ -2009,7 +2009,7 @@ Initial Value: storage.size()->value()
 Description: bit size
 ##### aligned_size
 Type: uint64_t
-Initial Value: size < 8 ? 8 : size < 16 ? 16 : size < 32 ? 32 : 64
+Initial Value: size <= 8 ? 8 : size <= 16 ? 16 : size <= 32 ? 32 : 64
 Description: aligned bit size
 #### Placeholder Mappings: 
 ##### uint_type

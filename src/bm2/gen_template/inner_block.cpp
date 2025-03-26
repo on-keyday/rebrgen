@@ -35,15 +35,15 @@ namespace rebgn {
             if (op == AbstractOp::DECLARE_FUNCTION) {
                 do_variable_definition(inner_block, flags, op, "func_type", "ctx.ref(ref).func_type().value()", "rebgn::FunctionType", "function type");
                 block_hook([&] {
-                    if (flags.format_nested_function) {
+                    if (USE_FLAG(format_nested_function)) {
                         futils::helper::DynDefer indent2;
-                        if (!flags.compact_bit_field) {
+                        if (!USE_FLAG(compact_bit_field)) {
                             inner_block.writeln("if(func_type != rebgn::FunctionType::BIT_GETTER &&");
                             inner_block.writeln("   func_type != rebgn::FunctionType::BIT_SETTER) {");
                             indent2 = inner_block.indent_scope_ex();
                         }
                         inner_block.writeln("inner_function(ctx, w, inner_range);");
-                        if (!flags.compact_bit_field) {
+                        if (!USE_FLAG(compact_bit_field)) {
                             indent2.execute();
                             inner_block.writeln("}");
                         }
@@ -86,7 +86,7 @@ namespace rebgn {
                 inner_block.writeln("ctx.output.struct_names.push_back(ident);");
             }
             block_hook([&] {
-                inner_block.writeln("w.writeln(\"", flags.struct_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.writeln("w.writeln(\"", USE_FLAG(struct_keyword), " \", ident, \" ", USE_FLAG(block_begin), "\");");
                 inner_block.writeln("defer.push_back(w.indent_scope_ex());");
             });
         }
@@ -94,17 +94,17 @@ namespace rebgn {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "union");
             define_bool(inner_block, flags, op, "is_empty_block", "range.start ==range.end -1", "is empty block");
             block_hook([&] {
-                if (flags.variant_mode == "union") {
-                    inner_block.writeln("w.writeln(\"", flags.union_keyword, " \",ident, \" ", flags.block_begin, "\");");
+                if (USE_FLAG(variant_mode) == "union") {
+                    inner_block.writeln("w.writeln(\"", USE_FLAG(union_keyword), " \",ident, \" ", USE_FLAG(block_begin), "\");");
                     inner_block.writeln("defer.push_back(w.indent_scope_ex());");
                 }
             });
         }
         else if (op == AbstractOp::END_UNION) {
             block_hook([&] {
-                if (flags.variant_mode == "union") {
+                if (USE_FLAG(variant_mode) == "union") {
                     inner_block.writeln("defer.pop_back();");
-                    inner_block.writeln("w.writeln(\"", flags.block_end_type, "\");");
+                    inner_block.writeln("w.writeln(\"", USE_FLAG(block_end_type), "\");");
                 }
             });
         }
@@ -117,15 +117,15 @@ namespace rebgn {
             inner_block.writeln("base_type = type_to_string(ctx,base_type_ref);");
             scope.execute();
             inner_block.writeln("}");
-            if (flags.default_enum_base.size()) {
+            if (USE_FLAG(default_enum_base).size()) {
                 inner_block.writeln("else {");
-                inner_block.indent_writeln("base_type = \"", flags.default_enum_base, "\";");
+                inner_block.indent_writeln("base_type = \"", USE_FLAG(default_enum_base), "\";");
                 inner_block.writeln("}");
             }
             block_hook([&] {
-                inner_block.writeln("w.write(\"", flags.enum_keyword, " \", ident, \" ", flags.block_begin, "\");");
+                inner_block.writeln("w.write(\"", USE_FLAG(enum_keyword), " \", ident, \" ", USE_FLAG(block_begin), "\");");
                 inner_block.writeln("if(base_type) {");
-                inner_block.indent_writeln("w.write(\" ", flags.enum_base_separator, " \", *base_type);");
+                inner_block.indent_writeln("w.write(\" ", USE_FLAG(enum_base_separator), " \", *base_type);");
                 inner_block.writeln("}");
                 inner_block.writeln("defer.push_back(w.indent_scope_ex());");
             });
@@ -135,7 +135,7 @@ namespace rebgn {
             define_eval(inner_block, flags, op, "evaluated", code_ref(flags, "left_ref"), "enum member value");
             define_ident(inner_block, flags, op, "enum_ident", code_ref(flags, "belong"), "enum");
             block_hook([&] {
-                inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", flags.enum_member_end, "\");");
+                inner_block.writeln("w.writeln(ident, \" = \", evaluated.result, \"", USE_FLAG(enum_member_end), "\");");
             });
         }
         else if (op == AbstractOp::DEFINE_BIT_FIELD) {
@@ -143,12 +143,12 @@ namespace rebgn {
             define_ident(inner_block, flags, op, "ident", code_ref(flags, "ident"), "bit field");
             define_ref(inner_block, flags, op, "belong", code_ref(flags, "belong"), "belonging struct or bit field");
             block_hook([&] {
-                if (flags.compact_bit_field) {
-                    if (flags.prior_ident) {
-                        inner_block.writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
+                if (USE_FLAG(compact_bit_field)) {
+                    if (USE_FLAG(prior_ident)) {
+                        inner_block.writeln("w.writeln(ident, \" ", USE_FLAG(field_type_separator), "\", type, \"", USE_FLAG(field_end), "\");");
                     }
                     else {
-                        inner_block.writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                        inner_block.writeln("w.writeln(type, \" ", USE_FLAG(field_type_separator), "\", ident, \"", USE_FLAG(field_end), "\");");
                     }
                 }
             });
@@ -168,17 +168,17 @@ namespace rebgn {
             define_bool(inner_block, flags, op, "is_bit_field", "belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD", "is part of bit field");
             block_hook([&] {
                 futils::helper::DynDefer defer;
-                if (flags.compact_bit_field) {
+                if (USE_FLAG(compact_bit_field)) {
                     inner_block.writeln("if (!is_bit_field) {");
                     defer = inner_block.indent_scope_ex();
                 }
-                if (flags.prior_ident) {
-                    inner_block.writeln("w.writeln(ident, \" ", flags.field_type_separator, "\", type, \"", flags.field_end, "\");");
+                if (USE_FLAG(prior_ident)) {
+                    inner_block.writeln("w.writeln(ident, \" ", USE_FLAG(field_type_separator), "\", type, \"", USE_FLAG(field_end), "\");");
                 }
                 else {
-                    inner_block.writeln("w.writeln(type, \" ", flags.field_type_separator, "\", ident, \"", flags.field_end, "\");");
+                    inner_block.writeln("w.writeln(type, \" ", USE_FLAG(field_type_separator), "\", ident, \"", USE_FLAG(field_end), "\");");
                 }
-                if (flags.compact_bit_field) {
+                if (USE_FLAG(compact_bit_field)) {
                     defer.execute();
                     inner_block.writeln("}");
                     inner_block.writeln("else {");
@@ -193,14 +193,14 @@ namespace rebgn {
                  op == AbstractOp::END_UNION_MEMBER) {
             block_hook([&] {
                 inner_block.writeln("defer.pop_back();");
-                inner_block.writeln("w.writeln(\"", flags.block_end_type, "\");");
+                inner_block.writeln("w.writeln(\"", USE_FLAG(block_end_type), "\");");
             });
         }
         else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
             define_ref(inner_block, flags, op, "func", code_ref(flags, "right_ref"), "function");
             define_range(inner_block, flags, op, "inner_range", "func", "function");
             block_hook([&] {
-                if (flags.format_nested_function) {
+                if (USE_FLAG(format_nested_function)) {
                     inner_block.writeln("inner_function(ctx, w, inner_range);");
                 }
             });

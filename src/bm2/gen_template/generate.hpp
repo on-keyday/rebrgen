@@ -17,6 +17,10 @@ namespace rebgn {
         return "futils::strutil::concat<std::string>(\"" + escaped + "\")";
     }
 
+    decltype(auto) use_flag(Flags& flags, auto op, std::string_view flag_name, auto& flag_ref) {
+        return flag_ref;
+    }
+
     std::string unimplemented_comment(Flags& flags, const std::string& op);
     enum class EvalResultMode {
         TEXT,

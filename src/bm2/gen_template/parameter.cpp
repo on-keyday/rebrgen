@@ -39,24 +39,24 @@ namespace rebgn {
                     define_type(add_parameter, flags, op, "type", code_ref(flags, "type"), "parameter type");
                 }
                 param_hook([&] {
-                    if (flags.prior_ident) {
-                        add_parameter.writeln("w.write(ident, \" ", flags.param_type_separator, "\", type);");
+                    if (USE_FLAG(prior_ident)) {
+                        add_parameter.writeln("w.write(ident, \" ", USE_FLAG(param_type_separator), "\", type);");
                     }
                     else {
-                        add_parameter.writeln("w.write(type, \" ", flags.param_type_separator, "\", ident);");
+                        add_parameter.writeln("w.write(type, \" ", USE_FLAG(param_type_separator), "\", ident);");
                     }
                     add_parameter.writeln("params++;");
                 });
             }
             else if (op == AbstractOp::ENCODER_PARAMETER) {
                 param_hook([&] {
-                    add_parameter.writeln("w.write(\"", flags.encoder_param, "\");");
+                    add_parameter.writeln("w.write(\"", USE_FLAG(encoder_param), "\");");
                     add_parameter.writeln("params++;");
                 });
             }
             else if (op == AbstractOp::DECODER_PARAMETER) {
                 param_hook([&] {
-                    add_parameter.writeln("w.write(\"", flags.decoder_param, "\");");
+                    add_parameter.writeln("w.write(\"", USE_FLAG(decoder_param), "\");");
                     add_parameter.writeln("params++;");
                 });
             }
@@ -138,10 +138,10 @@ namespace rebgn {
         add_parameter.writeln("auto belong = ctx.bm.code[range.start].belong().value();");
         add_parameter.writeln("auto is_member = belong.value() != 0 && ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
         if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_start, false)) {
-            if (flags.self_param.size()) {
+            if (USE_FLAG(self_param).size()) {
                 add_parameter.writeln("if(is_member) {");
                 auto if_block_belong = add_parameter.indent_scope();
-                add_parameter.writeln("w.write(\"", flags.self_param, "\");");
+                add_parameter.writeln("w.write(\"", USE_FLAG(self_param), "\");");
                 add_parameter.writeln("params++;");
                 if_block_belong.execute();
                 add_parameter.writeln("}");

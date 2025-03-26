@@ -75,7 +75,7 @@ namespace rebgn {
         }
         else if (type == StorageType::BOOL) {
             type_hook([&] {
-                type_to_string.writeln("return \"", flags.bool_type, "\";");
+                type_to_string.writeln("return \"", USE_FLAG_BASE(type, bool_type), "\";");
             });
         }
         else if (type == StorageType::ENUM) {
@@ -93,16 +93,16 @@ namespace rebgn {
             scope_variant.execute();
             type_to_string.writeln("}");
             type_hook([&] {
-                if (flags.variant_mode == "union") {
+                if (USE_FLAG_BASE(type, variant_mode) == "union") {
                     type_to_string.writeln("return ident;");
                 }
-                else if (flags.variant_mode == "algebraic") {
+                else if (USE_FLAG_BASE(type, variant_mode) == "algebraic") {
                     type_to_string.writeln("std::string result;");
                     type_to_string.writeln("for (size_t i = 0; i < types.size(); i++) {");
                     auto scope_variant_algebraic = type_to_string.indent_scope();
                     type_to_string.writeln("if (i != 0) {");
                     auto if_block_variant_algebraic = type_to_string.indent_scope();
-                    type_to_string.writeln("result += \" ", flags.algebraic_variant_separator, " \";");
+                    type_to_string.writeln("result += \" ", USE_FLAG_BASE(type, algebraic_variant_separator), " \";");
                     if_block_variant_algebraic.execute();
                     type_to_string.writeln("}");
                     type_to_string.writeln("result += types[i];");
@@ -119,12 +119,12 @@ namespace rebgn {
         }
         else if (type == StorageType::CODER_RETURN) {
             type_hook([&] {
-                type_to_string.writeln("return \"", flags.coder_return_type, "\";");
+                type_to_string.writeln("return \"", USE_FLAG_BASE(type, coder_return_type), "\";");
             });
         }
         else if (type == StorageType::PROPERTY_SETTER_RETURN) {
             type_hook([&] {
-                type_to_string.writeln("return \"", flags.property_setter_return_type, "\";");
+                type_to_string.writeln("return \"", USE_FLAG_BASE(type, property_setter_return_type), "\";");
             });
         }
         else if (type == StorageType::PTR) {
@@ -145,7 +145,7 @@ namespace rebgn {
                     {"LENGTH", "\",futils::number::to_string<std::string>(length),\""},
                 };
                 auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(array_type), map);
-                if (flags.byte_array_type.size()) {
+                if (USE_FLAG_BASE(type, byte_array_type).size()) {
                     type_to_string.writeln("if (is_byte_vector) {");
                     auto if_block_byte_vector = type_to_string.indent_scope();
                     auto escaped2 = env_escape_and_concat(flags, type, ENV_FLAG(byte_array_type), map);
@@ -159,10 +159,10 @@ namespace rebgn {
         else if (type == StorageType::VECTOR) {
             define_bool(type_to_string, flags, type, "is_byte_vector", "index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8", "is byte vector");
             type_hook([&] {
-                if (flags.byte_vector_type.size()) {
+                if (USE_FLAG_BASE(type, byte_vector_type).size()) {
                     type_to_string.writeln("if (is_byte_vector) {");
                     auto if_block_byte_vector = type_to_string.indent_scope();
-                    type_to_string.writeln("return \"", flags.byte_vector_type, "\";");
+                    type_to_string.writeln("return \"", USE_FLAG_BASE(type, byte_vector_type), "\";");
                     if_block_byte_vector.execute();
                     type_to_string.writeln("}");
                 }

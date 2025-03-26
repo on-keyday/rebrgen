@@ -98,7 +98,7 @@ namespace rebgn {
                 eval.writeln("else {");
                 auto scope2 = eval.indent_scope();
                 eval_hook([&] {
-                    do_make_eval_result(eval, op, flags, "\"" + flags.is_little_endian + "\"", EvalResultMode::TEXT);
+                    do_make_eval_result(eval, op, flags, "\"" + USE_FLAG(is_little_endian) + "\"", EvalResultMode::TEXT);
                 },
                           bm2::HookFileSub::no_fallback);
                 scope2.execute();
@@ -159,12 +159,12 @@ namespace rebgn {
         }
         else if (op == AbstractOp::IMMEDIATE_TRUE) {
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "\"" + flags.true_literal + "\"", EvalResultMode::TEXT);
+                do_make_eval_result(eval, op, flags, "\"" + USE_FLAG(true_literal) + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_FALSE) {
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "\"" + flags.false_literal + "\"", EvalResultMode::TEXT);
+                do_make_eval_result(eval, op, flags, "\"" + USE_FLAG(false_literal) + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::IMMEDIATE_INT64) {
@@ -187,12 +187,12 @@ namespace rebgn {
         }
         else if (op == AbstractOp::EMPTY_PTR) {
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "\"" + flags.empty_pointer + "\"", EvalResultMode::TEXT);
+                do_make_eval_result(eval, op, flags, "\"" + USE_FLAG(empty_pointer) + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::EMPTY_OPTIONAL) {
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "\"" + flags.empty_optional + "\"", EvalResultMode::TEXT);
+                do_make_eval_result(eval, op, flags, "\"" + USE_FLAG(empty_optional) + "\"", EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::PHI || op == AbstractOp::DECLARE_VARIABLE ||
@@ -237,11 +237,11 @@ namespace rebgn {
         else if (op == AbstractOp::ARRAY_SIZE) {
             define_eval(eval, flags, op, "vector_eval", code_ref(flags, "ref"), "array");
             eval_hook([&] {
-                if (flags.surrounded_size_method) {
-                    do_make_eval_result(eval, op, flags, "std::format(\"" + flags.size_method + "({})\", vector_eval.result)", EvalResultMode::TEXT);
+                if (USE_FLAG(surrounded_size_method)) {
+                    do_make_eval_result(eval, op, flags, "std::format(\"" + USE_FLAG(size_method) + "({})\", vector_eval.result)", EvalResultMode::TEXT);
                 }
                 else {
-                    do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", vector_eval.result, \"" + flags.size_method + "\")", EvalResultMode::TEXT);
+                    do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", vector_eval.result, \"" + USE_FLAG(size_method) + "\")", EvalResultMode::TEXT);
                 }
             });
         }
@@ -274,7 +274,7 @@ namespace rebgn {
             define_eval(eval, flags, op, "evaluated", code_ref(flags, "ref"), "cast source value");
             // eval.writeln("result.insert(result.end(), evaluated.begin(), evaluated.end() - 1);");
             eval_hook([&] {
-                if (flags.func_style_cast) {
+                if (USE_FLAG(func_style_cast)) {
                     do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", type, evaluated.result)", EvalResultMode::TEXT);
                 }
                 else {

@@ -143,6 +143,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool compact_bit_field = false;
     bool format_nested_function = false;
 
+#define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, flags.name)
+#define USE_FLAG(name) USE_FLAG_BASE(op, name)
 #define ENV_FLAG(name) #name, flags.name
 
 #define MAP_TO_MACRO(MACRO_NAME)                                               \

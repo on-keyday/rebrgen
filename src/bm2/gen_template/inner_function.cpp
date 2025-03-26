@@ -23,11 +23,11 @@ namespace rebgn {
             define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector (not temporary)");
             define_eval(inner_function, flags, op, "new_element_eval", code_ref(flags, "right_ref"), "new element");
             func_hook([&] {
-                if (flags.surrounded_append_method) {
-                    inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                if (USE_FLAG(surrounded_append_method)) {
+                    inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", USE_FLAG(append_method), "(\", new_element_eval.result, \")", USE_FLAG(end_of_statement), "\");");
                 }
                 else {
-                    inner_function.writeln("w.writeln(vector_eval.result, \".", flags.append_method, "(\", new_element_eval.result, \")", flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(vector_eval.result, \".", USE_FLAG(append_method), "(\", new_element_eval.result, \")", USE_FLAG(end_of_statement), "\");");
                 }
             });
         }
@@ -35,7 +35,7 @@ namespace rebgn {
             define_eval(inner_function, flags, op, "left_eval", code_ref(flags, "left_ref"), "assignment target");
             define_eval(inner_function, flags, op, "right_eval", code_ref(flags, "right_ref"), "assignment source");
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"\", left_eval.result, \" = \", right_eval.result, \"", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"\", left_eval.result, \" = \", right_eval.result, \"", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::BACKWARD_INPUT || op == AbstractOp::BACKWARD_OUTPUT) {
@@ -47,7 +47,7 @@ namespace rebgn {
                         {"OFFSET", "\",evaluated.result,\""},
                     };
                     auto escaped = env_escape(flags, op, ENV_FLAG(decode_backward), map);
-                    inner_function.writeln("w.writeln(\"", escaped, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
                 }
                 else {
                     std::map<std::string, std::string> map{
@@ -55,7 +55,7 @@ namespace rebgn {
                         {"OFFSET", "\",evaluated.result,\""},
                     };
                     auto escaped = env_escape(flags, op, ENV_FLAG(encode_backward), map);
-                    inner_function.writeln("w.writeln(\"", escaped, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
                 }
             });
         }
@@ -63,11 +63,11 @@ namespace rebgn {
             define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector to check");
             define_eval(inner_function, flags, op, "size_eval", code_ref(flags, "right_ref"), "size to check");
             func_hook([&] {
-                if (flags.surrounded_size_method) {
-                    inner_function.writeln("w.writeln(\"assert(", flags.size_method, "(\",vector_eval.result,\") == \", size_eval.result, \")", flags.end_of_statement, "\");");
+                if (USE_FLAG(surrounded_size_method)) {
+                    inner_function.writeln("w.writeln(\"assert(", USE_FLAG(size_method), "(\",vector_eval.result,\") == \", size_eval.result, \")", USE_FLAG(end_of_statement), "\");");
                 }
                 else {
-                    inner_function.writeln("w.writeln(\"assert(\", vector_eval.result, \".", flags.size_method, "() == \", size_eval.result, \")", flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"assert(\", vector_eval.result, \".", USE_FLAG(size_method), "() == \", size_eval.result, \")", USE_FLAG(end_of_statement), "\");");
                 }
             });
         }
@@ -83,15 +83,15 @@ namespace rebgn {
                 define_type(inner_function, flags, op, "type", code_ref(flags, "type"), "variable");
             }
             func_hook([&] {
-                if (flags.omit_type_on_define_var) {
-                    inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, init.result));");
+                if (USE_FLAG(omit_type_on_define_var)) {
+                    inner_function.writeln("w.writeln(std::format(\"", USE_FLAG(define_var_keyword), "{} ", USE_FLAG(define_var_assign), " {}", USE_FLAG(end_of_statement), "\", ident, init.result));");
                 }
                 else {
-                    if (flags.prior_ident) {
-                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\", ident, type, init.result));");
+                    if (USE_FLAG(prior_ident)) {
+                        inner_function.writeln("w.writeln(std::format(\"", USE_FLAG(define_var_keyword), "{} ", USE_FLAG(var_type_separator), "{} ", USE_FLAG(define_var_assign), " {}", USE_FLAG(end_of_statement), "\", ident, type, init.result));");
                     }
                     else {
-                        inner_function.writeln("w.writeln(std::format(\"", flags.define_var_keyword, "{} ", flags.var_type_separator, "{} ", flags.define_var_assign, " {}", flags.end_of_statement, "\",type, ident, init.result));");
+                        inner_function.writeln("w.writeln(std::format(\"", USE_FLAG(define_var_keyword), "{} ", USE_FLAG(var_type_separator), "{} ", USE_FLAG(define_var_assign), " {}", USE_FLAG(end_of_statement), "\",type, ident, init.result));");
                     }
                 }
             });
@@ -133,7 +133,7 @@ namespace rebgn {
             define_ident(inner_function, flags, op, "ident", code_ref(flags, "ident"), "constant name");
             define_eval(inner_function, flags, op, "init", code_ref(flags, "ref"), "constant value");
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"", flags.define_const_keyword, "\", ident, \" = \", init.result,\"", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(define_const_keyword), "\", ident, \" = \", init.result,\"", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::BEGIN_ENCODE_SUB_RANGE || op == AbstractOp::BEGIN_DECODE_SUB_RANGE) {
@@ -190,14 +190,14 @@ namespace rebgn {
         else if (op == AbstractOp::ASSERT) {
             define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "assertion condition");
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"assert(\", evaluated.result, \")", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"assert(\", evaluated.result, \")", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::EXPLICIT_ERROR) {
             do_variable_definition(inner_function, flags, op, "param", code_ref(flags, "param"), "Param", "error message parameters");
             define_eval(inner_function, flags, op, "evaluated", "param.refs[0]", "error message", true);
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"throw std::runtime_error(\", evaluated.result, \")", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"throw std::runtime_error(\", evaluated.result, \")", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::IF || op == AbstractOp::ELIF ||
@@ -236,27 +236,27 @@ namespace rebgn {
                 }
                 inner_function.writeln("}");
                 func_hook([&] {
-                    inner_function.writeln("w.write(\"", flags.func_keyword, " \");");
-                    if (!flags.trailing_return_type) {
+                    inner_function.writeln("w.write(\"", USE_FLAG(func_keyword), " \");");
+                    if (!USE_FLAG(trailing_return_type)) {
                         inner_function.writeln("if(type) {");
                         inner_function.indent_writeln("w.write(*type);");
                         inner_function.writeln("}");
                         inner_function.writeln("else {");
-                        inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
+                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
                         inner_function.writeln("}");
                     }
-                    inner_function.writeln("w.write(\" \", ident, \"", flags.func_brace_ident_separator, "(\");");
+                    inner_function.writeln("w.write(\" \", ident, \"", USE_FLAG(func_brace_ident_separator), "(\");");
                     inner_function.writeln("add_parameter(ctx, w, range);");
                     inner_function.writeln("w.write(\") \");");
-                    if (flags.trailing_return_type) {
+                    if (USE_FLAG(trailing_return_type)) {
                         inner_function.writeln("if(type) {");
-                        inner_function.indent_writeln("w.write(\"", flags.func_type_separator, "\", *type);");
+                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_type_separator), "\", *type);");
                         inner_function.writeln("}");
                         inner_function.writeln("else {");
-                        inner_function.indent_writeln("w.write(\"", flags.func_void_return_type, "\");");
+                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
                         inner_function.writeln("}");
                     }
-                    inner_function.writeln("w.writeln(\"", flags.block_begin, "\");");
+                    inner_function.writeln("w.writeln(\"", USE_FLAG(block_begin), "\");");
                 });
             }
             else {
@@ -268,43 +268,43 @@ namespace rebgn {
                 }
                 func_hook([&] {
                     if (op == AbstractOp::ELIF || op == AbstractOp::ELSE) {
-                        if (flags.otbs_on_block_end) {
-                            inner_function.writeln("w.write(\"", flags.block_end, "\");");
+                        if (USE_FLAG(otbs_on_block_end)) {
+                            inner_function.writeln("w.write(\"", USE_FLAG(block_end), "\");");
                         }
                         else {
-                            inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                            inner_function.writeln("w.writeln(\"", USE_FLAG(block_end), "\");");
                         }
                     }
                     inner_function.write("w.writeln(\"");
                     std::string condition = "\",evaluated.result,\"";
-                    if (flags.condition_has_parentheses) {
+                    if (USE_FLAG(condition_has_parentheses)) {
                         condition = "(" + condition + ")";
                     }
                     switch (op) {
                         case AbstractOp::IF:
-                            inner_function.write(flags.if_keyword, " ", condition, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(if_keyword), " ", condition, " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::ELIF:
-                            inner_function.write(flags.elif_keyword, " ", condition, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(elif_keyword), " ", condition, " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::ELSE:
-                            inner_function.write(flags.else_keyword, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(else_keyword), " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::LOOP_INFINITE:
-                            inner_function.write(flags.infinity_loop, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(infinity_loop), " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::LOOP_CONDITION:
-                            inner_function.write(flags.conditional_loop, " ", condition, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(conditional_loop), " ", condition, " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::MATCH:
                         case AbstractOp::EXHAUSTIVE_MATCH:
-                            inner_function.write(flags.match_keyword, " ", condition, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(match_keyword), " ", condition, " ", USE_FLAG(block_begin));
                             break;
                         case AbstractOp::CASE:
-                            inner_function.write(flags.match_case_keyword, " ", condition, " ", flags.match_case_separator, flags.block_begin);
+                            inner_function.write(USE_FLAG(match_case_keyword), " ", condition, " ", USE_FLAG(match_case_separator), USE_FLAG(block_begin));
                             break;
                         case AbstractOp::DEFAULT_CASE:
-                            inner_function.write(flags.match_default_keyword, " ", flags.block_begin);
+                            inner_function.write(USE_FLAG(match_default_keyword), " ", USE_FLAG(block_begin));
                             break;
                         default:;
                     }
@@ -318,17 +318,17 @@ namespace rebgn {
                  op == AbstractOp::END_CASE) {
             inner_function.writeln("defer.pop_back();");
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(block_end), "\");");
             });
         }
         else if (op == AbstractOp::CONTINUE) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"continue", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"continue", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::BREAK) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"break", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"break", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::RET) {
@@ -337,7 +337,7 @@ namespace rebgn {
             auto scope = inner_function.indent_scope();
             define_eval(inner_function, flags, op, "evaluated", "ref", "return value", true);
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return \", evaluated.result, \"", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"return \", evaluated.result, \"", USE_FLAG(end_of_statement), "\");");
             },
                       bm2::HookFileSub::value);
             scope.execute();
@@ -345,7 +345,7 @@ namespace rebgn {
             inner_function.writeln("else {");
             auto else_scope = inner_function.indent_scope();
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"return", USE_FLAG(end_of_statement), "\");");
             },
                       bm2::HookFileSub::empty);
             else_scope.execute();
@@ -353,18 +353,18 @@ namespace rebgn {
         }
         else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return ", flags.true_literal, flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"return ", USE_FLAG(true_literal), USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return ", flags.false_literal, flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\"return ", USE_FLAG(false_literal), USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::INC) {
             define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "increment target");
             func_hook([&] {
-                inner_function.writeln("w.writeln(evaluated.result, \"+= 1", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(evaluated.result, \"+= 1", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::CHECK_UNION || op == AbstractOp::SWITCH_UNION) {
@@ -388,33 +388,33 @@ namespace rebgn {
                     {"MEMBER_INDEX", "\",futils::number::to_string<std::string>(union_member_index),\""},
                 };
                 auto escaped = env_escape(flags, op, ENV_FLAG(check_union_condition), map);
-                inner_function.writeln("w.writeln(\"", flags.if_keyword, flags.condition_has_parentheses ? "(" : " ",
-                                       escaped, flags.condition_has_parentheses ? ") " : " ", flags.block_begin, "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(if_keyword), USE_FLAG(condition_has_parentheses) ? "(" : " ",
+                                       escaped, USE_FLAG(condition_has_parentheses) ? ") " : " ", USE_FLAG(block_begin), "\");");
                 inner_function.writeln("auto scope = w.indent_scope_ex();");
                 if (op == AbstractOp::CHECK_UNION) {
                     inner_function.writeln("if(check_type == rebgn::UnionCheckAt::ENCODER) {");
                     auto encoder_scope = inner_function.indent_scope();
                     auto ret = env_escape(flags, op, ENV_FLAG(check_union_fail_return_value), map);
-                    inner_function.writeln("w.writeln(\"return ", ret, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"return ", ret, USE_FLAG(end_of_statement), "\");");
                     encoder_scope.execute();
                     inner_function.writeln("}");
                     inner_function.writeln("else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_PTR) {");
                     auto property_getter_ptr_scope = inner_function.indent_scope();
-                    inner_function.writeln("w.writeln(\"return ", flags.empty_pointer, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"return ", USE_FLAG(empty_pointer), USE_FLAG(end_of_statement), "\");");
                     property_getter_ptr_scope.execute();
                     inner_function.writeln("}");
                     inner_function.writeln("else if(check_type == rebgn::UnionCheckAt::PROPERTY_GETTER_OPTIONAL) {");
                     auto property_getter_optional_scope = inner_function.indent_scope();
-                    inner_function.writeln("w.writeln(\"return ", flags.empty_optional, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"return ", USE_FLAG(empty_optional), USE_FLAG(end_of_statement), "\");");
                     property_getter_optional_scope.execute();
                     inner_function.writeln("}");
                 }
                 else {
                     auto switch_union = env_escape(flags, op, ENV_FLAG(switch_union), map);
-                    inner_function.writeln("w.writeln(\"", switch_union, flags.end_of_statement, "\");");
+                    inner_function.writeln("w.writeln(\"", switch_union, USE_FLAG(end_of_statement), "\");");
                 }
                 inner_function.writeln("scope.execute();");
-                inner_function.writeln("w.writeln(\"", flags.block_end, "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(block_end), "\");");
             });
         }
         else if (op == AbstractOp::CALL_ENCODE || op == AbstractOp::CALL_DECODE) {
@@ -427,7 +427,7 @@ namespace rebgn {
             func_hook([&] {
                 inner_function.writeln("w.write(obj_eval.result, \".\", func_name, \"(\");");
                 inner_function.writeln("add_call_parameter(ctx, w, inner_range);");
-                inner_function.writeln("w.writeln(\")", flags.end_of_statement, "\");");
+                inner_function.writeln("w.writeln(\")", USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::ENCODE_INT || op == AbstractOp::DECODE_INT ||

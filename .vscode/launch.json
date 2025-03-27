@@ -74,7 +74,7 @@
             "args": [
                 "-i","${workspaceRoot}/save/save.bin",
             ],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "console": "integratedTerminal",
@@ -104,7 +104,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/tool/gen_template",
             "args": [
-                "--config",
+                 "--config-file", "src\\bm2c\\config.json", "--mode", "config",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

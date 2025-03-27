@@ -273,9 +273,16 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
     }
 
     void write_code_config(bm2::TmpCodeWriter& w, Flags& flags) {
-        auto js = futils::json::convert_to_json<futils::json::OrderedJSON>(flags);
-        auto out = futils::json::to_string<std::string>(js);
-        w.writeln(out);
+        try {
+            printf("write config\n");
+            auto js = futils::json::convert_to_json<futils::json::OrderedJSON>(flags);
+            printf("convert to json\n");
+            auto out = futils::json::to_string<std::string>(js);
+            w.writeln(out);
+        } catch (std::exception& e) {
+            printf("error: %s\n", e.what());
+            throw;
+        }
     }
 
     void write_template_document(Flags& flags, bm2::TmpCodeWriter& w) {

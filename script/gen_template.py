@@ -3,6 +3,9 @@ import os
 import sys
 
 LANG_NAME = sys.argv[1]
+BUILD_MODE = "native" if len(sys.argv) < 3 else sys.argv[2]
+BUILD_TYPE = "Debug" if len(sys.argv) < 4 else sys.argv[3]
+
 
 # cmake --build ./built/native/Debug --target gen_template
 DEFAULT_FUTILS_DIR = (
@@ -10,32 +13,49 @@ DEFAULT_FUTILS_DIR = (
 )
 
 
-def execute(command, env) -> bytes:
+def execute(command, env, capture=True) -> bytes:
     passEnv = os.environ.copy()
     if env is not None:
         passEnv.update(env)
-    return sp.check_output(command, env=passEnv, stderr=sys.stderr)
+    if capture:
+        return sp.check_output(command, env=passEnv, stderr=sys.stderr)
+    else:
+        return sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
 
 
 execute(
-    ["cmake", "--build", "./built/native/Debug", "--target", "gen_template"],
+    [
+        "cmake",
+        "--build",
+        f"./built/{BUILD_MODE}/{BUILD_TYPE}",
+        "--target",
+        "gen_template",
+    ],
     env={
         "FUTILS_DIR": os.getenv(
             "FUTILS_DIR",
             DEFAULT_FUTILS_DIR,
         ),
     },
+    capture=False,
 )
 
 # cmake --install ./built/native/Debug --component gen_template
 execute(
-    ["cmake", "--install", "./built/native/Debug", "--component", "gen_template"],
+    [
+        "cmake",
+        "--install",
+        f"./built/{BUILD_MODE}/{BUILD_TYPE}",
+        "--component",
+        "gen_template",
+    ],
     env={
         "FUTILS_DIR": os.getenv(
             "FUTILS_DIR",
             DEFAULT_FUTILS_DIR,
         ),
     },
+    capture=False,
 )
 
 if not os.path.exists(f"src/bm2{LANG_NAME}"):
@@ -116,14 +136,21 @@ CMAKE = execute(
     None,
 )
 
-with open(f"src/bm2{LANG_NAME}/bm2{LANG_NAME}.hpp", "wb") as f:
-    f.write(HEADER)
 
-with open(f"src/bm2{LANG_NAME}/bm2{LANG_NAME}.cpp", "wb") as f:
-    f.write(GENERATOR)
+def write_with_cached(file_path: str, content: bytes):
+    cached = False
+    if os.path.exists(file_path):
+        with open(file_path, "rb") as f:
+            if f.read() == content:
+                print(f"Cached: {file_path}")
+                cached = True
+    if not cached:
+        with open(file_path, "wb") as f:
+            f.write(content)
+        print(f"Generated: {file_path}")
 
-with open(f"src/bm2{LANG_NAME}/main.cpp", "wb") as f:
-    f.write(MAIN)
 
-with open(f"src/bm2{LANG_NAME}/CMakeLists.txt", "wb") as f:
-    f.write(CMAKE)
+write_with_cached(f"src/bm2{LANG_NAME}/bm2{LANG_NAME}.hpp", HEADER)
+write_with_cached(f"src/bm2{LANG_NAME}/bm2{LANG_NAME}.cpp", GENERATOR)
+write_with_cached(f"src/bm2{LANG_NAME}/main.cpp", MAIN)
+write_with_cached(f"src/bm2{LANG_NAME}/CMakeLists.txt", CMAKE)

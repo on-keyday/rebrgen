@@ -138,10 +138,10 @@ namespace rebgn {
         add_parameter.writeln("auto belong = ctx.bm.code[range.start].belong().value();");
         add_parameter.writeln("auto is_member = belong.value() != 0 && ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM;");
         if (!may_write_from_hook(add_parameter, flags, bm2::HookFile::param_start, false)) {
-            if (USE_FLAG(self_param).size()) {
+            if (USE_FLAG_BASE(rebgn::AbstractOp::DEFINE_PARAMETER, self_param).size()) {
                 add_parameter.writeln("if(is_member) {");
                 auto if_block_belong = add_parameter.indent_scope();
-                add_parameter.writeln("w.write(\"", USE_FLAG(self_param), "\");");
+                add_parameter.writeln("w.write(\"", USE_FLAG_BASE(rebgn::AbstractOp::DEFINE_PARAMETER, self_param), "\");");
                 add_parameter.writeln("params++;");
                 if_block_belong.execute();
                 add_parameter.writeln("}");

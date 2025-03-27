@@ -65,7 +65,7 @@
     "variant_mode": "union",
     "algebraic_variant_separator": "|",
     "algebraic_variant_type": "$TYPES",
-    "check_union_condition": "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
+    "check_union_condition": "_,ok := $FIELD_IDENT.(*$MEMBER_IDENT);ok",
     "check_union_fail_return_value": "false",
     "switch_union": "$FIELD_IDENT = $MEMBER_IDENT{}",
     "address_of_placeholder": "&$VALUE",
@@ -78,7 +78,7 @@
     "decode_offset": "$DECODER.offset()",
     "encode_backward": "$ENCODER.backward($OFFSET)",
     "decode_backward": "$DECODER.backward($OFFSET)",
-    "is_little_endian_expr": "std::endian::native == std::endian::little",
+    "is_little_endian_expr": "binary.NativeEndian.Uint16([]byte{0x12, 0x34}) == uint16(0x3412)",
     "default_enum_base": "int",
     "enum_base_separator": " : "
 }

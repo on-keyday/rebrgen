@@ -114,7 +114,13 @@ if BUILD_MODE == "native":
         stderr=sys.stderr,
     )
     subprocess.run(
-        ["cmake", "--install", "./built/native/Debug", "--component", "gen_template"],
+        [
+            "cmake",
+            "--install",
+            f"./built/{BUILD_MODE}/{BUILD_TYPE}",
+            "--component",
+            "gen_template",
+        ],
         check=True,
         stdout=sys.stdout,
         stderr=sys.stderr,

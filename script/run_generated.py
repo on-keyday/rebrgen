@@ -2,12 +2,6 @@ import os
 import subprocess as sp
 import sys
 
-sp.run(
-    ["python","script/build.py"],
-    check=True,
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-)
 save = sp.check_output(
     ["C:/workspace/shbrgen/brgen/tool/src2json", "src/test/test_cases.bgn"],
     stderr=sys.stderr,
@@ -36,41 +30,83 @@ src = sp.check_output(
     ["tool/bm2c", "-i", "save/save.bin","--test-info","save/c/save.c.json"],
     stderr=sys.stderr,
 )
-with open("save/c/save.c", "wb") as f:
-    f.write(src)
-print(f"Generated: save/c/save.c")
+cached = False
+if os.path.exists("save/c/save.c"):
+    with open("save/c/save.c", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/c/save.c")
+            cached = True
+if not cached:
+    with open("save/c/save.c", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/c/save.c")
 src = sp.check_output(
     ["tool/bm2cpp", "-i", "save/save.bin","--test-info","save/cpp/save.cpp.json"],
     stderr=sys.stderr,
 )
-with open("save/cpp/save.cpp", "wb") as f:
-    f.write(src)
-print(f"Generated: save/cpp/save.cpp")
+cached = False
+if os.path.exists("save/cpp/save.cpp"):
+    with open("save/cpp/save.cpp", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/cpp/save.cpp")
+            cached = True
+if not cached:
+    with open("save/cpp/save.cpp", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/cpp/save.cpp")
 src = sp.check_output(
     ["tool/bm2go", "-i", "save/save.bin","--test-info","save/go/save.go.json"],
     stderr=sys.stderr,
 )
-with open("save/go/save.go", "wb") as f:
-    f.write(src)
-print(f"Generated: save/go/save.go")
+cached = False
+if os.path.exists("save/go/save.go"):
+    with open("save/go/save.go", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/go/save.go")
+            cached = True
+if not cached:
+    with open("save/go/save.go", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/go/save.go")
 src = sp.check_output(
     ["tool/bm2haskell", "-i", "save/save.bin","--test-info","save/haskell/save.hs.json"],
     stderr=sys.stderr,
 )
-with open("save/haskell/save.hs", "wb") as f:
-    f.write(src)
-print(f"Generated: save/haskell/save.hs")
+cached = False
+if os.path.exists("save/haskell/save.hs"):
+    with open("save/haskell/save.hs", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/haskell/save.hs")
+            cached = True
+if not cached:
+    with open("save/haskell/save.hs", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/haskell/save.hs")
 src = sp.check_output(
     ["tool/bm2python", "-i", "save/save.bin","--test-info","save/python/save.py.json"],
     stderr=sys.stderr,
 )
-with open("save/python/save.py", "wb") as f:
-    f.write(src)
-print(f"Generated: save/python/save.py")
+cached = False
+if os.path.exists("save/python/save.py"):
+    with open("save/python/save.py", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/python/save.py")
+            cached = True
+if not cached:
+    with open("save/python/save.py", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/python/save.py")
 src = sp.check_output(
     ["tool/bm2rust", "-i", "save/save.bin","--test-info","save/rust/save.rs.json"],
     stderr=sys.stderr,
 )
-with open("save/rust/save.rs", "wb") as f:
-    f.write(src)
-print(f"Generated: save/rust/save.rs")
+cached = False
+if os.path.exists("save/rust/save.rs"):
+    with open("save/rust/save.rs", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/rust/save.rs")
+            cached = True
+if not cached:
+    with open("save/rust/save.rs", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/rust/save.rs")

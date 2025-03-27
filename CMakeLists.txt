@@ -78,7 +78,10 @@ COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_SO
 )
 # install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool)
 elseif(WIN32)
-install(FILES "$ENV{FUTILS_DIR}/lib/libfutils.dll" DESTINATION tool)
+add_custom_command(
+TARGET gen_template POST_BUILD
+COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.dll" "${CMAKE_SOURCE_DIR}/tool/libfutils.dll"
+)
 endif()
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)

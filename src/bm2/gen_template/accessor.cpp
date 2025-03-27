@@ -76,13 +76,17 @@ namespace rebgn {
                     define_ref(field_accessor, flags, op, "union_ref", "belong", "union");
                     define_ref(field_accessor, flags, op, "union_field_ref", "ctx.ref(union_ref).belong().value()", "union field");
                     define_ref(field_accessor, flags, op, "union_field_belong", "ctx.ref(union_field_ref).belong().value()", "union field belong");
+                    do_variable_definition(field_accessor, flags, op, "union_field_eval", "field_accessor(ctx.ref(union_field_ref),ctx)", "string", "field accessor");
+                }
+                else if (op == AbstractOp::DEFINE_BIT_FIELD) {
+                    do_variable_definition(field_accessor, flags, op, "belong_eval", "field_accessor(ctx.ref(belong),ctx)", "string", "field accessor");
                 }
                 field_accessor_hook([&] {
                     if (op == AbstractOp::DEFINE_UNION_MEMBER) {
-                        do_make_eval_result(field_accessor, op, flags, "field_accessor(ctx.ref(union_field_ref),ctx)", EvalResultMode::PASSTHROUGH);
+                        do_make_eval_result(field_accessor, op, flags, "union_field_eval", EvalResultMode::PASSTHROUGH);
                     }
                     else if (op == AbstractOp::DEFINE_BIT_FIELD) {
-                        do_make_eval_result(field_accessor, op, flags, "field_accessor(ctx.ref(belong),ctx)", EvalResultMode::PASSTHROUGH);
+                        do_make_eval_result(field_accessor, op, flags, "belong_eval", EvalResultMode::PASSTHROUGH);
                     }
                     else {
                         field_accessor.writeln("if(is_member) {");

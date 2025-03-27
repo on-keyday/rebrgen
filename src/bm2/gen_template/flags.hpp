@@ -139,6 +139,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
 
     std::string eval_result_text = "$RESULT = make_eval_result($TEXT);";
     std::string eval_result_passthrough = "$RESULT = $TEXT;";
+    std::string access_style = "$BASE.$IDENT";
+    std::string enum_access_style = "$BASE::$IDENT";
 
     bool compact_bit_field = false;
     bool format_nested_function = false;
@@ -236,7 +238,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(compact_bit_field, "compact_bit_field")                         \
     MACRO_NAME(format_nested_function, "format_nested_function")               \
     MACRO_NAME(reserve_size_dynamic, "reserve_size_dynamic")                   \
-    MACRO_NAME(reserve_size_static, "reserve_size_static")
+    MACRO_NAME(reserve_size_static, "reserve_size_static")                     \
+    MACRO_NAME(access_style, "access_style")                                   \
+    MACRO_NAME(enum_access_style, "enum_access_style")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)

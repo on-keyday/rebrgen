@@ -80,5 +80,6 @@
     "decode_backward": "$DECODER.backward($OFFSET)",
     "is_little_endian_expr": "binary.NativeEndian.Uint16([]byte{0x12, 0x34}) == uint16(0x3412)",
     "default_enum_base": "int",
-    "enum_base_separator": " : "
+    "enum_base_separator": " : ",
+    "enum_access_style": "$IDENT"
 }

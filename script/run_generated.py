@@ -2,6 +2,12 @@ import os
 import subprocess as sp
 import sys
 
+sp.run(
+    ["python","script/build.py"],
+    check=True,
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)
 save = sp.check_output(
     ["C:/workspace/shbrgen/brgen/tool/src2json", "src/test/test_cases.bgn"],
     stderr=sys.stderr,

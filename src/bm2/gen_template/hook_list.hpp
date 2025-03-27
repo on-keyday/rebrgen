@@ -228,6 +228,8 @@ namespace bm2 {
         replacement = 12,
         static_ = 13,
         dynamic = 14,
+        normal = 15,
+        enum_member = 16,
     };
     constexpr const char* to_string(HookFileSub e) {
         switch (e) {
@@ -261,6 +263,10 @@ namespace bm2 {
                 return "_static";
             case HookFileSub::dynamic:
                 return "_dynamic";
+            case HookFileSub::normal:
+                return "_normal";
+            case HookFileSub::enum_member:
+                return "_enum_member";
         }
         return "";
     }
@@ -313,6 +319,12 @@ namespace bm2 {
         }
         if (str == "_dynamic") {
             return HookFileSub::dynamic;
+        }
+        if (str == "_normal") {
+            return HookFileSub::normal;
+        }
+        if (str == "_enum_member") {
+            return HookFileSub::enum_member;
         }
         return std::nullopt;
     }

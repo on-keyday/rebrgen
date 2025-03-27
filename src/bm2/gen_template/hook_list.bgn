@@ -56,6 +56,8 @@ enum HookFileSub:
     replacement = "_replacement" # replacement case (e.g. replacement of AbstractOp)
     static_ = "_static" # static case (e.g. static of AbstractOp)
     dynamic = "_dynamic" # dynamic case (e.g. dynamic of AbstractOp)
+    normal = "_normal" # normal case (e.g. normal of AbstractOp)
+    enum_member = "_enum_member" # enum member case (e.g. enum member of AbstractOp)
 
 enum FuncName:
     eval

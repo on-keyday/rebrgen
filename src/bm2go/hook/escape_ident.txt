@@ -1,5 +1,11 @@
-if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {
+if(code.op==rebgn::AbstractOp::DEFINE_FIELD||code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
     auto copy = str;
     copy[0] = std::toupper(copy[0]);
+    if(code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
+       auto typ = code.func_type().value();
+       if(typ == rebgn::FunctionType::UNION_SETTER || typ == rebgn::FunctionType::BIT_SETTER) {
+         copy = "Set" + copy;
+       }
+    }
     return copy;
 }

@@ -186,6 +186,7 @@ namespace bm2python {
             auto union_ref = belong; //reference of union
             auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
             auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
+            auto union_field_eval = field_accessor(ctx.ref(union_field_ref),ctx); //field accessor
             // load hook: field_accessor_define_union_member
             result = field_accessor(ctx.ref(union_field_ref),ctx);
             // end hook: field_accessor_define_union_member
@@ -200,6 +201,7 @@ namespace bm2python {
             auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            auto belong_eval = field_accessor(ctx.ref(belong),ctx); //field accessor
             // load hook: field_accessor_define_bit_field
             result = field_accessor(ctx.ref(belong),ctx);
             // end hook: field_accessor_define_bit_field
@@ -451,7 +453,14 @@ namespace bm2python {
             auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //left operand
             auto right_ident_ref = code.right_ref().value(); //reference of right operand
             auto right_ident = ctx.ident(right_ident_ref); //identifier of right operand
-            result = make_eval_result(std::format("{}.{}", left_eval.result, right_ident));
+            auto is_enum_member = ctx.ref(left_eval_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE; //is enum member
+            if(is_enum_member) {
+                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,""));
+                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,""));
+            }
+            else {
+                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,""));
+            }
             break;
         }
         case rebgn::AbstractOp::INDEX: {

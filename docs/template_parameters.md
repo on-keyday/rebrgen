@@ -43,12 +43,36 @@ Description: reference of right operand
 Type: string
 Initial Value: ctx.ident(right_ident_ref)
 Description: identifier of right operand
+##### is_enum_member
+Type: bool
+Initial Value: ctx.ref(left_eval_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE
+Description: is enum member
 #### Placeholder Mappings: 
+##### access_style
+Name: BASE
+Mapped Value: `",left_eval.result,"`
+Name: IDENT
+Mapped Value: `",right_ident,"`
+##### enum_access_style
+Name: BASE
+Mapped Value: `",left_eval.result,"`
+Name: IDENT
+Mapped Value: `",right_ident,"`
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
 Name: TEXT
-Mapped Value: `std::format("{}.{}", left_eval.result, right_ident)`
+Mapped Value: `futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,"")`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,"")`
+##### eval_result_text
+Name: RESULT
+Mapped Value: `result`
+Name: TEXT
+Mapped Value: `futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,"")`
 ### ADDRESS_OF
 #### Variables: 
 ##### target_ref
@@ -2065,12 +2089,16 @@ Description: reference of belong
 Type: bool
 Initial Value: belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM
 Description: is member of a struct
+##### belong_eval
+Type: string
+Initial Value: field_accessor(ctx.ref(belong),ctx)
+Description: field accessor
 #### Placeholder Mappings: 
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
 Name: TEXT
-Mapped Value: `field_accessor(ctx.ref(belong),ctx)`
+Mapped Value: `belong_eval`
 ### DEFINE_FIELD
 #### Variables: 
 ##### ident_ref
@@ -2220,12 +2248,16 @@ Description: reference of union field
 Type: Varint
 Initial Value: ctx.ref(union_field_ref).belong().value()
 Description: reference of union field belong
+##### union_field_eval
+Type: string
+Initial Value: field_accessor(ctx.ref(union_field_ref),ctx)
+Description: field accessor
 #### Placeholder Mappings: 
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
 Name: TEXT
-Mapped Value: `field_accessor(ctx.ref(union_field_ref),ctx)`
+Mapped Value: `union_field_eval`
 ## function `type_accessor`
 ### DEFINE_BIT_FIELD
 #### Variables: 

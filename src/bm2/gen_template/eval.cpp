@@ -223,8 +223,31 @@ namespace rebgn {
         else if (op == AbstractOp::ACCESS) {
             define_eval(eval, flags, op, "left_eval", code_ref(flags, "left_ref"), "left operand");
             define_ident(eval, flags, op, "right_ident", code_ref(flags, "right_ref"), "right operand");
+            define_bool(eval, flags, op, "is_enum_member", "ctx.ref(left_eval_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE", "is enum member");
             eval_hook([&] {
-                do_make_eval_result(eval, op, flags, "std::format(\"{}.{}\", left_eval.result, right_ident)", EvalResultMode::TEXT);
+                std::map<std::string, std::string> map{
+                    {"BASE", "\",left_eval.result,\""},
+                    {"IDENT", "\",right_ident,\""},
+                };
+                auto access = env_escape_and_concat(flags, op, ENV_FLAG(access_style), map);
+                auto enum_access = env_escape_and_concat(flags, op, ENV_FLAG(enum_access_style), map);
+                eval.writeln("if(is_enum_member) {");
+                auto scope = eval.indent_scope();
+                eval_hook([&] {
+                    do_make_eval_result(eval, op, flags, enum_access, EvalResultMode::TEXT);
+                },
+                          bm2::HookFileSub::enum_member);
+                do_make_eval_result(eval, op, flags, enum_access, EvalResultMode::TEXT);
+                scope.execute();
+                eval.writeln("}");
+                eval.writeln("else {");
+                auto scope2 = eval.indent_scope();
+                eval_hook([&] {
+                    do_make_eval_result(eval, op, flags, access, EvalResultMode::TEXT);
+                },
+                          bm2::HookFileSub::normal);
+                scope2.execute();
+                eval.writeln("}");
             });
         }
         else if (op == AbstractOp::INDEX) {

@@ -176,7 +176,10 @@ namespace bm2go {
             auto union_ref = belong; //reference of union
             auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
             auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
-            result = field_accessor(ctx.ref(union_field_ref),ctx);
+            auto union_field_eval = field_accessor(ctx.ref(union_field_ref),ctx); //field accessor
+            // load hook: field_accessor_define_union_member
+            result = make_eval_result(std::format("{}.(*{})",union_field_eval.result,ident));
+            // end hook: field_accessor_define_union_member
             break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
@@ -188,7 +191,8 @@ namespace bm2go {
             auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-            result = field_accessor(ctx.ref(belong),ctx);
+            auto belong_eval = field_accessor(ctx.ref(belong),ctx); //field accessor
+            result = belong_eval;
             break;
         }
         default: {
@@ -425,7 +429,14 @@ namespace bm2go {
             auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //left operand
             auto right_ident_ref = code.right_ref().value(); //reference of right operand
             auto right_ident = ctx.ident(right_ident_ref); //identifier of right operand
-            result = make_eval_result(std::format("{}.{}", left_eval.result, right_ident));
+            auto is_enum_member = ctx.ref(left_eval_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE; //is enum member
+            if(is_enum_member) {
+                result = make_eval_result(futils::strutil::concat<std::string>("",right_ident,""));
+                result = make_eval_result(futils::strutil::concat<std::string>("",right_ident,""));
+            }
+            else {
+                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,""));
+            }
             break;
         }
         case rebgn::AbstractOp::INDEX: {
@@ -1486,9 +1497,15 @@ namespace bm2go {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident
-            if(code.op==rebgn::AbstractOp::DEFINE_FIELD) {
+            if(code.op==rebgn::AbstractOp::DEFINE_FIELD||code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
                 auto copy = str;
                 copy[0] = std::toupper(copy[0]);
+                if(code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
+                   auto typ = code.func_type().value();
+                   if(typ == rebgn::FunctionType::UNION_SETTER || typ == rebgn::FunctionType::BIT_SETTER) {
+                     copy = "Set" + copy;
+                   }
+                }
                 return copy;
             }
             // end hook: escape_ident
@@ -1499,6 +1516,10 @@ namespace bm2go {
             auto& w = ctx.cw;
             // load hook: file_top
             w.writeln("package main");
+            w.writeln("");
+            w.writeln("import (");
+            w.writeln("    \"io\"");
+            w.writeln(")");
             // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {

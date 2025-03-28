@@ -22,7 +22,16 @@ if __name__ == "__main__":
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
-        run_command(["cargo", "build", "--manifest-path", "save/rust/Cargo.toml", "--target-dir", TMPDIR])
+        cargo_toml_path = os.path.join(TMPDIR, "Cargo.toml")
+        with open(cargo_toml_path, "w") as f:
+            f.write("""[package]
+        name = "save"
+        version = "0.1.0"
+        edition = "2021"
+        
+        [dependencies]
+        """)
+        run_command(["cargo", "build", "--manifest-path", cargo_toml_path, "--target-dir", TMPDIR])
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

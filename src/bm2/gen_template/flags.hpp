@@ -17,10 +17,23 @@ struct VariableDesc {
 struct EnvMappingDesc {
     std::string variable_name;
     std::map<std::string, std::string> mapping;
+    std::string_view file_name;
+    std::string_view func_name;
+    size_t line;
 };
+
+struct FlagUsageMappingDesc {
+    std::string flag_name;
+    std::string flag_value;
+    std::string_view file_name;
+    std::string_view func_name;
+    size_t line;
+};
+
 struct Content {
     std::vector<VariableDesc> variables;
     std::vector<EnvMappingDesc> env_mappings;
+    std::vector<FlagUsageMappingDesc> flag_usage_mappings;
 };
 
 struct Flags : futils::cmdline::templ::HelpOption {
@@ -141,13 +154,22 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string eval_result_passthrough = "$RESULT = $TEXT;";
     std::string access_style = "$BASE.$IDENT";
     std::string enum_access_style = "$BASE::$IDENT";
+    // NEW_OBJECT means initialized by default
+    std::string new_object_style = "$TYPE()";
+    std::string new_object_int_style = "0";
+    std::string new_object_float_style = "0.0";
+    std::string new_object_array_style = "$TYPE()";
+    std::string new_object_vector_style = "$TYPE()";
+    std::string new_object_struct_style = "$TYPE()";
+
+    std::string keyword_escape_style = "${VALUE}_";
 
     bool compact_bit_field = false;
     bool format_nested_function = false;
 
-#define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, flags.name)
+#define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, __FILE__, __func__, __LINE__, flags.name)
 #define USE_FLAG(name) USE_FLAG_BASE(op, name)
-#define ENV_FLAG(name) #name, flags.name
+#define ENV_FLAG(name) #name, __FILE__, __func__, __LINE__, flags.name
 
 #define MAP_TO_MACRO(MACRO_NAME)                                               \
     MACRO_NAME(lang_name, "lang")                                              \

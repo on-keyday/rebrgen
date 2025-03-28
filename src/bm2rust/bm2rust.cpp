@@ -2402,11 +2402,10 @@ namespace bm2rust {
     void to_rust(futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags, bm2::Output& output) {
         bool has_error = false;
         Context ctx(w, bm, output, [&](auto&& _1, auto&& _2, auto&& str) {
-            auto esc = escape_rust_keyword(str);
-            if (esc == "Error") {
+            escape_rust_keyword(str);
+            if (str == "Error") {
                 has_error = true;
             }
-            return esc;
         });
 
         bool has_union = false;

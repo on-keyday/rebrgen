@@ -1,1 +1,2 @@
+defer.pop_back();
 w.writeln(")");

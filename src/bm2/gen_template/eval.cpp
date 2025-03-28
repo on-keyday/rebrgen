@@ -8,10 +8,10 @@
 
 namespace rebgn {
 
-    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
+    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view file_name, std::string_view func_name, size_t line, std::string_view str, std::map<std::string, std::string>& map) {
         map.erase("DOLLAR");
         if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
-            flags.content[flags.func_name][std::string(action_at)].env_mappings.push_back({std::string(param_name), map});
+            flags.content[flags.func_name][std::string(action_at)].env_mappings.push_back({std::string(param_name), map, file_name, func_name, line});
         }
         map["DOLLAR"] = "$";
         return futils::env::expand<std::string>(str, futils::env::expand_map<std::string>(map), true);

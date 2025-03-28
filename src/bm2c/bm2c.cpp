@@ -1462,16 +1462,15 @@ namespace bm2c {
             }
         }
     }
-    std::string escape_c_keyword(const std::string& str) {
+    void escape_c_keyword(std::string& str) {
         if (str == "auto"||str == "break"||str == "case"||str == "char"||str == "const"||str == "continue"||str == "default"||str == "do"||str == "double"||str == "else"||str == "enum"||str == "extern"||str == "float"||str == "for"||str == "goto"||str == "if"||str == "inline"||str == "int"||str == "long"||str == "register"||str == "restrict"||str == "return"||str == "short"||str == "signed"||str == "sizeof"||str == "static"||str == "struct"||str == "switch"||str == "typedef"||str == "union"||str == "unsigned"||str == "void"||str == "volatile"||str == "while"||str == "_Alignas"||str == "_Alignof"||str == "_Atomic"||str == "_Bool"||str == "_Complex"||str == "_Generic"||str == "_Imaginary"||str == "_Noreturn"||str == "_Static_assert"||str == "_Thread_local") {
-            return str + "_";
+            str = futils::strutil::concat<std::string>("",str,"_");
         }
-        return str;
     }
     void to_c(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
-        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
-            return escape_c_keyword(str);
+            escape_c_keyword(str);
         }};
         // search metadata
         {

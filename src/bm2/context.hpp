@@ -102,8 +102,11 @@ namespace bm2 {
                 ctx.storage_table[st.code.value()] = st.storage;
             }
             for (auto& ir : bm.identifiers.refs) {
-                auto escaped = escape_ident(ctx, ir.code.value(), ir.string.data);
-                ctx.ident_table[ir.code.value()] = std::move(escaped);
+                ctx.ident_table[ir.code.value()] = ir.string.data;  // temporary assign
+            }
+            for (auto& ir : bm.identifiers.refs) {
+                escape_ident(ctx, ir.code.value(), ctx.ident_table[ir.code.value()]);
+                static_assert(std::is_void_v<std::invoke_result_t<decltype(escape_ident), Context&, std::uint64_t, std::string&>>);
             }
         }
 

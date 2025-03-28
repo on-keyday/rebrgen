@@ -22,8 +22,7 @@ if __name__ == "__main__":
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
-        print("You have to implement build command in hook/cmptest_build.txt. see also testkit/rust/setup.py")
-        exit(1)
+        run_command(["cargo", "build", "--manifest-path", "save/rust/Cargo.toml", "--target-dir", TMPDIR])
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

@@ -1688,7 +1688,7 @@ namespace bm2hexmap {
 
     void to_hexmap(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags, bm2::Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
-                        return str;
+                
                     }};
         futils::binary::reader r{flags.input_binary};
         // search metadata

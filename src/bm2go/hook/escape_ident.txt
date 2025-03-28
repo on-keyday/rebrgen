@@ -1,11 +1,18 @@
 if(code.op==rebgn::AbstractOp::DEFINE_FIELD||code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
-    auto copy = str;
-    copy[0] = std::toupper(copy[0]);
+    str[0] = std::toupper(str[0]);
     if(code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
        auto typ = code.func_type().value();
        if(typ == rebgn::FunctionType::UNION_SETTER || typ == rebgn::FunctionType::BIT_SETTER) {
-         copy = "Set" + copy;
+         str = "Set" + str;
+       }
+       else if(typ == rebgn::FunctionType::UNION_GETTER) {
+         str = "Get" + str;
        }
     }
-    return copy;
+    return;
+}
+
+if(code.op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+    auto belong_ident = ctx.ident(code.belong().value());
+    str = belong_ident + "_"+ str;
 }

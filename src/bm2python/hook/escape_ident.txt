@@ -4,10 +4,10 @@ if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
     if(func_type == rebgn::FunctionType::UNION_SETTER) {
         auto params = get_parameters(ctx,func_range);
         if(params.size() != 1) {
-            return "set_" + str;
+            str = "set_" + str;
         }
     }
     if(func_type== rebgn::FunctionType::VECTOR_SETTER) {
-        return "set_" + str;
+        str = "set_" + str;
     }
 }

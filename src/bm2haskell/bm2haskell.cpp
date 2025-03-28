@@ -1468,16 +1468,15 @@ namespace bm2haskell {
             }
         }
     }
-    std::string escape_haskell_keyword(const std::string& str) {
+    void escape_haskell_keyword(std::string& str) {
         if (str == "case"||str == "class"||str == "data"||str == "default"||str == "deriving"||str == "do"||str == "else"||str == "if"||str == "import"||str == "in"||str == "infix"||str == "infixl"||str == "infixr"||str == "instance"||str == "let"||str == "module"||str == "newtype"||str == "of"||str == "then"||str == "type"||str == "where") {
-            return str + "_";
+            str = futils::strutil::concat<std::string>("",str,"_");
         }
-        return str;
     }
     void to_haskell(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
-        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
-            return escape_haskell_keyword(str);
+            escape_haskell_keyword(str);
         }};
         // search metadata
         {

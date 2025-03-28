@@ -1369,11 +1369,11 @@ namespace bm2cpp {
             if (auto range = ctx.ident_range_table.find(code); range != ctx.ident_range_table.end()) {
                 if (auto f = find_op(ctx, range->second, rebgn::AbstractOp::DEFINE_FUNCTION)) {
                     if (ctx.bm.code[*f].func_type() == rebgn::FunctionType::VECTOR_SETTER) {
-                        return std::format("set_{}", escape_cpp_keyword(str));
+                        str = std::format("set_{}", str);
                     }
                 }
             }
-            return escape_cpp_keyword(str);
+            escape_cpp_keyword(str);
         });
         bool has_union = false;
         bool has_vector = false;

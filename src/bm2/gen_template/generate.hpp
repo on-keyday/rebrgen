@@ -4,20 +4,24 @@
 #include <string_view>
 #include <map>
 #include "flags.hpp"
+#include <format>
 
 namespace rebgn {
-    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map);
+    std::string env_escape(Flags& flags, std::string_view action_at, std::string_view param_name, std::string_view file_name, std::string_view func_name, size_t line, std::string_view str, std::map<std::string, std::string>& map);
 
-    std::string env_escape(Flags& flags, auto op, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
-        return env_escape(flags, std::string_view(to_string(op)), param_name, str, map);
+    std::string env_escape(Flags& flags, auto op, std::string_view param_name, std::string_view file_name, std::string_view func_name, size_t line, std::string_view str, std::map<std::string, std::string>& map) {
+        return env_escape(flags, std::string_view(to_string(op)), param_name, file_name, func_name, line, str, map);
     }
 
-    std::string env_escape_and_concat(Flags& flags, auto op, std::string_view param_name, std::string_view str, std::map<std::string, std::string>& map) {
-        auto escaped = env_escape(flags, op, param_name, str, map);
+    std::string env_escape_and_concat(Flags& flags, auto op, std::string_view param_name, std::string_view file_name, std::string_view func_name, size_t line, std::string_view str, std::map<std::string, std::string>& map) {
+        auto escaped = env_escape(flags, op, param_name, file_name, func_name, line, str, map);
         return "futils::strutil::concat<std::string>(\"" + escaped + "\")";
     }
 
-    decltype(auto) use_flag(Flags& flags, auto op, std::string_view flag_name, auto& flag_ref) {
+    decltype(auto) use_flag(Flags& flags, auto op, std::string_view flag_name, std::string_view file_name, std::string_view func_name, size_t line, auto& flag_ref) {
+        if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
+            flags.content[flags.func_name][std::string(to_string(op))].flag_usage_mappings.push_back({std::string(flag_name), std::format("{}", flag_ref), file_name, func_name, line});
+        }
         return flag_ref;
     }
 

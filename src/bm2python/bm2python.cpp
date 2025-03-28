@@ -1550,14 +1550,13 @@ namespace bm2python {
             }
         }
     }
-    std::string escape_python_keyword(const std::string& str) {
+    void escape_python_keyword(std::string& str) {
         if (str == "False"||str == "None"||str == "True"||str == "and"||str == "as"||str == "assert"||str == "async"||str == "await"||str == "break"||str == "class"||str == "continue"||str == "def"||str == "del"||str == "elif"||str == "else"||str == "except"||str == "finally"||str == "for"||str == "from"||str == "global"||str == "if"||str == "import"||str == "in"||str == "is"||str == "lambda"||str == "nonlocal"||str == "not"||str == "or"||str == "pass"||str == "raise"||str == "return"||str == "try"||str == "while"||str == "with"||str == "yield") {
-            return str + "_";
+            str = futils::strutil::concat<std::string>("",str,"_");
         }
-        return str;
     }
     void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
-        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident
             if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
@@ -1566,15 +1565,15 @@ namespace bm2python {
                 if(func_type == rebgn::FunctionType::UNION_SETTER) {
                     auto params = get_parameters(ctx,func_range);
                     if(params.size() != 1) {
-                        return "set_" + str;
+                        str = "set_" + str;
                     }
                 }
                 if(func_type== rebgn::FunctionType::VECTOR_SETTER) {
-                    return "set_" + str;
+                    str = "set_" + str;
                 }
             }
             // end hook: escape_ident
-            return escape_python_keyword(str);
+            escape_python_keyword(str);
         }};
         // search metadata
         // load hook: first_scan_before

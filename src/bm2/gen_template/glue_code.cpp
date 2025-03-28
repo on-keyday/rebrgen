@@ -313,6 +313,22 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
                                         auto field = s.object();
                                         field("variable_name", c3.variable_name);
                                         field("mapping", c3.mapping);
+                                        field("file_name", c3.file_name);
+                                        field("func_name", c3.func_name);
+                                        field("line", c3.line);
+                                    });
+                                }
+                            });
+                            obj("flag_usage_mappings", [&](auto& s) {
+                                auto element = s.array();
+                                for (auto& c3 : c2.second.flag_usage_mappings) {
+                                    element([&](auto& s) {
+                                        auto field = s.object();
+                                        field("flag_name", c3.flag_name);
+                                        field("flag_value", c3.flag_value);
+                                        field("file_name", c3.file_name);
+                                        field("func_name", c3.func_name);
+                                        field("line", c3.line);
                                     });
                                 }
                             });
@@ -368,7 +384,16 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
                         for (auto& [k, v] : c3.mapping) {
                             w.writeln("Name: ", k);
                             w.writeln("Mapped Value: `", v, "`");
+                            w.writeln("File: ", std::format("{}:{}", c3.file_name, c3.line));
+                            w.writeln("Function Name: ", c3.func_name);
                         }
+                    }
+                    w.writeln("#### Flag Usage Mappings: ");
+                    for (auto& c3 : c2.second.flag_usage_mappings) {
+                        w.writeln("##### ", c3.flag_name);
+                        w.writeln("Flag Value: `", c3.flag_value, "`");
+                        w.writeln("File: ", std::format("{}:{}", c3.file_name, c3.line));
+                        w.writeln("Function Name: ", c3.func_name);
                     }
                 }
             }

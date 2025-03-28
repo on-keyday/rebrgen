@@ -128,7 +128,7 @@ namespace rebgn {
 
         write_impl_template(w, flags);
 
-        w.writeln("std::string escape_", flags.lang_name, "_keyword(const std::string& str) {");
+        w.writeln("void escape_", flags.lang_name, "_keyword(std::string& str) {");
         auto scope_escape_ident = w.indent_scope();
         w.write("if (");
         if (!may_write_from_hook(flags, bm2::HookFile::keyword, [&](size_t i, futils::view::rvec keyword, bool is_last) {
@@ -140,19 +140,22 @@ namespace rebgn {
             w.writeln("str == \"if\" || str == \"for\" || str == \"else\" || str == \"break\" || str == \"continue\"");
         }
         w.writeln(") {");
-        w.indent_writeln("return str + \"_\";");
+        std::map<std::string, std::string> map{
+            {"VALUE", "\",str,\""},
+        };
+        auto escaped = env_escape_and_concat(flags, AbstractOp::DEFINE_PROGRAM, ENV_FLAG(keyword_escape_style), map);
+        w.indent_writeln("str = ", escaped, ";");
         w.writeln("}");
-        w.writeln("return str;");
         scope_escape_ident.execute();
         w.writeln("}");
 
         w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {");
         auto scope_to_xxx = w.indent_scope();
-        w.writeln("Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {");
+        w.writeln("Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {");
         auto scope_escape_key_ident = w.indent_scope();
         w.writeln("auto& code = ctx.ref(rebgn::Varint{id});");
         may_write_from_hook(w, flags, bm2::HookFile::escape_ident, false);
-        w.writeln("return escape_", flags.lang_name, "_keyword(str);");
+        w.writeln("escape_", flags.lang_name, "_keyword(str);");
         scope_escape_key_ident.execute();
         w.writeln("}};");
         w.writeln("// search metadata");

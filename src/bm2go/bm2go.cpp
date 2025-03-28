@@ -745,6 +745,7 @@ namespace bm2go {
             }
             case rebgn::AbstractOp::END_ENUM: {
                 // load hook: block_end_enum
+                defer.pop_back();
                 w.writeln(")");
                 // end hook: block_end_enum
                 break;
@@ -1486,30 +1487,36 @@ namespace bm2go {
             }
         }
     }
-    std::string escape_go_keyword(const std::string& str) {
+    void escape_go_keyword(std::string& str) {
         if (str == "if" || str == "for" || str == "else" || str == "break" || str == "continue"
         ) {
-            return str + "_";
+            str = futils::strutil::concat<std::string>("",str,"_");
         }
-        return str;
     }
     void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
-        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
+        Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident
             if(code.op==rebgn::AbstractOp::DEFINE_FIELD||code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
-                auto copy = str;
-                copy[0] = std::toupper(copy[0]);
+                str[0] = std::toupper(str[0]);
                 if(code.op==rebgn::AbstractOp::DEFINE_FUNCTION) {
                    auto typ = code.func_type().value();
                    if(typ == rebgn::FunctionType::UNION_SETTER || typ == rebgn::FunctionType::BIT_SETTER) {
-                     copy = "Set" + copy;
+                     str = "Set" + str;
+                   }
+                   else if(typ == rebgn::FunctionType::UNION_GETTER) {
+                     str = "Get" + str;
                    }
                 }
-                return copy;
+                return;
+            }
+            
+            if(code.op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                auto belong_ident = ctx.ident(code.belong().value());
+                str = belong_ident + "_"+ str;
             }
             // end hook: escape_ident
-            return escape_go_keyword(str);
+            escape_go_keyword(str);
         }};
         // search metadata
         {

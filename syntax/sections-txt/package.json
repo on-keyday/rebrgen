@@ -28,6 +28,9 @@
         "configuration": "./language-configuration.json"
       }
     ],
+    "activationEvents": [
+      "onLanguage:plaintext"
+    ],
     "grammars": [
       {
         "language": "rebrgen-gt-sections",

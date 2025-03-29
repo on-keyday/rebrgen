@@ -2,3 +2,4 @@ built
 tool
 save/
 node_modules/
+/.vsix

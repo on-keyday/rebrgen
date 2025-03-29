@@ -87,12 +87,59 @@
         "regex": "cpp",
         "iostream": "cpp",
         "*.rh": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "sections.txt": "sections"
     },
     "editor.formatOnSave": true,
     "C_Cpp.clang_format_style": "file",
     "brgen-lsp.src2json": "C:/workspace/shbrgen/brgen/tool/src2json.exe",
     "rust-analyzer.linkedProjects": [
         "C:\\workspace\\shbrgen\\rebrgen\\save\\save\\Cargo.toml"
-]
+    ],
+    "editor.tokenColorCustomizations": {
+        "[*Light*]": {
+            "textMateRules": [
+                {
+                    "scope": "ref.matchtext",
+                    "settings": {
+                        "foreground": "#000"
+                    }
+                }
+            ]
+        },
+        "[*Dark*]": {
+            "textMateRules": [
+                {
+                    "scope": "ref.matchtext",
+                    "settings": {
+                        "foreground": "#fff"
+                    }
+                },
+                {
+                    "scope": "keyword.control.section",
+                    "settings": {
+                        "foreground": "#ee00ee"
+                    }
+                },
+                {
+                    "scope": "keyword.control.include",
+                    "settings": {
+                        "foreground": "#ffff00"
+                    }
+                },
+                {
+                    "scope": "keyword.control.endsection",
+                    "settings": {
+                        "foreground": "#ee00ee"
+                    }
+                },
+                {
+                    "scope": "keyword.control.section.include",
+                    "settings": {
+                        "foreground": "#00ee00"
+                    }
+                }
+            ]
+        }
+    }
 }

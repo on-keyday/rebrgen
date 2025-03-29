@@ -1,0 +1,29 @@
+{
+    "type": "dark",
+    "tokenColors": [
+        {
+            "scope": "keyword.control.section",
+            "settings": {
+                "foreground": "#ee00ee"
+            }
+        },
+        {
+            "scope": "keyword.control.include",
+            "settings": {
+                "foreground": "#ffff00"
+            }
+        },
+        {
+            "scope": "keyword.control.endsection",
+            "settings": {
+                "foreground": "#ee00ee"
+            }
+        },
+        {
+            "scope": "keyword.control.section.include",
+            "settings": {
+                "foreground": "#00ee00"
+            }
+        }
+    ]
+}

@@ -70,43 +70,48 @@ namespace rebgn {
         return true;
     }
 
-    void write_code_template(bm2::TmpCodeWriter& w, Flags& flags) {
+    bool write_code_template(bm2::TmpCodeWriter& w, Flags& flags) {
         if (!may_load_config(flags)) {
-            return;
+            return false;
+        }
+        auto ok = load_sections_txt(flags);
+        if (!ok) {
+            futils::wrap::cerr_wrap() << "failed to load sections.txt: " << ok.error().error() << "\n";
+            return false;
         }
         if (flags.mode == bm2::GenerateMode::config_) {
             write_code_config(w, flags);
-            return;
+            return true;
         }
         if (flags.requires_lang_option()) {
             if (flags.lang_name.empty()) {
                 futils::wrap::cerr_wrap() << "--lang option is required\n";
-                return;
+                return false;
             }
         }
         if (flags.mode == bm2::GenerateMode::header) {
             write_code_header(w, flags);
-            return;
+            return true;
         }
         if (flags.mode == bm2::GenerateMode::main) {
             code_main(w, flags);
-            return;
+            return true;
         }
         if (flags.mode == bm2::GenerateMode::cmake) {
             write_code_cmake(w, flags);
-            return;
+            return true;
         }
         if (flags.mode == bm2::GenerateMode::js_worker) {
             write_code_js_glue_worker(w, flags);
-            return;
+            return true;
         }
         if (flags.mode == bm2::GenerateMode::js_ui || flags.mode == bm2::GenerateMode::js_ui_embed) {
             write_code_js_glue_ui_and_generator_call(w, flags);
-            return;
+            return true;
         }
         if (flags.mode == bm2::GenerateMode::cmptest_json || flags.mode == bm2::GenerateMode::cmptest_build) {
             write_cmptest_config(flags, w);
-            return;
+            return true;
         }
 
         w.writeln("/*license*/");
@@ -312,6 +317,8 @@ namespace rebgn {
 
         scope.execute();
         w.writeln("}  // namespace bm2", flags.lang_name);
+
+        return true;
     }
 }  // namespace rebgn
 
@@ -319,7 +326,9 @@ auto& cout = futils::wrap::cout_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     bm2::TmpCodeWriter w;
-    rebgn::write_code_template(w, flags);
+    if (!rebgn::write_code_template(w, flags)) {
+        return 1;
+    }
     if (flags.mode == bm2::GenerateMode::docs_json || flags.mode == bm2::GenerateMode::docs_markdown) {
         w.out().clear();
         rebgn::write_template_document(flags, w);

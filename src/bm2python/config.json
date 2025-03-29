@@ -44,9 +44,10 @@
     "false_literal": "False",
     "empty_pointer": "None",
     "empty_optional": "None",
-    "size_method": "__builtins__.len",
-    "surrounded_size_method": true,
-    "append_method": "append",
+    "size_method": "__builtins__.len($VECTOR)",
+    "append_method": "$VECTOR.append($ITEM)",
+    "assert_method": "assert $CONDITION",
+    "length_check_method": "assert __builtins__.len($VECTOR) == $SIZE",
     "variant_mode": "algebraic",
     "algebraic_variant_type": "Union[$TYPES]",
     "algebraic_variant_separator": ",",
@@ -66,5 +67,9 @@
     "decode_offset": "$DECODER.tell()",
     "is_little_endian_expr": "sys.byteorder == 'little'",
     "peek_bytes_op": "$VALUE = $DECODER.peek($LEN)",
-    "format_nested_function": true
+    "format_nested_function": true,
+    "property_setter_ok": "return True",
+    "property_setter_fail": "return False",
+    "coder_success": "return True",
+    "enum_access_style": "$BASE.$IDENT"
 }

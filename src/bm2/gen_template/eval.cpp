@@ -237,7 +237,6 @@ namespace rebgn {
                     do_make_eval_result(eval, op, flags, enum_access, EvalResultMode::TEXT);
                 },
                           bm2::HookFileSub::enum_member);
-                do_make_eval_result(eval, op, flags, enum_access, EvalResultMode::TEXT);
                 scope.execute();
                 eval.writeln("}");
                 eval.writeln("else {");
@@ -260,12 +259,11 @@ namespace rebgn {
         else if (op == AbstractOp::ARRAY_SIZE) {
             define_eval(eval, flags, op, "vector_eval", code_ref(flags, "ref"), "array");
             eval_hook([&] {
-                if (USE_FLAG(surrounded_size_method)) {
-                    do_make_eval_result(eval, op, flags, "std::format(\"" + USE_FLAG(size_method) + "({})\", vector_eval.result)", EvalResultMode::TEXT);
-                }
-                else {
-                    do_make_eval_result(eval, op, flags, "std::format(\"{}({})\", vector_eval.result, \"" + USE_FLAG(size_method) + "\")", EvalResultMode::TEXT);
-                }
+                std::map<std::string, std::string> map{
+                    {"VECTOR", "\",vector_eval.result,\""},
+                };
+                auto size_method = env_escape_and_concat(flags, op, ENV_FLAG(size_method), map);
+                do_make_eval_result(eval, op, flags, size_method, EvalResultMode::TEXT);
             });
         }
         else if (op == AbstractOp::DEFINE_FIELD || op == AbstractOp::DEFINE_PROPERTY || op == AbstractOp::DEFINE_BIT_FIELD) {

@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import shutil
 
 def run_command(args):
     print("run command: ", args)
@@ -12,6 +13,9 @@ def capture_command(args):
     print("run command with capture: ", args)
     return subprocess.check_output(args,stderr = sys.stderr)
 
+def copy_file(src, dst):
+    print("copy file: {} -> {}".format(src, dst))
+    shutil.copyfile(src, dst)
 if __name__ == "__main__":
     MODE = sys.argv[1]
     if MODE == "build":

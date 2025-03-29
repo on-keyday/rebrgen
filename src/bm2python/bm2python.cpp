@@ -455,8 +455,7 @@ namespace bm2python {
             auto right_ident = ctx.ident(right_ident_ref); //identifier of right operand
             auto is_enum_member = ctx.ref(left_eval_ref).op == rebgn::AbstractOp::IMMEDIATE_TYPE; //is enum member
             if(is_enum_member) {
-                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,""));
-                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,""));
+                result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,""));
             }
             else {
                 result = make_eval_result(futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,""));
@@ -524,7 +523,7 @@ namespace bm2python {
         case rebgn::AbstractOp::ARRAY_SIZE: {
             auto vector_eval_ref = code.ref().value(); //reference of array
             auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //array
-            result = make_eval_result(std::format("__builtins__.len({})", vector_eval.result));
+            result = make_eval_result(futils::strutil::concat<std::string>("__builtins__.len(",vector_eval.result,")"));
             break;
         }
         case rebgn::AbstractOp::FIELD_AVAILABLE: {
@@ -1196,6 +1195,7 @@ namespace bm2python {
                 auto scope = w.indent_scope();
                 w.writeln("return False");
                 scope.execute();
+                
                 // end hook: func_call_encode
                 break;
             }
@@ -1218,6 +1218,8 @@ namespace bm2python {
                 auto scope = w.indent_scope();
                 w.writeln("return False");
                 scope.execute();
+                
+                
                 // end hook: func_call_decode
                 break;
             }
@@ -1255,8 +1257,7 @@ namespace bm2python {
                 w.writeln("if ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 // load hook: func_if_after
-                auto next = find_next_else_or_end_if(ctx,i,true);
-                if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
+                if(is_empty_block) {
                     w.writeln("pass");
                 }
                 // end hook: func_if_after
@@ -1271,8 +1272,7 @@ namespace bm2python {
                 w.writeln("elif ",evaluated.result," :");
                 defer.push_back(w.indent_scope_ex());
                 // load hook: func_elif_after
-                auto next = find_next_else_or_end_if(ctx,i,true);
-                if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
+                if(is_empty_block) {
                     w.writeln("pass");
                 }
                 // end hook: func_elif_after
@@ -1285,10 +1285,10 @@ namespace bm2python {
                 w.writeln("else :");
                 defer.push_back(w.indent_scope_ex());
                 // load hook: func_else_after
-                auto next = find_next_else_or_end_if(ctx,i,true);
-                if(next == i +1||ctx.bm.code[i+1].op == rebgn::AbstractOp::BEGIN_COND_BLOCK) {
+                if(is_empty_block) {
                     w.writeln("pass");
                 }
+                
                 // end hook: func_else_after
                 break;
             }
@@ -1376,7 +1376,7 @@ namespace bm2python {
             case rebgn::AbstractOp::ASSERT: {
                 auto evaluated_ref = code.ref().value(); //reference of assertion condition
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //assertion condition
-                w.writeln("assert(", evaluated.result, ")");
+                w.writeln("assert(",evaluated.result,")");
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -1384,7 +1384,7 @@ namespace bm2python {
                 auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector to check
                 auto size_eval_ref = code.right_ref().value(); //reference of size to check
                 auto size_eval = eval(ctx.ref(size_eval_ref), ctx); //size to check
-                w.writeln("assert(__builtins__.len(",vector_eval.result,") == ", size_eval.result, ")");
+                w.writeln("assert __builtins__.len(",vector_eval.result,") == ",size_eval.result,"");
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
@@ -1398,7 +1398,7 @@ namespace bm2python {
                 auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector (not temporary)
                 auto new_element_eval_ref = code.right_ref().value(); //reference of new element
                 auto new_element_eval = eval(ctx.ref(new_element_eval_ref), ctx); //new element
-                w.writeln(vector_eval.result, ".append(", new_element_eval.result, ")");
+                w.writeln("",vector_eval.result,".append(",new_element_eval.result,")");
                 break;
             }
             case rebgn::AbstractOp::INC: {

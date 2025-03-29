@@ -13,40 +13,43 @@
 #include <binary/number.h>
 namespace bm2 {
     enum class HookFile {
-        keyword = 0,
-        generator_top = 1,
-        file_top = 2,
-        file_bottom = 3,
-        bm_context = 4,
-        flags = 5,
-        eval_result = 6,
-        escape_ident = 7,
-        entry = 8,
-        cmptest_build = 9,
-        cmptest_run = 10,
-        each_inner_block = 11,
-        each_inner_function = 12,
-        inner_function_start = 13,
-        inner_function_each_code = 14,
-        inner_block_start = 15,
-        inner_block_each_code = 16,
-        param_start = 17,
-        param_each_code = 18,
-        call_param_start = 19,
-        call_param_each_code = 20,
-        first_scan = 21,
-        tree_scan = 22,
-        inner_function_op = 23,
-        inner_block_op = 24,
-        eval_op = 25,
-        type_op = 26,
-        param_op = 27,
-        call_param_op = 28,
-        field_accessor_op = 29,
-        type_accessor_op = 30,
+        sections = 0,
+        keyword = 1,
+        generator_top = 2,
+        file_top = 3,
+        file_bottom = 4,
+        bm_context = 5,
+        flags = 6,
+        eval_result = 7,
+        escape_ident = 8,
+        entry = 9,
+        cmptest_build = 10,
+        cmptest_run = 11,
+        each_inner_block = 12,
+        each_inner_function = 13,
+        inner_function_start = 14,
+        inner_function_each_code = 15,
+        inner_block_start = 16,
+        inner_block_each_code = 17,
+        param_start = 18,
+        param_each_code = 19,
+        call_param_start = 20,
+        call_param_each_code = 21,
+        first_scan = 22,
+        tree_scan = 23,
+        inner_function_op = 24,
+        inner_block_op = 25,
+        eval_op = 26,
+        type_op = 27,
+        param_op = 28,
+        call_param_op = 29,
+        field_accessor_op = 30,
+        type_accessor_op = 31,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
+            case HookFile::sections:
+                return "sections";
             case HookFile::keyword:
                 return "keywords";
             case HookFile::generator_top:
@@ -116,6 +119,9 @@ namespace bm2 {
     constexpr std::optional<HookFile> HookFile_from_string(std::string_view str) {
         if (str.empty()) {
             return std::nullopt;
+        }
+        if (str == "sections") {
+            return HookFile::sections;
         }
         if (str == "keywords") {
             return HookFile::keyword;

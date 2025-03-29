@@ -1,5 +1,6 @@
 config.cpp.namespace = "bm2"
 enum HookFile:
+    sections = "sections" # sections (prior to file based hook)
     keyword = "keywords" # escape keywords
     generator_top = "generator_top" # generator top
     file_top = "file_top" # generated file top

@@ -36,10 +36,15 @@ struct Content {
     std::vector<FlagUsageMappingDesc> flag_usage_mappings;
 };
 
+struct HookSection {
+    std::vector<std::string> lines;
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     bm2::GenerateMode mode = bm2::GenerateMode::generator;
     std::map<bm2::FuncName, std::map<std::string, Content>> content;
     bm2::FuncName func_name = bm2::FuncName::eval;
+    std::map<std::u8string, HookSection> hook_sections;
 
     bool requires_lang_option() const {
         return !print_hooks && !(mode == bm2::GenerateMode::docs_json ||
@@ -124,11 +129,15 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool func_style_cast = false;
     std::string empty_pointer = "nullptr";
     std::string empty_optional = "std::nullopt";
-    std::string size_method = "size";
-    bool surrounded_size_method = false;  // if true, <size_method>(<expr>) will be used
-    std::string append_method = "push_back";
-    bool surrounded_append_method = false;  // if true, <base> = <append_method>(<base>,<expr>) will be used
-    std::string variant_mode = "union";     // union or algebraic
+    std::string size_method = "$VECTOR.size()";
+    std::string append_method = "$VECTOR.push_back($ITEM)";
+    std::string assert_method = "assert($CONDITION)";
+    std::string length_check_method = "assert($VECTOR.size() == $SIZE)";
+    std::string property_setter_ok = "return true";
+    std::string property_setter_fail = "return false";
+    std::string coder_success = "return true";
+
+    std::string variant_mode = "union";  // union or algebraic
     std::string algebraic_variant_separator = "|";
     std::string algebraic_variant_type = "$TYPES";
     std::string check_union_condition = "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)";
@@ -233,9 +242,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(empty_pointer, "empty_pointer")                                 \
     MACRO_NAME(empty_optional, "empty_optional")                               \
     MACRO_NAME(size_method, "size_method")                                     \
-    MACRO_NAME(surrounded_size_method, "surrounded_size_method")               \
     MACRO_NAME(append_method, "append_method")                                 \
-    MACRO_NAME(surrounded_append_method, "surrounded_append_method")           \
+    MACRO_NAME(length_check_method, "length_check_method")                     \
+    MACRO_NAME(property_setter_ok, "property_setter_ok")                       \
+    MACRO_NAME(property_setter_fail, "property_setter_fail")                   \
+    MACRO_NAME(coder_success, "coder_success")                                 \
     MACRO_NAME(variant_mode, "variant_mode")                                   \
     MACRO_NAME(algebraic_variant_separator, "algebraic_variant_separator")     \
     MACRO_NAME(algebraic_variant_type, "algebraic_variant_type")               \

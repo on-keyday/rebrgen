@@ -23,12 +23,12 @@ namespace rebgn {
             define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector (not temporary)");
             define_eval(inner_function, flags, op, "new_element_eval", code_ref(flags, "right_ref"), "new element");
             func_hook([&] {
-                if (USE_FLAG(surrounded_append_method)) {
-                    inner_function.writeln("w.writeln(vector_eval.result ,\" = \", vector_eval.result, \".", USE_FLAG(append_method), "(\", new_element_eval.result, \")", USE_FLAG(end_of_statement), "\");");
-                }
-                else {
-                    inner_function.writeln("w.writeln(vector_eval.result, \".", USE_FLAG(append_method), "(\", new_element_eval.result, \")", USE_FLAG(end_of_statement), "\");");
-                }
+                std::map<std::string, std::string> map{
+                    {"VECTOR", "\",vector_eval.result,\""},
+                    {"ITEM", "\",new_element_eval.result,\""},
+                };
+                auto escaped = env_escape(flags, op, ENV_FLAG(append_method), map);
+                inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::ASSIGN) {
@@ -63,12 +63,12 @@ namespace rebgn {
             define_eval(inner_function, flags, op, "vector_eval", code_ref(flags, "left_ref"), "vector to check");
             define_eval(inner_function, flags, op, "size_eval", code_ref(flags, "right_ref"), "size to check");
             func_hook([&] {
-                if (USE_FLAG(surrounded_size_method)) {
-                    inner_function.writeln("w.writeln(\"assert(", USE_FLAG(size_method), "(\",vector_eval.result,\") == \", size_eval.result, \")", USE_FLAG(end_of_statement), "\");");
-                }
-                else {
-                    inner_function.writeln("w.writeln(\"assert(\", vector_eval.result, \".", USE_FLAG(size_method), "() == \", size_eval.result, \")", USE_FLAG(end_of_statement), "\");");
-                }
+                std::map<std::string, std::string> map2{
+                    {"VECTOR", "\",vector_eval.result,\""},
+                    {"SIZE", "\",size_eval.result,\""},
+                };
+                auto escaped = env_escape(flags, op, ENV_FLAG(length_check_method), map2);
+                inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::DEFINE_VARIABLE || op == AbstractOp::DECLARE_VARIABLE) {
@@ -190,7 +190,11 @@ namespace rebgn {
         else if (op == AbstractOp::ASSERT) {
             define_eval(inner_function, flags, op, "evaluated", code_ref(flags, "ref"), "assertion condition");
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"assert(\", evaluated.result, \")", USE_FLAG(end_of_statement), "\");");
+                std::map<std::string, std::string> map{
+                    {"CONDITION", "\",evaluated.result,\""},
+                };
+                auto escaped = env_escape(flags, op, ENV_FLAG(assert_method), map);
+                inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::EXPLICIT_ERROR) {
@@ -351,14 +355,19 @@ namespace rebgn {
             else_scope.execute();
             inner_function.writeln("}");
         }
-        else if (op == AbstractOp::RET_SUCCESS || op == AbstractOp::RET_PROPERTY_SETTER_OK) {
+        else if (op == AbstractOp::RET_SUCCESS) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return ", USE_FLAG(true_literal), USE_FLAG(end_of_statement), "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(coder_success), USE_FLAG(end_of_statement), "\");");
+            });
+        }
+        else if (op == AbstractOp::RET_PROPERTY_SETTER_OK) {
+            func_hook([&] {
+                inner_function.writeln("w.writeln(\"", USE_FLAG(property_setter_ok), USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::RET_PROPERTY_SETTER_FAIL) {
             func_hook([&] {
-                inner_function.writeln("w.writeln(\"return ", USE_FLAG(false_literal), USE_FLAG(end_of_statement), "\");");
+                inner_function.writeln("w.writeln(\"", USE_FLAG(property_setter_fail), USE_FLAG(end_of_statement), "\");");
             });
         }
         else if (op == AbstractOp::INC) {

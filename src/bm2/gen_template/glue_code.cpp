@@ -442,6 +442,7 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("import sys");
             w.writeln("import os");
             w.writeln("import subprocess");
+            w.writeln("import shutil");
             w.writeln();
             w.writeln("def run_command(args):");
             auto scope_command = w.indent_scope();
@@ -455,6 +456,11 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("return subprocess.check_output(args,stderr = sys.stderr)");
             scope_capture.execute();
             w.writeln();
+            w.writeln("def copy_file(src, dst):");
+            auto scope_copy = w.indent_scope();
+            w.writeln("print(\"copy file: {} -> {}\".format(src, dst))");
+            w.writeln("shutil.copyfile(src, dst)");
+            scope_copy.execute();
             w.writeln("if __name__ == \"__main__\":");
             auto scope_main = w.indent_scope();
             w.writeln("MODE = sys.argv[1]");

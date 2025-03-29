@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import shutil
 
 def run_command(args):
     print("run command: ", args)
@@ -12,6 +13,9 @@ def capture_command(args):
     print("run command with capture: ", args)
     return subprocess.check_output(args,stderr = sys.stderr)
 
+def copy_file(src, dst):
+    print("copy file: {} -> {}".format(src, dst))
+    shutil.copyfile(src, dst)
 if __name__ == "__main__":
     MODE = sys.argv[1]
     if MODE == "build":
@@ -22,13 +26,12 @@ if __name__ == "__main__":
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
-        print("You have to implement build command in hook/cmptest_build.txt. see also testkit/python/setup.py")
-        exit(1)
+        copy_file(INPUT,OUTPUT)
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]
         OUTPUT = sys.argv[4]
-        exit(run_command([EXEC,INPUT,OUTPUT]))
+        run_command(["python",EXEC,INPUT,OUTPUT])
     else:
         print("invalid mode")
         exit(1)

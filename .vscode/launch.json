@@ -104,7 +104,8 @@
             "request": "launch",
             "program": "${workspaceRoot}/tool/gen_template",
             "args": [
-                 "--config-file", "src\\bm2c\\config.json", "--mode", "config",
+                 "--config-file", "src/bm2python/config.json",
+                 "--hook-dir","src/bm2python/hook",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -118,6 +119,14 @@
             "type": "cppvsdbg",
             "request": "attach",
             "processId": "${command:pickProcess}",
-        }
+        },
+        {
+			"name": "Extension",
+			"type": "extensionHost",
+			"request": "launch",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}/syntax/sections-txt"
+			]
+		}
     ]
 }

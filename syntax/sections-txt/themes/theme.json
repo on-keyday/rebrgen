@@ -14,7 +14,7 @@
             }
         },
         {
-            "scope": "keyword.control.endsection",
+            "scope": "keyword.control.end_section",
             "settings": {
                 "foreground": "#ee00ee"
             }

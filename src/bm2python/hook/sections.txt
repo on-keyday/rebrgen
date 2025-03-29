@@ -28,3 +28,44 @@ auto scope_2 = w.indent_scope();
 w.writeln("return False");
 scope_2.execute();
 !@include func_call_code_common.txt
+!@section cmptest_build.txt
+copy_file(INPUT,OUTPUT)
+!@section cmptest_run.txt
+run_command(["python",EXEC,INPUT,OUTPUT])
+!@section keywords.txt
+False
+None
+True
+and
+as
+assert
+async
+await
+break
+class
+continue
+def
+del
+elif
+else
+except
+finally
+for
+from
+global
+if
+import
+in
+is
+lambda
+nonlocal
+not
+or
+pass
+raise
+return
+try
+while
+with
+yield
+!@end_section

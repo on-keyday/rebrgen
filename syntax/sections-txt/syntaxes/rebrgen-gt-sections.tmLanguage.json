@@ -25,8 +25,8 @@
 			}
 		},
 		{
-			"name": "keyword.control.endsection",
-			"match": "^\\s*!@endsection"
+			"name": "keyword.control.end_section",
+			"match": "^\\s*!@end_section"
 		},
 		{
 			"name": "keyword.control.include",

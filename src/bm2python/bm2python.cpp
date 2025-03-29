@@ -1551,7 +1551,7 @@ namespace bm2python {
         }
     }
     void escape_python_keyword(std::string& str) {
-        if (str == "False"||str == "None"||str == "True"||str == "and"||str == "as"||str == "assert"||str == "async"||str == "await"||str == "break"||str == "class"||str == "continue"||str == "def"||str == "del"||str == "elif"||str == "else"||str == "except"||str == "finally"||str == "for"||str == "from"||str == "global"||str == "if"||str == "import"||str == "in"||str == "is"||str == "lambda"||str == "nonlocal"||str == "not"||str == "or"||str == "pass"||str == "raise"||str == "return"||str == "try"||str == "while"||str == "with"||str == "yield") {
+        if (str == "False"||str == "None"||str == "True"||str == "and"||str == "as"||str == "assert"||str == "async"||str == "await"||str == "break"||str == "class"||str == "continue"||str == "def"||str == "del"||str == "elif"||str == "else"||str == "except"||str == "finally"||str == "for"||str == "from"||str == "global"||str == "if"||str == "import"||str == "in"||str == "is"||str == "lambda"||str == "nonlocal"||str == "not"||str == "or"||str == "pass"||str == "raise"||str == "return"||str == "try"||str == "while"||str == "with"||str == "yield"||str == "!@end_section") {
             str = futils::strutil::concat<std::string>("",str,"_");
         }
     }

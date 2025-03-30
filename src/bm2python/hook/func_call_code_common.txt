@@ -1,6 +1,0 @@
-w.write("if not ", obj_eval.result, ".", func_name, "(");
-add_call_parameter(ctx, w,range);
-w.writeln("):");
-auto scope = w.indent_scope();
-w.writeln("return False");
-scope.execute();

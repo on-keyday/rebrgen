@@ -1,5 +1,0 @@
-w.writeln("if not isinstance(",obj_eval.result,",",func_belong_name,"):");
-auto scope_2 = w.indent_scope();
-w.writeln("return False");
-scope_2.execute();
-!@include func_call_code_common.txt

@@ -2646,7 +2646,7 @@ Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
 ##### is_empty_block
 Type: bool
-Initial Value: range.start ==range.end -1
+Initial Value: range.start ==range.end - 2
 Description: is empty block
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 
@@ -2702,7 +2702,7 @@ Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
 ##### is_empty_block
 Type: bool
-Initial Value: range.start ==range.end -1
+Initial Value: range.start ==range.end - 2
 Description: is empty block
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 
@@ -2726,7 +2726,7 @@ Initial Value: ctx.ident(ident_ref)
 Description: identifier of union
 ##### is_empty_block
 Type: bool
-Initial Value: range.start ==range.end -1
+Initial Value: range.start ==range.end - 2
 Description: is empty block
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 
@@ -2754,7 +2754,7 @@ Initial Value: ctx.ident(ident_ref)
 Description: identifier of format
 ##### is_empty_block
 Type: bool
-Initial Value: range.start ==range.end -1
+Initial Value: range.start ==range.end - 2
 Description: is empty block
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 

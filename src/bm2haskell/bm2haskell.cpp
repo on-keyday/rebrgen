@@ -664,7 +664,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 ctx.output.struct_names.push_back(ident);
                 w.writeln("data ", ident, " ");
                 defer.push_back(w.indent_scope_ex());
@@ -760,7 +760,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 w.writeln("union ",ident, " ");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -781,7 +781,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 w.writeln("data ", ident, " ");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -802,7 +802,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 w.writeln("data ", ident, " ");
                 defer.push_back(w.indent_scope_ex());
                 break;

@@ -6,6 +6,13 @@ if(is_empty_block) {
 !@include func_if_after.txt
 !@section func_else_after.txt
 !@include func_if_after.txt
+!@section block_define_union_member_after.txt
+!@include func_if_after.txt
+
+!@section block_define_enum.txt
+w.writeln("class ",ident,"(Enum):");
+defer.push_back(w.indent_scope_ex());
+
 
 !@section func_call_code_common.txt
 w.write("if not ", obj_eval.result, ".", func_name, "(");

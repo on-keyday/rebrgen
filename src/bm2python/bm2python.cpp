@@ -691,7 +691,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DEFINE_FORMAT: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 ctx.output.struct_names.push_back(ident);
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
@@ -765,6 +765,8 @@ namespace bm2python {
                 // load hook: block_define_enum
                 w.writeln("class ",ident,"(Enum):");
                 defer.push_back(w.indent_scope_ex());
+                
+                
                 // end hook: block_define_enum
                 break;
             }
@@ -792,7 +794,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
@@ -801,21 +803,22 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value(); //reference of UNION
                 auto inner_range = ctx.range(ref); //range of UNION
-                // load hook: block_declare_union
-                inner_block(ctx,w,inner_range);
-                // end hook: block_declare_union
+                TmpCodeWriter inner_w;
+                inner_block(ctx, inner_w, inner_range);
+                ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
                 // load hook: block_define_union_member_after
-                if(ctx.bm.code[i+1].op == rebgn::AbstractOp::END_UNION_MEMBER) {
+                if(is_empty_block) {
                     w.writeln("pass");
                 }
+                
                 // end hook: block_define_union_member_after
                 break;
             }
@@ -827,15 +830,15 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value(); //reference of UNION_MEMBER
                 auto inner_range = ctx.range(ref); //range of UNION_MEMBER
-                // load hook: block_declare_union_member
-                inner_block(ctx,w,inner_range);
-                // end hook: block_declare_union_member
+                TmpCodeWriter inner_w;
+                inner_block(ctx, inner_w, inner_range);
+                ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
-                auto is_empty_block = range.start ==range.end -1; //is empty block
+                auto is_empty_block = range.start ==range.end - 2; //is empty block
                 w.writeln("class ", ident, " :");
                 defer.push_back(w.indent_scope_ex());
                 break;
@@ -1288,7 +1291,6 @@ namespace bm2python {
                 if(is_empty_block) {
                     w.writeln("pass");
                 }
-                
                 // end hook: func_else_after
                 break;
             }

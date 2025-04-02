@@ -39,7 +39,7 @@ namespace rebgn {
         auto add_type_start = [&](auto&& inner) {
             flags.set_func_name(bm2::FuncName::type_accessor);
             type_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
-            auto scope = field_accessor.indent_scope();
+            auto scope = type_accessor.indent_scope();
             type_accessor_hook([&] {}, bm2::HookFileSub::before);
             inner();
             type_accessor_hook([&] {}, bm2::HookFileSub::after);
@@ -188,8 +188,8 @@ namespace rebgn {
         if_block_field_accessor.execute();
         field_accessor.writeln("}");  // close default
         field_accessor.writeln("}");  // close switch
-        scope_field_accessor.execute();
         field_accessor.writeln("return result;");
+        scope_field_accessor.execute();
         field_accessor.writeln("}");  // close function
 
         type_accessor.writeln("default: {");
@@ -198,8 +198,8 @@ namespace rebgn {
         if_block_type_accessor.execute();
         type_accessor.writeln("}");  // close default
         type_accessor.writeln("}");  // close switch
-        scope_type_accessor.execute();
         type_accessor.writeln("return result;");
+        scope_type_accessor.execute();
         type_accessor.writeln("}");  // close function
     }
 }  // namespace rebgn

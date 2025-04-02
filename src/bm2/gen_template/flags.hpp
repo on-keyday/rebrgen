@@ -175,6 +175,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
 
     bool compact_bit_field = false;
     bool format_nested_function = false;
+    bool format_nested_struct = false;
 
 #define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, __FILE__, __func__, __LINE__, flags.name)
 #define USE_FLAG(name) USE_FLAG_BASE(op, name)
@@ -273,7 +274,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(reserve_size_dynamic, "reserve_size_dynamic")                   \
     MACRO_NAME(reserve_size_static, "reserve_size_static")                     \
     MACRO_NAME(access_style, "access_style")                                   \
-    MACRO_NAME(enum_access_style, "enum_access_style")
+    MACRO_NAME(enum_access_style, "enum_access_style")                         \
+    MACRO_NAME(format_nested_struct, "format_nested_struct")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)

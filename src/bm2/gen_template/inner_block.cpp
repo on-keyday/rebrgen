@@ -74,9 +74,14 @@ namespace rebgn {
             define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), desc);
             define_range(inner_block, flags, op, "inner_range", "ref", desc);
             block_hook([&] {
-                inner_block.writeln("TmpCodeWriter inner_w;");
-                inner_block.writeln("inner_block(ctx, inner_w, inner_range);");
-                inner_block.writeln("ctx.cw.write_unformatted(inner_w.out());");
+                if (USE_FLAG(format_nested_struct)) {
+                    inner_block.writeln("inner_block(ctx, w, inner_range);");
+                }
+                else {
+                    inner_block.writeln("TmpCodeWriter inner_w;");
+                    inner_block.writeln("inner_block(ctx, inner_w, inner_range);");
+                    inner_block.writeln("ctx.cw.write_unformatted(inner_w.out());");
+                }
             });
         }
         else if (op == AbstractOp::DEFINE_FORMAT || op == AbstractOp::DEFINE_STATE || op == AbstractOp::DEFINE_UNION_MEMBER) {

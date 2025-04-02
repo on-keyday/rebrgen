@@ -71,5 +71,6 @@
     "property_setter_ok": "return True",
     "property_setter_fail": "return False",
     "coder_success": "return True",
-    "enum_access_style": "$BASE.$IDENT"
+    "enum_access_style": "$BASE.$IDENT",
+    "format_nested_struct": true
 }

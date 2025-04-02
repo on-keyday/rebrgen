@@ -1,1 +1,0 @@
-result = type_accessor(ctx.ref(belong),ctx);

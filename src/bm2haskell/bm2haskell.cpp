@@ -201,91 +201,91 @@ namespace bm2haskell {
             break;
         }
         }
-    return result;
+        return result;
     }
     std::string type_accessor(const rebgn::Code& code, Context& ctx) {
         std::string result;
         switch(code.op) {
         case rebgn::AbstractOp::DEFINE_FORMAT: {
-        auto ident_ref = code.ident().value(); //reference of FORMAT
-        auto ident = ctx.ident(ident_ref); //identifier of FORMAT
-        result = ident;
-        break;
+            auto ident_ref = code.ident().value(); //reference of FORMAT
+            auto ident = ctx.ident(ident_ref); //identifier of FORMAT
+            result = ident;
+            break;
         }
         case rebgn::AbstractOp::DEFINE_FIELD: {
-        auto ident_ref = code.ident().value(); //reference of FIELD
-        auto ident = ctx.ident(ident_ref); //identifier of FIELD
-        auto belong = code.belong().value(); //reference of belong
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
-        break;
+            auto ident_ref = code.ident().value(); //reference of FIELD
+            auto ident = ctx.ident(ident_ref); //identifier of FIELD
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            if(is_member) {
+                auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
+                result = std::format("{}.{}", belong_eval, ident);
+            }
+            else {
+                result = ident;
+            }
+            break;
         }
         case rebgn::AbstractOp::DEFINE_PROPERTY: {
-        auto ident_ref = code.ident().value(); //reference of PROPERTY
-        auto ident = ctx.ident(ident_ref); //identifier of PROPERTY
-        auto belong = code.belong().value(); //reference of belong
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
-        break;
+            auto ident_ref = code.ident().value(); //reference of PROPERTY
+            auto ident = ctx.ident(ident_ref); //identifier of PROPERTY
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            if(is_member) {
+                auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
+                result = std::format("{}.{}", belong_eval, ident);
+            }
+            else {
+                result = ident;
+            }
+            break;
         }
         case rebgn::AbstractOp::DEFINE_UNION: {
-        auto ident_ref = code.ident().value(); //reference of UNION
-        auto ident = ctx.ident(ident_ref); //identifier of UNION
-        auto belong = code.belong().value(); //reference of belong
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-        if(is_member) {
-            auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
-            result = std::format("{}.{}", belong_eval, ident);
-        }
-        else {
-            result = ident;
-        }
-        break;
+            auto ident_ref = code.ident().value(); //reference of UNION
+            auto ident = ctx.ident(ident_ref); //identifier of UNION
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            if(is_member) {
+                auto belong_eval = type_accessor(ctx.ref(belong),ctx); //field accessor
+                result = std::format("{}.{}", belong_eval, ident);
+            }
+            else {
+                result = ident;
+            }
+            break;
         }
         case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
-        auto ident_ref = code.ident().value(); //reference of UNION_MEMBER
-        auto ident = ctx.ident(ident_ref); //identifier of UNION_MEMBER
-        auto belong = code.belong().value(); //reference of belong
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-        auto union_member_ref = code.ident().value(); //reference of union member
-        auto union_ref = belong; //reference of union
-        auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
-        auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
-        auto belong_eval = type_accessor(ctx.ref(union_field_belong),ctx); //field accessor
-        result = std::format("{}.{}", belong_eval, ident);
-        break;
+            auto ident_ref = code.ident().value(); //reference of UNION_MEMBER
+            auto ident = ctx.ident(ident_ref); //identifier of UNION_MEMBER
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            auto union_member_ref = code.ident().value(); //reference of union member
+            auto union_ref = belong; //reference of union
+            auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
+            auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
+            auto belong_eval = type_accessor(ctx.ref(union_field_belong),ctx); //field accessor
+            result = std::format("{}.{}", belong_eval, ident);
+            break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
-        auto ident_ref = code.ident().value(); //reference of STATE
-        auto ident = ctx.ident(ident_ref); //identifier of STATE
-        result = ident;
-        break;
+            auto ident_ref = code.ident().value(); //reference of STATE
+            auto ident = ctx.ident(ident_ref); //identifier of STATE
+            result = ident;
+            break;
         }
         case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
-        auto ident_ref = code.ident().value(); //reference of BIT_FIELD
-        auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
-        auto belong = code.belong().value(); //reference of belong
-        auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
-        result = type_accessor(ctx.ref(belong),ctx);
-        break;
+            auto ident_ref = code.ident().value(); //reference of BIT_FIELD
+            auto ident = ctx.ident(ident_ref); //identifier of BIT_FIELD
+            auto belong = code.belong().value(); //reference of belong
+            auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            result = type_accessor(ctx.ref(belong),ctx);
+            break;
         }
         default: {
             return std::format("{}{}{}","{-",to_string(code.op),"-}");
         }
         }
-    return result;
+        return result;
     }
     EvalResult eval(const rebgn::Code& code, Context& ctx) {
         EvalResult result;

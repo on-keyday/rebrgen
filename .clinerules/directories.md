@@ -26,15 +26,16 @@
 
 ## 4. Generator (`bm2`)
 
-| Directory / File                 | Description                                    | Notes                                                                                                                                    |
-| -------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `src/bm2/`                       | Common generator tools and generator-generator |                                                                                                                                          |
-| `src/bm2/gen_template/`          | Generator-generator source code                | Includes entry point.                                                                                                                    |
-| `src/bm2{lang_name}/`            | Generator for `{lang_name}`                    | Run `script/list_lang.py` to list available languages. These generate code from `BinaryModule`. \*\*DO NOT edit `src/bm2{lang*name}/*.[h | c]pp` directly.\*\* |
-| `src/bm2hexmap/`                 | Maps hex representation to format              | Not a code generator.                                                                                                                    |
-| `src/bm2rust/`, `src/bm2cpp/`    | Hand-written generators                        | Created before generator-generator was available.                                                                                        |
-| `src/bm2{lang_name}/hook/`       | Hook directory for each language               |                                                                                                                                          |
-| `src/bm2{lang_name}/config.json` | Placeholder & basic language configurations    |                                                                                                                                          |
+| Directory / File                       | Description                                    | Notes                                                                                                                                    |
+| -------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `src/bm2/`                             | Common generator tools and generator-generator |                                                                                                                                          |
+| `src/bm2/gen_template/`                | Generator-generator source code                | Includes entry point.                                                                                                                    |
+| `src/bm2{lang_name}/`                  | Generator for `{lang_name}`                    | Run `script/list_lang.py` to list available languages. These generate code from `BinaryModule`. \*\*DO NOT edit `src/bm2{lang*name}/*.[h | c]pp` directly.\*\* |
+| `src/bm2hexmap/`                       | Maps hex representation to format              | Not a code generator.                                                                                                                    |
+| `src/bm2rust/`, `src/bm2cpp/`          | Hand-written generators                        | Created before generator-generator was available.                                                                                        |
+| `src/bm2{lang_name}/hook/`             | Hook directory for each language               |                                                                                                                                          |
+| `src/bm2{lang_name}/hook/sections.txt` | main hook file if exists                       |
+| `src/bm2{lang_name}/config.json`       | Placeholder & basic language configurations    |                                                                                                                                          |
 
 ## 5. Testing (`test`)
 

@@ -1,2 +1,0 @@
-w.writeln("class ",ident,"(Enum):");
-defer.push_back(w.indent_scope_ex());

@@ -18,11 +18,11 @@ namespace rebgn {
                     return unexpect_error("invalid section: {}", std::string_view(line.as_char(), line.size()));
                 }
             }
-            else if (current_section.size()) {
-                flags.hook_sections[current_section].lines.push_back(std::string(line.as_char(), line.size()));
-            }
             else if (line == "!@end_section") {
                 current_section.clear();
+            }
+            else if (current_section.size()) {
+                flags.hook_sections[current_section].lines.push_back(std::string(line.as_char(), line.size()));
             }
             else if (futils::strutil::starts_with(line, "!@section_include ")) {
                 auto split = futils::strutil::split<futils::view::rvec>(line, " ", 2);
@@ -93,8 +93,10 @@ namespace rebgn {
         if (!res) {
             return res;
         }
-        for (auto& section : flags.hook_sections) {
-            futils::wrap::cerr_wrap() << "loaded section: " << section.first << '\n';
+        if (flags.debug) {
+            for (auto& section : flags.hook_sections) {
+                futils::wrap::cerr_wrap() << "loaded section: " << section.first << '\n';
+            }
         }
         return true;
     }

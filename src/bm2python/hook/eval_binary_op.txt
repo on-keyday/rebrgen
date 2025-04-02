@@ -1,6 +1,0 @@
-if(op == rebgn::BinaryOp::logical_or) {
-    opstr = "or";
-}
-else if(op == rebgn::BinaryOp::logical_and) {
-    opstr = "and";
-}

@@ -1,1 +1,0 @@
-result = field_accessor(ctx.ref(union_field_ref),ctx);

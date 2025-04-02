@@ -1,3 +1,0 @@
-if(has_is_little_endian) {
-    ctx.cw.writeln("import sys");
-} 

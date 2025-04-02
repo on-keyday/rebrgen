@@ -1,2 +1,0 @@
-has_is_little_endian = true;
-goto OUT_FIRST_SCAN;

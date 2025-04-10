@@ -84,7 +84,7 @@ if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
     }
 }
 !@section cmptest_build.txt
-copy_file(INPUT,OUTPUT)
+copy_file(GENERATED,EXEC)
 !@section cmptest_run.txt
 run_command(["python",EXEC,INPUT,OUTPUT])
 !@section keywords.txt

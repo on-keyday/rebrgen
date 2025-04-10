@@ -1,0 +1,2 @@
+!@section cmptest_build.txt
+run_command(["g++", "save/cpp3/save.cpp", "-o", "save/cpp3/save"])

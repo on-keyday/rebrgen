@@ -63,6 +63,7 @@ if not os.path.exists(f"src/bm2{LANG_NAME}"):
 if not os.path.exists(f"src/bm2{LANG_NAME}/config.json"):
     CONFIG = execute(
         ["./tool/gen_template", "--lang", LANG_NAME, "--mode", "config"],
+        None,  # Added None for the env argument
     )
     with open(f"src/bm2{LANG_NAME}/config.json", "wb") as f:
         f.write(CONFIG)

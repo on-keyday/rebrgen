@@ -62,8 +62,14 @@ def generate_cmptest_glue_files(config_dir, output_dir, save_dir_base):
     config_files = search_config_files(config_dir)
     conf_names = []
     test_info = []
+    TARGETS = []  # if empty, then all
+    if os.path.exists(os.path.join(output_dir, "targets.json")):
+        with open(os.path.join(output_dir, "targets.json"), "r") as f:
+            TARGETS = json.load(f)
     for config_file in config_files:
         LANG_NAME, CMPTEST_JSON, CMPTEST_PY = generate_cmptest_glue(config_file)
+        if len(TARGETS) > 0 and LANG_NAME not in TARGETS:
+            continue
         os.makedirs(os.path.join(output_dir, LANG_NAME), exist_ok=True)
         conf_name = os.path.join(output_dir, LANG_NAME, f"cmptest.json")
         with open(conf_name, "w") as f:

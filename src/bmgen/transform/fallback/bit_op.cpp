@@ -201,7 +201,7 @@ namespace rebgn {
                 auto enc_endian = code.endian().value();
                 BM_ERROR_WRAP(src_type, error, (get_nbit_typ(enc_bit_size, enc_endian.sign())));
                 BM_ERROR_WRAP(src_type_storage, error, (m.get_storage(src_type)));
-                BM_IMMEDIATE(op, bit_mask, (1 << enc_bit_size) - 1);
+                BM_IMMEDIATE(op, bit_mask, safe_left_shift(1, enc_bit_size) - 1);
 
                 // on little endian:
                 //   // fill from lsb

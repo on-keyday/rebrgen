@@ -2299,7 +2299,7 @@ namespace bm2rust {
         }
     }
 
-    std::string escape_rust_keyword(const std::string& keyword) {
+    void escape_rust_keyword(std::string& keyword) {
         if (keyword == "as" ||
             keyword == "break" ||
             keyword == "const" ||
@@ -2338,10 +2338,10 @@ namespace bm2rust {
             keyword == "async" ||
             keyword == "await" ||
             keyword == "dyn" ||
-            keyword == "override") {
-            return std::format("{}_", keyword);
+            keyword == "override" ||
+            keyword == "type") {
+            keyword = std::format("{}_", keyword);
         }
-        return keyword;
     }
 
     void write_error_type(Context& ctx, auto&& w, const std::string& ident) {

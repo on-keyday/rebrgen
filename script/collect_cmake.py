@@ -87,6 +87,9 @@ with open(output, "w") as f:
     for file in src:
         if file["lang"] == "hexmap":
             continue  # skip this currently
+        # Create directory for language output if it doesn't exist
+        f.write(f'os.makedirs("save/{file["lang"]}", exist_ok=True)\n')
+        f.write(f"\n")
         f.write(f"src = sp.check_output(\n")
         f.write(f"    [\"tool/{file["name"]}\", \"-i\", \"save/save.bin\",\"--test-info\",\"save/{file["lang"]}/save.{file["suffix"]}.json\"],\n")
         f.write(f"    stderr=sys.stderr,\n")

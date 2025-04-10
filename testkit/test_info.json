@@ -1,58 +1,8 @@
 {
-    "total_count": 12,
+    "total_count": 2,
     "error_count": 0,
     "time": "0s",
     "generated_files": [
-        {
-            "dir": "save\\c",
-            "base": "save",
-            "suffix": ".c"
-        },
-        {
-            "dir": "save\\c",
-            "base": "save.c",
-            "suffix": ".json"
-        },
-        {
-            "dir": "save\\cpp",
-            "base": "save",
-            "suffix": ".cpp"
-        },
-        {
-            "dir": "save\\cpp",
-            "base": "save.cpp",
-            "suffix": ".json"
-        },
-        {
-            "dir": "save\\go",
-            "base": "save",
-            "suffix": ".go"
-        },
-        {
-            "dir": "save\\go",
-            "base": "save.go",
-            "suffix": ".json"
-        },
-        {
-            "dir": "save\\haskell",
-            "base": "save",
-            "suffix": ".hs"
-        },
-        {
-            "dir": "save\\haskell",
-            "base": "save.hs",
-            "suffix": ".json"
-        },
-        {
-            "dir": "save\\python",
-            "base": "save",
-            "suffix": ".py"
-        },
-        {
-            "dir": "save\\python",
-            "base": "save.py",
-            "suffix": ".json"
-        },
         {
             "dir": "save\\rust",
             "base": "save",

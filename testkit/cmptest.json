@@ -10,21 +10,6 @@
     ],
     "runners": [
         {
-            "file": "testkit/c/cmptest.json"
-        },
-        {
-            "file": "testkit/cpp/cmptest.json"
-        },
-        {
-            "file": "testkit/go/cmptest.json"
-        },
-        {
-            "file": "testkit/haskell/cmptest.json"
-        },
-        {
-            "file": "testkit/python/cmptest.json"
-        },
-        {
             "file": "testkit/rust/cmptest.json"
         }
     ]

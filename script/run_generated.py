@@ -32,6 +32,8 @@ with open("save/save_op.txt", "wb") as f:
     f.write(save)
 print("Generated: save/save_op.txt")
 
+os.makedirs("save/c", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2c", "-i", "save/save.bin","--test-info","save/c/save.c.json"],
     stderr=sys.stderr,
@@ -46,6 +48,8 @@ if not cached:
     with open("save/c/save.c", "wb") as f:
         f.write(src)
     print(f"Generated: save/c/save.c")
+os.makedirs("save/cpp", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2cpp", "-i", "save/save.bin","--test-info","save/cpp/save.cpp.json"],
     stderr=sys.stderr,
@@ -60,6 +64,24 @@ if not cached:
     with open("save/cpp/save.cpp", "wb") as f:
         f.write(src)
     print(f"Generated: save/cpp/save.cpp")
+os.makedirs("save/cpp3", exist_ok=True)
+
+src = sp.check_output(
+    ["tool/bm2cpp3", "-i", "save/save.bin","--test-info","save/cpp3/save.cpp.json"],
+    stderr=sys.stderr,
+)
+cached = False
+if os.path.exists("save/cpp3/save.cpp"):
+    with open("save/cpp3/save.cpp", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/cpp3/save.cpp")
+            cached = True
+if not cached:
+    with open("save/cpp3/save.cpp", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/cpp3/save.cpp")
+os.makedirs("save/go", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2go", "-i", "save/save.bin","--test-info","save/go/save.go.json"],
     stderr=sys.stderr,
@@ -74,6 +96,8 @@ if not cached:
     with open("save/go/save.go", "wb") as f:
         f.write(src)
     print(f"Generated: save/go/save.go")
+os.makedirs("save/haskell", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2haskell", "-i", "save/save.bin","--test-info","save/haskell/save.hs.json"],
     stderr=sys.stderr,
@@ -88,6 +112,8 @@ if not cached:
     with open("save/haskell/save.hs", "wb") as f:
         f.write(src)
     print(f"Generated: save/haskell/save.hs")
+os.makedirs("save/python", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2python", "-i", "save/save.bin","--test-info","save/python/save.py.json"],
     stderr=sys.stderr,
@@ -102,6 +128,8 @@ if not cached:
     with open("save/python/save.py", "wb") as f:
         f.write(src)
     print(f"Generated: save/python/save.py")
+os.makedirs("save/rust", exist_ok=True)
+
 src = sp.check_output(
     ["tool/bm2rust", "-i", "save/save.bin","--test-info","save/rust/save.rs.json"],
     stderr=sys.stderr,

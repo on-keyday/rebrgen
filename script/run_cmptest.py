@@ -14,6 +14,8 @@ sp.run(
         "./testkit/cmptest.json",
         "--clean-tmp",
         "--save-tmp-dir",
+        "--print-fail-command",
+        "--as-vscode",
     ],
     check=True,
     stdout=sys.stdout,

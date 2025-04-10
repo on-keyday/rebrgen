@@ -16,26 +16,51 @@ def capture_command(args):
 def copy_file(src, dst):
     print("copy file: {} -> {}".format(src, dst))
     shutil.copyfile(src, dst)
+def copy_dir(src, dst):
+    print("copy dir: {} -> {}".format(src, dst))
+    shutil.copytree(src, dst, dirs_exist_ok=True)
+def move_file(src, dst):
+    print("move file: {} -> {}".format(src, dst))
+    shutil.move(src, dst)
+def move_dir(src, dst):
+    print("move dir: {} -> {}".format(src, dst))
+    shutil.move(src, dst)
+def write_file(filename, content):
+    print("write file: {}".format(filename))
+    with open(filename, "w") as f:
+        f.write(content)
+def read_file(filename):
+    print("read file: {}".format(filename))
+    with open(filename, "r") as f:
+        return f.read()
 if __name__ == "__main__":
     MODE = sys.argv[1]
     if MODE == "build":
-        INPUT = sys.argv[2]
-        OUTPUT = sys.argv[3]
-        ORIGIN = sys.argv[4]
+        MAIN = sys.argv[2]
+        EXEC = sys.argv[3]
+        GENERATED = sys.argv[4]
         TMPDIR = sys.argv[5]
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
         cargo_toml_path = os.path.join(TMPDIR, "Cargo.toml")
-        with open(cargo_toml_path, "w") as f:
-            f.write("""[package]
+        src_path = os.path.join(TMPDIR, "src")
+        os.makedirs(src_path, exist_ok=True)
+        # move main.rs to src_path
+        main_rs_path = os.path.join(src_path, "main.rs")
+        move_file(MAIN, main_rs_path)
+        write_file(cargo_toml_path, """[package]
         name = "save"
         version = "0.1.0"
         edition = "2021"
         
         [dependencies]
         """)
+        copy_file(GENERATED, os.path.join(src_path,"save.rs"))
         run_command(["cargo", "build", "--manifest-path", cargo_toml_path, "--target-dir", TMPDIR])
+        # copy compiled binary to EXEC
+        suffix = ".exe" if os.name == "nt" else ""
+        copy_file(os.path.join(TMPDIR, "debug", "save"+suffix), EXEC)
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

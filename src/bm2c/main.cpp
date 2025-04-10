@@ -8,7 +8,7 @@ struct Flags : bm2::Flags {
         bm2::Flags::bind(ctx);
     }
 };
-DEFINE_ENTRY(Flags) {
+DEFINE_ENTRY(Flags,bm2c::Output) {
     bm2c::to_c(w, bm,flags.bm2c_flags,output);
     return 0;
 }

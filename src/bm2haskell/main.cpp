@@ -8,7 +8,7 @@ struct Flags : bm2::Flags {
         bm2::Flags::bind(ctx);
     }
 };
-DEFINE_ENTRY(Flags) {
+DEFINE_ENTRY(Flags,bm2haskell::Output) {
     bm2haskell::to_haskell(w, bm,flags.bm2haskell_flags,output);
     return 0;
 }

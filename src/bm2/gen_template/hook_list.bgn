@@ -2,6 +2,7 @@ config.cpp.namespace = "bm2"
 enum HookFile:
     sections = "sections" # sections (prior to file based hook)
     keyword = "keywords" # escape keywords
+    outputs = "outputs" # outputs (bm2xx::Output definitions)
     generator_top = "generator_top" # generator top
     file_top = "file_top" # generated file top
     file_bottom = "file_bottom" # generated file bottom
@@ -59,6 +60,7 @@ enum HookFileSub:
     dynamic = "_dynamic" # dynamic case (e.g. dynamic of AbstractOp)
     normal = "_normal" # normal case (e.g. normal of AbstractOp)
     enum_member = "_enum_member" # enum member case (e.g. enum member of AbstractOp)
+    header = "_header" # header case (e.g. header of AbstractOp)
 
 enum FuncName:
     eval

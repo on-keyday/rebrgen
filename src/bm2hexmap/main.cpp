@@ -10,7 +10,7 @@ struct Flags : bm2::Flags {
         ctx.VarString<true>(&bm2hexmap_flags.start_format_name, "start-format", "start format name", "NAME", futils::cmdline::option::CustomFlag::required);
     }
 };
-DEFINE_ENTRY(Flags) {
+DEFINE_ENTRY(Flags, bm2::Output) {
     futils::file::View view;
     if (auto res = view.open(flags.binary_file); !res) {
         futils::wrap::cerr_wrap() << res.error().template error<std::string>() << '\n';

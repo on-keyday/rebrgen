@@ -15,36 +15,37 @@ namespace bm2 {
     enum class HookFile {
         sections = 0,
         keyword = 1,
-        generator_top = 2,
-        file_top = 3,
-        file_bottom = 4,
-        bm_context = 5,
-        flags = 6,
-        eval_result = 7,
-        escape_ident = 8,
-        entry = 9,
-        cmptest_build = 10,
-        cmptest_run = 11,
-        each_inner_block = 12,
-        each_inner_function = 13,
-        inner_function_start = 14,
-        inner_function_each_code = 15,
-        inner_block_start = 16,
-        inner_block_each_code = 17,
-        param_start = 18,
-        param_each_code = 19,
-        call_param_start = 20,
-        call_param_each_code = 21,
-        first_scan = 22,
-        tree_scan = 23,
-        inner_function_op = 24,
-        inner_block_op = 25,
-        eval_op = 26,
-        type_op = 27,
-        param_op = 28,
-        call_param_op = 29,
-        field_accessor_op = 30,
-        type_accessor_op = 31,
+        outputs = 2,
+        generator_top = 3,
+        file_top = 4,
+        file_bottom = 5,
+        bm_context = 6,
+        flags = 7,
+        eval_result = 8,
+        escape_ident = 9,
+        entry = 10,
+        cmptest_build = 11,
+        cmptest_run = 12,
+        each_inner_block = 13,
+        each_inner_function = 14,
+        inner_function_start = 15,
+        inner_function_each_code = 16,
+        inner_block_start = 17,
+        inner_block_each_code = 18,
+        param_start = 19,
+        param_each_code = 20,
+        call_param_start = 21,
+        call_param_each_code = 22,
+        first_scan = 23,
+        tree_scan = 24,
+        inner_function_op = 25,
+        inner_block_op = 26,
+        eval_op = 27,
+        type_op = 28,
+        param_op = 29,
+        call_param_op = 30,
+        field_accessor_op = 31,
+        type_accessor_op = 32,
     };
     constexpr const char* to_string(HookFile e) {
         switch (e) {
@@ -52,6 +53,8 @@ namespace bm2 {
                 return "sections";
             case HookFile::keyword:
                 return "keywords";
+            case HookFile::outputs:
+                return "outputs";
             case HookFile::generator_top:
                 return "generator_top";
             case HookFile::file_top:
@@ -125,6 +128,9 @@ namespace bm2 {
         }
         if (str == "keywords") {
             return HookFile::keyword;
+        }
+        if (str == "outputs") {
+            return HookFile::outputs;
         }
         if (str == "generator_top") {
             return HookFile::generator_top;
@@ -236,6 +242,7 @@ namespace bm2 {
         dynamic = 14,
         normal = 15,
         enum_member = 16,
+        header = 17,
     };
     constexpr const char* to_string(HookFileSub e) {
         switch (e) {
@@ -273,6 +280,8 @@ namespace bm2 {
                 return "_normal";
             case HookFileSub::enum_member:
                 return "_enum_member";
+            case HookFileSub::header:
+                return "_header";
         }
         return "";
     }
@@ -331,6 +340,9 @@ namespace bm2 {
         }
         if (str == "_enum_member") {
             return HookFileSub::enum_member;
+        }
+        if (str == "_header") {
+            return HookFileSub::header;
         }
         return std::nullopt;
     }

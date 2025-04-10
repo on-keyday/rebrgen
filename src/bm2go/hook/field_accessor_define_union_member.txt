@@ -1,1 +1,0 @@
-result = make_eval_result(std::format("{}.(*{})",union_field_eval.result,ident));

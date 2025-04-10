@@ -9,7 +9,7 @@ struct Flags : bm2::Flags {
         ctx.VarBool(&bm2python_flags.use_async, "async", "use async operation");
     }
 };
-DEFINE_ENTRY(Flags) {
+DEFINE_ENTRY(Flags,bm2python::Output) {
     bm2python::to_python(w, bm,flags.bm2python_flags,output);
     return 0;
 }

@@ -84,7 +84,7 @@ when using with sections.txt, loaded from sections.txt contents if exists and de
 ## sections.txt
 
 sections.txt is single file mechanism for hook.
-Instead of creating multiple hook files, you can define multiple hooks in sections.txt.
+Instead of creating multiple hook files, you can define multiple hooks in sections.txt. This file can contains all kind of hook, including flags.txt, keywords.txt etc.
 
 If a text file with the same name as a section in sections.txt exists, the contents of sections.txt take precedence.
 

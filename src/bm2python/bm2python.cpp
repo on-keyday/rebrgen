@@ -1546,7 +1546,7 @@ namespace bm2python {
             str = futils::strutil::concat<std::string>("",str,"_");
         }
     }
-    void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
+    void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident

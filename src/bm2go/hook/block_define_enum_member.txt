@@ -1,1 +1,0 @@
-w.writeln(ident," ",enum_ident," = ",evaluated.result);

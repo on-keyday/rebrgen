@@ -415,7 +415,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         auto get_fs_then = [&](auto&& then) {
             if (flags.output == "-") {
                 futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
-                futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+                futils::binary::writer w{fs.get_write_handler(), &fs};
                 then(w, fs);
             }
             else {
@@ -426,7 +426,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     return;
                 }
                 futils::file::FileStream<std::string> fs{*file};
-                futils::binary::writer w{fs.get_direct_write_handler(), &fs};
+                futils::binary::writer w{fs.get_write_handler(), &fs};
                 then(w, fs);
             }
         };

@@ -8,5 +8,7 @@ namespace bm2python {
     struct Flags {
         bool use_async = false;
     };
-    void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output);
+    struct Output : bm2::Output {
+    };
+    void to_python(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output);
 }  // namespace bm2python

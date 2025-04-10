@@ -11,7 +11,7 @@ struct Flags : bm2::Flags {
     }
 };
 
-DEFINE_ENTRY(Flags) {
+DEFINE_ENTRY(Flags, bm2::Output) {
     bm2rust::to_rust(w, bm, flags.bm2rust_flags, output);
     return 0;
 }

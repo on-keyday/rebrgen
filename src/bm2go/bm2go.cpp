@@ -3,6 +3,9 @@
 #include <bm2/context.hpp>
 #include <bmgen/helper.hpp>
 #include <escape/escape.h>
+// load hook: generator_top
+
+// end hook: generator_top
 #include "bm2go.hpp"
 namespace bm2go {
     using TmpCodeWriter = bm2::TmpCodeWriter;
@@ -1487,12 +1490,11 @@ namespace bm2go {
         }
     }
     void escape_go_keyword(std::string& str) {
-        if (str == "if" || str == "for" || str == "else" || str == "break" || str == "continue"
-        ) {
+        if (str == "break"||str == "default"||str == "func"||str == "interface"||str == "select"||str == "case"||str == "defer"||str == "go"||str == "map"||str == "struct"||str == "chan"||str == "else"||str == "goto"||str == "package"||str == "switch"||str == "const"||str == "fallthrough"||str == "if"||str == "range"||str == "type"||str == "continue"||str == "for"||str == "import"||str == "return"||str == "var") {
             str = futils::strutil::concat<std::string>("",str,"_");
         }
     }
-    void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {
+    void to_go(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident

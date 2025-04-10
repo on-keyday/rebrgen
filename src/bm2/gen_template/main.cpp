@@ -154,7 +154,7 @@ namespace rebgn {
         scope_escape_ident.execute();
         w.writeln("}");
 
-        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output) {");
+        w.writeln("void to_", flags.lang_name, "(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output) {");
         auto scope_to_xxx = w.indent_scope();
         w.writeln("Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {");
         auto scope_escape_key_ident = w.indent_scope();

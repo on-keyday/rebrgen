@@ -7,5 +7,7 @@
 namespace bm2c {
     struct Flags {
     };
-    void to_c(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,bm2::Output& output);
+    struct Output : bm2::Output {
+    };
+    void to_c(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output);
 }  // namespace bm2c

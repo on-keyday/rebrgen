@@ -40,7 +40,7 @@ import library
 
 cmptest_build.txt,cmptest_run.txt: defining generated-generator test commands in Python.
 
-at cmptest_build.txt, you have to generate executable file from INPUT variable path to OUTPUT variable path
+at cmptest_build.txt, you have to generate executable file from MAIN,GENERATED variable path to EXEC variable path
 at cmptest_run.txt, you have to execute EXEC (same as OUTPUT in cmptest_build.txt) with INPUT (test input binary file path) and EXEC must generate OUTPUT (test output file path, should be same as test input for test success or different if implementation has bug). by default, if cmptest_run.txt not exists, running like `run_command([EXEC,INPUT,OUTPUT])`. you can modify this if EXEC is script like `run_command(["script_interpreter",EXEC,INPUT,OUTPUT])`
 
 sections.txt: described below

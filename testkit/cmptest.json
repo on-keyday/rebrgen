@@ -10,6 +10,9 @@
     ],
     "runners": [
         {
+            "file": "testkit/cpp3/cmptest.json"
+        },
+        {
             "file": "testkit/rust/cmptest.json"
         }
     ]

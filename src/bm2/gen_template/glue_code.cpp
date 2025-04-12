@@ -163,10 +163,7 @@ namespace rebgn {
     return uint8Array;
 };)");
         w.writeln("const bmgenModule = bmgen.default /*as EmscriptenModuleFactory<MyEmscriptenModule>*/;");
-        std::string lang_name = flags.worker_request_name;
-        if (lang_name.empty()) {
-            lang_name = flags.lang_name;
-        }
+        std::string lang_name = flags.worker_name();
         w.write_unformatted(std::format(R"(
 const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
     switch (e.lang /*as string*/) {{

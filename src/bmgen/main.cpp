@@ -7,6 +7,7 @@
 #include <file/file_stream.h>
 
 #include <fnet/util/base64.h>
+#include <testutil/timer.h>
 
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
@@ -14,7 +15,7 @@
 #endif
 
 namespace rebgn {
-    rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input);
+    rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input, std::function<void(const char*)> timer_cb);
 }
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
@@ -24,6 +25,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool print_parsed = false;
     bool base64 = false;
     bool print_only_op = false;
+    bool print_process_time = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -33,6 +35,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&print_parsed, "p,print-instructions", "print converted instructions");
         ctx.VarBool(&base64, "base64", "base64 encode output");
         ctx.VarBool(&print_only_op, "print-only-op", "print only op code(for debug)");
+        ctx.VarBool(&print_process_time, "print-process-time", "print process time");
     }
 };
 auto& cout = futils::wrap::cout_wrap();
@@ -40,24 +43,25 @@ auto& cerr = futils::wrap::cerr_wrap();
 
 namespace rebgn {
     void print_code(rebgn::Module& m) {
+        auto w = futils::wrap::pack();
         for (auto& [metadata, id] : m.metadata_table) {
-            cout << "metadata " << metadata << " " << id << '\n';
+            w << "metadata " << metadata << " " << id << '\n';
         }
         for (auto& [str, id] : m.string_table) {
-            cout << "string \"" << futils::escape::escape_str<std::string>(str, futils::escape::EscapeFlag::hex) << "\" " << id << '\n';
+            w << "string \"" << futils::escape::escape_str<std::string>(str, futils::escape::EscapeFlag::hex) << "\" " << id << '\n';
         }
         for (auto& [id, num] : m.ident_table) {
-            cout << "ident " << id->ident << " " << num;
+            w << "ident " << id->ident << " " << num;
             auto found = m.ident_index_table.find(num);
             if (found != m.ident_index_table.end()) {
-                cout << " " << to_string(m.code[found->second].op);
+                w << " " << to_string(m.code[found->second].op);
             }
-            cout << '\n';
+            w << '\n';
         }
 
         auto print_ref = [&](rebgn::Varint ref, bool use_index = true) {
             if (ref.value() == 0) {
-                cout << " (no ref)";
+                w << " (no ref)";
                 return;
             }
             bool found_ident = false;
@@ -67,84 +71,84 @@ namespace rebgn {
                     if (s.starts_with("DEFINE_")) {
                         s = s.substr(7);
                     }
-                    cout << " " << s;
+                    w << " " << s;
                     found_ident = true;
                 }
             }
             if (auto found = m.ident_table_rev.find(ref.value()); found != m.ident_table_rev.end()) {
-                cout << " " << found->second->ident;
+                w << " " << found->second->ident;
                 found_ident = true;
             }
             if (auto found = m.string_table_rev.find(ref.value()); found != m.string_table_rev.end()) {
-                cout << " \"" << futils::escape::escape_str<std::string>(found->second, futils::escape::EscapeFlag::hex) << "\"";
+                w << " \"" << futils::escape::escape_str<std::string>(found->second, futils::escape::EscapeFlag::hex) << "\"";
                 found_ident = true;
             }
             if (auto found = m.metadata_table_rev.find(ref.value()); found != m.metadata_table_rev.end()) {
-                cout << " " << found->second;
+                w << " " << found->second;
                 found_ident = true;
             }
             if (found_ident) {
-                cout << "(" << ref.value() << ")";
+                w << "(" << ref.value() << ")";
             }
             else {
-                cout << " " << ref.value();
+                w << " " << ref.value();
             }
         };
         auto print_type = [&](const rebgn::StorageRef& s) {
             if (s.ref.value() == 0) {
-                cout << "(no type)";
+                w << "(no type)";
                 return;
             }
-            cout << "type " << s.ref.value();
+            w << "type " << s.ref.value();
             auto found = m.get_storage(s);
             if (!found) {
-                cout << " (unknown storage)";
+                w << " (unknown storage)";
                 return;
             }
             if (found->length.value() != found->storages.size()) {
-                cout << " (length mismatch)";
+                w << " (length mismatch)";
             }
-            cout << " (";
+            w << " (";
             for (auto& st : found->storages) {
-                cout << " " << to_string(st.type);
+                w << " " << to_string(st.type);
                 if (auto size = st.size()) {
                     if (st.type == rebgn::StorageType::ARRAY) {
-                        cout << " length:" << size->value();
+                        w << " length:" << size->value();
                     }
                     else if (st.type == rebgn::StorageType::INT || st.type == rebgn::StorageType::UINT ||
                              st.type == rebgn::StorageType::FLOAT) {
-                        cout << " size:";
+                        w << " size:";
                         if (size->value() % 8 == 0) {
-                            cout << " " << size->value() / 8 << "byte =";
+                            w << " " << size->value() / 8 << "byte =";
                         }
-                        cout << " " << size->value() << "bit";
+                        w << " " << size->value() << "bit";
                     }
                     else if (st.type == rebgn::StorageType::STRUCT_REF) {
-                        cout << " size:";
+                        w << " size:";
                         if (size->value() == 0) {
-                            cout << " (variable)";
+                            w << " (variable)";
                         }
                         else {
                             auto siz = size->value() - 1;
                             if (siz % 8 == 0) {
-                                cout << siz / 8 << "byte =";
+                                w << siz / 8 << "byte =";
                             }
-                            cout << " " << siz << "bit";
+                            w << " " << siz << "bit";
                         }
                     }
                     else if (st.type == rebgn::StorageType::VARIANT) {
-                        cout << " alternative:" << size->value();
+                        w << " alternative:" << size->value();
                     }
                 }
                 if (auto ref = st.ref()) {
                     print_ref(*ref);
                 }
             }
-            cout << " )";
+            w << " )";
         };
         for (auto& t : m.storage_key_table_rev) {
             print_type(StorageRef{.ref = rebgn::Varint(t.first)});
-            cout << '\n';
+            w << '\n';
         }
         std::string nest;
         for (auto& c : m.code) {
@@ -176,9 +180,9 @@ namespace rebgn {
                     break;
             }
 
-            cout << nest << to_string(c.op);
+            w << nest << to_string(c.op);
             if (auto uop = c.uop()) {
-                cout << " " << to_string(*uop);
+                w << " " << to_string(*uop);
             }
             if (auto belong = c.belong()) {
                 print_ref(*belong);
@@ -193,64 +197,64 @@ namespace rebgn {
                 print_ref(*left_ref);
             }
             if (auto bop = c.bop()) {
-                cout << " " << to_string(*bop);
+                w << " " << to_string(*bop);
             }
             if (auto right_ref = c.right_ref()) {
                 print_ref(*right_ref);
             }
             if (auto int_value = c.int_value()) {
-                cout << " " << int_value->value();
+                w << " " << int_value->value();
             }
             if (auto int_value64 = c.int_value64()) {
-                cout << " " << *int_value64;
+                w << " " << *int_value64;
             }
             if (auto m = c.merge_mode()) {
-                cout << " " << to_string(*m);
+                w << " " << to_string(*m);
             }
             if (auto m = c.packed_op_type()) {
-                cout << " " << to_string(*m);
+                w << " " << to_string(*m);
             }
             if (auto m = c.check_at()) {
-                cout << " " << to_string(*m);
+                w << " " << to_string(*m);
             }
             if (auto m = c.func_type()) {
-                cout << " " << to_string(*m);
+                w << " " << to_string(*m);
             }
             if (auto length = c.array_length()) {
-                cout << " " << length->value() << " elements";
+                w << " " << length->value() << " elements";
             }
             if (auto bit_size = c.bit_size()) {
-                cout << " " << bit_size->value() << "bit";
+                w << " " << bit_size->value() << "bit";
             }
             if (auto bit_plus_one = c.bit_size_plus()) {
                 if (bit_plus_one->value() == 0) {
-                    cout << " (variable)";
+                    w << " (variable)";
                 }
                 else {
-                    cout << " " << bit_plus_one->value() - 1 << "bit";
+                    w << " " << bit_plus_one->value() - 1 << "bit";
                 }
             }
 
             if (auto s = c.type()) {
-                cout << " ";
+                w << " ";
                 print_type(*s);
             }
             if (auto s = c.from_type()) {
-                cout << " ";
+                w << " ";
                 print_type(*s);
             }
             if (auto s = c.cast_type()) {
-                cout << " " << to_string(*s);
+                w << " " << to_string(*s);
             }
             if (auto r = c.reserve_type()) {
-                cout << " " << to_string(*r);
+                w << " " << to_string(*r);
             }
             if (auto s = c.sub_range_type()) {
-                cout << " " << to_string(*s);
+                w << " " << to_string(*s);
             }
             if (auto e = c.endian()) {
-                cout << " " << to_string(e->endian());
-                cout << " " << (e->sign() ? "signed" : "unsigned");
+                w << " " << to_string(e->endian());
+                w << " " << (e->sign() ? "signed" : "unsigned");
                 if (e->dynamic_ref.value() != 0) {
                     print_ref(e->dynamic_ref);
                 }
@@ -258,86 +262,86 @@ namespace rebgn {
             if (auto m = c.metadata()) {
                 print_ref(m->name);
                 for (auto& v : m->refs) {
-                    cout << " ";
+                    w << " ";
                     print_ref(v);
                 }
             }
             if (auto param = c.param()) {
-                cout << " (";
+                w << " (";
                 bool first = true;
                 for (auto& p : param->refs) {
                     if (first) {
                         first = false;
                     }
                     else {
-                        cout << ",";
+                        w << ",";
                     }
                     print_ref(p);
                 }
-                cout << " )";
+                w << " )";
             }
             if (auto phi_param = c.phi_params()) {
-                cout << " (";
+                w << " (";
                 bool first = true;
                 for (auto& [k, v] : phi_param->params) {
                     if (first) {
                         first = false;
                     }
                     else {
-                        cout << ",";
+                        w << ",";
                     }
                     print_ref(k);
-                    cout << ":";
+                    w << ":";
                     print_ref(v);
                 }
-                cout << " )";
+                w << " )";
             }
             if (auto enc = c.encode_flags()) {
-                cout << " (";
+                w << " (";
                 size_t i = 0;
                 if (enc->has_seek()) {
                     if (i) {
-                        cout << ",";
+                        w << ",";
                     }
                     cout << "seek";
                     i++;
                 }
-                cout << " )";
+                w << " )";
             }
             if (auto dec = c.decode_flags()) {
                 cout << " (";
                 size_t i = 0;
                 if (dec->has_eof()) {
-                    cout << "eof";
+                    w << "eof";
                     i++;
                 }
                 if (dec->has_peek()) {
                     if (i) {
-                        cout << ",";
+                        w << ",";
                     }
-                    cout << "peek";
+                    w << "peek";
                     i++;
                 }
                 if (dec->has_seek()) {
                     if (i) {
-                        cout << ",";
+                        w << ",";
                     }
-                    cout << "seek";
+                    w << "seek";
                     i++;
                 }
                 if (dec->has_remain_bytes()) {
                     if (i) {
-                        cout << ",";
+                        w << ",";
                     }
-                    cout << "remain_bytes";
+                    w << "remain_bytes";
                     i++;
                 }
-                cout << " )";
+                w << " )";
             }
             if (auto fb = c.fallback()) {
                 print_ref(*fb);
             }
-            cout << '\n';
+            w << '\n';
             switch (c.op) {
                 case rebgn::AbstractOp::DEFINE_ENUM:
                 case rebgn::AbstractOp::DEFINE_FORMAT:
@@ -369,11 +373,19 @@ namespace rebgn {
                     break;
             }
         }
+        cout << w.pack();
     }
 }  // namespace rebgn
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
-    auto res = rebgn::load_json(flags.input);
+    futils::test::Timer timer;
+    std::vector<std::pair<const char*, std::chrono::milliseconds>> time_list;
+    auto res = rebgn::load_json(flags.input, [&](const char* str) {
+        if (flags.print_process_time) {
+            auto time = timer.next_step();
+            time_list.emplace_back(str, time);
+        }
+    });
     if (!res) {
         cerr << res.error().error<std::string>() << '\n';
         return 1;
@@ -383,11 +395,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cerr << m.error().error<std::string>() << '\n';
         return 1;
     }
+    auto convert_time = timer.next_step();
     auto err = rebgn::transform(*m, *res);
     if (err) {
         cerr << err.error<std::string>() << '\n';
         return 1;
     }
+    auto transform_time = timer.next_step();
     if (flags.print_parsed) {
         if (flags.print_only_op) {
             for (auto& c : m->code) {
@@ -398,6 +412,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             rebgn::print_code(*m);
         }
     }
+    auto print_parsed_time = timer.next_step();
     if (flags.cfg_output.size()) {
         auto file = futils::file::File::create(flags.cfg_output);
         if (!file) {
@@ -408,6 +423,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         futils::binary::writer w{fs.get_direct_write_handler(), &fs};
         rebgn::write_cfg(w, *m);
     }
+    auto cfg_output_time = timer.next_step();
     if (flags.output.size()) {
         rebgn::Error err;
         futils::file::FileError fserr;
@@ -462,6 +478,17 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << err.error<std::string>() << '\n';
             return 1;
         }
+    }
+    auto output_time = timer.next_step();
+    if (flags.print_process_time) {
+        for (auto& [str, time] : time_list) {
+            cerr << str << ": " << time << "\n";
+        }
+        cerr << "convert time: " << convert_time << "\n";
+        cerr << "transform time: " << transform_time << "\n";
+        cerr << "print parsed time: " << print_parsed_time << "\n";
+        cerr << "cfg output time: " << cfg_output_time << "\n";
+        cerr << "output time: " << output_time << "\n";
     }
     return 0;
 }

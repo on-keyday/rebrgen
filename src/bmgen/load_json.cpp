@@ -55,21 +55,23 @@ namespace rebgn {
         }
     };
 
-    rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input) {
+    rebgn::expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input, std::function<void(const char*)> timer_cb) {
         futils::file::View view;
         if (auto res = view.open(input); !res) {
             return unexpect_error(Error(res.error()));
         }
+        timer_cb("json file open");
         futils::json::BytesLikeReader<futils::view::rvec> r{futils::view::rvec(view)};
         r.size = r.bytes.size();
         futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>, DecoderObserver> jc;
-        futils::json::GenericConstructor<decltype(r)&, std::vector<futils::json::ParseStateDetail>, decltype(jc)&> g{r, jc};
+        futils::json::GenericConstructor<decltype(r)&, futils::json::StaticStack<8, futils::json::ParseStateDetail>, decltype(jc)&> g{r, jc};
         futils::json::Parser<decltype(g)&> p{g};
         p.skip_space();
         auto result = p.parse();
         if (result != futils::json::ParseResult::end) {
             return unexpect_error("cannot parse json file: {} {}", futils::json::to_string(result), futils::json::to_string(p.state.state()));
         }
+        timer_cb("json file parse");
         auto js = std::move(jc.stack.back());
         brgen::ast::AstFile file;
         if (!futils::json::convert_from_json(js, file)) {
@@ -78,6 +80,7 @@ namespace rebgn {
         if (!file.ast) {
             return unexpect_error("ast is not found");
         }
+        timer_cb("json file convert");
         brgen::ast::JSONConverter c;
         auto res = c.decode(*file.ast);
         if (!res) {
@@ -86,6 +89,7 @@ namespace rebgn {
         if (!*res) {
             return unexpect_error("cannot decode json file");
         }
+        timer_cb("json file decode");
         return *res;
     }
 }  // namespace rebgn

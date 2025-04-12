@@ -16,7 +16,7 @@ with open("save/sample.json", "wb") as f:
     f.write(save)
 print("Generated: save/sample.json")
 save = sp.check_output(
-    ["tool/bmgen", "-p", "-i", "save/sample.json", "-o", "save/save.bin", "-c", "save/save.dot"],
+    ["tool/bmgen", "-p", "-i", "save/sample.json", "-o", "save/save.bin", "-c", "save/save.dot","--print-process-time"],
     stderr=sys.stderr,
 )
 print("Generated: save/save.bin")
@@ -25,7 +25,7 @@ with open("save/save.txt", "wb") as f:
     f.write(save)
 print("Generated: save/save.txt")
 save = sp.check_output(
-    ["tool/bmgen", "-p", "-i", "save/sample.json", "--print-only-op"],
+    ["tool/bmgen", "-p", "-i", "save/sample.json", "--print-only-op","--print-process-time"],
     stderr=sys.stderr,
 )
 with open("save/save_op.txt", "wb") as f:

@@ -1,2 +1,20 @@
 !@section cmptest_build.txt
 run_command(["g++", MAIN, GENERATED, "-o", EXEC])
+
+!@section block_declare_function.txt
+if(ret_type) {
+    w.write(*ret_type);
+}
+else {
+    w.write("void");
+}
+w.write(" ");
+w.write(ident);
+w.write("(");
+add_parameter(ctx,w,inner_range);
+w.write(") ");
+w.writeln(";");
+!@section block_declare_property_getter.txt
+!@include block_declare_function.txt
+!@section block_declare_property_setter.txt
+!@include block_declare_function.txt

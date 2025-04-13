@@ -67,7 +67,7 @@
     "decode_offset": "$DECODER.tell()",
     "is_little_endian_expr": "sys.byteorder == 'little'",
     "peek_bytes_op": "$VALUE = $DECODER.peek($LEN)",
-    "format_nested_function": true,
+    "format_nested_function": "define",
     "property_setter_ok": "return True",
     "property_setter_fail": "return False",
     "coder_success": "return True",

@@ -96,7 +96,14 @@ namespace bm2cpp3 {
                 for (size_t i = index + 1; i < s.storages.size(); i++) {
                     types.push_back(type_to_string_impl(ctx, s, bit_size, i));
                 }
-                return ident;
+                std::string result;
+                for (size_t i = 0; i < types.size(); i++) {
+                    if (i != 0) {
+                        result += " , ";
+                    }
+                    result += types[i];
+                }
+                return futils::strutil::concat<std::string>("std::variant<",result,">");
             }
             case rebgn::StorageType::CODER_RETURN: {
                 return "bool";
@@ -678,6 +685,7 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::DECLARE_FORMAT: {
                 auto ref = code.ref().value(); //reference of FORMAT
                 auto inner_range = ctx.range(code.ref().value()); //range of FORMAT
+                auto ident = ctx.ident(ref); //identifier of FORMAT
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -690,7 +698,12 @@ namespace bm2cpp3 {
                 auto ident = ctx.ident(ident_ref); //identifier of field
                 auto belong = code.belong().value(); //reference of belonging struct or bit field
                 auto is_bit_field = belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD; //is part of bit field
-                w.writeln(type, "  ", ident, ";");
+                if (!is_bit_field) {
+                    w.writeln(type, "  ", ident, ";");
+                }
+                else {
+                    w.writeln("/*",ident,"*/");
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -702,23 +715,95 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 auto ref = code.ref().value(); //reference of PROPERTY
                 auto inner_range = ctx.range(code.ref().value()); //range of PROPERTY
+                auto ident = ctx.ident(ref); //identifier of PROPERTY
                 inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
+                w.write(" ");
+                if(ret_type) {
+                    w.write(*ret_type);
+                }
+                else {
+                    w.write("void");
+                }
+                w.write(" ", ident, "(");
+                add_parameter(ctx, w, inner_range);
+                w.write(") ");
+                w.writeln(";");
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
+                w.write(" ");
+                if(ret_type) {
+                    w.write(*ret_type);
+                }
+                else {
+                    w.write("void");
+                }
+                w.write(" ", ident, "(");
+                add_parameter(ctx, w, inner_range);
+                w.write(") ");
+                w.writeln(";");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value(); //reference of FUNCTION
                 auto inner_range = ctx.range(code.ref().value()); //range of FUNCTION
+                auto ident = ctx.ident(ref); //identifier of FUNCTION
                 auto func_type = ctx.ref(ref).func_type().value(); //function type
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(ref).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
+                // load hook: block_declare_function
+                if(ret_type) {
+                    w.write(*ret_type);
+                }
+                else {
+                    w.write("void");
+                }
+                w.write(" ");
+                w.write(ident);
+                w.write("(");
+                add_parameter(ctx,w,inner_range);
+                w.write(") ");
+                w.writeln(";");
+                // end hook: block_declare_function
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -729,10 +814,11 @@ namespace bm2cpp3 {
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
-                w.write("enum ", ident, " {");
+                w.write("enum ", ident);
                 if(base_type) {
                     w.write("  :  ", *base_type);
                 }
+                w.writeln(" {");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -744,6 +830,7 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::DECLARE_ENUM: {
                 auto ref = code.ref().value(); //reference of ENUM
                 auto inner_range = ctx.range(code.ref().value()); //range of ENUM
+                auto ident = ctx.ident(ref); //identifier of ENUM
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -761,21 +848,15 @@ namespace bm2cpp3 {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
                 auto is_empty_block = range.start ==range.end - 2; //is empty block
-                w.writeln("union ",ident, " {");
-                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
-                defer.pop_back();
-                w.writeln("};");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value(); //reference of UNION
                 auto inner_range = ctx.range(ref); //range of UNION
-                TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, inner_range);
-                ctx.cw.write_unformatted(inner_w.out());
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
@@ -794,9 +875,7 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value(); //reference of UNION_MEMBER
                 auto inner_range = ctx.range(ref); //range of UNION_MEMBER
-                TmpCodeWriter inner_w;
-                inner_block(ctx, inner_w, inner_range);
-                ctx.cw.write_unformatted(inner_w.out());
+                inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
@@ -815,6 +894,7 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::DECLARE_STATE: {
                 auto ref = code.ref().value(); //reference of STATE
                 auto inner_range = ctx.range(code.ref().value()); //range of STATE
+                auto ident = ctx.ident(ref); //identifier of STATE
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -823,6 +903,7 @@ namespace bm2cpp3 {
                 auto ident_ref = code.ident().value(); //reference of bit field
                 auto ident = ctx.ident(ident_ref); //identifier of bit field
                 auto belong = code.belong().value(); //reference of belonging struct or bit field
+                w.writeln(type, "  ", ident, ";");
                 break;
             }
             case rebgn::AbstractOp::END_BIT_FIELD: {
@@ -875,25 +956,26 @@ namespace bm2cpp3 {
                 auto ident = ctx.ident(ident_ref); //identifier of function
                 auto func_type = code.func_type().value(); //function type
                 auto is_empty_block = i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
-                auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                std::optional<std::string> type = std::nullopt; //function return type
+                auto inner_range = range; //function range
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
-                    type = type_to_string(ctx,type_ref);
+                    ret_type = type_to_string(ctx,type_ref);
                 }
                 std::optional<std::string> belong_name = std::nullopt; //function belong name
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
                 w.write(" ");
-                if(type) {
-                    w.write(*type);
+                if(ret_type) {
+                    w.write(*ret_type);
                 }
                 else {
                     w.write("void");
                 }
                 w.write(" ", ident, "(");
-                add_parameter(ctx, w, range);
+                add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 w.writeln("{");
                 defer.push_back(w.indent_scope_ex());
@@ -1489,6 +1571,8 @@ namespace bm2cpp3 {
             w.writeln("// Please refer to the following link for more information.");
             w.writeln("// if you want to contribute, please refer to the following link.");
             w.writeln("// https://github.com/on-keyday/rebrgen");
+            w.writeln("");
+            w.writeln("#include <cstdint>");
             // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {
@@ -1508,10 +1592,6 @@ namespace bm2cpp3 {
             }
             TmpCodeWriter w;
             auto func_type = code.func_type().value(); //function type
-            if (func_type == rebgn::FunctionType::BIT_GETTER ||
-                func_type == rebgn::FunctionType::BIT_SETTER) {
-                continue;
-            }
             inner_function(ctx, w, rebgn::Range{.start = range.range.start.value() , .end = range.range.end.value()});
             ctx.cw.write_unformatted(w.out());
         }

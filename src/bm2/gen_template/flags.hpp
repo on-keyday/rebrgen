@@ -174,7 +174,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string keyword_escape_style = "${VALUE}_";
 
     bool compact_bit_field = false;
-    bool format_nested_function = false;
+    std::string format_nested_function = "";  // "", declare, define
     bool format_nested_struct = false;
 
 #define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, __FILE__, __func__, __LINE__, flags.name)

@@ -5,3 +5,5 @@
 // Please refer to the following link for more information.
 // if you want to contribute, please refer to the following link.
 // https://github.com/on-keyday/rebrgen
+
+#include <cstdint>

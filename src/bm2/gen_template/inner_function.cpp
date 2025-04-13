@@ -6,6 +6,41 @@
 #include "define.hpp"
 
 namespace rebgn {
+    void write_func_decl(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
+        inner_function.writeln("w.write(\"", USE_FLAG(func_keyword), " \");");
+        if (!USE_FLAG(trailing_return_type)) {
+            inner_function.writeln("if(ret_type) {");
+            inner_function.indent_writeln("w.write(*ret_type);");
+            inner_function.writeln("}");
+            inner_function.writeln("else {");
+            inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
+            inner_function.writeln("}");
+        }
+        inner_function.writeln("w.write(\" \", ident, \"", USE_FLAG(func_brace_ident_separator), "(\");");
+        inner_function.writeln("add_parameter(ctx, w, inner_range);");
+        inner_function.writeln("w.write(\") \");");
+        if (USE_FLAG(trailing_return_type)) {
+            inner_function.writeln("if(ret_type) {");
+            inner_function.indent_writeln("w.write(\"", USE_FLAG(func_type_separator), "\", *ret_type);");
+            inner_function.writeln("}");
+            inner_function.writeln("else {");
+            inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
+            inner_function.writeln("}");
+        }
+    }
+
+    void write_return_type(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
+        inner_function.writeln("auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);");
+        do_typed_variable_definition(inner_function, flags, op, "ret_type", "std::nullopt", "std::optional<std::string>", "function return type");
+        inner_function.writeln("if(found_type_pos) {");
+        {
+            auto inner_scope = inner_function.indent_scope();
+            inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].type().value();");
+            inner_function.writeln("ret_type = type_to_string(ctx,type_ref);");
+        }
+        inner_function.writeln("}");
+    }
+
     void write_inner_function(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
         flags.set_func_name(bm2::FuncName::inner_function);
         inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
@@ -223,15 +258,8 @@ namespace rebgn {
                 do_variable_definition(inner_function, flags, op, "func_type", code_ref(flags, "func_type"), "rebgn::FunctionType", "function type");
                 define_bool(inner_function, flags, op, "is_empty_block", "i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION", "empty block");
                 // inner_function.writeln("auto range = ctx.range(code.ident().value());");
-                inner_function.writeln("auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);");
-                do_typed_variable_definition(inner_function, flags, op, "type", "std::nullopt", "std::optional<std::string>", "function return type");
-                inner_function.writeln("if(found_type_pos) {");
-                {
-                    auto inner_scope = inner_function.indent_scope();
-                    inner_function.writeln("auto type_ref = ctx.bm.code[*found_type_pos].type().value();");
-                    inner_function.writeln("type = type_to_string(ctx,type_ref);");
-                }
-                inner_function.writeln("}");
+                do_variable_definition(inner_function, flags, op, "inner_range", "range", "Range", "function range");
+                write_return_type(inner_function, op, flags);
                 do_typed_variable_definition(inner_function, flags, op, "belong_name", "std::nullopt", "std::optional<std::string>", "function belong name");
                 inner_function.writeln("if(auto belong = code.belong();belong&&belong->value()!=0) {");
                 {
@@ -240,26 +268,7 @@ namespace rebgn {
                 }
                 inner_function.writeln("}");
                 func_hook([&] {
-                    inner_function.writeln("w.write(\"", USE_FLAG(func_keyword), " \");");
-                    if (!USE_FLAG(trailing_return_type)) {
-                        inner_function.writeln("if(type) {");
-                        inner_function.indent_writeln("w.write(*type);");
-                        inner_function.writeln("}");
-                        inner_function.writeln("else {");
-                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
-                        inner_function.writeln("}");
-                    }
-                    inner_function.writeln("w.write(\" \", ident, \"", USE_FLAG(func_brace_ident_separator), "(\");");
-                    inner_function.writeln("add_parameter(ctx, w, range);");
-                    inner_function.writeln("w.write(\") \");");
-                    if (USE_FLAG(trailing_return_type)) {
-                        inner_function.writeln("if(type) {");
-                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_type_separator), "\", *type);");
-                        inner_function.writeln("}");
-                        inner_function.writeln("else {");
-                        inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
-                        inner_function.writeln("}");
-                    }
+                    write_func_decl(inner_function, op, flags);
                     inner_function.writeln("w.writeln(\"", USE_FLAG(block_begin), "\");");
                 });
             }

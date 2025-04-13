@@ -678,6 +678,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DECLARE_FORMAT: {
                 auto ref = code.ref().value(); //reference of FORMAT
                 auto inner_range = ctx.range(code.ref().value()); //range of FORMAT
+                auto ident = ctx.ident(ref); //identifier of FORMAT
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -702,23 +703,59 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 auto ref = code.ref().value(); //reference of PROPERTY
                 auto inner_range = ctx.range(code.ref().value()); //range of PROPERTY
+                auto ident = ctx.ident(ref); //identifier of PROPERTY
                 inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value(); //reference of FUNCTION
                 auto inner_range = ctx.range(code.ref().value()); //range of FUNCTION
+                auto ident = ctx.ident(ref); //identifier of FUNCTION
                 auto func_type = ctx.ref(ref).func_type().value(); //function type
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(ref).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -729,10 +766,11 @@ namespace bm2haskell {
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
-                w.write("data ", ident, " ");
+                w.write("data ", ident);
                 if(base_type) {
                     w.write("  :  ", *base_type);
                 }
+                w.writeln(" ");
                 defer.push_back(w.indent_scope_ex());
                 break;
             }
@@ -744,6 +782,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DECLARE_ENUM: {
                 auto ref = code.ref().value(); //reference of ENUM
                 auto inner_range = ctx.range(code.ref().value()); //range of ENUM
+                auto ident = ctx.ident(ref); //identifier of ENUM
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -815,6 +854,7 @@ namespace bm2haskell {
             case rebgn::AbstractOp::DECLARE_STATE: {
                 auto ref = code.ref().value(); //reference of STATE
                 auto inner_range = ctx.range(code.ref().value()); //range of STATE
+                auto ident = ctx.ident(ref); //identifier of STATE
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -875,11 +915,12 @@ namespace bm2haskell {
                 auto ident = ctx.ident(ident_ref); //identifier of function
                 auto func_type = code.func_type().value(); //function type
                 auto is_empty_block = i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
-                auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                std::optional<std::string> type = std::nullopt; //function return type
+                auto inner_range = range; //function range
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
-                    type = type_to_string(ctx,type_ref);
+                    ret_type = type_to_string(ctx,type_ref);
                 }
                 std::optional<std::string> belong_name = std::nullopt; //function belong name
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
@@ -887,10 +928,10 @@ namespace bm2haskell {
                 }
                 w.write(" ");
                 w.write(" ", ident, " :: (");
-                add_parameter(ctx, w, range);
+                add_parameter(ctx, w, inner_range);
                 w.write(") ");
-                if(type) {
-                    w.write("->", *type);
+                if(ret_type) {
+                    w.write("->", *ret_type);
                 }
                 else {
                     w.write("void");
@@ -1482,6 +1523,10 @@ namespace bm2haskell {
             auto& w = ctx.cw;
             // load hook: file_top
             w.writeln("{- Code generated by bm2haskell from https://github.com/on-keyday/rebrgen -}");
+            w.writeln("{- This language is still in development and not yet working.             -}");
+            w.writeln("{- Please refer to the following link for more information.               -}");
+            w.writeln("{- if you want to contribute, please refer to the following link.         -}");
+            w.writeln("{- https://github.com/on-keyday/rebrgen                                   -}");
             w.writeln("import Data.Array");
             w.writeln("import Data.Word");
             w.writeln("import Data.Int");

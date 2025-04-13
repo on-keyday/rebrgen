@@ -42,4 +42,6 @@ namespace rebgn {
                               bm2::TmpCodeWriter& add_parameter,
                               bm2::TmpCodeWriter& add_call_parameter, Flags& flags);
     void write_type_to_string_func(bm2::TmpCodeWriter& w, bm2::TmpCodeWriter& type_to_string, Flags& flags);
+    void write_func_decl(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags);
+    void write_return_type(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags);
 }  // namespace rebgn

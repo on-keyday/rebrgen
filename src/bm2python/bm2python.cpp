@@ -697,6 +697,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_FORMAT: {
                 auto ref = code.ref().value(); //reference of FORMAT
                 auto inner_range = ctx.range(code.ref().value()); //range of FORMAT
+                auto ident = ctx.ident(ref); //identifier of FORMAT
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -721,25 +722,61 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_PROPERTY: {
                 auto ref = code.ref().value(); //reference of PROPERTY
                 auto inner_range = ctx.range(code.ref().value()); //range of PROPERTY
+                auto ident = ctx.ident(ref); //identifier of PROPERTY
                 inner_block(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_SETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 inner_function(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY_GETTER: {
                 auto func = code.right_ref().value(); //reference of function
                 auto inner_range = ctx.range(func); //range of function
+                auto ident_ref = ctx.ref(func).ident().value(); //reference of function
+                auto ident = ctx.ident(ident_ref); //identifier of function
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 inner_function(ctx, w, inner_range);
                 break;
             }
             case rebgn::AbstractOp::DECLARE_FUNCTION: {
                 auto ref = code.ref().value(); //reference of FUNCTION
                 auto inner_range = ctx.range(code.ref().value()); //range of FUNCTION
+                auto ident = ctx.ident(ref); //identifier of FUNCTION
                 auto func_type = ctx.ref(ref).func_type().value(); //function type
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
+                if(found_type_pos) {
+                    auto type_ref = ctx.bm.code[*found_type_pos].type().value();
+                    ret_type = type_to_string(ctx,type_ref);
+                }
+                std::optional<std::string> belong_name = std::nullopt; //function belong name
+                if(auto belong = ctx.ref(ref).belong();belong&&belong->value()!=0) {
+                    belong_name = ctx.ident(belong.value());
+                }
                 if(func_type != rebgn::FunctionType::BIT_GETTER &&
                    func_type != rebgn::FunctionType::BIT_SETTER) {
                     inner_function(ctx, w, inner_range);
@@ -770,6 +807,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_ENUM: {
                 auto ref = code.ref().value(); //reference of ENUM
                 auto inner_range = ctx.range(code.ref().value()); //range of ENUM
+                auto ident = ctx.ident(ref); //identifier of ENUM
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -839,6 +877,7 @@ namespace bm2python {
             case rebgn::AbstractOp::DECLARE_STATE: {
                 auto ref = code.ref().value(); //reference of STATE
                 auto inner_range = ctx.range(code.ref().value()); //range of STATE
+                auto ident = ctx.ident(ref); //identifier of STATE
                 inner_block(ctx, w, inner_range);
                 break;
             }
@@ -899,11 +938,12 @@ namespace bm2python {
                 auto ident = ctx.ident(ident_ref); //identifier of function
                 auto func_type = code.func_type().value(); //function type
                 auto is_empty_block = i + 1 < ctx.bm.code.size() && ctx.bm.code[i + 1].op == rebgn::AbstractOp::END_FUNCTION; //empty block
-                auto found_type_pos = find_op(ctx,range,rebgn::AbstractOp::RETURN_TYPE);
-                std::optional<std::string> type = std::nullopt; //function return type
+                auto inner_range = range; //function range
+                auto found_type_pos = find_op(ctx,inner_range,rebgn::AbstractOp::RETURN_TYPE);
+                std::optional<std::string> ret_type = std::nullopt; //function return type
                 if(found_type_pos) {
                     auto type_ref = ctx.bm.code[*found_type_pos].type().value();
-                    type = type_to_string(ctx,type_ref);
+                    ret_type = type_to_string(ctx,type_ref);
                 }
                 std::optional<std::string> belong_name = std::nullopt; //function belong name
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
@@ -924,10 +964,10 @@ namespace bm2python {
                 // end hook: func_define_function_pre_main
                 w.write("def ");
                 w.write(" ", ident, "(");
-                add_parameter(ctx, w, range);
+                add_parameter(ctx, w, inner_range);
                 w.write(") ");
-                if(type) {
-                    w.write("->", *type);
+                if(ret_type) {
+                    w.write("->", *ret_type);
                 }
                 else {
                     w.write("");

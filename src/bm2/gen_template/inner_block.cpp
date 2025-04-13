@@ -32,17 +32,33 @@ namespace rebgn {
             op == AbstractOp::DECLARE_FUNCTION) {
             define_ref(inner_block, flags, op, "ref", code_ref(flags, "ref"), desc);
             define_range(inner_block, flags, op, "inner_range", code_ref(flags, "ref"), desc);
+            define_ident(inner_block, flags, op, "ident", "ref", desc, true);
             if (op == AbstractOp::DECLARE_FUNCTION) {
                 do_variable_definition(inner_block, flags, op, "func_type", "ctx.ref(ref).func_type().value()", "rebgn::FunctionType", "function type");
+                write_return_type(inner_block, op, flags);
+                do_typed_variable_definition(inner_block, flags, op, "belong_name", "std::nullopt", "std::optional<std::string>", "function belong name");
+                inner_block.writeln("if(auto belong = ctx.ref(ref).belong();belong&&belong->value()!=0) {");
+                {
+                    auto inner_scope = inner_block.indent_scope();
+                    inner_block.writeln("belong_name = ctx.ident(belong.value());");
+                }
+                inner_block.writeln("}");
                 block_hook([&] {
-                    if (USE_FLAG(format_nested_function)) {
+                    auto& key = USE_FLAG(format_nested_function);
+                    if (key == "define" || key == "declare") {
                         futils::helper::DynDefer indent2;
                         if (!USE_FLAG(compact_bit_field)) {
                             inner_block.writeln("if(func_type != rebgn::FunctionType::BIT_GETTER &&");
                             inner_block.writeln("   func_type != rebgn::FunctionType::BIT_SETTER) {");
                             indent2 = inner_block.indent_scope_ex();
                         }
-                        inner_block.writeln("inner_function(ctx, w, inner_range);");
+                        if (key == "define") {
+                            inner_block.writeln("inner_function(ctx, w, inner_range);");
+                        }
+                        else {
+                            write_func_decl(inner_block, op, flags);
+                            inner_block.writeln("w.writeln(\"", USE_FLAG(end_of_statement), "\");");
+                        }
                         if (!USE_FLAG(compact_bit_field)) {
                             indent2.execute();
                             inner_block.writeln("}");
@@ -128,10 +144,11 @@ namespace rebgn {
                 inner_block.writeln("}");
             }
             block_hook([&] {
-                inner_block.writeln("w.write(\"", USE_FLAG(enum_keyword), " \", ident, \" ", USE_FLAG(block_begin), "\");");
+                inner_block.writeln("w.write(\"", USE_FLAG(enum_keyword), " \", ident);");
                 inner_block.writeln("if(base_type) {");
                 inner_block.indent_writeln("w.write(\" ", USE_FLAG(enum_base_separator), " \", *base_type);");
                 inner_block.writeln("}");
+                inner_block.writeln("w.writeln(\" ", USE_FLAG(block_begin), "\");");
                 inner_block.writeln("defer.push_back(w.indent_scope_ex());");
             });
         }
@@ -188,7 +205,7 @@ namespace rebgn {
                     inner_block.writeln("}");
                     inner_block.writeln("else {");
                     auto scope = inner_block.indent_scope();
-                    inner_block.writeln("w.writeln(\"", flags.wrap_comment("\",ident,\""), "\")");
+                    inner_block.writeln("w.writeln(\"", flags.wrap_comment("\",ident,\""), "\");");
                     scope.execute();
                     inner_block.writeln("}");
                 }
@@ -204,9 +221,22 @@ namespace rebgn {
         else if (op == AbstractOp::DEFINE_PROPERTY_GETTER || op == AbstractOp::DEFINE_PROPERTY_SETTER) {
             define_ref(inner_block, flags, op, "func", code_ref(flags, "right_ref"), "function");
             define_range(inner_block, flags, op, "inner_range", "func", "function");
+            define_ident(inner_block, flags, op, "ident", "ctx.ref(func).ident().value()", "function");
+            write_return_type(inner_block, op, flags);
+            do_typed_variable_definition(inner_block, flags, op, "belong_name", "std::nullopt", "std::optional<std::string>", "function belong name");
+            inner_block.writeln("if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {");
+            auto scope = inner_block.indent_scope();
+            inner_block.writeln("belong_name = ctx.ident(belong.value());");
+            scope.execute();
+            inner_block.writeln("}");
             block_hook([&] {
-                if (USE_FLAG(format_nested_function)) {
+                auto& key = USE_FLAG(format_nested_function);
+                if (key == "define") {
                     inner_block.writeln("inner_function(ctx, w, inner_range);");
+                }
+                else if (key == "declare") {
+                    write_func_decl(inner_block, op, flags);
+                    inner_block.writeln("w.writeln(\"", USE_FLAG(end_of_statement), "\");");
                 }
             });
         }

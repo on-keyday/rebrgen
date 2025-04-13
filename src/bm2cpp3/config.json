@@ -2,7 +2,7 @@
     "lang": "cpp3",
     "suffix": "cpp",
     "worker_request_name": "cpp3",
-    "worker_lsp_name": "",
+    "worker_lsp_name": "cpp",
     "comment_prefix": "/*",
     "comment_suffix": "*/",
     "int_type": "std::int${ALIGNED_BIT_SIZE}_t",

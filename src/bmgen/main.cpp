@@ -303,13 +303,13 @@ namespace rebgn {
                     if (i) {
                         w << ",";
                     }
-                    cout << "seek";
+                    w << "seek";
                     i++;
                 }
                 w << " )";
             }
             if (auto dec = c.decode_flags()) {
-                cout << " (";
+                w << " (";
                 size_t i = 0;
                 if (dec->has_eof()) {
                     w << "eof";

@@ -85,7 +85,7 @@ namespace rebgn {
                     if (op == AbstractOp::DEFINE_UNION_MEMBER) {
                         do_make_eval_result(field_accessor, op, flags, "union_field_eval", EvalResultMode::PASSTHROUGH);
                     }
-                    else if (op == AbstractOp::DEFINE_BIT_FIELD) {
+                    else if (op == AbstractOp::DEFINE_BIT_FIELD && !USE_FLAG(compact_bit_field)) {
                         do_make_eval_result(field_accessor, op, flags, "belong_eval", EvalResultMode::PASSTHROUGH);
                     }
                     else {

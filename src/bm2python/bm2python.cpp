@@ -311,6 +311,10 @@ namespace bm2python {
             result = make_eval_result(ident);
             break;
         }
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+            result = field_accessor(code,ctx);
+            break;
+        }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
             result = make_eval_result(futils::strutil::concat<std::string>("",ctx.r(),".tell()"));
             break;
@@ -963,7 +967,7 @@ namespace bm2python {
                 }
                 // end hook: func_define_function_pre_main
                 w.write("def ");
-                w.write(" ", ident, "(");
+                w.write(ident, "(");
                 add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 if(ret_type) {

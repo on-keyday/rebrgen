@@ -76,6 +76,7 @@ namespace rebgn {
             case AbstractOp::PHI:
             case AbstractOp::ASSIGN:
             case AbstractOp::DEFINE_FIELD:
+            case AbstractOp::DEFINE_BIT_FIELD:
             case AbstractOp::DEFINE_PROPERTY:
             case AbstractOp::DEFINE_VARIABLE:
             case AbstractOp::DECLARE_VARIABLE:

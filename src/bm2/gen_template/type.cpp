@@ -142,7 +142,7 @@ namespace rebgn {
             type_hook([&] {
                 std::map<std::string, std::string> map{
                     {"TYPE", "\",base_type,\""},
-                    {"LENGTH", "\",futils::number::to_string<std::string>(length),\""},
+                    {"LEN", "\",futils::number::to_string<std::string>(length),\""},
                 };
                 auto escaped = env_escape_and_concat(flags, type, ENV_FLAG(array_type), map);
                 if (USE_FLAG_BASE(type, byte_array_type).size()) {

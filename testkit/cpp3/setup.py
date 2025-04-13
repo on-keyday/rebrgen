@@ -45,6 +45,7 @@ if __name__ == "__main__":
         CONFIG_DIR = os.path.dirname(CONFIG)
         run_command(["g++", MAIN, GENERATED, "-o", EXEC])
         
+        
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

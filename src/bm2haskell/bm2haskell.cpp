@@ -77,7 +77,7 @@ namespace bm2haskell {
                 auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
                 auto length = storage.size()->value(); //array length
                 if (is_byte_vector) {
-                    return futils::strutil::concat<std::string>("std::array<std::uint8_t, >");
+                    return futils::strutil::concat<std::string>("std::array<std::uint8_t, ",futils::number::to_string<std::string>(length),">");
                 }
                 return futils::strutil::concat<std::string>("Array Int ",base_type,"");
             }
@@ -302,6 +302,10 @@ namespace bm2haskell {
             auto ident_ref = code.ident().value(); //reference of variable value
             auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+            result = field_accessor(code,ctx);
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
@@ -926,8 +930,7 @@ namespace bm2haskell {
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
-                w.write(" ");
-                w.write(" ", ident, " :: (");
+                w.write(ident, " :: (");
                 add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 if(ret_type) {

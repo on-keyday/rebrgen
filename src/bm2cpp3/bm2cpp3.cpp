@@ -77,9 +77,9 @@ namespace bm2cpp3 {
                 auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
                 auto length = storage.size()->value(); //array length
                 if (is_byte_vector) {
-                    return futils::strutil::concat<std::string>("std::array<std::uint8_t, >");
+                    return futils::strutil::concat<std::string>("std::array<std::uint8_t, ",futils::number::to_string<std::string>(length),">");
                 }
-                return futils::strutil::concat<std::string>("std::array<",base_type,", >");
+                return futils::strutil::concat<std::string>("std::array<",base_type,", ",futils::number::to_string<std::string>(length),">");
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
@@ -200,7 +200,13 @@ namespace bm2cpp3 {
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
             auto belong_eval = field_accessor(ctx.ref(belong),ctx); //field accessor
-            result = belong_eval;
+            if(is_member) {
+                auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
+                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+            }
+            else {
+                result = make_eval_result(ident);
+            }
             break;
         }
         default: {
@@ -309,6 +315,10 @@ namespace bm2cpp3 {
             auto ident_ref = code.ident().value(); //reference of variable value
             auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+            result = field_accessor(code,ctx);
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {
@@ -734,14 +744,14 @@ namespace bm2cpp3 {
                 if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
-                w.write(" ");
                 if(ret_type) {
                     w.write(*ret_type);
                 }
                 else {
                     w.write("void");
                 }
-                w.write(" ", ident, "(");
+                w.write(" ");
+                w.write(ident, "(");
                 add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 w.writeln(";");
@@ -762,14 +772,14 @@ namespace bm2cpp3 {
                 if(auto belong = ctx.ref(func).belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
-                w.write(" ");
                 if(ret_type) {
                     w.write(*ret_type);
                 }
                 else {
                     w.write("void");
                 }
-                w.write(" ", ident, "(");
+                w.write(" ");
+                w.write(ident, "(");
                 add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 w.writeln(";");
@@ -790,7 +800,6 @@ namespace bm2cpp3 {
                 if(auto belong = ctx.ref(ref).belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
-                // load hook: block_declare_function
                 if(ret_type) {
                     w.write(*ret_type);
                 }
@@ -798,12 +807,10 @@ namespace bm2cpp3 {
                     w.write("void");
                 }
                 w.write(" ");
-                w.write(ident);
-                w.write("(");
-                add_parameter(ctx,w,inner_range);
+                w.write(ident, "(");
+                add_parameter(ctx, w, inner_range);
                 w.write(") ");
                 w.writeln(";");
-                // end hook: block_declare_function
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM: {
@@ -967,17 +974,26 @@ namespace bm2cpp3 {
                 if(auto belong = code.belong();belong&&belong->value()!=0) {
                     belong_name = ctx.ident(belong.value());
                 }
-                w.write(" ");
+                // load hook: func_define_function
                 if(ret_type) {
                     w.write(*ret_type);
                 }
                 else {
                     w.write("void");
                 }
-                w.write(" ", ident, "(");
-                add_parameter(ctx, w, inner_range);
+                w.write(" ");
+                if(belong_name) {
+                    w.write(*belong_name,"::");
+                }
+                w.write(ident);
+                w.write("(");
+                add_parameter(ctx,w,inner_range);
                 w.write(") ");
+                if(ret_type) {
+                    w.write(*ret_type);
+                }
                 w.writeln("{");
+                // end hook: func_define_function
                 defer.push_back(w.indent_scope_ex());
                 break;
             }

@@ -7,7 +7,10 @@
 
 namespace rebgn {
     void write_func_decl(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
-        inner_function.writeln("w.write(\"", USE_FLAG(func_keyword), " \");");
+        auto& keyword = USE_FLAG(func_keyword);
+        if (keyword.size()) {
+            inner_function.writeln("w.write(\"", keyword, " \");");
+        }
         if (!USE_FLAG(trailing_return_type)) {
             inner_function.writeln("if(ret_type) {");
             inner_function.indent_writeln("w.write(*ret_type);");
@@ -15,8 +18,9 @@ namespace rebgn {
             inner_function.writeln("else {");
             inner_function.indent_writeln("w.write(\"", USE_FLAG(func_void_return_type), "\");");
             inner_function.writeln("}");
+            inner_function.writeln("w.write(\" \");");
         }
-        inner_function.writeln("w.write(\" \", ident, \"", USE_FLAG(func_brace_ident_separator), "(\");");
+        inner_function.writeln("w.write(ident, \"", USE_FLAG(func_brace_ident_separator), "(\");");
         inner_function.writeln("add_parameter(ctx, w, inner_range);");
         inner_function.writeln("w.write(\") \");");
         if (USE_FLAG(trailing_return_type)) {

@@ -79,7 +79,7 @@ namespace bm2go {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
                 auto is_byte_vector = index + 1 < s.storages.size() && s.storages[index + 1].type == rebgn::StorageType::UINT && s.storages[index + 1].size().value().value() == 8; //is byte vector
                 auto length = storage.size()->value(); //array length
-                return futils::strutil::concat<std::string>("[]",base_type,"");
+                return futils::strutil::concat<std::string>("[",futils::number::to_string<std::string>(length),"]",base_type,"");
             }
             case rebgn::StorageType::VECTOR: {
                 auto base_type = type_to_string_impl(ctx, s, bit_size, index + 1); //base type
@@ -304,6 +304,10 @@ namespace bm2go {
             auto ident_ref = code.ident().value(); //reference of variable value
             auto ident = ctx.ident(ident_ref); //identifier of variable value
             result = make_eval_result(ident);
+            break;
+        }
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
+            result = field_accessor(code,ctx);
             break;
         }
         case rebgn::AbstractOp::INPUT_BYTE_OFFSET: {

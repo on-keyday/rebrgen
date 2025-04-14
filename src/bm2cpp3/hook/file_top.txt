@@ -7,3 +7,8 @@
 // https://github.com/on-keyday/rebrgen
 
 #include <cstdint>
+#include <vector>
+#include <array>
+#include <optional>
+#include <variant>
+#include <iostream>

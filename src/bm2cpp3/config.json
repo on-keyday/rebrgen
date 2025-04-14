@@ -27,7 +27,7 @@
     "block_end_type": "};",
     "prior_ident": false,
     "struct_keyword": "struct",
-    "enum_keyword": "enum",
+    "enum_keyword": "enum class",
     "define_var_keyword": "",
     "define_const_keyword": "const",
     "var_type_separator": " ",

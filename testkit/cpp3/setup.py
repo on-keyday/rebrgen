@@ -4,14 +4,23 @@ import sys
 import os
 import subprocess
 import shutil
+import pathlib as pl
+import json
 
 def run_command(args):
     print("run command: ", args)
-    return subprocess.check_call(args,stdout = sys.stdout, stderr = sys.stderr)
+    ret = subprocess.call(args,stdout = sys.stdout, stderr = sys.stderr)
+    if ret != 0:
+        print(f"Command failed with exit code {ret}")
+        exit(ret)
 
 def capture_command(args):
     print("run command with capture: ", args)
-    return subprocess.check_output(args,stderr = sys.stderr)
+    ret = subprocess.run(args,stderr = sys.stderr,stdout = subprocess.PIPE)
+    if ret.returncode != 0:
+        print(f"Command failed with exit code {ret.returncode}")
+        exit(ret.returncode)
+    return ret.stdout
 
 def copy_file(src, dst):
     print("copy file: {} -> {}".format(src, dst))
@@ -43,7 +52,10 @@ if __name__ == "__main__":
         DEBUG = sys.argv[6]
         CONFIG = sys.argv[7]
         CONFIG_DIR = os.path.dirname(CONFIG)
-        run_command(["g++", MAIN, GENERATED, "-o", EXEC])
+        file = read_file(MAIN)
+        file = file.replace(GENERATED,pl.Path(GENERATED).absolute().as_posix())
+        write_file(MAIN,file)
+        run_command(["clang++", MAIN, "-o", EXEC])
         
         
     elif MODE == "run":

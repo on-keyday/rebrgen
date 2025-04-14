@@ -1,6 +1,27 @@
 [
     {
-        "binary": "./binary_data/varint.dat",
+        "binary": "./binary_data/varint/1byte.dat",
+        "format_name": "Varint",
+        "file_base": "save",
+        "failure_case": false,
+        "hex": true
+    },
+    {
+        "binary": "./binary_data/varint/2byte.dat",
+        "format_name": "Varint",
+        "file_base": "save",
+        "failure_case": false,
+        "hex": true
+    },
+    {
+        "binary": "./binary_data/varint/4byte.dat",
+        "format_name": "Varint",
+        "file_base": "save",
+        "failure_case": false,
+        "hex": true
+    },
+    {
+        "binary": "./binary_data/varint/8byte.dat",
         "format_name": "Varint",
         "file_base": "save",
         "failure_case": false,

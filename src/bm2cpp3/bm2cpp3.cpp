@@ -821,7 +821,7 @@ namespace bm2cpp3 {
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
-                w.write("enum ", ident);
+                w.write("enum class ", ident);
                 if(base_type) {
                     w.write("  :  ", *base_type);
                 }
@@ -1589,6 +1589,11 @@ namespace bm2cpp3 {
             w.writeln("// https://github.com/on-keyday/rebrgen");
             w.writeln("");
             w.writeln("#include <cstdint>");
+            w.writeln("#include <vector>");
+            w.writeln("#include <array>");
+            w.writeln("#include <optional>");
+            w.writeln("#include <variant>");
+            w.writeln("#include <iostream>");
             // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {

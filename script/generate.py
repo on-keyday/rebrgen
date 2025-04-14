@@ -8,7 +8,13 @@ SRC2JSON = (
     "C:/workspace/shbrgen/brgen/tool/src2json" if len(sys.argv) < 5 else sys.argv[4]
 )
 
-LANG_LIST = ["c", "python", "haskell", "go", "cpp3"]
+LANG_LIST = [
+    "c",
+    "python",
+    "haskell",
+    "go",
+    "cpp3",
+]
 
 for lang in LANG_LIST:
     sp.run(

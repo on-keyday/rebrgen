@@ -68,8 +68,7 @@ def generate_cmptest_glue_files(config_dir, output_dir, save_dir_base):
             TARGETS = json.load(f)
     for config_file in config_files:
         LANG_NAME, CMPTEST_JSON, CMPTEST_PY = generate_cmptest_glue(config_file)
-        if len(TARGETS) > 0 and LANG_NAME not in TARGETS:
-            continue
+
         os.makedirs(os.path.join(output_dir, LANG_NAME), exist_ok=True)
         conf_name = os.path.join(output_dir, LANG_NAME, f"cmptest.json")
         with open(conf_name, "w") as f:
@@ -90,21 +89,22 @@ def generate_cmptest_glue_files(config_dir, output_dir, save_dir_base):
                 f.write("You have to write test code here...")
         save_dir = os.path.join(save_dir_base, LANG_NAME)
         conf_name = pl.Path(conf_name).as_posix()
-        conf_names.append(conf_name)
-        test_info.append(
-            {
-                "dir": save_dir,
-                "base": "save",
-                "suffix": "." + CMPTEST_JSON["suffix"],
-            },
-        )
-        test_info.append(
-            {
-                "dir": save_dir,
-                "base": "save." + CMPTEST_JSON["suffix"],
-                "suffix": ".json",
-            },
-        )
+        if len(TARGETS) == 0 or LANG_NAME in TARGETS:
+            conf_names.append(conf_name)
+            test_info.append(
+                {
+                    "dir": save_dir,
+                    "base": "save",
+                    "suffix": "." + CMPTEST_JSON["suffix"],
+                },
+            )
+            test_info.append(
+                {
+                    "dir": save_dir,
+                    "base": "save." + CMPTEST_JSON["suffix"],
+                    "suffix": ".json",
+                },
+            )
     INPUTS = []
     if os.path.exists(os.path.join(output_dir, "inputs.json")):
         with open(os.path.join(output_dir, "inputs.json"), "r") as f:

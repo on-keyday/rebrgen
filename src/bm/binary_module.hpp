@@ -1356,18 +1356,20 @@ namespace rebgn {
     enum class FunctionType : std::uint8_t {
         FREE = 0,
         MEMBER = 1,
-        ENCODE = 2,
-        DECODE = 3,
-        BIT_GETTER = 4,
-        BIT_SETTER = 5,
-        UNION_GETTER = 6,
-        UNION_SETTER = 7,
-        VECTOR_SETTER = 8,
+        CAST = 2,
+        ENCODE = 3,
+        DECODE = 4,
+        BIT_GETTER = 5,
+        BIT_SETTER = 6,
+        UNION_GETTER = 7,
+        UNION_SETTER = 8,
+        VECTOR_SETTER = 9,
     };
     constexpr const char* to_string(FunctionType e) {
         switch(e) {
             case FunctionType::FREE: return "FREE";
             case FunctionType::MEMBER: return "MEMBER";
+            case FunctionType::CAST: return "CAST";
             case FunctionType::ENCODE: return "ENCODE";
             case FunctionType::DECODE: return "DECODE";
             case FunctionType::BIT_GETTER: return "BIT_GETTER";
@@ -1388,6 +1390,9 @@ namespace rebgn {
         }
         if (str == "MEMBER") {
             return FunctionType::MEMBER;
+        }
+        if (str == "CAST") {
+            return FunctionType::CAST;
         }
         if (str == "ENCODE") {
             return FunctionType::ENCODE;

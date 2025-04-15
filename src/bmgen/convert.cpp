@@ -1202,7 +1202,12 @@ namespace rebgn {
                     c.func_type(FunctionType::FREE);
                 }
                 else {
-                    c.func_type(FunctionType::MEMBER);
+                    if (node->is_cast) {
+                        c.func_type(FunctionType::CAST);
+                    }
+                    else {
+                        c.func_type(FunctionType::MEMBER);
+                    }
                 }
             }
         });

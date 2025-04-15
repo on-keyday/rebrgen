@@ -12,6 +12,8 @@ format Varint:
         2 => value :u30
         3 => value :u62
 
+    fn u64() -> u64:
+        return value
 
 # from ast_enum.bgn
 enum BinaryOp:
@@ -230,7 +232,7 @@ enum AbstractOp:
     IMMEDIATE_CHAR
     IMMEDIATE_STRING
     IMMEDIATE_TYPE
-    IMMEDIATE_CONST
+    
 
     NEW_OBJECT
     INIT_RECURSIVE_STRUCT
@@ -435,6 +437,7 @@ enum FunctionType:
     :u8
     FREE
     MEMBER
+    CAST
     ENCODE
     DECODE
     BIT_GETTER

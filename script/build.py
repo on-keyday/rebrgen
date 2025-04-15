@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 
+
 print("Building...", sys.argv)
 BUILD_TYPE = sys.argv[2] if len(sys.argv) > 2 else "Debug"
 BUILD_MODE = sys.argv[1] if len(sys.argv) > 1 else "native"
@@ -96,7 +97,7 @@ if BUILD_MODE == "native":
         stderr=sys.stderr,
     )
     subprocess.run(
-        ["cmake", "--build", f"./built/{BUILD_MODE}/{BUILD_TYPE}"],
+        ["cmake", "--build", f"./built/{BUILD_MODE}/{BUILD_TYPE}", "--", "-j", "1"],
         check=True,
         stdout=sys.stdout,
         stderr=sys.stderr,

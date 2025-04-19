@@ -275,7 +275,7 @@ namespace rebgn {
         w.indent_writeln("def.execute();");
         w.writeln("}");
 
-        if (flags.format_nested_function != "define") {
+        if (flags.format_nested_function != "define" && flags.format_nested_function != "none") {
             w.writeln("for (size_t i = 0; i < bm.ident_ranges.ranges.size(); i++) {");
             auto _scope = w.indent_scope();
             w.writeln("auto& range = bm.ident_ranges.ranges[i];");

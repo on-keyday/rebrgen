@@ -110,6 +110,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string func_type_separator = " ";
     std::string func_void_return_type = "void";
     bool prior_ident = false;
+    std::string define_variable = "";
+    std::string define_field = "";
+    std::string define_bit_field = "";
+    std::string define_parameter = "";
+
     std::string if_keyword = "if";
     std::string elif_keyword = "else if";
     std::string else_keyword = "else";
@@ -174,7 +179,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string keyword_escape_style = "${VALUE}_";
 
     bool compact_bit_field = false;
-    std::string format_nested_function = "";  // "", declare, define
+    std::string format_nested_function = "";  // "", declare, define, none
     bool format_nested_struct = false;
 
 #define USE_FLAG_BASE(op, name) use_flag(flags, op, #name, __FILE__, __func__, __LINE__, flags.name)
@@ -209,6 +214,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(otbs_on_block_end, "otbs_on_block_end")                         \
     MACRO_NAME(block_end_type, "block_end_type")                               \
     MACRO_NAME(prior_ident, "prior_ident")                                     \
+    MACRO_NAME(define_variable, "define_variable")                             \
+    MACRO_NAME(define_field, "define_field")                                   \
     MACRO_NAME(struct_keyword, "struct_keyword")                               \
     MACRO_NAME(enum_keyword, "enum_keyword")                                   \
     MACRO_NAME(define_var_keyword, "define_var_keyword")                       \

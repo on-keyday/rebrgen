@@ -122,7 +122,16 @@ namespace rebgn {
                 define_type(inner_function, flags, op, "type", code_ref(flags, "type"), "variable");
             }
             func_hook([&] {
-                if (USE_FLAG(omit_type_on_define_var)) {
+                if (auto& key = USE_FLAG(define_variable); key.size()) {
+                    std::map<std::string, std::string> map{
+                        {"IDENT", "\",ident,\""},
+                        {"INIT", "\",init.result,\""},
+                        {"TYPE", "\",type,\""},
+                    };
+                    auto escaped = env_escape(flags, op, ENV_FLAG(define_variable), map);
+                    inner_function.writeln("w.writeln(\"", escaped, USE_FLAG(end_of_statement), "\");");
+                }
+                else if (USE_FLAG(omit_type_on_define_var)) {
                     inner_function.writeln("w.writeln(std::format(\"", USE_FLAG(define_var_keyword), "{} ", USE_FLAG(define_var_assign), " {}", USE_FLAG(end_of_statement), "\", ident, init.result));");
                 }
                 else {

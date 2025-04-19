@@ -39,7 +39,15 @@ namespace rebgn {
                     define_type(add_parameter, flags, op, "type", code_ref(flags, "type"), "parameter type");
                 }
                 param_hook([&] {
-                    if (USE_FLAG(prior_ident)) {
+                    if (auto& key = USE_FLAG(define_parameter); key.size()) {
+                        std::map<std::string, std::string> param_map = {
+                            {"IDENT", "\",ident,\""},
+                            {"TYPE", "\",type,\""},
+                        };
+                        auto escaped = env_escape(flags, op, ENV_FLAG(define_parameter), param_map);
+                        add_parameter.writeln("w.write(\"", escaped, "\");");
+                    }
+                    else if (USE_FLAG(prior_ident)) {
                         add_parameter.writeln("w.write(ident, \" ", USE_FLAG(param_type_separator), "\", type);");
                     }
                     else {

@@ -1,0 +1,8 @@
+!@section block_define_format.txt
+w.writeln("meta:");
+{
+    auto scope = w.indent_scope();
+    w.writeln("id: \"",ident,"\"");
+}
+w.writeln("seq:");
+defer.push_back(w.indent_scope_ex());

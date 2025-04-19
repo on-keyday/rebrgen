@@ -14,6 +14,7 @@ LANG_LIST = [
     "haskell",
     "go",
     "cpp3",
+    "kaitai"
 ]
 
 for lang in LANG_LIST:

@@ -1,0 +1,27 @@
+{
+    "suffix": "ksy",
+    "test_template": "./testkit/kaitai/test_template.ksy",
+    "replace_file_name": "stub.ksy",
+    "replace_struct_name": "TEST_CLASS",
+    "build_output_name": "build_output",
+    "build_input_name": "main.ksy",
+    "build_command": [
+        "python",
+        "./testkit/kaitai/setup.py",
+        "build",
+        "$INPUT",
+        "$OUTPUT",
+        "$ORIGIN",
+        "$TMPDIR",
+        "$DEBUG",
+        "$CONFIG"
+    ],
+    "run_command": [
+        "python",
+        "./testkit/kaitai/setup.py",
+        "run",
+        "$EXEC",
+        "$INPUT",
+        "$OUTPUT"
+    ]
+}

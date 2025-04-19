@@ -114,6 +114,22 @@ if not cached:
     with open("save/haskell/save.hs", "wb") as f:
         f.write(src)
     print(f"Generated: save/haskell/save.hs")
+os.makedirs("save/kaitai", exist_ok=True)
+
+src = sp.check_output(
+    ["tool/bm2kaitai", "-i", "save/save.bin","--test-info","save/kaitai/save.ksy.json"],
+    stderr=sys.stderr,
+)
+cached = False
+if os.path.exists("save/kaitai/save.ksy"):
+    with open("save/kaitai/save.ksy", "rb") as f:
+        if f.read() == src:
+            print(f"Cached: save/kaitai/save.ksy")
+            cached = True
+if not cached:
+    with open("save/kaitai/save.ksy", "wb") as f:
+        f.write(src)
+    print(f"Generated: save/kaitai/save.ksy")
 os.makedirs("save/python", exist_ok=True)
 
 src = sp.check_output(

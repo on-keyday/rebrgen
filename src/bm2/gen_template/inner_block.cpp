@@ -166,7 +166,16 @@ namespace rebgn {
             define_ref(inner_block, flags, op, "belong", code_ref(flags, "belong"), "belonging struct or bit field");
             block_hook([&] {
                 if (USE_FLAG(compact_bit_field)) {
-                    if (USE_FLAG(prior_ident)) {
+                    if (auto& key = USE_FLAG(define_bit_field); key.size()) {
+                        std::map<std::string, std::string> map{
+                            {"IDENT", "\",ident,\""},
+                            {"FULL_IDENT", "\",type_accessor(ctx.ref(belong),ctx),\""},
+                            {"TYPE", "\",type,\""},
+                        };
+                        auto escaped = env_escape(flags, op, ENV_FLAG(define_bit_field), map);
+                        inner_block.writeln("w.writeln(\"", escaped, USE_FLAG(field_end), "\");");
+                    }
+                    else if (USE_FLAG(prior_ident)) {
                         inner_block.writeln("w.writeln(ident, \" ", USE_FLAG(field_type_separator), "\", type, \"", USE_FLAG(field_end), "\");");
                     }
                     else {
@@ -194,12 +203,22 @@ namespace rebgn {
                     inner_block.writeln("if (!is_bit_field) {");
                     defer = inner_block.indent_scope_ex();
                 }
-                if (USE_FLAG(prior_ident)) {
+                if (auto& key = USE_FLAG(define_field); key.size()) {
+                    std::map<std::string, std::string> map{
+                        {"IDENT", "\",ident,\""},
+                        {"FULL_IDENT", "\",type_accessor(ctx.ref(belong),ctx),\""},
+                        {"TYPE", "\",type,\""},
+                    };
+                    auto escaped = env_escape(flags, op, ENV_FLAG(define_field), map);
+                    inner_block.writeln("w.writeln(\"", escaped, USE_FLAG(field_end), "\");");
+                }
+                else if (USE_FLAG(prior_ident)) {
                     inner_block.writeln("w.writeln(ident, \" ", USE_FLAG(field_type_separator), "\", type, \"", USE_FLAG(field_end), "\");");
                 }
                 else {
                     inner_block.writeln("w.writeln(type, \" ", USE_FLAG(field_type_separator), "\", ident, \"", USE_FLAG(field_end), "\");");
                 }
+
                 if (USE_FLAG(compact_bit_field)) {
                     defer.execute();
                     inner_block.writeln("}");

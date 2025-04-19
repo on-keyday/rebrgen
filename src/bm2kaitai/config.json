@@ -65,9 +65,9 @@
     "property_setter_ok": "return true",
     "property_setter_fail": "return false",
     "coder_success": "return true",
-    "variant_mode": "union",
+    "variant_mode": "algebraic",
     "algebraic_variant_separator": "|",
-    "algebraic_variant_type": "$TYPES",
+    "algebraic_variant_type": "$VARIANT",
     "check_union_condition": "!std::holds_alternative<$MEMBER_INDEX>($FIELD_IDENT)",
     "check_union_fail_return_value": "false",
     "switch_union": "$FIELD_IDENT = $MEMBER_IDENT()",
@@ -92,5 +92,5 @@
     "reserve_size_static": "",
     "access_style": "$BASE.$IDENT",
     "enum_access_style": "$BASE::$IDENT",
-    "format_nested_struct": true
+    "format_nested_struct": false
 }

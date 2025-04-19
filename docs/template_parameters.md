@@ -388,7 +388,7 @@ Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### self_param
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:147
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:149
 Function Name: write_parameter_func
 ### DEFINE_PROPERTY
 #### Variables: 
@@ -2914,7 +2914,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### decoder_param
 Flag Value: `Decoder& w`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:65
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:67
 Function Name: operator()
 ### DEFINE_PARAMETER
 #### Variables: 
@@ -2942,11 +2942,11 @@ File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:48
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:52
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ### ENCODER_PARAMETER
 #### Variables: 
@@ -2954,7 +2954,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### encoder_param
 Flag Value: `Encoder& w`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:59
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:61
 Function Name: operator()
 ### PROPERTY_INPUT_PARAMETER
 #### Variables: 
@@ -2982,11 +2982,11 @@ File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:48
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:52
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ### STATE_VARIABLE_PARAMETER
 #### Variables: 
@@ -3014,11 +3014,11 @@ File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:48
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:52
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ## function `add_call_parameter`
 ### PROPERTY_INPUT_PARAMETER

@@ -7,6 +7,10 @@
 namespace bm2kaitai {
     using TmpCodeWriter = bm2::TmpCodeWriter;
     struct Context : bm2::Context {
+        // load hook: bm_context
+        TmpCodeWriter struct_writer;
+        TmpCodeWriter enum_writer;
+        // end hook: bm_context
         Context(::futils::binary::writer& w, const rebgn::BinaryModule& bm,bm2::Output& output, auto&& escape_ident) : bm2::Context{w, bm,output,"r","w","(*this)", std::move(escape_ident)} {}
     };
     struct EvalResult {
@@ -96,7 +100,14 @@ namespace bm2kaitai {
                 for (size_t i = index + 1; i < s.storages.size(); i++) {
                     types.push_back(type_to_string_impl(ctx, s, bit_size, i));
                 }
-                return ident;
+                std::string result;
+                for (size_t i = 0; i < types.size(); i++) {
+                    if (i != 0) {
+                        result += " | ";
+                    }
+                    result += types[i];
+                }
+                return futils::strutil::concat<std::string>("",ident,"");
             }
             case rebgn::StorageType::CODER_RETURN: {
                 return "bool";
@@ -671,13 +682,10 @@ namespace bm2kaitai {
                 auto is_empty_block = range.start ==range.end - 2; //is empty block
                 ctx.output.struct_names.push_back(ident);
                 // load hook: block_define_format
-                w.writeln("meta:");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("id: \"",ident,"\"");
-                }
+                w.writeln(ident,":");
+                auto scope = w.indent_scope();
                 w.writeln("seq:");
-                defer.push_back(w.indent_scope_ex());
+                defer.push_back(futils::helper::defer_ex([scope = std::move(scope) ,s =w.indent_scope()](){}));
                 // end hook: block_define_format
                 break;
             }
@@ -690,7 +698,11 @@ namespace bm2kaitai {
                 auto ref = code.ref().value(); //reference of FORMAT
                 auto inner_range = ctx.range(code.ref().value()); //range of FORMAT
                 auto ident = ctx.ident(ref); //identifier of FORMAT
-                inner_block(ctx, w, inner_range);
+                // load hook: block_declare_format
+                TmpCodeWriter ib;
+                inner_block(ctx,ib,inner_range);
+                ctx.struct_writer.write_unformatted(ib.out());
+                // end hook: block_declare_format
                 break;
             }
             case rebgn::AbstractOp::DEFINE_FIELD: {
@@ -702,7 +714,10 @@ namespace bm2kaitai {
                 auto ident = ctx.ident(ident_ref); //identifier of field
                 auto belong = code.belong().value(); //reference of belonging struct or bit field
                 auto is_bit_field = belong.value()!=0&&ctx.ref(belong).op==rebgn::AbstractOp::DEFINE_BIT_FIELD; //is part of bit field
-                w.writeln(type, "  ", ident, ";");
+                // load hook: block_define_field
+                w.writeln("- id: ",ident);
+                w.writeln("  type: ",type);
+                // end hook: block_define_field
                 break;
             }
             case rebgn::AbstractOp::DEFINE_PROPERTY: {
@@ -777,12 +792,10 @@ namespace bm2kaitai {
                 if(base_type_ref.ref.value() != 0) {
                     base_type = type_to_string(ctx,base_type_ref);
                 }
-                w.write("enum ", ident);
-                if(base_type) {
-                    w.write("  :  ", *base_type);
-                }
-                w.writeln(" ");
+                // load hook: block_define_enum
+                w.writeln(ident,":");
                 defer.push_back(w.indent_scope_ex());
+                // end hook: block_define_enum
                 break;
             }
             case rebgn::AbstractOp::END_ENUM: {
@@ -794,7 +807,9 @@ namespace bm2kaitai {
                 auto ref = code.ref().value(); //reference of ENUM
                 auto inner_range = ctx.range(code.ref().value()); //range of ENUM
                 auto ident = ctx.ident(ref); //identifier of ENUM
-                inner_block(ctx, w, inner_range);
+                // load hook: block_declare_enum
+                inner_block(ctx,ctx.enum_writer,inner_range);
+                // end hook: block_declare_enum
                 break;
             }
             case rebgn::AbstractOp::DEFINE_ENUM_MEMBER: {
@@ -804,34 +819,39 @@ namespace bm2kaitai {
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //enum member value
                 auto enum_ident_ref = code.belong().value(); //reference of enum
                 auto enum_ident = ctx.ident(enum_ident_ref); //identifier of enum
-                w.writeln(ident, " = ", evaluated.result, ",");
+                // load hook: block_define_enum_member
+                w.writeln(evaluated.result,": '",ident,"'");
+                // end hook: block_define_enum_member
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION: {
                 auto ident_ref = code.ident().value(); //reference of union
                 auto ident = ctx.ident(ident_ref); //identifier of union
                 auto is_empty_block = range.start ==range.end - 2; //is empty block
-                w.writeln("union ",ident, " ");
-                defer.push_back(w.indent_scope_ex());
                 break;
             }
             case rebgn::AbstractOp::END_UNION: {
-                defer.pop_back();
-                w.writeln("");
                 break;
             }
             case rebgn::AbstractOp::DECLARE_UNION: {
                 auto ref = code.ref().value(); //reference of UNION
                 auto inner_range = ctx.range(ref); //range of UNION
-                inner_block(ctx, w, inner_range);
+                TmpCodeWriter inner_w;
+                inner_block(ctx, inner_w, inner_range);
+                ctx.cw.write_unformatted(inner_w.out());
                 break;
             }
             case rebgn::AbstractOp::DEFINE_UNION_MEMBER: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
                 auto is_empty_block = range.start ==range.end - 2; //is empty block
-                w.writeln("struct ", ident, " ");
-                defer.push_back(w.indent_scope_ex());
+                // load hook: block_define_union_member
+                w.writeln(ident,":");
+                auto scope = w.indent_scope();
+                w.writeln("seq:");
+                defer.push_back(futils::helper::defer_ex([scope = std::move(scope) ,s =w.indent_scope()](){}));
+                
+                // end hook: block_define_union_member
                 break;
             }
             case rebgn::AbstractOp::END_UNION_MEMBER: {
@@ -842,15 +862,24 @@ namespace bm2kaitai {
             case rebgn::AbstractOp::DECLARE_UNION_MEMBER: {
                 auto ref = code.ref().value(); //reference of UNION_MEMBER
                 auto inner_range = ctx.range(ref); //range of UNION_MEMBER
-                inner_block(ctx, w, inner_range);
+                // load hook: block_declare_union_member
+                TmpCodeWriter ib;
+                inner_block(ctx,ib,inner_range);
+                ctx.struct_writer.write_unformatted(ib.out());
+                
+                // end hook: block_declare_union_member
                 break;
             }
             case rebgn::AbstractOp::DEFINE_STATE: {
                 auto ident_ref = code.ident().value(); //reference of format
                 auto ident = ctx.ident(ident_ref); //identifier of format
                 auto is_empty_block = range.start ==range.end - 2; //is empty block
-                w.writeln("struct ", ident, " ");
-                defer.push_back(w.indent_scope_ex());
+                // load hook: block_define_state
+                w.writeln(ident,":");
+                auto scope = w.indent_scope();
+                w.writeln("seq:");
+                defer.push_back(futils::helper::defer_ex([scope = std::move(scope) ,s =w.indent_scope()](){}));
+                // end hook: block_define_state
                 break;
             }
             case rebgn::AbstractOp::END_STATE: {
@@ -862,7 +891,11 @@ namespace bm2kaitai {
                 auto ref = code.ref().value(); //reference of STATE
                 auto inner_range = ctx.range(code.ref().value()); //range of STATE
                 auto ident = ctx.ident(ref); //identifier of STATE
-                inner_block(ctx, w, inner_range);
+                // load hook: block_declare_state
+                TmpCodeWriter ib;
+                inner_block(ctx,ib,inner_range);
+                ctx.struct_writer.write_unformatted(ib.out());
+                // end hook: block_declare_state
                 break;
             }
             case rebgn::AbstractOp::DEFINE_BIT_FIELD: {
@@ -1524,6 +1557,14 @@ namespace bm2kaitai {
     void to_kaitai(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            // load hook: escape_ident
+            for(auto& s:str) {
+                s = std::tolower(s);
+            }
+            if(str[0] < 'a' || str[0] > 'z') {
+                str = "x" + str;
+            }
+            // end hook: escape_ident
             escape_kaitai_keyword(str);
         }};
         // search metadata
@@ -1548,5 +1589,15 @@ namespace bm2kaitai {
         for (auto& def : ctx.on_functions) {
             def.execute();
         }
+        // load hook: file_bottom_before
+        ctx.cw.writeln("types:");
+        auto struct_w = ctx.cw.indent_scope();
+        ctx.cw.write_unformatted(ctx.struct_writer.out());
+        struct_w.execute();
+        ctx.cw.writeln("enums:");
+        auto enum_w = ctx.cw.indent_scope();
+        ctx.cw.write_unformatted(ctx.enum_writer.out()); 
+        enum_w.execute();
+        // end hook: file_bottom_before
     }
 }  // namespace bm2kaitai

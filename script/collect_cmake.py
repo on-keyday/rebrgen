@@ -59,8 +59,10 @@ with open(output, "w") as f:
     f.write("    stdout=sys.stdout,\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
+    f.write(f"INPUT = \"{INPUT}\" if len(sys.argv) < 2 else sys.argv[1]\n")
+    f.write("print(f\"Input: {INPUT}\")\n")
     f.write("save = sp.check_output(\n")
-    f.write(f"    [\"{SRC2JSON}\", \"{INPUT}\"],\n")
+    f.write(f"    [\"{SRC2JSON}\", INPUT],\n")
     f.write("    stderr=sys.stderr,\n")
     f.write(")\n")
     f.write("with open(\"save/sample.json\", \"wb\") as f:\n")
@@ -111,15 +113,15 @@ output = "script/run_generated.bat"
 with open(output, "w") as f:
     f.write("@echo off\n")
     f.write("setlocal\n")
-    f.write("python script/run_generated.py\n")
+    f.write("python script/run_generated.py %*\n")
 
 output = "script/run_generated.sh"
 
 with open(output, "wb") as f:
     f.write("#!/bin/bash\n".encode())
-    f.write("python script/run_generated.py\n".encode())
+    f.write("python script/run_generated.py \"$@\"\n".encode())
 output = "script/run_generated.ps1"
 
 with open(output, "w") as f:
     f.write("$ErrorActionPreference = 'Stop'\n")
-    f.write("python script/run_generated.py\n")
+    f.write("python script/run_generated.py @args\n")

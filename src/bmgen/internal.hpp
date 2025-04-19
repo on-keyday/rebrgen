@@ -691,7 +691,9 @@ namespace rebgn {
             }
         }
         if (node->cond) {
+            BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, &node->cond->loc);
             BM_GET_EXPR(cond, m, node->cond);
+            BM_END_COND_BLOCK(m.op, m.code, cond_block, cond);
             m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
                 c.ref(cond);
             });

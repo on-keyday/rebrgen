@@ -989,9 +989,6 @@ namespace bm2cpp3 {
                 w.write("(");
                 add_parameter(ctx,w,inner_range);
                 w.write(") ");
-                if(ret_type) {
-                    w.write(*ret_type);
-                }
                 w.writeln("{");
                 // end hook: func_define_function
                 defer.push_back(w.indent_scope_ex());

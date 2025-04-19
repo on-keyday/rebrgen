@@ -1,2 +1,2 @@
 $ErrorActionPreference = 'Stop'
-python script/run_generated.py
+python script/run_generated.py @args

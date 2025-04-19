@@ -8,8 +8,10 @@ sp.run(
     stdout=sys.stdout,
     stderr=sys.stderr,
 )
+INPUT = "src/test/test_cases.bgn" if len(sys.argv) < 2 else sys.argv[1]
+print(f"Input: {INPUT}")
 save = sp.check_output(
-    ["C:/workspace/shbrgen/brgen/tool/src2json", "src/test/test_cases.bgn"],
+    ["C:/workspace/shbrgen/brgen/tool/src2json", INPUT],
     stderr=sys.stderr,
 )
 with open("save/sample.json", "wb") as f:

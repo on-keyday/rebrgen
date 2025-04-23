@@ -113,4 +113,15 @@ namespace rebgn {
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, rebgn::StorageType op, bm2::HookFileSub sub = bm2::HookFileSub::main);
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, bool as_code);
 
+    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook,auto op, std::string_view variable_name, bm2::HookFileSub sub) {
+        auto op_name = to_string(op);
+        auto concat = std::format("{}_{}_var_{}{}", to_string(hook), op_name, variable_name, to_string(sub));
+        // to lower
+        for (auto& c : concat) {
+            c = std::tolower(c);
+        }
+        return may_write_from_hook(flags, concat, [&](size_t i, futils::view::rvec line, bool is_last) {
+            with_hook_comment(w, flags, concat, line, i, is_last);
+        });
+    }
 }  // namespace rebgn

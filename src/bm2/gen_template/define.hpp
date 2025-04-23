@@ -2,6 +2,7 @@
 #pragma once
 #include "flags.hpp"
 #include "../context.hpp"
+#include "hook_load.hpp"
 
 namespace rebgn {
     void may_add_doc_content(Flags& flags, auto op, std::string_view var_name, std::string_view type, std::string_view description, std::string_view init_expr) {
@@ -10,14 +11,21 @@ namespace rebgn {
         }
     }
 
-    void do_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
-        w.writeln("auto ", var_name, " = ", init_expr, "; //", description);
-        may_add_doc_content(flags, op, var_name, type, description, init_expr);
+    void do_variable_definition_internal(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view desc_type, std::string_view description) {                
+        may_write_from_hook(w,flags,flags.func_hook,op,var_name,bm2::HookFileSub::before);
+        if(!may_write_from_hook(w,flags,flags.func_hook,op,var_name,bm2::HookFileSub::main)) {
+            w.writeln(type, " ", var_name, " = ", init_expr, "; //", description);
+        }
+        may_write_from_hook(w,flags,flags.func_hook,op,var_name,bm2::HookFileSub::after);
+        may_add_doc_content(flags, op, var_name, desc_type, description, init_expr);
     }
 
     void do_typed_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
-        w.writeln(type, " ", var_name, " = ", init_expr, "; //", description);
-        may_add_doc_content(flags, op, var_name, type, description, init_expr);
+        do_variable_definition_internal(w, flags, op, var_name, init_expr, type, type, description);
+    }
+
+    void do_variable_definition(bm2::TmpCodeWriter& w, Flags& flags, auto op, std::string_view var_name, std::string_view init_expr, std::string_view type, std::string_view description) {
+        do_variable_definition_internal(w, flags, op, var_name, init_expr, "auto", type, description);
     }
 
     inline std::string code_ref(Flags& flags, std::string_view ref_name, std::string_view base = "code") {

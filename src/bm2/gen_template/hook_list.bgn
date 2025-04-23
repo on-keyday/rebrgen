@@ -61,6 +61,7 @@ enum HookFileSub:
     normal = "_normal" # normal case (e.g. normal of AbstractOp)
     enum_member = "_enum_member" # enum member case (e.g. enum member of AbstractOp)
     header = "_header" # header case (e.g. header of AbstractOp)
+    var_ = "_var" # variable case
 
 enum FuncName:
     eval

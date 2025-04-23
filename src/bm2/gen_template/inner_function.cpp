@@ -46,7 +46,7 @@ namespace rebgn {
     }
 
     void write_inner_function(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::inner_function);
+        flags.set_func_name(bm2::FuncName::inner_function,bm2::HookFile::inner_function_op);
         inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_function.indent_scope();
         auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {

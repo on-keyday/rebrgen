@@ -8,7 +8,7 @@
 namespace rebgn {
     void write_inner_block(bm2::TmpCodeWriter& inner_block,
                            AbstractOp op, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::inner_block);
+        flags.set_func_name(bm2::FuncName::inner_block,bm2::HookFile::inner_block_op);
         inner_block.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_block.indent_scope();
         auto block_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {

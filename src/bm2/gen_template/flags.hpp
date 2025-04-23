@@ -44,6 +44,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bm2::GenerateMode mode = bm2::GenerateMode::generator;
     std::map<bm2::FuncName, std::map<std::string, Content>> content;
     bm2::FuncName func_name = bm2::FuncName::eval;
+    bm2::HookFile func_hook=bm2::HookFile::eval_op;
     std::map<std::u8string, HookSection> hook_sections;
 
     bool requires_lang_option() const {
@@ -51,8 +52,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
                                  mode == bm2::GenerateMode::docs_markdown);
     }
 
-    void set_func_name(bm2::FuncName func_name) {
+    void set_func_name(bm2::FuncName func_name,bm2::HookFile hook) {
         this->func_name = func_name;
+        this->func_hook = hook;
     }
 
     std::string_view config_file = "config.json";

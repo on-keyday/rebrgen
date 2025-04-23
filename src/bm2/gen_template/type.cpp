@@ -8,7 +8,7 @@
 namespace rebgn {
 
     void write_type_to_string(bm2::TmpCodeWriter& type_to_string, StorageType type, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::type_to_string);
+        flags.set_func_name(bm2::FuncName::type_to_string,bm2::HookFile::type_op);
         auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
             if (sub == bm2::HookFileSub::main) {
                 may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, bm2::HookFileSub::pre_main);

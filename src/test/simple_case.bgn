@@ -3,3 +3,11 @@ format Simple:
     hello :u8
     world :u16
     data :[10]u8
+    len :u8
+    var_data :[len]u8
+    bit_field1 :u1
+    bit_field2 :u2
+    bit_field3 :u3
+    bit_field4: u2
+
+

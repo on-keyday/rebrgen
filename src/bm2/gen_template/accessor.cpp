@@ -17,7 +17,7 @@ namespace rebgn {
         };
 
         auto add_start = [&](auto&& inner) {
-            flags.set_func_name(bm2::FuncName::field_accessor);
+            flags.set_func_name(bm2::FuncName::field_accessor,bm2::HookFile::field_accessor_op);
             field_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = field_accessor.indent_scope();
             field_accessor_hook([&] {}, bm2::HookFileSub::before);
@@ -37,7 +37,7 @@ namespace rebgn {
             }
         };
         auto add_type_start = [&](auto&& inner) {
-            flags.set_func_name(bm2::FuncName::type_accessor);
+            flags.set_func_name(bm2::FuncName::type_accessor,bm2::HookFile::type_accessor_op);
             type_accessor.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = type_accessor.indent_scope();
             type_accessor_hook([&] {}, bm2::HookFileSub::before);

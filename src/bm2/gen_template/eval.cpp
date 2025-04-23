@@ -33,7 +33,7 @@ namespace rebgn {
     }
 
     void write_eval(bm2::TmpCodeWriter& eval, AbstractOp op, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::eval);
+        flags.set_func_name(bm2::FuncName::eval,bm2::HookFile::eval_op);
         eval.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = eval.indent_scope();
         auto eval_hook = [&](auto&& default_action, bm2::HookFileSub stage = bm2::HookFileSub::main) {

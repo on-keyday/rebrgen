@@ -9,7 +9,7 @@ namespace rebgn {
     void write_add_parameter(bm2::TmpCodeWriter& add_parameter,
                              bm2::TmpCodeWriter& add_call_parameter,
                              AbstractOp op, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::add_parameter);
+        flags.set_func_name(bm2::FuncName::add_parameter,bm2::HookFile::param_op);
         if (op != AbstractOp::RETURN_TYPE) {
             add_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope = add_parameter.indent_scope();
@@ -79,7 +79,7 @@ namespace rebgn {
             scope.execute();
             add_parameter.writeln("}");
 
-            flags.set_func_name(bm2::FuncName::add_call_parameter);
+            flags.set_func_name(bm2::FuncName::add_call_parameter,bm2::HookFile::call_param_op);
             add_call_parameter.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
             auto scope_call = add_call_parameter.indent_scope();
             auto call_param_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {

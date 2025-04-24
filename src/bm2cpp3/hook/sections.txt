@@ -23,9 +23,10 @@ w.write(") ");
 w.writeln("{");
 !@section func_append_var_vector_eval_before.txt
 ctx.on_assign = true;
+!@copy_section func_assign_var_left_eval_before.txt
 !@section func_append_var_vector_eval_after.txt
 ctx.on_assign = false;
-
+!@copy_section func_assign_var_left_eval_after.txt
 !@section escape_ident.txt
 if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
     if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER || code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
@@ -56,5 +57,21 @@ w.writeln("if (!w.write(futils::view::rvec(",vector_value.result,").substr(0,",s
 w.writeln("  return false; // write ",vector_value.result," failed");
 w.writeln("}");
 !@copy_section func_encode_int_vector_fixed_bytes.txt
+!@section func_decode_int_vector_bytes.txt
+w.writeln("if (!r.read(",vector_value.result,",",size_value.result,")) {");
+w.writeln("  return false; // read ",vector_value.result," failed");
+w.writeln("}");
+!@section func_decode_int_vector_fixed_bytes.txt
+w.writeln("if (!r.read(futils::view::wvec(",vector_value.result,").substr(0,",size_value.result,"))) {");
+w.writeln("  return false; // read ",vector_value.result," failed");
+w.writeln("}");
 !@section field_accessor_define_union_member.txt
 result = make_eval_result(std::format("std::get<{}>({})",ident,union_field_eval.result));
+!@section func_assign.txt
+if(ctx.ref(left_eval_ref).op != rebgn::AbstractOp::DEFINE_BIT_FIELD&&
+  find_belong_op(ctx,ctx.ref(left_eval_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+    w.writeln(left_eval.result,"(",right_eval.result,");");
+}
+else {
+    w.writeln(left_eval.result, " = ", right_eval.result, ";");
+}

@@ -588,7 +588,7 @@ namespace bm2cpp3 {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Encoder& w");
+                    w.write("::futils::binary::writer& w");
                     params++;
                     break;
                 }
@@ -596,7 +596,7 @@ namespace bm2cpp3 {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Decoder& r");
+                    w.write("::futils::binary::reader& r");
                     params++;
                     break;
                 }
@@ -1163,7 +1163,11 @@ namespace bm2cpp3 {
                     auto size_value_ref = code.right_ref().value(); //reference of size
                     auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
-                        w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
+                        // load hook: func_decode_int_vector_bytes
+                        w.writeln("if (!r.read(",vector_value.result,",",size_value.result,")) {");
+                        w.writeln("  return false; // read ",vector_value.result," failed");
+                        w.writeln("}");
+                        // end hook: func_decode_int_vector_bytes
                     }
                     else {
                         w.writeln("/*Unimplemented DECODE_INT_VECTOR*/");
@@ -1205,7 +1209,11 @@ namespace bm2cpp3 {
                     auto size_value_ref = code.right_ref().value(); //reference of size
                     auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
-                        w.writeln("",vector_value.result," = ",ctx.r(),".decode_bytes(",size_value.result,")");
+                        // load hook: func_decode_int_vector_fixed_bytes
+                        w.writeln("if (!r.read(futils::view::wvec(",vector_value.result,").substr(0,",size_value.result,"))) {");
+                        w.writeln("  return false; // read ",vector_value.result," failed");
+                        w.writeln("}");
+                        // end hook: func_decode_int_vector_fixed_bytes
                     }
                     else {
                         w.writeln("/*Unimplemented DECODE_INT_VECTOR_FIXED*/");
@@ -1397,10 +1405,24 @@ namespace bm2cpp3 {
             }
             case rebgn::AbstractOp::ASSIGN: {
                 auto left_eval_ref = code.left_ref().value(); //reference of assignment target
+                // load hook: func_assign_var_left_eval_before
+                ctx.on_assign = true;
+                // end hook: func_assign_var_left_eval_before
                 auto left_eval = eval(ctx.ref(left_eval_ref), ctx); //assignment target
+                // load hook: func_assign_var_left_eval_after
+                ctx.on_assign = false;
+                // end hook: func_assign_var_left_eval_after
                 auto right_eval_ref = code.right_ref().value(); //reference of assignment source
                 auto right_eval = eval(ctx.ref(right_eval_ref), ctx); //assignment source
-                w.writeln("", left_eval.result, " = ", right_eval.result, ";");
+                // load hook: func_assign
+                if(ctx.ref(left_eval_ref).op != rebgn::AbstractOp::DEFINE_BIT_FIELD&&
+                  find_belong_op(ctx,ctx.ref(left_eval_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                    w.writeln(left_eval.result,"(",right_eval.result,");");
+                }
+                else {
+                    w.writeln(left_eval.result, " = ", right_eval.result, ";");
+                }
+                // end hook: func_assign
                 break;
             }
             case rebgn::AbstractOp::PROPERTY_ASSIGN: {
@@ -1443,7 +1465,6 @@ namespace bm2cpp3 {
                 auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector (not temporary)
                 // load hook: func_append_var_vector_eval_after
                 ctx.on_assign = false;
-                
                 // end hook: func_append_var_vector_eval_after
                 auto new_element_eval_ref = code.right_ref().value(); //reference of new element
                 auto new_element_eval = eval(ctx.ref(new_element_eval_ref), ctx); //new element
@@ -1635,6 +1656,8 @@ namespace bm2cpp3 {
             w.writeln("#include <optional>");
             w.writeln("#include <variant>");
             w.writeln("#include <iostream>");
+            w.writeln("#include <binary/reader.h>");
+            w.writeln("#include <binary/writer.h>");
             // end hook: file_top
         }
         for (size_t j = 0; j < bm.programs.ranges.size(); j++) {

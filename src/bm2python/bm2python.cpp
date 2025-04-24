@@ -93,8 +93,19 @@ namespace bm2python {
                 auto ident_ref = storage.ref().value(); //reference of variant
                 auto ident = ctx.ident(ident_ref); //identifier of variant
                 std::vector<std::string> types = {}; //variant types
+                std::optional<size_t> variant_size = 0; //variant storage size
                 for (size_t i = index + 1; i < s.storages.size(); i++) {
                     types.push_back(type_to_string_impl(ctx, s, bit_size, i));
+                    auto candidate = s.storages[i].size()->value();
+                    if (candidate == 0) {
+                        variant_size = std::nullopt;
+                    }
+                    else if (variant_size&&variant_size < (candidate - 1)) {
+                        variant_size = candidate - 1;
+                    }
+                }
+                if (variant_size&&bit_size) {
+                    *bit_size = *variant_size;
                 }
                 std::string result;
                 for (size_t i = 0; i < types.size(); i++) {

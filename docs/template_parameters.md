@@ -3064,25 +3064,25 @@ Description: array length
 ##### array_type
 Name: LEN
 Mapped Value: `",futils::number::to_string<std::string>(length),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:147
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:166
 Function Name: operator()
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:147
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:166
 Function Name: operator()
 ##### byte_array_type
 Name: LEN
 Mapped Value: `",futils::number::to_string<std::string>(length),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:151
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:170
 Function Name: operator()
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:151
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:170
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### byte_array_type
 Flag Value: `std::array<std::uint8_t, $LEN>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:148
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:167
 Function Name: operator()
 ### BOOL
 #### Variables: 
@@ -3098,7 +3098,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### coder_return_type
 Flag Value: `bool`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:122
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:141
 Function Name: operator()
 ### DEFINE_FUNCTION
 #### Variables: 
@@ -3181,7 +3181,7 @@ Description: base type
 ##### optional_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:181
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:200
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### PROPERTY_SETTER_RETURN
@@ -3190,7 +3190,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### property_setter_return_type
 Flag Value: `bool`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:127
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:146
 Function Name: operator()
 ### PTR
 #### Variables: 
@@ -3202,7 +3202,7 @@ Description: base type
 ##### pointer_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:135
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:154
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### RECURSIVE_STRUCT_REF
@@ -3269,11 +3269,15 @@ Description: identifier of variant
 Type: std::vector<std::string>
 Initial Value: {}
 Description: variant types
+##### variant_size
+Type: std::optional<size_t>
+Initial Value: 0
+Description: variant storage size
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 
 ##### variant_mode
 Flag Value: `union`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:96
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:115
 Function Name: operator()
 ### VECTOR
 #### Variables: 
@@ -3289,16 +3293,16 @@ Description: is byte vector
 ##### vector_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:172
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:191
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### byte_vector_type
 Flag Value: `std::vector<std::uint8_t>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:162
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:181
 Function Name: operator()
 ##### byte_vector_type
 Flag Value: `std::vector<std::uint8_t>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:165
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:184
 Function Name: operator()
 ## function `field_accessor`
 ### DEFINE_BIT_FIELD

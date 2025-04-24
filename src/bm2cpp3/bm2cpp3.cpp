@@ -93,9 +93,25 @@ namespace bm2cpp3 {
                 auto ident_ref = storage.ref().value(); //reference of variant
                 auto ident = ctx.ident(ident_ref); //identifier of variant
                 std::vector<std::string> types = {}; //variant types
+                std::optional<size_t> variant_size = 0; //variant storage size
                 for (size_t i = index + 1; i < s.storages.size(); i++) {
                     types.push_back(type_to_string_impl(ctx, s, bit_size, i));
+                    auto candidate = s.storages[i].size()->value();
+                    if (candidate == 0) {
+                        variant_size = std::nullopt;
+                    }
+                    else if (variant_size&&variant_size < (candidate - 1)) {
+                        variant_size = candidate - 1;
+                    }
                 }
+                if (variant_size&&bit_size) {
+                    *bit_size = *variant_size;
+                }
+                // load hook: type_variant_pre_main
+                if(auto bf = find_belong_op(ctx,ctx.ref(ident_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                    return type_to_string(ctx,ctx.ref(rebgn::Varint{*bf}).type().value(),bit_size);
+                }
+                // end hook: type_variant_pre_main
                 std::string result;
                 for (size_t i = 0; i < types.size(); i++) {
                     if (i != 0) {
@@ -1516,6 +1532,11 @@ namespace bm2cpp3 {
                 auto union_member_ident = ctx.ident(union_member_ref); //identifier of union member
                 auto union_ident = ctx.ident(union_ref); //identifier of union
                 auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
+                // load hook: func_switch_union_pre_main
+                if(find_belong_op(ctx,ctx.ref(union_field_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                    continue; // skip bit field
+                }
+                // end hook: func_switch_union_pre_main
                 w.writeln("if(!std::holds_alternative<",union_member_ident,">(",union_field_ident.result,")) {");
                 auto scope = w.indent_scope_ex();
                 w.writeln("",union_field_ident.result," = ",union_member_ident,"();");
@@ -1532,6 +1553,11 @@ namespace bm2cpp3 {
                 auto union_ident = ctx.ident(union_ref); //identifier of union
                 auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
                 auto check_type = code.check_at().value(); //union check location
+                // load hook: func_check_union_pre_main
+                if(find_belong_op(ctx,ctx.ref(union_field_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+                    continue; // skip bit field
+                }
+                // end hook: func_check_union_pre_main
                 w.writeln("if(!std::holds_alternative<",union_member_ident,">(",union_field_ident.result,")) {");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {
@@ -1631,7 +1657,7 @@ namespace bm2cpp3 {
             auto& code = ctx.ref(rebgn::Varint{id});
             // load hook: escape_ident
             if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
-                if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER || code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
+                if(code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
                     str = "set_" + str;
                 }
             }

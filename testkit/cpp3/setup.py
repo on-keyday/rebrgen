@@ -56,8 +56,6 @@ if __name__ == "__main__":
         file = file.replace(GENERATED,pl.Path(GENERATED).absolute().as_posix())
         write_file(MAIN,file)
         run_command(["clang++", MAIN, "-o", EXEC])
-        
-        
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

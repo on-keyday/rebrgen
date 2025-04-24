@@ -3,8 +3,6 @@ file = read_file(MAIN)
 file = file.replace(GENERATED,pl.Path(GENERATED).absolute().as_posix())
 write_file(MAIN,file)
 run_command(["clang++", MAIN, "-o", EXEC])
-
-
 !@section func_define_function.txt
 if(ret_type) {
     w.write(*ret_type);
@@ -29,7 +27,7 @@ ctx.on_assign = false;
 !@copy_section func_assign_var_left_eval_after.txt
 !@section escape_ident.txt
 if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
-    if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER || code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
+    if(code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
         str = "set_" + str;
     }
 }
@@ -75,3 +73,12 @@ if(ctx.ref(left_eval_ref).op != rebgn::AbstractOp::DEFINE_BIT_FIELD&&
 else {
     w.writeln(left_eval.result, " = ", right_eval.result, ";");
 }
+!@section type_variant_pre_main.txt
+if(auto bf = find_belong_op(ctx,ctx.ref(ident_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+    return type_to_string(ctx,ctx.ref(rebgn::Varint{*bf}).type().value(),bit_size);
+}
+!@section func_check_union_pre_main.txt
+if(find_belong_op(ctx,ctx.ref(union_field_ref),rebgn::AbstractOp::DEFINE_BIT_FIELD)) {
+    continue; // skip bit field
+}
+!@copy_section func_switch_union_pre_main.txt

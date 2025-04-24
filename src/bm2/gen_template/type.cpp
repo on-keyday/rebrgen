@@ -8,7 +8,7 @@
 namespace rebgn {
 
     void write_type_to_string(bm2::TmpCodeWriter& type_to_string, StorageType type, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::type_to_string,bm2::HookFile::type_op);
+        flags.set_func_name(bm2::FuncName::type_to_string, bm2::HookFile::type_op);
         auto type_hook = [&](auto&& default_action, bm2::HookFileSub sub = bm2::HookFileSub::main) {
             if (sub == bm2::HookFileSub::main) {
                 may_write_from_hook(type_to_string, flags, bm2::HookFile::type_op, type, bm2::HookFileSub::pre_main);
@@ -87,10 +87,29 @@ namespace rebgn {
         else if (type == StorageType::VARIANT) {
             define_ident(type_to_string, flags, type, "ident", "storage.ref().value()", "variant");
             do_typed_variable_definition(type_to_string, flags, type, "types", "{}", "std::vector<std::string>", "variant types");
+            do_typed_variable_definition(type_to_string, flags, type, "variant_size", "0", "std::optional<size_t>", "variant storage size");
             type_to_string.writeln("for (size_t i = index + 1; i < s.storages.size(); i++) {");
             auto scope_variant = type_to_string.indent_scope();
-            type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
+            {
+                type_to_string.writeln("types.push_back(type_to_string_impl(ctx, s, bit_size, i));");
+                type_to_string.writeln("auto candidate = s.storages[i].size()->value();");
+                type_to_string.writeln("if (candidate == 0) {");
+                auto if_block_variant = type_to_string.indent_scope();
+                type_to_string.writeln("variant_size = std::nullopt;");
+                if_block_variant.execute();
+                type_to_string.writeln("}");
+                type_to_string.writeln("else if (variant_size&&variant_size < (candidate - 1)) {");
+                auto elif_block_variant = type_to_string.indent_scope();
+                type_to_string.writeln("variant_size = candidate - 1;");
+                elif_block_variant.execute();
+                type_to_string.writeln("}");
+            }
             scope_variant.execute();
+            type_to_string.writeln("}");
+            type_to_string.writeln("if (variant_size&&bit_size) {");
+            auto if_block_variant_size = type_to_string.indent_scope();
+            type_to_string.writeln("*bit_size = *variant_size;");
+            if_block_variant_size.execute();
             type_to_string.writeln("}");
             type_hook([&] {
                 if (USE_FLAG_BASE(type, variant_mode) == "union") {

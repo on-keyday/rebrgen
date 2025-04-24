@@ -13,4 +13,31 @@ format Simple:
         var_field1 :[len]u8
     else:
         var_field2 :[len]u8
+    type :StorageType
 
+enum StorageType:
+    :u8
+    # terminal
+    INT   
+    UINT 
+    FLOAT 
+    STRUCT_REF
+    RECURSIVE_STRUCT_REF
+    BYTE_VECTOR # special case of vector
+
+    # qualifiers
+    ENUM
+    ARRAY
+    VECTOR
+    # for recursive type
+    PTR
+    # for union
+    VARIANT
+
+format Varint:
+    prefix :u2
+    match prefix:
+        0 => value :u6
+        1 => value :u14
+        2 => value :u30
+        3 => value :u62

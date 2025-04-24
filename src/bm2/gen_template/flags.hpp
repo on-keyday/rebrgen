@@ -44,7 +44,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bm2::GenerateMode mode = bm2::GenerateMode::generator;
     std::map<bm2::FuncName, std::map<std::string, Content>> content;
     bm2::FuncName func_name = bm2::FuncName::eval;
-    bm2::HookFile func_hook=bm2::HookFile::eval_op;
+    bm2::HookFile func_hook = bm2::HookFile::eval_op;
     std::map<std::u8string, HookSection> hook_sections;
 
     bool requires_lang_option() const {
@@ -52,7 +52,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
                                  mode == bm2::GenerateMode::docs_markdown);
     }
 
-    void set_func_name(bm2::FuncName func_name,bm2::HookFile hook) {
+    void set_func_name(bm2::FuncName func_name, bm2::HookFile hook) {
         this->func_name = func_name;
         this->func_hook = hook;
     }
@@ -132,7 +132,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool condition_has_parentheses = true;
     std::string self_param = "";
     std::string encoder_param = "Encoder& w";
-    std::string decoder_param = "Decoder& w";
+    std::string decoder_param = "Decoder& r";
     bool func_style_cast = false;
     std::string empty_pointer = "nullptr";
     std::string empty_optional = "std::nullopt";
@@ -284,7 +284,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
     MACRO_NAME(reserve_size_static, "reserve_size_static")                     \
     MACRO_NAME(access_style, "access_style")                                   \
     MACRO_NAME(enum_access_style, "enum_access_style")                         \
-    MACRO_NAME(format_nested_struct, "format_nested_struct")
+    MACRO_NAME(format_nested_struct, "format_nested_struct")                   \
+    MACRO_NAME(keyword_escape_style, "keyword_escape_style")
 
     bool from_json(const futils::json::JSON& js) {
         JSON_PARAM_BEGIN(*this, js)

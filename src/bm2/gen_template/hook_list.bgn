@@ -16,6 +16,9 @@ enum HookFile:
     cmptest_build = "cmptest_build" # cmptest build
     cmptest_run = "cmptest_run" # cmptest run
 
+    js_ui = "js_ui" # javascript ui
+    js_worker = "js_worker" # javascript worker
+
     each_inner_block = "each_inner_block" # each inner block
     each_inner_function = "each_inner_function" # each inner function
     inner_function_start = "inner_function_start" # inner function start
@@ -62,6 +65,7 @@ enum HookFileSub:
     enum_member = "_enum_member" # enum member case (e.g. enum member of AbstractOp)
     header = "_header" # header case (e.g. header of AbstractOp)
     var_ = "_var" # variable case
+    bytes = "_bytes" # bytes case (e.g. bytes of AbstractOp)
 
 enum FuncName:
     eval

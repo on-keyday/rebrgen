@@ -178,13 +178,13 @@ const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
             return new Error("unknown message type");
     }}
 }};
-
-const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
-    console.log("bm2{} worker is ready");
-}});
 )",
                                         lang_name,
-                                        flags.lang_name, flags.lang_name));
+                                        flags.lang_name));
+        w.write_unformatted(std::format(R"(const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
+    console.log("bm2{}", flags.lang_name, " worker is ready");
+}});)",
+                                        flags.lang_name));
     }
 
     void write_code_js_glue_ui_and_generator_call(bm2::TmpCodeWriter& w, Flags& flags) {
@@ -254,26 +254,30 @@ const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
             w.writeln("export ");
         }
 
-        w.writeln("function set", upperWorkerName, "UIConfig(setter) {");
+        w.writeln("function set", upperWorkerName, "UIConfig(ui) {");
         auto scope1 = w.indent_scope();
-        w.writeln("setter(\"", workerName, "\",(nest_setter) => {");
-        auto scope2 = w.indent_scope();
-        for (auto&& f : flag) {
-            w.writeln("nest_setter(\"", f.bind_target, "\",{");
-            auto scope_flag = w.indent_scope();
-            if (f.type == "bool") {
-                w.writeln("type: \"checkbox\",");
-                w.writeln("value: ", f.default_value, ",");
+        may_write_from_hook(w, flags, bm2::HookFile::js_ui, bm2::HookFileSub::before);
+        if (!may_write_from_hook(w, flags, bm2::HookFile::js_ui, false)) {
+            w.writeln("ui.set_flags(\"", workerName, "\",(nest_setter) => {");
+            auto scope2 = w.indent_scope();
+            for (auto&& f : flag) {
+                w.writeln("nest_setter(\"", f.bind_target, "\",{");
+                auto scope_flag = w.indent_scope();
+                if (f.type == "bool") {
+                    w.writeln("type: \"checkbox\",");
+                    w.writeln("value: ", f.default_value, ",");
+                }
+                else if (f.type == "string") {
+                    w.writeln("type: \"text\",");
+                    w.writeln("value: \"", f.default_value, "\",");
+                }
+                scope_flag.execute();
+                w.writeln("});");
             }
-            else if (f.type == "string") {
-                w.writeln("type: \"text\",");
-                w.writeln("value: \"", f.default_value, "\",");
-            }
-            scope_flag.execute();
+            scope2.execute();
             w.writeln("});");
         }
-        scope2.execute();
-        w.writeln("});");
+        may_write_from_hook(w, flags, bm2::HookFile::js_ui, bm2::HookFileSub::after);
         scope1.execute();
         w.writeln("}");
     }

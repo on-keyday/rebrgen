@@ -199,3 +199,24 @@ ignored
 !@section fuga.txt
 shown too
 ```
+
+### !@copy_section file
+
+copy previous section to `file`
+
+for example
+
+```
+!@section hoge.txt
+print("hello");
+!@copy_section huga.txt
+```
+
+is same as
+
+```
+!@section hoge.txt
+print("hello");
+!@section huga.txt
+print("hello");
+```

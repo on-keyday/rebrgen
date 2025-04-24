@@ -9,5 +9,8 @@ format Simple:
     bit_field2 :u2
     bit_field3 :u3
     bit_field4: u2
-
+    if bit_field1 == 0:
+        var_field1 :[len]u8
+    else:
+        var_field2 :[len]u8
 

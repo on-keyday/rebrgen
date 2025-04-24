@@ -569,7 +569,7 @@ namespace bm2haskell {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Decoder& w");
+                    w.write("Decoder& r");
                     params++;
                     break;
                 }

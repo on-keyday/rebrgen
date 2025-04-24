@@ -103,7 +103,7 @@ namespace bm2cpp3 {
                     }
                     result += types[i];
                 }
-                return futils::strutil::concat<std::string>("std::variant<",result,">");
+                return futils::strutil::concat<std::string>("std::variant<std::monostate,",result,">");
             }
             case rebgn::StorageType::CODER_RETURN: {
                 return "bool";
@@ -140,6 +140,18 @@ namespace bm2cpp3 {
             auto ident = ctx.ident(ident_ref); //identifier of FIELD
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            // load hook: field_accessor_define_field_pre_main
+            auto is_bit_field = find_belong_op(ctx,ctx.ref(belong),rebgn::AbstractOp::DEFINE_BIT_FIELD); //check if belong is a bit field
+            if(is_bit_field) {
+                 auto belong_eval = field_accessor(ctx.ref(ctx.ref(rebgn::Varint{*is_bit_field}).belong().value()), ctx); //belong eval
+                 const char* brace="";
+                 if(!ctx.on_assign) {
+                    brace ="()";
+                 }
+                 result = make_eval_result(std::format("{}.{}{}", belong_eval.result, ident,brace));
+            }
+            else 
+            // end hook: field_accessor_define_field_pre_main
             if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
                 result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
@@ -187,7 +199,9 @@ namespace bm2cpp3 {
             auto union_field_ref = ctx.ref(union_ref).belong().value(); //reference of union field
             auto union_field_belong = ctx.ref(union_field_ref).belong().value(); //reference of union field belong
             auto union_field_eval = field_accessor(ctx.ref(union_field_ref),ctx); //field accessor
-            result = union_field_eval;
+            // load hook: field_accessor_define_union_member
+            result = make_eval_result(std::format("std::get<{}>({})",ident,union_field_eval.result));
+            // end hook: field_accessor_define_union_member
             break;
         }
         case rebgn::AbstractOp::DEFINE_STATE: {
@@ -582,7 +596,7 @@ namespace bm2cpp3 {
                     if(params > 0) {
                         w.write(", ");
                     }
-                    w.write("Decoder& w");
+                    w.write("Decoder& r");
                     params++;
                     break;
                 }
@@ -1097,7 +1111,11 @@ namespace bm2cpp3 {
                     auto size_value_ref = code.right_ref().value(); //reference of size
                     auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
-                        w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
+                        // load hook: func_encode_int_vector_bytes
+                        w.writeln("if (!w.write(futils::view::rvec(",vector_value.result,").substr(0,",size_value.result,"))) {");
+                        w.writeln("  return false; // write ",vector_value.result," failed");
+                        w.writeln("}");
+                        // end hook: func_encode_int_vector_bytes
                     }
                     else {
                         w.writeln("/*Unimplemented ENCODE_INT_VECTOR*/");
@@ -1119,7 +1137,11 @@ namespace bm2cpp3 {
                     auto size_value_ref = code.right_ref().value(); //reference of size
                     auto size_value = eval(ctx.ref(size_value_ref), ctx); //size
                     if(bit_size == 8) {
-                        w.writeln("",ctx.w(),".encode_bytes(",vector_value.result,")");
+                        // load hook: func_encode_int_vector_fixed_bytes
+                        w.writeln("if (!w.write(futils::view::rvec(",vector_value.result,").substr(0,",size_value.result,"))) {");
+                        w.writeln("  return false; // write ",vector_value.result," failed");
+                        w.writeln("}");
+                        // end hook: func_encode_int_vector_fixed_bytes
                     }
                     else {
                         w.writeln("/*Unimplemented ENCODE_INT_VECTOR_FIXED*/");
@@ -1388,7 +1410,11 @@ namespace bm2cpp3 {
             case rebgn::AbstractOp::ASSERT: {
                 auto evaluated_ref = code.ref().value(); //reference of assertion condition
                 auto evaluated = eval(ctx.ref(evaluated_ref), ctx); //assertion condition
-                w.writeln("assert(",evaluated.result,");");
+                // load hook: func_assert
+                w.writeln("if (!(",evaluated.result,")) {");
+                w.writeln("  return false; // ",evaluated.result," is false");
+                w.writeln("}");
+                // end hook: func_assert
                 break;
             }
             case rebgn::AbstractOp::LENGTH_CHECK: {
@@ -1396,7 +1422,11 @@ namespace bm2cpp3 {
                 auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector to check
                 auto size_eval_ref = code.right_ref().value(); //reference of size to check
                 auto size_eval = eval(ctx.ref(size_eval_ref), ctx); //size to check
-                w.writeln("assert(",vector_eval.result,".size() == ",size_eval.result,");");
+                // load hook: func_length_check
+                w.writeln("if(",vector_eval.result,".size() != ",size_eval.result,") {");
+                w.writeln("  return false; // ",vector_eval.result,".size() != ",size_eval.result);
+                w.writeln("}");
+                // end hook: func_length_check
                 break;
             }
             case rebgn::AbstractOp::EXPLICIT_ERROR: {
@@ -1407,7 +1437,14 @@ namespace bm2cpp3 {
             }
             case rebgn::AbstractOp::APPEND: {
                 auto vector_eval_ref = code.left_ref().value(); //reference of vector (not temporary)
+                // load hook: func_append_var_vector_eval_before
+                ctx.on_assign = true;
+                // end hook: func_append_var_vector_eval_before
                 auto vector_eval = eval(ctx.ref(vector_eval_ref), ctx); //vector (not temporary)
+                // load hook: func_append_var_vector_eval_after
+                ctx.on_assign = false;
+                
+                // end hook: func_append_var_vector_eval_after
                 auto new_element_eval_ref = code.right_ref().value(); //reference of new element
                 auto new_element_eval = eval(ctx.ref(new_element_eval_ref), ctx); //new element
                 w.writeln("",vector_eval.result,".push_back(",new_element_eval.result,");");
@@ -1458,7 +1495,7 @@ namespace bm2cpp3 {
                 auto union_member_ident = ctx.ident(union_member_ref); //identifier of union member
                 auto union_ident = ctx.ident(union_ref); //identifier of union
                 auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
-                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) {");
+                w.writeln("if(!std::holds_alternative<",union_member_ident,">(",union_field_ident.result,")) {");
                 auto scope = w.indent_scope_ex();
                 w.writeln("",union_field_ident.result," = ",union_member_ident,"();");
                 scope.execute();
@@ -1474,7 +1511,7 @@ namespace bm2cpp3 {
                 auto union_ident = ctx.ident(union_ref); //identifier of union
                 auto union_field_ident = eval(ctx.ref(union_field_ref), ctx); //union field
                 auto check_type = code.check_at().value(); //union check location
-                w.writeln("if(!std::holds_alternative<",futils::number::to_string<std::string>(union_member_index),">(",union_field_ident.result,")) {");
+                w.writeln("if(!std::holds_alternative<",union_member_ident,">(",union_field_ident.result,")) {");
                 auto scope = w.indent_scope_ex();
                 if(check_type == rebgn::UnionCheckAt::ENCODER) {
                     w.writeln("return false;");
@@ -1571,6 +1608,13 @@ namespace bm2cpp3 {
     void to_cpp3(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags,Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto& str) {
             auto& code = ctx.ref(rebgn::Varint{id});
+            // load hook: escape_ident
+            if(code.op == rebgn::AbstractOp::DEFINE_FUNCTION) {
+                if(code.func_type().value() == rebgn::FunctionType::UNION_SETTER || code.func_type().value() == rebgn::FunctionType::VECTOR_SETTER) {
+                    str = "set_" + str;
+                }
+            }
+            // end hook: escape_ident
             escape_cpp3_keyword(str);
         }};
         // search metadata

@@ -7,10 +7,8 @@ defer.push_back(w.indent_scope_ex());
 !@section block_define_format.txt
 w.writeln("type ",ident," struct {");
 defer.push_back(w.indent_scope_ex());
-!@section block_define_state.txt
-!@include block_define_format.txt
-!@section block_define_union_member.txt
-!@include block_define_format.txt
+!@copy_section block_define_state.txt
+!@copy_section block_define_union_member.txt
 !@section block_define_union.txt
 w.writeln("type ",ident," interface {");
 defer.push_back(w.indent_scope_ex());

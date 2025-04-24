@@ -28,7 +28,7 @@
       "name": "Debug bm2cpp",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/bm2cpp",
+      "program": "${workspaceRoot}/tool/bm2cpp3",
       "args": ["-i", "${workspaceRoot}/save/save.bin"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

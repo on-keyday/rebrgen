@@ -46,7 +46,7 @@ namespace rebgn {
     }
 
     void write_inner_function(bm2::TmpCodeWriter& inner_function, AbstractOp op, Flags& flags) {
-        flags.set_func_name(bm2::FuncName::inner_function,bm2::HookFile::inner_function_op);
+        flags.set_func_name(bm2::FuncName::inner_function, bm2::HookFile::inner_function_op);
         inner_function.writeln(std::format("case rebgn::AbstractOp::{}: {{", to_string(op)));
         auto scope = inner_function.indent_scope();
         auto func_hook = [&](auto&& inner, bm2::HookFileSub stage = bm2::HookFileSub::main) {
@@ -491,44 +491,47 @@ namespace rebgn {
                 func_hook([&] {
                     inner_function.writeln("if(bit_size == 8) {");
                     auto indent3 = inner_function.indent_scope();
-                    if (op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::ENCODE_INT_VECTOR_FIXED) {
-                        std::map<std::string, std::string> map{
-                            {"ENCODER", "\",ctx.w(),\""},
-                            {"LEN", "\",size_value.result,\""},
-                            {"VALUE", "\",vector_value.result,\""},
-                        };
-                        auto escaped = env_escape(flags, op, ENV_FLAG(encode_bytes_op), map);
-                        inner_function.writeln("w.writeln(\"", escaped, "\");");
-                    }
-                    else if (op == AbstractOp::DECODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR_FIXED) {
-                        std::map<std::string, std::string> map{
-                            {"DECODER", "\",ctx.r(),\""},
-                            {"LEN", "\",size_value.result,\""},
-                            {"VALUE", "\",vector_value.result,\""},
-                        };
-                        auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_op), map);
-                        inner_function.writeln("w.writeln(\"", escaped, "\");");
-                    }
-                    else if (op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
-                        std::map<std::string, std::string> map{
-                            {"DECODER", "\",ctx.r(),\""},
-                            {"VALUE", "\",evaluated.result,\""},
-                        };
-                        auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_until_eof_op), map);
-                        inner_function.writeln("w.writeln(\"", escaped, "\");");
-                    }
-                    else if (op == AbstractOp::PEEK_INT_VECTOR) {
-                        std::map<std::string, std::string> map{
-                            {"DECODER", "\",ctx.r(),\""},
-                            {"LEN", "\",size_value.result,\""},
-                            {"VALUE", "\",vector_value.result,\""},
-                        };
-                        auto escaped = env_escape(flags, op, ENV_FLAG(peek_bytes_op), map);
-                        inner_function.writeln("w.writeln(\"", escaped, "\");");
-                    }
-                    else {
-                        inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
-                    }
+                    func_hook([&] {
+                        if (op == AbstractOp::ENCODE_INT_VECTOR || op == AbstractOp::ENCODE_INT_VECTOR_FIXED) {
+                            std::map<std::string, std::string> map{
+                                {"ENCODER", "\",ctx.w(),\""},
+                                {"LEN", "\",size_value.result,\""},
+                                {"VALUE", "\",vector_value.result,\""},
+                            };
+                            auto escaped = env_escape(flags, op, ENV_FLAG(encode_bytes_op), map);
+                            inner_function.writeln("w.writeln(\"", escaped, "\");");
+                        }
+                        else if (op == AbstractOp::DECODE_INT_VECTOR || op == AbstractOp::DECODE_INT_VECTOR_FIXED) {
+                            std::map<std::string, std::string> map{
+                                {"DECODER", "\",ctx.r(),\""},
+                                {"LEN", "\",size_value.result,\""},
+                                {"VALUE", "\",vector_value.result,\""},
+                            };
+                            auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_op), map);
+                            inner_function.writeln("w.writeln(\"", escaped, "\");");
+                        }
+                        else if (op == AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF) {
+                            std::map<std::string, std::string> map{
+                                {"DECODER", "\",ctx.r(),\""},
+                                {"VALUE", "\",evaluated.result,\""},
+                            };
+                            auto escaped = env_escape(flags, op, ENV_FLAG(decode_bytes_until_eof_op), map);
+                            inner_function.writeln("w.writeln(\"", escaped, "\");");
+                        }
+                        else if (op == AbstractOp::PEEK_INT_VECTOR) {
+                            std::map<std::string, std::string> map{
+                                {"DECODER", "\",ctx.r(),\""},
+                                {"LEN", "\",size_value.result,\""},
+                                {"VALUE", "\",vector_value.result,\""},
+                            };
+                            auto escaped = env_escape(flags, op, ENV_FLAG(peek_bytes_op), map);
+                            inner_function.writeln("w.writeln(\"", escaped, "\");");
+                        }
+                        else {
+                            inner_function.writeln("w.writeln(\"", flags.wrap_comment("Unimplemented " + std::string(to_string(op))), "\");");
+                        }
+                    },
+                              bm2::HookFileSub::bytes);
                     indent3.execute();
                     inner_function.writeln("}");
                     inner_function.writeln("else {");

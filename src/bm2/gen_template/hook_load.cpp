@@ -8,11 +8,18 @@ namespace rebgn {
     expected<bool> handle_section_common(Flags& flags, futils::view::rvec view, std::vector<std::filesystem::path> stack, const std::u8string& name, std::u8string& current_section) {
         auto lines = futils::strutil::lines<futils::view::rvec>(view);
         for (auto& line : lines) {
-            if (futils::strutil::starts_with(line, "!@section ")) {
+            if (futils::strutil::starts_with(line, "!@section ") ||
+                futils::strutil::starts_with(line, "!@copy_section ")) {
                 auto split = futils::strutil::split<futils::view::rvec>(line, " ", 2);
                 if (split.size() == 2) {
                     auto hook_file = std::filesystem::path(flags.hook_file_dir) / std::string_view(split[1].as_char(), split[1].size());
-                    current_section = hook_file.generic_u8string();
+                    auto new_section = hook_file.generic_u8string();
+                    if (line[2] == 'c') {              // !@copy_section
+                        if (current_section.size()) {  // copy current section
+                            flags.hook_sections[new_section].lines = flags.hook_sections[current_section].lines;
+                        }
+                    }
+                    current_section = std::move(new_section);
                 }
                 else {
                     return unexpect_error("invalid section: {}", std::string_view(line.as_char(), line.size()));

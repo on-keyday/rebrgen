@@ -1445,15 +1445,15 @@ Description: size
 ##### decode_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DECODE_INT_VECTOR_FIXED
@@ -1494,15 +1494,15 @@ Description: size
 ##### decode_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:509
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DECODE_INT_VECTOR_UNTIL_EOF
@@ -1535,11 +1535,11 @@ Description: element
 ##### decode_bytes_until_eof_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:517
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:518
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",evaluated.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:517
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:518
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DEFAULT_CASE
@@ -1840,15 +1840,15 @@ Description: size
 ##### encode_bytes_op
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### ENCODE_INT_VECTOR_FIXED
@@ -1889,15 +1889,15 @@ Description: size
 ##### encode_bytes_op
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:500
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### END_CASE
@@ -2191,15 +2191,15 @@ Description: size
 ##### peek_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:526
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:526
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:526
+File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### RESERVE_SIZE
@@ -2913,7 +2913,7 @@ Function Name: operator()
 #### Placeholder Mappings: 
 #### Flag Usage Mappings: 
 ##### decoder_param
-Flag Value: `Decoder& w`
+Flag Value: `Decoder& r`
 File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:67
 Function Name: operator()
 ### DEFINE_PARAMETER

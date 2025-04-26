@@ -42,6 +42,15 @@ def read_file(filename):
     print("read file: {}".format(filename))
     with open(filename, "r") as f:
         return f.read()
+def get_env(name,default_ = ''):
+    print("get env: {}".format(name))
+    return os.environ.get(name, default_)
+def get_env_int(name,default_ = 0):
+    print("get env int: {}".format(name))
+    return int(os.environ.get(name, default_))
+def get_env_bool(name,default_ = False):
+    print("get env bool: {}".format(name))
+    return os.environ.get(name, default_) == "true" or os.environ.get(name, default_) == "True"
 if __name__ == "__main__":
     MODE = sys.argv[1]
     if MODE == "build":

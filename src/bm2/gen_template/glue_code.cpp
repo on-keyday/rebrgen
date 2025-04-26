@@ -516,6 +516,21 @@ const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
             scope_read2.execute();
             scope_read.execute();
 
+            w.writeln("def get_env(name,default_ = ''):");
+            auto scope_env = w.indent_scope();
+            w.writeln("print(\"get env: {}\".format(name))");
+            w.writeln("return os.environ.get(name, default_)");
+            scope_env.execute();
+            w.writeln("def get_env_int(name,default_ = 0):");
+            auto scope_env_int = w.indent_scope();
+            w.writeln("print(\"get env int: {}\".format(name))");
+            w.writeln("return int(os.environ.get(name, default_))");
+            scope_env_int.execute();
+            w.writeln("def get_env_bool(name,default_ = False):");
+            auto scope_env_bool = w.indent_scope();
+            w.writeln("print(\"get env bool: {}\".format(name))");
+            w.writeln("return os.environ.get(name, default_) == \"true\" or os.environ.get(name, default_) == \"True\"");
+            scope_env_bool.execute();
             w.writeln("if __name__ == \"__main__\":");
             auto scope_main = w.indent_scope();
             w.writeln("MODE = sys.argv[1]");

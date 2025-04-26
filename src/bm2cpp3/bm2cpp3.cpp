@@ -182,13 +182,20 @@ namespace bm2cpp3 {
             auto ident = ctx.ident(ident_ref); //identifier of PROPERTY
             auto belong = code.belong().value(); //reference of belong
             auto is_member = belong.value() != 0&& ctx.ref(belong).op != rebgn::AbstractOp::DEFINE_PROGRAM; //is member of a struct
+            // load hook: field_accessor_define_property
             if(is_member) {
                 auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
-                result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+                if(ctx.on_assign) {
+                    result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+                }
+                else {
+                    result = make_eval_result(std::format("(*{}.{}())", belong_eval.result, ident));
+                }
             }
             else {
                 result = make_eval_result(ident);
             }
+            // end hook: field_accessor_define_property
             break;
         }
         case rebgn::AbstractOp::DEFINE_UNION: {

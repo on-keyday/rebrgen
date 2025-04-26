@@ -2,7 +2,8 @@
 file = read_file(MAIN)
 file = file.replace(GENERATED,pl.Path(GENERATED).absolute().as_posix())
 write_file(MAIN,file)
-run_command(["clang++", MAIN, "-o", EXEC])
+FUTILS_DIR = get_env("FUTILS_DIR","C:/workspace/utils_backup") +"/src/include"
+run_command(["clang++", MAIN, "-o", EXEC, "-I", FUTILS_DIR, "-std=c++23"])
 !@section func_define_function.txt
 if(ret_type) {
     w.write(*ret_type);
@@ -42,6 +43,19 @@ if(is_bit_field) {
      result = make_eval_result(std::format("{}.{}{}", belong_eval.result, ident,brace));
 }
 else 
+!@section field_accessor_define_property.txt
+if(is_member) {
+    auto belong_eval = field_accessor(ctx.ref(belong), ctx); //belong eval
+    if(ctx.on_assign) {
+        result = make_eval_result(std::format("{}.{}", belong_eval.result, ident));
+    }
+    else {
+        result = make_eval_result(std::format("(*{}.{}())", belong_eval.result, ident));
+    }
+}
+else {
+    result = make_eval_result(ident);
+}
 !@section func_assert.txt
 w.writeln("if (!(",evaluated.result,")) {");
 w.writeln("  return false; // ",evaluated.result," is false");

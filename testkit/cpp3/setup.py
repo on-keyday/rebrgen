@@ -42,6 +42,15 @@ def read_file(filename):
     print("read file: {}".format(filename))
     with open(filename, "r") as f:
         return f.read()
+def get_env(name,default_ = ''):
+    print("get env: {}".format(name))
+    return os.environ.get(name, default_)
+def get_env_int(name,default_ = 0):
+    print("get env int: {}".format(name))
+    return int(os.environ.get(name, default_))
+def get_env_bool(name,default_ = False):
+    print("get env bool: {}".format(name))
+    return os.environ.get(name, default_) == "true" or os.environ.get(name, default_) == "True"
 if __name__ == "__main__":
     MODE = sys.argv[1]
     if MODE == "build":
@@ -55,7 +64,8 @@ if __name__ == "__main__":
         file = read_file(MAIN)
         file = file.replace(GENERATED,pl.Path(GENERATED).absolute().as_posix())
         write_file(MAIN,file)
-        run_command(["clang++", MAIN, "-o", EXEC])
+        FUTILS_DIR = get_env("FUTILS_DIR","C:/workspace/utils_backup") +"/src/include"
+        run_command(["clang++", MAIN, "-o", EXEC, "-I", FUTILS_DIR, "-std=c++23"])
     elif MODE == "run":
         EXEC = sys.argv[2]
         INPUT = sys.argv[3]

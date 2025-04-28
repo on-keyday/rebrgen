@@ -182,7 +182,7 @@ const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
                                         lang_name,
                                         flags.lang_name));
         w.write_unformatted(std::format(R"(const bmgenWorker = new EmWorkContext(bmgenModule,requestCallback, () => {{
-    console.log("bm2{}", flags.lang_name, " worker is ready");
+    console.log("bm2{} worker is ready");
 }});)",
                                         flags.lang_name));
     }

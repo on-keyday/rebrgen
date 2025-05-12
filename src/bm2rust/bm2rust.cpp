@@ -2378,6 +2378,24 @@ namespace bm2rust {
         scope1.execute();
         w.writeln("}");
 
+        w.writeln("impl std::error::Error for ", ident, " {");
+        auto scope2 = w.indent_scope();
+        w.writeln("fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {");
+        auto scope3 = w.indent_scope();
+        w.writeln("match self {");
+        auto scope4 = w.indent_scope();
+        w.writeln(ident, "::IOError(_,e) => Some(e),");
+        w.writeln(ident, "::TryFromIntError(e) => Some(e),");
+        w.writeln(ident, "::PropertySetterError(_) => None,");
+        w.writeln(ident, "::ArrayLengthMismatch(_,_,_) => None,");
+        w.writeln(ident, "::AssertError(_) => None,");
+        w.writeln(ident, "::InvalidUnionVariant(_) => None,");
+        w.writeln(ident, "::BackwardError(_,_) => None,");
+        scope4.execute();
+        w.writeln("}");
+        scope3.execute();
+        w.writeln("}");
+
         w.writeln("impl From<std::num::TryFromIntError> for ", ident, " {");
         auto scope4 = w.indent_scope();
         w.writeln("fn from(e: std::num::TryFromIntError) -> Self {");

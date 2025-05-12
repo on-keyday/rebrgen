@@ -2395,6 +2395,8 @@ namespace bm2rust {
         w.writeln("}");
         scope23.execute();
         w.writeln("}");
+        scope21.execute();
+        w.writeln("}");
 
         w.writeln("impl From<std::num::TryFromIntError> for ", ident, " {");
         auto scope4 = w.indent_scope();

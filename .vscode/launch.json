@@ -85,9 +85,9 @@
         "-i",
         "${workspaceRoot}/save/save.bin",
         "--binary",
-        "${workspaceRoot}/save/bridge_msg.bin",
+        "${workspaceRoot}/save/ipv6.dat",
         "--start-format",
-        "NetLinkMessage"
+        "Test"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

@@ -33,10 +33,16 @@ namespace bm2hexmap {
         std::uint64_t value;
     };
 
+    struct Value;
+    struct Map {
+        std::unordered_map<std::string, std::shared_ptr<Value>> map;
+        std::vector<std::string> insert_order;
+    };
+
     struct Value {
         std::variant<std::monostate, std::uint64_t,
                      EnumValue, std::vector<std::shared_ptr<Value>>,
-                     std::unordered_map<std::string, std::shared_ptr<Value>>>
+                     Map>
             value;
 
         expected<std::uint64_t> as_int() {
@@ -73,14 +79,15 @@ namespace bm2hexmap {
 
         expected<std::shared_ptr<Value>> index(const std::string& index) {
             if (std::holds_alternative<std::monostate>(value)) {
-                value = std::unordered_map<std::string, std::shared_ptr<Value>>();
+                value = Map();
             }
-            if (auto p = std::get_if<std::unordered_map<std::string, std::shared_ptr<Value>>>(&value); p) {
-                if (auto found = p->find(index); found != p->end()) {
+            if (auto p = std::get_if<Map>(&value); p) {
+                if (auto found = p->map.find(index); found != p->map.end()) {
                     return found->second;
                 }
                 auto v = std::make_shared<Value>();
-                (*p)[index] = v;
+                p->map[index] = v;
+                p->insert_order.push_back(index);
                 return v;
             }
             return unexpect_error("Index error");
@@ -101,8 +108,6 @@ namespace bm2hexmap {
         }
     };
 
-    using Map = std::unordered_map<std::string, std::shared_ptr<Value>>;
-
     struct Stack {
         rebgn::AbstractOp op = rebgn::AbstractOp::IMMEDIATE_INT;
         Map variables;
@@ -112,7 +117,7 @@ namespace bm2hexmap {
 
     struct Context : bm2::Context {
         futils::view::rvec input_binary;
-        json::JSON output;
+        json::OrderedJSON output;
 
         std::vector<OffsetRange> offset_ranges;
 
@@ -126,6 +131,7 @@ namespace bm2hexmap {
         bool can_read = true;
 
         std::map<std::string, std::vector<std::pair<std::uint64_t, std::string>>> enum_map;
+        size_t non_aligned_pos = 0;
 
         // map identifier to format name
         std::unordered_map<std::string, rebgn::Varint> format_table;
@@ -210,12 +216,13 @@ namespace bm2hexmap {
 
         std::shared_ptr<Value> variable(const std::string& ident) {
             for (auto it = stack.rbegin(); it != stack.rend(); it++) {
-                auto found = it->variables.find(ident);
-                if (found != it->variables.end()) {
+                auto found = it->variables.map.find(ident);
+                if (found != it->variables.map.end()) {
                     return found->second;
                 }
             }
-            return stack.back().variables[ident] = std::make_shared<Value>();
+            stack.back().variables.insert_order.push_back(ident);
+            return stack.back().variables.map[ident] = std::make_shared<Value>();
         }
     };
     std::string type_to_string_impl(Context& ctx, const rebgn::Storages& s, size_t* bit_size = nullptr, size_t index = 0) {
@@ -337,7 +344,7 @@ namespace bm2hexmap {
 
     std::shared_ptr<Value> new_map() {
         auto v = std::make_shared<Value>();
-        v->value = std::unordered_map<std::string, std::shared_ptr<Value>>();
+        v->value = Map();
         return v;
     }
 
@@ -382,9 +389,10 @@ namespace bm2hexmap {
         switch (code.op) {
             case rebgn::AbstractOp::DEFINE_FIELD: {
                 auto ident = ctx.ident(code.ident().value());
-                auto& field = ctx.self[ident];
+                auto& field = ctx.self.map[ident];
                 if (!field) {
                     field = std::make_shared<Value>();
+                    ctx.self.insert_order.push_back(ident);
                 }
                 result.push_back(EvalResult(field, ident));
                 break;
@@ -966,6 +974,41 @@ namespace bm2hexmap {
     }
 
     bool map_n_bit_to_field(Context& ctx, futils::binary::reader& r, size_t bit_size, std::shared_ptr<Value>& ref, rebgn::Varint related_field, rebgn::EndianExpr endian) {
+        std::uint64_t interpreted_value = 0;
+        auto has_non_aligned = ctx.non_aligned_pos != 0;
+        auto is_little = endian.endian() == rebgn::Endian::little ||
+                         (endian.endian() == rebgn::Endian::native && futils::binary::is_little());
+        if (has_non_aligned) {
+            if (is_little) {
+                ctx.output["error"] = "little endian not supported for non-aligned bit size currently";
+                return false;
+            }
+            // consume non-aligned bits
+            auto can_consume = 8 - ctx.non_aligned_pos;
+            if (can_consume > bit_size) {
+                ctx.non_aligned_pos += bit_size;
+                auto offset = r.offset() - 1;
+                auto read = r.read().substr(r.read().size() - 1, 1);
+                interpreted_value = (read[0] >> (8 - ctx.non_aligned_pos)) & ((1 << bit_size) - 1);
+                ctx.offset_ranges.push_back({
+                    .start = offset,
+                    .end = offset + 1,
+                    .related_field = related_field,
+                    .related_data = r.read().substr(r.read().size() - 1, 1),
+                    .interpreted_value = interpreted_value,
+                });
+                ctx.read_offset = r.offset();
+                ctx.can_read = !r.empty();
+                ref->value = interpreted_value;
+                return true;
+            }
+            else {
+                auto read = r.read().substr(r.read().size() - 1, 1);
+                interpreted_value = (read[0] & ((1 << can_consume) - 1)) << (bit_size - can_consume);
+                bit_size -= can_consume;
+                ctx.non_aligned_pos = 0;
+            }
+        }
         if (bit_size % 8 == 0) {
             futils::view::rvec data;
             auto offset = r.offset();
@@ -974,16 +1017,43 @@ namespace bm2hexmap {
                 return false;
             }
             auto then_offset = r.offset();
-            std::uint64_t interpreted_value = 0;
             for (size_t i = 0; i < data.size(); i++) {
-                if (endian.endian() == rebgn::Endian::little ||
-                    (endian.endian() == rebgn::Endian::native && futils::binary::is_little())) {
-                    interpreted_value |= (std::uint64_t)data[i] << (i * 8);
+                if (is_little) {
+                    interpreted_value |= (std::uint64_t)data[i] << ((i * 8));
                 }
                 else {
-                    interpreted_value |= (std::uint64_t)data[i] << ((data.size() - 1 - i) * 8);
+                    interpreted_value |= (std::uint64_t)data[i] << (((data.size() - 1 - i) * 8));
                 }
             }
+            ctx.offset_ranges.push_back({
+                .start = has_non_aligned ? offset - 1 : offset,
+                .end = then_offset,
+                .related_field = related_field,
+                .related_data = data,
+                .interpreted_value = interpreted_value,
+            });
+            ctx.read_offset = r.offset();
+            ctx.can_read = !r.empty();
+            ref->value = interpreted_value;
+        }
+        else {
+            if (is_little) {
+                ctx.output["error"] = "little endian not supported for non-aligned bit size currently";
+                return false;
+            }
+            auto to_read = bit_size / 8 + 1;
+            auto remaining_bits = bit_size % 8;
+            futils::view::rvec data;
+            auto offset = r.offset();
+            if (!r.read(data, to_read)) {
+                ctx.output["error"] = std::format("read {} bytes failed", to_read);
+                return false;
+            }
+            auto then_offset = r.offset();
+            for (size_t i = 0; i < data.size() - 1; i++) {
+                interpreted_value |= (std::uint64_t)data[i] << (((data.size() - 1 - i) * 8) + remaining_bits);
+            }
+            interpreted_value |= (data[data.size() - 1] >> (8 - remaining_bits)) & ((1 << remaining_bits) - 1);
             ctx.offset_ranges.push_back({
                 .start = offset,
                 .end = then_offset,
@@ -993,11 +1063,10 @@ namespace bm2hexmap {
             });
             ctx.read_offset = r.offset();
             ctx.can_read = !r.empty();
+            ctx.non_aligned_pos = 8 - remaining_bits;
             ref->value = interpreted_value;
-            return true;
         }
-        ctx.output["error"] = "bit size not multiple of 8";
-        return false;
+        return true;
     }
 
     void inner_function(Context& ctx, futils::binary::reader& r, rebgn::Range range) {
@@ -1401,7 +1470,8 @@ namespace bm2hexmap {
                         return;
                     }
                     new_variable->value = init_eval.back().value.value()->value;
-                    ctx.stack.back().variables[ident] = new_variable;
+                    ctx.stack.back().variables.map[ident] = new_variable;
+                    ctx.stack.back().variables.insert_order.push_back(ident);
                     break;
                 }
                 case rebgn::AbstractOp::DEFINE_CONSTANT: {
@@ -1593,7 +1663,9 @@ namespace bm2hexmap {
         return ctx.ident(related_field);
     }
 
-    void map_value_to_json(Context& ctx, json::JSON& json, const std::shared_ptr<Value>& val) {
+    using JSONValue = json::OrderedJSON;
+
+    void map_value_to_json(Context& ctx, JSONValue& json, const std::shared_ptr<Value>& val) {
         if (!val) {
             json = nullptr;
             return;
@@ -1606,23 +1678,27 @@ namespace bm2hexmap {
         }
         else if (std::holds_alternative<std::vector<std::shared_ptr<Value>>>(val->value)) {
             auto& vec = std::get<std::vector<std::shared_ptr<Value>>>(val->value);
-            json::JSON arr;
+            JSONValue arr;
             arr.init_array();
             for (auto& v : vec) {
-                json::JSON j;
+                json::OrderedJSON j;
                 map_value_to_json(ctx, j, v);
                 arr.push_back(j);
             }
             json = std::move(arr);
         }
-        else if (std::holds_alternative<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value)) {
-            auto& map = std::get<std::unordered_map<std::string, std::shared_ptr<Value>>>(val->value);
-            json::JSON obj;
+        else if (std::holds_alternative<Map>(val->value)) {
+            auto& map = std::get<Map>(val->value);
+            JSONValue obj;
             obj.init_obj();
-            for (auto& [k, v] : map) {
-                json::JSON j;
-                map_value_to_json(ctx, j, v);
-                obj[k] = j;
+            for (auto& k : map.insert_order) {
+                auto found = map.map.find(k);
+                if (found == map.map.end()) {
+                    continue;
+                }
+                JSONValue j;
+                map_value_to_json(ctx, j, found->second);
+                obj[found->first] = std::move(j);
             }
             json = std::move(obj);
         }
@@ -1632,11 +1708,11 @@ namespace bm2hexmap {
     }
 
     void dump_json(Context& ctx, futils::binary::reader& r) {
-        std::vector<json::JSON> offset_ranges;
+        std::vector<JSONValue> offset_ranges;
         ctx.output["read_offset"] = std::uint64_t(r.offset());
         ctx.output["read_remain"] = std::uint64_t(r.remain().size());
         for (auto& range : ctx.offset_ranges) {
-            json::JSON json;
+            JSONValue json;
             json["start"] = std::uint64_t(range.start);
             json["end"] = std::uint64_t(range.end);
             json["related_field"] = related_field_to_string(ctx, range.related_field);
@@ -1649,36 +1725,48 @@ namespace bm2hexmap {
             offset_ranges.push_back(json);
         }
         ctx.output["offset_ranges"] = std::move(offset_ranges);
-        std::vector<json::JSON> ops;
+        std::vector<JSONValue> ops;
         for (auto& op : ctx.op_step) {
             ops.push_back(to_string(ctx.bm.code[op].op));
         }
         ctx.output["op_step"] = std::move(ops);
         auto& self = ctx.output["self"];
         auto& current = self[0];
-        for (auto& kv : ctx.self) {
-            json::JSON json;
-            map_value_to_json(ctx, json, kv.second);
-            current[kv.first] = std::move(json);
+        for (auto& kv : ctx.self.insert_order) {
+            auto found = ctx.self.map.find(kv);
+            if (found == ctx.self.map.end()) {
+                continue;
+            }
+            JSONValue json;
+            map_value_to_json(ctx, json, found->second);
+            current[found->first] = std::move(json);
         }
         for (auto& self_stack : ctx.self_stack) {
-            json::JSON current;
-            for (auto& kv : self_stack) {
-                json::JSON json;
-                map_value_to_json(ctx, json, kv.second);
-                current[kv.first] = json;
+            JSONValue current;
+            for (auto& kv : self_stack.insert_order) {
+                auto found = self_stack.map.find(kv);
+                if (found == self_stack.map.end()) {
+                    continue;
+                }
+                JSONValue json;
+                map_value_to_json(ctx, json, found->second);
+                current[found->first] = json;
             }
             self.push_back(current);
         }
         auto& variables = ctx.output["variables"];
         variables.init_array();
         for (auto& s : ctx.stack) {
-            json::JSON base;
+            JSONValue base;
             base.init_obj();
-            for (auto& kv : s.variables) {
-                json::JSON json;
-                map_value_to_json(ctx, json, kv.second);
-                base[kv.first] = json;
+            for (auto& kv : s.variables.insert_order) {
+                auto found = s.variables.map.find(kv);
+                if (found == s.variables.map.end()) {
+                    continue;
+                }
+                JSONValue json;
+                map_value_to_json(ctx, json, found->second);
+                base[found->first] = json;
             }
             variables.push_back(base);
         }
@@ -1688,7 +1776,7 @@ namespace bm2hexmap {
 
     void to_hexmap(::futils::binary::writer& w, const rebgn::BinaryModule& bm, const Flags& flags, bm2::Output& output) {
         Context ctx{w, bm, output, [&](bm2::Context& ctx, std::uint64_t id, auto&& str) {
-                
+
                     }};
         futils::binary::reader r{flags.input_binary};
         // search metadata

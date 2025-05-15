@@ -30,7 +30,7 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
         with:
-          actions-cache-folder: emsdk
+          actions-cache-folder: /tmp/emsdk
       - name: Set up Ninja
         uses: seanmiddleditch/gha-setup-ninja@96bed6edff20d1dd61ecff9b75cc519d516e6401 # master
       - name: Cache
@@ -44,7 +44,7 @@ jobs:
           path: |
             ./built
             ./utils
-            ./emsdk
+            /tmp/emsdk
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('build.sh') }}
       - name: Pull Utils
         if: ${{ steps.cache_web.outputs.cache-hit }}

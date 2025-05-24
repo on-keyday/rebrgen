@@ -26,5 +26,12 @@
         "file_base": "save",
         "failure_case": false,
         "hex": true
+    },
+    {
+        "binary": "./binary_data/ipv6.dat",
+        "format_name": "TestPacket",
+        "file_base": "save",
+        "failure_case": false,
+        "hex": true
     }
 ]

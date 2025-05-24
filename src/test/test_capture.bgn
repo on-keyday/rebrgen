@@ -92,7 +92,26 @@ format ICMPHeader:
     type: ICMPv6Type   
     code: u8
     checksum: u16
-format Test:
+
+format NDPNeighborSolicitation:
+    reserved: u32
+    target_addr: [16]u8
+    options: [..]NDPOption
+enum NDPOptionType:
+    :u8
+    source_link_layer_address = 1
+    target_link_layer_address = 2
+    prefix_information = 3
+    redirect_header = 4
+    mtu = 5
+format NDPOption:
+    type: NDPOptionType
+    length: u8
+    length != 0
+    data: [length * 8 - 2]u8
+
+format TestPacket:
    ether :EthernetFrame
    ipv6 :IPv6Header
    icmp :ICMPHeader
+   ndp :NDPNeighborSolicitation

@@ -15,6 +15,7 @@ exit(
             "./testkit/cmptest.json",
             "--clean-tmp",
             "--save-tmp-dir",
+            "--debug",
         ],
         stdout=sys.stdout,
         stderr=sys.stderr,

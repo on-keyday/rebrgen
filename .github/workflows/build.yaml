@@ -59,6 +59,7 @@ jobs:
         run: |
           git clone https://github.com/on-keyday/utils.git
           cd utils
+          rm -rf ./built
           . build wasm-em Release futils
           cd ..
       - name: Install libc++-dev and libc++abi-dev
@@ -72,6 +73,7 @@ jobs:
           cd utils
           . build shared Release futils
           cd ..
+          rm -rf ./built
           BUILD_MODE=native FUTILS_DIR=$(pwd)/utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
           cmake --build ./built/native/Debug --target gen_template
           cmake --install ./built/native/Debug --component gen_template

@@ -567,12 +567,19 @@ namespace bm2rust {
         if (auto belong = code.belong(); belong) {
             auto idx = ctx.ident_index_table[belong.value().value()];
             auto& belong_code = ctx.bm.code[idx];
-            if (belong_code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER ||
-                belong_code.op == rebgn::AbstractOp::DEFINE_UNION ||
-                belong_code.op == rebgn::AbstractOp::DEFINE_FIELD ||
-                belong_code.op == rebgn::AbstractOp::DEFINE_FORMAT ||
-                belong_code.op == rebgn::AbstractOp::DEFINE_BIT_FIELD ||
-                belong_code.op == rebgn::AbstractOp::DEFINE_PROPERTY) {
+            if (code.op == rebgn::AbstractOp::DEFINE_UNION && belong_code.op == rebgn::AbstractOp::DEFINE_FIELD) {
+                // skip belong
+                auto idx = ctx.ident_index_table[belong_code.belong().value().value()];
+                auto& belong_belong_code = ctx.bm.code[idx];
+                auto t = get_belong_type_internal(ctx, belong_belong_code);
+                ident_str = std::format("{}::{}", t, ident_str);
+            }
+            else if (belong_code.op == rebgn::AbstractOp::DEFINE_UNION ||
+                     belong_code.op == rebgn::AbstractOp::DEFINE_UNION_MEMBER ||
+                     belong_code.op == rebgn::AbstractOp::DEFINE_FIELD ||
+                     belong_code.op == rebgn::AbstractOp::DEFINE_FORMAT ||
+                     belong_code.op == rebgn::AbstractOp::DEFINE_BIT_FIELD ||
+                     belong_code.op == rebgn::AbstractOp::DEFINE_PROPERTY) {
                 auto t = get_belong_type_internal(ctx, belong_code);
                 ident_str = std::format("{}::{}", t, ident_str);
             }

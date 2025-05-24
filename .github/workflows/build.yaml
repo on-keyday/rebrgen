@@ -66,6 +66,7 @@ jobs:
         run: sudo apt-get install libc++-dev libc++abi-dev -y
       - name: Build
         run: |
+          rm -rf ./built
           chmod +x script/build.sh
           EMSDK_PATH=$EMSDK/emsdk_env.sh FUTILS_DIR=./utils ./script/build.sh web Release
           cp README.md web/
@@ -73,7 +74,6 @@ jobs:
           cd utils
           . build shared Release futils
           cd ..
-          rm -rf ./built
           BUILD_MODE=native FUTILS_DIR=$(pwd)/utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
           cmake --build ./built/native/Debug --target gen_template
           cmake --install ./built/native/Debug --component gen_template

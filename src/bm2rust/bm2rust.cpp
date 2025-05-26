@@ -354,6 +354,7 @@ namespace bm2rust {
                     w.write(", ");
                 }
                 w.write(ident, " :&mut ", type);
+                params++;
             }
             if (code.op == rebgn::AbstractOp::DEFINE_PARAMETER) {
                 auto storage = *code.type();
@@ -363,6 +364,7 @@ namespace bm2rust {
                     w.write(", ");
                 }
                 w.write(ident, ": ", type);
+                params++;
             }
         }
     }

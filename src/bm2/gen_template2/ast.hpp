@@ -28,6 +28,8 @@ struct AstNode {
         Block,
         ExpressionStatement, // New node type
         LoopStatement,       // New node type
+        IndexExpr,           // New node type
+        Program,             // New node type for top-level program structure
         // Add more as needed
     };
 
@@ -80,10 +82,23 @@ struct VariableDecl : Statement {
 };
 
 struct FunctionCall : Expression {
+    std::unique_ptr<Expression> base_object; // For member function calls (e.g., obj.func())
     std::string function_name;
     std::vector<std::unique_ptr<Expression>> arguments;
+    // Constructor for free functions
     FunctionCall(std::string name, std::vector<std::unique_ptr<Expression>> args = {})
         : function_name(std::move(name)), arguments(std::move(args)) {}
+    // Constructor for member functions
+    FunctionCall(std::unique_ptr<Expression> base, std::string name, std::vector<std::unique_ptr<Expression>> args = {})
+        : base_object(std::move(base)), function_name(std::move(name)), arguments(std::move(args)) {}
+    std::string accept(AstRenderer& renderer) const override;
+};
+
+struct IndexExpr : Expression {
+    std::unique_ptr<Expression> base;
+    std::unique_ptr<Expression> index;
+    IndexExpr(std::unique_ptr<Expression> b, std::unique_ptr<Expression> i)
+        : base(std::move(b)), index(std::move(i)) {}
     std::string accept(AstRenderer& renderer) const override;
 };
 
@@ -193,7 +208,11 @@ public:
     }
 
     std::string visit(const FunctionCall& node) {
-        std::string result = node.function_name + "(";
+        std::string result;
+        if (node.base_object) {
+            result += node.base_object->accept(*this) + ".";
+        }
+        result += node.function_name + "(";
         for (size_t i = 0; i < node.arguments.size(); ++i) {
             result += node.arguments[i]->accept(*this);
             if (i < node.arguments.size() - 1) {
@@ -201,6 +220,10 @@ public:
             }
         }
         return result + ")";
+    }
+
+    std::string visit(const IndexExpr& node) {
+        return node.base->accept(*this) + "[" + node.index->accept(*this) + "]";
     }
 
     std::string visit(const ReturnStatement& node) {
@@ -309,5 +332,6 @@ inline std::string CaseStatement::accept(AstRenderer& renderer) const { return r
 inline std::string Block::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
 inline std::string ExpressionStatement::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
 inline std::string LoopStatement::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
+inline std::string IndexExpr::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
 
 } // namespace rebgn

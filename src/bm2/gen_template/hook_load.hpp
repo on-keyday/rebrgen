@@ -113,7 +113,7 @@ namespace rebgn {
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, rebgn::StorageType op, bm2::HookFileSub sub = bm2::HookFileSub::main);
     bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, bool as_code);
 
-    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook,auto op, std::string_view variable_name, bm2::HookFileSub sub) {
+    bool may_write_from_hook(bm2::TmpCodeWriter& w, Flags& flags, bm2::HookFile hook, auto op, std::string_view variable_name, bm2::HookFileSub sub) {
         auto op_name = to_string(op);
         auto concat = std::format("{}_{}_var_{}{}", to_string(hook), op_name, variable_name, to_string(sub));
         // to lower

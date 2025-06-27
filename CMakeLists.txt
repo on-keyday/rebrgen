@@ -62,15 +62,22 @@ add_executable(gen_template
     "src/bm2/gen_template/hook_load.cpp"
 )
 
+add_executable(gen_template2
+    "src/bm2/gen_template2/main.cpp"
+)
+
 add_subdirectory("src")
 
 target_link_libraries(bmgen futils bm)
 target_link_libraries(gen_template futils)
+target_link_libraries(gen_template2 futils bm)
 if(UNIX)
 set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
+set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
 endif()
 install(TARGETS bmgen bm DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
+install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 if(UNIX)

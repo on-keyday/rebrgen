@@ -351,12 +351,18 @@ inline std::unique_ptr<Statement> var_decl(std::string type_name, std::string na
     return std::make_unique<VariableDecl>(std::move(type_name), std::move(name), std::move(initializer));
 }
 
-inline std::unique_ptr<Expression> func_call(std::string name, std::vector<std::unique_ptr<Expression>> args = {}) {
-    return std::make_unique<FunctionCall>(std::move(name), std::move(args));
+template<typename... Args>
+inline std::unique_ptr<Expression> func_call(std::string name, Args&&... args) {
+    std::vector<std::unique_ptr<Expression>> expr_args;
+    (expr_args.push_back(std::forward<Args>(args)), ...);
+    return std::make_unique<FunctionCall>(std::move(name), std::move(expr_args));
 }
 
-inline std::unique_ptr<Expression> member_func_call(std::unique_ptr<Expression> base, std::string name, std::vector<std::unique_ptr<Expression>> args = {}) {
-    return std::make_unique<FunctionCall>(std::move(base), std::move(name), std::move(args));
+template<typename... Args>
+inline std::unique_ptr<Expression> member_func_call(std::unique_ptr<Expression> base, std::string name, Args&&... args) {
+    std::vector<std::unique_ptr<Expression>> expr_args;
+    (expr_args.push_back(std::forward<Args>(args)), ...);
+    return std::make_unique<FunctionCall>(std::move(base), std::move(name), std::move(expr_args));
 }
 
 inline std::unique_ptr<Expression> idx_expr(std::unique_ptr<Expression> base, std::unique_ptr<Expression> index) {

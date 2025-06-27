@@ -49,7 +49,7 @@ inline std::unique_ptr<rebgn::Expression> generate_immediate_int(const bm2::Cont
 // Generator for IMMEDIATE_STRING
 inline std::unique_ptr<rebgn::Expression> generate_immediate_string(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    return lit("\"" + ctx.ident_table.at(code.ident()->value()) + "\"");
+    return lit("" + ctx.ident_table.at(code.ident()->value()) + "");
 }
 
 // Generator for IMMEDIATE_TRUE
@@ -105,6 +105,36 @@ inline std::unique_ptr<rebgn::Expression> generate_assign_expression(const bm2::
     return bin_op(std::move(left_expr), "=", std::move(right_expr));
 }
 
+// Generator for PROPERTY_ASSIGN
+inline std::unique_ptr<rebgn::Expression> generate_property_assign_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
+    std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
+    return bin_op(std::move(left_expr), "=", std::move(right_expr));
+}
+
+// Generator for ASSERT
+inline std::unique_ptr<rebgn::Statement> generate_assert_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::unique_ptr<rebgn::Expression> condition = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.ref()->value()), flags);
+    return expr_stmt(func_call("assert", std::move(condition)));
+}
+
+// Generator for LENGTH_CHECK
+inline std::unique_ptr<rebgn::Statement> generate_length_check_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
+    std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
+    return expr_stmt(func_call("length_check", std::move(left_expr), std::move(right_expr)));
+}
+
+// Generator for EXPLICIT_ERROR
+inline std::unique_ptr<rebgn::Statement> generate_explicit_error_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    // Assuming ref is a string literal for now
+    std::string error_message = ctx.ident_table.at(code.param()->refs[0].value());    std::string quoted_error_message = "\"" + error_message + "\"";    return expr_stmt(func_call("explicit_error", lit(quoted_error_message)));
+}
+
 // Generator for ACCESS
 inline std::unique_ptr<rebgn::Expression> generate_access_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
@@ -132,6 +162,21 @@ inline std::unique_ptr<rebgn::Expression> generate_index_expression(const bm2::C
     return idx_expr(std::move(left_expr), std::move(right_expr));
 }
 
+// Generator for APPEND
+inline std::unique_ptr<rebgn::Expression> generate_append_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
+    std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
+    return member_func_call(std::move(left_expr), "append", std::move(right_expr));
+}
+
+// Generator for INC
+inline std::unique_ptr<rebgn::Expression> generate_inc_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::unique_ptr<rebgn::Expression> expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.ref()->value()), flags);
+    return un_op("++", std::move(expr));
+}
+
 // Generator for ARRAY_SIZE
 inline std::unique_ptr<rebgn::Expression> generate_array_size_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
@@ -143,13 +188,8 @@ inline std::unique_ptr<rebgn::Expression> generate_array_size_expression(const b
 inline std::unique_ptr<rebgn::Expression> generate_binary_op(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
     std::string op_str = to_string(code.bop().value());
-    std::cerr << "DEBUG: BINARY op_str: " << op_str << std::endl;
-    std::cerr << "DEBUG: BINARY left_ref: " << code.left_ref()->value() << std::endl;
-    std::cerr << "DEBUG: BINARY right_ref: " << code.right_ref()->value() << std::endl;
     size_t left_idx = ctx.ident_index_table.at(code.left_ref()->value());
     size_t right_idx = ctx.ident_index_table.at(code.right_ref()->value());
-    std::cerr << "DEBUG: BINARY resolved left_idx: " << left_idx << std::endl;
-    std::cerr << "DEBUG: BINARY resolved right_idx: " << right_idx << std::endl;
     std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, left_idx, flags);
     std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, right_idx, flags);
     return bin_op(std::move(left_expr), op_str, std::move(right_expr));
@@ -159,10 +199,7 @@ inline std::unique_ptr<rebgn::Expression> generate_binary_op(const bm2::Context&
 inline std::unique_ptr<rebgn::Expression> generate_unary_op(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
     std::string op_str = to_string(code.uop().value());
-    std::cerr << "DEBUG: UNARY op_str: " << op_str << std::endl;
-    std::cerr << "DEBUG: UNARY ref: " << code.ref()->value() << std::endl;
     size_t ref_idx = ctx.ident_index_table.at(code.ref()->value());
-    std::cerr << "DEBUG: UNARY resolved ref_idx: " << ref_idx << std::endl;
     std::unique_ptr<rebgn::Expression> expr = generate_expression_from_code(ctx, ref_idx, flags);
     return un_op(op_str, std::move(expr));
 }
@@ -181,7 +218,7 @@ inline std::unique_ptr<rebgn::Statement> generate_if_statement(const bm2::Contex
         then_statements.push_back(generate_statement_from_code(ctx, current_idx, flags));
         current_idx++;
     }
-    std::unique_ptr<rebgn::Statement> then_block = block(std::move(then_statements));
+    std::unique_ptr<rebgn::Block> then_block = block(std::move(then_statements));
 
     std::unique_ptr<rebgn::Statement> else_block = nullptr;
 
@@ -234,8 +271,6 @@ inline std::unique_ptr<rebgn::Statement> generate_return_statement(const bm2::Co
 // Generator for DEFINE_VARIABLE
 inline std::unique_ptr<rebgn::Statement> generate_variable_declaration(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    // For now, declare an int variable with a placeholder name and no initializer
-    // In a real scenario, you'd extract type and name from 'code'
     std::string var_name = "my_variable";
     if (code.ident()) {
         var_name = ctx.ident_table.at(code.ident()->value());
@@ -250,7 +285,6 @@ inline std::unique_ptr<rebgn::Statement> generate_variable_declaration(const bm2
 // Central dispatch for expressions
 std::unique_ptr<rebgn::Expression> generate_expression_from_code(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    std::cerr << "DEBUG: generate_expression_from_code processing op: " << to_string(code.op) << " at index: " << code_idx << std::endl;
     switch (code.op) {
         case rebgn::AbstractOp::IMMEDIATE_INT:
             return generate_immediate_int(ctx, code_idx, flags);
@@ -281,15 +315,21 @@ std::unique_ptr<rebgn::Expression> generate_expression_from_code(const bm2::Cont
             return generate_ref_evaluation(ctx, code_idx, flags);
         case rebgn::AbstractOp::ASSIGN:
             return generate_assign_expression(ctx, code_idx, flags);
+        case rebgn::AbstractOp::PROPERTY_ASSIGN:
+            return generate_property_assign_expression(ctx, code_idx, flags);
         case rebgn::AbstractOp::ACCESS:
             return generate_access_expression(ctx, code_idx, flags);
         case rebgn::AbstractOp::INDEX:
             return generate_index_expression(ctx, code_idx, flags);
         case rebgn::AbstractOp::ARRAY_SIZE:
             return generate_array_size_expression(ctx, code_idx, flags);
+        case rebgn::AbstractOp::APPEND:
+            return generate_append_expression(ctx, code_idx, flags);
+        case rebgn::AbstractOp::INC:
+            return generate_inc_expression(ctx, code_idx, flags);
         // Add more expression types here
         default:
-            return expr_stmt(lit("// Unimplemented Expression: " + std::string(to_string(code.op))));
+            return lit("// Unimplemented Expression: " + std::string(to_string(code.op)));
     }
 }
 
@@ -308,9 +348,21 @@ std::unique_ptr<rebgn::Statement> generate_statement_from_code(const bm2::Contex
             return generate_return_statement(ctx, code_idx, flags);
         case rebgn::AbstractOp::DEFINE_VARIABLE:
             return generate_variable_declaration(ctx, code_idx, flags);
-        // Add more statement types here
-        default:
-            return expr_stmt(lit("// Unimplemented Statement: " + std::string(to_string(code.op))));
+        case rebgn::AbstractOp::ASSERT:
+            return generate_assert_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::LENGTH_CHECK:
+            return generate_length_check_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::EXPLICIT_ERROR:
+            return generate_explicit_error_statement(ctx, code_idx, flags);
+        default: {
+            // If it's an expression, wrap it in an ExpressionStatement
+            // Otherwise, it's an unimplemented statement
+            if (is_expr(code.op)) {
+                return expr_stmt(generate_expression_from_code(ctx, code_idx, flags));
+            } else {
+                return expr_stmt(lit("// Unimplemented Statement: " + std::string(to_string(code.op))));
+            }
+        }
     }
 }
 

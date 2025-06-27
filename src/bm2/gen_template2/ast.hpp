@@ -334,4 +334,53 @@ inline std::string ExpressionStatement::accept(AstRenderer& renderer) const { re
 inline std::string LoopStatement::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
 inline std::string IndexExpr::accept(AstRenderer& renderer) const { return renderer.visit(*this); }
 
+// Helper functions for AST node creation
+inline std::unique_ptr<Expression> lit(std::string value) {
+    return std::make_unique<Literal>(std::move(value));
+}
+
+inline std::unique_ptr<Expression> bin_op(std::unique_ptr<Expression> left, std::string op, std::unique_ptr<Expression> right) {
+    return std::make_unique<BinaryOpExpr>(std::move(left), std::move(op), std::move(right));
+}
+
+inline std::unique_ptr<Expression> un_op(std::string op, std::unique_ptr<Expression> expr) {
+    return std::make_unique<UnaryOpExpr>(std::move(op), std::move(expr));
+}
+
+inline std::unique_ptr<Statement> var_decl(std::string type_name, std::string name, std::unique_ptr<Expression> initializer = nullptr) {
+    return std::make_unique<VariableDecl>(std::move(type_name), std::move(name), std::move(initializer));
+}
+
+inline std::unique_ptr<Expression> func_call(std::string name, std::vector<std::unique_ptr<Expression>> args = {}) {
+    return std::make_unique<FunctionCall>(std::move(name), std::move(args));
+}
+
+inline std::unique_ptr<Expression> member_func_call(std::unique_ptr<Expression> base, std::string name, std::vector<std::unique_ptr<Expression>> args = {}) {
+    return std::make_unique<FunctionCall>(std::move(base), std::move(name), std::move(args));
+}
+
+inline std::unique_ptr<Expression> idx_expr(std::unique_ptr<Expression> base, std::unique_ptr<Expression> index) {
+    return std::make_unique<IndexExpr>(std::move(base), std::move(index));
+}
+
+inline std::unique_ptr<Statement> ret_stmt(std::unique_ptr<Expression> expr = nullptr) {
+    return std::make_unique<ReturnStatement>(std::move(expr));
+}
+
+inline std::unique_ptr<Statement> if_stmt(std::unique_ptr<Expression> cond, std::unique_ptr<Statement> then_b, std::unique_ptr<Statement> else_b = nullptr) {
+    return std::make_unique<IfStatement>(std::move(cond), std::move(then_b), std::move(else_b));
+}
+
+inline std::unique_ptr<Block> block(std::vector<std::unique_ptr<Statement>> stmts = {}) {
+    return std::make_unique<Block>(std::move(stmts));
+}
+
+inline std::unique_ptr<Statement> expr_stmt(std::unique_ptr<Expression> expr) {
+    return std::make_unique<ExpressionStatement>(std::move(expr));
+}
+
+inline std::unique_ptr<Statement> loop_stmt(std::unique_ptr<Block> body, std::unique_ptr<Expression> cond = nullptr) {
+    return std::make_unique<LoopStatement>(std::move(body), std::move(cond));
+}
+
 } // namespace rebgn

@@ -43,53 +43,52 @@ inline size_t find_end_of_if_block(const bm2::Context& ctx, size_t start_idx) {
 // Generator for IMMEDIATE_INT
 inline std::unique_ptr<rebgn::Expression> generate_immediate_int(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    std::cerr << "DEBUG: generate_immediate_int processing value: " << code.int_value()->value() << " at index: " << code_idx << std::endl;
-    return std::make_unique<rebgn::Literal>(std::to_string(code.int_value()->value()));
+    return lit(std::to_string(code.int_value()->value()));
 }
 
 // Generator for IMMEDIATE_STRING
 inline std::unique_ptr<rebgn::Expression> generate_immediate_string(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    return std::make_unique<rebgn::Literal>("\"" + ctx.ident_table.at(code.ident()->value()) + "\"");
+    return lit("\"" + ctx.ident_table.at(code.ident()->value()) + "\"");
 }
 
 // Generator for IMMEDIATE_TRUE
 inline std::unique_ptr<rebgn::Expression> generate_immediate_true(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
-    return std::make_unique<rebgn::Literal>("true");
+    return lit("true");
 }
 
 // Generator for IMMEDIATE_FALSE
 inline std::unique_ptr<rebgn::Expression> generate_immediate_false(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
-    return std::make_unique<rebgn::Literal>("false");
+    return lit("false");
 }
 
 // Generator for IMMEDIATE_INT64
 inline std::unique_ptr<rebgn::Expression> generate_immediate_int64(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    return std::make_unique<rebgn::Literal>(std::to_string(code.int_value64().value()) + "LL");
+    return lit(std::to_string(code.int_value64().value()) + "LL");
 }
 
 // Generator for IMMEDIATE_CHAR
 inline std::unique_ptr<rebgn::Expression> generate_immediate_char(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
-    return std::make_unique<rebgn::Literal>("'" + std::string(1, static_cast<char>(code.int_value()->value())) + "'");
+    return lit("'" + std::string(1, static_cast<char>(code.int_value()->value())) + "'");
 }
 
 // Generator for IMMEDIATE_TYPE
 inline std::unique_ptr<rebgn::Expression> generate_immediate_type(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
     // Assuming StorageRef points to an identifier that represents the type name
-    return std::make_unique<rebgn::Literal>(ctx.ident_table.at(code.type().value().ref.value()));
+    return lit(ctx.ident_table.at(code.type().value().ref.value()));
 }
 
 // Generator for EMPTY_PTR
 inline std::unique_ptr<rebgn::Expression> generate_empty_ptr(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
-    return std::make_unique<rebgn::Literal>("nullptr");
+    return lit("nullptr");
 }
 
 // Generator for EMPTY_OPTIONAL
 inline std::unique_ptr<rebgn::Expression> generate_empty_optional(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
-    return std::make_unique<rebgn::Literal>("std::nullopt");
+    return lit("std::nullopt");
 }
 
 // Generator for PHI, DECLARE_VARIABLE, DEFINE_VARIABLE_REF, BEGIN_COND_BLOCK
@@ -103,7 +102,7 @@ inline std::unique_ptr<rebgn::Expression> generate_assign_expression(const bm2::
     const auto& code = ctx.bm.code[code_idx];
     std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
     std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
-    return std::make_unique<rebgn::BinaryOpExpr>(std::move(left_expr), "=", std::move(right_expr));
+    return bin_op(std::move(left_expr), "=", std::move(right_expr));
 }
 
 // Generator for ACCESS
@@ -118,10 +117,10 @@ inline std::unique_ptr<rebgn::Expression> generate_access_expression(const bm2::
 
     if (is_enum_member) {
         // Enum member access (e.g., EnumType::EnumValue)
-        return std::make_unique<rebgn::BinaryOpExpr>(std::move(left_expr), "::", std::make_unique<rebgn::Literal>(right_ident));
+        return bin_op(std::move(left_expr), "::", lit(right_ident));
     } else {
         // Normal member access (e.g., object.member)
-        return std::make_unique<rebgn::BinaryOpExpr>(std::move(left_expr), ".", std::make_unique<rebgn::Literal>(right_ident));
+        return bin_op(std::move(left_expr), ".", lit(right_ident));
     }
 }
 
@@ -130,14 +129,14 @@ inline std::unique_ptr<rebgn::Expression> generate_index_expression(const bm2::C
     const auto& code = ctx.bm.code[code_idx];
     std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
     std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
-    return std::make_unique<rebgn::IndexExpr>(std::move(left_expr), std::move(right_expr));
+    return idx_expr(std::move(left_expr), std::move(right_expr));
 }
 
 // Generator for ARRAY_SIZE
 inline std::unique_ptr<rebgn::Expression> generate_array_size_expression(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
     const auto& code = ctx.bm.code[code_idx];
     std::unique_ptr<rebgn::Expression> target_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.ref()->value()), flags);
-    return std::make_unique<rebgn::FunctionCall>(std::move(target_expr), "size");
+    return member_func_call(std::move(target_expr), "size");
 }
 
 // Generator for BINARY operations
@@ -153,7 +152,7 @@ inline std::unique_ptr<rebgn::Expression> generate_binary_op(const bm2::Context&
     std::cerr << "DEBUG: BINARY resolved right_idx: " << right_idx << std::endl;
     std::unique_ptr<rebgn::Expression> left_expr = generate_expression_from_code(ctx, left_idx, flags);
     std::unique_ptr<rebgn::Expression> right_expr = generate_expression_from_code(ctx, right_idx, flags);
-    return std::make_unique<rebgn::BinaryOpExpr>(std::move(left_expr), op_str, std::move(right_expr));
+    return bin_op(std::move(left_expr), op_str, std::move(right_expr));
 }
 
 // Generator for UNARY operations
@@ -165,7 +164,7 @@ inline std::unique_ptr<rebgn::Expression> generate_unary_op(const bm2::Context& 
     size_t ref_idx = ctx.ident_index_table.at(code.ref()->value());
     std::cerr << "DEBUG: UNARY resolved ref_idx: " << ref_idx << std::endl;
     std::unique_ptr<rebgn::Expression> expr = generate_expression_from_code(ctx, ref_idx, flags);
-    return std::make_unique<rebgn::UnaryOpExpr>(op_str, std::move(expr));
+    return un_op(op_str, std::move(expr));
 }
 
 // Generator for IF statements
@@ -182,7 +181,7 @@ inline std::unique_ptr<rebgn::Statement> generate_if_statement(const bm2::Contex
         then_statements.push_back(generate_statement_from_code(ctx, current_idx, flags));
         current_idx++;
     }
-    std::unique_ptr<rebgn::Statement> then_block = std::make_unique<rebgn::Block>(std::move(then_statements));
+    std::unique_ptr<rebgn::Statement> then_block = block(std::move(then_statements));
 
     std::unique_ptr<rebgn::Statement> else_block = nullptr;
 
@@ -198,11 +197,11 @@ inline std::unique_ptr<rebgn::Statement> generate_if_statement(const bm2::Contex
                 else_statements.push_back(generate_statement_from_code(ctx, current_idx, flags));
                 current_idx++;
             }
-            else_block = std::make_unique<rebgn::Block>(std::move(else_statements));
+            else_block = block(std::move(else_statements));
         }
     }
 
-    return std::make_unique<rebgn::IfStatement>(std::move(condition), std::move(then_block), std::move(else_block));
+    return if_stmt(std::move(condition), std::move(then_block), std::move(else_block));
 }
 
 // Generator for LOOP statements
@@ -215,10 +214,10 @@ inline std::unique_ptr<rebgn::Statement> generate_loop_statement(const bm2::Cont
 
     // For now, loop body is a placeholder
     std::vector<std::unique_ptr<rebgn::Statement>> loop_body_statements;
-    loop_body_statements.push_back(std::make_unique<rebgn::ExpressionStatement>(std::make_unique<rebgn::Literal>("// loop body")));
-    std::unique_ptr<rebgn::Block> loop_body = std::make_unique<rebgn::Block>(std::move(loop_body_statements));
+    loop_body_statements.push_back(expr_stmt(lit("// loop body")));
+    std::unique_ptr<rebgn::Block> loop_body = block(std::move(loop_body_statements));
 
-    return std::make_unique<rebgn::LoopStatement>(std::move(loop_body), std::move(condition));
+    return loop_stmt(std::move(loop_body), std::move(condition));
 }
 
 // Generator for RETURN_TYPE
@@ -229,7 +228,7 @@ inline std::unique_ptr<rebgn::Statement> generate_return_statement(const bm2::Co
     if (code.ref()) { // Check if ref exists
         expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.ref()->value()), flags);
     }
-    return std::make_unique<rebgn::ReturnStatement>(std::move(expr));
+    return ret_stmt(std::move(expr));
 }
 
 // Generator for DEFINE_VARIABLE
@@ -245,7 +244,7 @@ inline std::unique_ptr<rebgn::Statement> generate_variable_declaration(const bm2
     if (code.ref()) {
         initializer = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.ref()->value()), flags);
     }
-    return std::make_unique<rebgn::VariableDecl>("int", var_name, std::move(initializer));
+    return var_decl("int", var_name, std::move(initializer));
 }
 
 // Central dispatch for expressions
@@ -290,7 +289,7 @@ std::unique_ptr<rebgn::Expression> generate_expression_from_code(const bm2::Cont
             return generate_array_size_expression(ctx, code_idx, flags);
         // Add more expression types here
         default:
-            return std::make_unique<rebgn::Literal>("// Unimplemented Expression: " + std::string(to_string(code.op)));
+            return expr_stmt(lit("// Unimplemented Expression: " + std::string(to_string(code.op))));
     }
 }
 
@@ -311,7 +310,7 @@ std::unique_ptr<rebgn::Statement> generate_statement_from_code(const bm2::Contex
             return generate_variable_declaration(ctx, code_idx, flags);
         // Add more statement types here
         default:
-            return std::make_unique<rebgn::ExpressionStatement>(std::make_unique<rebgn::Literal>("// Unimplemented Statement: " + std::string(to_string(code.op))));
+            return expr_stmt(lit("// Unimplemented Statement: " + std::string(to_string(code.op))));
     }
 }
 

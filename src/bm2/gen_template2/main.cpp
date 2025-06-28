@@ -314,6 +314,235 @@ namespace rebgn {
         w << renderer.render(generated_stmt);
         w << "\n\n";
 
+        // 23: DEFINE_PROGRAM (ident 789 - my_variable_name)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_PROGRAM;
+        bm.code.back().ident(rebgn::Varint(789));
+
+        // 24: END_PROGRAM
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_PROGRAM;
+
+        // Test with DEFINE_PROGRAM
+        generated_stmt = generate_statement_from_code(ctx, 23, flags);
+        w << "// Define Program Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_PROGRAM
+        generated_stmt = generate_statement_from_code(ctx, 24, flags);
+        w << "// End Program Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 25: DEFINE_FORMAT (ident 456 - test_string)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_FORMAT;
+        bm.code.back().ident(rebgn::Varint(456));
+
+        // 26: END_FORMAT
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_FORMAT;
+
+        // Test with DEFINE_FORMAT
+        generated_stmt = generate_statement_from_code(ctx, 25, flags);
+        w << "// Define Format Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_FORMAT
+        generated_stmt = generate_statement_from_code(ctx, 26, flags);
+        w << "// End Format Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 27: DEFINE_FIELD (ident 789 - my_variable_name, belong 456 - test_string, type 220 - Error Message)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_FIELD;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+        rebgn::StorageRef field_type_ref;
+        field_type_ref.ref = rebgn::Varint(220);
+        bm.code.back().type(field_type_ref);
+
+        // Test with DEFINE_FIELD
+        generated_stmt = generate_statement_from_code(ctx, 27, flags);
+        w << "// Define Field Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 28: DEFINE_PROPERTY (ident 789 - my_variable_name, belong 456 - test_string)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_PROPERTY;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+
+        // 29: END_PROPERTY
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_PROPERTY;
+
+        // Test with DEFINE_PROPERTY
+        generated_stmt = generate_statement_from_code(ctx, 28, flags);
+        w << "// Define Property Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_PROPERTY
+        generated_stmt = generate_statement_from_code(ctx, 29, flags);
+        w << "// End Property Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 30: DEFINE_FUNCTION (ident 789 - my_variable_name, belong 456 - test_string, func_type 0 - normal)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_FUNCTION;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+        bm.code.back().func_type(rebgn::FunctionType::FREE);
+
+        // 31: END_FUNCTION
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_FUNCTION;
+
+        // Test with DEFINE_FUNCTION
+        generated_stmt = generate_statement_from_code(ctx, 30, flags);
+        w << "// Define Function Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_FUNCTION
+        generated_stmt = generate_statement_from_code(ctx, 31, flags);
+        w << "// End Function Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 32: DEFINE_ENUM (ident 789 - my_variable_name, type 220 - Error Message)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_ENUM;
+        bm.code.back().ident(rebgn::Varint(789));
+        rebgn::StorageRef enum_type_ref;
+        enum_type_ref.ref = rebgn::Varint(220);
+        bm.code.back().type(enum_type_ref);
+
+        // 33: END_ENUM
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_ENUM;
+
+        // Test with DEFINE_ENUM
+        generated_stmt = generate_statement_from_code(ctx, 32, flags);
+        w << "// Define Enum Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_ENUM
+        generated_stmt = generate_statement_from_code(ctx, 33, flags);
+        w << "// End Enum Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 34: DEFINE_ENUM_MEMBER (ident 789 - my_variable_name, left_ref 2 - 10, right_ref 3 - 20)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_ENUM_MEMBER;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().left_ref(rebgn::Varint(2));
+        bm.code.back().right_ref(rebgn::Varint(3));
+
+        // Test with DEFINE_ENUM_MEMBER
+        generated_stmt = generate_statement_from_code(ctx, 34, flags);
+        w << "// Define Enum Member Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 35: DEFINE_UNION (ident 789 - my_variable_name, belong 456 - test_string)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_UNION;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+
+        // 36: END_UNION
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_UNION;
+
+        // Test with DEFINE_UNION
+        generated_stmt = generate_statement_from_code(ctx, 35, flags);
+        w << "// Define Union Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_UNION
+        generated_stmt = generate_statement_from_code(ctx, 36, flags);
+        w << "// End Union Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 37: DEFINE_UNION_MEMBER (ident 789 - my_variable_name, belong 456 - test_string)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_UNION_MEMBER;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+
+        // 38: END_UNION_MEMBER
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_UNION_MEMBER;
+
+        // Test with DEFINE_UNION_MEMBER
+        generated_stmt = generate_statement_from_code(ctx, 37, flags);
+        w << "// Define Union Member Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_UNION_MEMBER
+        generated_stmt = generate_statement_from_code(ctx, 38, flags);
+        w << "// End Union Member Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 39: DEFINE_STATE (ident 789 - my_variable_name)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_STATE;
+        bm.code.back().ident(rebgn::Varint(789));
+
+        // 40: END_STATE
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_STATE;
+
+        // Test with DEFINE_STATE
+        generated_stmt = generate_statement_from_code(ctx, 39, flags);
+        w << "// Define State Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_STATE
+        generated_stmt = generate_statement_from_code(ctx, 40, flags);
+        w << "// End State Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // 41: DEFINE_BIT_FIELD (ident 789 - my_variable_name, belong 456 - test_string, type 220 - Error Message)
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::DEFINE_BIT_FIELD;
+        bm.code.back().ident(rebgn::Varint(789));
+        bm.code.back().belong(rebgn::Varint(456));
+        rebgn::StorageRef bit_field_type_ref;
+        bit_field_type_ref.ref = rebgn::Varint(220);
+        bm.code.back().type(bit_field_type_ref);
+
+        // 42: END_BIT_FIELD
+        bm.code.emplace_back();
+        bm.code.back().op = rebgn::AbstractOp::END_BIT_FIELD;
+
+        // Test with DEFINE_BIT_FIELD
+        generated_stmt = generate_statement_from_code(ctx, 41, flags);
+        w << "// Define Bit Field Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
+        // Test with END_BIT_FIELD
+        generated_stmt = generate_statement_from_code(ctx, 42, flags);
+        w << "// End Bit Field Test\n";
+        w << renderer.render(generated_stmt);
+        w << "\n\n";
+
         return true;
     }
 }  // namespace rebgn

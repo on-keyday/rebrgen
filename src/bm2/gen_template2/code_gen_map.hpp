@@ -20,6 +20,28 @@ inline std::map<rebgn::AbstractOp, AstGeneratorFunc> ast_generators;
 // Forward declarations for recursive calls
 std::unique_ptr<Expression> generate_expression_from_code(const bm2::Context& ctx, size_t code_idx, Flags& flags);
 std::unique_ptr<Statement> generate_statement_from_code(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_program_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_program_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_format_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_format_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_property_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_property_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_function_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_function_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_enum_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_enum_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_enum_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_union_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_union_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_union_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_union_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_state_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_state_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_bit_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_end_bit_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_encoder_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
+std::unique_ptr<rebgn::Statement> generate_define_decoder_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags);
 
 // Helper to find the end of an IF block (and its ELIF/ELSE branches)
 // Returns the index of the END_IF, or the next statement after the ELSE block
@@ -354,6 +376,50 @@ std::unique_ptr<rebgn::Statement> generate_statement_from_code(const bm2::Contex
             return generate_length_check_statement(ctx, code_idx, flags);
         case rebgn::AbstractOp::EXPLICIT_ERROR:
             return generate_explicit_error_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_PROGRAM:
+            return generate_define_program_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_PROGRAM:
+            return generate_end_program_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_FORMAT:
+            return generate_define_format_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_FORMAT:
+            return generate_end_format_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_FIELD:
+            return generate_define_field_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_PROPERTY:
+            return generate_define_property_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_PROPERTY:
+            return generate_end_property_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_FUNCTION:
+            return generate_define_function_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_FUNCTION:
+            return generate_end_function_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_ENUM:
+            return generate_define_enum_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_ENUM:
+            return generate_end_enum_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_ENUM_MEMBER:
+            return generate_define_enum_member_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_UNION:
+            return generate_define_union_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_UNION:
+            return generate_end_union_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_UNION_MEMBER:
+            return generate_define_union_member_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_UNION_MEMBER:
+            return generate_end_union_member_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_STATE:
+            return generate_define_state_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_STATE:
+            return generate_end_state_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_BIT_FIELD:
+            return generate_define_bit_field_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::END_BIT_FIELD:
+            return generate_end_bit_field_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_ENCODER:
+            return generate_define_encoder_statement(ctx, code_idx, flags);
+        case rebgn::AbstractOp::DEFINE_DECODER:
+            return generate_define_decoder_statement(ctx, code_idx, flags);
         default: {
             // If it's an expression, wrap it in an ExpressionStatement
             // Otherwise, it's an unimplemented statement
@@ -366,6 +432,224 @@ std::unique_ptr<rebgn::Statement> generate_statement_from_code(const bm2::Contex
     }
 }
 
+// Generator for DEFINE_PROGRAM
+inline std::unique_ptr<rebgn::Statement> generate_define_program_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string program_name = "main"; // Default name
+    if (code.ident()) {
+        program_name = ctx.ident_table.at(code.ident()->value());
+    }
+    // For now, just return a comment indicating the program definition
+    return expr_stmt(lit("// Define Program: " + program_name));
+}
+
+// Generator for END_PROGRAM
+inline std::unique_ptr<rebgn::Statement> generate_end_program_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    // For now, just return a comment indicating the end of program
+    return expr_stmt(lit("// End Program"));
+}
+
+// Generator for DEFINE_FORMAT
+inline std::unique_ptr<rebgn::Statement> generate_define_format_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string format_name = "";
+    if (code.ident()) {
+        format_name = ctx.ident_table.at(code.ident()->value());
+    }
+    return expr_stmt(lit("// Define Format: " + format_name));
+}
+
+// Generator for END_FORMAT
+inline std::unique_ptr<rebgn::Statement> generate_end_format_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Format"));
+}
+
+// Generator for DEFINE_FIELD
+inline std::unique_ptr<rebgn::Statement> generate_define_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string field_name = "";
+    if (code.ident()) {
+        field_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    std::string type_name = "";
+    if (code.type()) {
+        type_name = ctx.ident_table.at(code.type()->ref.value());
+    }
+    return expr_stmt(lit("// Define Field: " + field_name + ", Belong: " + belong_name + ", Type: " + type_name));
+}
+
+// Generator for DEFINE_PROPERTY
+inline std::unique_ptr<rebgn::Statement> generate_define_property_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string property_name = "";
+    if (code.ident()) {
+        property_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    return expr_stmt(lit("// Define Property: " + property_name + ", Belong: " + belong_name));
+}
+
+// Generator for END_PROPERTY
+inline std::unique_ptr<rebgn::Statement> generate_end_property_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Property"));
+}
+
+// Generator for DEFINE_FUNCTION
+inline std::unique_ptr<rebgn::Statement> generate_define_function_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string function_name = "";
+    if (code.ident()) {
+        function_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    std::string func_type = to_string(code.func_type().value());
+    return expr_stmt(lit("// Define Function: " + function_name + ", Belong: " + belong_name + ", Type: " + func_type));
+}
+
+// Generator for END_FUNCTION
+inline std::unique_ptr<rebgn::Statement> generate_end_function_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Function"));
+}
+
+// Generator for DEFINE_ENUM
+inline std::unique_ptr<rebgn::Statement> generate_define_enum_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string enum_name = "";
+    if (code.ident()) {
+        enum_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string type_name = "";
+    if (code.type()) {
+        type_name = ctx.ident_table.at(code.type()->ref.value());
+    }
+    return expr_stmt(lit("// Define Enum: " + enum_name + ", Type: " + type_name));
+}
+
+// Generator for END_ENUM
+inline std::unique_ptr<rebgn::Statement> generate_end_enum_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Enum"));
+}
+
+// Generator for DEFINE_ENUM_MEMBER
+inline std::unique_ptr<rebgn::Statement> generate_define_enum_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string member_name = "";
+    if (code.ident()) {
+        member_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::unique_ptr<rebgn::Expression> left_expr = nullptr;
+    if (code.left_ref()) {
+        left_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.left_ref()->value()), flags);
+    }
+    std::unique_ptr<rebgn::Expression> right_expr = nullptr;
+    if (code.right_ref()) {
+        right_expr = generate_expression_from_code(ctx, ctx.ident_index_table.at(code.right_ref()->value()), flags);
+    }
+    return expr_stmt(lit("// Define Enum Member: " + member_name + ", Left Ref: " + (code.left_ref() ? std::to_string(code.left_ref()->value()) : "null") + ", Right Ref: " + (code.right_ref() ? std::to_string(code.right_ref()->value()) : "null")));
+}
+
+// Generator for DEFINE_UNION
+inline std::unique_ptr<rebgn::Statement> generate_define_union_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string union_name = "";
+    if (code.ident()) {
+        union_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    return expr_stmt(lit("// Define Union: " + union_name + ", Belong: " + belong_name));
+}
+
+// Generator for END_UNION
+inline std::unique_ptr<rebgn::Statement> generate_end_union_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Union"));
+}
+
+// Generator for DEFINE_UNION_MEMBER
+inline std::unique_ptr<rebgn::Statement> generate_define_union_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string member_name = "";
+    if (code.ident()) {
+        member_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    return expr_stmt(lit("// Define Union Member: " + member_name + ", Belong: " + belong_name));
+}
+
+// Generator for END_UNION_MEMBER
+inline std::unique_ptr<rebgn::Statement> generate_end_union_member_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Union Member"));
+}
+
+// Generator for DEFINE_STATE
+inline std::unique_ptr<rebgn::Statement> generate_define_state_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string state_name = "";
+    if (code.ident()) {
+        state_name = ctx.ident_table.at(code.ident()->value());
+    }
+    return expr_stmt(lit("// Define State: " + state_name));
+}
+
+// Generator for END_STATE
+inline std::unique_ptr<rebgn::Statement> generate_end_state_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End State"));
+}
+
+// Generator for DEFINE_BIT_FIELD
+inline std::unique_ptr<rebgn::Statement> generate_define_bit_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string field_name = "";
+    if (code.ident()) {
+        field_name = ctx.ident_table.at(code.ident()->value());
+    }
+    std::string belong_name = "";
+    if (code.belong()) {
+        belong_name = ctx.ident_table.at(code.belong()->value());
+    }
+    std::string type_name = "";
+    if (code.type()) {
+        type_name = ctx.ident_table.at(code.type()->ref.value());
+    }
+    return expr_stmt(lit("// Define Bit Field: " + field_name + ", Belong: " + belong_name + ", Type: " + type_name));
+}
+
+// Generator for END_BIT_FIELD
+inline std::unique_ptr<rebgn::Statement> generate_end_bit_field_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    return expr_stmt(lit("// End Bit Field"));
+}
+
+// Generator for DEFINE_ENCODER
+inline std::unique_ptr<rebgn::Statement> generate_define_encoder_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string left_ref_str = (code.left_ref() ? std::to_string(code.left_ref()->value()) : "null");
+    std::string right_ref_str = (code.right_ref() ? std::to_string(code.right_ref()->value()) : "null");
+    return expr_stmt(lit("// Define Encoder: Left Ref: " + left_ref_str + ", Right Ref: " + right_ref_str));
+}
+
+// Generator for DEFINE_DECODER
+inline std::unique_ptr<rebgn::Statement> generate_define_decoder_statement(const bm2::Context& ctx, size_t code_idx, Flags& flags) {
+    const auto& code = ctx.bm.code[code_idx];
+    std::string left_ref_str = (code.left_ref() ? std::to_string(code.left_ref()->value()) : "null");
+    std::string right_ref_str = (code.right_ref() ? std::to_string(code.right_ref()->value()) : "null");
+    return expr_stmt(lit("// Define Decoder: Left Ref: " + left_ref_str + ", Right Ref: " + right_ref_str));
+}
+
 // Function to initialize the map (call once)
 inline void initialize_ast_generators() {
     // Expression generators are handled by generate_expression_from_code
@@ -374,7 +658,7 @@ inline void initialize_ast_generators() {
 
 // Function to get the AST generator for a given AbstractOp
 // This function is no longer directly used for dispatching, but kept for compatibility if needed
-inline AstGeneratorFunc get_ast_generator(rebgn::AbstractOp op) {
+inline rebgn::AstGeneratorFunc get_ast_generator(rebgn::AbstractOp op) {
     // This function's role has been largely replaced by generate_expression_from_code
     // and generate_statement_from_code
     return nullptr; 

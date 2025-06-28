@@ -52,12 +52,8 @@ The following `AbstractOp` types have been successfully converted from `rebgn::B
 **3. Current Challenges and Unresolved Issues**
 
 *   **`EXPLICIT_ERROR` Handling:**
-    *   A runtime error "cannot access to empty optional" occurs during the processing of `EXPLICIT_ERROR` (`AbstractOp 96`).
-    *   This issue is believed to stem from a discrepancy between the principle that `binary_module.bgn` is the Root of Trust and the generated code in `binary_module.hpp` and `binary_module.cpp`.
-    *   While `abstract_ops.json` defines `EXPLICIT_ERROR` with a `param: "Param"`, `union_struct_116` (which corresponds to `EXPLICIT_ERROR` in `binary_module.hpp`'s `Code` struct) contains `Param param; Varint belong;`.
-    *   It is suspected that the `Code::param()` getter/setter might not be correctly handling the combination of `EXPLICIT_ERROR` `AbstractOp` and `Param` type.
-    *   Currently, the `EXPLICIT_ERROR` test case in `main.cpp` is commented out, and `generate_explicit_error_statement` in `code_gen_map.hpp` has been reverted to use `code.param()->refs[0].value()`.
-    *   **The next task is to prioritize resolving this `EXPLICIT_ERROR` issue.** This will require a detailed analysis of the `Code::param()` getter/setter implementation in `binary_module.cpp` to accurately determine how `Param` data for `EXPLICIT_ERROR` should be stored and accessed.
+    *   The runtime error "cannot access to empty optional" during the processing of `EXPLICIT_ERROR` (`AbstractOp 96`) has been resolved. The `EXPLICIT_ERROR` test case in `main.cpp` is now uncommented and working as expected.
+    *   **The next task is to prioritize implementing remaining `AbstractOp` types and integrating the hook system.**
 
 **4. Changes in Development Approach**
 

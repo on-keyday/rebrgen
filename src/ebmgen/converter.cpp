@@ -303,6 +303,134 @@ namespace ebmgen {
             body.if_statement(std::move(ebm_if_stmt));
             return add_statement(std::move(body));
         }
+        else if (auto loop_stmt = ast::as<ast::Loop>(node)) {
+            body.statement_kind = ebm::StatementOp::LOOP_STATEMENT;
+            ebm::LoopStatement ebm_loop_stmt;
+
+            // Determine loop type and set corresponding fields
+            if (loop_stmt->init && loop_stmt->cond && loop_stmt->step) {
+                // For-each loop (assuming init, cond, step implies for-each)
+                ebm_loop_stmt.loop_type = ebm::LoopType::FOR_EACH;
+                // TODO: Handle item_var and collection for FOR_EACH
+            } else if (loop_stmt->cond) {
+                // While loop
+                ebm_loop_stmt.loop_type = ebm::LoopType::WHILE;
+                auto cond_ref = convert_expr(loop_stmt->cond);
+                if (!cond_ref) {
+                    return unexpect_error(std::move(cond_ref.error()));
+                }
+                ebm_loop_stmt.condition(*cond_ref);
+            } else {
+                // Infinite loop
+                ebm_loop_stmt.loop_type = ebm::LoopType::INFINITE;
+            }
+
+            // Convert loop body
+            ebm::Block loop_body_block;
+            if (loop_stmt->body) {
+                if (auto indent_block = ast::as<ast::IndentBlock>(loop_stmt->body)) {
+                    for (auto& element : indent_block->elements) {
+                        if (auto stmt_element = ast::as<ast::Stmt>(element)) {
+                            auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
+                            if (!stmt_ref) {
+                                return unexpect_error(std::move(stmt_ref.error()));
+                            }
+                            loop_body_block.statements.push_back(*stmt_ref);
+                        } else {
+                            return unexpect_error("Unsupported node type in loop body");
+                        }
+                    }
+                } else {
+                    return unexpect_error("Unsupported node type for loop body");
+                }
+            }
+            ebm_loop_stmt.body = std::move(loop_body_block);
+
+            body.loop(std::move(ebm_loop_stmt));
+            return add_statement(std::move(body));
+        }
+        else if (auto match_stmt = ast::as<ast::Match>(node)) {
+            body.statement_kind = ebm::StatementOp::MATCH_STATEMENT;
+            ebm::MatchStatement ebm_match_stmt;
+
+            auto target_ref = convert_expr(match_stmt->cond->expr);
+            if (!target_ref) {
+                return unexpect_error(std::move(target_ref.error()));
+            }
+            ebm_match_stmt.target = *target_ref;
+            ebm_match_stmt.is_exhaustive = match_stmt->exhaustive;
+
+            std::vector<ebm::MatchBranch> branches;
+            for (auto& branch : match_stmt->branch) {
+                ebm::MatchBranch ebm_branch;
+                auto cond_ref = convert_expr(branch->cond->expr);
+                if (!cond_ref) {
+                    return unexpect_error(std::move(cond_ref.error()));
+                }
+                ebm_branch.condition = *cond_ref;
+
+                ebm::Block branch_body_block;
+                if (branch->then) {
+                    if (auto indent_block = ast::as<ast::IndentBlock>(branch->then)) {
+                        for (auto& element : indent_block->elements) {
+                            if (auto stmt_element = ast::as<ast::Stmt>(element)) {
+                                auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
+                                if (!stmt_ref) {
+                                    return unexpect_error(std::move(stmt_ref.error()));
+                                }
+                                branch_body_block.statements.push_back(*stmt_ref);
+                            } else {
+                                return unexpect_error("Unsupported node type in match branch body");
+                            }
+                        }
+                    } else if (auto stmt_element = ast::as<ast::Stmt>(branch->then)) {
+                        auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(branch->then));
+                        if (!stmt_ref) {
+                            return unexpect_error(std::move(stmt_ref.error()));
+                        }
+                        branch_body_block.statements.push_back(*stmt_ref);
+                    } else {
+                        return unexpect_error("Unsupported node type for match branch body");
+                    }
+                }
+                ebm_branch.body = std::move(branch_body_block);
+                branches.push_back(std::move(ebm_branch));
+            }
+            ebm_match_stmt.branches(std::move(branches));
+            ebm_match_stmt.branches_len(ebm::Varint{static_cast<uint64_t>(match_stmt->branch.size())});
+
+            body.match_statement(std::move(ebm_match_stmt));
+            return add_statement(std::move(body));
+        }
+        else if (auto program_stmt = ast::as<ast::Program>(node)) {
+            body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
+            auto name_ref = add_identifier(program_stmt->name);
+            if (!name_ref) {
+                return unexpect_error(std::move(name_ref.error()));
+            }
+            body.name(*name_ref);
+
+            ebm::Block program_body_block;
+            if (program_stmt->elements) {
+                if (auto indent_block = ast::as<ast::IndentBlock>(program_stmt->elements)) {
+                    for (auto& element : indent_block->elements) {
+                        if (auto stmt_element = ast::as<ast::Stmt>(element)) {
+                            auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
+                            if (!stmt_ref) {
+                                return unexpect_error(std::move(stmt_ref.error()));
+                            }
+                            program_body_block.statements.push_back(*stmt_ref);
+                        } else {
+                            return unexpect_error("Unsupported node type in program body");
+                        }
+                    }
+                } else {
+                    return unexpect_error("Unsupported node type for program body");
+                }
+            }
+            body.body(std::move(program_body_block));
+            return add_statement(std::move(body));
+        }
         // TODO: Implement conversion for different statement types
         return unexpect_error("Statement conversion not implemented yet");
     }

@@ -316,6 +316,25 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    enum class FallbackType : std::uint8_t {
+        FUNDAMENTAL = 0,
+    };
+    constexpr const char* to_string(FallbackType e) {
+        switch(e) {
+            case FallbackType::FUNDAMENTAL: return "FUNDAMENTAL";
+        }
+        return "";
+    }
+    
+    constexpr std::optional<FallbackType> FallbackType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "FUNDAMENTAL") {
+            return FallbackType::FUNDAMENTAL;
+        }
+        return std::nullopt;
+    }
     enum class StatementOp : std::uint8_t {
         ASSIGNMENT = 0,
         RETURN = 1,
@@ -700,28 +719,34 @@ namespace ebm {
     struct ExpressionRef;
     struct StringRef;
     struct StatementRef;
-    struct PhiParam;
-    struct Loc;
     struct Block;
+    struct Fallback;
+    struct PhiParam;
+    struct AnyRef;
+    struct ExpressionBody;
+    struct Expression;
     struct IfStatement;
     struct UnionMemberDecl;
     struct FieldDecl;
     struct BitFieldDecl;
     struct PropertyDecl;
     struct EnumMemberDecl;
-    struct MatchBranch;
+    struct Fallbacks;
     struct LoopStatement;
-    struct VariableDecl;
+    struct MatchBranch;
     struct MatchStatement;
+    struct VariableDecl;
+    struct FunctionDecl;
+    struct EnumDecl;
     struct StructDecl;
     struct UnionDecl;
     struct Metadata;
-    struct Type;
-    struct DebugInfo;
-    struct FunctionDecl;
-    struct EnumDecl;
-    struct Expression;
+    struct StatementBody;
     struct Statement;
+    struct TypeBody;
+    struct Type;
+    struct Loc;
+    struct DebugInfo;
     struct ExtendedBinaryModule;
     struct EBM_API Varint{
         ::futils::binary::flags_t<std::uint64_t,2,62> flags_1_;
@@ -772,25 +797,139 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
+    struct EBM_API Block{
+        Varint statements_len;
+        std::vector<StatementRef> statements;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API Fallback{
+        FallbackType fallback_type{};
+        Block block;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+    };
     struct EBM_API PhiParam{
         ExpressionRef condition;
         ExpressionRef value;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API Loc{
-        Varint ident;
-        Varint file_id;
-        Varint line;
-        Varint column;
-        Varint start;
-        Varint end;
+    struct EBM_API AnyRef{
+        Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API Block{
-        Varint statements_len;
-        std::vector<StatementRef> statements;
+    struct EBM_API ExpressionBody{
+        ExpressionOp op{};
+        struct EBM_API union_struct_5{
+            std::uint64_t int_value = 0;
+        };
+        struct EBM_API union_struct_6{
+            std::uint8_t bool_value = 0;
+        };
+        struct EBM_API union_struct_7{
+            StringRef string_value;
+        };
+        struct EBM_API union_struct_8{
+            TypeRef type_ref;
+        };
+        struct EBM_API union_struct_9{
+            IdentifierRef id;
+        };
+        struct EBM_API union_struct_10{
+            BinaryOp bop{};
+            ExpressionRef left;
+            ExpressionRef right;
+        };
+        struct EBM_API union_struct_11{
+            UnaryOp uop{};
+            ExpressionRef operand;
+        };
+        struct EBM_API union_struct_12{
+            ExpressionRef callee;
+            Varint args_len;
+            std::vector<ExpressionRef> arguments;
+        };
+        struct EBM_API union_struct_13{
+            ExpressionRef base;
+            ExpressionRef index;
+        };
+        struct EBM_API union_struct_14{
+            ExpressionRef base;
+            IdentifierRef member;
+        };
+        struct EBM_API union_struct_15{
+            TypeRef target_type;
+            ExpressionRef source_expr;
+            CastType cast_kind{};
+        };
+        std::variant<std::monostate, union_struct_5, union_struct_6, union_struct_7, union_struct_8, union_struct_9, union_struct_10, union_struct_11, union_struct_12, union_struct_13, union_struct_14, union_struct_15> union_variant_4;
+        std::optional<Varint> args_len() const;
+        bool args_len(Varint&& v);
+        bool args_len(const Varint& v);
+        std::optional<std::vector<ExpressionRef>> arguments() const;
+        bool arguments(std::vector<ExpressionRef>&& v);
+        bool arguments(const std::vector<ExpressionRef>& v);
+        std::optional<ExpressionRef> base() const;
+        bool base(ExpressionRef&& v);
+        bool base(const ExpressionRef& v);
+        std::optional<std::uint8_t> bool_value() const;
+        bool bool_value(std::uint8_t&& v);
+        bool bool_value(const std::uint8_t& v);
+        std::optional<BinaryOp> bop() const;
+        bool bop(BinaryOp&& v);
+        bool bop(const BinaryOp& v);
+        std::optional<ExpressionRef> callee() const;
+        bool callee(ExpressionRef&& v);
+        bool callee(const ExpressionRef& v);
+        std::optional<CastType> cast_kind() const;
+        bool cast_kind(CastType&& v);
+        bool cast_kind(const CastType& v);
+        std::optional<IdentifierRef> id() const;
+        bool id(IdentifierRef&& v);
+        bool id(const IdentifierRef& v);
+        std::optional<ExpressionRef> index() const;
+        bool index(ExpressionRef&& v);
+        bool index(const ExpressionRef& v);
+        std::optional<std::uint64_t> int_value() const;
+        bool int_value(std::uint64_t&& v);
+        bool int_value(const std::uint64_t& v);
+        std::optional<ExpressionRef> left() const;
+        bool left(ExpressionRef&& v);
+        bool left(const ExpressionRef& v);
+        std::optional<IdentifierRef> member() const;
+        bool member(IdentifierRef&& v);
+        bool member(const IdentifierRef& v);
+        std::optional<ExpressionRef> operand() const;
+        bool operand(ExpressionRef&& v);
+        bool operand(const ExpressionRef& v);
+        std::optional<ExpressionRef> right() const;
+        bool right(ExpressionRef&& v);
+        bool right(const ExpressionRef& v);
+        std::optional<ExpressionRef> source_expr() const;
+        bool source_expr(ExpressionRef&& v);
+        bool source_expr(const ExpressionRef& v);
+        std::optional<StringRef> string_value() const;
+        bool string_value(StringRef&& v);
+        bool string_value(const StringRef& v);
+        std::optional<TypeRef> target_type() const;
+        bool target_type(TypeRef&& v);
+        bool target_type(const TypeRef& v);
+        std::optional<TypeRef> type_ref() const;
+        bool type_ref(TypeRef&& v);
+        bool type_ref(const TypeRef& v);
+        std::optional<UnaryOp> uop() const;
+        bool uop(UnaryOp&& v);
+        bool uop(const UnaryOp& v);
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+    };
+    struct EBM_API Expression{
+        ExpressionRef id;
+        ExpressionBody body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
@@ -804,9 +943,9 @@ namespace ebm {
     struct EBM_API UnionMemberDecl{
         IdentifierRef name;
         TypeRef field_type;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_3_;
-        bits_flag_alias_method(flags_3_,0,is_state_variable);
-        bits_flag_alias_method(flags_3_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_16_;
+        bits_flag_alias_method(flags_16_,0,is_state_variable);
+        bits_flag_alias_method(flags_16_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
@@ -814,9 +953,9 @@ namespace ebm {
         IdentifierRef name;
         TypeRef field_type;
         IdentifierRef parent_struct;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_4_;
-        bits_flag_alias_method(flags_4_,0,is_state_variable);
-        bits_flag_alias_method(flags_4_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_17_;
+        bits_flag_alias_method(flags_17_,0,is_state_variable);
+        bits_flag_alias_method(flags_17_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
@@ -843,24 +982,24 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API MatchBranch{
-        ExpressionRef condition;
-        Block body;
+    struct EBM_API Fallbacks{
+        Varint fallbacks_len;
+        std::vector<Fallback> fallbacks;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
     struct EBM_API LoopStatement{
         LoopType loop_type{};
-        struct EBM_API union_struct_7{
+        struct EBM_API union_struct_20{
         };
-        struct EBM_API union_struct_8{
+        struct EBM_API union_struct_21{
             ExpressionRef condition;
         };
-        struct EBM_API union_struct_9{
+        struct EBM_API union_struct_22{
             IdentifierRef item_var;
             ExpressionRef collection;
         };
-        std::variant<std::monostate, union_struct_7, union_struct_8, union_struct_9> union_variant_6;
+        std::variant<std::monostate, union_struct_20, union_struct_21, union_struct_22> union_variant_19;
         std::optional<ExpressionRef> collection() const;
         bool collection(ExpressionRef&& v);
         bool collection(const ExpressionRef& v);
@@ -875,135 +1014,29 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
     };
-    struct EBM_API VariableDecl{
-        IdentifierRef name;
-        TypeRef var_type;
-        ExpressionRef initial_value;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_10_;
-        bits_flag_alias_method(flags_10_,0,is_constant);
-        bits_flag_alias_method(flags_10_,1,reserved);
+    struct EBM_API MatchBranch{
+        ExpressionRef condition;
+        Block body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
     struct EBM_API MatchStatement{
         ExpressionRef target;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_11_;
-        bits_flag_alias_method(flags_11_,0,is_exhaustive);
-        bits_flag_alias_method(flags_11_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_23_;
+        bits_flag_alias_method(flags_23_,0,is_exhaustive);
+        bits_flag_alias_method(flags_23_,1,reserved);
         Varint branches_len;
         std::vector<MatchBranch> branches;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API StructDecl{
+    struct EBM_API VariableDecl{
         IdentifierRef name;
-        Varint fields_len;
-        std::vector<FieldDecl> fields;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_12_;
-        bits_flag_alias_method(flags_12_,0,is_recursive);
-        bits_flag_alias_method(flags_12_,1,reserved);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct EBM_API UnionDecl{
-        IdentifierRef name;
-        IdentifierRef parent_field;
-        Varint members_len;
-        std::vector<UnionMemberDecl> members;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct EBM_API Metadata{
-        IdentifierRef name;
-        Varint values_len;
-        std::vector<ExpressionRef> values;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct EBM_API Type{
-        TypeKind kind{};
-        struct EBM_API union_struct_15{
-            std::uint8_t size = 0;
-        };
-        struct EBM_API union_struct_16{
-            std::uint8_t size = 0;
-        };
-        struct EBM_API union_struct_17{
-            std::uint8_t size = 0;
-        };
-        struct EBM_API union_struct_18{
-        };
-        struct EBM_API union_struct_19{
-            TypeRef base_type;
-        };
-        struct EBM_API union_struct_20{
-            TypeRef element_type;
-            Varint length;
-        };
-        struct EBM_API union_struct_21{
-            TypeRef element_type;
-        };
-        struct EBM_API union_struct_22{
-            IdentifierRef name;
-        };
-        struct EBM_API union_struct_23{
-            IdentifierRef name;
-        };
-        struct EBM_API union_struct_24{
-            TypeRef common_type;
-        };
-        struct EBM_API union_struct_25{
-            TypeRef coder_type;
-        };
-        struct EBM_API union_struct_26{
-            TypeRef property_type;
-        };
-        struct EBM_API union_struct_27{
-            TypeRef inner_type;
-        };
-        struct EBM_API union_struct_28{
-            TypeRef pointee_type;
-        };
-        std::variant<std::monostate, union_struct_15, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28> union_variant_14;
-        std::optional<TypeRef> base_type() const;
-        bool base_type(TypeRef&& v);
-        bool base_type(const TypeRef& v);
-        std::optional<TypeRef> coder_type() const;
-        bool coder_type(TypeRef&& v);
-        bool coder_type(const TypeRef& v);
-        std::optional<TypeRef> common_type() const;
-        bool common_type(TypeRef&& v);
-        bool common_type(const TypeRef& v);
-        std::optional<TypeRef> element_type() const;
-        bool element_type(TypeRef&& v);
-        bool element_type(const TypeRef& v);
-        std::optional<TypeRef> inner_type() const;
-        bool inner_type(TypeRef&& v);
-        bool inner_type(const TypeRef& v);
-        std::optional<Varint> length() const;
-        bool length(Varint&& v);
-        bool length(const Varint& v);
-        std::optional<IdentifierRef> name() const;
-        bool name(IdentifierRef&& v);
-        bool name(const IdentifierRef& v);
-        std::optional<TypeRef> pointee_type() const;
-        bool pointee_type(TypeRef&& v);
-        bool pointee_type(const TypeRef& v);
-        std::optional<TypeRef> property_type() const;
-        bool property_type(TypeRef&& v);
-        bool property_type(const TypeRef& v);
-        std::optional<std::uint8_t> size() const;
-        bool size(std::uint8_t&& v);
-        bool size(const std::uint8_t& v);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-    };
-    struct EBM_API DebugInfo{
-        Varint len_files;
-        std::vector<String> files;
-        Varint len_locs;
-        std::vector<Loc> locs;
+        TypeRef var_type;
+        ExpressionRef initial_value;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_24_;
+        bits_flag_alias_method(flags_24_,0,is_constant);
+        bits_flag_alias_method(flags_24_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
@@ -1023,213 +1056,145 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API Expression{
-        ExpressionRef id;
-        ExpressionOp op{};
-        struct EBM_API union_struct_31{
-            std::uint64_t value = 0;
-        };
-        struct EBM_API union_struct_32{
-            std::uint8_t value = 0;
-        };
-        struct EBM_API union_struct_33{
-            StringRef value;
-        };
-        struct EBM_API union_struct_34{
-            TypeRef type_ref;
-        };
-        struct EBM_API union_struct_35{
-            IdentifierRef value;
-        };
-        struct EBM_API union_struct_36{
-            BinaryOp bop{};
-            ExpressionRef left;
-            ExpressionRef right;
-        };
-        struct EBM_API union_struct_37{
-            UnaryOp uop{};
-            ExpressionRef operand;
-        };
-        struct EBM_API union_struct_38{
-            ExpressionRef callee;
-            Varint args_len;
-            std::vector<ExpressionRef> arguments;
-        };
-        struct EBM_API union_struct_39{
-            ExpressionRef base;
-            ExpressionRef index;
-        };
-        struct EBM_API union_struct_40{
-            ExpressionRef base;
-            IdentifierRef member;
-        };
-        struct EBM_API union_struct_41{
-            TypeRef target_type;
-            ExpressionRef source_expr;
-            CastType cast_kind{};
-        };
-        std::variant<std::monostate, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41> union_variant_30;
-        std::optional<Varint> args_len() const;
-        bool args_len(Varint&& v);
-        bool args_len(const Varint& v);
-        std::optional<std::vector<ExpressionRef>> arguments() const;
-        bool arguments(std::vector<ExpressionRef>&& v);
-        bool arguments(const std::vector<ExpressionRef>& v);
-        std::optional<ExpressionRef> base() const;
-        bool base(ExpressionRef&& v);
-        bool base(const ExpressionRef& v);
-        std::optional<BinaryOp> bop() const;
-        bool bop(BinaryOp&& v);
-        bool bop(const BinaryOp& v);
-        std::optional<ExpressionRef> callee() const;
-        bool callee(ExpressionRef&& v);
-        bool callee(const ExpressionRef& v);
-        std::optional<CastType> cast_kind() const;
-        bool cast_kind(CastType&& v);
-        bool cast_kind(const CastType& v);
-        std::optional<ExpressionRef> index() const;
-        bool index(ExpressionRef&& v);
-        bool index(const ExpressionRef& v);
-        std::optional<ExpressionRef> left() const;
-        bool left(ExpressionRef&& v);
-        bool left(const ExpressionRef& v);
-        std::optional<IdentifierRef> member() const;
-        bool member(IdentifierRef&& v);
-        bool member(const IdentifierRef& v);
-        std::optional<ExpressionRef> operand() const;
-        bool operand(ExpressionRef&& v);
-        bool operand(const ExpressionRef& v);
-        std::optional<ExpressionRef> right() const;
-        bool right(ExpressionRef&& v);
-        bool right(const ExpressionRef& v);
-        std::optional<ExpressionRef> source_expr() const;
-        bool source_expr(ExpressionRef&& v);
-        bool source_expr(const ExpressionRef& v);
-        std::optional<TypeRef> target_type() const;
-        bool target_type(TypeRef&& v);
-        bool target_type(const TypeRef& v);
-        std::optional<TypeRef> type_ref() const;
-        bool type_ref(TypeRef&& v);
-        bool type_ref(const TypeRef& v);
-        std::optional<UnaryOp> uop() const;
-        bool uop(UnaryOp&& v);
-        bool uop(const UnaryOp& v);
+    struct EBM_API StructDecl{
+        IdentifierRef name;
+        Varint fields_len;
+        std::vector<FieldDecl> fields;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_25_;
+        bits_flag_alias_method(flags_25_,0,is_recursive);
+        bits_flag_alias_method(flags_25_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API Statement{
-        StatementRef id;
+    struct EBM_API UnionDecl{
+        IdentifierRef name;
+        IdentifierRef parent_field;
+        Varint members_len;
+        std::vector<UnionMemberDecl> members;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API Metadata{
+        IdentifierRef name;
+        Varint values_len;
+        std::vector<ExpressionRef> values;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API StatementBody{
         StatementOp statement_kind{};
-        struct EBM_API union_struct_44{
+        struct EBM_API union_struct_28{
             ExpressionRef target;
             ExpressionRef value;
         };
-        struct EBM_API union_struct_45{
+        struct EBM_API union_struct_29{
             ExpressionRef value;
         };
-        struct EBM_API union_struct_46{
+        struct EBM_API union_struct_30{
             ExpressionRef condition;
             IdentifierRef message;
         };
-        struct EBM_API union_struct_47{
+        struct EBM_API union_struct_31{
             IdentifierRef target_var;
             TypeRef object_type;
         };
-        struct EBM_API union_struct_48{
+        struct EBM_API union_struct_32{
             IdentifierRef target_var;
             TypeRef data_type;
             EndianExpr endian;
             Varint bit_size;
+            Fallbacks fallbacks;
         };
-        struct EBM_API union_struct_49{
+        struct EBM_API union_struct_33{
             ExpressionRef source_expr;
             TypeRef data_type;
             EndianExpr endian;
             Varint bit_size;
+            Fallbacks fallbacks;
         };
-        struct EBM_API union_struct_50{
+        struct EBM_API union_struct_34{
             ExpressionRef offset;
             IdentifierRef stream_type;
         };
-        struct EBM_API union_struct_51{
+        struct EBM_API union_struct_35{
             IdentifierRef target_var;
             IdentifierRef stream_type;
         };
-        struct EBM_API union_struct_52{
+        struct EBM_API union_struct_36{
             IdentifierRef target_var;
             IdentifierRef stream_type;
         };
-        struct EBM_API union_struct_53{
+        struct EBM_API union_struct_37{
             IdentifierRef target_var;
             IdentifierRef stream_type;
             ExpressionRef num_bytes;
         };
-        struct EBM_API union_struct_54{
+        struct EBM_API union_struct_38{
             IfStatement if_statement;
         };
-        struct EBM_API union_struct_55{
+        struct EBM_API union_struct_39{
             LoopStatement loop;
         };
-        struct EBM_API union_struct_56{
+        struct EBM_API union_struct_40{
             MatchStatement match_statement;
         };
-        struct EBM_API union_struct_57{
+        struct EBM_API union_struct_41{
         };
-        struct EBM_API union_struct_58{
+        struct EBM_API union_struct_42{
         };
-        struct EBM_API union_struct_59{
+        struct EBM_API union_struct_43{
             FunctionDecl func_decl;
         };
-        struct EBM_API union_struct_60{
+        struct EBM_API union_struct_44{
             VariableDecl var_decl;
         };
-        struct EBM_API union_struct_61{
+        struct EBM_API union_struct_45{
             FieldDecl field_decl;
         };
-        struct EBM_API union_struct_62{
+        struct EBM_API union_struct_46{
             EnumDecl enum_decl;
         };
-        struct EBM_API union_struct_63{
+        struct EBM_API union_struct_47{
             EnumMemberDecl enum_member_decl;
         };
-        struct EBM_API union_struct_64{
+        struct EBM_API union_struct_48{
             StructDecl struct_decl;
         };
-        struct EBM_API union_struct_65{
+        struct EBM_API union_struct_49{
             UnionDecl union_decl;
         };
-        struct EBM_API union_struct_66{
+        struct EBM_API union_struct_50{
             IdentifierRef name;
             Block body;
         };
-        struct EBM_API union_struct_67{
+        struct EBM_API union_struct_51{
             IdentifierRef name;
             Block body;
         };
-        struct EBM_API union_struct_68{
+        struct EBM_API union_struct_52{
             BitFieldDecl bit_field_decl;
         };
-        struct EBM_API union_struct_69{
+        struct EBM_API union_struct_53{
             PropertyDecl property_decl;
         };
-        struct EBM_API union_struct_70{
+        struct EBM_API union_struct_54{
             Metadata metadata;
         };
-        struct EBM_API union_struct_71{
+        struct EBM_API union_struct_55{
             IdentifierRef module_name;
             IdentifierRef alias;
         };
-        struct EBM_API union_struct_72{
+        struct EBM_API union_struct_56{
             IdentifierRef target_var;
             Varint params_len;
             std::vector<PhiParam> params;
         };
-        struct EBM_API union_struct_73{
+        struct EBM_API union_struct_57{
             StringRef message;
             Varint args_len;
             std::vector<ExpressionRef> arguments;
         };
-        std::variant<std::monostate, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73> union_variant_43;
+        std::variant<std::monostate, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57> union_variant_27;
         std::optional<IdentifierRef> alias() const;
         bool alias(IdentifierRef&& v);
         bool alias(const IdentifierRef& v);
@@ -1263,6 +1228,9 @@ namespace ebm {
         std::optional<EnumMemberDecl> enum_member_decl() const;
         bool enum_member_decl(EnumMemberDecl&& v);
         bool enum_member_decl(const EnumMemberDecl& v);
+        std::optional<Fallbacks> fallbacks() const;
+        bool fallbacks(Fallbacks&& v);
+        bool fallbacks(const Fallbacks& v);
         std::optional<FieldDecl> field_decl() const;
         bool field_decl(FieldDecl&& v);
         bool field_decl(const FieldDecl& v);
@@ -1331,10 +1299,121 @@ namespace ebm {
         bool var_decl(const VariableDecl& v);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+    };
+    struct EBM_API Statement{
+        StatementRef id;
+        StatementBody body;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API TypeBody{
+        TypeKind kind{};
+        struct EBM_API union_struct_60{
+            std::uint8_t size = 0;
+        };
+        struct EBM_API union_struct_61{
+            std::uint8_t size = 0;
+        };
+        struct EBM_API union_struct_62{
+            std::uint8_t size = 0;
+        };
+        struct EBM_API union_struct_63{
+        };
+        struct EBM_API union_struct_64{
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_65{
+            TypeRef element_type;
+            Varint length;
+        };
+        struct EBM_API union_struct_66{
+            TypeRef element_type;
+        };
+        struct EBM_API union_struct_67{
+            IdentifierRef name;
+        };
+        struct EBM_API union_struct_68{
+            IdentifierRef name;
+        };
+        struct EBM_API union_struct_69{
+            TypeRef common_type;
+        };
+        struct EBM_API union_struct_70{
+            TypeRef coder_type;
+        };
+        struct EBM_API union_struct_71{
+            TypeRef property_type;
+        };
+        struct EBM_API union_struct_72{
+            TypeRef inner_type;
+        };
+        struct EBM_API union_struct_73{
+            TypeRef pointee_type;
+        };
+        std::variant<std::monostate, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73> union_variant_59;
+        std::optional<TypeRef> base_type() const;
+        bool base_type(TypeRef&& v);
+        bool base_type(const TypeRef& v);
+        std::optional<TypeRef> coder_type() const;
+        bool coder_type(TypeRef&& v);
+        bool coder_type(const TypeRef& v);
+        std::optional<TypeRef> common_type() const;
+        bool common_type(TypeRef&& v);
+        bool common_type(const TypeRef& v);
+        std::optional<TypeRef> element_type() const;
+        bool element_type(TypeRef&& v);
+        bool element_type(const TypeRef& v);
+        std::optional<TypeRef> inner_type() const;
+        bool inner_type(TypeRef&& v);
+        bool inner_type(const TypeRef& v);
+        std::optional<Varint> length() const;
+        bool length(Varint&& v);
+        bool length(const Varint& v);
+        std::optional<IdentifierRef> name() const;
+        bool name(IdentifierRef&& v);
+        bool name(const IdentifierRef& v);
+        std::optional<TypeRef> pointee_type() const;
+        bool pointee_type(TypeRef&& v);
+        bool pointee_type(const TypeRef& v);
+        std::optional<TypeRef> property_type() const;
+        bool property_type(TypeRef&& v);
+        bool property_type(const TypeRef& v);
+        std::optional<std::uint8_t> size() const;
+        bool size(std::uint8_t&& v);
+        bool size(const std::uint8_t& v);
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+    };
+    struct EBM_API Type{
+        TypeRef id;
+        TypeBody body;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API Loc{
+        AnyRef ident;
+        Varint file_id;
+        Varint line;
+        Varint column;
+        Varint start;
+        Varint end;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API DebugInfo{
+        Varint len_files;
+        std::vector<String> files;
+        Varint len_locs;
+        std::vector<Loc> locs;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
     struct EBM_API ExtendedBinaryModule{
         //"EBMG" (4 bytes)
         std::uint8_t version = 0;
+        AnyRef max_id;
         Varint identifiers_len;
         std::vector<String> identifiers;
         Varint strings_len;

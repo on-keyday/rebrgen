@@ -95,19 +95,22 @@ enum ExpressionOp:
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
+    body :ExpressionBody # Body of the expression
+
+format ExpressionBody:
     op :ExpressionOp
     match op:
         ExpressionOp.LITERAL_INT:
-            value :u64
+            int_value :u64
         ExpressionOp.LITERAL_BOOL:
-            value :u8 # 0: false, 1: true other values are invalid
-            value == 0 || value == 1
+            bool_value :u8 # 0: false, 1: true other values are invalid
+            bool_value == 0 || bool_value == 1
         ExpressionOp.LITERAL_STRING:
-            value :StringRef # Reference to string in string table
+            string_value :StringRef # Reference to string in string table
         ExpressionOp.LITERAL_TYPE:
             type_ref :TypeRef
         ExpressionOp.IDENTIFIER:
-            value :IdentifierRef
+            id :IdentifierRef
         ExpressionOp.BINARY_OP:
             bop :BinaryOp
             left :ExpressionRef
@@ -230,6 +233,18 @@ format Metadata:
     values_len :Varint # Number of values
     values :[values_len.value]ExpressionRef # List of values (e.g., strings, numbers)
 
+enum FallbackType:
+    :u8
+    FUNDAMENTAL # Expressions that have been reduced to the most basic level
+
+format Fallback:
+    fallback_type :FallbackType # Type of fallback
+    block :Block # Fallback block to execute if no other branch matches
+
+format Fallbacks:
+    fallbacks_len :Varint # Number of fallbacks
+    fallbacks :[fallbacks_len.value]Fallback # List of fallbacks
+
 enum StatementOp:
     :u8
     ASSIGNMENT
@@ -265,6 +280,9 @@ enum StatementOp:
 
 format Statement:
     id :StatementRef
+    body :StatementBody # Body of the statement
+
+format StatementBody:
     statement_kind :StatementOp
     match statement_kind:
         StatementOp.ASSIGNMENT:
@@ -283,11 +301,13 @@ format Statement:
             data_type :TypeRef
             endian :EndianExpr # Endianness for read
             bit_size :Varint # Number of bits to read
+            fallbacks :Fallbacks # Optional fallbacks for read implementation
         StatementOp.WRITE_DATA:
             source_expr :ExpressionRef # Data to write
             data_type :TypeRef
             endian :EndianExpr # Endianness for write
             bit_size :Varint # Number of bits to write
+            fallbacks :Fallbacks # Optional fallbacks for write implementation
         StatementOp.SEEK_STREAM:
             offset :ExpressionRef # Offset to seek to
             stream_type :IdentifierRef # e.g., "input", "output"
@@ -415,6 +435,10 @@ enum TypeKind:
 
 
 format Type:
+    id :TypeRef # Reference to this type in the types table
+    body :TypeBody # Body of the type definition
+
+format TypeBody:
     kind :TypeKind
     match kind:
         TypeKind.INT => size :u8 # Size in bits (e.g., 8, 16, 32, 64)
@@ -443,8 +467,11 @@ format Type:
         TypeKind.PTR:
             pointee_type :TypeRef # Pointer to another type
 
+format AnyRef:
+    id :Varint # Reference to an entry in the identifiers, types, or expressions table
+
 format Loc:
-    ident :Varint # ref to generated code
+    ident :AnyRef # Reference to an identifier, type, or expression
     file_id :Varint # files index + 1
     line :Varint # line number
     column :Varint # column number
@@ -460,6 +487,7 @@ format DebugInfo:
 format ExtendedBinaryModule:
     magic: "EBMG" # Magic number for EBM format
     version :u8
+    max_id :AnyRef # Maximum identifier used in the module (for concatenation)
     identifiers_len :Varint
     identifiers :[identifiers_len.value]String # Centralized identifier table
     strings_len :Varint

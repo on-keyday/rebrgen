@@ -10,9 +10,10 @@ namespace ebmgen {
         ebm::ExtendedBinaryModule& ebm;
         std::shared_ptr<ast::Node> root;
         Error err;
-        std::uint64_t next_id = 1;
 
        private:
+        std::uint64_t next_id = 1;
+
         expected<ebm::ExpressionRef> new_expr_id() {
             return varint(next_id++).transform([](auto&& v) {
                 return ebm::ExpressionRef{v};
@@ -53,7 +54,6 @@ namespace ebmgen {
             return buffer;
         }
 
-       public:
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
             auto expr_id = new_expr_id();
             if (!expr_id) {
@@ -67,6 +67,54 @@ namespace ebmgen {
             ebm.expressions.push_back(std::move(expr));
             return *expr_id;
         }
+
+        expected<ebm::StringRef> add_string(const std::string& str) {
+            auto len = varint(str.size());
+            if (!len) {
+                return unexpect_error("Failed to create varint for string length: {}", len.error().error());
+            }
+            auto str_id = new_string_id();
+            if (!str_id) {
+                return str_id;
+            }
+            ebm::StringLiteral string;
+            string.id = *str_id;
+            string.value.length = *len;
+            string.value.data = str;
+            ebm.strings.push_back(std::move(string));
+            return *str_id;
+        }
+
+        expected<ebm::TypeRef> add_type(ebm::TypeBody&& body) {
+            auto type_id = new_type_id();
+            if (!type_id) {
+                return type_id;
+            }
+            ebm::Type type;
+            type.id = *type_id;
+            type.body = std::move(body);
+            ebm.types.push_back(std::move(type));
+            return *type_id;
+        }
+
+        expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
+            auto len = varint(name.size());
+            if (!len) {
+                return unexpect_error("Failed to create varint for identifier length: {}", len.error().error());
+            }
+            auto id_ref = new_ident_id();
+            if (!id_ref) {
+                return id_ref;
+            }
+            ebm::Identifier identifier;
+            identifier.id = *id_ref;
+            identifier.name.length = *len;
+            identifier.name.data = name;
+            ebm.identifiers.push_back(std::move(identifier));
+            return *id_ref;
+        }
+
+        expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type);
 
         void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);

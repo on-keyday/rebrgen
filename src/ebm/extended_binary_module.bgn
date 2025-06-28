@@ -98,6 +98,7 @@ format Expression:
     body :ExpressionBody # Body of the expression
 
 format ExpressionBody:
+    type :TypeRef # Type of the expression
     op :ExpressionOp
     match op:
         ExpressionOp.LITERAL_INT:
@@ -457,7 +458,9 @@ format TypeBody:
         TypeKind.RECURSIVE_STRUCT:
             name :IdentifierRef # Reference to recursive struct name
         TypeKind.VARIANT:
-            common_type :TypeRef # Common type for all union members
+            common_type :TypeRef # Optional Common type for all union members
+            len_members :Varint # Number of members in the union
+            members :[len_members.value]TypeRef # List of member types
         TypeKind.CODER_RETURN:
             coder_type :TypeRef # Type returned by encoder/decoder
         TypeKind.PROPERTY_SETTER_RETURN:
@@ -484,14 +487,22 @@ format DebugInfo:
     len_locs :Varint
     locs :[len_locs.value]Loc
 
+format Identifier:
+    id :IdentifierRef
+    name :String # Identifier name
+
+format StringLiteral:
+    id :StringRef # Reference to this string in the string table
+    value :String # String value
+
 format ExtendedBinaryModule:
     magic: "EBMG" # Magic number for EBM format
     version :u8
     max_id :AnyRef # Maximum identifier used in the module (for concatenation)
     identifiers_len :Varint
-    identifiers :[identifiers_len.value]String # Centralized identifier table
+    identifiers :[identifiers_len.value]Identifier # Centralized identifier table
     strings_len :Varint
-    strings :[strings_len.value]String # Centralized string literal table
+    strings :[strings_len.value]StringLiteral # Centralized string literal table
     types_len :Varint
     types :[types_len.value]Type # Centralized type definitions
     statements_len :Varint

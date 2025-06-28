@@ -746,6 +746,8 @@ namespace ebm {
     struct TypeBody;
     struct Type;
     struct Loc;
+    struct Identifier;
+    struct StringLiteral;
     struct DebugInfo;
     struct ExtendedBinaryModule;
     struct EBM_API Varint{
@@ -822,6 +824,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
     struct EBM_API ExpressionBody{
+        TypeRef type;
         ExpressionOp op{};
         struct EBM_API union_struct_5{
             std::uint64_t int_value = 0;
@@ -925,7 +928,6 @@ namespace ebm {
         bool uop(const UnaryOp& v);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
     };
     struct EBM_API Expression{
         ExpressionRef id;
@@ -1338,6 +1340,8 @@ namespace ebm {
         };
         struct EBM_API union_struct_69{
             TypeRef common_type;
+            Varint len_members;
+            std::vector<TypeRef> members;
         };
         struct EBM_API union_struct_70{
             TypeRef coder_type;
@@ -1367,9 +1371,15 @@ namespace ebm {
         std::optional<TypeRef> inner_type() const;
         bool inner_type(TypeRef&& v);
         bool inner_type(const TypeRef& v);
+        std::optional<Varint> len_members() const;
+        bool len_members(Varint&& v);
+        bool len_members(const Varint& v);
         std::optional<Varint> length() const;
         bool length(Varint&& v);
         bool length(const Varint& v);
+        std::optional<std::vector<TypeRef>> members() const;
+        bool members(std::vector<TypeRef>&& v);
+        bool members(const std::vector<TypeRef>& v);
         std::optional<IdentifierRef> name() const;
         bool name(IdentifierRef&& v);
         bool name(const IdentifierRef& v);
@@ -1402,6 +1412,18 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
+    struct EBM_API Identifier{
+        IdentifierRef id;
+        String name;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
+    struct EBM_API StringLiteral{
+        StringRef id;
+        String value;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
     struct EBM_API DebugInfo{
         Varint len_files;
         std::vector<String> files;
@@ -1415,9 +1437,9 @@ namespace ebm {
         std::uint8_t version = 0;
         AnyRef max_id;
         Varint identifiers_len;
-        std::vector<String> identifiers;
+        std::vector<Identifier> identifiers;
         Varint strings_len;
-        std::vector<String> strings;
+        std::vector<StringLiteral> strings;
         Varint types_len;
         std::vector<Type> types;
         Varint statements_len;

@@ -186,7 +186,8 @@ namespace ebmgen {
             if (!ref) {
                 err = ref.error();
             }
-        } else if (auto stmt = ast::as<ast::Stmt>(node)) {
+        }
+        else if (auto stmt = ast::as<ast::Stmt>(node)) {
             auto ref = convert_statement(ast::cast_to<ast::Stmt>(node));
             if (!ref) {
                 err = ref.error();
@@ -204,6 +205,102 @@ namespace ebmgen {
             }
             body.condition(*cond_ref);
             // TODO: Handle assert message
+            return add_statement(std::move(body));
+        }
+        if (auto assert_stmt = ast::as<ast::Assert>(node)) {
+            body.statement_kind = ebm::StatementOp::ASSERT;
+            auto cond_ref = convert_expr(assert_stmt->cond);
+            if (!cond_ref) {
+                return unexpect_error(std::move(cond_ref.error()));
+            }
+            body.condition(*cond_ref);
+            return add_statement(std::move(body));
+        }
+        else if (auto return_stmt = ast::as<ast::Return>(node)) {
+            body.statement_kind = ebm::StatementOp::RETURN;
+            if (return_stmt->expr) {
+                auto expr_ref = convert_expr(return_stmt->expr);
+                if (!expr_ref) {
+                    return unexpect_error(std::move(expr_ref.error()));
+                }
+                body.value(*expr_ref);
+            }
+            return add_statement(std::move(body));
+        }
+        else if (auto break_stmt = ast::as<ast::Break>(node)) {
+            body.statement_kind = ebm::StatementOp::BREAK;
+            return add_statement(std::move(body));
+        }
+        else if (auto continue_stmt = ast::as<ast::Continue>(node)) {
+            body.statement_kind = ebm::StatementOp::CONTINUE;
+            return add_statement(std::move(body));
+        }
+        else if (auto if_stmt = ast::as<ast::If>(node)) {
+            body.statement_kind = ebm::StatementOp::IF_STATEMENT;
+            ebm::IfStatement ebm_if_stmt;
+            auto cond_ref = convert_expr(if_stmt->cond->expr);
+            if (!cond_ref) {
+                return unexpect_error(std::move(cond_ref.error()));
+            }
+            ebm_if_stmt.condition = *cond_ref;
+
+            // Convert then block
+            ebm::Block then_block;
+            if (if_stmt->then) {
+                // Assuming then is an IndentBlock, need to traverse its elements
+                if (auto indent_block = ast::as<ast::IndentBlock>(if_stmt->then)) {
+                    for (auto& element : indent_block->elements) {
+                        if (auto stmt_element = ast::as<ast::Stmt>(element)) {
+                            auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
+                            if (!stmt_ref) {
+                                return unexpect_error(std::move(stmt_ref.error()));
+                            }
+                            then_block.statements.push_back(*stmt_ref);
+                        }
+                        else {
+                            return unexpect_error("Unsupported node type in then block");
+                        }
+                    }
+                }
+                else {
+                    return unexpect_error("Unsupported node type for then block");
+                }
+            }
+            ebm_if_stmt.then_block = std::move(then_block);
+
+            // Convert else block
+            ebm::Block else_block;
+            if (if_stmt->els) {
+                // Assuming else is an IndentBlock or another If
+                if (auto indent_block = ast::as<ast::IndentBlock>(if_stmt->els)) {
+                    for (auto& element : indent_block->elements) {
+                        if (auto stmt_element = ast::as<ast::Stmt>(element)) {
+                            auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
+                            if (!stmt_ref) {
+                                return unexpect_error(std::move(stmt_ref.error()));
+                            }
+                            else_block.statements.push_back(*stmt_ref);
+                        }
+                        else {
+                            return unexpect_error("Unsupported node type in else block");
+                        }
+                    }
+                }
+                else if (auto else_if_stmt = ast::as<ast::If>(if_stmt->els)) {
+                    // Nested if-else if
+                    auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(if_stmt->els));
+                    if (!stmt_ref) {
+                        return unexpect_error(std::move(stmt_ref.error()));
+                    }
+                    else_block.statements.push_back(*stmt_ref);
+                }
+                else {
+                    return unexpect_error("Unsupported node type for else block");
+                }
+            }
+            ebm_if_stmt.else_block = std::move(else_block);
+
+            body.if_statement(std::move(ebm_if_stmt));
             return add_statement(std::move(body));
         }
         // TODO: Implement conversion for different statement types

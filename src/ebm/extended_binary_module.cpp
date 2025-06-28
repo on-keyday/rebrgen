@@ -4580,6 +4580,296 @@ namespace ebm {
         }
         return false;
     }
+    std::optional<StringRef> StatementBody::message() const {
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::RETURN==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::ASSERT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::NEW_OBJECT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::GET_STREAM_OFFSET==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::GET_REMAINING_BYTES==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::CAN_READ_STREAM==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::BREAK==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::METADATA==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if(!std::holds_alternative<union_struct_57>(union_variant_27)) {
+            return std::nullopt;
+        }
+        return std::get<30>((*this).union_variant_27).message;
+        }
+        return std::nullopt;
+    }
+    bool StatementBody::message(const StringRef& v) {
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::RETURN==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ASSERT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::NEW_OBJECT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::READ_DATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::GET_STREAM_OFFSET==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::GET_REMAINING_BYTES==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::CAN_READ_STREAM==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::BREAK==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::CONTINUE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::METADATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+            if(!std::holds_alternative<union_struct_57>(union_variant_27)) {
+                union_variant_27 = union_struct_57();
+            }
+            std::get<30>((*this).union_variant_27).message = v;
+            return true;
+        }
+        return false;
+    }
+    bool StatementBody::message(StringRef&& v) {
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::RETURN==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ASSERT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::NEW_OBJECT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::READ_DATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::GET_STREAM_OFFSET==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::GET_REMAINING_BYTES==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::CAN_READ_STREAM==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::BREAK==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::CONTINUE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::METADATA==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+            if(!std::holds_alternative<union_struct_57>(union_variant_27)) {
+                union_variant_27 = union_struct_57();
+            }
+            std::get<30>((*this).union_variant_27).message = std::move(v);
+            return true;
+        }
+        return false;
+    }
     std::optional<Metadata> StatementBody::metadata() const {
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
         return std::nullopt;
@@ -10119,9 +10409,6 @@ namespace ebm {
             if (auto err = std::get<3>((*this).union_variant_27).condition.encode(w)) {
                 return err;
             }
-            if (auto err = std::get<3>((*this).union_variant_27).message.encode(w)) {
-                return err;
-            }
         }
         else if (StatementOp::NEW_OBJECT==(*this).statement_kind) {
             if(!std::holds_alternative<union_struct_31>(union_variant_27)) {
@@ -10434,9 +10721,6 @@ namespace ebm {
                 union_variant_27 = union_struct_30();
             }
             if (auto err = std::get<3>((*this).union_variant_27).condition.decode(r)) {
-                return err;
-            }
-            if (auto err = std::get<3>((*this).union_variant_27).message.decode(r)) {
                 return err;
             }
         }

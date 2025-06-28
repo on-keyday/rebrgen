@@ -1094,7 +1094,6 @@ namespace ebm {
         };
         struct EBM_API union_struct_30{
             ExpressionRef condition;
-            IdentifierRef message;
         };
         struct EBM_API union_struct_31{
             IdentifierRef target_var;
@@ -1248,6 +1247,9 @@ namespace ebm {
         std::optional<MatchStatement> match_statement() const;
         bool match_statement(MatchStatement&& v);
         bool match_statement(const MatchStatement& v);
+        std::optional<StringRef> message() const;
+        bool message(StringRef&& v);
+        bool message(const StringRef& v);
         std::optional<Metadata> metadata() const;
         bool metadata(Metadata&& v);
         bool metadata(const Metadata& v);

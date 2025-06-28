@@ -293,7 +293,7 @@ format StatementBody:
             value :ExpressionRef # Return value (optional)
         StatementOp.ASSERT:
             condition :ExpressionRef
-            message :IdentifierRef # Reference to error message string
+            # message :IdentifierRef # Reference to error message string
         StatementOp.NEW_OBJECT:
             target_var :IdentifierRef # Variable to assign new object to
             object_type :TypeRef

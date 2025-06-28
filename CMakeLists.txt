@@ -28,6 +28,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
 add_library(bm SHARED "src/bm/binary_module.cpp")
 
+add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
+
 add_executable(bmgen
     "src/bmgen/main.cpp" 
     "src/bmgen/convert.cpp" 
@@ -49,6 +51,10 @@ add_executable(bmgen
     "src/bmgen/transform/fallback/endian.cpp"
 )
 
+add_executable(ebmgen
+    "src/ebmgen/main.cpp"
+    "src/ebmgen/convert.cpp" 
+)
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"
@@ -69,6 +75,7 @@ add_executable(gen_template2
 add_subdirectory("src")
 
 target_link_libraries(bmgen futils bm)
+target_link_libraries(ebmgen futils ebm)
 target_link_libraries(gen_template futils)
 target_link_libraries(gen_template2 futils bm)
 if(UNIX)

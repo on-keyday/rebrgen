@@ -53,7 +53,9 @@ add_executable(bmgen
 
 add_executable(ebmgen
     "src/ebmgen/main.cpp"
-    "src/ebmgen/convert.cpp" 
+    "src/ebmgen/convert.cpp"
+    "src/ebmgen/converter.cpp"
+    "src/ebmgen/load_json.cpp"
 )
 
 add_executable(gen_template 
@@ -83,6 +85,7 @@ set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}
 set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
 endif()
 install(TARGETS bmgen bm DESTINATION tool)
+install(TARGETS ebmgen ebm DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")

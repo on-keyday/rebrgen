@@ -52,9 +52,26 @@ The `src/ebm/extended_binary_module.bgn` reflects these principles:
 
 #### 5. Current Status of `ebmgen` Development
 
-*   **EBM Definition Complete:** The `src/ebm/extended_binary_module.bgn` file is fully defined and syntactically correct according to the `brgen` DSL.
-*   **C++ Bindings Generated:** The `extended_binary_module.hpp` and `extended_binary_module.cpp` files have been successfully generated, providing the C++ data structures for the EBM.
-*   **`ebmgen` Project Setup:** The basic project structure for `ebmgen` (including `main.cpp`, `convert.hpp`, `convert.cpp`) is in place, with appropriate namespaces (`ebmgen` for compiler logic, `ebm` for the IR).
+The `ebmgen` project is actively under development, focusing on the robust conversion of the `brgen` AST into the `ExtendedBinaryModule` (EBM).
+
+*   **EBM Definition Complete:** The `src/ebm/extended_binary_module.bgn` file is fully defined and syntactically correct according to the `brgen` DSL. The corresponding C++ bindings (`extended_binary_module.hpp` and `extended_binary_module.cpp`) have been successfully generated, providing the necessary data structures for `ebmgen` and `bm2*` tools to interact with the new IR.
+*   **`ebmgen` Project Setup:** The basic project structure for `ebmgen` (including `main.cpp`, `convert.hpp`, `convert.cpp`, `converter.hpp`, `converter.cpp`) is in place, with appropriate namespaces (`ebmgen` for compiler logic, `ebm` for the IR).
+*   **Core `Converter` Implementation:** The `Converter` class is being developed to traverse the `brgen` AST and populate the `ExtendedBinaryModule`'s tables.
+    *   **Expression Conversion:** The converter currently supports the conversion of the following `brgen` AST expression types into `ebm::Expression` nodes:
+        *   `IntLiteral` (e.g., `10`, `0xFF`)
+        *   `BoolLiteral` (e.g., `true`, `false`)
+        *   `StrLiteral` (e.g., `"hello"`)
+        *   `TypeLiteral` (e.g., `u8`, `float32`)
+        *   `Ident` (identifiers/variables)
+        *   `Binary` operations (e.g., `a + b`, `x == y`)
+        *   `Unary` operations (e.g., `-x`, `!b`)
+        *   `Call` expressions (function calls)
+        *   `Index` expressions (array/vector indexing, e.g., `arr[i]`)
+        *   `MemberAccess` expressions (struct/object member access, e.g., `obj.field`)
+        *   `Cast` expressions (type casting, where the `CastType` is inferred during conversion based on source and destination types).
+    *   **Internal Reference Management:** The `Converter` utilizes internal `std::unordered_map`s to efficiently manage and retrieve references (e.g., `IdentifierRef`, `StringRef`, `TypeRef`, `ExpressionRef`) to objects stored in the `ExtendedBinaryModule`'s centralized tables. This ensures data integrity and avoids duplication.
+    *   **Type Information in Expressions:** A key design decision in the EBM is that every `ebm::ExpressionBody` now explicitly carries its `ebm::TypeRef`. This type information is populated during the conversion process from the `brgen` AST's `expr_type` field, providing richer semantic context within the IR.
+    *   **Statement Conversion (Initial Phase):** The `convert_statement` method has been introduced, and initial support for `ast::Assert` statements is in place. The `Assert` statement's condition is converted to an `ebm::Expression`, and its message (if a string literal) is added to the `ebm.strings` table.
 
 #### 6. Crucial Learnings and `brgen` DSL Nuances
 
@@ -64,11 +81,13 @@ Throughout this development, understanding the specific syntax and behavior of t
 *   **No Optional (`?`) Syntax:** Unlike some IDLs, `brgen` does not use `?` for optional fields. All fields within a `format` are implicitly mandatory. Conditional presence of data must be handled semantically by the `ebmgen` compiler and `bm2{lang}` backends based on the `op`/`statement_kind` field.
 *   **Empty Match Arms (`..`):** Empty cases in `match` statements are denoted by `..`.
 *   **Enum Member Access:** Enum members are accessed using `EnumName.MEMBER_NAME` (e.g., `AbstractOp.LITERAL_INT`, `LoopType.WHILE`).
+*   **Implicit Type Information:** Unlike some languages where type casting is explicit in the AST, `brgen`'s AST does not always carry explicit `CastType` information for all conversions. `ebmgen` is responsible for inferring the appropriate `ebm::CastType` based on the source and destination types during the conversion process.
+*   **Bitwise Operations:** `brgen`'s AST uses `shl` and `shr` for bitwise left and right shifts, respectively, and `complement` for bitwise NOT. These are mapped to their corresponding `ebm::BinaryOp` and `ebm::UnaryOp` values during conversion.
 
 #### 7. Next Steps
 
 The immediate next steps for `ebmgen` are:
-1.  **Implement AST Conversion:** Develop the logic within `src/ebmgen/convert.cpp` to traverse the `brgen` AST and populate the `ExtendedBinaryModule`'s tables and structures.
+1.  **Complete Statement Conversion:** Implement the conversion logic for all remaining `brgen::ast::Stmt` types into `ebm::Statement` nodes.
 2.  **Implement IR Optimizations:** Begin developing IR-to-IR transformation passes within `ebmgen` to optimize the EBM before it's consumed by the backends.
 
 This new EBM design provides a robust and flexible foundation for `rebrgen` to generate high-quality, idiomatic code across a wide spectrum of programming languages, from low-level assembly to high-level functional paradigms.

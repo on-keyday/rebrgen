@@ -87,6 +87,98 @@ namespace ebmgen {
         }
     }
 
+    ebm::Identifier* Converter::get_identifier(ebm::IdentifierRef ref) {
+        if (ref.id.value() == 0 || identifier_map.find(ref.id.value()) == identifier_map.end()) {
+            return nullptr;
+        }
+        return &ebm.identifiers[identifier_map[ref.id.value()]];
+    }
+
+    ebm::StringLiteral* Converter::get_string(ebm::StringRef ref) {
+        if (ref.id.value() == 0 || string_map.find(ref.id.value()) == string_map.end()) {
+            return nullptr;
+        }
+        return &ebm.strings[string_map[ref.id.value()]];
+    }
+
+    ebm::Type* Converter::get_type(ebm::TypeRef ref) {
+        if (ref.id.value() == 0 || type_map.find(ref.id.value()) == type_map.end()) {
+            return nullptr;
+        }
+        return &ebm.types[type_map[ref.id.value()]];
+    }
+
+    ebm::Expression* Converter::get_expression(ebm::ExpressionRef ref) {
+        if (ref.id.value() == 0 || expression_map.find(ref.id.value()) == expression_map.end()) {
+            return nullptr;
+        }
+        return &ebm.expressions[expression_map[ref.id.value()]];
+    }
+
+    ebm::Statement* Converter::get_statement(ebm::StatementRef ref) {
+        if (ref.id.value() == 0 || statement_map.find(ref.id.value()) == statement_map.end()) {
+            return nullptr;
+        }
+        return &ebm.statements[statement_map[ref.id.value()]];
+    }
+
+    expected<ebm::CastType> Converter::get_cast_type(ebm::TypeRef dest_ref, ebm::TypeRef src_ref) {
+        auto dest = get_type(dest_ref);
+        auto src = get_type(src_ref);
+
+        if (!dest || !src) {
+            return unexpect_error("Invalid type reference for cast");
+        }
+
+        if (dest->body.kind == ebm::TypeKind::INT || dest->body.kind == ebm::TypeKind::UINT) {
+            if (src->body.kind == ebm::TypeKind::ENUM) {
+                return ebm::CastType::ENUM_TO_INT;
+            }
+            if (src->body.kind == ebm::TypeKind::FLOAT) {
+                return ebm::CastType::FLOAT_TO_INT_BIT;
+            }
+            if (src->body.kind == ebm::TypeKind::BOOL) {
+                return ebm::CastType::BOOL_TO_INT;
+            }
+            // Handle int/uint size and signedness conversions
+            if ((src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) && dest->body.size() && src->body.size()) {
+                auto dest_size = *dest->body.size();
+                auto src_size = *src->body.size();
+                if (dest_size < src_size) {
+                    return ebm::CastType::LARGE_INT_TO_SMALL_INT;
+                }
+                if (dest_size > src_size) {
+                    return ebm::CastType::SMALL_INT_TO_LARGE_INT;
+                }
+                // Check signedness conversion
+                if (dest->body.kind == ebm::TypeKind::UINT && src->body.kind == ebm::TypeKind::INT) {
+                    return ebm::CastType::SIGNED_TO_UNSIGNED;
+                }
+                if (dest->body.kind == ebm::TypeKind::INT && src->body.kind == ebm::TypeKind::UINT) {
+                    return ebm::CastType::UNSIGNED_TO_SIGNED;
+                }
+            }
+        }
+        else if (dest->body.kind == ebm::TypeKind::ENUM) {
+            if (src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) {
+                return ebm::CastType::INT_TO_ENUM;
+            }
+        }
+        else if (dest->body.kind == ebm::TypeKind::FLOAT) {
+            if (src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) {
+                return ebm::CastType::INT_TO_FLOAT_BIT;
+            }
+        }
+        else if (dest->body.kind == ebm::TypeKind::BOOL) {
+            if (src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) {
+                return ebm::CastType::INT_TO_BOOL;
+            }
+        }
+        // TODO: Add more complex type conversions (ARRAY, VECTOR, STRUCT, RECURSIVE_STRUCT)
+
+        return ebm::CastType::OTHER;
+    }
+
     void Converter::convert_node(const std::shared_ptr<ast::Node>& node) {
         if (err) return;
         if (auto expr = ast::as<ast::Expr>(node)) {
@@ -94,7 +186,28 @@ namespace ebmgen {
             if (!ref) {
                 err = ref.error();
             }
+        } else if (auto stmt = ast::as<ast::Stmt>(node)) {
+            auto ref = convert_statement(ast::cast_to<ast::Stmt>(node));
+            if (!ref) {
+                err = ref.error();
+            }
         }
+    }
+
+    expected<ebm::StatementRef> Converter::convert_statement(const std::shared_ptr<ast::Stmt>& node) {
+        ebm::StatementBody body;
+        if (auto assert_stmt = ast::as<ast::Assert>(node)) {
+            body.statement_kind = ebm::StatementOp::ASSERT;
+            auto cond_ref = convert_expr(assert_stmt->cond);
+            if (!cond_ref) {
+                return unexpect_error(std::move(cond_ref.error()));
+            }
+            body.condition(*cond_ref);
+            // TODO: Handle assert message
+            return add_statement(std::move(body));
+        }
+        // TODO: Implement conversion for different statement types
+        return unexpect_error("Statement conversion not implemented yet");
     }
 
     expected<ebm::ExpressionRef> Converter::convert_expr(const std::shared_ptr<ast::Expr>& node) {
@@ -218,8 +331,16 @@ namespace ebmgen {
                 return unexpect_error(std::move(source_expr_ref.error()));
             }
             body.target_type(*target_type_ref);
+            auto source_expr_type_ref = convert_type(cast_expr->arguments[0]->expr_type);
+            if (!source_expr_type_ref) {
+                return unexpect_error(std::move(source_expr_type_ref.error()));
+            }
             body.source_expr(*source_expr_ref);
-            // TODO: convert brgen::ast::CastType to ebm::CastType
+            auto cast_kind = get_cast_type(*target_type_ref, *source_expr_type_ref);
+            if (!cast_kind) {
+                return unexpect_error(std::move(cast_kind.error()));
+            }
+            body.cast_kind(*cast_kind);
             return add_expr(std::move(body));
         }
         else {

@@ -14,6 +14,12 @@ namespace ebmgen {
        private:
         std::uint64_t next_id = 1;
 
+        std::unordered_map<uint64_t, size_t> identifier_map;
+        std::unordered_map<uint64_t, size_t> string_map;
+        std::unordered_map<uint64_t, size_t> type_map;
+        std::unordered_map<uint64_t, size_t> expression_map;
+        std::unordered_map<uint64_t, size_t> statement_map;
+
         expected<ebm::ExpressionRef> new_expr_id() {
             return varint(next_id++).transform([](auto&& v) {
                 return ebm::ExpressionRef{v};
@@ -26,9 +32,9 @@ namespace ebmgen {
             });
         }
 
-        expected<ebm::Varint> new_stmt_id() {
+        expected<ebm::StatementRef> new_stmt_id() {
             return varint(next_id++).transform([](auto&& v) {
-                return ebm::Varint{v};
+                return ebm::StatementRef{v};
             });
         }
 
@@ -65,6 +71,7 @@ namespace ebmgen {
             expr.id = *expr_id;
             expr.body = std::move(body);
             ebm.expressions.push_back(std::move(expr));
+            expression_map[expr_id->id.value()] = ebm.expressions.size() - 1;
             return *expr_id;
         }
 
@@ -82,6 +89,7 @@ namespace ebmgen {
             string.value.length = *len;
             string.value.data = str;
             ebm.strings.push_back(std::move(string));
+            string_map[str_id->id.value()] = ebm.strings.size() - 1;
             return *str_id;
         }
 
@@ -94,6 +102,7 @@ namespace ebmgen {
             type.id = *type_id;
             type.body = std::move(body);
             ebm.types.push_back(std::move(type));
+            type_map[type_id->id.value()] = ebm.types.size() - 1;
             return *type_id;
         }
 
@@ -111,13 +120,35 @@ namespace ebmgen {
             identifier.name.length = *len;
             identifier.name.data = name;
             ebm.identifiers.push_back(std::move(identifier));
+            identifier_map[id_ref->id.value()] = ebm.identifiers.size() - 1;
             return *id_ref;
         }
 
+        expected<ebm::StatementRef> add_statement(ebm::StatementBody&& body) {
+            auto stmt_id = new_stmt_id();
+            if (!stmt_id) {
+                return stmt_id;
+            }
+            ebm::Statement stmt;
+            stmt.id = *stmt_id;
+            stmt.body = std::move(body);
+            ebm.statements.push_back(std::move(stmt));
+            statement_map[stmt_id->id.value()] = ebm.statements.size() - 1;
+            return *stmt_id;
+        }
+
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type);
+        expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
+
+        ebm::Identifier* get_identifier(ebm::IdentifierRef ref);
+        ebm::StringLiteral* get_string(ebm::StringRef ref);
+        ebm::Type* get_type(ebm::TypeRef ref);
+        ebm::Expression* get_expression(ebm::ExpressionRef ref);
+        ebm::Statement* get_statement(ebm::StatementRef ref);
 
         void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
+        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Stmt>& node);
 
        public:
         Converter(ebm::ExtendedBinaryModule& ebm) : ebm(ebm) {}

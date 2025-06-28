@@ -11,6 +11,7 @@
 #include <binary/float.h>
 #include <view/iovec.h>
 #include <binary/number.h>
+#include <memory>
 #include <error/error.h>
 #include <string>
 #ifndef BM_API
@@ -25,55 +26,29 @@ namespace rebgn {
         mul = 0,
         div = 1,
         mod = 2,
-        left_arithmetic_shift = 3,
-        right_arithmetic_shift = 4,
-        left_logical_shift = 5,
-        right_logical_shift = 6,
-        bit_and = 7,
-        add = 8,
-        sub = 9,
-        bit_or = 10,
-        bit_xor = 11,
-        equal = 12,
-        not_equal = 13,
-        less = 14,
-        less_or_eq = 15,
-        grater = 16,
-        grater_or_eq = 17,
-        logical_and = 18,
-        logical_or = 19,
-        cond_op1 = 20,
-        cond_op2 = 21,
-        range_exclusive = 22,
-        range_inclusive = 23,
-        assign = 24,
-        define_assign = 25,
-        const_assign = 26,
-        add_assign = 27,
-        sub_assign = 28,
-        mul_assign = 29,
-        div_assign = 30,
-        mod_assign = 31,
-        left_logical_shift_assign = 32,
-        right_logical_shift_assign = 33,
-        left_arithmetic_shift_assign = 34,
-        right_arithmetic_shift_assign = 35,
-        bit_and_assign = 36,
-        bit_or_assign = 37,
-        bit_xor_assign = 38,
-        comma = 39,
-        in_assign = 40,
-        append_assign = 41,
+        left_shift = 3,
+        right_shift = 4,
+        bit_and = 5,
+        add = 6,
+        sub = 7,
+        bit_or = 8,
+        bit_xor = 9,
+        equal = 10,
+        not_equal = 11,
+        less = 12,
+        less_or_eq = 13,
+        grater = 14,
+        grater_or_eq = 15,
+        logical_and = 16,
+        logical_or = 17,
     };
     constexpr const char* to_string(BinaryOp e) {
         switch(e) {
             case BinaryOp::mul: return "*";
             case BinaryOp::div: return "/";
             case BinaryOp::mod: return "%";
-            case BinaryOp::left_arithmetic_shift: return "<<<";
-            case BinaryOp::right_arithmetic_shift: return ">>>";
-            case BinaryOp::left_logical_shift: return "<<";
-            case BinaryOp::right_logical_shift: return ">>";
+            case BinaryOp::left_shift: return "<<";
+            case BinaryOp::right_shift: return ">>";
             case BinaryOp::bit_and: return "&";
             case BinaryOp::add: return "+";
             case BinaryOp::sub: return "-";
@@ -87,28 +62,6 @@ namespace rebgn {
             case BinaryOp::grater_or_eq: return ">=";
             case BinaryOp::logical_and: return "&&";
             case BinaryOp::logical_or: return "||";
-            case BinaryOp::cond_op1: return "?";
-            case BinaryOp::cond_op2: return ":";
-            case BinaryOp::range_exclusive: return "..";
-            case BinaryOp::range_inclusive: return "..=";
-            case BinaryOp::assign: return "=";
-            case BinaryOp::define_assign: return ":=";
-            case BinaryOp::const_assign: return "::=";
-            case BinaryOp::add_assign: return "+=";
-            case BinaryOp::sub_assign: return "-=";
-            case BinaryOp::mul_assign: return "*=";
-            case BinaryOp::div_assign: return "/=";
-            case BinaryOp::mod_assign: return "%=";
-            case BinaryOp::left_logical_shift_assign: return "<<=";
-            case BinaryOp::right_logical_shift_assign: return ">>=";
-            case BinaryOp::left_arithmetic_shift_assign: return "<<<=";
-            case BinaryOp::right_arithmetic_shift_assign: return ">>>=";
-            case BinaryOp::bit_and_assign: return "&=";
-            case BinaryOp::bit_or_assign: return "|=";
-            case BinaryOp::bit_xor_assign: return "^=";
-            case BinaryOp::comma: return ",";
-            case BinaryOp::in_assign: return "in";
-            case BinaryOp::append_assign: return "append";
         }
         return "";
     }
@@ -126,17 +79,11 @@ namespace rebgn {
         if (str == "%") {
             return BinaryOp::mod;
         }
-        if (str == "<<<") {
-            return BinaryOp::left_arithmetic_shift;
-        }
-        if (str == ">>>") {
-            return BinaryOp::right_arithmetic_shift;
-        }
         if (str == "<<") {
-            return BinaryOp::left_logical_shift;
+            return BinaryOp::left_shift;
         }
         if (str == ">>") {
-            return BinaryOp::right_logical_shift;
+            return BinaryOp::right_shift;
         }
         if (str == "&") {
             return BinaryOp::bit_and;
@@ -176,72 +123,6 @@ namespace rebgn {
         }
         if (str == "||") {
             return BinaryOp::logical_or;
-        }
-        if (str == "?") {
-            return BinaryOp::cond_op1;
-        }
-        if (str == ":") {
-            return BinaryOp::cond_op2;
-        }
-        if (str == "..") {
-            return BinaryOp::range_exclusive;
-        }
-        if (str == "..=") {
-            return BinaryOp::range_inclusive;
-        }
-        if (str == "=") {
-            return BinaryOp::assign;
-        }
-        if (str == ":=") {
-            return BinaryOp::define_assign;
-        }
-        if (str == "::=") {
-            return BinaryOp::const_assign;
-        }
-        if (str == "+=") {
-            return BinaryOp::add_assign;
-        }
-        if (str == "-=") {
-            return BinaryOp::sub_assign;
-        }
-        if (str == "*=") {
-            return BinaryOp::mul_assign;
-        }
-        if (str == "/=") {
-            return BinaryOp::div_assign;
-        }
-        if (str == "%=") {
-            return BinaryOp::mod_assign;
-        }
-        if (str == "<<=") {
-            return BinaryOp::left_logical_shift_assign;
-        }
-        if (str == ">>=") {
-            return BinaryOp::right_logical_shift_assign;
-        }
-        if (str == "<<<=") {
-            return BinaryOp::left_arithmetic_shift_assign;
-        }
-        if (str == ">>>=") {
-            return BinaryOp::right_arithmetic_shift_assign;
-        }
-        if (str == "&=") {
-            return BinaryOp::bit_and_assign;
-        }
-        if (str == "|=") {
-            return BinaryOp::bit_or_assign;
-        }
-        if (str == "^=") {
-            return BinaryOp::bit_xor_assign;
-        }
-        if (str == ",") {
-            return BinaryOp::comma;
-        }
-        if (str == "in") {
-            return BinaryOp::in_assign;
-        }
-        if (str == "append") {
-            return BinaryOp::append_assign;
         }
         return std::nullopt;
     }
@@ -313,315 +194,92 @@ namespace rebgn {
         }
         return std::nullopt;
     }
-    enum class BitOrder : std::uint8_t {
-        unspec = 0,
-        msb = 1,
-        lsb = 2,
-    };
-    constexpr const char* to_string(BitOrder e) {
-        switch(e) {
-            case BitOrder::unspec: return "unspec";
-            case BitOrder::msb: return "msb";
-            case BitOrder::lsb: return "lsb";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<BitOrder> BitOrder_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "unspec") {
-            return BitOrder::unspec;
-        }
-        if (str == "msb") {
-            return BitOrder::msb;
-        }
-        if (str == "lsb") {
-            return BitOrder::lsb;
-        }
-        return std::nullopt;
-    }
     enum class AbstractOp : std::uint8_t {
-        METADATA = 0,
-        IMPORT = 1,
-        DYNAMIC_ENDIAN = 2,
-        RETURN_TYPE = 3,
-        DEFINE_PROGRAM = 4,
-        END_PROGRAM = 5,
-        DECLARE_PROGRAM = 6,
-        DEFINE_FORMAT = 7,
-        END_FORMAT = 8,
-        DECLARE_FORMAT = 9,
-        DEFINE_FIELD = 10,
-        CONDITIONAL_FIELD = 11,
-        CONDITIONAL_PROPERTY = 12,
-        MERGED_CONDITIONAL_FIELD = 13,
-        DEFINE_PROPERTY = 14,
-        END_PROPERTY = 15,
-        DECLARE_PROPERTY = 16,
-        DEFINE_PROPERTY_SETTER = 17,
-        DEFINE_PROPERTY_GETTER = 18,
-        DEFINE_PARAMETER = 19,
-        DEFINE_FUNCTION = 20,
-        END_FUNCTION = 21,
-        DECLARE_FUNCTION = 22,
-        DEFINE_ENUM = 23,
-        END_ENUM = 24,
-        DECLARE_ENUM = 25,
-        DEFINE_ENUM_MEMBER = 26,
-        DEFINE_UNION = 27,
-        END_UNION = 28,
-        DECLARE_UNION = 29,
-        DEFINE_UNION_MEMBER = 30,
-        END_UNION_MEMBER = 31,
-        DECLARE_UNION_MEMBER = 32,
-        DEFINE_STATE = 33,
-        END_STATE = 34,
-        DECLARE_STATE = 35,
-        DEFINE_BIT_FIELD = 36,
-        END_BIT_FIELD = 37,
-        DECLARE_BIT_FIELD = 38,
-        BEGIN_ENCODE_PACKED_OPERATION = 39,
-        END_ENCODE_PACKED_OPERATION = 40,
-        BEGIN_DECODE_PACKED_OPERATION = 41,
-        END_DECODE_PACKED_OPERATION = 42,
-        DEFINE_ENCODER = 43,
-        DEFINE_DECODER = 44,
-        ENCODE_INT = 45,
-        DECODE_INT = 46,
-        ENCODE_INT_VECTOR = 47,
-        ENCODE_INT_VECTOR_FIXED = 48,
-        DECODE_INT_VECTOR = 49,
-        DECODE_INT_VECTOR_UNTIL_EOF = 50,
-        DECODE_INT_VECTOR_FIXED = 51,
-        PEEK_INT_VECTOR = 52,
-        BACKWARD_INPUT = 53,
-        BACKWARD_OUTPUT = 54,
-        INPUT_BYTE_OFFSET = 55,
-        OUTPUT_BYTE_OFFSET = 56,
-        INPUT_BIT_OFFSET = 57,
-        OUTPUT_BIT_OFFSET = 58,
-        REMAIN_BYTES = 59,
-        CAN_READ = 60,
-        IS_LITTLE_ENDIAN = 61,
-        CALL_ENCODE = 62,
-        CALL_DECODE = 63,
-        CAST = 64,
-        CALL_CAST = 65,
-        ADDRESS_OF = 66,
-        OPTIONAL_OF = 67,
-        EMPTY_PTR = 68,
-        EMPTY_OPTIONAL = 69,
-        LOOP_INFINITE = 70,
-        LOOP_CONDITION = 71,
-        CONTINUE = 72,
-        BREAK = 73,
-        END_LOOP = 74,
-        IF = 75,
-        ELIF = 76,
-        ELSE = 77,
-        END_IF = 78,
-        MATCH = 79,
-        EXHAUSTIVE_MATCH = 80,
-        CASE = 81,
-        END_CASE = 82,
-        DEFAULT_CASE = 83,
-        END_MATCH = 84,
-        DEFINE_VARIABLE = 85,
-        DEFINE_VARIABLE_REF = 86,
-        DEFINE_CONSTANT = 87,
-        DECLARE_VARIABLE = 88,
-        BINARY = 89,
-        NOT_PREV_THEN = 90,
-        UNARY = 91,
-        ASSIGN = 92,
-        PROPERTY_ASSIGN = 93,
-        ASSERT = 94,
-        LENGTH_CHECK = 95,
-        EXPLICIT_ERROR = 96,
-        ACCESS = 97,
-        INDEX = 98,
-        APPEND = 99,
-        INC = 100,
-        CALL = 101,
-        RET = 102,
-        RET_SUCCESS = 103,
-        RET_PROPERTY_SETTER_OK = 104,
-        RET_PROPERTY_SETTER_FAIL = 105,
-        IMMEDIATE_TRUE = 106,
-        IMMEDIATE_FALSE = 107,
-        IMMEDIATE_INT = 108,
-        IMMEDIATE_INT64 = 109,
-        IMMEDIATE_CHAR = 110,
-        IMMEDIATE_STRING = 111,
-        IMMEDIATE_TYPE = 112,
-        NEW_OBJECT = 113,
-        INIT_RECURSIVE_STRUCT = 114,
-        CHECK_RECURSIVE_STRUCT = 115,
-        SWITCH_UNION = 116,
-        CHECK_UNION = 117,
-        ENCODER_PARAMETER = 118,
-        DECODER_PARAMETER = 119,
-        STATE_VARIABLE_PARAMETER = 120,
-        PROPERTY_INPUT_PARAMETER = 121,
-        EVAL_EXPR = 122,
-        ARRAY_SIZE = 123,
-        RESERVE_SIZE = 124,
-        BEGIN_ENCODE_SUB_RANGE = 125,
-        END_ENCODE_SUB_RANGE = 126,
-        BEGIN_DECODE_SUB_RANGE = 127,
-        END_DECODE_SUB_RANGE = 128,
-        SEEK_ENCODER = 129,
-        SEEK_DECODER = 130,
-        FIELD_AVAILABLE = 131,
-        PHI = 132,
-        PROPERTY_FUNCTION = 133,
-        DEFINE_FALLBACK = 134,
-        END_FALLBACK = 135,
-        BEGIN_COND_BLOCK = 136,
-        END_COND_BLOCK = 137,
+        LITERAL_INT = 0,
+        LITERAL_BOOL = 1,
+        LITERAL_STRING = 2,
+        LITERAL_TYPE = 3,
+        IDENTIFIER_REF = 4,
+        BINARY_OP = 5,
+        UNARY_OP = 6,
+        ASSIGNMENT = 7,
+        CALL = 8,
+        RETURN = 9,
+        ASSERT = 10,
+        NEW_OBJECT = 11,
+        INDEX_ACCESS = 12,
+        MEMBER_ACCESS = 13,
+        TYPE_CAST = 14,
+        IF_STATEMENT = 15,
+        LOOP_STATEMENT = 16,
+        MATCH_STATEMENT = 17,
+        BREAK = 18,
+        CONTINUE = 19,
+        FUNCTION_DECL = 20,
+        VARIABLE_DECL = 21,
+        FIELD_DECL = 22,
+        ENUM_DECL = 23,
+        ENUM_MEMBER_DECL = 24,
+        STRUCT_DECL = 25,
+        UNION_DECL = 26,
+        PROGRAM_DECL = 27,
+        STATE_DECL = 28,
+        BIT_FIELD_DECL = 29,
+        PROPERTY_DECL = 30,
+        READ_DATA = 31,
+        WRITE_DATA = 32,
+        SEEK_STREAM = 33,
+        GET_STREAM_OFFSET = 34,
+        GET_REMAINING_BYTES = 35,
+        CAN_READ_STREAM = 36,
+        METADATA = 37,
+        IMPORT_MODULE = 38,
+        PHI_NODE = 39,
+        ERROR_REPORT = 40,
     };
     constexpr const char* to_string(AbstractOp e) {
         switch(e) {
-            case AbstractOp::METADATA: return "METADATA";
-            case AbstractOp::IMPORT: return "IMPORT";
-            case AbstractOp::DYNAMIC_ENDIAN: return "DYNAMIC_ENDIAN";
-            case AbstractOp::RETURN_TYPE: return "RETURN_TYPE";
-            case AbstractOp::DEFINE_PROGRAM: return "DEFINE_PROGRAM";
-            case AbstractOp::END_PROGRAM: return "END_PROGRAM";
-            case AbstractOp::DECLARE_PROGRAM: return "DECLARE_PROGRAM";
-            case AbstractOp::DEFINE_FORMAT: return "DEFINE_FORMAT";
-            case AbstractOp::END_FORMAT: return "END_FORMAT";
-            case AbstractOp::DECLARE_FORMAT: return "DECLARE_FORMAT";
-            case AbstractOp::DEFINE_FIELD: return "DEFINE_FIELD";
-            case AbstractOp::CONDITIONAL_FIELD: return "CONDITIONAL_FIELD";
-            case AbstractOp::CONDITIONAL_PROPERTY: return "CONDITIONAL_PROPERTY";
-            case AbstractOp::MERGED_CONDITIONAL_FIELD: return "MERGED_CONDITIONAL_FIELD";
-            case AbstractOp::DEFINE_PROPERTY: return "DEFINE_PROPERTY";
-            case AbstractOp::END_PROPERTY: return "END_PROPERTY";
-            case AbstractOp::DECLARE_PROPERTY: return "DECLARE_PROPERTY";
-            case AbstractOp::DEFINE_PROPERTY_SETTER: return "DEFINE_PROPERTY_SETTER";
-            case AbstractOp::DEFINE_PROPERTY_GETTER: return "DEFINE_PROPERTY_GETTER";
-            case AbstractOp::DEFINE_PARAMETER: return "DEFINE_PARAMETER";
-            case AbstractOp::DEFINE_FUNCTION: return "DEFINE_FUNCTION";
-            case AbstractOp::END_FUNCTION: return "END_FUNCTION";
-            case AbstractOp::DECLARE_FUNCTION: return "DECLARE_FUNCTION";
-            case AbstractOp::DEFINE_ENUM: return "DEFINE_ENUM";
-            case AbstractOp::END_ENUM: return "END_ENUM";
-            case AbstractOp::DECLARE_ENUM: return "DECLARE_ENUM";
-            case AbstractOp::DEFINE_ENUM_MEMBER: return "DEFINE_ENUM_MEMBER";
-            case AbstractOp::DEFINE_UNION: return "DEFINE_UNION";
-            case AbstractOp::END_UNION: return "END_UNION";
-            case AbstractOp::DECLARE_UNION: return "DECLARE_UNION";
-            case AbstractOp::DEFINE_UNION_MEMBER: return "DEFINE_UNION_MEMBER";
-            case AbstractOp::END_UNION_MEMBER: return "END_UNION_MEMBER";
-            case AbstractOp::DECLARE_UNION_MEMBER: return "DECLARE_UNION_MEMBER";
-            case AbstractOp::DEFINE_STATE: return "DEFINE_STATE";
-            case AbstractOp::END_STATE: return "END_STATE";
-            case AbstractOp::DECLARE_STATE: return "DECLARE_STATE";
-            case AbstractOp::DEFINE_BIT_FIELD: return "DEFINE_BIT_FIELD";
-            case AbstractOp::END_BIT_FIELD: return "END_BIT_FIELD";
-            case AbstractOp::DECLARE_BIT_FIELD: return "DECLARE_BIT_FIELD";
-            case AbstractOp::BEGIN_ENCODE_PACKED_OPERATION: return "BEGIN_ENCODE_PACKED_OPERATION";
-            case AbstractOp::END_ENCODE_PACKED_OPERATION: return "END_ENCODE_PACKED_OPERATION";
-            case AbstractOp::BEGIN_DECODE_PACKED_OPERATION: return "BEGIN_DECODE_PACKED_OPERATION";
-            case AbstractOp::END_DECODE_PACKED_OPERATION: return "END_DECODE_PACKED_OPERATION";
-            case AbstractOp::DEFINE_ENCODER: return "DEFINE_ENCODER";
-            case AbstractOp::DEFINE_DECODER: return "DEFINE_DECODER";
-            case AbstractOp::ENCODE_INT: return "ENCODE_INT";
-            case AbstractOp::DECODE_INT: return "DECODE_INT";
-            case AbstractOp::ENCODE_INT_VECTOR: return "ENCODE_INT_VECTOR";
-            case AbstractOp::ENCODE_INT_VECTOR_FIXED: return "ENCODE_INT_VECTOR_FIXED";
-            case AbstractOp::DECODE_INT_VECTOR: return "DECODE_INT_VECTOR";
-            case AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF: return "DECODE_INT_VECTOR_UNTIL_EOF";
-            case AbstractOp::DECODE_INT_VECTOR_FIXED: return "DECODE_INT_VECTOR_FIXED";
-            case AbstractOp::PEEK_INT_VECTOR: return "PEEK_INT_VECTOR";
-            case AbstractOp::BACKWARD_INPUT: return "BACKWARD_INPUT";
-            case AbstractOp::BACKWARD_OUTPUT: return "BACKWARD_OUTPUT";
-            case AbstractOp::INPUT_BYTE_OFFSET: return "INPUT_BYTE_OFFSET";
-            case AbstractOp::OUTPUT_BYTE_OFFSET: return "OUTPUT_BYTE_OFFSET";
-            case AbstractOp::INPUT_BIT_OFFSET: return "INPUT_BIT_OFFSET";
-            case AbstractOp::OUTPUT_BIT_OFFSET: return "OUTPUT_BIT_OFFSET";
-            case AbstractOp::REMAIN_BYTES: return "REMAIN_BYTES";
-            case AbstractOp::CAN_READ: return "CAN_READ";
-            case AbstractOp::IS_LITTLE_ENDIAN: return "IS_LITTLE_ENDIAN";
-            case AbstractOp::CALL_ENCODE: return "CALL_ENCODE";
-            case AbstractOp::CALL_DECODE: return "CALL_DECODE";
-            case AbstractOp::CAST: return "CAST";
-            case AbstractOp::CALL_CAST: return "CALL_CAST";
-            case AbstractOp::ADDRESS_OF: return "ADDRESS_OF";
-            case AbstractOp::OPTIONAL_OF: return "OPTIONAL_OF";
-            case AbstractOp::EMPTY_PTR: return "EMPTY_PTR";
-            case AbstractOp::EMPTY_OPTIONAL: return "EMPTY_OPTIONAL";
-            case AbstractOp::LOOP_INFINITE: return "LOOP_INFINITE";
-            case AbstractOp::LOOP_CONDITION: return "LOOP_CONDITION";
-            case AbstractOp::CONTINUE: return "CONTINUE";
-            case AbstractOp::BREAK: return "BREAK";
-            case AbstractOp::END_LOOP: return "END_LOOP";
-            case AbstractOp::IF: return "IF";
-            case AbstractOp::ELIF: return "ELIF";
-            case AbstractOp::ELSE: return "ELSE";
-            case AbstractOp::END_IF: return "END_IF";
-            case AbstractOp::MATCH: return "MATCH";
-            case AbstractOp::EXHAUSTIVE_MATCH: return "EXHAUSTIVE_MATCH";
-            case AbstractOp::CASE: return "CASE";
-            case AbstractOp::END_CASE: return "END_CASE";
-            case AbstractOp::DEFAULT_CASE: return "DEFAULT_CASE";
-            case AbstractOp::END_MATCH: return "END_MATCH";
-            case AbstractOp::DEFINE_VARIABLE: return "DEFINE_VARIABLE";
-            case AbstractOp::DEFINE_VARIABLE_REF: return "DEFINE_VARIABLE_REF";
-            case AbstractOp::DEFINE_CONSTANT: return "DEFINE_CONSTANT";
-            case AbstractOp::DECLARE_VARIABLE: return "DECLARE_VARIABLE";
-            case AbstractOp::BINARY: return "BINARY";
-            case AbstractOp::NOT_PREV_THEN: return "NOT_PREV_THEN";
-            case AbstractOp::UNARY: return "UNARY";
-            case AbstractOp::ASSIGN: return "ASSIGN";
-            case AbstractOp::PROPERTY_ASSIGN: return "PROPERTY_ASSIGN";
-            case AbstractOp::ASSERT: return "ASSERT";
-            case AbstractOp::LENGTH_CHECK: return "LENGTH_CHECK";
-            case AbstractOp::EXPLICIT_ERROR: return "EXPLICIT_ERROR";
-            case AbstractOp::ACCESS: return "ACCESS";
-            case AbstractOp::INDEX: return "INDEX";
-            case AbstractOp::APPEND: return "APPEND";
-            case AbstractOp::INC: return "INC";
+            case AbstractOp::LITERAL_INT: return "LITERAL_INT";
+            case AbstractOp::LITERAL_BOOL: return "LITERAL_BOOL";
+            case AbstractOp::LITERAL_STRING: return "LITERAL_STRING";
+            case AbstractOp::LITERAL_TYPE: return "LITERAL_TYPE";
+            case AbstractOp::IDENTIFIER_REF: return "IDENTIFIER_REF";
+            case AbstractOp::BINARY_OP: return "BINARY_OP";
+            case AbstractOp::UNARY_OP: return "UNARY_OP";
+            case AbstractOp::ASSIGNMENT: return "ASSIGNMENT";
             case AbstractOp::CALL: return "CALL";
-            case AbstractOp::RET: return "RET";
-            case AbstractOp::RET_SUCCESS: return "RET_SUCCESS";
-            case AbstractOp::RET_PROPERTY_SETTER_OK: return "RET_PROPERTY_SETTER_OK";
-            case AbstractOp::RET_PROPERTY_SETTER_FAIL: return "RET_PROPERTY_SETTER_FAIL";
-            case AbstractOp::IMMEDIATE_TRUE: return "IMMEDIATE_TRUE";
-            case AbstractOp::IMMEDIATE_FALSE: return "IMMEDIATE_FALSE";
-            case AbstractOp::IMMEDIATE_INT: return "IMMEDIATE_INT";
-            case AbstractOp::IMMEDIATE_INT64: return "IMMEDIATE_INT64";
-            case AbstractOp::IMMEDIATE_CHAR: return "IMMEDIATE_CHAR";
-            case AbstractOp::IMMEDIATE_STRING: return "IMMEDIATE_STRING";
-            case AbstractOp::IMMEDIATE_TYPE: return "IMMEDIATE_TYPE";
+            case AbstractOp::RETURN: return "RETURN";
+            case AbstractOp::ASSERT: return "ASSERT";
             case AbstractOp::NEW_OBJECT: return "NEW_OBJECT";
-            case AbstractOp::INIT_RECURSIVE_STRUCT: return "INIT_RECURSIVE_STRUCT";
-            case AbstractOp::CHECK_RECURSIVE_STRUCT: return "CHECK_RECURSIVE_STRUCT";
-            case AbstractOp::SWITCH_UNION: return "SWITCH_UNION";
-            case AbstractOp::CHECK_UNION: return "CHECK_UNION";
-            case AbstractOp::ENCODER_PARAMETER: return "ENCODER_PARAMETER";
-            case AbstractOp::DECODER_PARAMETER: return "DECODER_PARAMETER";
-            case AbstractOp::STATE_VARIABLE_PARAMETER: return "STATE_VARIABLE_PARAMETER";
-            case AbstractOp::PROPERTY_INPUT_PARAMETER: return "PROPERTY_INPUT_PARAMETER";
-            case AbstractOp::EVAL_EXPR: return "EVAL_EXPR";
-            case AbstractOp::ARRAY_SIZE: return "ARRAY_SIZE";
-            case AbstractOp::RESERVE_SIZE: return "RESERVE_SIZE";
-            case AbstractOp::BEGIN_ENCODE_SUB_RANGE: return "BEGIN_ENCODE_SUB_RANGE";
-            case AbstractOp::END_ENCODE_SUB_RANGE: return "END_ENCODE_SUB_RANGE";
-            case AbstractOp::BEGIN_DECODE_SUB_RANGE: return "BEGIN_DECODE_SUB_RANGE";
-            case AbstractOp::END_DECODE_SUB_RANGE: return "END_DECODE_SUB_RANGE";
-            case AbstractOp::SEEK_ENCODER: return "SEEK_ENCODER";
-            case AbstractOp::SEEK_DECODER: return "SEEK_DECODER";
-            case AbstractOp::FIELD_AVAILABLE: return "FIELD_AVAILABLE";
-            case AbstractOp::PHI: return "PHI";
-            case AbstractOp::PROPERTY_FUNCTION: return "PROPERTY_FUNCTION";
-            case AbstractOp::DEFINE_FALLBACK: return "DEFINE_FALLBACK";
-            case AbstractOp::END_FALLBACK: return "END_FALLBACK";
-            case AbstractOp::BEGIN_COND_BLOCK: return "BEGIN_COND_BLOCK";
-            case AbstractOp::END_COND_BLOCK: return "END_COND_BLOCK";
+            case AbstractOp::INDEX_ACCESS: return "INDEX_ACCESS";
+            case AbstractOp::MEMBER_ACCESS: return "MEMBER_ACCESS";
+            case AbstractOp::TYPE_CAST: return "TYPE_CAST";
+            case AbstractOp::IF_STATEMENT: return "IF_STATEMENT";
+            case AbstractOp::LOOP_STATEMENT: return "LOOP_STATEMENT";
+            case AbstractOp::MATCH_STATEMENT: return "MATCH_STATEMENT";
+            case AbstractOp::BREAK: return "BREAK";
+            case AbstractOp::CONTINUE: return "CONTINUE";
+            case AbstractOp::FUNCTION_DECL: return "FUNCTION_DECL";
+            case AbstractOp::VARIABLE_DECL: return "VARIABLE_DECL";
+            case AbstractOp::FIELD_DECL: return "FIELD_DECL";
+            case AbstractOp::ENUM_DECL: return "ENUM_DECL";
+            case AbstractOp::ENUM_MEMBER_DECL: return "ENUM_MEMBER_DECL";
+            case AbstractOp::STRUCT_DECL: return "STRUCT_DECL";
+            case AbstractOp::UNION_DECL: return "UNION_DECL";
+            case AbstractOp::PROGRAM_DECL: return "PROGRAM_DECL";
+            case AbstractOp::STATE_DECL: return "STATE_DECL";
+            case AbstractOp::BIT_FIELD_DECL: return "BIT_FIELD_DECL";
+            case AbstractOp::PROPERTY_DECL: return "PROPERTY_DECL";
+            case AbstractOp::READ_DATA: return "READ_DATA";
+            case AbstractOp::WRITE_DATA: return "WRITE_DATA";
+            case AbstractOp::SEEK_STREAM: return "SEEK_STREAM";
+            case AbstractOp::GET_STREAM_OFFSET: return "GET_STREAM_OFFSET";
+            case AbstractOp::GET_REMAINING_BYTES: return "GET_REMAINING_BYTES";
+            case AbstractOp::CAN_READ_STREAM: return "CAN_READ_STREAM";
+            case AbstractOp::METADATA: return "METADATA";
+            case AbstractOp::IMPORT_MODULE: return "IMPORT_MODULE";
+            case AbstractOp::PHI_NODE: return "PHI_NODE";
+            case AbstractOp::ERROR_REPORT: return "ERROR_REPORT";
         }
         return "";
     }
@@ -630,443 +288,226 @@ namespace rebgn {
         if (str.empty()) {
             return std::nullopt;
         }
-        if (str == "METADATA") {
-            return AbstractOp::METADATA;
+        if (str == "LITERAL_INT") {
+            return AbstractOp::LITERAL_INT;
         }
-        if (str == "IMPORT") {
-            return AbstractOp::IMPORT;
+        if (str == "LITERAL_BOOL") {
+            return AbstractOp::LITERAL_BOOL;
         }
-        if (str == "DYNAMIC_ENDIAN") {
-            return AbstractOp::DYNAMIC_ENDIAN;
+        if (str == "LITERAL_STRING") {
+            return AbstractOp::LITERAL_STRING;
         }
-        if (str == "RETURN_TYPE") {
-            return AbstractOp::RETURN_TYPE;
+        if (str == "LITERAL_TYPE") {
+            return AbstractOp::LITERAL_TYPE;
         }
-        if (str == "DEFINE_PROGRAM") {
-            return AbstractOp::DEFINE_PROGRAM;
+        if (str == "IDENTIFIER_REF") {
+            return AbstractOp::IDENTIFIER_REF;
         }
-        if (str == "END_PROGRAM") {
-            return AbstractOp::END_PROGRAM;
+        if (str == "BINARY_OP") {
+            return AbstractOp::BINARY_OP;
         }
-        if (str == "DECLARE_PROGRAM") {
-            return AbstractOp::DECLARE_PROGRAM;
+        if (str == "UNARY_OP") {
+            return AbstractOp::UNARY_OP;
         }
-        if (str == "DEFINE_FORMAT") {
-            return AbstractOp::DEFINE_FORMAT;
-        }
-        if (str == "END_FORMAT") {
-            return AbstractOp::END_FORMAT;
-        }
-        if (str == "DECLARE_FORMAT") {
-            return AbstractOp::DECLARE_FORMAT;
-        }
-        if (str == "DEFINE_FIELD") {
-            return AbstractOp::DEFINE_FIELD;
-        }
-        if (str == "CONDITIONAL_FIELD") {
-            return AbstractOp::CONDITIONAL_FIELD;
-        }
-        if (str == "CONDITIONAL_PROPERTY") {
-            return AbstractOp::CONDITIONAL_PROPERTY;
-        }
-        if (str == "MERGED_CONDITIONAL_FIELD") {
-            return AbstractOp::MERGED_CONDITIONAL_FIELD;
-        }
-        if (str == "DEFINE_PROPERTY") {
-            return AbstractOp::DEFINE_PROPERTY;
-        }
-        if (str == "END_PROPERTY") {
-            return AbstractOp::END_PROPERTY;
-        }
-        if (str == "DECLARE_PROPERTY") {
-            return AbstractOp::DECLARE_PROPERTY;
-        }
-        if (str == "DEFINE_PROPERTY_SETTER") {
-            return AbstractOp::DEFINE_PROPERTY_SETTER;
-        }
-        if (str == "DEFINE_PROPERTY_GETTER") {
-            return AbstractOp::DEFINE_PROPERTY_GETTER;
-        }
-        if (str == "DEFINE_PARAMETER") {
-            return AbstractOp::DEFINE_PARAMETER;
-        }
-        if (str == "DEFINE_FUNCTION") {
-            return AbstractOp::DEFINE_FUNCTION;
-        }
-        if (str == "END_FUNCTION") {
-            return AbstractOp::END_FUNCTION;
-        }
-        if (str == "DECLARE_FUNCTION") {
-            return AbstractOp::DECLARE_FUNCTION;
-        }
-        if (str == "DEFINE_ENUM") {
-            return AbstractOp::DEFINE_ENUM;
-        }
-        if (str == "END_ENUM") {
-            return AbstractOp::END_ENUM;
-        }
-        if (str == "DECLARE_ENUM") {
-            return AbstractOp::DECLARE_ENUM;
-        }
-        if (str == "DEFINE_ENUM_MEMBER") {
-            return AbstractOp::DEFINE_ENUM_MEMBER;
-        }
-        if (str == "DEFINE_UNION") {
-            return AbstractOp::DEFINE_UNION;
-        }
-        if (str == "END_UNION") {
-            return AbstractOp::END_UNION;
-        }
-        if (str == "DECLARE_UNION") {
-            return AbstractOp::DECLARE_UNION;
-        }
-        if (str == "DEFINE_UNION_MEMBER") {
-            return AbstractOp::DEFINE_UNION_MEMBER;
-        }
-        if (str == "END_UNION_MEMBER") {
-            return AbstractOp::END_UNION_MEMBER;
-        }
-        if (str == "DECLARE_UNION_MEMBER") {
-            return AbstractOp::DECLARE_UNION_MEMBER;
-        }
-        if (str == "DEFINE_STATE") {
-            return AbstractOp::DEFINE_STATE;
-        }
-        if (str == "END_STATE") {
-            return AbstractOp::END_STATE;
-        }
-        if (str == "DECLARE_STATE") {
-            return AbstractOp::DECLARE_STATE;
-        }
-        if (str == "DEFINE_BIT_FIELD") {
-            return AbstractOp::DEFINE_BIT_FIELD;
-        }
-        if (str == "END_BIT_FIELD") {
-            return AbstractOp::END_BIT_FIELD;
-        }
-        if (str == "DECLARE_BIT_FIELD") {
-            return AbstractOp::DECLARE_BIT_FIELD;
-        }
-        if (str == "BEGIN_ENCODE_PACKED_OPERATION") {
-            return AbstractOp::BEGIN_ENCODE_PACKED_OPERATION;
-        }
-        if (str == "END_ENCODE_PACKED_OPERATION") {
-            return AbstractOp::END_ENCODE_PACKED_OPERATION;
-        }
-        if (str == "BEGIN_DECODE_PACKED_OPERATION") {
-            return AbstractOp::BEGIN_DECODE_PACKED_OPERATION;
-        }
-        if (str == "END_DECODE_PACKED_OPERATION") {
-            return AbstractOp::END_DECODE_PACKED_OPERATION;
-        }
-        if (str == "DEFINE_ENCODER") {
-            return AbstractOp::DEFINE_ENCODER;
-        }
-        if (str == "DEFINE_DECODER") {
-            return AbstractOp::DEFINE_DECODER;
-        }
-        if (str == "ENCODE_INT") {
-            return AbstractOp::ENCODE_INT;
-        }
-        if (str == "DECODE_INT") {
-            return AbstractOp::DECODE_INT;
-        }
-        if (str == "ENCODE_INT_VECTOR") {
-            return AbstractOp::ENCODE_INT_VECTOR;
-        }
-        if (str == "ENCODE_INT_VECTOR_FIXED") {
-            return AbstractOp::ENCODE_INT_VECTOR_FIXED;
-        }
-        if (str == "DECODE_INT_VECTOR") {
-            return AbstractOp::DECODE_INT_VECTOR;
-        }
-        if (str == "DECODE_INT_VECTOR_UNTIL_EOF") {
-            return AbstractOp::DECODE_INT_VECTOR_UNTIL_EOF;
-        }
-        if (str == "DECODE_INT_VECTOR_FIXED") {
-            return AbstractOp::DECODE_INT_VECTOR_FIXED;
-        }
-        if (str == "PEEK_INT_VECTOR") {
-            return AbstractOp::PEEK_INT_VECTOR;
-        }
-        if (str == "BACKWARD_INPUT") {
-            return AbstractOp::BACKWARD_INPUT;
-        }
-        if (str == "BACKWARD_OUTPUT") {
-            return AbstractOp::BACKWARD_OUTPUT;
-        }
-        if (str == "INPUT_BYTE_OFFSET") {
-            return AbstractOp::INPUT_BYTE_OFFSET;
-        }
-        if (str == "OUTPUT_BYTE_OFFSET") {
-            return AbstractOp::OUTPUT_BYTE_OFFSET;
-        }
-        if (str == "INPUT_BIT_OFFSET") {
-            return AbstractOp::INPUT_BIT_OFFSET;
-        }
-        if (str == "OUTPUT_BIT_OFFSET") {
-            return AbstractOp::OUTPUT_BIT_OFFSET;
-        }
-        if (str == "REMAIN_BYTES") {
-            return AbstractOp::REMAIN_BYTES;
-        }
-        if (str == "CAN_READ") {
-            return AbstractOp::CAN_READ;
-        }
-        if (str == "IS_LITTLE_ENDIAN") {
-            return AbstractOp::IS_LITTLE_ENDIAN;
-        }
-        if (str == "CALL_ENCODE") {
-            return AbstractOp::CALL_ENCODE;
-        }
-        if (str == "CALL_DECODE") {
-            return AbstractOp::CALL_DECODE;
-        }
-        if (str == "CAST") {
-            return AbstractOp::CAST;
-        }
-        if (str == "CALL_CAST") {
-            return AbstractOp::CALL_CAST;
-        }
-        if (str == "ADDRESS_OF") {
-            return AbstractOp::ADDRESS_OF;
-        }
-        if (str == "OPTIONAL_OF") {
-            return AbstractOp::OPTIONAL_OF;
-        }
-        if (str == "EMPTY_PTR") {
-            return AbstractOp::EMPTY_PTR;
-        }
-        if (str == "EMPTY_OPTIONAL") {
-            return AbstractOp::EMPTY_OPTIONAL;
-        }
-        if (str == "LOOP_INFINITE") {
-            return AbstractOp::LOOP_INFINITE;
-        }
-        if (str == "LOOP_CONDITION") {
-            return AbstractOp::LOOP_CONDITION;
-        }
-        if (str == "CONTINUE") {
-            return AbstractOp::CONTINUE;
-        }
-        if (str == "BREAK") {
-            return AbstractOp::BREAK;
-        }
-        if (str == "END_LOOP") {
-            return AbstractOp::END_LOOP;
-        }
-        if (str == "IF") {
-            return AbstractOp::IF;
-        }
-        if (str == "ELIF") {
-            return AbstractOp::ELIF;
-        }
-        if (str == "ELSE") {
-            return AbstractOp::ELSE;
-        }
-        if (str == "END_IF") {
-            return AbstractOp::END_IF;
-        }
-        if (str == "MATCH") {
-            return AbstractOp::MATCH;
-        }
-        if (str == "EXHAUSTIVE_MATCH") {
-            return AbstractOp::EXHAUSTIVE_MATCH;
-        }
-        if (str == "CASE") {
-            return AbstractOp::CASE;
-        }
-        if (str == "END_CASE") {
-            return AbstractOp::END_CASE;
-        }
-        if (str == "DEFAULT_CASE") {
-            return AbstractOp::DEFAULT_CASE;
-        }
-        if (str == "END_MATCH") {
-            return AbstractOp::END_MATCH;
-        }
-        if (str == "DEFINE_VARIABLE") {
-            return AbstractOp::DEFINE_VARIABLE;
-        }
-        if (str == "DEFINE_VARIABLE_REF") {
-            return AbstractOp::DEFINE_VARIABLE_REF;
-        }
-        if (str == "DEFINE_CONSTANT") {
-            return AbstractOp::DEFINE_CONSTANT;
-        }
-        if (str == "DECLARE_VARIABLE") {
-            return AbstractOp::DECLARE_VARIABLE;
-        }
-        if (str == "BINARY") {
-            return AbstractOp::BINARY;
-        }
-        if (str == "NOT_PREV_THEN") {
-            return AbstractOp::NOT_PREV_THEN;
-        }
-        if (str == "UNARY") {
-            return AbstractOp::UNARY;
-        }
-        if (str == "ASSIGN") {
-            return AbstractOp::ASSIGN;
-        }
-        if (str == "PROPERTY_ASSIGN") {
-            return AbstractOp::PROPERTY_ASSIGN;
-        }
-        if (str == "ASSERT") {
-            return AbstractOp::ASSERT;
-        }
-        if (str == "LENGTH_CHECK") {
-            return AbstractOp::LENGTH_CHECK;
-        }
-        if (str == "EXPLICIT_ERROR") {
-            return AbstractOp::EXPLICIT_ERROR;
-        }
-        if (str == "ACCESS") {
-            return AbstractOp::ACCESS;
-        }
-        if (str == "INDEX") {
-            return AbstractOp::INDEX;
-        }
-        if (str == "APPEND") {
-            return AbstractOp::APPEND;
-        }
-        if (str == "INC") {
-            return AbstractOp::INC;
+        if (str == "ASSIGNMENT") {
+            return AbstractOp::ASSIGNMENT;
         }
         if (str == "CALL") {
             return AbstractOp::CALL;
         }
-        if (str == "RET") {
-            return AbstractOp::RET;
+        if (str == "RETURN") {
+            return AbstractOp::RETURN;
         }
-        if (str == "RET_SUCCESS") {
-            return AbstractOp::RET_SUCCESS;
-        }
-        if (str == "RET_PROPERTY_SETTER_OK") {
-            return AbstractOp::RET_PROPERTY_SETTER_OK;
-        }
-        if (str == "RET_PROPERTY_SETTER_FAIL") {
-            return AbstractOp::RET_PROPERTY_SETTER_FAIL;
-        }
-        if (str == "IMMEDIATE_TRUE") {
-            return AbstractOp::IMMEDIATE_TRUE;
-        }
-        if (str == "IMMEDIATE_FALSE") {
-            return AbstractOp::IMMEDIATE_FALSE;
-        }
-        if (str == "IMMEDIATE_INT") {
-            return AbstractOp::IMMEDIATE_INT;
-        }
-        if (str == "IMMEDIATE_INT64") {
-            return AbstractOp::IMMEDIATE_INT64;
-        }
-        if (str == "IMMEDIATE_CHAR") {
-            return AbstractOp::IMMEDIATE_CHAR;
-        }
-        if (str == "IMMEDIATE_STRING") {
-            return AbstractOp::IMMEDIATE_STRING;
-        }
-        if (str == "IMMEDIATE_TYPE") {
-            return AbstractOp::IMMEDIATE_TYPE;
+        if (str == "ASSERT") {
+            return AbstractOp::ASSERT;
         }
         if (str == "NEW_OBJECT") {
             return AbstractOp::NEW_OBJECT;
         }
-        if (str == "INIT_RECURSIVE_STRUCT") {
-            return AbstractOp::INIT_RECURSIVE_STRUCT;
+        if (str == "INDEX_ACCESS") {
+            return AbstractOp::INDEX_ACCESS;
         }
-        if (str == "CHECK_RECURSIVE_STRUCT") {
-            return AbstractOp::CHECK_RECURSIVE_STRUCT;
+        if (str == "MEMBER_ACCESS") {
+            return AbstractOp::MEMBER_ACCESS;
         }
-        if (str == "SWITCH_UNION") {
-            return AbstractOp::SWITCH_UNION;
+        if (str == "TYPE_CAST") {
+            return AbstractOp::TYPE_CAST;
         }
-        if (str == "CHECK_UNION") {
-            return AbstractOp::CHECK_UNION;
+        if (str == "IF_STATEMENT") {
+            return AbstractOp::IF_STATEMENT;
         }
-        if (str == "ENCODER_PARAMETER") {
-            return AbstractOp::ENCODER_PARAMETER;
+        if (str == "LOOP_STATEMENT") {
+            return AbstractOp::LOOP_STATEMENT;
         }
-        if (str == "DECODER_PARAMETER") {
-            return AbstractOp::DECODER_PARAMETER;
+        if (str == "MATCH_STATEMENT") {
+            return AbstractOp::MATCH_STATEMENT;
         }
-        if (str == "STATE_VARIABLE_PARAMETER") {
-            return AbstractOp::STATE_VARIABLE_PARAMETER;
+        if (str == "BREAK") {
+            return AbstractOp::BREAK;
         }
-        if (str == "PROPERTY_INPUT_PARAMETER") {
-            return AbstractOp::PROPERTY_INPUT_PARAMETER;
+        if (str == "CONTINUE") {
+            return AbstractOp::CONTINUE;
         }
-        if (str == "EVAL_EXPR") {
-            return AbstractOp::EVAL_EXPR;
+        if (str == "FUNCTION_DECL") {
+            return AbstractOp::FUNCTION_DECL;
         }
-        if (str == "ARRAY_SIZE") {
-            return AbstractOp::ARRAY_SIZE;
+        if (str == "VARIABLE_DECL") {
+            return AbstractOp::VARIABLE_DECL;
         }
-        if (str == "RESERVE_SIZE") {
-            return AbstractOp::RESERVE_SIZE;
+        if (str == "FIELD_DECL") {
+            return AbstractOp::FIELD_DECL;
         }
-        if (str == "BEGIN_ENCODE_SUB_RANGE") {
-            return AbstractOp::BEGIN_ENCODE_SUB_RANGE;
+        if (str == "ENUM_DECL") {
+            return AbstractOp::ENUM_DECL;
         }
-        if (str == "END_ENCODE_SUB_RANGE") {
-            return AbstractOp::END_ENCODE_SUB_RANGE;
+        if (str == "ENUM_MEMBER_DECL") {
+            return AbstractOp::ENUM_MEMBER_DECL;
         }
-        if (str == "BEGIN_DECODE_SUB_RANGE") {
-            return AbstractOp::BEGIN_DECODE_SUB_RANGE;
+        if (str == "STRUCT_DECL") {
+            return AbstractOp::STRUCT_DECL;
         }
-        if (str == "END_DECODE_SUB_RANGE") {
-            return AbstractOp::END_DECODE_SUB_RANGE;
+        if (str == "UNION_DECL") {
+            return AbstractOp::UNION_DECL;
         }
-        if (str == "SEEK_ENCODER") {
-            return AbstractOp::SEEK_ENCODER;
+        if (str == "PROGRAM_DECL") {
+            return AbstractOp::PROGRAM_DECL;
         }
-        if (str == "SEEK_DECODER") {
-            return AbstractOp::SEEK_DECODER;
+        if (str == "STATE_DECL") {
+            return AbstractOp::STATE_DECL;
         }
-        if (str == "FIELD_AVAILABLE") {
-            return AbstractOp::FIELD_AVAILABLE;
+        if (str == "BIT_FIELD_DECL") {
+            return AbstractOp::BIT_FIELD_DECL;
         }
-        if (str == "PHI") {
-            return AbstractOp::PHI;
+        if (str == "PROPERTY_DECL") {
+            return AbstractOp::PROPERTY_DECL;
         }
-        if (str == "PROPERTY_FUNCTION") {
-            return AbstractOp::PROPERTY_FUNCTION;
+        if (str == "READ_DATA") {
+            return AbstractOp::READ_DATA;
         }
-        if (str == "DEFINE_FALLBACK") {
-            return AbstractOp::DEFINE_FALLBACK;
+        if (str == "WRITE_DATA") {
+            return AbstractOp::WRITE_DATA;
         }
-        if (str == "END_FALLBACK") {
-            return AbstractOp::END_FALLBACK;
+        if (str == "SEEK_STREAM") {
+            return AbstractOp::SEEK_STREAM;
         }
-        if (str == "BEGIN_COND_BLOCK") {
-            return AbstractOp::BEGIN_COND_BLOCK;
+        if (str == "GET_STREAM_OFFSET") {
+            return AbstractOp::GET_STREAM_OFFSET;
         }
-        if (str == "END_COND_BLOCK") {
-            return AbstractOp::END_COND_BLOCK;
+        if (str == "GET_REMAINING_BYTES") {
+            return AbstractOp::GET_REMAINING_BYTES;
+        }
+        if (str == "CAN_READ_STREAM") {
+            return AbstractOp::CAN_READ_STREAM;
+        }
+        if (str == "METADATA") {
+            return AbstractOp::METADATA;
+        }
+        if (str == "IMPORT_MODULE") {
+            return AbstractOp::IMPORT_MODULE;
+        }
+        if (str == "PHI_NODE") {
+            return AbstractOp::PHI_NODE;
+        }
+        if (str == "ERROR_REPORT") {
+            return AbstractOp::ERROR_REPORT;
         }
         return std::nullopt;
     }
-    enum class SubRangeType : std::uint8_t {
-        byte_len = 0,
-        replacement = 1,
+    enum class ExpressionOp : std::uint8_t {
+        LITERAL_INT = 0,
+        LITERAL_BOOL = 1,
+        LITERAL_STRING = 2,
+        LITERAL_TYPE = 3,
+        IDENTIFIER_REF = 4,
+        BINARY_OP = 5,
+        UNARY_OP = 6,
+        CALL = 7,
+        INDEX_ACCESS = 8,
+        MEMBER_ACCESS = 9,
+        TYPE_CAST = 10,
     };
-    constexpr const char* to_string(SubRangeType e) {
+    constexpr const char* to_string(ExpressionOp e) {
         switch(e) {
-            case SubRangeType::byte_len: return "byte_len";
-            case SubRangeType::replacement: return "replacement";
+            case ExpressionOp::LITERAL_INT: return "LITERAL_INT";
+            case ExpressionOp::LITERAL_BOOL: return "LITERAL_BOOL";
+            case ExpressionOp::LITERAL_STRING: return "LITERAL_STRING";
+            case ExpressionOp::LITERAL_TYPE: return "LITERAL_TYPE";
+            case ExpressionOp::IDENTIFIER_REF: return "IDENTIFIER_REF";
+            case ExpressionOp::BINARY_OP: return "BINARY_OP";
+            case ExpressionOp::UNARY_OP: return "UNARY_OP";
+            case ExpressionOp::CALL: return "CALL";
+            case ExpressionOp::INDEX_ACCESS: return "INDEX_ACCESS";
+            case ExpressionOp::MEMBER_ACCESS: return "MEMBER_ACCESS";
+            case ExpressionOp::TYPE_CAST: return "TYPE_CAST";
         }
         return "";
     }
     
-    constexpr std::optional<SubRangeType> SubRangeType_from_string(std::string_view str) {
+    constexpr std::optional<ExpressionOp> ExpressionOp_from_string(std::string_view str) {
         if (str.empty()) {
             return std::nullopt;
         }
-        if (str == "byte_len") {
-            return SubRangeType::byte_len;
+        if (str == "LITERAL_INT") {
+            return ExpressionOp::LITERAL_INT;
         }
-        if (str == "replacement") {
-            return SubRangeType::replacement;
+        if (str == "LITERAL_BOOL") {
+            return ExpressionOp::LITERAL_BOOL;
+        }
+        if (str == "LITERAL_STRING") {
+            return ExpressionOp::LITERAL_STRING;
+        }
+        if (str == "LITERAL_TYPE") {
+            return ExpressionOp::LITERAL_TYPE;
+        }
+        if (str == "IDENTIFIER_REF") {
+            return ExpressionOp::IDENTIFIER_REF;
+        }
+        if (str == "BINARY_OP") {
+            return ExpressionOp::BINARY_OP;
+        }
+        if (str == "UNARY_OP") {
+            return ExpressionOp::UNARY_OP;
+        }
+        if (str == "CALL") {
+            return ExpressionOp::CALL;
+        }
+        if (str == "INDEX_ACCESS") {
+            return ExpressionOp::INDEX_ACCESS;
+        }
+        if (str == "MEMBER_ACCESS") {
+            return ExpressionOp::MEMBER_ACCESS;
+        }
+        if (str == "TYPE_CAST") {
+            return ExpressionOp::TYPE_CAST;
+        }
+        return std::nullopt;
+    }
+    enum class LoopType : std::uint8_t {
+        INFINITE = 0,
+        WHILE = 1,
+        FOR_EACH = 2,
+    };
+    constexpr const char* to_string(LoopType e) {
+        switch(e) {
+            case LoopType::INFINITE: return "INFINITE";
+            case LoopType::WHILE: return "WHILE";
+            case LoopType::FOR_EACH: return "FOR_EACH";
+        }
+        return "";
+    }
+    
+    constexpr std::optional<LoopType> LoopType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "INFINITE") {
+            return LoopType::INFINITE;
+        }
+        if (str == "WHILE") {
+            return LoopType::WHILE;
+        }
+        if (str == "FOR_EACH") {
+            return LoopType::FOR_EACH;
         }
         return std::nullopt;
     }
@@ -1083,13 +524,11 @@ namespace rebgn {
         LARGE_INT_TO_SMALL_INT = 9,
         SIGNED_TO_UNSIGNED = 10,
         UNSIGNED_TO_SIGNED = 11,
-        ONE_BIT_TO_INT = 12,
-        INT_TO_ONE_BIT = 13,
-        BOOL_TO_INT = 14,
-        INT_TO_BOOL = 15,
-        STRUCT_TO_RECURSIVE_STRUCT = 16,
-        RECURSIVE_STRUCT_TO_STRUCT = 17,
-        OTHER = 18,
+        BOOL_TO_INT = 12,
+        INT_TO_BOOL = 13,
+        STRUCT_TO_RECURSIVE_STRUCT = 14,
+        RECURSIVE_STRUCT_TO_STRUCT = 15,
+        OTHER = 16,
     };
     constexpr const char* to_string(CastType e) {
         switch(e) {
@@ -1105,8 +544,6 @@ namespace rebgn {
             case CastType::LARGE_INT_TO_SMALL_INT: return "LARGE_INT_TO_SMALL_INT";
             case CastType::SIGNED_TO_UNSIGNED: return "SIGNED_TO_UNSIGNED";
             case CastType::UNSIGNED_TO_SIGNED: return "UNSIGNED_TO_SIGNED";
-            case CastType::ONE_BIT_TO_INT: return "ONE_BIT_TO_INT";
-            case CastType::INT_TO_ONE_BIT: return "INT_TO_ONE_BIT";
             case CastType::BOOL_TO_INT: return "BOOL_TO_INT";
             case CastType::INT_TO_BOOL: return "INT_TO_BOOL";
             case CastType::STRUCT_TO_RECURSIVE_STRUCT: return "STRUCT_TO_RECURSIVE_STRUCT";
@@ -1156,12 +593,6 @@ namespace rebgn {
         if (str == "UNSIGNED_TO_SIGNED") {
             return CastType::UNSIGNED_TO_SIGNED;
         }
-        if (str == "ONE_BIT_TO_INT") {
-            return CastType::ONE_BIT_TO_INT;
-        }
-        if (str == "INT_TO_ONE_BIT") {
-            return CastType::INT_TO_ONE_BIT;
-        }
         if (str == "BOOL_TO_INT") {
             return CastType::BOOL_TO_INT;
         }
@@ -1176,98 +607,6 @@ namespace rebgn {
         }
         if (str == "OTHER") {
             return CastType::OTHER;
-        }
-        return std::nullopt;
-    }
-    struct BMContext {
-        Endian global_endian{};
-        BitOrder global_bit_order{};
-        bool has_dynamic_endian = false;
-        bool has_dynamic_bit_order = false;
-        bool inner_bit_operations = false;
-        std::uint64_t bit_offset = 0;
-    };
-    enum class StorageType : std::uint8_t {
-        INT = 0,
-        UINT = 1,
-        FLOAT = 2,
-        STRUCT_REF = 3,
-        RECURSIVE_STRUCT_REF = 4,
-        BOOL = 5,
-        ENUM = 6,
-        ARRAY = 7,
-        VECTOR = 8,
-        VARIANT = 9,
-        CODER_RETURN = 10,
-        PROPERTY_SETTER_RETURN = 11,
-        OPTIONAL = 12,
-        PTR = 13,
-    };
-    constexpr const char* to_string(StorageType e) {
-        switch(e) {
-            case StorageType::INT: return "INT";
-            case StorageType::UINT: return "UINT";
-            case StorageType::FLOAT: return "FLOAT";
-            case StorageType::STRUCT_REF: return "STRUCT_REF";
-            case StorageType::RECURSIVE_STRUCT_REF: return "RECURSIVE_STRUCT_REF";
-            case StorageType::BOOL: return "BOOL";
-            case StorageType::ENUM: return "ENUM";
-            case StorageType::ARRAY: return "ARRAY";
-            case StorageType::VECTOR: return "VECTOR";
-            case StorageType::VARIANT: return "VARIANT";
-            case StorageType::CODER_RETURN: return "CODER_RETURN";
-            case StorageType::PROPERTY_SETTER_RETURN: return "PROPERTY_SETTER_RETURN";
-            case StorageType::OPTIONAL: return "OPTIONAL";
-            case StorageType::PTR: return "PTR";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<StorageType> StorageType_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "INT") {
-            return StorageType::INT;
-        }
-        if (str == "UINT") {
-            return StorageType::UINT;
-        }
-        if (str == "FLOAT") {
-            return StorageType::FLOAT;
-        }
-        if (str == "STRUCT_REF") {
-            return StorageType::STRUCT_REF;
-        }
-        if (str == "RECURSIVE_STRUCT_REF") {
-            return StorageType::RECURSIVE_STRUCT_REF;
-        }
-        if (str == "BOOL") {
-            return StorageType::BOOL;
-        }
-        if (str == "ENUM") {
-            return StorageType::ENUM;
-        }
-        if (str == "ARRAY") {
-            return StorageType::ARRAY;
-        }
-        if (str == "VECTOR") {
-            return StorageType::VECTOR;
-        }
-        if (str == "VARIANT") {
-            return StorageType::VARIANT;
-        }
-        if (str == "CODER_RETURN") {
-            return StorageType::CODER_RETURN;
-        }
-        if (str == "PROPERTY_SETTER_RETURN") {
-            return StorageType::PROPERTY_SETTER_RETURN;
-        }
-        if (str == "OPTIONAL") {
-            return StorageType::OPTIONAL;
-        }
-        if (str == "PTR") {
-            return StorageType::PTR;
         }
         return std::nullopt;
     }
@@ -1300,174 +639,32 @@ namespace rebgn {
         }
         return std::nullopt;
     }
-    enum class PackedOpType : std::uint8_t {
-        FIXED = 0,
-        VARIABLE = 1,
+    enum class TypeKind : std::uint8_t {
+        VOID = 0,
     };
-    constexpr const char* to_string(PackedOpType e) {
+    constexpr const char* to_string(TypeKind e) {
         switch(e) {
-            case PackedOpType::FIXED: return "FIXED";
-            case PackedOpType::VARIABLE: return "VARIABLE";
+            case TypeKind::VOID: return "VOID";
         }
         return "";
     }
     
-    constexpr std::optional<PackedOpType> PackedOpType_from_string(std::string_view str) {
+    constexpr std::optional<TypeKind> TypeKind_from_string(std::string_view str) {
         if (str.empty()) {
             return std::nullopt;
         }
-        if (str == "FIXED") {
-            return PackedOpType::FIXED;
-        }
-        if (str == "VARIABLE") {
-            return PackedOpType::VARIABLE;
-        }
-        return std::nullopt;
-    }
-    enum class UnionCheckAt : std::uint8_t {
-        PROPERTY_GETTER_PTR = 0,
-        PROPERTY_GETTER_OPTIONAL = 1,
-        ENCODER = 2,
-    };
-    constexpr const char* to_string(UnionCheckAt e) {
-        switch(e) {
-            case UnionCheckAt::PROPERTY_GETTER_PTR: return "PROPERTY_GETTER_PTR";
-            case UnionCheckAt::PROPERTY_GETTER_OPTIONAL: return "PROPERTY_GETTER_OPTIONAL";
-            case UnionCheckAt::ENCODER: return "ENCODER";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<UnionCheckAt> UnionCheckAt_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "PROPERTY_GETTER_PTR") {
-            return UnionCheckAt::PROPERTY_GETTER_PTR;
-        }
-        if (str == "PROPERTY_GETTER_OPTIONAL") {
-            return UnionCheckAt::PROPERTY_GETTER_OPTIONAL;
-        }
-        if (str == "ENCODER") {
-            return UnionCheckAt::ENCODER;
-        }
-        return std::nullopt;
-    }
-    enum class FunctionType : std::uint8_t {
-        FREE = 0,
-        MEMBER = 1,
-        CAST = 2,
-        ENCODE = 3,
-        DECODE = 4,
-        BIT_GETTER = 5,
-        BIT_SETTER = 6,
-        UNION_GETTER = 7,
-        UNION_SETTER = 8,
-        VECTOR_SETTER = 9,
-    };
-    constexpr const char* to_string(FunctionType e) {
-        switch(e) {
-            case FunctionType::FREE: return "FREE";
-            case FunctionType::MEMBER: return "MEMBER";
-            case FunctionType::CAST: return "CAST";
-            case FunctionType::ENCODE: return "ENCODE";
-            case FunctionType::DECODE: return "DECODE";
-            case FunctionType::BIT_GETTER: return "BIT_GETTER";
-            case FunctionType::BIT_SETTER: return "BIT_SETTER";
-            case FunctionType::UNION_GETTER: return "UNION_GETTER";
-            case FunctionType::UNION_SETTER: return "UNION_SETTER";
-            case FunctionType::VECTOR_SETTER: return "VECTOR_SETTER";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<FunctionType> FunctionType_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "FREE") {
-            return FunctionType::FREE;
-        }
-        if (str == "MEMBER") {
-            return FunctionType::MEMBER;
-        }
-        if (str == "CAST") {
-            return FunctionType::CAST;
-        }
-        if (str == "ENCODE") {
-            return FunctionType::ENCODE;
-        }
-        if (str == "DECODE") {
-            return FunctionType::DECODE;
-        }
-        if (str == "BIT_GETTER") {
-            return FunctionType::BIT_GETTER;
-        }
-        if (str == "BIT_SETTER") {
-            return FunctionType::BIT_SETTER;
-        }
-        if (str == "UNION_GETTER") {
-            return FunctionType::UNION_GETTER;
-        }
-        if (str == "UNION_SETTER") {
-            return FunctionType::UNION_SETTER;
-        }
-        if (str == "VECTOR_SETTER") {
-            return FunctionType::VECTOR_SETTER;
-        }
-        return std::nullopt;
-    }
-    enum class ReserveType : std::uint8_t {
-        STATIC = 0,
-        DYNAMIC = 1,
-    };
-    constexpr const char* to_string(ReserveType e) {
-        switch(e) {
-            case ReserveType::STATIC: return "STATIC";
-            case ReserveType::DYNAMIC: return "DYNAMIC";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<ReserveType> ReserveType_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "STATIC") {
-            return ReserveType::STATIC;
-        }
-        if (str == "DYNAMIC") {
-            return ReserveType::DYNAMIC;
+        if (str == "VOID") {
+            return TypeKind::VOID;
         }
         return std::nullopt;
     }
     struct Varint;
-    struct DecodeParamFlags;
-    struct EncodeParamFlags;
-    struct Range;
+    struct Type;
     struct String;
-    struct IdentIndex;
-    struct Storage;
-    struct Metadata;
-    struct Param;
-    struct PhiParam;
-    struct EndianExpr;
-    struct StorageRef;
-    struct RangePacked;
-    struct Loc;
-    struct StringRef;
-    struct Storages;
-    struct PhiParams;
-    struct StorageRefMap;
-    struct StorageRefMaps;
-    struct StringRefs;
-    struct IdentIndexs;
-    struct Ranges;
-    struct IdentRange;
-    struct IdentRanges;
-    struct DebugInfo;
-    struct Code;
-    struct BinaryModule;
+    struct IdentifierRef;
+    struct TypeRef;
+    struct FieldDecl;
+    struct UnionMemberDecl;
     struct BM_API Varint{
         ::futils::binary::flags_t<std::uint64_t,2,62> flags_1_;
         bits_flag_alias_method(flags_1_,0,prefix);
@@ -1476,35 +673,11 @@ namespace rebgn {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 0;
     };
-    struct BM_API DecodeParamFlags{
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 1, 1, 1, 2> flags_2_;
-        bits_flag_alias_method(flags_2_,0,has_seek);
-        bits_flag_alias_method(flags_2_,1,has_peek);
-        bits_flag_alias_method(flags_2_,2,has_eof);
-        bits_flag_alias_method(flags_2_,3,has_remain_bytes);
-        bits_flag_alias_method(flags_2_,4,has_sub_range);
-        bits_flag_alias_method(flags_2_,5,has_offset);
-        bits_flag_alias_method(flags_2_,6,reserved);
+    struct BM_API Type{
+        TypeKind kind{};
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
-    };
-    struct BM_API EncodeParamFlags{
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 5> flags_3_;
-        bits_flag_alias_method(flags_3_,0,has_seek);
-        bits_flag_alias_method(flags_3_,1,has_sub_range);
-        bits_flag_alias_method(flags_3_,2,has_offset);
-        bits_flag_alias_method(flags_3_,3,reserved);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-    };
-    struct BM_API Range{
-        std::uint64_t start = 0;
-        std::uint64_t end = 0;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 16;
     };
     struct BM_API String{
         Varint length;
@@ -1512,788 +685,34 @@ namespace rebgn {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct BM_API IdentIndex{
-        Varint ident;
-        Varint index;
+    struct BM_API IdentifierRef{
+        Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct BM_API Storage{
-        StorageType type{};
-        struct BM_API union_struct_6{
-            Varint size;
-        };
-        struct BM_API union_struct_7{
-            Varint size;
-        };
-        struct BM_API union_struct_8{
-            Varint size;
-        };
-        struct BM_API union_struct_9{
-            Varint size;
-            Varint ref;
-        };
-        struct BM_API union_struct_10{
-            Varint ref;
-        };
-        struct BM_API union_struct_11{
-            Varint ref;
-        };
-        struct BM_API union_struct_12{
-            Varint size;
-        };
-        struct BM_API union_struct_13{
-            Varint ref;
-            Varint size;
-        };
-        std::variant<std::monostate, union_struct_6, union_struct_7, union_struct_8, union_struct_9, union_struct_10, union_struct_11, union_struct_12, union_struct_13> union_variant_5;
-        std::optional<Varint> ref() const;
-        bool ref(Varint&& v);
-        bool ref(const Varint& v);
-        std::optional<Varint> size() const;
-        bool size(Varint&& v);
-        bool size(const Varint& v);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-    };
-    struct BM_API Metadata{
-        Varint name;
-        Varint len;
-        std::vector<Varint> refs;
+    struct BM_API TypeRef{
+        Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct BM_API Param{
-        Varint len;
-        std::vector<Varint> refs;
+    struct BM_API FieldDecl{
+        IdentifierRef name;
+        TypeRef field_type;
+        IdentifierRef parent_struct;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_2_;
+        bits_flag_alias_method(flags_2_,0,is_state_variable);
+        bits_flag_alias_method(flags_2_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct BM_API PhiParam{
-        Varint condition;
-        Varint assign;
+    struct BM_API UnionMemberDecl{
+        IdentifierRef name;
+        TypeRef field_type;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_3_;
+        bits_flag_alias_method(flags_3_,0,is_state_variable);
+        bits_flag_alias_method(flags_3_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API EndianExpr{
-        ::futils::binary::flags_t<std::uint8_t, 3, 1, 4> flags_14_;
-        bits_flag_alias_method_with_enum(flags_14_,0,endian,Endian);
-        bits_flag_alias_method(flags_14_,1,sign);
-        bits_flag_alias_method(flags_14_,2,reserved);
-        Varint dynamic_ref;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-    };
-    struct BM_API StorageRef{
-        Varint ref;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API RangePacked{
-        Varint start;
-        Varint end;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API Loc{
-        Varint ident;
-        Varint file_id;
-        Varint line;
-        Varint column;
-        Varint start;
-        Varint end;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API StringRef{
-        Varint code;
-        String string;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API Storages{
-        Varint length;
-        std::vector<Storage> storages;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API PhiParams{
-        Varint length;
-        std::vector<PhiParam> params;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API StorageRefMap{
-        Varint code;
-        Storages storage;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API StorageRefMaps{
-        Varint length;
-        std::vector<StorageRefMap> maps;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API StringRefs{
-        Varint refs_length;
-        std::vector<StringRef> refs;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API IdentIndexs{
-        Varint refs_length;
-        std::vector<IdentIndex> refs;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API Ranges{
-        Varint length;
-        std::vector<RangePacked> ranges;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API IdentRange{
-        Varint ident;
-        RangePacked range;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API IdentRanges{
-        Varint length;
-        std::vector<IdentRange> ranges;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API DebugInfo{
-        Varint len_files;
-        std::vector<String> files;
-        Varint len_locs;
-        std::vector<Loc> locs;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
-    struct BM_API Code{
-        AbstractOp op{};
-        struct BM_API union_struct_17{
-            Metadata metadata;
-        };
-        struct BM_API union_struct_18{
-            Varint ident;
-        };
-        struct BM_API union_struct_19{
-            Varint ident;
-            Varint ref;
-        };
-        struct BM_API union_struct_20{
-            Varint ident;
-            Varint int_value;
-        };
-        struct BM_API union_struct_21{
-            Varint ident;
-            Varint int_value;
-        };
-        struct BM_API union_struct_22{
-            Varint ident;
-            std::uint64_t int_value64 = 0;
-        };
-        struct BM_API union_struct_23{
-            Varint ident;
-        };
-        struct BM_API union_struct_24{
-            Varint ident;
-        };
-        struct BM_API union_struct_25{
-            Varint ident;
-        };
-        struct BM_API union_struct_26{
-            Varint ident;
-            StorageRef type;
-        };
-        struct BM_API union_struct_27{
-            Varint ident;
-        };
-        struct BM_API union_struct_28{
-            Varint ident;
-        };
-        struct BM_API union_struct_29{
-            Varint ident;
-            Varint belong;
-            StorageRef type;
-        };
-        struct BM_API union_struct_30{
-            Varint ident;
-            Varint belong;
-        };
-        struct BM_API union_struct_31{
-            Varint ident;
-            StorageRef type;
-        };
-        struct BM_API union_struct_32{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_33{
-            Varint ident;
-            Varint belong;
-            FunctionType func_type{};
-        };
-        struct BM_API union_struct_34{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_35{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_36{
-            Varint ident;
-            Varint belong;
-        };
-        struct BM_API union_struct_37{
-            Varint ident;
-            Varint ref;
-            StorageRef type;
-        };
-        struct BM_API union_struct_38{
-            Varint ident;
-            Varint ref;
-        };
-        struct BM_API union_struct_39{
-            Varint ident;
-            Varint ref;
-            StorageRef type;
-        };
-        struct BM_API union_struct_40{
-            Varint ref;
-        };
-        struct BM_API union_struct_41{
-            Varint ident;
-            Varint belong;
-            StorageRef type;
-        };
-        struct BM_API union_struct_42{
-            Varint ident;
-            Varint int_value;
-            Varint belong;
-        };
-        struct BM_API union_struct_43{
-            StorageRef type;
-        };
-        struct BM_API union_struct_44{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_45{
-            Varint ident;
-            BinaryOp bop{};
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_46{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_47{
-            Varint ident;
-            UnaryOp uop{};
-            Varint ref;
-        };
-        struct BM_API union_struct_48{
-            Varint ref;
-        };
-        struct BM_API union_struct_49{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_50{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_51{
-            Varint ident;
-            Varint ref;
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_52{
-            Varint ident;
-            Varint ref;
-            PhiParams phi_params;
-        };
-        struct BM_API union_struct_53{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_54{
-            Varint ident;
-            Varint ref;
-        };
-        struct BM_API union_struct_55{
-            Varint ident;
-            Varint ref;
-            StorageRef type;
-        };
-        struct BM_API union_struct_56{
-            Varint ident;
-        };
-        struct BM_API union_struct_57{
-            Varint ident;
-        };
-        struct BM_API union_struct_58{
-            Varint ref;
-        };
-        struct BM_API union_struct_59{
-            Varint ref;
-        };
-        struct BM_API union_struct_60{
-            Varint ident;
-            Varint ref;
-            Varint fallback;
-        };
-        struct BM_API union_struct_61{
-            Varint ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_62{
-            Varint left_ref;
-            Varint right_ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_63{
-            Varint left_ref;
-            Varint right_ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint array_length;
-            Varint fallback;
-        };
-        struct BM_API union_struct_64{
-            Varint left_ref;
-            Varint right_ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_65{
-            Varint left_ref;
-            Varint right_ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint array_length;
-            Varint fallback;
-        };
-        struct BM_API union_struct_66{
-            Varint ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_67{
-            Varint ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_68{
-            Varint left_ref;
-            Varint right_ref;
-            EndianExpr endian;
-            Varint bit_size;
-            Varint belong;
-            Varint fallback;
-        };
-        struct BM_API union_struct_69{
-            Varint ident;
-            Varint ref;
-            StorageRef type;
-            StorageRef from_type;
-            CastType cast_type{};
-        };
-        struct BM_API union_struct_70{
-            Varint ident;
-            StorageRef type;
-            Param param;
-        };
-        struct BM_API union_struct_71{
-            Varint left_ref;
-            Varint right_ref;
-            Varint bit_size_plus;
-        };
-        struct BM_API union_struct_72{
-            Varint left_ref;
-            Varint right_ref;
-            Varint bit_size_plus;
-        };
-        struct BM_API union_struct_73{
-            Varint ref;
-        };
-        struct BM_API union_struct_74{
-            Varint ref;
-        };
-        struct BM_API union_struct_75{
-            Varint ident;
-            StorageRef type;
-        };
-        struct BM_API union_struct_76{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_77{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_78{
-            Varint ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_79{
-            Varint left_ref;
-            Varint right_ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_80{
-            Varint ref;
-        };
-        struct BM_API union_struct_81{
-            Varint ref;
-        };
-        struct BM_API union_struct_82{
-            Varint ref;
-        };
-        struct BM_API union_struct_83{
-            Varint ref;
-        };
-        struct BM_API union_struct_84{
-            Varint ref;
-        };
-        struct BM_API union_struct_85{
-            Varint ref;
-        };
-        struct BM_API union_struct_86{
-            Varint ref;
-        };
-        struct BM_API union_struct_87{
-            Varint ref;
-        };
-        struct BM_API union_struct_88{
-            Varint ref;
-        };
-        struct BM_API union_struct_89{
-            Varint ref;
-        };
-        struct BM_API union_struct_90{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_91{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_92{
-            Varint ident;
-            StorageRef type;
-            Param param;
-            Varint belong;
-            MergeMode merge_mode{};
-        };
-        struct BM_API union_struct_93{
-            Varint ref;
-        };
-        struct BM_API union_struct_94{
-            Varint ref;
-        };
-        struct BM_API union_struct_95{
-            Varint ident;
-            Varint belong;
-            StorageRef type;
-        };
-        struct BM_API union_struct_96{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_97{
-            Varint ident;
-            Varint belong;
-            PackedOpType packed_op_type{};
-            EndianExpr endian;
-            Varint bit_size;
-            Varint fallback;
-        };
-        struct BM_API union_struct_98{
-            Varint fallback;
-        };
-        struct BM_API union_struct_99{
-            Varint ident;
-            Varint belong;
-            PackedOpType packed_op_type{};
-            EndianExpr endian;
-            Varint bit_size;
-            Varint fallback;
-        };
-        struct BM_API union_struct_100{
-            Varint fallback;
-        };
-        struct BM_API union_struct_101{
-            Varint ref;
-        };
-        struct BM_API union_struct_102{
-            Varint ref;
-            UnionCheckAt check_at{};
-        };
-        struct BM_API union_struct_103{
-            Varint belong;
-            Varint ref;
-        };
-        struct BM_API union_struct_104{
-            Varint belong;
-        };
-        struct BM_API union_struct_105{
-            Varint belong;
-        };
-        struct BM_API union_struct_106{
-            Varint belong;
-        };
-        struct BM_API union_struct_107{
-            Varint ref;
-        };
-        struct BM_API union_struct_108{
-            Varint ref;
-        };
-        struct BM_API union_struct_109{
-            Varint left_ref;
-            Varint right_ref;
-            EncodeParamFlags encode_flags;
-        };
-        struct BM_API union_struct_110{
-            Varint left_ref;
-            Varint right_ref;
-            DecodeParamFlags decode_flags;
-        };
-        struct BM_API union_struct_111{
-            Varint ident;
-            Varint left_ref;
-            Varint right_ref;
-            StorageRef type;
-        };
-        struct BM_API union_struct_112{
-            Varint ref;
-        };
-        struct BM_API union_struct_113{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_114{
-            Varint left_ref;
-            Varint right_ref;
-        };
-        struct BM_API union_struct_115{
-            Varint ref;
-        };
-        struct BM_API union_struct_116{
-            Param param;
-            Varint belong;
-        };
-        struct BM_API union_struct_117{
-            Varint ident;
-            Varint ref;
-            Param param;
-        };
-        struct BM_API union_struct_118{
-            Varint ident;
-        };
-        struct BM_API union_struct_119{
-            Varint ident;
-        };
-        struct BM_API union_struct_120{
-            Varint ident;
-        };
-        struct BM_API union_struct_121{
-            Varint ident;
-        };
-        struct BM_API union_struct_122{
-            Varint ident;
-            Varint ref;
-        };
-        struct BM_API union_struct_123{
-            Varint left_ref;
-            Varint right_ref;
-            ReserveType reserve_type{};
-        };
-        struct BM_API union_struct_124{
-            SubRangeType sub_range_type{};
-            Varint ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_125{
-            SubRangeType sub_range_type{};
-            Varint ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_126{
-            Varint ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_127{
-            Varint ref;
-            Varint belong;
-        };
-        struct BM_API union_struct_128{
-            Varint ident;
-            Varint belong;
-        };
-        struct BM_API union_struct_129{
-            Varint ident;
-            Varint ref;
-            Varint fallback;
-        };
-        struct BM_API union_struct_130{
-            Varint ident;
-        };
-        struct BM_API union_struct_131{
-            Varint ident;
-        };
-        struct BM_API union_struct_132{
-            Varint ident;
-            Varint ref;
-        };
-        std::variant<std::monostate, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97, union_struct_98, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112, union_struct_113, union_struct_114, union_struct_115, union_struct_116, union_struct_117, union_struct_118, union_struct_119, union_struct_120, union_struct_121, union_struct_122, union_struct_123, union_struct_124, union_struct_125, union_struct_126, union_struct_127, union_struct_128, union_struct_129, union_struct_130, union_struct_131, union_struct_132> union_variant_16;
-        std::optional<Varint> array_length() const;
-        bool array_length(Varint&& v);
-        bool array_length(const Varint& v);
-        std::optional<Varint> belong() const;
-        bool belong(Varint&& v);
-        bool belong(const Varint& v);
-        std::optional<Varint> bit_size() const;
-        bool bit_size(Varint&& v);
-        bool bit_size(const Varint& v);
-        std::optional<Varint> bit_size_plus() const;
-        bool bit_size_plus(Varint&& v);
-        bool bit_size_plus(const Varint& v);
-        std::optional<BinaryOp> bop() const;
-        bool bop(BinaryOp&& v);
-        bool bop(const BinaryOp& v);
-        std::optional<CastType> cast_type() const;
-        bool cast_type(CastType&& v);
-        bool cast_type(const CastType& v);
-        std::optional<UnionCheckAt> check_at() const;
-        bool check_at(UnionCheckAt&& v);
-        bool check_at(const UnionCheckAt& v);
-        std::optional<DecodeParamFlags> decode_flags() const;
-        bool decode_flags(DecodeParamFlags&& v);
-        bool decode_flags(const DecodeParamFlags& v);
-        std::optional<EncodeParamFlags> encode_flags() const;
-        bool encode_flags(EncodeParamFlags&& v);
-        bool encode_flags(const EncodeParamFlags& v);
-        std::optional<EndianExpr> endian() const;
-        bool endian(EndianExpr&& v);
-        bool endian(const EndianExpr& v);
-        std::optional<Varint> fallback() const;
-        bool fallback(Varint&& v);
-        bool fallback(const Varint& v);
-        std::optional<StorageRef> from_type() const;
-        bool from_type(StorageRef&& v);
-        bool from_type(const StorageRef& v);
-        std::optional<FunctionType> func_type() const;
-        bool func_type(FunctionType&& v);
-        bool func_type(const FunctionType& v);
-        std::optional<Varint> ident() const;
-        bool ident(Varint&& v);
-        bool ident(const Varint& v);
-        std::optional<Varint> int_value() const;
-        bool int_value(Varint&& v);
-        bool int_value(const Varint& v);
-        std::optional<std::uint64_t> int_value64() const;
-        bool int_value64(std::uint64_t&& v);
-        bool int_value64(const std::uint64_t& v);
-        std::optional<Varint> left_ref() const;
-        bool left_ref(Varint&& v);
-        bool left_ref(const Varint& v);
-        std::optional<MergeMode> merge_mode() const;
-        bool merge_mode(MergeMode&& v);
-        bool merge_mode(const MergeMode& v);
-        std::optional<Metadata> metadata() const;
-        bool metadata(Metadata&& v);
-        bool metadata(const Metadata& v);
-        std::optional<PackedOpType> packed_op_type() const;
-        bool packed_op_type(PackedOpType&& v);
-        bool packed_op_type(const PackedOpType& v);
-        std::optional<Param> param() const;
-        bool param(Param&& v);
-        bool param(const Param& v);
-        std::optional<PhiParams> phi_params() const;
-        bool phi_params(PhiParams&& v);
-        bool phi_params(const PhiParams& v);
-        std::optional<Varint> ref() const;
-        bool ref(Varint&& v);
-        bool ref(const Varint& v);
-        std::optional<ReserveType> reserve_type() const;
-        bool reserve_type(ReserveType&& v);
-        bool reserve_type(const ReserveType& v);
-        std::optional<Varint> right_ref() const;
-        bool right_ref(Varint&& v);
-        bool right_ref(const Varint& v);
-        std::optional<SubRangeType> sub_range_type() const;
-        bool sub_range_type(SubRangeType&& v);
-        bool sub_range_type(const SubRangeType& v);
-        std::optional<StorageRef> type() const;
-        bool type(StorageRef&& v);
-        bool type(const StorageRef& v);
-        std::optional<UnaryOp> uop() const;
-        bool uop(UnaryOp&& v);
-        bool uop(const UnaryOp& v);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-    };
-    struct BM_API BinaryModule{
-        //"RBGM" (4 bytes)
-        Varint max_id;
-        StringRefs metadata;
-        StringRefs strings;
-        StringRefs identifiers;
-        IdentIndexs ident_indexes;
-        StorageRefMaps types;
-        Ranges programs;
-        IdentRanges ident_ranges;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_133_;
-        bits_flag_alias_method(flags_133_,0,has_debug_info);
-        bits_flag_alias_method(flags_133_,1,reserved);
-        struct BM_API union_struct_136{
-            DebugInfo debug_info;
-        };
-        std::variant<std::monostate, union_struct_136> union_variant_135;
-        std::optional<DebugInfo> debug_info() const;
-        bool debug_info(DebugInfo&& v);
-        bool debug_info(const DebugInfo& v);
-        Varint code_length;
-        std::vector<Code> code;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 4;
     };
 } // namespace rebgn
 

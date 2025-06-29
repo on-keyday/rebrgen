@@ -35,7 +35,11 @@ The core philosophy is to create an IR that:
 The `src/ebm/extended_binary_module.bgn` reflects these principles:
 
 *   **Graph-Based Structure via Explicit References:**
-    *   Instead of a linear instruction stream, EBM models the program as a graph. `Expression` and `Statement` are now top-level, centralized tables (`expressions`, `statements`) referenced by explicit `ExpressionRef` and `StatementRef` types. This allows for:
+    *   Instead of a linear instruction stream, EBM models the program as a graph. `Expression` and `Statement` are now top-level, centralized tables (`expressions`, `statements`) referenced by explicit `ExpressionRef` and `StatementRef` types.
+    *   **Significant Update:** Declarations like `MatchStatement.branches`, `StructDecl.fields`, `UnionDecl.members`, `FunctionDecl.params`, and `EnumDecl.members` now utilize `Block` formats instead of direct vectors. This allows for more flexible and complex content within these declarations, accommodating not just simple lists of items but also sequences of statements.
+    *   **Enhanced Referencing:** `ExpressionBody.id` now references `StatementRef` (the definition of an identifier) instead of `IdentifierRef`. Similarly, `FieldDecl.parent_struct`, `UnionMemberDecl.parent_union`, `BitFieldDecl.parent_format`, `PropertyDecl.parent_format`, and `FunctionDecl.parent_format` explicitly use `StatementRef` to point to their parent definition statements, strengthening hierarchical relationships.
+    *   **New Helper Formats:** Introduction of `Block` (for lists of `StatementRef`s), `Expressions` (for lists of `ExpressionRef`s), `LoopFlowControl` (for `break`/`continue` context), and `ErrorReport` (for structured error messages).
+    *   These changes allow for:
         *   **Deduplication:** Common expressions/statements are stored once and referenced multiple times.
         *   **Clearer Relationships:** Explicit references make the IR's structure easy to navigate and understand.
         *   **Optimization Potential:** Facilitates graph-based analyses (e.g., data flow, control flow) and transformations.
@@ -54,24 +58,26 @@ The `src/ebm/extended_binary_module.bgn` reflects these principles:
 
 The `ebmgen` project is actively under development, focusing on the robust conversion of the `brgen` AST into the `ExtendedBinaryModule` (EBM).
 
-*   **EBM Definition Complete:** The `src/ebm/extended_binary_module.bgn` file is fully defined and syntactically correct according to the `brgen` DSL. The corresponding C++ bindings (`extended_binary_module.hpp` and `extended_binary_module.cpp`) have been successfully generated, providing the necessary data structures for `ebmgen` and `bm2*` tools to interact with the new IR.
+*   **EBM Definition Updated:** The `src/ebm/extended_binary_module.bgn` file has been significantly updated by manual intervention to incorporate `Block`s for various declarations and to use `StatementRef` for hierarchical relationships. The corresponding C++ bindings (`extended_binary_module.hpp` and `extended_binary_module.cpp`) have been successfully regenerated, providing the necessary data structures for `ebmgen` and `bm2*` tools to interact with the new IR.
 *   **`ebmgen` Project Setup:** The basic project structure for `ebmgen` (including `main.cpp`, `convert.hpp`, `convert.cpp`, `converter.hpp`, `converter.cpp`) is in place, with appropriate namespaces (`ebmgen` for compiler logic, `ebm` for the IR).
 *   **Core `Converter` Implementation:** The `Converter` class is being developed to traverse the `brgen` AST and populate the `ExtendedBinaryModule`'s tables.
+    *   **Caching Mechanism:** A `visited_nodes` map has been introduced to cache `StatementRef`s for already converted `ast::Node`s, preventing redundant processing and ensuring a correct graph-based IR.
+    *   **Refactored Statement Conversion:** The `convert_statement` method now acts as a caching layer, calling `convert_statement_impl` for the actual conversion logic.
     *   **Expression Conversion:** The converter currently supports the conversion of the following `brgen` AST expression types into `ebm::Expression` nodes:
         *   `IntLiteral` (e.g., `10`, `0xFF`)
         *   `BoolLiteral` (e.g., `true`, `false`)
         *   `StrLiteral` (e.g., `"hello"`)
         *   `TypeLiteral` (e.g., `u8`, `float32`)
-        *   `Ident` (identifiers/variables)
+        *   `Ident` (now correctly references its defining `StatementRef`)
         *   `Binary` operations (e.g., `a + b`, `x == y`)
         *   `Unary` operations (e.g., `-x`, `!b`)
         *   `Call` expressions (function calls)
         *   `Index` expressions (array/vector indexing, e.g., `arr[i]`)
         *   `MemberAccess` expressions (struct/object member access, e.g., `obj.field`)
         *   `Cast` expressions (type casting, where the `CastType` is inferred during conversion based on source and destination types).
-    *   **Internal Reference Management:** The `Converter` utilizes internal `std::unordered_map`s to efficiently manage and retrieve references (e.g., `IdentifierRef`, `StringRef`, `TypeRef`, `ExpressionRef`) to objects stored in the `ExtendedBinaryModule`'s centralized tables. This ensures data integrity and avoids duplication.
-    *   **Type Information in Expressions:** A key design decision in the EBM is that every `ebm::ExpressionBody` now explicitly carries its `ebm::TypeRef`. This type information is populated during the conversion process from the `brgen` AST's `expr_type` field, providing richer semantic context within the IR.
-    *   **Statement Conversion (Initial Phase):** The `convert_statement` method has been introduced, and initial support for `ast::Assert` statements is in place. The `Assert` statement's condition is converted to an `ebm::Expression`, and its message (if a string literal) is added to the `ebm.strings` table.
+    *   **Type Conversion:** The `convert_type` function now handles `ast::IntType`, `ast::BoolType`, `ast::FloatType`, `ast::IdentType`, `ast::ArrayType`, `ast::IntLiteralType`, `ast::StrLiteralType`, `ast::EnumType`, and `ast::StructType`.
+    *   **Statement Conversion:** The `convert_statement` method now supports `ast::Assert`, `ast::Return`, `ast::Break`, `ast::Continue`, `ast::If`, `ast::Loop`, `ast::Match`, `ast::Program`, `ast::Format` (as `StructDecl`), `ast::Enum`, `ast::Function`, `ast::Metadata`, and `ast::State`.
+    *   **Binary Serialization:** The `main.cpp` has been updated to correctly serialize the generated `ebm::ExtendedBinaryModule` to a binary output file.
 
 #### 6. Crucial Learnings and `brgen` DSL Nuances
 
@@ -83,11 +89,31 @@ Throughout this development, understanding the specific syntax and behavior of t
 *   **Enum Member Access:** Enum members are accessed using `EnumName.MEMBER_NAME` (e.g., `AbstractOp.LITERAL_INT`, `LoopType.WHILE`).
 *   **Implicit Type Information:** Unlike some languages where type casting is explicit in the AST, `brgen`'s AST does not always carry explicit `CastType` information for all conversions. `ebmgen` is responsible for inferring the appropriate `ebm::CastType` based on the source and destination types during the conversion process.
 *   **Bitwise Operations:** `brgen`'s AST uses `shl` and `shr` for bitwise left and right shifts, respectively, and `complement` for bitwise NOT. These are mapped to their corresponding `ebm::BinaryOp` and `ebm::UnaryOp` values during conversion.
+*   **`ast::Format` Body Contents:** It's now understood that `ast::Format` bodies can contain statements other than just `ast::Field` declarations (e.g., `assert` statements). The EBM's `StructDecl` has been updated to accommodate this by using a `Block` for its `fields`.
 
 #### 7. Next Steps
 
 The immediate next steps for `ebmgen` are:
-1.  **Complete Statement Conversion:** Implement the conversion logic for all remaining `brgen::ast::Stmt` types into `ebm::Statement` nodes.
-2.  **Implement IR Optimizations:** Begin developing IR-to-IR transformation passes within `ebmgen` to optimize the EBM before it's consumed by the backends.
+1.  **Complete Statement Conversion:** Implement the conversion logic for any remaining `brgen::ast::Stmt` types into `ebm::Statement` nodes.
+2.  **Refine `ast::Format` Body Handling:** Ensure all types of statements within `ast::Format` bodies are correctly converted and placed into the `StructDecl`'s `Block`.
+3.  **Implement IR Optimizations:** Begin developing IR-to-IR transformation passes within `ebmgen` to optimize the EBM before it's consumed by the backends.
 
 This new EBM design provides a robust and flexible foundation for `rebrgen` to generate high-quality, idiomatic code across a wide spectrum of programming languages, from low-level assembly to high-level functional paradigms.
+
+#### 8. Building and Running `ebmgen`
+
+To build the `ebmgen` executable, navigate to the root of the `rebrgen` directory and use the `script/build.py` script:
+
+```bash
+python script/build.py native Debug
+```
+
+This command will build the project in `Debug` mode for your native platform. The `ebmgen` executable will be located at `tool/ebmgen.exe` (on Windows) or `tool/ebmgen` (on Linux/macOS) relative to the `rebrgen` root directory.
+
+Once built, you can run `ebmgen` by providing an input `brgen` AST JSON file and specifying an output EBM file.
+
+```bash
+./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>
+```
+
+Replace `<path/to/input.json>` with the absolute path to your `brgen` AST JSON file and `<path/to/output.ebm>` with the desired absolute path for the generated EBM file.

@@ -95,25 +95,35 @@ namespace ebmgen {
         else if (auto enum_type = ast::as<ast::EnumType>(type)) {
             body.kind = ebm::TypeKind::ENUM;
             if (auto locked_enum = enum_type->base.lock()) {
-                auto name_ref = add_identifier(locked_enum->ident->ident);
-                if (!name_ref) {
-                    return unexpect_error(std::move(name_ref.error()));
+                auto statement_ref = convert_statement(locked_enum);
+                if (!statement_ref) {
+                    return unexpect_error(std::move(statement_ref.error()));
                 }
-                body.name(*name_ref);
+                body.id(*statement_ref);
+                if (locked_enum->base_type) {
+                    auto base_type_ref = convert_type(locked_enum->base_type);
+                    if (!base_type_ref) {
+                        return unexpect_error(std::move(base_type_ref.error()));
+                    }
+                    body.base_type(*base_type_ref);
+                }
+                else {
+                    body.base_type(ebm::TypeRef{});
+                }
             }
             else {
                 return unexpect_error("EnumType has no base enum");
             }
         }
         else if (auto struct_type = ast::as<ast::StructType>(type)) {
-            body.kind = ebm::TypeKind::STRUCT;
+            body.kind = struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
             if (auto locked_base = struct_type->base.lock()) {
                 if (auto format = ast::as<ast::Format>(locked_base)) {
-                    auto name_ref = add_identifier(format->ident->ident);
-                    if (!name_ref) {
-                        return unexpect_error(std::move(name_ref.error()));
+                    auto statement_ref = convert_statement(locked_base);
+                    if (!statement_ref) {
+                        return unexpect_error(std::move(statement_ref.error()));
                     }
-                    body.name(*name_ref);
+                    body.id(*statement_ref);
                 }
                 else {
                     return unexpect_error("Unsupported base type for StructType");
@@ -488,30 +498,11 @@ namespace ebmgen {
             struct_decl.name = *name_ref;
             if (format->body) {
                 for (auto& element : format->body->struct_type->fields) {
-                    if (auto field = ast::as<ast::Field>(element)) {
-                        ebm::FieldDecl field_decl;
-                        auto field_name_ref = add_identifier(field->ident->ident);
-                        if (!field_name_ref) {
-                            return unexpect_error(std::move(field_name_ref.error()));
-                        }
-                        field_decl.name = *field_name_ref;
-                        auto type_ref = convert_type(field->field_type);
-                        if (!type_ref) {
-                            return unexpect_error(std::move(type_ref.error()));
-                        }
-                        field_decl.field_type = *type_ref;
-                        ebm::StatementBody field_body;
-                        field_body.statement_kind = ebm::StatementOp::FIELD_DECL;
-                        field_body.field_decl(std::move(field_decl));
-                        auto field_ref = add_statement(std::move(field_body));
-                        if (!field_ref) {
-                            return unexpect_error(std::move(field_ref.error()));
-                        }
-                        append(struct_decl.fields, *field_ref);
+                    auto stmt_ref = convert_statement(element);
+                    if (!stmt_ref) {
+                        return unexpect_error(std::move(stmt_ref.error()));
                     }
-                    else {
-                        return unexpect_error("Unsupported node type in format body: {}", node_type_to_string(element->node_type));
-                    }
+                    append(struct_decl.fields, *stmt_ref);
                 }
             }
             return set_length(struct_decl.fields).and_then([&] {
@@ -660,7 +651,33 @@ namespace ebmgen {
                 return add_statement(new_id, std::move(body));
             });
         }
+        else if (auto field = ast::as<ast::Field>(node)) {
+            body.statement_kind = ebm::StatementOp::FIELD_DECL;
+            ebm::FieldDecl field_decl;
+            auto field_name_ref = add_identifier(field->ident->ident);
+            if (!field_name_ref) {
+                return unexpect_error(std::move(field_name_ref.error()));
+            }
+            field_decl.name = *field_name_ref;
+            auto type_ref = convert_type(field->field_type);
+            if (!type_ref) {
+                return unexpect_error(std::move(type_ref.error()));
+            }
+            field_decl.field_type = *type_ref;
+            // TODO: Handle parent_struct and is_state_variable
+            body.field_decl(std::move(field_decl));
+            return add_statement(new_id, std::move(body));
+        }
         // TODO: Implement conversion for different statement types
+        else if (auto expr = ast::as<ast::Expr>(node)) {
+            body.statement_kind = ebm::StatementOp::EXPRESSION;
+            auto expr_ref = convert_expr(ast::cast_to<ast::Expr>(node));
+            if (!expr_ref) {
+                return unexpect_error(std::move(expr_ref.error()));
+            }
+            body.expression(*expr_ref);
+            return add_statement(new_id, std::move(body));
+        }
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
 

@@ -279,6 +279,7 @@ enum StatementOp:
     PROPERTY_DECL
     METADATA
     IMPORT_MODULE
+    EXPRESSION # expression statement
     PHI_NODE # For SSA form or assignment tracking
     ERROR_REPORT # Explicit error reporting
 
@@ -378,6 +379,8 @@ format StatementBody:
             params :[params_len.value]PhiParam
         StatementOp.ERROR_REPORT:
             error_report :ErrorReport
+        StatementOp.EXPRESSION:
+            expression :ExpressionRef # Expression statement
 
 format Expressions:
     len :Varint
@@ -461,17 +464,18 @@ format TypeBody:
         TypeKind.UINT => size :u8 # Size in bits (e.g., 8, 16, 32, 64)
         TypeKind.FLOAT => size :u8 # Size in bits (e.g., 32, 64)
         TypeKind.BOOL => .. # Boolean type
-        TypeKind.ENUM:
-            base_type :TypeRef # Base type of the enum (e.g., u8, u16)
         TypeKind.ARRAY:
             element_type :TypeRef
             length :Varint # Fixed length of the array
         TypeKind.VECTOR:
             element_type :TypeRef
         TypeKind.STRUCT:
-            name :IdentifierRef # Reference to struct name
+            id :StatementRef # Reference to struct name
         TypeKind.RECURSIVE_STRUCT:
-            name :IdentifierRef # Reference to recursive struct name
+            id :StatementRef # Reference to recursive struct name
+        TypeKind.ENUM:
+            id :StatementRef # Reference to enum name
+            base_type :TypeRef # Optional base type (e.g., u8, u16)
         TypeKind.VARIANT:
             common_type :TypeRef # Optional Common type for all union members
             len_members :Varint # Number of members in the union

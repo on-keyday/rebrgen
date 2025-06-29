@@ -16,6 +16,12 @@ namespace ebmgen {
         std::uint64_t next_id = 1;
         std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
 
+        std::unordered_map<std::string, ebm::IdentifierRef> identifier_cache;
+        std::unordered_map<std::string, ebm::StringRef> string_cache;
+        std::unordered_map<std::string, ebm::TypeRef> type_cache;
+        std::unordered_map<std::string, ebm::ExpressionRef> expression_cache;
+        std::unordered_map<std::string, ebm::StatementRef> statement_cache;
+
         std::unordered_map<uint64_t, size_t> identifier_map;
         std::unordered_map<uint64_t, size_t> string_map;
         std::unordered_map<uint64_t, size_t> type_map;
@@ -63,6 +69,13 @@ namespace ebmgen {
         }
 
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
+            auto serialized = serialize(body);
+            if (!serialized) {
+                return unexpect_error("Failed to serialize expression body: {}", serialized.error().error());
+            }
+            if (auto it = expression_cache.find(*serialized); it != expression_cache.end()) {
+                return it->second;  // Return cached expression reference
+            }
             auto expr_id = new_expr_id();
             if (!expr_id) {
                 return expr_id;
@@ -74,10 +87,14 @@ namespace ebmgen {
             expr.body = std::move(body);
             ebm.expressions.push_back(std::move(expr));
             expression_map[expr_id->id.value()] = ebm.expressions.size() - 1;
+            expression_cache[*serialized] = *expr_id;  // Cache the serialized expression
             return *expr_id;
         }
 
         expected<ebm::StringRef> add_string(const std::string& str) {
+            if (auto it = string_cache.find(str); it != string_cache.end()) {
+                return it->second;  // Return cached string reference
+            }
             auto len = varint(str.size());
             if (!len) {
                 return unexpect_error("Failed to create varint for string length: {}", len.error().error());
@@ -92,10 +109,18 @@ namespace ebmgen {
             string.value.data = str;
             ebm.strings.push_back(std::move(string));
             string_map[str_id->id.value()] = ebm.strings.size() - 1;
+            string_cache[str] = *str_id;  // Cache the string reference
             return *str_id;
         }
 
         expected<ebm::TypeRef> add_type(ebm::TypeBody&& body) {
+            auto serialized = serialize(body);
+            if (!serialized) {
+                return unexpect_error("Failed to serialize type body: {}", serialized.error().error());
+            }
+            if (auto it = type_cache.find(*serialized); it != type_cache.end()) {
+                return it->second;  // Return cached type reference
+            }
             auto type_id = new_type_id();
             if (!type_id) {
                 return type_id;
@@ -105,10 +130,14 @@ namespace ebmgen {
             type.body = std::move(body);
             ebm.types.push_back(std::move(type));
             type_map[type_id->id.value()] = ebm.types.size() - 1;
+            type_cache[*serialized] = *type_id;  // Cache the serialized type
             return *type_id;
         }
 
         expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
+            if (auto it = identifier_cache.find(name); it != identifier_cache.end()) {
+                return it->second;  // Return cached identifier reference
+            }
             auto len = varint(name.size());
             if (!len) {
                 return unexpect_error("Failed to create varint for identifier length: {}", len.error().error());
@@ -123,10 +152,18 @@ namespace ebmgen {
             identifier.name.data = name;
             ebm.identifiers.push_back(std::move(identifier));
             identifier_map[id_ref->id.value()] = ebm.identifiers.size() - 1;
+            identifier_cache[name] = *id_ref;  // Cache the identifier reference
             return *id_ref;
         }
 
         expected<ebm::StatementRef> add_statement(ebm::StatementBody&& body) {
+            auto serialized = serialize(body);
+            if (!serialized) {
+                return unexpect_error("Failed to serialize statement body: {}", serialized.error().error());
+            }
+            if (auto it = statement_cache.find(*serialized); it != statement_cache.end()) {
+                return it->second;  // Return cached statement reference
+            }
             auto stmt_id = new_stmt_id();
             if (!stmt_id) {
                 return stmt_id;
@@ -136,6 +173,7 @@ namespace ebmgen {
             stmt.body = std::move(body);
             ebm.statements.push_back(std::move(stmt));
             statement_map[stmt_id->id.value()] = ebm.statements.size() - 1;
+            statement_cache[*serialized] = *stmt_id;  // Cache the serialized statement
             return *stmt_id;
         }
 

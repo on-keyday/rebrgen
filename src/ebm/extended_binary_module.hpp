@@ -366,8 +366,9 @@ namespace ebm {
         PROPERTY_DECL = 27,
         METADATA = 28,
         IMPORT_MODULE = 29,
-        PHI_NODE = 30,
-        ERROR_REPORT = 31,
+        EXPRESSION = 30,
+        PHI_NODE = 31,
+        ERROR_REPORT = 32,
     };
     constexpr const char* to_string(StatementOp e) {
         switch(e) {
@@ -401,6 +402,7 @@ namespace ebm {
             case StatementOp::PROPERTY_DECL: return "PROPERTY_DECL";
             case StatementOp::METADATA: return "METADATA";
             case StatementOp::IMPORT_MODULE: return "IMPORT_MODULE";
+            case StatementOp::EXPRESSION: return "EXPRESSION";
             case StatementOp::PHI_NODE: return "PHI_NODE";
             case StatementOp::ERROR_REPORT: return "ERROR_REPORT";
         }
@@ -500,6 +502,9 @@ namespace ebm {
         }
         if (str == "IMPORT_MODULE") {
             return StatementOp::IMPORT_MODULE;
+        }
+        if (str == "EXPRESSION") {
+            return StatementOp::EXPRESSION;
         }
         if (str == "PHI_NODE") {
             return StatementOp::PHI_NODE;
@@ -1232,7 +1237,10 @@ namespace ebm {
         struct EBM_API union_struct_59{
             ErrorReport error_report;
         };
-        std::variant<std::monostate, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59> union_variant_27;
+        struct EBM_API union_struct_60{
+            ExpressionRef expression;
+        };
+        std::variant<std::monostate, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60> union_variant_27;
         std::optional<IdentifierRef> alias() const;
         bool alias(IdentifierRef&& v);
         bool alias(const IdentifierRef& v);
@@ -1269,6 +1277,9 @@ namespace ebm {
         std::optional<ErrorReport> error_report() const;
         bool error_report(ErrorReport&& v);
         bool error_report(const ErrorReport& v);
+        std::optional<ExpressionRef> expression() const;
+        bool expression(ExpressionRef&& v);
+        bool expression(const ExpressionRef& v);
         std::optional<Fallbacks> fallbacks() const;
         bool fallbacks(Fallbacks&& v);
         bool fallbacks(const Fallbacks& v);
@@ -1353,9 +1364,6 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_62{
-            std::uint8_t size = 0;
-        };
         struct EBM_API union_struct_63{
             std::uint8_t size = 0;
         };
@@ -1363,9 +1371,9 @@ namespace ebm {
             std::uint8_t size = 0;
         };
         struct EBM_API union_struct_65{
+            std::uint8_t size = 0;
         };
         struct EBM_API union_struct_66{
-            TypeRef base_type;
         };
         struct EBM_API union_struct_67{
             TypeRef element_type;
@@ -1375,29 +1383,33 @@ namespace ebm {
             TypeRef element_type;
         };
         struct EBM_API union_struct_69{
-            IdentifierRef name;
+            StatementRef id;
         };
         struct EBM_API union_struct_70{
-            IdentifierRef name;
+            StatementRef id;
         };
         struct EBM_API union_struct_71{
+            StatementRef id;
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_72{
             TypeRef common_type;
             Varint len_members;
             std::vector<TypeRef> members;
         };
-        struct EBM_API union_struct_72{
+        struct EBM_API union_struct_73{
             TypeRef coder_type;
         };
-        struct EBM_API union_struct_73{
+        struct EBM_API union_struct_74{
             TypeRef property_type;
         };
-        struct EBM_API union_struct_74{
+        struct EBM_API union_struct_75{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_75{
+        struct EBM_API union_struct_76{
             TypeRef pointee_type;
         };
-        std::variant<std::monostate, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75> union_variant_61;
+        std::variant<std::monostate, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76> union_variant_62;
         std::optional<TypeRef> base_type() const;
         bool base_type(TypeRef&& v);
         bool base_type(const TypeRef& v);
@@ -1410,6 +1422,9 @@ namespace ebm {
         std::optional<TypeRef> element_type() const;
         bool element_type(TypeRef&& v);
         bool element_type(const TypeRef& v);
+        std::optional<StatementRef> id() const;
+        bool id(StatementRef&& v);
+        bool id(const StatementRef& v);
         std::optional<TypeRef> inner_type() const;
         bool inner_type(TypeRef&& v);
         bool inner_type(const TypeRef& v);
@@ -1422,9 +1437,6 @@ namespace ebm {
         std::optional<std::vector<TypeRef>> members() const;
         bool members(std::vector<TypeRef>&& v);
         bool members(const std::vector<TypeRef>& v);
-        std::optional<IdentifierRef> name() const;
-        bool name(IdentifierRef&& v);
-        bool name(const IdentifierRef& v);
         std::optional<TypeRef> pointee_type() const;
         bool pointee_type(TypeRef&& v);
         bool pointee_type(const TypeRef& v);

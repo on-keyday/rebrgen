@@ -57,4 +57,14 @@ namespace ebmgen {
         }
         return v;
     }
+
+    template <class T>
+    expected<void> set_length(ebm::Varint& target, const T& container) {
+        auto len = varint(container.size());
+        if (!len) {
+            return unexpect_error(std::move(len.error()));
+        }
+        target = *len;
+        return {};
+    }
 }  // namespace ebmgen

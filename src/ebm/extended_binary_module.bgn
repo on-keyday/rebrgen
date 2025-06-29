@@ -345,7 +345,6 @@ format StatementBody:
         StatementOp.UNION_DECL:
             union_decl :UnionDecl
         StatementOp.PROGRAM_DECL:
-            name :IdentifierRef
             body :Block
         StatementOp.STATE_DECL:
             name :IdentifierRef

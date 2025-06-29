@@ -3,6 +3,8 @@
 #include <wrap/cout.h>
 #include "load_json.hpp"
 #include "convert.hpp"
+#include <file/file_stream.h> // Required for futils::file::FileStream
+#include <binary/writer.h> // Required for futils::binary::writer
 
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
@@ -30,6 +32,22 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cerr << err.error<std::string>() << '\n';
         return 1;
     }
+
+    // Serialize and write to output file
+    futils::file::FileError fserr;
+    auto file = futils::file::File::create(flags.output);
+    if (!file) {
+        cerr << "Failed to open output file: " << flags.output << ": " << file.error().error<std::string>() << '\n';
+        return 1;
+    }
+    futils::file::FileStream<std::string> fs{*file};
+    futils::binary::writer writer{fs.get_write_handler(), &fs};
+    err = ebm.encode(writer);
+    if (err) {
+        cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
+        return 1;
+    }
+
     cout << "ebmgen finished successfully!\n";
     return 0;
 }

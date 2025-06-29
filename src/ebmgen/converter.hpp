@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include <core/ast/ast.h>
 #include <ebm/extended_binary_module.hpp>
+#include <unordered_set>
 
 namespace ebmgen {
 
@@ -13,6 +14,7 @@ namespace ebmgen {
 
        private:
         std::uint64_t next_id = 1;
+        std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
 
         std::unordered_map<uint64_t, size_t> identifier_map;
         std::unordered_map<uint64_t, size_t> string_map;
@@ -137,6 +139,15 @@ namespace ebmgen {
             return *stmt_id;
         }
 
+        expected<ebm::StatementRef> add_statement(ebm::StatementRef stmt_id, ebm::StatementBody&& body) {
+            ebm::Statement stmt;
+            stmt.id = stmt_id;
+            stmt.body = std::move(body);
+            ebm.statements.push_back(std::move(stmt));
+            statement_map[stmt_id.id.value()] = ebm.statements.size() - 1;
+            return stmt_id;
+        }
+
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type);
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
 
@@ -148,12 +159,27 @@ namespace ebmgen {
 
         void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
-        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Stmt>& node);
+        expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
+
+        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node) {
+            if (auto it = visited_nodes.find(node); it != visited_nodes.end()) {
+                return it->second;  // Already visited, return cached result
+            }
+            auto new_ref = new_stmt_id();
+            if (!new_ref) {
+                return unexpect_error("Failed to create new statement ID: {}", new_ref.error().error());
+            }
+            visited_nodes[node] = *new_ref;  // Cache the new reference
+            return convert_statement_impl(*new_ref, node);
+        }
 
        public:
         Converter(ebm::ExtendedBinaryModule& ebm) : ebm(ebm) {}
 
         Error convert(const std::shared_ptr<brgen::ast::Node>& ast_root);
+
+       private:
+        Error set_lengths();
     };
 
 }  // namespace ebmgen

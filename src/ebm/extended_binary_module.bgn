@@ -111,7 +111,7 @@ format ExpressionBody:
         ExpressionOp.LITERAL_TYPE:
             type_ref :TypeRef
         ExpressionOp.IDENTIFIER:
-            id :IdentifierRef
+            id :StatementRef # reference to definition of the identifier 
         ExpressionOp.BINARY_OP:
             bop :BinaryOp
             left :ExpressionRef
@@ -168,33 +168,31 @@ format UnionMemberDecl:
     field_type :TypeRef # Type of the member
     is_state_variable :u1 # 0: regular, 1: state variable
     reserved :u7 # Reserved for future use
+    parent_union :StatementRef # Reference to parent union/format
 
 format MatchStatement:
     target :ExpressionRef # Expression to match against
     is_exhaustive :u1 # 0: non-exhaustive, 1: exhaustive
     reserved :u7 # Reserved for future use
-    branches_len :Varint # Number of branches
-    branches :[branches_len.value]MatchBranch # List of match branches
+    branches :Block # List of match branches
 
 format FieldDecl:
     name :IdentifierRef # Field name
     field_type :TypeRef # Type of the field
-    parent_struct :IdentifierRef # Reference to parent struct/format
+    parent_struct :StatementRef # Reference to parent struct/format
     is_state_variable :u1 # 0: regular, 1: state variable
     reserved :u7 # Reserved for future use    
 
 format StructDecl:
     name :IdentifierRef # Struct name
-    fields_len :Varint # Number of fields
-    fields :[fields_len.value]FieldDecl # List of fields
+    fields :Block # List of fields
     is_recursive :u1 # 0: no, 1: yes (for recursive structs)
     reserved :u7 # Reserved for future use
 
 format UnionDecl:
     name :IdentifierRef # Union name
-    parent_field :IdentifierRef # Reference to the field that holds this union
-    members_len :Varint # Number of members
-    members :[members_len.value]UnionMemberDecl # List of union members 
+    parent_field :StatementRef # Reference to the field that holds this union
+    members :Block # List of union members
 
 enum PackedOpType:
     :u8
@@ -203,36 +201,39 @@ enum PackedOpType:
 
 format BitFieldDecl:
     name :IdentifierRef # Bit field name
-    parent_format :IdentifierRef # Reference to parent format (e.g., struct, union)
+    parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     bit_size :Varint # Total bit size of the bit field
     packed_op_type :PackedOpType # 0: fixed, 1: variable
 
 format PropertyDecl:
     name :IdentifierRef # Property name
-    parent_format :IdentifierRef # Reference to parent format (e.g., struct, union)
+    parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
     
 format FunctionDecl:
     name :IdentifierRef # Function name
     return_type :TypeRef # Return type of the function
-    params_len :Varint # Number of parameters
-    params :[params_len.value]VariableDecl # List of parameters
+    params: Block
+    parent_format :StatementRef # Reference to parent format (maybe null) (e.g., struct, union)
 
 format EnumDecl:
     name :IdentifierRef # Enum name
     base_type :TypeRef # Optional base type (e.g., u8, u16)
-    members_len :Varint # Number of members
-    members :[members_len.value]EnumMemberDecl # List of enum members
+    members :Block # List of enum members
 
 format EnumMemberDecl:
     name :IdentifierRef # Member name
     value :ExpressionRef # Integer value (e.g., 0, 1, 2)
-    string_repr :IdentifierRef # Optional string representation (e.g., "MemberName")
+    string_repr :StringRef # Optional string representation (e.g., "MemberName")
+
+format StateDecl:
+    name :IdentifierRef # State name
+    body :Block # Body of the state 
+
 format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
-    values_len :Varint # Number of values
-    values :[values_len.value]ExpressionRef # List of values (e.g., strings, numbers)
+    values :Expressions
 
 enum FallbackType:
     :u8
@@ -243,8 +244,8 @@ format Fallback:
     block :Block # Fallback block to execute if no other branch matches
 
 format Fallbacks:
-    fallbacks_len :Varint # Number of fallbacks
-    fallbacks :[fallbacks_len.value]Fallback # List of fallbacks
+    len :Varint # Number of fallbacks
+    container :[len.value]Fallback # List of fallbacks
 
 enum StatementOp:
     :u8
@@ -261,6 +262,7 @@ enum StatementOp:
     IF_STATEMENT
     LOOP_STATEMENT
     MATCH_STATEMENT
+    MATCH_BRANCH
     BREAK
     CONTINUE
     FUNCTION_DECL
@@ -270,6 +272,7 @@ enum StatementOp:
     ENUM_MEMBER_DECL
     STRUCT_DECL
     UNION_DECL
+    UNION_MEMBER_DECL
     PROGRAM_DECL
     STATE_DECL
     BIT_FIELD_DECL
@@ -283,6 +286,13 @@ format Statement:
     id :StatementRef
     body :StatementBody # Body of the statement
 
+format LoopFlowControl:
+    related_statement :StatementRef # Reference to the loop statement
+
+format ErrorReport:
+    message :StringRef # Reference to error message string
+    arguments : Expressions # Optional arguments for the error message
+
 format StatementBody:
     statement_kind :StatementOp
     match statement_kind:
@@ -293,12 +303,11 @@ format StatementBody:
             value :ExpressionRef # Return value (optional)
         StatementOp.ASSERT:
             condition :ExpressionRef
-            # message :IdentifierRef # Reference to error message string
         StatementOp.NEW_OBJECT:
             target_var :IdentifierRef # Variable to assign new object to
             object_type :TypeRef
         StatementOp.READ_DATA:
-            target_var :IdentifierRef # Variable to store read data
+            target_var :ExpressionRef # Variable to store read data
             data_type :TypeRef
             endian :EndianExpr # Endianness for read
             bit_size :Varint # Number of bits to read
@@ -313,13 +322,13 @@ format StatementBody:
             offset :ExpressionRef # Offset to seek to
             stream_type :IdentifierRef # e.g., "input", "output"
         StatementOp.GET_STREAM_OFFSET:
-            target_var :IdentifierRef # Variable to store offset
+            target_var :ExpressionRef # Variable to store offset
             stream_type :IdentifierRef # e.g., "input", "output"
         StatementOp.GET_REMAINING_BYTES:
-            target_var :IdentifierRef # Variable to store remaining bytes
+            target_var :ExpressionRef # Variable to store remaining bytes
             stream_type :IdentifierRef # e.g., "input", "output"
         StatementOp.CAN_READ_STREAM:
-            target_var :IdentifierRef # Variable to store boolean result
+            target_var :ExpressionRef # Variable to store boolean result
             stream_type :IdentifierRef # e.g., "input", "output"
             num_bytes :ExpressionRef # Number of bytes to check
         StatementOp.IF_STATEMENT:
@@ -328,8 +337,12 @@ format StatementBody:
             loop :LoopStatement
         StatementOp.MATCH_STATEMENT:
             match_statement :MatchStatement
-        StatementOp.BREAK => ..
-        StatementOp.CONTINUE => ..
+        StatementOp.MATCH_BRANCH:
+            match_branch :MatchBranch # Single branch of a match statement
+        StatementOp.BREAK:
+            break_ :LoopFlowControl
+        StatementOp.CONTINUE:
+            continue_ :LoopFlowControl
         StatementOp.FUNCTION_DECL:
             func_decl :FunctionDecl
         StatementOp.VARIABLE_DECL:
@@ -344,11 +357,12 @@ format StatementBody:
             struct_decl :StructDecl
         StatementOp.UNION_DECL:
             union_decl :UnionDecl
+        StatementOp.UNION_MEMBER_DECL:
+            union_member_decl :UnionMemberDecl
         StatementOp.PROGRAM_DECL:
             body :Block
         StatementOp.STATE_DECL:
-            name :IdentifierRef
-            body :Block
+            state_decl :StateDecl
         StatementOp.BIT_FIELD_DECL:
             bit_field_decl :BitFieldDecl
         StatementOp.PROPERTY_DECL:
@@ -363,13 +377,15 @@ format StatementBody:
             params_len :Varint
             params :[params_len.value]PhiParam
         StatementOp.ERROR_REPORT:
-            message :StringRef # Reference to error message string
-            args_len :Varint
-            arguments :[args_len.value]ExpressionRef # Arguments for the error message
+            error_report :ErrorReport
+
+format Expressions:
+    len :Varint
+    container :[len.value]ExpressionRef # List of expressions
 
 format Block:
-    statements_len :Varint
-    statements :[statements_len.value]StatementRef
+    len :Varint
+    container :[len.value]StatementRef
 
 format MatchBranch:
     condition :ExpressionRef # Case condition (e.g., literal, range, default)
@@ -504,9 +520,9 @@ format ExtendedBinaryModule:
     strings :[strings_len.value]StringLiteral # Centralized string literal table
     types_len :Varint
     types :[types_len.value]Type # Centralized type definitions
-    statements_len :Varint
-    statements :[statements_len.value]Statement # Top-level program declarations
-    expressions_len :Varint
+    statements_len :Varint # Number of statements
+    statements :[statements_len.value]Statement # Centralized statement table
+    expressions_len :Varint # Number of expressions
     expressions :[expressions_len.value]Expression # Centralized expression table
     debug_info :DebugInfo # Debugging information
 

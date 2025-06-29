@@ -59,12 +59,17 @@ namespace ebmgen {
     }
 
     template <class T>
-    expected<void> set_length(ebm::Varint& target, const T& container) {
-        auto len = varint(container.size());
+    expected<void> set_length(T& container) {
+        auto len = varint(container.container.size());
         if (!len) {
             return unexpect_error(std::move(len.error()));
         }
-        target = *len;
+        container.len = *len;
         return {};
+    }
+
+    template <class T>
+    void append(T& container, const typename decltype(T::container)::value_type& value) {
+        container.container.push_back(value);
     }
 }  // namespace ebmgen

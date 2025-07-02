@@ -92,11 +92,11 @@ namespace ebmgen {
         else if (auto enum_type = ast::as<ast::EnumType>(type)) {
             body.kind = ebm::TypeKind::ENUM;
             if (auto locked_enum = enum_type->base.lock()) {
-                auto statement_ref = convert_statement(locked_enum);
-                if (!statement_ref) {
-                    return unexpect_error(std::move(statement_ref.error()));
+                auto name_ref = add_identifier(locked_enum->ident->ident);
+                if (!name_ref) {
+                    return unexpect_error(std::move(name_ref.error()));
                 }
-                body.id(*statement_ref);
+                body.id(ebm::StatementRef{name_ref->id});
                 if (locked_enum->base_type) {
                     auto base_type_ref = convert_type(locked_enum->base_type);
                     if (!base_type_ref) {
@@ -115,11 +115,15 @@ namespace ebmgen {
         else if (auto struct_type = ast::as<ast::StructType>(type)) {
             body.kind = struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
             if (auto locked_base = struct_type->base.lock()) {
-                auto statement_ref = convert_statement(locked_base);
-                if (!statement_ref) {
-                    return unexpect_error(std::move(statement_ref.error()));
+                if (auto member = ast::as<ast::Member>(locked_base)) {
+                    auto name_ref = add_identifier(member->ident->ident);
+                    if (!name_ref) {
+                        return unexpect_error(std::move(name_ref.error()));
+                    }
+                    body.id(ebm::StatementRef{name_ref->id});
+                } else {
+                    return unexpect_error("StructType base is not a Member");
                 }
-                body.id(*statement_ref);
             }
             else {
                 return unexpect_error("StructType has no base");

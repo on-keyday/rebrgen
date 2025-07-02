@@ -70,6 +70,7 @@ namespace ebmgen {
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+        expected<ebm::StreamType> to_ebm_stream_type(ast::IOMethod method);
 
         Error set_lengths();
     };

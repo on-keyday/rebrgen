@@ -1,4 +1,5 @@
 #include "../converter.hpp"
+#include <iostream>
 
 namespace ebmgen {
     expected<ebm::StatementRef> Converter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
@@ -214,11 +215,16 @@ namespace ebmgen {
             struct_decl.name = *name_ref;
             if (format->body) {
                 for (auto& element : format->body->struct_type->fields) {
-                    auto stmt_ref = convert_statement(element);
-                    if (!stmt_ref) {
-                        return unexpect_error(std::move(stmt_ref.error()));
+                    if (ast::as<ast::Field>(element)) {
+                        auto field_element_shared_ptr = std::static_pointer_cast<ast::Field>(element);
+                        auto node_to_convert = std::static_pointer_cast<ast::Node>(field_element_shared_ptr);
+                        auto stmt_ref = convert_statement(node_to_convert);
+                        if (!stmt_ref) {
+                            return unexpect_error(std::move(stmt_ref.error()));
+                        }
+                        append(struct_decl.fields, *stmt_ref);
                     }
-                    append(struct_decl.fields, *stmt_ref);
+                    // TODO: Handle other Member types within Format body if necessary (e.g., functions)
                 }
             }
             return set_length(struct_decl.fields).and_then([&] {
@@ -368,7 +374,7 @@ namespace ebmgen {
             });
         }
         else if (auto field = ast::as<ast::Field>(node)) {
-            if (auto union_type = ast::as<ast::UnionType>(field->field_type)) {
+            if (auto union_type = std::static_pointer_cast<ast::UnionType>(field->field_type)) {
                 body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
                 ebm::PropertyDecl prop_decl;
                 auto field_name_ref = add_identifier(field->ident->ident);
@@ -376,13 +382,63 @@ namespace ebmgen {
                     return unexpect_error(std::move(field_name_ref.error()));
                 }
                 prop_decl.name = *field_name_ref;
-                auto property_type_ref = convert_type(std::static_pointer_cast<ast::UnionType>(field->field_type));
+
+                auto property_type_ref = convert_type(union_type);
                 if (!property_type_ref) {
                     return unexpect_error(std::move(property_type_ref.error()));
                 }
                 prop_decl.property_type = *property_type_ref;
-                // TODO: Handle parent_format and merge_mode
+
+                if (auto parent_member = field->belong.lock()) {
+                    auto statement_ref = convert_statement(parent_member);
+                    if (!statement_ref) {
+                        return unexpect_error(std::move(statement_ref.error()));
+                    }
+                    prop_decl.parent_format = *statement_ref;
+                }
+                else {
+                    prop_decl.parent_format = ebm::StatementRef{};
+                }
+
+                prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
+
                 body.property_decl(std::move(prop_decl));
+                return add_statement(new_id, std::move(body));
+            }
+            else if (field->bit_alignment != field->eventual_bit_alignment) {
+                body.statement_kind = ebm::StatementOp::BIT_FIELD_DECL;
+                ebm::BitFieldDecl bit_field_decl;
+                auto name_ref = add_identifier(field->ident->ident);
+                if (!name_ref) {
+                    return unexpect_error(std::move(name_ref.error()));
+                }
+                bit_field_decl.name = *name_ref;
+
+                if (auto parent_member = field->belong.lock()) {
+                    auto statement_ref = convert_statement(parent_member);
+                    if (!statement_ref) {
+                        return unexpect_error(std::move(statement_ref.error()));
+                    }
+                    bit_field_decl.parent_format = *statement_ref;
+                }
+                else {
+                    bit_field_decl.parent_format = ebm::StatementRef{};
+                }
+
+                if (field->field_type->bit_size) {
+                    auto bit_size_val = varint(*field->field_type->bit_size);
+                    if (!bit_size_val) {
+                        return unexpect_error(std::move(bit_size_val.error()));
+                    }
+                    bit_field_decl.bit_size = *bit_size_val;
+                }
+                else {
+                    return unexpect_error("Bit field type has no bit size");
+                }
+
+                bit_field_decl.packed_op_type = ebm::PackedOpType::FIXED;  // Default to FIXED for now
+
+                body.bit_field_decl(std::move(bit_field_decl));
                 return add_statement(new_id, std::move(body));
             }
             else {
@@ -408,9 +464,148 @@ namespace ebmgen {
                 return add_statement(new_id, std::move(body));
             }
         }
-        // TODO: Implement conversion for different statement types
+        else if (auto io_op_stmt = ast::as<ast::IOOperation>(node)) {
+            switch (io_op_stmt->method) {
+                case ast::IOMethod::input_get: {
+                    body.statement_kind = ebm::StatementOp::READ_DATA;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
+                    if (!data_type_ref) {
+                        return unexpect_error(std::move(data_type_ref.error()));
+                    }
+                    body.data_type(*data_type_ref);
+                    // TODO: Handle endian, bit_size, and fallback_stmt
+                    break;
+                }
+                case ast::IOMethod::output_put: {
+                    body.statement_kind = ebm::StatementOp::WRITE_DATA;
+                    auto source_expr_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!source_expr_ref) {
+                        return unexpect_error(std::move(source_expr_ref.error()));
+                    }
+                    body.source_expr(*source_expr_ref);
+                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
+                    if (!data_type_ref) {
+                        return unexpect_error(std::move(data_type_ref.error()));
+                    }
+                    body.data_type(*data_type_ref);
+                    // TODO: Handle endian, bit_size, and fallback_stmt
+                    break;
+                }
+                case ast::IOMethod::input_offset:
+                case ast::IOMethod::input_bit_offset: {
+                    body.statement_kind = ebm::StatementOp::GET_STREAM_OFFSET;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                case ast::IOMethod::input_remain: {
+                    body.statement_kind = ebm::StatementOp::GET_REMAINING_BYTES;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                case ast::IOMethod::input_subrange: {  // Assuming input_subrange maps to SEEK_STREAM
+                    body.statement_kind = ebm::StatementOp::SEEK_STREAM;
+                    auto offset_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!offset_ref) {
+                        return unexpect_error(std::move(offset_ref.error()));
+                    }
+                    body.offset(*offset_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                case ast::IOMethod::input_peek: {  // Assuming input_peek maps to CAN_READ_STREAM
+                    body.statement_kind = ebm::StatementOp::CAN_READ_STREAM;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    auto num_bytes_ref = convert_expr(io_op_stmt->arguments[1]);
+                    if (!num_bytes_ref) {
+                        return unexpect_error(std::move(num_bytes_ref.error()));
+                    }
+                    body.num_bytes(*num_bytes_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                default: {
+                    return unexpect_error("Unhandled IOMethod: {}", ast::to_string(io_op_stmt->method));
+                }
+            }
+            return add_statement(new_id, std::move(body));
+        }
+        else if (auto explicit_error_stmt = ast::as<ast::ExplicitError>(node)) {
+            body.statement_kind = ebm::StatementOp::ERROR_REPORT;
+            ebm::ErrorReport error_report;
+            auto message_str_ref = add_string(explicit_error_stmt->message->value);
+            if (!message_str_ref) {
+                return unexpect_error(std::move(message_str_ref.error()));
+            }
+            error_report.message = *message_str_ref;
+            for (auto& arg : explicit_error_stmt->base->arguments) {
+                auto arg_expr_ref = convert_expr(arg);
+                if (!arg_expr_ref) {
+                    return unexpect_error(std::move(arg_expr_ref.error()));
+                }
+                append(error_report.arguments, *arg_expr_ref);
+            }
+            auto ok = set_length(error_report.arguments);
+            if (!ok) {
+                return unexpect_error(std::move(ok.error()));
+            }
+            body.error_report(std::move(error_report));
+            return add_statement(new_id, std::move(body));
+        }
+
+        else if (auto import_stmt = ast::as<ast::Import>(node)) {
+            body.statement_kind = ebm::StatementOp::IMPORT_MODULE;
+            auto module_name_ref = add_identifier(import_stmt->path);
+            if (!module_name_ref) {
+                return unexpect_error(std::move(module_name_ref.error()));
+            }
+            body.module_name(*module_name_ref);
+            // TODO: Handle alias if it exists in ast::Import
+            return add_statement(new_id, std::move(body));
+        }
+        else if (auto implicit_yield_stmt = ast::as<ast::ImplicitYield>(node)) {
+            body.statement_kind = ebm::StatementOp::EXPRESSION;
+            auto expr_ref = convert_expr(implicit_yield_stmt->expr);
+            if (!expr_ref) {
+                return unexpect_error(std::move(expr_ref.error()));
+            }
+            body.expression(*expr_ref);
+            return add_statement(new_id, std::move(body));
+        }
         else if (auto binary_expr = ast::as<ast::Binary>(node)) {
-            if (binary_expr->op == ast::BinaryOp::define_assign || binary_expr->op == ast::BinaryOp::const_assign) {
+            if (binary_expr->op == ast::BinaryOp::assign) {
+                body.statement_kind = ebm::StatementOp::ASSIGNMENT;
+                auto target_ref = convert_expr(binary_expr->left);
+                if (!target_ref) {
+                    return unexpect_error(std::move(target_ref.error()));
+                }
+                body.target(*target_ref);
+                auto value_ref = convert_expr(binary_expr->right);
+                if (!value_ref) {
+                    return unexpect_error(std::move(value_ref.error()));
+                }
+                body.value(*value_ref);
+                return add_statement(new_id, std::move(body));
+            }
+            else if (binary_expr->op == ast::BinaryOp::define_assign || binary_expr->op == ast::BinaryOp::const_assign) {
                 body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
                 ebm::VariableDecl var_decl;
                 auto name_ident = ast::as<ast::Ident>(binary_expr->left);
@@ -449,6 +644,7 @@ namespace ebmgen {
             body.expression(*expr_ref);
             return add_statement(new_id, std::move(body));
         }
+        // Debug print to identify unhandled node types
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
 }  // namespace ebmgen

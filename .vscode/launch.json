@@ -125,7 +125,9 @@
         "-i",
         "${workspaceRoot}/save/simple.json",
         "-o",
-        "${workspaceRoot}/save/out.ebm"
+        "${workspaceRoot}/save/out.ebm",
+        "-d",
+        "${workspaceRoot}/save/debug_output.txt"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

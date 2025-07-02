@@ -3,17 +3,22 @@
 #include <wrap/cout.h>
 #include "load_json.hpp"
 #include "convert.hpp"
+#include "debug_printer.hpp" // Include the new header
 #include <file/file_stream.h> // Required for futils::file::FileStream
 #include <binary/writer.h> // Required for futils::binary::writer
+#include <fstream> // Required for std::ofstream
+#include <sstream> // Required for std::stringstream
 
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
+    std::string_view debug_output; // New flag for debug output
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
+        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE"); // Bind new flag
     }
 };
 
@@ -31,6 +36,21 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (err) {
         cerr << err.error<std::string>() << '\n';
         return 1;
+    }
+
+    // Debug print if requested
+    if (!flags.debug_output.empty()) {
+        std::stringstream debug_ss;
+        ebmgen::DebugPrinter printer(ebm, debug_ss);
+        printer.print_module();
+
+        std::ofstream debug_ofs(std::string(flags.debug_output));
+        if (!debug_ofs.is_open()) {
+            cerr << "Failed to open debug output file: " << flags.debug_output << '\n';
+            return 1;
+        }
+        debug_ofs << debug_ss.str();
+        debug_ofs.close();
     }
 
     // Serialize and write to output file

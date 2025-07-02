@@ -59,6 +59,7 @@ add_executable(ebmgen
     "src/ebmgen/convert/statement.cpp"
     "src/ebmgen/convert/expression.cpp"
     "src/ebmgen/convert/type.cpp"
+    "src/ebmgen/debug_printer.cpp"
 )
 
 add_executable(gen_template 

@@ -49,6 +49,10 @@ namespace ebmgen {
                 }
                 append(then_block, *stmt_ref);
             }
+            auto ok = set_length(then_block);
+            if (!ok) {
+                return unexpect_error(std::move(ok.error()));
+            }
             ebm_if_stmt.then_block = std::move(then_block);
 
             // Convert else block
@@ -75,6 +79,10 @@ namespace ebmgen {
                 else {
                     return unexpect_error("Unsupported node type for else block");
                 }
+            }
+            ok = set_length(else_block);
+            if (!ok) {
+                return unexpect_error(std::move(ok.error()));
             }
             ebm_if_stmt.else_block = std::move(else_block);
 
@@ -388,11 +396,7 @@ namespace ebmgen {
                     field_decl.name = *field_name_ref;
                 }
                 else {
-                    auto anonymous = add_anonymous_identifier();
-                    if (!anonymous) {
-                        return unexpect_error(std::move(anonymous.error()));
-                    }
-                    field_decl.name = *anonymous;
+                    field_decl.name = ebm::IdentifierRef{};  // Anonymous field
                 }
                 auto type_ref = convert_type(field->field_type);
                 if (!type_ref) {
@@ -447,4 +451,4 @@ namespace ebmgen {
         }
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
-}
+}  // namespace ebmgen

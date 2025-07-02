@@ -35,7 +35,7 @@ namespace ebmgen {
         expected<ebm::ExpressionRef> new_expr_id();
         expected<ebm::TypeRef> new_type_id();
         expected<ebm::StatementRef> new_stmt_id();
-        expected<ebm::IdentifierRef> new_ident_id(bool is_anonymous);
+        expected<ebm::IdentifierRef> new_ident_id();
         expected<ebm::StringRef> new_string_id();
 
         template <typename T>
@@ -52,7 +52,6 @@ namespace ebmgen {
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body);
         expected<ebm::StringRef> add_string(const std::string& str);
         expected<ebm::TypeRef> add_type(ebm::TypeBody&& body);
-        expected<ebm::IdentifierRef> add_anonymous_identifier();
         expected<ebm::IdentifierRef> add_identifier(const std::string& name);
         expected<ebm::StatementRef> add_statement(ebm::StatementBody&& body);
         expected<ebm::StatementRef> add_statement(ebm::StatementRef stmt_id, ebm::StatementBody&& body);

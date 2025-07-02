@@ -66,8 +66,7 @@ format String:
 
 format IdentifierRef:
     id :Varint # Reference to an entry in the identifiers table
-    is_anonymous :u1
-    reserved :u7 # Reserved for future use, should be 0
+
 
 format TypeRef:
     id :Varint # Reference to an entry in the types table
@@ -309,6 +308,11 @@ format ErrorReport:
     message :StringRef # Reference to error message string
     arguments : Expressions # Optional arguments for the error message
 
+enum StreamType:
+    :u8
+    INPUT = 0 # Input stream (e.g., reading data)
+    OUTPUT = 1 # Output stream (e.g., writing data)
+
 format StatementBody:
     statement_kind :StatementOp
     match statement_kind:
@@ -320,7 +324,7 @@ format StatementBody:
         StatementOp.ASSERT:
             condition :ExpressionRef
         StatementOp.NEW_OBJECT:
-            target_var :IdentifierRef # Variable to assign new object to
+            target_var :ExpressionRef # Variable to assign new object to
             object_type :TypeRef
         StatementOp.READ_DATA:
             target_var :ExpressionRef # Variable to store read data
@@ -336,16 +340,16 @@ format StatementBody:
             fallback_stmt :FallbackStatements # Optional fallbacks for write implementation
         StatementOp.SEEK_STREAM:
             offset :ExpressionRef # Offset to seek to
-            stream_type :IdentifierRef # e.g., "input", "output"
+            stream_type :StreamType
         StatementOp.GET_STREAM_OFFSET:
             target_var :ExpressionRef # Variable to store offset
-            stream_type :IdentifierRef # e.g., "input", "output"
+            stream_type :StreamType
         StatementOp.GET_REMAINING_BYTES:
             target_var :ExpressionRef # Variable to store remaining bytes
-            stream_type :IdentifierRef # e.g., "input", "output"
+            stream_type :StreamType
         StatementOp.CAN_READ_STREAM:
             target_var :ExpressionRef # Variable to store boolean result
-            stream_type :IdentifierRef # e.g., "input", "output"
+            stream_type :StreamType
             num_bytes :ExpressionRef # Number of bytes to check
         StatementOp.IF_STATEMENT:
             if_statement :IfStatement
@@ -389,7 +393,7 @@ format StatementBody:
             module_name :IdentifierRef
             alias :IdentifierRef # Optional alias
         StatementOp.PHI_NODE:
-            target_var :IdentifierRef
+            target_var :ExpressionRef # Variable to assign phi node to
             params_len :Varint
             params :[params_len.value]PhiParam
         StatementOp.ERROR_REPORT:

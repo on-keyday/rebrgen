@@ -254,6 +254,25 @@ namespace ebmgen {
             return add_expr(std::move(body));
         }
         else if (auto range = ast::as<ast::Range>(node)) {
+            body.op = ebm::ExpressionOp::RANGE;
+            ebm::ExpressionRef start, end;
+            if (range->start) {
+                auto start_ref = convert_expr(range->start);
+                if (!start_ref) {
+                    return unexpect_error(std::move(start_ref.error()));
+                }
+                start = *start_ref;
+            }
+            if (range->end) {
+                auto end_ref = convert_expr(range->end);
+                if (!end_ref) {
+                    return unexpect_error(std::move(end_ref.error()));
+                }
+                end = *end_ref;
+            }
+            body.start(start);
+            body.end(end);
+            return add_expr(std::move(body));
         }
         else {
             return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));

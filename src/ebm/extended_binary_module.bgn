@@ -66,6 +66,8 @@ format String:
 
 format IdentifierRef:
     id :Varint # Reference to an entry in the identifiers table
+    is_anonymous :u1
+    reserved :u7 # Reserved for future use, should be 0
 
 format TypeRef:
     id :Varint # Reference to an entry in the types table
@@ -433,6 +435,7 @@ enum TypeKind:
     STRUCT
     RECURSIVE_STRUCT
     BOOL
+    VOID
 
     # qualifiers
     ENUM
@@ -457,6 +460,10 @@ format Type:
     id :TypeRef # Reference to this type in the types table
     body :TypeBody # Body of the type definition
 
+format Types:
+    len :Varint # Number of types
+    container :[len.value]TypeRef # List of type definitions
+
 format TypeBody:
     kind :TypeKind
     match kind:
@@ -478,8 +485,7 @@ format TypeBody:
             base_type :TypeRef # Optional base type (e.g., u8, u16)
         TypeKind.VARIANT:
             common_type :TypeRef # Optional Common type for all union members
-            len_members :Varint # Number of members in the union
-            members :[len_members.value]TypeRef # List of member types
+            members :Types # List of variant members (types)
         TypeKind.CODER_RETURN:
             coder_type :TypeRef # Type returned by encoder/decoder
         TypeKind.PROPERTY_SETTER_RETURN:

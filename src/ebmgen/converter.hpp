@@ -46,9 +46,11 @@ namespace ebmgen {
             });
         }
 
-        expected<ebm::IdentifierRef> new_ident_id() {
-            return varint(next_id++).transform([](auto&& v) {
-                return ebm::IdentifierRef{v};
+        expected<ebm::IdentifierRef> new_ident_id(bool is_anonymous) {
+            return varint(next_id++).transform([&](auto&& v) {
+                auto ref = ebm::IdentifierRef{v};
+                ref.is_anonymous(is_anonymous);
+                return ref;
             });
         }
 
@@ -134,6 +136,14 @@ namespace ebmgen {
             return *type_id;
         }
 
+        expected<ebm::IdentifierRef> add_anonymous_identifier() {
+            auto id_ref = new_ident_id(true);
+            if (!id_ref) {
+                return id_ref;
+            }
+            return *id_ref;
+        }
+
         expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
             if (auto it = identifier_cache.find(name); it != identifier_cache.end()) {
                 return it->second;  // Return cached identifier reference
@@ -142,7 +152,7 @@ namespace ebmgen {
             if (!len) {
                 return unexpect_error("Failed to create varint for identifier length: {}", len.error().error());
             }
-            auto id_ref = new_ident_id();
+            auto id_ref = new_ident_id(false);
             if (!id_ref) {
                 return id_ref;
             }

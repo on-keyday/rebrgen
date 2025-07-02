@@ -118,20 +118,61 @@ namespace ebmgen {
         else if (auto struct_type = ast::as<ast::StructType>(type)) {
             body.kind = struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
             if (auto locked_base = struct_type->base.lock()) {
-                if (auto format = ast::as<ast::Format>(locked_base)) {
-                    auto statement_ref = convert_statement(locked_base);
-                    if (!statement_ref) {
-                        return unexpect_error(std::move(statement_ref.error()));
-                    }
-                    body.id(*statement_ref);
+                auto statement_ref = convert_statement(locked_base);
+                if (!statement_ref) {
+                    return unexpect_error(std::move(statement_ref.error()));
                 }
-                else {
-                    return unexpect_error("Unsupported base type for StructType");
-                }
+                body.id(*statement_ref);
             }
             else {
                 return unexpect_error("StructType has no base");
             }
+        }
+        else if (auto union_type = ast::as<ast::UnionType>(type)) {
+            body.kind = ebm::TypeKind::VARIANT;
+            if (union_type->common_type) {
+                auto common_type_ref = convert_type(union_type->common_type);
+                if (!common_type_ref) {
+                    return unexpect_error(std::move(common_type_ref.error()));
+                }
+                body.common_type(*common_type_ref);
+            }
+            ebm::Types members;
+            for (auto& candidate : union_type->candidates) {
+                if (auto field = candidate->field.lock()) {
+                    auto member_type_ref = convert_type(field->field_type);
+                    if (!member_type_ref) {
+                        return unexpect_error(std::move(member_type_ref.error()));
+                    }
+                    append(members, *member_type_ref);
+                }
+            }
+            auto ok = set_length(members);
+            if (!ok) {
+                return unexpect_error(std::move(ok.error()));
+            }
+            body.members(std::move(members));
+        }
+        else if (auto struct_union_type = ast::as<ast::StructUnionType>(type)) {
+            body.kind = ebm::TypeKind::VARIANT;
+            // StructUnionType does not have a direct common_type field in AST, but its structs might imply one.
+            // For now, we'll just convert the types of its constituent structs.
+            ebm::Types members;
+            for (auto& struct_member : struct_union_type->structs) {
+                auto member_type_ref = convert_type(std::static_pointer_cast<ast::Type>(struct_member));
+                if (!member_type_ref) {
+                    return unexpect_error(std::move(member_type_ref.error()));
+                }
+                append(members, *member_type_ref);
+            }
+            auto ok = set_length(members);
+            if (!ok) {
+                return unexpect_error(std::move(ok.error()));
+            }
+            body.members(std::move(members));
+        }
+        else if (auto void_type = ast::as<ast::VoidType>(type)) {
+            body.kind = ebm::TypeKind::VOID;
         }
         else {
             return unexpect_error("Unsupported type for conversion: {}", node_type_to_string(type->node_type));
@@ -178,7 +219,7 @@ namespace ebmgen {
             case ast::BinaryOp::bit_xor:
                 return ebm::BinaryOp::bit_xor;
             default:
-                return unexpect_error("Unsupported binary operator");
+                return unexpect_error("Unsupported binary operator: {}", to_string(op));
         }
     }
 
@@ -652,24 +693,83 @@ namespace ebmgen {
             });
         }
         else if (auto field = ast::as<ast::Field>(node)) {
-            body.statement_kind = ebm::StatementOp::FIELD_DECL;
-            ebm::FieldDecl field_decl;
-            auto field_name_ref = add_identifier(field->ident->ident);
-            if (!field_name_ref) {
-                return unexpect_error(std::move(field_name_ref.error()));
+            if (auto union_type = ast::as<ast::UnionType>(field->field_type)) {
+                body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
+                ebm::PropertyDecl prop_decl;
+                auto field_name_ref = add_identifier(field->ident->ident);
+                if (!field_name_ref) {
+                    return unexpect_error(std::move(field_name_ref.error()));
+                }
+                prop_decl.name = *field_name_ref;
+                auto property_type_ref = convert_type(std::static_pointer_cast<ast::UnionType>(field->field_type));
+                if (!property_type_ref) {
+                    return unexpect_error(std::move(property_type_ref.error()));
+                }
+                prop_decl.property_type = *property_type_ref;
+                // TODO: Handle parent_format and merge_mode
+                body.property_decl(std::move(prop_decl));
+                return add_statement(new_id, std::move(body));
             }
-            field_decl.name = *field_name_ref;
-            auto type_ref = convert_type(field->field_type);
-            if (!type_ref) {
-                return unexpect_error(std::move(type_ref.error()));
+            else {
+                body.statement_kind = ebm::StatementOp::FIELD_DECL;
+                ebm::FieldDecl field_decl;
+                if (field->ident) {
+                    auto field_name_ref = add_identifier(field->ident->ident);
+                    if (!field_name_ref) {
+                        return unexpect_error(std::move(field_name_ref.error()));
+                    }
+                    field_decl.name = *field_name_ref;
+                }
+                else {
+                    auto anonymous = add_anonymous_identifier();
+                    if (!anonymous) {
+                        return unexpect_error(std::move(anonymous.error()));
+                    }
+                    field_decl.name = *anonymous;
+                }
+                auto type_ref = convert_type(field->field_type);
+                if (!type_ref) {
+                    return unexpect_error(std::move(type_ref.error()));
+                }
+                field_decl.field_type = *type_ref;
+                // TODO: Handle parent_struct and is_state_variable
+                body.field_decl(std::move(field_decl));
+                return add_statement(new_id, std::move(body));
             }
-            field_decl.field_type = *type_ref;
-            // TODO: Handle parent_struct and is_state_variable
-            body.field_decl(std::move(field_decl));
-            return add_statement(new_id, std::move(body));
         }
         // TODO: Implement conversion for different statement types
-        else if (auto expr = ast::as<ast::Expr>(node)) {
+        else if (auto binary_expr = ast::as<ast::Binary>(node)) {
+            if (binary_expr->op == ast::BinaryOp::define_assign || binary_expr->op == ast::BinaryOp::const_assign) {
+                body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
+                ebm::VariableDecl var_decl;
+                auto name_ident = ast::as<ast::Ident>(binary_expr->left);
+                if (!name_ident) {
+                    return unexpect_error("Left-hand side of define_assign/const_assign must be an identifier");
+                }
+                auto name_ref = add_identifier(name_ident->ident);
+                if (!name_ref) {
+                    return unexpect_error(std::move(name_ref.error()));
+                }
+                var_decl.name = *name_ref;
+
+                auto type_ref = convert_type(binary_expr->left->expr_type);
+                if (!type_ref) {
+                    return unexpect_error(std::move(type_ref.error()));
+                }
+                var_decl.var_type = *type_ref;
+
+                if (binary_expr->right) {
+                    auto initial_value_ref = convert_expr(binary_expr->right);
+                    if (!initial_value_ref) {
+                        return unexpect_error(std::move(initial_value_ref.error()));
+                    }
+                    var_decl.initial_value = *initial_value_ref;
+                }
+                var_decl.is_constant(binary_expr->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
+                body.var_decl(std::move(var_decl));
+                return add_statement(new_id, std::move(body));
+            }
+            // Fall through to expression conversion if not define_assign or const_assign
             body.statement_kind = ebm::StatementOp::EXPRESSION;
             auto expr_ref = convert_expr(ast::cast_to<ast::Expr>(node));
             if (!expr_ref) {
@@ -735,6 +835,9 @@ namespace ebmgen {
             return add_expr(std::move(body));
         }
         else if (auto binary = ast::as<ast::Binary>(node)) {
+            if (binary->op == ast::BinaryOp::define_assign || binary->op == ast::BinaryOp::const_assign) {
+                return unexpect_error("define_assign/const_assign should be handled as a statement, not an expression");
+            }
             body.op = ebm::ExpressionOp::BINARY_OP;
             auto left_ref = convert_expr(binary->left);
             if (!left_ref) {

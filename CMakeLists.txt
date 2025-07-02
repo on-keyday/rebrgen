@@ -56,6 +56,9 @@ add_executable(ebmgen
     "src/ebmgen/convert.cpp"
     "src/ebmgen/converter.cpp"
     "src/ebmgen/load_json.cpp"
+    "src/ebmgen/convert/statement.cpp"
+    "src/ebmgen/convert/expression.cpp"
+    "src/ebmgen/convert/type.cpp"
 )
 
 add_executable(gen_template 

@@ -94,6 +94,7 @@ enum ExpressionOp:
     INDEX_ACCESS 
     MEMBER_ACCESS 
     TYPE_CAST
+    RANGE
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -135,6 +136,9 @@ format ExpressionBody:
             target_type :TypeRef
             source_expr :ExpressionRef
             cast_kind :CastType # Hint for the backend
+        ExpressionOp.RANGE:
+            start :ExpressionRef # Start of the range (maybe null)
+            end :ExpressionRef # End of the range (maybe null)
 
 enum LoopType:
     :u8
@@ -241,13 +245,22 @@ enum FallbackType:
     :u8
     FUNDAMENTAL # Expressions that have been reduced to the most basic level
 
-format Fallback:
+format FallbackStatement:
     fallback_type :FallbackType # Type of fallback
     block :Block # Fallback block to execute if no other branch matches
 
-format Fallbacks:
+format FallbackStatements:
     len :Varint # Number of fallbacks
-    container :[len.value]Fallback # List of fallbacks
+    container :[len.value]FallbackStatement # List of fallbacks
+
+format FallbackExpression:
+    fallback_type :FallbackType # Type of fallback
+    expression :ExpressionRef # Fallback expression to evaluate if no other branch matches
+
+format FallbackExpressions:
+    len :Varint # Number of fallbacks
+    container :[len.value]FallbackExpression # List of fallbacks
+
 
 enum StatementOp:
     :u8
@@ -314,13 +327,13 @@ format StatementBody:
             data_type :TypeRef
             endian :EndianExpr # Endianness for read
             bit_size :Varint # Number of bits to read
-            fallbacks :Fallbacks # Optional fallbacks for read implementation
+            fallback_stmt :FallbackStatements # Optional fallbacks for read implementation
         StatementOp.WRITE_DATA:
             source_expr :ExpressionRef # Data to write
             data_type :TypeRef
             endian :EndianExpr # Endianness for write
             bit_size :Varint # Number of bits to write
-            fallbacks :Fallbacks # Optional fallbacks for write implementation
+            fallback_stmt :FallbackStatements # Optional fallbacks for write implementation
         StatementOp.SEEK_STREAM:
             offset :ExpressionRef # Offset to seek to
             stream_type :IdentifierRef # e.g., "input", "output"
@@ -436,6 +449,7 @@ enum TypeKind:
     RECURSIVE_STRUCT
     BOOL
     VOID
+    META # like `Enum.member` syntax's Enum's type
 
     # qualifiers
     ENUM
@@ -443,6 +457,7 @@ enum TypeKind:
     VECTOR
     # for union
     VARIANT
+    RANGE
 
     # encoder/decoder return value
     CODER_RETURN
@@ -494,6 +509,8 @@ format TypeBody:
             inner_type :TypeRef # Optional inner type
         TypeKind.PTR:
             pointee_type :TypeRef # Pointer to another type
+        TypeKind.RANGE:
+            base_type :TypeRef # Base type of the range (e.g., u8, u16) (maybe null)
 
 format AnyRef:
     id :Varint # Reference to an entry in the identifiers, types, or expressions table

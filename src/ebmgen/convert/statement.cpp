@@ -227,10 +227,12 @@ namespace ebmgen {
                     // TODO: Handle other Member types within Format body if necessary (e.g., functions)
                 }
             }
-            return set_length(struct_decl.fields).and_then([&] {
-                body.struct_decl(std::move(struct_decl));
-                return add_statement(new_id, std::move(body));
-            });
+            auto struct_decl_ref = add_statement(new_id, std::move(body));
+            if (!struct_decl_ref) {
+                return unexpect_error(std::move(struct_decl_ref.error()));
+            }
+
+            return struct_decl_ref;
         }
         else if (auto enum_decl = ast::as<ast::Enum>(node)) {
             body.statement_kind = ebm::StatementOp::ENUM_DECL;

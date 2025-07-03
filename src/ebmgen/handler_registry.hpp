@@ -8,17 +8,38 @@
 
 namespace ebmgen {
 
-    class Converter;  // Forward declaration to avoid circular dependency
+    class HandlerRegistry;  // Forward declaration to avoid circular dependency
+
+    enum class GenerateType {
+        Normal,
+        Encode,
+        Decode,
+    };
+    struct ConverterProxy {
+       private:
+        const GenerateType type;
+        HandlerRegistry& converter;
+
+       public:
+        constexpr ConverterProxy(HandlerRegistry& conv, GenerateType t) : type(t), converter(conv) {}
+
+        constexpr GenerateType get_type() const {
+            return type;
+        }
+
+        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+        expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
+    };
 
     // Defines the function signature for all statement handlers.
     // It takes a reference to the Converter to access its helper methods.
     using StatementHandler =
-        std::function<expected<ebm::StatementRef>(Converter&, ebm::StatementRef, const std::shared_ptr<ast::Node>&)>;
+        std::function<expected<ebm::StatementRef>(ConverterProxy& c, ebm::StatementRef new_ref, const std::shared_ptr<ast::Node>& node)>;
 
     // A registry for the new, refactored handler functions.
     class HandlerRegistry {
        private:
-        std::unordered_map<ast::NodeType, StatementHandler> statement_handlers;
+        std::unordered_map<std::pair<ast::NodeType, GenerateType>, StatementHandler> statement_handlers;
 
         // This method will be implemented in the .cpp file.
         void register_statement_handlers();
@@ -30,8 +51,8 @@ namespace ebmgen {
 
         // Finds a handler for a given node type.
         // Returns nullptr if no handler is registered.
-        StatementHandler* get_statement_handler(ast::NodeType type) {
-            if (auto it = statement_handlers.find(type); it != statement_handlers.end()) {
+        StatementHandler* get_statement_handler(ConverterProxy& p, ast::NodeType type) {
+            if (auto it = statement_handlers.find({type, p.get_type()}); it != statement_handlers.end()) {
                 return &it->second;
             }
             return nullptr;
@@ -39,8 +60,8 @@ namespace ebmgen {
 
        protected:
         // Provides a way for the implementation file to register handlers.
-        void add_statement_handler(ast::NodeType type, StatementHandler handler) {
-            statement_handlers[type] = std::move(handler);
+        void add_statement_handler(GenerateType p, ast::NodeType type, StatementHandler handler) {
+            statement_handlers[{type, p}] = std::move(handler);
         }
     };
 

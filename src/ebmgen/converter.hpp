@@ -4,6 +4,7 @@
 #include <core/ast/ast.h>
 #include <ebm/extended_binary_module.hpp>
 #include <unordered_set>
+#include "handler_registry.hpp"
 
 namespace ebmgen {
 
@@ -14,11 +15,13 @@ namespace ebmgen {
         Error convert(const std::shared_ptr<brgen::ast::Node>& ast_root);
 
        private:
+        friend struct ConverterProxy;
         ebm::ExtendedBinaryModule& ebm;
         std::shared_ptr<ast::Node> root;
         Error err;
         std::uint64_t next_id = 1;
-        std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
+        GenerateType current_generate_type = GenerateType::Normal;
+        std::unordered_map<std::pair<std::shared_ptr<ast::Node>, GenerateType>, ebm::StatementRef> visited_nodes;
 
         std::unordered_map<std::string, ebm::IdentifierRef> identifier_cache;
         std::unordered_map<std::string, ebm::StringRef> string_cache;
@@ -68,9 +71,10 @@ namespace ebmgen {
         void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
+        Error encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        Error decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
-        expected<ebm::StreamType> to_ebm_stream_type(ast::IOMethod method);
 
         Error set_lengths();
     };

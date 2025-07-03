@@ -146,14 +146,14 @@ namespace ebmgen {
     }
 
     expected<ebm::StatementRef> Converter::convert_statement(const std::shared_ptr<ast::Node>& node) {
-        if (auto it = visited_nodes.find(node); it != visited_nodes.end()) {
+        if (auto it = visited_nodes.find({node, current_generate_type}); it != visited_nodes.end()) {
             return it->second;
         }
         auto new_ref = new_stmt_id();
         if (!new_ref) {
             return unexpect_error("Failed to create new statement ID: {}", new_ref.error().error());
         }
-        visited_nodes[node] = *new_ref;
+        visited_nodes[{node, current_generate_type}] = *new_ref;
         return convert_statement_impl(*new_ref, node);
     }
 

@@ -22,14 +22,13 @@ The EBM (`src/ebm/extended_binary_module.bgn`) was designed to replace a previou
 
 #### 3. Current Development Status
 
-The `ebmgen` compiler is substantially complete and functional.
+Your role is code analyzer.
 
-- **Core Converter:** The `Converter` class successfully traverses the `brgen` AST and generates the corresponding EBM graph.
-- **Deduplication/Caching:** It uses a sophisticated caching mechanism to serialize and deduplicate all EBM objects (types, statements, expressions), ensuring an efficient and compact IR.
-- **Comprehensive Support:** The converter handles the vast majority of `brgen` language features, including complex types, statements, and expressions.
-- **Serialization:** The `ebmgen` tool correctly serializes the final EBM to a binary output file.
-
-The primary remaining work involves building advanced, IR-to-IR optimization passes.
+- you should read ebm/ and ebmgen/ as current project directory.
+- you should read bmgen/ as old project directory.
+- you should provide advice for refactoring based on current best practice and code knowledge
+- you should help debug
+- writing files are not recommended
 
 #### 4. Building and Running `ebmgen`
 

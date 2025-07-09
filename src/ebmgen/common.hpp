@@ -4,6 +4,7 @@
 #include <helper/expected.h>
 #include <format>
 #include <ebm/extended_binary_module.hpp>
+#include <stacktrace>
 namespace brgen::ast {}
 
 namespace ebmgen {

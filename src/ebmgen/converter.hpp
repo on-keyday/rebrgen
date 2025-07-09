@@ -142,52 +142,85 @@ namespace ebmgen {
             return expression_repo.add(ident_source, std::move(body));
         }
 
-        /*
-        std::unordered_map<std::string, ebm::IdentifierRef> identifier_cache;
-        std::unordered_map<std::string, ebm::StringRef> string_cache;
-        std::unordered_map<std::string, ebm::TypeRef> type_cache;
-        std::unordered_map<std::string, ebm::ExpressionRef> expression_cache;
-        std::unordered_map<std::string, ebm::StatementRef> statement_cache;
-
-        std::unordered_map<uint64_t, size_t> identifier_map;
-        std::unordered_map<uint64_t, size_t> string_map;
-        std::unordered_map<uint64_t, size_t> type_map;
-        std::unordered_map<uint64_t, size_t> expression_map;
-        std::unordered_map<uint64_t, size_t> statement_map;
-
-        expected<ebm::ExpressionRef> new_expr_id();
-        expected<ebm::TypeRef> new_type_id();
-        expected<ebm::StatementRef> new_stmt_id();
-        expected<ebm::IdentifierRef> new_ident_id();
-        expected<ebm::StringRef> new_string_id();
-
-        expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body);
-        expected<ebm::StringRef> add_string(const std::string& str);
-        expected<ebm::TypeRef> add_type(ebm::TypeBody&& body);
-        expected<ebm::IdentifierRef> add_identifier(const std::string& name);
-        expected<ebm::StatementRef> add_statement(ebm::StatementBody&& body);
-        expected<ebm::StatementRef> add_statement(ebm::StatementRef stmt_id, ebm::StatementBody&& body);
-
-        ebm::Identifier* get_identifier(ebm::IdentifierRef ref);
-        ebm::StringLiteral* get_string(ebm::StringRef ref);
-        ebm::Type* get_type(ebm::TypeRef ref);
-        ebm::Expression* get_expression(ebm::ExpressionRef ref);
-        ebm::Statement* get_statement(ebm::StatementRef ref);
-
-        */
-
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type);
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
 
         void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
-        Error encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
-        Error decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<ebm::StatementRef> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<ebm::StatementRef> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 
         Error set_lengths();
+
+        ebm::Endian global_endian = ebm::Endian::big;
+        ebm::Endian local_endian = ebm::Endian::unspec;
+        ebm::StatementRef current_dynamic_endian = ebm::StatementRef{};
+        bool on_function = false;
+
+        expected<ebm::EndianExpr> get_endian(ebm::Endian base, bool sign);
+        bool set_endian(ebm::Endian e, ebm::StatementRef id = ebm::StatementRef{});
+        expected<ebm::TypeRef> get_counter_type();
+
+        expected<ebm::TypeRef> get_unsigned_n_int(size_t n);
+        expected<ebm::TypeRef> get_u8_n_array(size_t n);
+        expected<ebm::TypeRef> get_bool_type();
+        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
+        expected<ebm::ExpressionRef> get_int_literal(std::uint64_t value);
+
+        expected<ebm::StatementRef> add_endian_specific(ebm::EndianExpr endian, auto&& on_little_endian, auto&& on_big_endian) {
+            ebm::StatementRef ref;
+            const auto is_native_or_dynamic = endian.endian() == ebm::Endian::native || endian.endian() == ebm::Endian::dynamic;
+            if (is_native_or_dynamic) {
+                ebm::ExpressionBody is_little;
+                is_little.op = ebm::ExpressionOp::IS_LITTLE_ENDIAN;
+                is_little.endian_expr(endian.dynamic_ref);  // if native, this will be empty
+                auto is_little_ref = add_expr(std::move(is_little));
+                if (!is_little_ref) {
+                    return unexpect_error(std::move(is_little_ref.error()));
+                }
+                ebm::IfStatement if_stmt;
+                if_stmt.condition = *is_little_ref;
+                expected<ebm::StatementRef> then_block = on_little_endian();
+                if (!then_block) {
+                    return unexpect_error(std::move(then_block.error()));
+                }
+                if_stmt.then_block = *then_block;
+                expected<ebm::StatementRef> else_block = on_big_endian();
+                if (!else_block) {
+                    return unexpect_error(std::move(else_block.error()));
+                }
+                if_stmt.else_block = *else_block;
+                ebm::StatementBody body;
+                body.statement_kind = ebm::StatementOp::IF_STATEMENT;
+                body.if_statement(std::move(if_stmt));
+                auto res = add_statement(std::move(body));
+                if (!res) {
+                    return unexpect_error(std::move(res.error()));
+                }
+                ref = *res;
+            }
+            else if (endian.endian() == ebm::Endian::little) {
+                expected<ebm::StatementRef> res = on_little_endian();
+                if (!res) {
+                    return unexpect_error(std::move(res.error()));
+                }
+                ref = *res;
+            }
+            else if (endian.endian() == ebm::Endian::big) {
+                expected<ebm::StatementRef> res = on_big_endian();
+                if (!res) {
+                    return unexpect_error(std::move(res.error()));
+                }
+                ref = *res;
+            }
+            else {
+                return unexpect_error("Unsupported endian type: {}", to_string(endian.endian()));
+            }
+            return ref;
+        }
     };
 
 }  // namespace ebmgen

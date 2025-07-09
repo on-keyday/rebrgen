@@ -140,5 +140,8 @@
         }
       ]
     }
-  }
+  },
+  "clangd.arguments": [
+    "-compile-commands-dir=${workspaceFolder}/built/native/Debug"
+  ]
 }

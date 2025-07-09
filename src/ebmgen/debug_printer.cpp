@@ -1,7 +1,6 @@
 #include "debug_printer.hpp"
 
 #include <iostream>
-#include <iomanip>
 
 namespace ebmgen {
 
@@ -108,12 +107,12 @@ namespace ebmgen {
 
     void DebugPrinter::print_identifier(const ebm::Identifier& ident) const {
         indent();
-        os_ << "ID: " << ident.id.id.value() << ", Name: \"" << ident.name.data << "\"" << std::endl;
+        os_ << "ID: " << ident.id.id.value() << ", Name: \"" << ident.body.data << "\"" << std::endl;
     }
 
     void DebugPrinter::print_string_literal(const ebm::StringLiteral& str_lit) const {
         indent();
-        os_ << "ID: " << str_lit.id.id.value() << ", Value: \"" << str_lit.value.data << "\"" << std::endl;
+        os_ << "ID: " << str_lit.id.id.value() << ", Value: \"" << str_lit.body.data << "\"" << std::endl;
     }
 
     void DebugPrinter::print_type(const ebm::Type& type) const {
@@ -440,13 +439,7 @@ namespace ebmgen {
                     }
                     indent_level_--;
                     indent();
-                    os_ << "Else Block (" << if_stmt->else_block.container.size() << ") :" << std::endl;
-                    indent_level_++;
-                    for (const auto& stmt_ref : if_stmt->else_block.container) {
-                        indent();
-                        os_ << "- Statement Ref ID: " << stmt_ref.id.value() << std::endl;
-                    }
-                    indent_level_--;
+                    os_ << "Else Block ID: " << if_stmt->else_block.id.value() << std::endl;
                 }
                 break;
             }
@@ -503,13 +496,7 @@ namespace ebmgen {
                     indent();
                     os_ << "Condition Expr ID: " << match_branch->condition.id.value() << std::endl;
                     indent();
-                    os_ << "Body Block (" << match_branch->body.container.size() << ") :" << std::endl;
-                    indent_level_++;
-                    for (const auto& stmt_ref : match_branch->body.container) {
-                        indent();
-                        os_ << "- Statement Ref ID: " << stmt_ref.id.value() << std::endl;
-                    }
-                    indent_level_--;
+                    os_ << "Body Block ID: " << match_branch->body.id.value() << std::endl;
                 }
                 break;
             }
@@ -656,7 +643,7 @@ namespace ebmgen {
                 break;
             }
             case ebm::StatementOp::PROGRAM_DECL: {
-                if (auto body_block = body.body()) {
+                if (auto body_block = body.block()) {
                     indent();
                     os_ << "Body Block (" << body_block->container.size() << ") :" << std::endl;
                     indent_level_++;

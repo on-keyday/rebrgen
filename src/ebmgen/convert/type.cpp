@@ -115,44 +115,15 @@ namespace ebmgen {
         else if (auto struct_type = ast::as<ast::StructType>(type)) {
             body.kind = struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
             if (auto locked_base = struct_type->base.lock()) {
-                if (auto member = ast::as<ast::Member>(locked_base)) {
-                    auto name_ref = add_identifier(member->ident->ident);
-                    if (!name_ref) {
-                        return unexpect_error(std::move(name_ref.error()));
-                    }
-                    body.id(ebm::StatementRef{name_ref->id});
-                } else {
-                    return unexpect_error("StructType base is not a Member");
+                auto name_ref = convert_statement(locked_base);
+                if (!name_ref) {
+                    return unexpect_error(std::move(name_ref.error()));
                 }
+                body.id(*name_ref);
             }
             else {
                 return unexpect_error("StructType has no base");
             }
-        }
-        else if (auto union_type = ast::as<ast::UnionType>(type)) {
-            body.kind = ebm::TypeKind::VARIANT;
-            if (union_type->common_type) {
-                auto common_type_ref = convert_type(union_type->common_type);
-                if (!common_type_ref) {
-                    return unexpect_error(std::move(common_type_ref.error()));
-                }
-                body.common_type(*common_type_ref);
-            }
-            ebm::Types members;
-            for (auto& candidate : union_type->candidates) {
-                if (auto field = candidate->field.lock()) {
-                    auto member_type_ref = convert_type(field->field_type);
-                    if (!member_type_ref) {
-                        return unexpect_error(std::move(member_type_ref.error()));
-                    }
-                    append(members, *member_type_ref);
-                }
-            }
-            auto ok = set_length(members);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
-            body.members(std::move(members));
         }
         else if (auto struct_union_type = ast::as<ast::StructUnionType>(type)) {
             body.kind = ebm::TypeKind::VARIANT;
@@ -165,10 +136,6 @@ namespace ebmgen {
                     return unexpect_error(std::move(member_type_ref.error()));
                 }
                 append(members, *member_type_ref);
-            }
-            auto ok = set_length(members);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
             }
             body.members(std::move(members));
         }

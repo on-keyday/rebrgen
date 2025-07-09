@@ -341,42 +341,44 @@ namespace ebm {
         return std::nullopt;
     }
     enum class StatementOp : std::uint8_t {
-        ASSIGNMENT = 0,
-        RETURN = 1,
-        ASSERT = 2,
-        NEW_OBJECT = 3,
-        READ_DATA = 4,
-        WRITE_DATA = 5,
-        SEEK_STREAM = 6,
-        GET_STREAM_OFFSET = 7,
-        GET_REMAINING_BYTES = 8,
-        CAN_READ_STREAM = 9,
-        IF_STATEMENT = 10,
-        LOOP_STATEMENT = 11,
-        MATCH_STATEMENT = 12,
-        MATCH_BRANCH = 13,
-        BREAK = 14,
-        CONTINUE = 15,
-        FUNCTION_DECL = 16,
-        VARIABLE_DECL = 17,
-        FIELD_DECL = 18,
-        ENUM_DECL = 19,
-        ENUM_MEMBER_DECL = 20,
-        STRUCT_DECL = 21,
-        UNION_DECL = 22,
-        UNION_MEMBER_DECL = 23,
-        PROGRAM_DECL = 24,
-        STATE_DECL = 25,
-        BIT_FIELD_DECL = 26,
-        PROPERTY_DECL = 27,
-        METADATA = 28,
-        IMPORT_MODULE = 29,
-        EXPRESSION = 30,
-        PHI_NODE = 31,
-        ERROR_REPORT = 32,
+        BLOCK = 0,
+        ASSIGNMENT = 1,
+        RETURN = 2,
+        ASSERT = 3,
+        NEW_OBJECT = 4,
+        READ_DATA = 5,
+        WRITE_DATA = 6,
+        SEEK_STREAM = 7,
+        GET_STREAM_OFFSET = 8,
+        GET_REMAINING_BYTES = 9,
+        CAN_READ_STREAM = 10,
+        IF_STATEMENT = 11,
+        LOOP_STATEMENT = 12,
+        MATCH_STATEMENT = 13,
+        MATCH_BRANCH = 14,
+        BREAK = 15,
+        CONTINUE = 16,
+        FUNCTION_DECL = 17,
+        VARIABLE_DECL = 18,
+        FIELD_DECL = 19,
+        ENUM_DECL = 20,
+        ENUM_MEMBER_DECL = 21,
+        STRUCT_DECL = 22,
+        UNION_DECL = 23,
+        UNION_MEMBER_DECL = 24,
+        PROGRAM_DECL = 25,
+        STATE_DECL = 26,
+        BIT_FIELD_DECL = 27,
+        PROPERTY_DECL = 28,
+        METADATA = 29,
+        IMPORT_MODULE = 30,
+        EXPRESSION = 31,
+        PHI_NODE = 32,
+        ERROR_REPORT = 33,
     };
     constexpr const char* to_string(StatementOp e) {
         switch(e) {
+            case StatementOp::BLOCK: return "BLOCK";
             case StatementOp::ASSIGNMENT: return "ASSIGNMENT";
             case StatementOp::RETURN: return "RETURN";
             case StatementOp::ASSERT: return "ASSERT";
@@ -417,6 +419,9 @@ namespace ebm {
     constexpr std::optional<StatementOp> StatementOp_from_string(std::string_view str) {
         if (str.empty()) {
             return std::nullopt;
+        }
+        if (str == "BLOCK") {
+            return StatementOp::BLOCK;
         }
         if (str == "ASSIGNMENT") {
             return StatementOp::ASSIGNMENT;
@@ -786,7 +791,6 @@ namespace ebm {
     struct AnyRef;
     struct ExpressionBody;
     struct Expression;
-    struct IfStatement;
     struct MatchStatement;
     struct StructDecl;
     struct StateDecl;
@@ -794,6 +798,7 @@ namespace ebm {
     struct Metadata;
     struct FallbackStatements;
     struct FallbackExpressions;
+    struct IfStatement;
     struct LoopStatement;
     struct MatchBranch;
     struct FunctionDecl;
@@ -1023,13 +1028,6 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
-    struct EBM_API IfStatement{
-        ExpressionRef condition;
-        Block then_block;
-        Block else_block;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-    };
     struct EBM_API MatchStatement{
         ExpressionRef target;
         ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_17_;
@@ -1078,6 +1076,13 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
+    struct EBM_API IfStatement{
+        ExpressionRef condition;
+        Block then_block;
+        StatementRef else_block;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+    };
     struct EBM_API LoopStatement{
         LoopType loop_type{};
         struct EBM_API union_struct_21{
@@ -1106,7 +1111,7 @@ namespace ebm {
     };
     struct EBM_API MatchBranch{
         ExpressionRef condition;
-        Block body;
+        StatementRef body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
@@ -1194,39 +1199,38 @@ namespace ebm {
     struct EBM_API StatementBody{
         StatementOp statement_kind{};
         struct EBM_API union_struct_29{
+            Block block;
+        };
+        struct EBM_API union_struct_30{
             ExpressionRef target;
             ExpressionRef value;
         };
-        struct EBM_API union_struct_30{
+        struct EBM_API union_struct_31{
             ExpressionRef value;
         };
-        struct EBM_API union_struct_31{
-            ExpressionRef condition;
-        };
         struct EBM_API union_struct_32{
-            ExpressionRef target_var;
-            TypeRef object_type;
+            ExpressionRef condition;
         };
         struct EBM_API union_struct_33{
             ExpressionRef target_var;
-            TypeRef data_type;
-            EndianExpr endian;
-            Varint bit_size;
-            FallbackStatements fallback_stmt;
+            TypeRef object_type;
         };
         struct EBM_API union_struct_34{
-            ExpressionRef source_expr;
+            ExpressionRef target_var;
             TypeRef data_type;
             EndianExpr endian;
             Varint bit_size;
             FallbackStatements fallback_stmt;
         };
         struct EBM_API union_struct_35{
-            ExpressionRef offset;
-            StreamType stream_type{};
+            ExpressionRef source_expr;
+            TypeRef data_type;
+            EndianExpr endian;
+            Varint bit_size;
+            FallbackStatements fallback_stmt;
         };
         struct EBM_API union_struct_36{
-            ExpressionRef target_var;
+            ExpressionRef offset;
             StreamType stream_type{};
         };
         struct EBM_API union_struct_37{
@@ -1236,81 +1240,85 @@ namespace ebm {
         struct EBM_API union_struct_38{
             ExpressionRef target_var;
             StreamType stream_type{};
-            ExpressionRef num_bytes;
         };
         struct EBM_API union_struct_39{
-            IfStatement if_statement;
+            ExpressionRef target_var;
+            StreamType stream_type{};
+            ExpressionRef num_bytes;
         };
         struct EBM_API union_struct_40{
-            LoopStatement loop;
+            IfStatement if_statement;
         };
         struct EBM_API union_struct_41{
-            MatchStatement match_statement;
+            LoopStatement loop;
         };
         struct EBM_API union_struct_42{
-            MatchBranch match_branch;
+            MatchStatement match_statement;
         };
         struct EBM_API union_struct_43{
-            LoopFlowControl break_;
+            MatchBranch match_branch;
         };
         struct EBM_API union_struct_44{
-            LoopFlowControl continue_;
+            LoopFlowControl break_;
         };
         struct EBM_API union_struct_45{
-            FunctionDecl func_decl;
+            LoopFlowControl continue_;
         };
         struct EBM_API union_struct_46{
-            VariableDecl var_decl;
+            FunctionDecl func_decl;
         };
         struct EBM_API union_struct_47{
-            FieldDecl field_decl;
+            VariableDecl var_decl;
         };
         struct EBM_API union_struct_48{
-            EnumDecl enum_decl;
+            FieldDecl field_decl;
         };
         struct EBM_API union_struct_49{
-            EnumMemberDecl enum_member_decl;
+            EnumDecl enum_decl;
         };
         struct EBM_API union_struct_50{
-            StructDecl struct_decl;
+            EnumMemberDecl enum_member_decl;
         };
         struct EBM_API union_struct_51{
-            UnionDecl union_decl;
+            StructDecl struct_decl;
         };
         struct EBM_API union_struct_52{
-            UnionMemberDecl union_member_decl;
+            UnionDecl union_decl;
         };
         struct EBM_API union_struct_53{
-            Block body;
+            UnionMemberDecl union_member_decl;
         };
         struct EBM_API union_struct_54{
-            StateDecl state_decl;
+            Block block;
         };
         struct EBM_API union_struct_55{
-            BitFieldDecl bit_field_decl;
+            StateDecl state_decl;
         };
         struct EBM_API union_struct_56{
-            PropertyDecl property_decl;
+            BitFieldDecl bit_field_decl;
         };
         struct EBM_API union_struct_57{
-            Metadata metadata;
+            PropertyDecl property_decl;
         };
         struct EBM_API union_struct_58{
+            Metadata metadata;
+        };
+        struct EBM_API union_struct_59{
             IdentifierRef module_name;
             IdentifierRef alias;
         };
-        struct EBM_API union_struct_59{
+        struct EBM_API union_struct_60{
             ExpressionRef target_var;
             Varint params_len;
             std::vector<PhiParam> params;
         };
-        struct EBM_API union_struct_60{
+        struct EBM_API union_struct_61{
             ErrorReport error_report;
         };
-        struct EBM_API union_struct_61{
+        struct EBM_API union_struct_62{
             ExpressionRef expression;
         };
-        std::variant<std::monostate, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61> union_variant_28;
+        std::variant<std::monostate, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45, union_struct_46, union_struct_47, union_struct_48, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62> union_variant_28;
         std::optional<IdentifierRef> alias() const;
         bool alias(IdentifierRef&& v);
         bool alias(const IdentifierRef& v);
@@ -1320,9 +1328,9 @@ namespace ebm {
         std::optional<Varint> bit_size() const;
         bool bit_size(Varint&& v);
         bool bit_size(const Varint& v);
-        std::optional<Block> body() const;
-        bool body(Block&& v);
-        bool body(const Block& v);
+        std::optional<Block> block() const;
+        bool block(Block&& v);
+        bool block(const Block& v);
         std::optional<LoopFlowControl> break_() const;
         bool break_(LoopFlowControl&& v);
         bool break_(const LoopFlowControl& v);
@@ -1443,9 +1451,6 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_64{
-            std::uint8_t size = 0;
-        };
         struct EBM_API union_struct_65{
             std::uint8_t size = 0;
         };
@@ -1453,44 +1458,47 @@ namespace ebm {
             std::uint8_t size = 0;
         };
         struct EBM_API union_struct_67{
+            std::uint8_t size = 0;
         };
         struct EBM_API union_struct_68{
-            TypeRef element_type;
-            Varint length;
         };
         struct EBM_API union_struct_69{
             TypeRef element_type;
+            Varint length;
         };
         struct EBM_API union_struct_70{
-            StatementRef id;
+            TypeRef element_type;
         };
         struct EBM_API union_struct_71{
             StatementRef id;
         };
         struct EBM_API union_struct_72{
             StatementRef id;
-            TypeRef base_type;
         };
         struct EBM_API union_struct_73{
+            StatementRef id;
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_74{
             TypeRef common_type;
             Types members;
         };
-        struct EBM_API union_struct_74{
+        struct EBM_API union_struct_75{
             TypeRef coder_type;
         };
-        struct EBM_API union_struct_75{
+        struct EBM_API union_struct_76{
             TypeRef property_type;
         };
-        struct EBM_API union_struct_76{
+        struct EBM_API union_struct_77{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_77{
+        struct EBM_API union_struct_78{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_78{
+        struct EBM_API union_struct_79{
             TypeRef base_type;
         };
-        std::variant<std::monostate, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78> union_variant_63;
+        std::variant<std::monostate, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79> union_variant_64;
         std::optional<TypeRef> base_type() const;
         bool base_type(TypeRef&& v);
         bool base_type(const TypeRef& v);
@@ -1546,13 +1554,13 @@ namespace ebm {
     };
     struct EBM_API Identifier{
         IdentifierRef id;
-        String name;
+        String body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };
     struct EBM_API StringLiteral{
         StringRef id;
-        String value;
+        String body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
     };

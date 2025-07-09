@@ -158,7 +158,7 @@ format LoopStatement:
 format IfStatement:
     condition :ExpressionRef # Condition for the if statement
     then_block :Block
-    else_block :Block # Optional else-if/else
+    else_block :StatementRef
 
 format VariableDecl:
     name :IdentifierRef # Variable name
@@ -263,6 +263,7 @@ format FallbackExpressions:
 
 enum StatementOp:
     :u8
+    BLOCK # Block of statements
     ASSIGNMENT
     RETURN
     ASSERT
@@ -316,6 +317,8 @@ enum StreamType:
 format StatementBody:
     statement_kind :StatementOp
     match statement_kind:
+        StatementOp.BLOCK:
+            block :Block # List of statements
         StatementOp.ASSIGNMENT:
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
@@ -380,7 +383,7 @@ format StatementBody:
         StatementOp.UNION_MEMBER_DECL:
             union_member_decl :UnionMemberDecl
         StatementOp.PROGRAM_DECL:
-            body :Block
+            block :Block
         StatementOp.STATE_DECL:
             state_decl :StateDecl
         StatementOp.BIT_FIELD_DECL:
@@ -411,7 +414,7 @@ format Block:
 
 format MatchBranch:
     condition :ExpressionRef # Case condition (e.g., literal, range, default)
-    body :Block
+    body :StatementRef # Body of the branch
 
 format PhiParam:
     condition :ExpressionRef # Condition for this path (optional)
@@ -535,11 +538,11 @@ format DebugInfo:
 
 format Identifier:
     id :IdentifierRef
-    name :String # Identifier name
+    body :String # Identifier name
 
 format StringLiteral:
     id :StringRef # Reference to this string in the string table
-    value :String # String value
+    body :String # String value
 
 format ExtendedBinaryModule:
     magic: "EBMG" # Magic number for EBM format

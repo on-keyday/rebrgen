@@ -57,8 +57,8 @@ namespace ebmgen {
     }
 
     expected<ebm::CastType> Converter::get_cast_type(ebm::TypeRef dest_ref, ebm::TypeRef src_ref) {
-        auto dest = get_type(dest_ref);
-        auto src = get_type(src_ref);
+        auto dest = type_repo.get(dest_ref);
+        auto src = type_repo.get(src_ref);
 
         if (!dest || !src) {
             return unexpect_error("Invalid type reference for cast");
@@ -128,12 +128,10 @@ namespace ebmgen {
                 return unexpect_error("cannot parse int literal");
             }
             body.int_value(*value);
-            return add_expr(std::move(body));
         }
         else if (auto literal = ast::as<ast::BoolLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_BOOL;
             body.bool_value(literal->value);
-            return add_expr(std::move(body));
         }
         else if (auto literal = ast::as<ast::StrLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_STRING;
@@ -142,7 +140,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(str_ref.error()));
             }
             body.string_value(*str_ref);
-            return add_expr(std::move(body));
         }
         else if (auto literal = ast::as<ast::TypeLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_TYPE;
@@ -151,7 +148,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(type_ref.error()));
             }
             body.type_ref(*type_ref);
-            return add_expr(std::move(body));
         }
         else if (auto ident = ast::as<ast::Ident>(node)) {
             body.op = ebm::ExpressionOp::IDENTIFIER;
@@ -164,7 +160,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(id_ref.error()));
             }
             body.id(*id_ref);
-            return add_expr(std::move(body));
         }
         else if (auto binary = ast::as<ast::Binary>(node)) {
             if (binary->op == ast::BinaryOp::define_assign || binary->op == ast::BinaryOp::const_assign) {
@@ -186,7 +181,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(bop.error()));
             }
             body.bop(*bop);
-            return add_expr(std::move(body));
         }
         else if (auto unary = ast::as<ast::Unary>(node)) {
             body.op = ebm::ExpressionOp::UNARY_OP;
@@ -200,7 +194,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(uop.error()));
             }
             body.uop(*uop);
-            return add_expr(std::move(body));
         }
         else if (auto index_expr = ast::as<ast::Index>(node)) {
             body.op = ebm::ExpressionOp::INDEX_ACCESS;
@@ -214,7 +207,6 @@ namespace ebmgen {
             }
             body.base(*base_ref);
             body.index(*index_ref);
-            return add_expr(std::move(body));
         }
         else if (auto member_access = ast::as<ast::MemberAccess>(node)) {
             body.op = ebm::ExpressionOp::MEMBER_ACCESS;
@@ -228,7 +220,6 @@ namespace ebmgen {
             }
             body.base(*base_ref);
             body.member(*member_ref);
-            return add_expr(std::move(body));
         }
         else if (auto cast_expr = ast::as<ast::Cast>(node)) {
             body.op = ebm::ExpressionOp::TYPE_CAST;
@@ -251,7 +242,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(cast_kind.error()));
             }
             body.cast_kind(*cast_kind);
-            return add_expr(std::move(body));
         }
         else if (auto range = ast::as<ast::Range>(node)) {
             body.op = ebm::ExpressionOp::RANGE;
@@ -272,10 +262,10 @@ namespace ebmgen {
             }
             body.start(start);
             body.end(end);
-            return add_expr(std::move(body));
         }
         else {
             return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
         }
+        return add_expr(std::move(body));
     }
 }  // namespace ebmgen

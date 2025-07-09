@@ -1,5 +1,6 @@
 #include "../converter.hpp"
-#include <iostream>
+#include "core/ast/node/base.h"
+#include "core/ast/node/expr.h"
 
 namespace ebmgen {
     expected<ebm::StatementRef> Converter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
@@ -11,7 +12,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(cond_ref.error()));
             }
             body.condition(*cond_ref);
-            return add_statement(new_id, std::move(body));
         }
         else if (auto return_stmt = ast::as<ast::Return>(node)) {
             body.statement_kind = ebm::StatementOp::RETURN;
@@ -22,15 +22,15 @@ namespace ebmgen {
                 }
                 body.value(*expr_ref);
             }
-            return add_statement(new_id, std::move(body));
+            else {
+                body.value(ebm::ExpressionRef{});
+            }
         }
         else if (auto break_stmt = ast::as<ast::Break>(node)) {
             body.statement_kind = ebm::StatementOp::BREAK;
-            return add_statement(new_id, std::move(body));
         }
         else if (auto continue_stmt = ast::as<ast::Continue>(node)) {
             body.statement_kind = ebm::StatementOp::CONTINUE;
-            return add_statement(new_id, std::move(body));
         }
         else if (auto if_stmt = ast::as<ast::If>(node)) {
             body.statement_kind = ebm::StatementOp::IF_STATEMENT;
@@ -50,45 +50,20 @@ namespace ebmgen {
                 }
                 append(then_block, *stmt_ref);
             }
-            auto ok = set_length(then_block);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
             ebm_if_stmt.then_block = std::move(then_block);
 
             // Convert else block
-            ebm::Block else_block;
+            ebm::StatementRef else_block;
             if (if_stmt->els) {
-                // Assuming else is an IndentBlock or another If
-                if (auto indent_block = ast::as<ast::IndentBlock>(if_stmt->els)) {
-                    for (auto& element : indent_block->elements) {
-                        auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(element));
-                        if (!stmt_ref) {
-                            return unexpect_error(std::move(stmt_ref.error()));
-                        }
-                        append(else_block, *stmt_ref);
-                    }
+                auto else_ref = convert_statement(if_stmt->els);
+                if (!else_ref) {
+                    return unexpect_error(std::move(else_ref.error()));
                 }
-                else if (auto else_if_stmt = ast::as<ast::If>(if_stmt->els)) {
-                    // Nested if-else if
-                    auto stmt_ref = convert_statement(std::static_pointer_cast<ast::Stmt>(if_stmt->els));
-                    if (!stmt_ref) {
-                        return unexpect_error(std::move(stmt_ref.error()));
-                    }
-                    append(else_block, *stmt_ref);
-                }
-                else {
-                    return unexpect_error("Unsupported node type for else block");
-                }
-            }
-            ok = set_length(else_block);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
+                else_block = *else_ref;
             }
             ebm_if_stmt.else_block = std::move(else_block);
 
             body.if_statement(std::move(ebm_if_stmt));
-            return add_statement(new_id, std::move(body));
         }
         else if (auto loop_stmt = ast::as<ast::Loop>(node)) {
             body.statement_kind = ebm::StatementOp::LOOP_STATEMENT;
@@ -127,7 +102,6 @@ namespace ebmgen {
             }
             ebm_loop_stmt.body = std::move(loop_body_block);
             body.loop(std::move(ebm_loop_stmt));
-            return add_statement(new_id, std::move(body));
         }
         else if (auto match_stmt = ast::as<ast::Match>(node)) {
             body.statement_kind = ebm::StatementOp::MATCH_STATEMENT;
@@ -141,53 +115,44 @@ namespace ebmgen {
             ebm_match_stmt.is_exhaustive(match_stmt->struct_union_type->exhaustive);
 
             for (auto& branch : match_stmt->branch) {
-                ebm::MatchBranch ebm_branch;
-                auto cond_ref = convert_expr(branch->cond->expr);
-                if (!cond_ref) {
-                    return unexpect_error(std::move(cond_ref.error()));
-                }
-                ebm_branch.condition = *cond_ref;
-
-                ebm::Block branch_body_block;
-                if (branch->then) {
-                    if (auto indent_block = ast::as<ast::IndentBlock>(branch->then)) {
-                        for (auto& element : indent_block->elements) {
-                            auto stmt_ref = convert_statement(element);
-                            if (!stmt_ref) {
-                                return unexpect_error(std::move(stmt_ref.error()));
-                            }
-                            append(branch_body_block, *stmt_ref);
-                        }
-                    }
-                    else if (auto stmt_element = ast::as<ast::ScopedStatement>(branch->then)) {
-                        auto stmt_ref = convert_statement(stmt_element->statement);
-                        if (!stmt_ref) {
-                            return unexpect_error(std::move(stmt_ref.error()));
-                        }
-                        append(branch_body_block, *stmt_ref);
-                    }
-                    else {
-                        return unexpect_error("Unsupported node type for match branch body");
-                    }
-                }
-                auto ok = set_length(branch_body_block);
-                if (!ok) {
-                    return unexpect_error(std::move(ok.error()));
-                }
-                ebm_branch.body = std::move(branch_body_block);
-                ebm::StatementBody ebm_branch_stmt;
-                ebm_branch_stmt.statement_kind = ebm::StatementOp::MATCH_BRANCH;
-                ebm_branch_stmt.match_branch(std::move(ebm_branch));
-                auto branch_ref = add_statement(std::move(ebm_branch_stmt));
+                auto branch_ref = convert_statement(branch);
                 if (!branch_ref) {
                     return unexpect_error(std::move(branch_ref.error()));
                 }
                 append(ebm_match_stmt.branches, *branch_ref);
             }
-            return set_length(ebm_match_stmt.branches).and_then([&] {
-                body.match_statement(std::move(ebm_match_stmt));
-                return add_statement(new_id, std::move(body));
-            });
+            body.match_statement(std::move(ebm_match_stmt));
+        }
+        else if (auto indent_block = ast::as<ast::IndentBlock>(node)) {
+            body.statement_kind = ebm::StatementOp::BLOCK;
+            ebm::Block block_body;
+            for (auto& element : indent_block->elements) {
+                auto stmt_ref = convert_statement(element);
+                if (!stmt_ref) {
+                    return unexpect_error(std::move(stmt_ref.error()));
+                }
+                append(block_body, *stmt_ref);
+            }
+            body.block(std::move(block_body));
+        }
+        else if (auto match_branch = ast::as<ast::MatchBranch>(node)) {
+            ebm::MatchBranch ebm_branch;
+            auto cond_ref = convert_expr(match_branch->cond->expr);
+            if (!cond_ref) {
+                return unexpect_error(std::move(cond_ref.error()));
+            }
+            ebm_branch.condition = *cond_ref;
+
+            ebm::StatementRef branch_body_block;
+            if (match_branch->then) {
+                auto stmt_ref = convert_statement(match_branch->then);
+                if (!stmt_ref) {
+                    return unexpect_error(std::move(stmt_ref.error()));
+                }
+                branch_body_block = *stmt_ref;
+            }
+            ebm_branch.body = branch_body_block;
+            body.match_branch(std::move(ebm_branch));
         }
         else if (auto program_stmt = ast::as<ast::Program>(node)) {
             body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
@@ -200,10 +165,7 @@ namespace ebmgen {
                 }
                 append(program_body_block, *stmt_ref);
             }
-            return set_length(program_body_block).and_then([&] {
-                body.body(std::move(program_body_block));
-                return add_statement(new_id, std::move(body));
-            });
+            body.block(std::move(program_body_block));
         }
         else if (auto format = ast::as<ast::Format>(node)) {
             body.statement_kind = ebm::StatementOp::STRUCT_DECL;
@@ -227,12 +189,7 @@ namespace ebmgen {
                     // TODO: Handle other Member types within Format body if necessary (e.g., functions)
                 }
             }
-            auto struct_decl_ref = add_statement(new_id, std::move(body));
-            if (!struct_decl_ref) {
-                return unexpect_error(std::move(struct_decl_ref.error()));
-            }
-
-            return struct_decl_ref;
+            body.struct_decl(std::move(struct_decl));
         }
         else if (auto enum_decl = ast::as<ast::Enum>(node)) {
             body.statement_kind = ebm::StatementOp::ENUM_DECL;
@@ -250,42 +207,38 @@ namespace ebmgen {
                 ebm_enum_decl.base_type = *base_type_ref;
             }
             for (auto& member : enum_decl->members) {
-                ebm::EnumMemberDecl ebm_enum_member_decl;
-                auto member_name_ref = add_identifier(member->ident->ident);
-                if (!member_name_ref) {
-                    return unexpect_error(std::move(member_name_ref.error()));
-                }
-                ebm_enum_member_decl.name = *member_name_ref;
-                if (member->value) {
-                    auto value_expr_ref = convert_expr(member->value);
-                    if (!value_expr_ref) {
-                        return unexpect_error(std::move(value_expr_ref.error()));
-                    }
-                    ebm_enum_member_decl.value = *value_expr_ref;
-                }
-                if (member->str_literal) {
-                    auto str_ref = add_string(member->str_literal->value);
-                    if (!str_ref) {
-                        return unexpect_error(std::move(str_ref.error()));
-                    }
-                    ebm_enum_member_decl.string_repr = *str_ref;
-                }
-                ebm::StatementBody ebm_enum_member_body;
-                ebm_enum_member_body.statement_kind = ebm::StatementOp::ENUM_MEMBER_DECL;
-                ebm_enum_member_body.enum_member_decl(std::move(ebm_enum_member_decl));
-                auto ebm_enum_member_ref = add_statement(std::move(ebm_enum_member_body));
+                auto ebm_enum_member_ref = convert_statement(member);
                 if (!ebm_enum_member_ref) {
                     return unexpect_error(std::move(ebm_enum_member_ref.error()));
                 }
                 // Append the enum member reference to the enum declaration
                 append(ebm_enum_decl.members, *ebm_enum_member_ref);
             }
-            auto ok = set_length(ebm_enum_decl.members);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
             body.enum_decl(std::move(ebm_enum_decl));
-            return add_statement(new_id, std::move(body));
+        }
+        else if (auto enum_member = ast::as<ast::EnumMember>(node)) {
+            ebm::EnumMemberDecl ebm_enum_member_decl;
+            auto member_name_ref = add_identifier(enum_member->ident->ident);
+            if (!member_name_ref) {
+                return unexpect_error(std::move(member_name_ref.error()));
+            }
+            ebm_enum_member_decl.name = *member_name_ref;
+            if (enum_member->value) {
+                auto value_expr_ref = convert_expr(enum_member->value);
+                if (!value_expr_ref) {
+                    return unexpect_error(std::move(value_expr_ref.error()));
+                }
+                ebm_enum_member_decl.value = *value_expr_ref;
+            }
+            if (enum_member->str_literal) {
+                auto str_ref = add_string(enum_member->str_literal->value);
+                if (!str_ref) {
+                    return unexpect_error(std::move(str_ref.error()));
+                }
+                ebm_enum_member_decl.string_repr = *str_ref;
+            }
+            body.statement_kind = ebm::StatementOp::ENUM_MEMBER_DECL;
+            body.enum_member_decl(std::move(ebm_enum_member_decl));
         }
         else if (auto func = ast::as<ast::Function>(node)) {
             body.statement_kind = ebm::StatementOp::FUNCTION_DECL;
@@ -323,12 +276,7 @@ namespace ebmgen {
                 }
                 append(func_decl.params, *param_ref);
             }
-            auto ok = set_length(func_decl.params);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
             body.func_decl(std::move(func_decl));
-            return add_statement(new_id, std::move(body));
         }
         else if (auto metadata_stmt = ast::as<ast::Metadata>(node)) {
             body.statement_kind = ebm::StatementOp::METADATA;
@@ -345,12 +293,7 @@ namespace ebmgen {
                 }
                 append(ebm_metadata.values, *value_expr_ref);
             }
-            auto ok = set_length(ebm_metadata.values);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
             body.metadata(std::move(ebm_metadata));
-            return add_statement(new_id, std::move(body));
         }
         else if (auto state_stmt = ast::as<ast::State>(node)) {
             body.statement_kind = ebm::StatementOp::STATE_DECL;
@@ -369,14 +312,11 @@ namespace ebmgen {
                 }
                 append(state_body_block, *stmt_ref);
             }
-            return set_length(state_body_block).and_then([&] {
-                state_decl.body = std::move(state_body_block);
-                body.state_decl(std::move(state_decl));
-                return add_statement(new_id, std::move(body));
-            });
+            state_decl.body = std::move(state_body_block);
+            body.state_decl(std::move(state_decl));
         }
         else if (auto field = ast::as<ast::Field>(node)) {
-            if (auto union_type = std::static_pointer_cast<ast::UnionType>(field->field_type)) {
+            if (auto union_type = ast::as<ast::UnionType>(field->field_type)) {
                 body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
                 ebm::PropertyDecl prop_decl;
                 auto field_name_ref = add_identifier(field->ident->ident);
@@ -385,7 +325,7 @@ namespace ebmgen {
                 }
                 prop_decl.name = *field_name_ref;
 
-                auto property_type_ref = convert_type(union_type);
+                auto property_type_ref = convert_type(field->field_type);
                 if (!property_type_ref) {
                     return unexpect_error(std::move(property_type_ref.error()));
                 }
@@ -405,7 +345,6 @@ namespace ebmgen {
                 prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
 
                 body.property_decl(std::move(prop_decl));
-                return add_statement(new_id, std::move(body));
             }
             else if (field->bit_alignment != field->eventual_bit_alignment) {
                 body.statement_kind = ebm::StatementOp::BIT_FIELD_DECL;
@@ -441,7 +380,6 @@ namespace ebmgen {
                 bit_field_decl.packed_op_type = ebm::PackedOpType::FIXED;  // Default to FIXED for now
 
                 body.bit_field_decl(std::move(bit_field_decl));
-                return add_statement(new_id, std::move(body));
             }
             else {
                 body.statement_kind = ebm::StatementOp::FIELD_DECL;
@@ -463,7 +401,6 @@ namespace ebmgen {
                 field_decl.field_type = *type_ref;
                 // TODO: Handle parent_struct and is_state_variable
                 body.field_decl(std::move(field_decl));
-                return add_statement(new_id, std::move(body));
             }
         }
         else if (auto io_op_stmt = ast::as<ast::IOOperation>(node)) {
@@ -548,7 +485,6 @@ namespace ebmgen {
                     return unexpect_error("Unhandled IOMethod: {}", ast::to_string(io_op_stmt->method));
                 }
             }
-            return add_statement(new_id, std::move(body));
         }
         else if (auto explicit_error_stmt = ast::as<ast::ExplicitError>(node)) {
             body.statement_kind = ebm::StatementOp::ERROR_REPORT;
@@ -565,14 +501,8 @@ namespace ebmgen {
                 }
                 append(error_report.arguments, *arg_expr_ref);
             }
-            auto ok = set_length(error_report.arguments);
-            if (!ok) {
-                return unexpect_error(std::move(ok.error()));
-            }
             body.error_report(std::move(error_report));
-            return add_statement(new_id, std::move(body));
         }
-
         else if (auto import_stmt = ast::as<ast::Import>(node)) {
             body.statement_kind = ebm::StatementOp::IMPORT_MODULE;
             auto module_name_ref = add_identifier(import_stmt->path);
@@ -580,8 +510,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(module_name_ref.error()));
             }
             body.module_name(*module_name_ref);
-            // TODO: Handle alias if it exists in ast::Import
-            return add_statement(new_id, std::move(body));
         }
         else if (auto implicit_yield_stmt = ast::as<ast::ImplicitYield>(node)) {
             body.statement_kind = ebm::StatementOp::EXPRESSION;
@@ -590,7 +518,6 @@ namespace ebmgen {
                 return unexpect_error(std::move(expr_ref.error()));
             }
             body.expression(*expr_ref);
-            return add_statement(new_id, std::move(body));
         }
         else if (auto binary_expr = ast::as<ast::Binary>(node)) {
             if (binary_expr->op == ast::BinaryOp::assign) {
@@ -605,7 +532,6 @@ namespace ebmgen {
                     return unexpect_error(std::move(value_ref.error()));
                 }
                 body.value(*value_ref);
-                return add_statement(new_id, std::move(body));
             }
             else if (binary_expr->op == ast::BinaryOp::define_assign || binary_expr->op == ast::BinaryOp::const_assign) {
                 body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
@@ -635,18 +561,20 @@ namespace ebmgen {
                 }
                 var_decl.is_constant(binary_expr->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
                 body.var_decl(std::move(var_decl));
-                return add_statement(new_id, std::move(body));
             }
-            // Fall through to expression conversion if not define_assign or const_assign
-            body.statement_kind = ebm::StatementOp::EXPRESSION;
-            auto expr_ref = convert_expr(ast::cast_to<ast::Expr>(node));
-            if (!expr_ref) {
-                return unexpect_error(std::move(expr_ref.error()));
+            else {
+                body.statement_kind = ebm::StatementOp::EXPRESSION;
+                auto expr_ref = convert_expr(ast::cast_to<ast::Expr>(node));
+                if (!expr_ref) {
+                    return unexpect_error(std::move(expr_ref.error()));
+                }
+                body.expression(*expr_ref);
             }
-            body.expression(*expr_ref);
-            return add_statement(new_id, std::move(body));
         }
-        // Debug print to identify unhandled node types
-        return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
+        else {
+            // Debug print to identify unhandled node types
+            return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
+        }
+        return add_statement(new_id, std::move(body));
     }
 }  // namespace ebmgen

@@ -7,21 +7,34 @@
 #include <unordered_map>
 
 namespace ebmgen {
-
-    class HandlerRegistry;  // Forward declaration to avoid circular dependency
-
     enum class GenerateType {
         Normal,
         Encode,
         Decode,
     };
+}
+
+namespace std {
+    template <>
+    struct hash<std::pair<brgen::ast::NodeType, ebmgen::GenerateType>> {
+        size_t operator()(const std::pair<brgen::ast::NodeType, ebmgen::GenerateType>& p) const {
+            return hash<int>()(static_cast<int>(p.first)) ^ hash<int>()(static_cast<int>(p.second));
+        }
+    };
+
+}  // namespace std
+namespace ebmgen {
+
+    class HandlerRegistry;  // Forward declaration to avoid circular dependency
+
     struct ConverterProxy {
        private:
         const GenerateType type;
         HandlerRegistry& converter;
 
        public:
-        constexpr ConverterProxy(HandlerRegistry& conv, GenerateType t) : type(t), converter(conv) {}
+        constexpr ConverterProxy(HandlerRegistry& conv, GenerateType t)
+            : type(t), converter(conv) {}
 
         constexpr GenerateType get_type() const {
             return type;

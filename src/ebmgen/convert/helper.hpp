@@ -1,11 +1,14 @@
 /*license*/
 #pragma once
 
-#define MAYBE(out, expr)                                     \
+#define MAYBE_VOID(out, expr)                                \
     auto out##____ = expr;                                   \
     if (!out##____) {                                        \
         return unexpect_error(std::move(out##____.error())); \
-    }                                                        \
+    }
+
+#define MAYBE(out, expr)  \
+    MAYBE_VOID(out, expr) \
     auto out = std::move(*out##____)
 
 #define EBM_NEW_OBJECT(ref_name, typ)                             \
@@ -146,4 +149,30 @@
         body___.loop(std::move(loop_stmt___));                     \
         MAYBE(loop_ref____, add_statement(std::move(body___)));    \
         ref_name = loop_ref____;                                   \
+    }
+
+#define EBM_COUNTER_LOOP_START(counter_name)                          \
+    ebm::ExpressionRef counter_name;                                  \
+    ebm::StatementRef counter_name##_def;                             \
+    {                                                                 \
+        MAYBE(zero, get_int_literal(0));                              \
+        MAYBE(counter_type, get_counter_type());                      \
+        EBM_DEFINE_ANONYMOUS_VARIABLE(counter__, counter_type, zero); \
+        counter_name = counter__;                                     \
+        counter_name##_def = counter___def;                           \
+    }
+
+#define EBM_COUNTER_LOOP_END(loop_stmt, counter_name, limit_expr__, body__)             \
+    ebm::StatementRef loop_stmt;                                                        \
+    {                                                                                   \
+        MAYBE(bool_type, get_bool_type());                                              \
+        EBM_BINARY_OP(cmp, ebm::BinaryOp::less, bool_type, counter_name, limit_expr__); \
+        ebm::Block loop_body;                                                           \
+        loop_body.container.reserve(2);                                                 \
+        append(loop_body, body__);                                                      \
+        EBM_INCREMENT(inc, counter);                                                    \
+        append(loop_body, inc);                                                         \
+        EBM_BLOCK(loop_block, std::move(loop_body));                                    \
+        EBM_WHILE_LOOP(loop_stmt__, cmp, loop_block);                                   \
+        loop_stmt = loop_stmt__;                                                        \
     }

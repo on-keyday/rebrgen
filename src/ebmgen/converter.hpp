@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include <core/ast/ast.h>
 #include <ebm/extended_binary_module.hpp>
+#include <memory>
 #include "handler_registry.hpp"
 
 namespace ebmgen {
@@ -149,7 +150,12 @@ namespace ebmgen {
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
         expected<ebm::StatementRef> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
+        expected<void> encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
+        expected<void> encode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
         expected<ebm::StatementRef> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<ebm::ExpressionRef> get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 

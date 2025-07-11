@@ -1,6 +1,7 @@
 #include "../converter.hpp"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
+#include "helper.hpp"
 
 namespace ebmgen {
     expected<ebm::StatementRef> Converter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
@@ -42,14 +43,7 @@ namespace ebmgen {
             ebm_if_stmt.condition = *cond_ref;
 
             // Convert then block
-            ebm::Block then_block;
-            for (auto& element : if_stmt->then->elements) {
-                auto stmt_ref = convert_statement(element);
-                if (!stmt_ref) {
-                    return unexpect_error(std::move(stmt_ref.error()));
-                }
-                append(then_block, *stmt_ref);
-            }
+            MAYBE(then_block, convert_statement(if_stmt->then));
             ebm_if_stmt.then_block = std::move(then_block);
 
             // Convert else block
@@ -90,16 +84,7 @@ namespace ebmgen {
             }
 
             // Convert loop body
-            ebm::Block loop_body_block;
-            if (loop_stmt->body) {
-                for (auto& element : loop_stmt->body->elements) {
-                    auto stmt_ref = convert_statement(element);
-                    if (!stmt_ref) {
-                        return unexpect_error(std::move(stmt_ref.error()));
-                    }
-                    append(loop_body_block, *stmt_ref);
-                }
-            }
+            MAYBE(loop_body_block, convert_statement(loop_stmt->body));
             ebm_loop_stmt.body = std::move(loop_body_block);
             body.loop(std::move(ebm_loop_stmt));
         }

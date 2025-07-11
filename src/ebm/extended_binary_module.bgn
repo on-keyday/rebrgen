@@ -96,6 +96,9 @@ enum ExpressionOp:
     RANGE
     NEW_OBJECT
     IS_LITTLE_ENDIAN # Check if the system or current context is little-endian
+    GET_STREAM_OFFSET
+    GET_REMAINING_BYTES
+    CAN_READ_STREAM
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -142,6 +145,13 @@ format ExpressionBody:
             end :ExpressionRef # End of the range (maybe null)
         ExpressionOp.IS_LITTLE_ENDIAN:
             endian_expr :StatementRef # Reference to the dynamic endian expression (maybe null)
+        ExpressionOp.GET_STREAM_OFFSET:
+            stream_type :StreamType
+        ExpressionOp.GET_REMAINING_BYTES:
+            stream_type :StreamType
+        ExpressionOp.CAN_READ_STREAM:
+            stream_type :StreamType
+            num_bytes :ExpressionRef # Number of bytes to check
 
 enum LoopType:
     :u8
@@ -244,26 +254,26 @@ format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
     values :Expressions
 
-enum FallbackType:
+enum LoweringType:
     :u8
     FUNDAMENTAL # Expressions that have been reduced to the most basic level expressions
-    C_LIKE # C-like expressions that can be evaluated in a C context (direct cast to using cast e.g. (struct iphdr*)ip)
+    C_LIKE # C-like expressions that can be evaluated in a C context (like direct cast to using cast e.g. (struct iphdr*)ip)
 
-format FallbackStatement:
-    fallback_type :FallbackType # Type of fallback
-    block :StatementRef # Fallback block to execute if no other branch matches
+format LoweredStatement:
+    lowering_type :LoweringType # Type of lowering
+    block :StatementRef # Lowering block
 
-format FallbackStatements:
-    len :Varint # Number of fallbacks
-    container :[len.value]FallbackStatement # List of fallbacks
+format LoweredStatements:
+    len :Varint # Number of lowered statements
+    container :[len.value]LoweredStatement # List of lowered statements
 
-format FallbackExpression:
-    fallback_type :FallbackType # Type of fallback
-    expression :ExpressionRef # Fallback expression to evaluate if no other branch matches
+format LoweredExpression:
+    lowering_type :LoweringType # Type of lowered statements
+    expression :ExpressionRef  # 
 
-format FallbackExpressions:
-    len :Varint # Number of fallbacks
-    container :[len.value]FallbackExpression # List of fallbacks
+format LoweredExpressions:
+    len :Varint # Number of lowered expressions
+    container :[len.value]LoweredExpression # List of lowered expressions
 
 
 enum StatementOp:
@@ -275,9 +285,6 @@ enum StatementOp:
     READ_DATA
     WRITE_DATA
     SEEK_STREAM
-    GET_STREAM_OFFSET
-    GET_REMAINING_BYTES
-    CAN_READ_STREAM
     IF_STATEMENT
     LOOP_STATEMENT
     MATCH_STATEMENT
@@ -301,7 +308,7 @@ enum StatementOp:
     EXPRESSION # expression statement
     PHI_NODE # For SSA form or assignment tracking
     ERROR_REPORT # Explicit error reporting
-    FALLBACK_STATEMENTS # fallback statements
+    LOWERED_STATEMENTS # lowered statements
 
 format Statement:
     id :StatementRef
@@ -324,8 +331,11 @@ enum SizeUnit:
     UNKNOWN
     BIT_FIXED
     BYTE_FIXED
+    ELEMENT_FIXED
     BIT_DYNAMIC 
     BYTE_DYNAMIC
+    ELEMENT_DYNAMIC 
+
 
 format Size:
     unit :SizeUnit # Size unit (e.g., BIT, BYTE)
@@ -333,15 +343,17 @@ format Size:
         SizeUnit.UNKNOWN => .. # Unknown size, used for dynamic sizes
         SizeUnit.BIT_FIXED => size :Varint # Fixed size in bits (e.g., 8, 16, 32, 64)
         SizeUnit.BYTE_FIXED => size :Varint # Fixed size in bytes (e.g., 1, 2, 4, 8)
+        SizeUnit.ELEMENT_FIXED => size :Varint # Fixed size in elements (e.g., 1, 2, 4, 8)
         SizeUnit.BIT_DYNAMIC => ref :ExpressionRef # Reference to dynamic size expression
         SizeUnit.BYTE_DYNAMIC => ref :ExpressionRef # Reference to dynamic size expression
+        SizeUnit.ELEMENT_DYNAMIC => ref :ExpressionRef # Reference to dynamic size expression
 
 format IOData:
     target :ExpressionRef # Variable to store read/write data
     data_type :TypeRef # Type of the data to read/write
     endian :EndianExpr # Endianness for write
     size :Size # Size information for read/write
-    fallback_stmt :StatementRef # Optional fallbacks for read/write operations
+    lowered_stmt :StatementRef # Optional lowered statements for read/write operations
 
 format StatementBody:
     statement_kind :StatementOp
@@ -362,16 +374,7 @@ format StatementBody:
         StatementOp.SEEK_STREAM:
             offset :ExpressionRef # Offset to seek to
             stream_type :StreamType
-        StatementOp.GET_STREAM_OFFSET:
-            target_var :ExpressionRef # Variable to store offset
-            stream_type :StreamType
-        StatementOp.GET_REMAINING_BYTES:
-            target_var :ExpressionRef # Variable to store remaining bytes
-            stream_type :StreamType
-        StatementOp.CAN_READ_STREAM:
-            target_var :ExpressionRef # Variable to store boolean result
-            stream_type :StreamType
-            num_bytes :ExpressionRef # Number of bytes to check
+       
         StatementOp.IF_STATEMENT:
             if_statement :IfStatement
         StatementOp.LOOP_STATEMENT:
@@ -421,8 +424,8 @@ format StatementBody:
             error_report :ErrorReport
         StatementOp.EXPRESSION:
             expression :ExpressionRef # Expression statement
-        StatementOp.FALLBACK_STATEMENTS:
-            fallback_statements :FallbackStatements # Fallback statements to execute if no other branch matches
+        StatementOp.LOWERED_STATEMENTS:
+            lowered_statements :LoweredStatements # Lowered expressions
 
 format Expressions:
     len :Varint

@@ -1,5 +1,7 @@
 #include "../converter.hpp"
 #include <core/ast/tool/ident.h>
+#include "helper.hpp"
+#include <fnet/util/base64.h>
 
 namespace ebmgen {
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op) {
@@ -134,32 +136,27 @@ namespace ebmgen {
             body.bool_value(literal->value);
         }
         else if (auto literal = ast::as<ast::StrLiteral>(node)) {
-            body.op = ebm::ExpressionOp::LITERAL_STRING;
-            auto str_ref = add_string(literal->value);
-            if (!str_ref) {
-                return unexpect_error(std::move(str_ref.error()));
+            std::string candidate;
+            if (!futils::base64::decode(literal->binary_value, candidate)) {
+                return unexpect_error("Invalid base64 string: {}", literal->binary_value);
             }
-            body.string_value(*str_ref);
+            body.op = ebm::ExpressionOp::LITERAL_STRING;
+            MAYBE(str_ref, add_string(literal->value));
+            body.string_value(str_ref);
         }
         else if (auto literal = ast::as<ast::TypeLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_TYPE;
-            auto type_ref = convert_type(literal->type_literal);
-            if (!type_ref) {
-                return unexpect_error(std::move(type_ref.error()));
-            }
-            body.type_ref(*type_ref);
+            MAYBE(type_ref, convert_type(literal->type_literal));
+            body.type_ref(type_ref);
         }
         else if (auto ident = ast::as<ast::Ident>(node)) {
             body.op = ebm::ExpressionOp::IDENTIFIER;
             auto base = ast::tool::lookup_base(ast::cast_to<ast::Ident>(node));
             if (!base) {
                 return unexpect_error("Identifier {} not found", ident->ident);
-            };
-            auto id_ref = convert_statement(base->first->base.lock());
-            if (!id_ref) {
-                return unexpect_error(std::move(id_ref.error()));
             }
-            body.id(*id_ref);
+            MAYBE(id_ref, convert_statement(base->first->base.lock()));
+            body.id(id_ref);
         }
         else if (auto binary = ast::as<ast::Binary>(node)) {
             if (binary->op == ast::BinaryOp::define_assign || binary->op == ast::BinaryOp::const_assign) {
@@ -223,21 +220,11 @@ namespace ebmgen {
         }
         else if (auto cast_expr = ast::as<ast::Cast>(node)) {
             body.op = ebm::ExpressionOp::TYPE_CAST;
-            auto target_type_ref = convert_type(cast_expr->expr_type);
-            if (!target_type_ref) {
-                return unexpect_error(std::move(target_type_ref.error()));
-            }
-            auto source_expr_ref = convert_expr(cast_expr->arguments[0]);
-            if (!source_expr_ref) {
-                return unexpect_error(std::move(source_expr_ref.error()));
-            }
-            body.target_type(*target_type_ref);
-            auto source_expr_type_ref = convert_type(cast_expr->arguments[0]->expr_type);
-            if (!source_expr_type_ref) {
-                return unexpect_error(std::move(source_expr_type_ref.error()));
-            }
-            body.source_expr(*source_expr_ref);
-            auto cast_kind = get_cast_type(*target_type_ref, *source_expr_type_ref);
+            MAYBE(source_expr_ref, convert_expr(cast_expr->arguments[0]));
+            MAYBE(source_expr_type_ref, convert_type(cast_expr->arguments[0]->expr_type));
+            body.source_expr(source_expr_ref);
+            body.from_type(source_expr_type_ref);
+            auto cast_kind = get_cast_type(body.type, source_expr_type_ref);
             if (!cast_kind) {
                 return unexpect_error(std::move(cast_kind.error()));
             }

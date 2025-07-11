@@ -99,6 +99,7 @@ enum ExpressionOp:
     GET_STREAM_OFFSET
     GET_REMAINING_BYTES
     CAN_READ_STREAM
+    ARRAY_SIZE # Get the size of an array or vector
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -152,6 +153,8 @@ format ExpressionBody:
         ExpressionOp.CAN_READ_STREAM:
             stream_type :StreamType
             num_bytes :ExpressionRef # Number of bytes to check
+        ExpressionOp.ARRAY_SIZE:
+            array_expr :ExpressionRef # Reference to the array or vector expression
 
 enum LoopType:
     :u8

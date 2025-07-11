@@ -44,18 +44,23 @@
         ref_name##_def = new_var_ref________;                          \
     }
 
-#define EBM_CAST(ref_name, to_typ, from_typ, expr)                 \
-    ebm::ExpressionRef ref_name;                                   \
-    {                                                              \
-        ebm::ExpressionBody body___;                               \
-        body___.op = ebm::ExpressionOp::TYPE_CAST;                 \
-        body___.type = to_typ;                                     \
-        body___.from_type(from_typ);                               \
-        body___.source_expr(expr);                                 \
-        MAYBE(cast_kind________, get_cast_type(to_typ, from_typ)); \
-        body___.cast_kind(cast_kind________);                      \
-        MAYBE(cast_ref________, add_expr(std::move(body___)));     \
-        ref_name = cast_ref________;                               \
+#define EBM_CAST(ref_name, to_typ, from_typ, expr)                     \
+    ebm::ExpressionRef ref_name;                                       \
+    {                                                                  \
+        if (from_typ.id.value() != to_typ.id.value()) {                \
+            ebm::ExpressionBody body___;                               \
+            body___.op = ebm::ExpressionOp::TYPE_CAST;                 \
+            body___.type = to_typ;                                     \
+            body___.from_type(from_typ);                               \
+            body___.source_expr(expr);                                 \
+            MAYBE(cast_kind________, get_cast_type(to_typ, from_typ)); \
+            body___.cast_kind(cast_kind________);                      \
+            MAYBE(cast_ref________, add_expr(std::move(body___)));     \
+            ref_name = cast_ref________;                               \
+        }                                                              \
+        else {                                                         \
+            ref_name = expr;                                           \
+        }                                                              \
     }
 
 #define EBM_BINARY_OP(ref_name, bop__, typ, left__, right__)    \
@@ -104,27 +109,34 @@
         ref_name = index_ref____;                           \
     }
 
-// internally, represent as i = i + 1 because no INCREMENT operator in EBM
-#define EBM_INCREMENT(ref_name, target__)                             \
+#define EBM_WRITE_DATA(ref_name, io_data)                             \
     ebm::StatementRef ref_name;                                       \
     {                                                                 \
         ebm::StatementBody body___;                                   \
-        body___.statement_kind = ebm::StatementOp::ASSIGNMENT;        \
-        ebm::ExpressionRef incremented;                               \
-        {                                                             \
-            ebm::ExpressionBody body___;                              \
-            body___.op = ebm::ExpressionOp::BINARY_OP;                \
-            body___.bop(ebm::BinaryOp::add);                          \
-            body___.left(target__);                                   \
-            MAYBE(one, get_int_literal(1));                           \
-            body___.right(one);                                       \
-            MAYBE(incremented_ref____, add_expr(std::move(body___))); \
-            incremented = incremented_ref____;                        \
-        }                                                             \
-        body___.target(target__);                                     \
-        body___.value(incremented);                                   \
-        MAYBE(increment_ref____, add_statement(std::move(body___)));  \
-        ref_name = increment_ref____;                                 \
+        body___.statement_kind = ebm::StatementOp::WRITE_DATA;        \
+        body___.write_data(io_data);                                  \
+        MAYBE(write_data_ref____, add_statement(std::move(body___))); \
+        ref_name = write_data_ref____;                                \
+    }
+
+#define EBM_READ_DATA(ref_name, io_data)                             \
+    ebm::StatementRef ref_name;                                      \
+    {                                                                \
+        ebm::StatementBody body___;                                  \
+        body___.statement_kind = ebm::StatementOp::READ_DATA;        \
+        body___.read_data(io_data);                                  \
+        MAYBE(read_data_ref____, add_statement(std::move(body___))); \
+        ref_name = read_data_ref____;                                \
+    }
+
+// internally, represent as i = i + 1 because no INCREMENT operator in EBM
+#define EBM_INCREMENT(ref_name, target__, target_type_)                              \
+    ebm::StatementRef ref_name;                                                      \
+    {                                                                                \
+        MAYBE(one, get_int_literal(1));                                              \
+        EBM_BINARY_OP(incremented, ebm::BinaryOp::add, target_type_, target__, one); \
+        EBM_ASSIGNMENT(increment_ref____, target__, incremented);                    \
+        ref_name = increment_ref____;                                                \
     }
 
 #define EBM_BLOCK(ref_name, block_body__)                        \
@@ -170,9 +182,22 @@
         ebm::Block loop_body;                                                           \
         loop_body.container.reserve(2);                                                 \
         append(loop_body, body__);                                                      \
-        EBM_INCREMENT(inc, counter);                                                    \
+        MAYBE(counter_type, get_counter_type());                                        \
+        EBM_INCREMENT(inc, counter_name, counter_type);                                 \
         append(loop_body, inc);                                                         \
         EBM_BLOCK(loop_block, std::move(loop_body));                                    \
         EBM_WHILE_LOOP(loop_stmt__, cmp, loop_block);                                   \
         loop_stmt = loop_stmt__;                                                        \
+    }
+
+#define EBM_ARRAY_SIZE(ref_name, array_expr__)                   \
+    ebm::ExpressionRef ref_name;                                 \
+    {                                                            \
+        ebm::ExpressionBody body___;                             \
+        body___.op = ebm::ExpressionOp::ARRAY_SIZE;              \
+        MAYBE(counter_type, get_counter_type());                 \
+        body___.type = counter_type;                             \
+        body___.array_expr(array_expr__);                        \
+        MAYBE(array_size_ref____, add_expr(std::move(body___))); \
+        ref_name = array_size_ref____;                           \
     }

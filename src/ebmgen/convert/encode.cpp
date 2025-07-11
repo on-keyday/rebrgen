@@ -1,6 +1,7 @@
 /*license*/
 #pragma once
 #include <bit>
+#include <cstddef>
 #include <memory>
 #include "../converter.hpp"
 #include "core/ast/ast.h"
@@ -127,36 +128,53 @@ namespace ebmgen {
         }
     }
 
-    expected<ebm::StatementRef> Converter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
-        // add fallback
-        MAYBE(u8_n_array, get_u8_n_array(n));
-        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
-        EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
-        MAYBE(value_type, get_unsigned_n_int(n * 8));
-        if (value_type.id.value() != cast_from.id.value()) {
-            EBM_CAST(cast_ref, value_type, cast_from, from);
-            from = cast_ref;
-        }
+    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size) {
+        return ebm::IOData{
+            .target = target,
+            .data_type = data_type,
+            .endian = endian,
+            .size = size,
+            .lowered_stmt = ebm::StatementRef{},
+        };
+    }
 
-        MAYBE(zero, get_int_literal(0));
+    expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit) {
+        ebm::Size size;
+        size.unit = unit;
+        MAYBE(size_val, varint(n));
+        if (!size.size(size_val)) {
+            return unexpect_error("Unit {} is not fixed", to_string(unit));
+        }
+        return size;
+    }
+
+    expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit) {
+        ebm::Size size;
+        size.unit = unit;
+        if (!size.ref(ref)) {
+            return unexpect_error("Unit {} is not dynamic", to_string(unit));
+        }
+        return size;
+    }
+
+#define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                       \
+    MAYBE(u8_n_array, get_u8_n_array(n));                           \
+    EBM_NEW_OBJECT(new_obj_ref, u8_n_array);                        \
+    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref); \
+    MAYBE(value_type, get_unsigned_n_int(n * 8));                   \
+    MAYBE(zero, get_int_literal(0));                                \
+    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));  \
+    IO_MACRO(io_ref, (make_io_data(buffer, u8_n_array, endian, io_size)));
+
+    expected<ebm::StatementRef> Converter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
+        COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref);
+        EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
+
         if (n == 1) {  // special case for 1 byte
             EBM_INDEX(array_index, buffer, zero);
-            EBM_ASSIGNMENT(assign, array_index, from);
-            ebm::IOData io_desc;
-            io_desc.data_type = u8_n_array;
-            io_desc.size.unit = ebm::SizeUnit::BYTE_FIXED;
-            auto size_val = varint(n);
-            if (!size_val) {
-                return unexpect_error(std::move(size_val.error()));
-            }
-            io_desc.size.size(*size_val);
-            io_desc.endian = endian;
-            ebm::StatementBody body;
-            body.statement_kind = ebm::StatementOp::WRITE_DATA;
-            body.write_data(std::move(io_desc));
-            MAYBE(write_ref, add_statement(std::move(body)));
+            EBM_ASSIGNMENT(assign, array_index, casted);
             ebm::Block block;
-            block.container.reserve(2);
+            block.container.reserve(3);
             append(block, buffer_def);
             append(block, assign);
             append(block, write_ref);
@@ -166,32 +184,28 @@ namespace ebmgen {
 
         MAYBE(counter_type, get_counter_type());
 
-        MAYBE(len, get_int_literal(n));
-
-        // EBM_DEFINE_ANONYMOUS_VARIABLE(counter, counter_type, zero);
-
         EBM_COUNTER_LOOP_START(counter);
 
-        MAYBE(bool_type, get_bool_type());
-
-        // EBM_BINARY_OP(cmp_id, ebm::BinaryOp::less, bool_type, counter, len);
         MAYBE(eight, get_int_literal(8));
         MAYBE(xFF, get_int_literal(0xff));
         MAYBE(u8_t, get_unsigned_n_int(8));
-        MAYBE(len_minus_one, get_int_literal(n - 1));
-        // if little endian
-        //   shift_index = counter
-        // else
-        //   // len - 1 can be constant
-        //   shift_index = len - 1 - counter
-        // buffer[counter] = (from >> (8 * shift_index)) & 0xff
+        // casted = value_type(from)
+        // buffer = [0] * n
+        // for counter in 0..len:
+        //   if little endian
+        //     shift_index = counter
+        //   else
+        //     // len - 1 can be constant
+        //     shift_index = len - 1 - counter
+        //   buffer[counter] = (casted >> (8 * shift_index)) & 0xff
+        // write(buffer)
         auto do_assign = [&](ebm::ExpressionRef shift_index) -> expected<ebm::StatementRef> {
             EBM_BINARY_OP(shift, ebm::BinaryOp::mul, counter_type, shift_index, eight);
-            EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, value_type, from, shift);
+            EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, value_type, casted, shift);
             EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, value_type, shifted, xFF);
-            EBM_CAST(casted, u8_t, value_type, masked);
+            EBM_CAST(casted2, u8_t, value_type, masked);
             EBM_INDEX(array_index, buffer, counter);
-            EBM_ASSIGNMENT(res, array_index, casted);
+            EBM_ASSIGNMENT(res, array_index, casted2);
             return res;
         };
 
@@ -201,37 +215,17 @@ namespace ebmgen {
                 return do_assign(counter);
             },
             [&] -> expected<ebm::StatementRef> {
+                MAYBE(len_minus_one, get_int_literal(n - 1));
                 EBM_BINARY_OP(shift_index, ebm::BinaryOp::sub, counter_type, len_minus_one, counter);
                 return do_assign(shift_index);
             });
         if (!do_it) {
             return unexpect_error(std::move(do_it.error()));
         }
-        /*
-        ebm::Block loop_body;
-        loop_body.container.reserve(2);
-        append(loop_body, *do_it);
-        EBM_INCREMENT(inc, counter);
-        append(loop_body, inc);
-        EBM_BLOCK(loop_block, std::move(loop_body));
-        EBM_WHILE_LOOP(loop_stmt, cmp_id, loop_block);
-        */
+
+        MAYBE(len, get_int_literal(n));
 
         EBM_COUNTER_LOOP_END(loop_stmt, counter, len, *do_it);
-
-        ebm::IOData io_desc;
-        io_desc.data_type = u8_n_array;
-        io_desc.size.unit = ebm::SizeUnit::BYTE_FIXED;
-        auto size_val = varint(n);
-        if (!size_val) {
-            return unexpect_error(std::move(size_val.error()));
-        }
-        io_desc.size.size(*size_val);
-        io_desc.endian = endian;
-        ebm::StatementBody body;
-        body.statement_kind = ebm::StatementOp::WRITE_DATA;
-        body.write_data(std::move(io_desc));
-        MAYBE(write_ref, add_statement(std::move(body)));
 
         ebm::Block block;
         block.container.reserve(4);
@@ -239,6 +233,84 @@ namespace ebmgen {
         append(block, counter_def);
         append(block, loop_stmt);
         append(block, write_ref);
+        EBM_BLOCK(block_ref, std::move(block));
+        return block_ref;
+    }
+
+    expected<ebm::StatementRef> Converter::decode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef to, ebm::TypeRef cast_to) {
+        COMMON_BUFFER_SETUP(EBM_READ_DATA, read_ref);
+
+        if (n == 1) {  // special case for 1 byte
+            EBM_INDEX(array_index, buffer, zero);
+            EBM_CAST(cast_ref, cast_to, value_type, array_index);
+            EBM_ASSIGNMENT(assign, to, cast_ref);
+            ebm::Block block;
+            block.container.reserve(3);
+            append(block, buffer_def);
+            append(block, read_ref);
+            append(block, assign);
+            EBM_BLOCK(block_ref, std::move(block));
+            return block_ref;
+        }
+
+        EBM_DEFINE_ANONYMOUS_VARIABLE(value_holder, value_type, zero);
+
+        MAYBE(counter_type, get_counter_type());
+
+        EBM_COUNTER_LOOP_START(counter);
+
+        MAYBE(eight, get_int_literal(8));
+        MAYBE(xFF, get_int_literal(0xff));
+        MAYBE(u8_t, get_unsigned_n_int(8));
+        // value_holder = value_type(0)
+        // buffer = [0] * n
+        // read(buffer)
+        // for counter in 0..len:
+        //   if little endian
+        //     shift_index = counter
+        //   else
+        //     // len - 1 can be constant
+        //     shift_index = len - 1 - counter
+        //   value_holder |= (value_type(buffer[counter]) << (8 * shift_index))
+        // to = (may cast) value_holder
+        auto do_assign = [&](ebm::ExpressionRef shift_index) -> expected<ebm::StatementRef> {
+            EBM_BINARY_OP(shift, ebm::BinaryOp::mul, counter_type, shift_index, eight);
+            EBM_INDEX(array_index, buffer, counter);
+            EBM_CAST(casted, value_type, u8_t, array_index);
+            EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, value_type, casted, shift);
+            EBM_BINARY_OP(masked, ebm::BinaryOp::bit_or, value_type, value_holder, shifted);
+            EBM_ASSIGNMENT(res, value_holder, masked);
+            return res;
+        };
+
+        auto do_it = add_endian_specific(
+            endian,
+            [&] -> expected<ebm::StatementRef> {
+                return do_assign(counter);
+            },
+            [&] -> expected<ebm::StatementRef> {
+                MAYBE(len_minus_one, get_int_literal(n - 1));
+                EBM_BINARY_OP(shift_index, ebm::BinaryOp::sub, counter_type, len_minus_one, counter);
+                return do_assign(shift_index);
+            });
+        if (!do_it) {
+            return unexpect_error(std::move(do_it.error()));
+        }
+
+        MAYBE(len, get_int_literal(n));
+
+        EBM_COUNTER_LOOP_END(loop_stmt, counter, len, *do_it);
+
+        EBM_CAST(cast_ref, cast_to, value_type, value_holder);
+        EBM_ASSIGNMENT(assign, to, cast_ref);
+
+        ebm::Block block;
+        block.container.reserve(5);
+        append(block, buffer_def);
+        append(block, counter_def);
+        append(block, read_ref);
+        append(block, loop_stmt);
+        append(block, assign);
         EBM_BLOCK(block_ref, std::move(block));
         return block_ref;
     }
@@ -320,7 +392,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> Converter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& fallback_stmts) {
+    expected<void> Converter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
         if (aty->length_value) {
             io_desc.size.unit = ebm::SizeUnit::ELEMENT_FIXED;
             MAYBE(length_value, varint(*aty->length_value));
@@ -335,34 +407,26 @@ namespace ebmgen {
             return unexpect_error("ArrayType must have a length or length_value");
         }
         auto len = aty->length_value;
-        auto elem_is_int = ast::as<ast::IntType>(arr->element_type);
+        // auto elem_is_int = ast::as<ast::IntType>(aty->element_type);
         if (len) {
             MAYBE(imm_len, get_int_literal(*len));
-            auto imm = immediate(m, *len);
-            if (!imm) {
-                return imm.error();
-            }
-            if (elem_is_int) {
-                BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-                BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, *imm, endian, *elem_is_int->bit_size, (get_field_ref(m, field)), *len);
-                return none;
-            }
-            return counter_loop(m, *imm, [&](Varint i) {
-                BM_INDEX(m.op, index, base_ref, i);
-                return encode_type(m, arr->element_type, index, mapped_type, field, should_init_recursive);
-            });
+            EBM_COUNTER_LOOP_START(i);
+            EBM_INDEX(indexed, base_ref, i);
+            MAYBE(encode_info, encode_field_type(aty->element_type, indexed, field));
+            EBM_COUNTER_LOOP_END(loop_stmt, i, imm_len, encode_info);
+            ebm::LoweredStatement lowered;
+            lowered.lowering_type = ebm::LoweringType::FUNDAMENTAL;
+            lowered.block = loop_stmt;
+            append(lowered_stmts, std::move(lowered));
+            return {};
         }
-        if (!arr->length) {
-            return error("Array length is not specified");
+        if (!aty->length) {
+            return unexpect_error("Array length is not specified");
         }
-        BM_NEW_NODE_ID(len_, error, arr->length);
-        m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
-            c.ident(len_);
-            c.ref(base_ref);
-        });
-        if (ast::is_any_range(arr->length)) {
+        EBM_ARRAY_SIZE(array_size, base_ref);
+        if (ast::is_any_range(aty->length)) {
             if (is_alignment_vector(field)) {
-                auto req_size = get_alignment_requirement(m, arr, field, true);
+                auto req_size = get_alignment_requirement(*field->arguments->alignment_value / 8, ebm::StreamType::OUTPUT);
                 if (!req_size) {
                     return req_size.error();
                 }
@@ -424,13 +488,13 @@ namespace ebmgen {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
             return encode_field_type(ity->base.lock(), base_ref, field);
         }
-        ebm::IOData io_desc;
-        io_desc.target = base_ref;
-        ebm::LoweredStatements lowered_stmts;  // omit if empty
         auto typ_ref = convert_type(typ);
         if (!typ_ref) {
             return unexpect_error(std::move(typ_ref.error()));
         }
+        ebm::IOData io_desc = make_io_data(base_ref, *typ_ref, ebm::EndianExpr{}, ebm::Size{});
+        ebm::LoweredStatements lowered_stmts;  // omit if empty
+
         io_desc.data_type = *typ_ref;
         if (auto ity = ast::as<ast::IntType>(typ)) {
             MAYBE_VOID(ok, encode_int_type(io_desc, ast::cast_to<ast::IntType>(typ), base_ref, lowered_stmts));

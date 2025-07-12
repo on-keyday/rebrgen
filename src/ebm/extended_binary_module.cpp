@@ -6977,6 +6977,44 @@ namespace ebm {
         }
         return false;
     }
+    std::optional<StatementRef> StatementBody::previous_assignment() const {
+        if (StatementOp::BLOCK==(*this).statement_kind) {
+        return std::nullopt;
+        }
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if(!std::holds_alternative<union_struct_44>(union_variant_42)) {
+            return std::nullopt;
+        }
+        return std::get<2>((*this).union_variant_42).previous_assignment;
+        }
+        return std::nullopt;
+    }
+    bool StatementBody::previous_assignment(const StatementRef& v) {
+        if (StatementOp::BLOCK==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+            if(!std::holds_alternative<union_struct_44>(union_variant_42)) {
+                union_variant_42 = union_struct_44();
+            }
+            std::get<2>((*this).union_variant_42).previous_assignment = v;
+            return true;
+        }
+        return false;
+    }
+    bool StatementBody::previous_assignment(StatementRef&& v) {
+        if (StatementOp::BLOCK==(*this).statement_kind) {
+            return false;
+        }
+        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+            if(!std::holds_alternative<union_struct_44>(union_variant_42)) {
+                union_variant_42 = union_struct_44();
+            }
+            std::get<2>((*this).union_variant_42).previous_assignment = std::move(v);
+            return true;
+        }
+        return false;
+    }
     std::optional<PropertyDecl> StatementBody::property_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
         return std::nullopt;
@@ -11544,6 +11582,9 @@ namespace ebm {
             if (auto err = std::get<2>((*this).union_variant_42).value.encode(w)) {
                 return err;
             }
+            if (auto err = std::get<2>((*this).union_variant_42).previous_assignment.encode(w)) {
+                return err;
+            }
         }
         else if (StatementOp::RETURN==(*this).statement_kind) {
             if(!std::holds_alternative<union_struct_45>(union_variant_42)) {
@@ -11820,6 +11861,9 @@ namespace ebm {
                 return err;
             }
             if (auto err = std::get<2>((*this).union_variant_42).value.decode(r)) {
+                return err;
+            }
+            if (auto err = std::get<2>((*this).union_variant_42).previous_assignment.decode(r)) {
                 return err;
             }
         }

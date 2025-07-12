@@ -81,7 +81,7 @@ namespace ebmgen {
         std::unordered_map<uint64_t, size_t> identifier_map;
         std::vector<Instance> instances;
     };
-
+    bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
     class Converter {
        public:
         Converter(ebm::ExtendedBinaryModule& ebm)
@@ -143,7 +143,7 @@ namespace ebmgen {
             return expression_repo.add(ident_source, std::move(body));
         }
 
-        expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type);
+        expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
 
         void convert_node(const std::shared_ptr<ast::Node>& node);

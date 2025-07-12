@@ -5,6 +5,7 @@
 #include <memory>
 #include "../converter.hpp"
 #include "core/ast/ast.h"
+#include "core/ast/node/statement.h"
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
@@ -392,6 +393,24 @@ namespace ebmgen {
         return {};
     }
 
+    bool is_alignment_vector(const std::shared_ptr<ast::Field>& t) {
+        if (!t) {
+            return false;
+        }
+        if (auto arr = ast::as<ast::ArrayType>(t->field_type)) {
+            auto elm_is_int = ast::as<ast::IntType>(arr->element_type);
+            if (elm_is_int && !elm_is_int->is_signed &&
+                elm_is_int->bit_size == 8 &&
+                t->arguments &&
+                t->arguments->alignment_value &&
+                *t->arguments->alignment_value != 0 &&
+                *t->arguments->alignment_value % 8 == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     expected<void> Converter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
         if (aty->length_value) {
             io_desc.size.unit = ebm::SizeUnit::ELEMENT_FIXED;
@@ -426,14 +445,10 @@ namespace ebmgen {
         EBM_ARRAY_SIZE(array_size, base_ref);
         if (ast::is_any_range(aty->length)) {
             if (is_alignment_vector(field)) {
-                auto req_size = get_alignment_requirement(*field->arguments->alignment_value / 8, ebm::StreamType::OUTPUT);
-                if (!req_size) {
-                    return req_size.error();
-                }
-                BM_GET_ENDIAN(endian, Endian::unspec, false);
+                MAYBE(req_size, get_alignment_requirement(*field->arguments->alignment_value / 8, ebm::StreamType::OUTPUT));
                 auto array_size = *field->arguments->alignment_value / 8 - 1;
-                BM_ENCODE_INT_VEC_FIXED(m.op, base_ref, *req_size, endian, 8, (get_field_ref(m, field)), array_size);
-                return none;
+                MAYBE(size, make_dynamic_size(req_size, ebm::SizeUnit::BYTE_DYNAMIC));
+                make_io_data();
             }
         }
         else {

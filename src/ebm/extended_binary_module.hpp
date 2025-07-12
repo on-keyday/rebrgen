@@ -1345,6 +1345,7 @@ namespace ebm {
         struct EBM_API union_struct_44{
             ExpressionRef target;
             ExpressionRef value;
+            StatementRef previous_assignment;
         };
         struct EBM_API union_struct_45{
             ExpressionRef value;
@@ -1504,6 +1505,9 @@ namespace ebm {
         std::optional<Varint> params_len() const;
         bool params_len(Varint&& v);
         bool params_len(const Varint& v);
+        std::optional<StatementRef> previous_assignment() const;
+        bool previous_assignment(StatementRef&& v);
+        bool previous_assignment(const StatementRef& v);
         std::optional<PropertyDecl> property_decl() const;
         bool property_decl(PropertyDecl&& v);
         bool property_decl(const PropertyDecl& v);

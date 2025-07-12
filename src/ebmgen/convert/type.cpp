@@ -1,7 +1,9 @@
 #include "../converter.hpp"
+#include "ebm/extended_binary_module.hpp"
+#include "helper.hpp"
 
 namespace ebmgen {
-    expected<ebm::TypeRef> Converter::convert_type(const std::shared_ptr<ast::Type>& type) {
+    expected<ebm::TypeRef> Converter::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
         ebm::TypeBody body;
         if (auto int_type = ast::as<ast::IntType>(type)) {
             if (int_type->is_signed) {
@@ -27,26 +29,25 @@ namespace ebmgen {
         }
         else if (auto ident_type = ast::as<ast::IdentType>(type)) {
             if (auto locked = ident_type->base.lock()) {
-                return convert_type(locked);
+                return convert_type(locked, field);
             }
             return unexpect_error("IdentType has no base type");
         }
         else if (auto array_type = ast::as<ast::ArrayType>(type)) {
-            body.kind = ebm::TypeKind::ARRAY;
-            auto element_type_ref = convert_type(array_type->element_type);
-            if (!element_type_ref) {
-                return unexpect_error(std::move(element_type_ref.error()));
+            MAYBE(element_type, convert_type(array_type->element_type));
+            body.kind = ebm::TypeKind::VECTOR;
+            if (array_type->length_value) {
+                body.kind = ebm::TypeKind::ARRAY;
+                MAYBE(expected_len, varint(*array_type->length_value));
+                body.length(expected_len);
             }
-            body.element_type(*element_type_ref);
-            if (array_type->length) {
-                auto length_expr_ref = convert_expr(array_type->length);
-                if (!length_expr_ref) {
-                    return unexpect_error(std::move(length_expr_ref.error()));
-                }
-                // TODO: Convert ExpressionRef to Varint for length
-                // For now, just setting a dummy Varint
-                body.length(ebm::Varint{0});
+            else if (is_alignment_vector(field)) {
+                auto vector_len = *field->arguments->alignment_value / 8 - 1;
+                body.kind = ebm::TypeKind::ARRAY;
+                MAYBE(expected_len, varint(vector_len));
+                body.length(expected_len);
             }
+            body.element_type(element_type);
         }
         else if (auto int_literal_type = ast::as<ast::IntLiteralType>(type)) {
             body.kind = ebm::TypeKind::UINT;  // Assuming unsigned for now
@@ -76,17 +77,11 @@ namespace ebmgen {
         }
         else if (auto str_literal_type = ast::as<ast::StrLiteralType>(type)) {
             body.kind = ebm::TypeKind::ARRAY;
-            auto element_type_ref = convert_type(std::make_shared<ast::IntType>(str_literal_type->loc, 8, ast::Endian::unspec, false));
-            if (!element_type_ref) {
-                return unexpect_error(std::move(element_type_ref.error()));
-            }
-            body.element_type(*element_type_ref);
+            MAYBE(element_type, get_unsigned_n_int(8));
+            body.element_type(element_type);
             if (str_literal_type->bit_size) {
-                auto length = varint(*str_literal_type->bit_size / 8);
-                if (!length) {
-                    return unexpect_error(std::move(length.error()));
-                }
-                body.length(*length);
+                MAYBE(length, varint(*str_literal_type->bit_size / 8));
+                body.length(length);
             }
         }
         else if (auto enum_type = ast::as<ast::EnumType>(type)) {
@@ -127,11 +122,9 @@ namespace ebmgen {
         }
         else if (auto struct_union_type = ast::as<ast::StructUnionType>(type)) {
             body.kind = ebm::TypeKind::VARIANT;
-            // StructUnionType does not have a direct common_type field in AST, but its structs might imply one.
-            // For now, we'll just convert the types of its constituent structs.
             ebm::Types members;
             for (auto& struct_member : struct_union_type->structs) {
-                auto member_type_ref = convert_type(std::static_pointer_cast<ast::Type>(struct_member));
+                auto member_type_ref = convert_type(struct_member);
                 if (!member_type_ref) {
                     return unexpect_error(std::move(member_type_ref.error()));
                 }

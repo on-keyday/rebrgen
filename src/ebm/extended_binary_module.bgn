@@ -366,6 +366,7 @@ format StatementBody:
         StatementOp.ASSIGNMENT:
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
+            previous_assignment :StatementRef # Previous assignment or phi node (optional)
         StatementOp.RETURN:
             value :ExpressionRef # Return value (optional)
         StatementOp.ASSERT:

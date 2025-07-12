@@ -1,6 +1,8 @@
 /*license*/
 #pragma once
 
+#include "ebm/extended_binary_module.hpp"
+namespace ebmgen {
 #define MAYBE_VOID(out, expr)                                \
     auto out##____ = expr;                                   \
     if (!out##____) {                                        \
@@ -11,122 +13,97 @@
     MAYBE_VOID(out, expr) \
     auto out = std::move(*out##____)
 
-#define EBM_NEW_OBJECT(ref_name, typ)                             \
-    ebm::ExpressionRef ref_name;                                  \
-    {                                                             \
-        ebm::ExpressionBody body___;                              \
-        body___.op = ebm::ExpressionOp::NEW_OBJECT;               \
-        body___.type = typ;                                       \
-        MAYBE(new_obj_ref________, add_expr(std::move(body___))); \
-        ref_name = new_obj_ref________;                           \
+    ebm::ExpressionBody make_new_object_body(ebm::TypeRef type);
+
+#define EBM_NEW_OBJECT(ref_name, typ)                                    \
+    ebm::ExpressionRef ref_name;                                         \
+    {                                                                    \
+        MAYBE(new_obj_ref________, add_expr(make_new_object_body(typ))); \
+        ref_name = new_obj_ref________;                                  \
     }
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)      \
-    ebm::ExpressionRef ref_name;                                       \
-    ebm::StatementRef ref_name##_def;                                  \
-    {                                                                  \
-        ebm::StatementBody body___;                                    \
-        body___.statement_kind = ebm::StatementOp::VARIABLE_DECL;      \
-        ebm::VariableDecl var_decl___;                                 \
-        auto temporary_name = identifier_repo.new_id(ident_source);    \
-        var_decl___.name = *temporary_name;                            \
-        var_decl___.var_type = typ;                                    \
-        var_decl___.initial_value = initial_ref;                       \
-        var_decl___.is_constant(false);                                \
-        body___.var_decl(std::move(var_decl___));                      \
-        MAYBE(new_var_ref________, add_statement(std::move(body___))); \
-        ebm::ExpressionBody expr___;                                   \
-        expr___.type = typ;                                            \
-        expr___.op = ebm::ExpressionOp::IDENTIFIER;                    \
-        expr___.id(new_var_ref________);                               \
-        MAYBE(new_expr_ref____, add_expr(std::move(expr___)));         \
-        ref_name = new_expr_ref____;                                   \
-        ref_name##_def = new_var_ref________;                          \
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref);
+
+    ebm::ExpressionBody make_identifier_expr(ebm::StatementRef id, ebm::TypeRef type);
+
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                        \
+    ebm::ExpressionRef ref_name;                                                                         \
+    ebm::StatementRef ref_name##_def;                                                                    \
+    {                                                                                                    \
+        MAYBE(temporary_name, identifier_repo.new_id(ident_source));                                     \
+        MAYBE(new_var_ref________, add_statement(make_variable_decl(temporary_name, typ, initial_ref))); \
+        MAYBE(new_expr_ref____, add_expr(make_identifier_expr(new_var_ref________, typ)));               \
+        ref_name = new_expr_ref____;                                                                     \
+        ref_name##_def = new_var_ref________;                                                            \
     }
 
-#define EBM_CAST(ref_name, to_typ, from_typ, expr)                     \
-    ebm::ExpressionRef ref_name;                                       \
-    {                                                                  \
-        if (from_typ.id.value() != to_typ.id.value()) {                \
-            ebm::ExpressionBody body___;                               \
-            body___.op = ebm::ExpressionOp::TYPE_CAST;                 \
-            body___.type = to_typ;                                     \
-            body___.from_type(from_typ);                               \
-            body___.source_expr(expr);                                 \
-            MAYBE(cast_kind________, get_cast_type(to_typ, from_typ)); \
-            body___.cast_kind(cast_kind________);                      \
-            MAYBE(cast_ref________, add_expr(std::move(body___)));     \
-            ref_name = cast_ref________;                               \
-        }                                                              \
-        else {                                                         \
-            ref_name = expr;                                           \
-        }                                                              \
+    ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);
+
+#define EBM_CAST(ref_name, to_typ, from_typ, expr)                                                   \
+    ebm::ExpressionRef ref_name;                                                                     \
+    {                                                                                                \
+        if (from_typ.id.value() != to_typ.id.value()) {                                              \
+            MAYBE(cast_kind________, get_cast_type(to_typ, from_typ));                               \
+            MAYBE(cast_ref________, add_expr(make_cast(to_typ, from_typ, expr, cast_kind________))); \
+            ref_name = cast_ref________;                                                             \
+        }                                                                                            \
+        else {                                                                                       \
+            ref_name = expr;                                                                         \
+        }                                                                                            \
     }
 
-#define EBM_BINARY_OP(ref_name, bop__, typ, left__, right__)    \
-    ebm::ExpressionRef ref_name;                                \
-    {                                                           \
-        ebm::ExpressionBody body___;                            \
-        body___.op = ebm::ExpressionOp::BINARY_OP;              \
-        body___.type = typ;                                     \
-        body___.bop(bop__);                                     \
-        body___.left(left__);                                   \
-        body___.right(right__);                                 \
-        MAYBE(binary_op_ref____, add_expr(std::move(body___))); \
-        ref_name = binary_op_ref____;                           \
+    ebm::ExpressionBody make_binary_op(ebm::BinaryOp bop, ebm::TypeRef type, ebm::ExpressionRef left, ebm::ExpressionRef right);
+
+#define EBM_BINARY_OP(ref_name, bop__, typ, left__, right__)                             \
+    ebm::ExpressionRef ref_name;                                                         \
+    {                                                                                    \
+        MAYBE(binary_op_ref____, add_expr(make_binary_op(bop__, typ, left__, right__))); \
+        ref_name = binary_op_ref____;                                                    \
     }
 
-#define EBM_UNARY_OP(ref_name, uop__, operand__)               \
-    ebm::ExpressionRef ref_name;                               \
-    {                                                          \
-        ebm::ExpressionBody body___;                           \
-        body___.op = ebm::ExpressionOp::UNARY_OP;              \
-        body___.uop(uop__);                                    \
-        body___.operand(operand__);                            \
-        MAYBE(unary_op_ref____, add_expr(std::move(body___))); \
-        ref_name = unary_op_ref____;                           \
+    ebm::ExpressionBody make_unary_op(ebm::UnaryOp uop, ebm::TypeRef type, ebm::ExpressionRef operand);
+
+#define EBM_UNARY_OP(ref_name, uop__, typ, operand__)                            \
+    ebm::ExpressionRef ref_name;                                                 \
+    {                                                                            \
+        MAYBE(unary_op_ref____, add_expr(make_unary_op(uop__, typ, operand__))); \
+        ref_name = unary_op_ref____;                                             \
     }
 
-#define EBM_ASSIGNMENT(ref_name, target__, value__)               \
-    ebm::StatementRef ref_name;                                   \
-    {                                                             \
-        ebm::StatementBody body___;                               \
-        body___.statement_kind = ebm::StatementOp::ASSIGNMENT;    \
-        body___.target(target__);                                 \
-        body___.value(value__);                                   \
-        MAYBE(assign_ref____, add_statement(std::move(body___))); \
-        ref_name = assign_ref____;                                \
+    ebm::StatementBody make_assignment(ebm::ExpressionRef target, ebm::ExpressionRef value, ebm::StatementRef previous_assignment);
+
+#define EBM_ASSIGNMENT(ref_name, target__, value__)                                   \
+    ebm::StatementRef ref_name;                                                       \
+    { /*currently previous assign is always null*/                                    \
+        MAYBE(assign_ref____, add_statement(make_assignment(target__, value__, {}))); \
+        ref_name = assign_ref____;                                                    \
     }
 
-#define EBM_INDEX(ref_name, base__, index__)                \
-    ebm::ExpressionRef ref_name;                            \
-    {                                                       \
-        ebm::ExpressionBody body___;                        \
-        body___.op = ebm::ExpressionOp::INDEX_ACCESS;       \
-        body___.base(base__);                               \
-        body___.index(index__);                             \
-        MAYBE(index_ref____, add_expr(std::move(body___))); \
-        ref_name = index_ref____;                           \
-    }
+    ebm::ExpressionBody make_index(ebm::ExpressionRef base, ebm::ExpressionRef index);
 
-#define EBM_WRITE_DATA(ref_name, io_data)                             \
-    ebm::StatementRef ref_name;                                       \
-    {                                                                 \
-        ebm::StatementBody body___;                                   \
-        body___.statement_kind = ebm::StatementOp::WRITE_DATA;        \
-        body___.write_data(io_data);                                  \
-        MAYBE(write_data_ref____, add_statement(std::move(body___))); \
-        ref_name = write_data_ref____;                                \
-    }
-
-#define EBM_READ_DATA(ref_name, io_data)                             \
-    ebm::StatementRef ref_name;                                      \
+#define EBM_INDEX(ref_name, base__, index__)                         \
+    ebm::ExpressionRef ref_name;                                     \
     {                                                                \
-        ebm::StatementBody body___;                                  \
-        body___.statement_kind = ebm::StatementOp::READ_DATA;        \
-        body___.read_data(io_data);                                  \
-        MAYBE(read_data_ref____, add_statement(std::move(body___))); \
-        ref_name = read_data_ref____;                                \
+        MAYBE(index_ref____, add_expr(make_index(base__, index__))); \
+        ref_name = index_ref____;                                    \
+    }
+
+    ebm::StatementBody make_write_data(ebm::IOData io_data);
+
+#define EBM_WRITE_DATA(ref_name, io_data)                                   \
+    ebm::StatementRef ref_name;                                             \
+    {                                                                       \
+        MAYBE(write_data_ref____, add_statement(make_write_data(io_data))); \
+        ref_name = write_data_ref____;                                      \
+    }
+
+    ebm::StatementBody make_read_data(ebm::IOData io_data);
+
+#define EBM_READ_DATA(ref_name, io_data)                                  \
+    ebm::StatementRef ref_name;                                           \
+    {                                                                     \
+        MAYBE(read_data_ref____, add_statement(make_read_data(io_data))); \
+        ref_name = read_data_ref____;                                     \
     }
 
 // internally, represent as i = i + 1 because no INCREMENT operator in EBM
@@ -201,3 +178,4 @@
         MAYBE(array_size_ref____, add_expr(std::move(body___))); \
         ref_name = array_size_ref____;                           \
     }
+}  // namespace ebmgen

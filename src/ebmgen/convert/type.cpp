@@ -151,6 +151,24 @@ namespace ebmgen {
                 body.base_type(ebm::TypeRef{});
             }
         }
+        else if (auto function_type = ast::as<ast::FunctionType>(type)) {
+            body.kind = ebm::TypeKind::FUNCTION;
+            if (function_type->return_type) {
+                MAYBE(return_type, convert_type(function_type->return_type));
+                body.return_type(return_type);
+            }
+            else {
+                MAYBE(void_type, get_void_type());
+                body.return_type(void_type);
+            }
+
+            ebm::Types params;
+            for (const auto& param : function_type->parameters) {
+                MAYBE(param_type, convert_type(param));
+                append(params, param_type);
+            }
+            body.params(std::move(params));
+        }
         else {
             return unexpect_error("Unsupported type for conversion: {}", node_type_to_string(type->node_type));
         }

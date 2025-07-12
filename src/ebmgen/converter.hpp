@@ -4,6 +4,7 @@
 #include <core/ast/ast.h>
 #include <ebm/extended_binary_module.hpp>
 #include <memory>
+#include <unordered_map>
 #include "handler_registry.hpp"
 
 namespace ebmgen {
@@ -82,6 +83,13 @@ namespace ebmgen {
         std::vector<Instance> instances;
     };
     bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
+
+    struct FormatEncodeDecode {
+        ebm::StatementRef encode;
+        ebm::TypeRef encode_type;
+        ebm::StatementRef decode;
+        ebm::TypeRef decode_type;
+    };
     class Converter {
        public:
         Converter(ebm::ExtendedBinaryModule& ebm)
@@ -104,6 +112,28 @@ namespace ebmgen {
         ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
         ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
         ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
+
+        std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
+        void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,
+                                      ebm::StatementRef encode,
+                                      ebm::TypeRef encode_type,
+                                      ebm::StatementRef decode,
+                                      ebm::TypeRef decode_type) {
+            format_encode_decode[node] = FormatEncodeDecode{
+                encode,
+                encode_type,
+                decode,
+                decode_type,
+            };
+        }
+
+        expected<FormatEncodeDecode> get_format_encode_decode(const std::shared_ptr<ast::Node>& node) {
+            auto it = format_encode_decode.find(node);
+            if (it != format_encode_decode.end()) {
+                return it->second;
+            }
+            return unexpect_error("Format encode/decode not found for node");
+        }
 
         expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
             auto len = varint(name.size());
@@ -154,10 +184,14 @@ namespace ebmgen {
         expected<void> encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
         expected<void> encode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
         expected<void> encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
+        expected<void> encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
         expected<ebm::StatementRef> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
         expected<ebm::ExpressionRef> get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+
+        expected<ebm::StatementRef> assert_statement(ebm::ExpressionRef condition);
 
         Error set_lengths();
 
@@ -173,6 +207,7 @@ namespace ebmgen {
         expected<ebm::TypeRef> get_unsigned_n_int(size_t n);
         expected<ebm::TypeRef> get_u8_n_array(size_t n);
         expected<ebm::TypeRef> get_bool_type();
+        expected<ebm::TypeRef> get_void_type();
 
         expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
         expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);

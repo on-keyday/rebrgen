@@ -10,6 +10,7 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
 #include "helper.hpp"
+#include <fnet/util/base64.h>
 
 namespace ebmgen {
     expected<ebm::EndianExpr> Converter::get_endian(ebm::Endian base, bool sign) {
@@ -76,6 +77,16 @@ namespace ebmgen {
             return unexpect_error(std::move(bool_type.error()));
         }
         return bool_type;
+    }
+
+    expected<ebm::TypeRef> Converter::get_void_type() {
+        ebm::TypeBody typ;
+        typ.kind = ebm::TypeKind::VOID;
+        auto void_type = type_repo.add(ident_source, std::move(typ));
+        if (!void_type) {
+            return unexpect_error(std::move(void_type.error()));
+        }
+        return void_type;
     }
 
     expected<ebm::TypeRef> Converter::get_u8_n_array(size_t n) {
@@ -158,21 +169,22 @@ namespace ebmgen {
         return size;
     }
 
-#define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                       \
-    MAYBE(u8_n_array, get_u8_n_array(n));                           \
-    EBM_NEW_OBJECT(new_obj_ref, u8_n_array);                        \
-    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref); \
-    MAYBE(value_type, get_unsigned_n_int(n * 8));                   \
-    MAYBE(zero, get_int_literal(0));                                \
-    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));  \
-    IO_MACRO(io_ref, (make_io_data(buffer, u8_n_array, endian, io_size)));
+#define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                              \
+    MAYBE(u8_n_array, get_u8_n_array(n));                                  \
+    EBM_NEW_OBJECT(new_obj_ref, u8_n_array);                               \
+    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);        \
+    MAYBE(value_type, get_unsigned_n_int(n * 8));                          \
+    MAYBE(zero, get_int_literal(0));                                       \
+    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));         \
+    IO_MACRO(io_ref, (make_io_data(buffer, u8_n_array, endian, io_size))); \
+    MAYBE(u8_t, get_unsigned_n_int(8));
 
     expected<ebm::StatementRef> Converter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
         COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref);
         EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
 
         if (n == 1) {  // special case for 1 byte
-            EBM_INDEX(array_index, buffer, zero);
+            EBM_INDEX(array_index, u8_t, buffer, zero);
             EBM_ASSIGNMENT(assign, array_index, casted);
             ebm::Block block;
             block.container.reserve(3);
@@ -189,7 +201,7 @@ namespace ebmgen {
 
         MAYBE(eight, get_int_literal(8));
         MAYBE(xFF, get_int_literal(0xff));
-        MAYBE(u8_t, get_unsigned_n_int(8));
+
         // casted = value_type(from)
         // buffer = [0] * n
         // for counter in 0..len:
@@ -205,7 +217,7 @@ namespace ebmgen {
             EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, value_type, casted, shift);
             EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, value_type, shifted, xFF);
             EBM_CAST(casted2, u8_t, value_type, masked);
-            EBM_INDEX(array_index, buffer, counter);
+            EBM_INDEX(array_index, u8_t, buffer, counter);
             EBM_ASSIGNMENT(res, array_index, casted2);
             return res;
         };
@@ -242,7 +254,7 @@ namespace ebmgen {
         COMMON_BUFFER_SETUP(EBM_READ_DATA, read_ref);
 
         if (n == 1) {  // special case for 1 byte
-            EBM_INDEX(array_index, buffer, zero);
+            EBM_INDEX(array_index, u8_t, buffer, zero);
             EBM_CAST(cast_ref, cast_to, value_type, array_index);
             EBM_ASSIGNMENT(assign, to, cast_ref);
             ebm::Block block;
@@ -262,7 +274,6 @@ namespace ebmgen {
 
         MAYBE(eight, get_int_literal(8));
         MAYBE(xFF, get_int_literal(0xff));
-        MAYBE(u8_t, get_unsigned_n_int(8));
         // value_holder = value_type(0)
         // buffer = [0] * n
         // read(buffer)
@@ -276,7 +287,7 @@ namespace ebmgen {
         // to = (may cast) value_holder
         auto do_assign = [&](ebm::ExpressionRef shift_index) -> expected<ebm::StatementRef> {
             EBM_BINARY_OP(shift, ebm::BinaryOp::mul, counter_type, shift_index, eight);
-            EBM_INDEX(array_index, buffer, counter);
+            EBM_INDEX(array_index, u8_t, buffer, counter);
             EBM_CAST(casted, value_type, u8_t, array_index);
             EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, value_type, casted, shift);
             EBM_BINARY_OP(masked, ebm::BinaryOp::bit_or, value_type, value_holder, shifted);
@@ -330,41 +341,23 @@ namespace ebmgen {
     }
 
     expected<void> Converter::encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& ity, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        auto endian = get_endian(ebm::Endian(ity->endian), ity->is_signed);
-        if (!endian) {
-            return unexpect_error(std::move(endian.error()));
-        }
-        io_desc.endian = *endian;
+        MAYBE(endian, get_endian(ebm::Endian(ity->endian), ity->is_signed));
+        io_desc.endian = endian;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            auto multi_byte_int = encode_multi_byte_int_with_fixed_array(*ity->bit_size / 8, *endian, base_ref, io_desc.data_type);
-            if (!multi_byte_int) {
-                return unexpect_error(std::move(multi_byte_int.error()));
-            }
-            ebm::LoweredStatement lowered;
-            lowered.lowering_type = ebm::LoweringType::FUNDAMENTAL;
-            lowered.block = *multi_byte_int;
-            append(lowered_stmts, std::move(lowered));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(*ity->bit_size / 8, endian, base_ref, io_desc.data_type));
+            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
     }
 
     expected<void> Converter::encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& fty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        auto endian = get_endian(ebm::Endian(fty->endian), false);
-        if (!endian) {
-            return unexpect_error(std::move(endian.error()));
-        }
-        io_desc.endian = *endian;
+        MAYBE(endian, get_endian(ebm::Endian(fty->endian), false));
+        io_desc.endian = endian;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            auto multi_byte_int = encode_multi_byte_int_with_fixed_array(*fty->bit_size / 8, *endian, base_ref, io_desc.data_type);
-            if (!multi_byte_int) {
-                return unexpect_error(std::move(multi_byte_int.error()));
-            }
-            ebm::LoweredStatement lowered;
-            lowered.lowering_type = ebm::LoweringType::FUNDAMENTAL;
-            lowered.block = *multi_byte_int;
-            append(lowered_stmts, std::move(lowered));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(*fty->bit_size / 8, endian, base_ref, io_desc.data_type));
+            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
     }
@@ -374,12 +367,12 @@ namespace ebmgen {
             if (locked_enum->base_type) {
                 MAYBE(to_ty, convert_type(locked_enum->base_type));
                 EBM_CAST(casted, to_ty, io_desc.data_type, base_ref);
-                MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, field));
+                MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, nullptr));
                 auto copy = *statement_repo.get(encode_info)->body.write_data();
                 io_desc.endian = copy.endian;
                 io_desc.size = copy.size;
                 ebm::LoweredStatement lowered;
-                lowered.lowering_type = ebm::LoweringType::FUNDAMENTAL;
+                lowered.lowering_type = ebm::LoweringType::NAIVE;
                 lowered.block = encode_info;
                 append(lowered_stmts, std::move(lowered));
             }
@@ -411,99 +404,164 @@ namespace ebmgen {
         return false;
     }
 
+    expected<ebm::StatementRef> Converter::assert_statement(ebm::ExpressionRef condition) {
+        ebm::LoweredStatements lowered_stmts;
+
+        // TODO: add more specific error message
+        MAYBE(error_msg, add_string("Assertion failed"));
+        EBM_ERROR_REPORT(error_report, error_msg, {});
+        MAYBE(bool_type, get_bool_type());
+        EBM_UNARY_OP(not_condition, ebm::UnaryOp::logical_not, bool_type, condition);
+        EBM_IF_STATEMENT(if_stmt, not_condition, error_report, {});
+
+        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, if_stmt));
+
+        EBM_LOWERED_STATEMENTS(lowered, std::move(lowered_stmts));
+
+        EBM_ASSERT(assert_stmt, not_condition, lowered);
+        return assert_stmt;
+    }
+
     expected<void> Converter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
-        if (aty->length_value) {
-            io_desc.size.unit = ebm::SizeUnit::ELEMENT_FIXED;
-            MAYBE(length_value, varint(*aty->length_value));
-            io_desc.size.size(length_value);
-        }
-        else if (aty->length) {
-            MAYBE(length_expr, convert_expr(aty->length));
-            io_desc.size.unit = ebm::SizeUnit::ELEMENT_DYNAMIC;
-            io_desc.size.ref(length_expr);
-        }
-        else {
-            return unexpect_error("ArrayType must have a length or length_value");
-        }
-        auto len = aty->length_value;
-        // auto elem_is_int = ast::as<ast::IntType>(aty->element_type);
-        if (len) {
-            MAYBE(imm_len, get_int_literal(*len));
-            EBM_COUNTER_LOOP_START(i);
-            EBM_INDEX(indexed, base_ref, i);
-            MAYBE(encode_info, encode_field_type(aty->element_type, indexed, field));
-            EBM_COUNTER_LOOP_END(loop_stmt, i, imm_len, encode_info);
-            ebm::LoweredStatement lowered;
-            lowered.lowering_type = ebm::LoweringType::FUNDAMENTAL;
-            lowered.block = loop_stmt;
-            append(lowered_stmts, std::move(lowered));
+        MAYBE(element_type, convert_type(aty->element_type));
+        const auto elem_body = type_repo.get(element_type);
+        const auto is_byte = elem_body->body.kind == ebm::TypeKind::UINT && *elem_body->body.size() == 8;
+        auto fixed_unit = [is_byte]() -> ebm::SizeUnit {
+            return is_byte ? ebm::SizeUnit::BYTE_FIXED : ebm::SizeUnit::ELEMENT_FIXED;
+        };
+        auto dynamic_unit = [is_byte]() -> ebm::SizeUnit {
+            return is_byte ? ebm::SizeUnit::BYTE_DYNAMIC : ebm::SizeUnit::ELEMENT_DYNAMIC;
+        };
+        auto set_fixed_size = [&](size_t n) -> expected<void> {
+            MAYBE(size, make_fixed_size(n, fixed_unit()));
+            io_desc.size = size;
             return {};
-        }
-        if (!aty->length) {
-            return unexpect_error("Array length is not specified");
-        }
-        EBM_ARRAY_SIZE(array_size, base_ref);
-        if (ast::is_any_range(aty->length)) {
-            if (is_alignment_vector(field)) {
-                MAYBE(req_size, get_alignment_requirement(*field->arguments->alignment_value / 8, ebm::StreamType::OUTPUT));
-                auto array_size = *field->arguments->alignment_value / 8 - 1;
-                MAYBE(size, make_dynamic_size(req_size, ebm::SizeUnit::BYTE_DYNAMIC));
-                make_io_data();
-            }
+        };
+        auto set_dynamic_size = [&](ebm::ExpressionRef n) -> expected<void> {
+            MAYBE(size, make_dynamic_size(n, dynamic_unit()));
+            io_desc.size = size;
+            return {};
+        };
+        ebm::ExpressionRef length;
+        ebm::StatementRef assert_;
+        if (aty->length_value) {
+            MAYBE(imm_len, get_int_literal(*aty->length_value));
+            MAYBE_VOID(ok, set_fixed_size(*aty->length_value));
+            length = imm_len;
         }
         else {
-            auto len_init = get_expr(m, arr->length);
-            if (!len_init) {
-                return len_init.error();
+            if (!aty->length) {
+                return unexpect_error("Array length is not specified");
             }
-            auto expr_type = arr->length->expr_type;
-            if (auto u = ast::as<ast::UnionType>(expr_type)) {
-                if (!u->common_type) {
-                    return error("Union type must have common type");
+            EBM_ARRAY_SIZE(array_size, base_ref);
+
+            if (ast::is_any_range(aty->length)) {
+                if (is_alignment_vector(field)) {  // this means array is fixed size, but we need to calculate the alignment at runtime
+                    MAYBE(req_size, get_alignment_requirement(*field->arguments->alignment_value / 8, ebm::StreamType::OUTPUT));
+                    MAYBE_VOID(ok, set_dynamic_size(req_size));
+                    length = req_size;
                 }
-                expr_type = u->common_type;
+                else {
+                    MAYBE_VOID(ok, set_dynamic_size(array_size));
+                    length = array_size;
+                }
             }
-            auto s = define_storage(m, expr_type);
-            if (!s) {
-                return s.error();
+            else {
+                MAYBE(len_init, convert_expr(aty->length));
+                auto expr_type = aty->length->expr_type;
+                if (auto u = ast::as<ast::UnionType>(expr_type)) {
+                    if (!u->common_type) {
+                        return unexpect_error("Union type must have common type");
+                    }
+                    expr_type = u->common_type;
+                }
+                MAYBE(bool_type, get_bool_type());
+                EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, array_size, len_init);
+                MAYBE(assert_stmt, assert_statement(eq));
+                assert_ = assert_stmt;
+                MAYBE_VOID(ok, set_dynamic_size(len_init));
+                length = len_init;
             }
-            auto expected_len = define_typed_tmp_var(m, *len_init, *s, ast::ConstantLevel::immutable_variable);
-            if (!expected_len) {
-                return expected_len.error();
-            }
-            // add length check
-            m.op(AbstractOp::LENGTH_CHECK, [&](Code& c) {
-                c.left_ref(base_ref);
-                c.right_ref(*expected_len);
-                c.belong(get_field_ref(m, field));
-            });
         }
-        if (elem_is_int) {
-            BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-            m.op(AbstractOp::ENCODE_INT_VECTOR, [&](Code& c) {
-                c.left_ref(base_ref);
-                c.right_ref(len_);
-                c.endian(endian);
-                c.bit_size(*varint(*elem_is_int->bit_size));
-                c.belong(get_field_ref(m, field));
-            });
-            return none;
+        EBM_COUNTER_LOOP_START(counter);
+        EBM_INDEX(indexed, element_type, base_ref, counter);
+        MAYBE(encode_info, encode_field_type(aty->element_type, indexed, nullptr));
+        EBM_COUNTER_LOOP_END(loop_stmt, counter, length, encode_info);
+
+        ebm::Block block;
+        block.container.reserve(2 + (assert_.id.value() != 0));
+        append(block, counter_def);
+        if (assert_.id.value() != 0) {
+            append(block, assert_);
         }
-        return counter_loop(m, len_, [&](Varint counter) {
-            BM_INDEX(m.op, index, base_ref, counter);
-            auto err = encode_type(m, arr->element_type, index, mapped_type, field, false);
-            if (err) {
-                return err;
-            }
-            return none;
-        });
+        append(block, loop_stmt);
+
+        EBM_BLOCK(loop_block, std::move(block));
+
+        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, loop_block));
+
+        return {};
+    }
+
+    expected<void> Converter::encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
+        std::string candidate;
+        if (!futils::base64::decode(typ->strong_ref->binary_value, candidate)) {
+            return unexpect_error("Invalid base64 string: {}", typ->strong_ref->binary_value);
+        }
+        MAYBE(u8_n_array, get_u8_n_array(candidate.size()));
+        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
+        MAYBE(u8_t, get_unsigned_n_int(8));
+        MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
+        io_desc.size = io_size;
+        EBM_WRITE_DATA(write_ref, make_io_data(buffer, u8_n_array, io_desc.endian, io_size));
+        ebm::Block block;
+        append(block, buffer_def);
+        for (size_t i = 0; i < candidate.size(); i++) {
+            MAYBE(i_ref, get_int_literal(i));
+            MAYBE(literal, get_int_literal(static_cast<unsigned char>(candidate[i])));
+            EBM_INDEX(array_index, u8_t, buffer, i_ref);
+            EBM_ASSIGNMENT(assign, array_index, literal);
+            append(block, assign);
+        }
+        append(block, write_ref);
+        EBM_BLOCK(block_ref, std::move(block));
+        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));
+        return {};
+    }
+
+    expected<void> Converter::encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
+        auto base = typ->base.lock();
+        auto fmt = ast::as<ast::Format>(base);
+        if (!fmt) {
+            return unexpect_error("Struct type must have a format");
+        }
+        if (typ->bit_size && !(fmt->encode_fn.lock() || fmt->decode_fn.lock())) {
+            auto size = get_size(*typ->bit_size);
+            io_desc.size = size;
+        }
+        else {
+            io_desc.size = ebm::Size{.unit = ebm::SizeUnit::DYNAMIC};
+        }
+        ebm::CallDesc call_desc;
+        // force convert encode and decode functions
+        MAYBE_VOID(ok, convert_statement(base));
+        MAYBE(encdec, get_format_encode_decode(base));
+        EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
+        call_desc.callee = enc_access;
+        // TODO: add arguments
+        EBM_CALL(call_ref, std::move(call_desc));
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::EXPRESSION;
+        body.expression(call_ref);
+        auto call_stmt = add_statement(std::move(body));
     }
 
     expected<ebm::StatementRef> Converter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
             return encode_field_type(ity->base.lock(), base_ref, field);
         }
-        auto typ_ref = convert_type(typ);
+        auto typ_ref = convert_type(typ, field);
         if (!typ_ref) {
             return unexpect_error(std::move(typ_ref.error()));
         }
@@ -517,20 +575,24 @@ namespace ebmgen {
         else if (auto fty = ast::as<ast::FloatType>(typ)) {
             MAYBE_VOID(ok, encode_float_type(io_desc, ast::cast_to<ast::FloatType>(typ), base_ref, lowered_stmts));
         }
+        else if (auto str_lit = ast::as<ast::StrLiteralType>(typ)) {
+            MAYBE_VOID(ok, encode_str_literal_type(io_desc, ast::cast_to<ast::StrLiteralType>(typ), base_ref, lowered_stmts));
+        }
+        else if (auto uty = ast::as<ast::UnionType>(typ)) {
+            return unexpect_error("Union type cannot be used in encoding");
+        }
         else if (auto ety = ast::as<ast::EnumType>(typ)) {
             MAYBE_VOID(ok, encode_enum_type(io_desc, ast::cast_to<ast::EnumType>(typ), base_ref, lowered_stmts, field));
         }
         else if (auto aty = ast::as<ast::ArrayType>(typ)) {
-            MAYBE_VOID(ok, encode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts));
+            MAYBE_VOID(ok, encode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts, field));
         }
         else {
             return unexpect_error("Unsupported type for encoding: {}", node_type_to_string(typ->node_type));
         }
+        assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
         if (lowered_stmts.container.size()) {
-            ebm::StatementBody body;
-            body.statement_kind = ebm::StatementOp::LOWERED_STATEMENTS;
-            body.lowered_statements(std::move(lowered_stmts));
-            MAYBE(lowered_stmt, add_statement(std::move(body)));
+            EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
             io_desc.lowered_stmt = lowered_stmt;
         }
         ebm::StatementBody body;

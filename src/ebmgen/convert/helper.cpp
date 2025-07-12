@@ -68,9 +68,10 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::ExpressionBody make_index(ebm::ExpressionRef base, ebm::ExpressionRef index) {
+    ebm::ExpressionBody make_index(ebm::TypeRef type, ebm::ExpressionRef base, ebm::ExpressionRef index) {
         ebm::ExpressionBody body;
         body.op = ebm::ExpressionOp::INDEX_ACCESS;
+        body.type = type;
         body.base(base);
         body.index(index);
         return body;
@@ -82,10 +83,104 @@ namespace ebmgen {
         body.write_data(io_data);
         return body;
     }
+
     ebm::StatementBody make_read_data(ebm::IOData io_data) {
         ebm::StatementBody body;
         body.statement_kind = ebm::StatementOp::READ_DATA;
         body.read_data(io_data);
         return body;
     }
+
+    ebm::StatementBody make_block(ebm::Block&& block) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::BLOCK;
+        body.block(std::move(block));
+        return body;
+    }
+
+    ebm::StatementBody make_while_loop(ebm::ExpressionRef condition, ebm::StatementRef body) {
+        ebm::StatementBody body_;
+        body_.statement_kind = ebm::StatementOp::LOOP_STATEMENT;
+        ebm::LoopStatement loop_stmt;
+        loop_stmt.loop_type = ebm::LoopType::WHILE;
+        loop_stmt.condition(condition);
+        loop_stmt.body = body;
+        body_.loop(std::move(loop_stmt));
+        return body_;
+    }
+
+    ebm::ExpressionBody make_array_size(ebm::TypeRef type, ebm::ExpressionRef array_expr) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::ARRAY_SIZE;
+        body.type = type;
+        body.array_expr(array_expr);
+        return body;
+    }
+
+    ebm::LoweredStatement make_lowered_statement(ebm::LoweringType lowering_type, ebm::StatementRef body) {
+        ebm::LoweredStatement lowered;
+        lowered.lowering_type = lowering_type;
+        lowered.block = body;
+        return lowered;
+    }
+
+    ebm::StatementBody make_error_report(ebm::StringRef message, ebm::Expressions&& arguments) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::ERROR_REPORT;
+        ebm::ErrorReport error_report;
+        error_report.message = message;
+        error_report.arguments = std::move(arguments);
+        body.error_report(std::move(error_report));
+        return body;
+    }
+
+#define ASSERT_ID(id_) assert(id_.id.value() != 0 && "Invalid ID for expression or statement")
+
+    ebm::StatementBody make_if_statement(ebm::ExpressionRef condition, ebm::StatementRef then_block, ebm::StatementRef else_block) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::IF_STATEMENT;
+        ebm::IfStatement if_stmt;
+        ASSERT_ID(condition);
+        ASSERT_ID(then_block);
+        if_stmt.condition = condition;
+        if_stmt.then_block = then_block;
+        if_stmt.else_block = else_block;
+        body.if_statement(std::move(if_stmt));
+        return body;
+    }
+
+    ebm::StatementBody make_lowered_statements(ebm::LoweredStatements&& lowered_stmts) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::LOWERED_STATEMENTS;
+        body.lowered_statements(std::move(lowered_stmts));
+        return body;
+    }
+
+    ebm::StatementBody make_assert_statement(ebm::ExpressionRef condition, ebm::StatementRef lowered_statement) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::ASSERT;
+        ebm::AssertDesc assert_desc;
+        ASSERT_ID(condition);
+        assert_desc.condition = condition;
+        assert_desc.lowered_statement = lowered_statement;
+        body.assert_desc(std::move(assert_desc));
+        return body;
+    }
+
+    ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::StatementRef member) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::MEMBER_ACCESS;
+        body.type = type;
+        body.base(base);
+        body.member(member);
+        return body;
+    }
+
+    ebm::ExpressionBody make_call(ebm::CallDesc&& call_desc) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::CALL;
+        body.call_desc(std::move(call_desc));
+        return body;
+    }
+
 }  // namespace ebmgen

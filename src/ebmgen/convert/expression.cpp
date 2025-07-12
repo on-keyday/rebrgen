@@ -141,7 +141,7 @@ namespace ebmgen {
                 return unexpect_error("Invalid base64 string: {}", literal->binary_value);
             }
             body.op = ebm::ExpressionOp::LITERAL_STRING;
-            MAYBE(str_ref, add_string(literal->value));
+            MAYBE(str_ref, add_string(candidate));
             body.string_value(str_ref);
         }
         else if (auto literal = ast::as<ast::TypeLiteral>(node)) {

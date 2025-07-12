@@ -208,6 +208,8 @@ namespace ebmgen {
         expected<ebm::TypeRef> get_u8_n_array(size_t n);
         expected<ebm::TypeRef> get_bool_type();
         expected<ebm::TypeRef> get_void_type();
+        expected<ebm::TypeRef> get_encoder_return_type();
+        expected<ebm::TypeRef> get_decoder_return_type();
 
         expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
         expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);

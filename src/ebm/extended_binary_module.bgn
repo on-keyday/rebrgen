@@ -100,6 +100,7 @@ enum ExpressionOp:
     GET_REMAINING_BYTES
     CAN_READ_STREAM
     ARRAY_SIZE # Get the size of an array or vector
+    IS_ERROR # check if encoder/decoder value is error
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -157,6 +158,8 @@ format ExpressionBody:
             num_bytes :ExpressionRef # Number of bytes to check
         ExpressionOp.ARRAY_SIZE:
             array_expr :ExpressionRef # Reference to the array or vector expression
+        ExpressionOp.IS_ERROR:
+            target_expr :ExpressionRef # Expression to check for error (ENCODER_RETURN or DECODER_RETURN type)
 
 enum LoopType:
     :u8
@@ -288,6 +291,7 @@ enum StatementOp:
     BLOCK # Block of statements
     ASSIGNMENT
     RETURN
+    ERROR_RETURN # for encoder/decoder return value
     ASSERT
     READ_DATA
     WRITE_DATA
@@ -378,6 +382,8 @@ format StatementBody:
             previous_assignment :StatementRef # Previous assignment or phi node (optional)
         StatementOp.RETURN:
             value :ExpressionRef # Return value (optional)
+        StatementOp.ERROR_RETURN:
+            value :ExpressionRef # Error return value (e.g., ENCODER_RETURN or DECODER_RETURN)
         StatementOp.ASSERT:
             assert_desc :AssertDesc # Assertion description
         StatementOp.READ_DATA:
@@ -501,8 +507,9 @@ enum TypeKind:
     VARIANT
     RANGE
 
-    # encoder/decoder return value
-    CODER_RETURN
+    # encoder/decoder return value (these are language specific, e.g errno + int for C, Result<T, E> for Rust, error for Go)
+    ENCODER_RETURN
+    DECODER_RETURN
 
     # property setter return value
     PROPERTY_SETTER_RETURN
@@ -545,8 +552,6 @@ format TypeBody:
         TypeKind.VARIANT:
             common_type :TypeRef # Optional Common type for all union members
             members :Types # List of variant members (types)
-        TypeKind.CODER_RETURN:
-            coder_type :TypeRef # Type returned by encoder/decoder
         TypeKind.PROPERTY_SETTER_RETURN:
             property_type :TypeRef # Type returned by property setter
         TypeKind.OPTIONAL:

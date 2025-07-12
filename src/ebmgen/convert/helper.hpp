@@ -179,4 +179,22 @@ namespace ebmgen {
 #define EBM_CALL(ref_name, call_desc__) \
     EBM_AST_EXPRESSION(ref_name, make_call, call_desc__)
 
+    ebm::StatementBody make_expression_statement(ebm::ExpressionRef expr);
+
+#define EBM_EXPR_STATEMENT(ref_name, expr) \
+    EBM_AST_STATEMENT(ref_name, make_expression_statement, expr)
+
+    ebm::ExpressionBody make_error_check(ebm::TypeRef type, ebm::ExpressionRef target_expr);
+#define EBM_IS_ERROR(ref_name, target_expr)                                         \
+    ebm::ExpressionRef ref_name;                                                    \
+    {                                                                               \
+        MAYBE(bool_type, get_bool_type());                                          \
+        MAYBE(error_check_ref, add_expr(make_error_check(bool_type, target_expr))); \
+        ref_name = error_check_ref;                                                 \
+    }
+
+    ebm::StatementBody make_error_return(ebm::ExpressionRef value);
+#define EBM_ERROR_RETURN(ref_name, value) \
+    EBM_AST_STATEMENT(ref_name, make_error_return, value)
+
 }  // namespace ebmgen

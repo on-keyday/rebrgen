@@ -69,24 +69,25 @@ namespace ebmgen {
         return *int_literal;
     }
 
-    expected<ebm::TypeRef> Converter::get_bool_type() {
+    expected<ebm::TypeRef> get_single_type(ebm::TypeKind kind, auto& type_repo, IdentifierSource& ident_source) {
         ebm::TypeBody typ;
-        typ.kind = ebm::TypeKind::BOOL;
-        auto bool_type = type_repo.add(ident_source, std::move(typ));
-        if (!bool_type) {
-            return unexpect_error(std::move(bool_type.error()));
-        }
-        return bool_type;
+        typ.kind = kind;
+        return type_repo.add(ident_source, std::move(typ));
+    }
+
+    expected<ebm::TypeRef> Converter::get_bool_type() {
+        return get_single_type(ebm::TypeKind::BOOL, type_repo, ident_source);
     }
 
     expected<ebm::TypeRef> Converter::get_void_type() {
-        ebm::TypeBody typ;
-        typ.kind = ebm::TypeKind::VOID;
-        auto void_type = type_repo.add(ident_source, std::move(typ));
-        if (!void_type) {
-            return unexpect_error(std::move(void_type.error()));
-        }
-        return void_type;
+        return get_single_type(ebm::TypeKind::VOID, type_repo, ident_source);
+    }
+
+    expected<ebm::TypeRef> Converter::get_encoder_return_type() {
+        return get_single_type(ebm::TypeKind::ENCODER_RETURN, type_repo, ident_source);
+    }
+    expected<ebm::TypeRef> Converter::get_decoder_return_type() {
+        return get_single_type(ebm::TypeKind::DECODER_RETURN, type_repo, ident_source);
     }
 
     expected<ebm::TypeRef> Converter::get_u8_n_array(size_t n) {
@@ -551,10 +552,20 @@ namespace ebmgen {
         call_desc.callee = enc_access;
         // TODO: add arguments
         EBM_CALL(call_ref, std::move(call_desc));
-        ebm::StatementBody body;
-        body.statement_kind = ebm::StatementOp::EXPRESSION;
-        body.expression(call_ref);
-        auto call_stmt = add_statement(std::move(body));
+        MAYBE(typ_ref, get_encoder_return_type());
+        EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ_ref, call_ref);
+        EBM_IS_ERROR(is_error, result);
+        EBM_ERROR_RETURN(error_return, result);
+        EBM_IF_STATEMENT(if_stmt, is_error, error_return, {});
+
+        ebm::Block block;
+        block.container.reserve(2);
+        append(block, result_def);
+        append(block, if_stmt);
+        EBM_BLOCK(block_ref, std::move(block));
+
+        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));
+        return {};
     }
 
     expected<ebm::StatementRef> Converter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {

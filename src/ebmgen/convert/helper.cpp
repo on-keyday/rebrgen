@@ -183,4 +183,26 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_expression_statement(ebm::ExpressionRef expr) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::EXPRESSION;
+        body.expression(expr);
+        return body;
+    }
+
+    ebm::ExpressionBody make_error_check(ebm::TypeRef type, ebm::ExpressionRef target_expr) {
+        ebm::ExpressionBody body;
+        body.type = type;
+        body.op = ebm::ExpressionOp::IS_ERROR;
+        body.target_expr(target_expr);
+        return body;
+    }
+
+    ebm::StatementBody make_error_return(ebm::ExpressionRef value) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::ERROR_RETURN;
+        body.value(value);
+        return body;
+    }
+
 }  // namespace ebmgen

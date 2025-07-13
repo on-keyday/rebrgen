@@ -10,14 +10,14 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::StatementBody make_anonymous_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref) {
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const) {
         ebm::StatementBody body;
         body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
         ebm::VariableDecl var_decl;
         var_decl.name = name;
         var_decl.var_type = type;
         var_decl.initial_value = initial_ref;
-        var_decl.is_constant(false);
+        var_decl.is_constant(is_const);
         body.var_decl(std::move(var_decl));
         return body;
     }
@@ -202,6 +202,14 @@ namespace ebmgen {
         ebm::StatementBody body;
         body.statement_kind = ebm::StatementOp::ERROR_RETURN;
         body.value(value);
+        return body;
+    }
+
+    ebm::ExpressionBody make_max_value(ebm::TypeRef type, ebm::ExpressionRef lowered_expr) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::MAX_VALUE;
+        body.type = type;
+        body.lowered_expr(lowered_expr);
         return body;
     }
 

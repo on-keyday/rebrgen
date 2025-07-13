@@ -101,6 +101,7 @@ enum ExpressionOp:
     CAN_READ_STREAM
     ARRAY_SIZE # Get the size of an array or vector
     IS_ERROR # check if encoder/decoder value is error
+    MAX_VALUE # Get the maximum value of a type (e.g., u8, u16, u32, u64)
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -160,6 +161,8 @@ format ExpressionBody:
             array_expr :ExpressionRef # Reference to the array or vector expression
         ExpressionOp.IS_ERROR:
             target_expr :ExpressionRef # Expression to check for error (ENCODER_RETURN or DECODER_RETURN type)
+        ExpressionOp.MAX_VALUE:
+            lowered_expr :ExpressionRef # Optional lowered expression for the maximum value
 
 enum LoopType:
     :u8
@@ -318,7 +321,7 @@ enum StatementOp:
     IMPORT_MODULE
     EXPRESSION # expression statement
     PHI_NODE # For SSA form or assignment tracking
-    ERROR_REPORT # Explicit error reporting
+    ERROR_REPORT # Explicit error reporting; initial raise of an error
     LOWERED_STATEMENTS # lowered statements
 
 format Statement:

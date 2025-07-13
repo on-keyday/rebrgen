@@ -26,27 +26,40 @@ namespace ebmgen {
 #define EBM_AST_EXPRESSION(ref_name, make_func, ...) \
     EBM_AST_CONSTRUCTOR(ref_name, ExpressionRef, add_expr, make_func, __VA_ARGS__)
 
+#define EBM_AST_EXPRESSION_REF(ref_name) ebm::ExpressionRef ref_name;
+#define EBM_AST_STATEMENT_REF(ref_name) ebm::StatementRef ref_name;
+#define EBM_AST_VARIABLE_REF(ref_name) EBM_AST_EXPRESSION_REF(ref_name) EBM_AST_STATEMENT_REF(ref_name##_def)
+#define EBM_AST_VARIABLE_REF_SET(ref_name, expr_name, def_name) \
+    ref_name = expr_name;                                       \
+    ref_name##_def = def_name;
+
     ebm::ExpressionBody make_new_object_body(ebm::TypeRef type);
 
 #define EBM_NEW_OBJECT(ref_name, typ) \
     EBM_AST_EXPRESSION(ref_name, make_new_object_body, typ)
 
-    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref);
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const);
 
     ebm::ExpressionBody make_identifier_expr(ebm::StatementRef id, ebm::TypeRef type);
 
 #define EBM_IDENTIFIER(ref_name, id, typ) \
     EBM_AST_EXPRESSION(ref_name, make_identifier_expr, id, typ)
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                 \
-    ebm::ExpressionRef ref_name;                                                                  \
-    ebm::StatementRef ref_name##_def;                                                             \
-    {                                                                                             \
-        MAYBE(temporary_name, identifier_repo.new_id(ident_source));                              \
-        MAYBE(new_var_ref_, add_statement(make_variable_decl(temporary_name, typ, initial_ref))); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                         \
-        ref_name = new_expr_ref_;                                                                 \
-        ref_name##_def = new_var_ref_;                                                            \
+#define EBM_DEFINE_VARIABLE(ref_name, id, typ, initial_ref, is_const)                           \
+    EBM_AST_VARIABLE_REF(ref_name) {                                                            \
+        MAYBE(new_var_ref_, add_statement(make_variable_decl(id, typ, initial_ref, is_const))); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                       \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                        \
+    }
+
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                        \
+    ebm::ExpressionRef ref_name;                                                                         \
+    ebm::StatementRef ref_name##_def;                                                                    \
+    {                                                                                                    \
+        MAYBE(temporary_name, identifier_repo.new_id(ident_source));                                     \
+        MAYBE(new_var_ref_, add_statement(make_variable_decl(temporary_name, typ, initial_ref, false))); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                 \
     }
 
     ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);
@@ -114,15 +127,20 @@ namespace ebmgen {
 #define EBM_WHILE_LOOP(ref_name, condition__, body__) \
     EBM_AST_STATEMENT(ref_name, make_while_loop, condition__, body__)
 
-#define EBM_COUNTER_LOOP_START(counter_name)                          \
-    ebm::ExpressionRef counter_name;                                  \
-    ebm::StatementRef counter_name##_def;                             \
-    {                                                                 \
-        MAYBE(zero, get_int_literal(0));                              \
-        MAYBE(counter_type, get_counter_type());                      \
-        EBM_DEFINE_ANONYMOUS_VARIABLE(counter__, counter_type, zero); \
-        counter_name = counter__;                                     \
-        counter_name##_def = counter___def;                           \
+#define EBM_COUNTER_LOOP_START_CUSTOM(counter_name, counter_type)                       \
+    EBM_AST_VARIABLE_REF(counter_name);                                                 \
+    {                                                                                   \
+        MAYBE(zero, get_int_literal(0));                                                \
+        EBM_DEFINE_ANONYMOUS_VARIABLE(counter_name##__, counter_type, zero);            \
+        EBM_AST_VARIABLE_REF_SET(counter_name, counter_name##__, counter_name##___def); \
+    }
+
+#define EBM_COUNTER_LOOP_START(counter_name)                                            \
+    EBM_AST_VARIABLE_REF(counter_name);                                                 \
+    {                                                                                   \
+        MAYBE(counter_type, get_counter_type());                                        \
+        EBM_COUNTER_LOOP_START_CUSTOM(counter_name##__, counter_type);                  \
+        EBM_AST_VARIABLE_REF_SET(counter_name, counter_name##__, counter_name##___def); \
     }
 
 #define EBM_COUNTER_LOOP_END(loop_stmt, counter_name, limit_expr__, body__)             \
@@ -139,6 +157,21 @@ namespace ebmgen {
         EBM_BLOCK(loop_block, std::move(loop_body));                                    \
         EBM_WHILE_LOOP(loop_stmt__, cmp, loop_block);                                   \
         loop_stmt = loop_stmt__;                                                        \
+    }
+
+#define EBM_COUNTER_LOOP_END_BODY(loop_stmt, counter_name, limit_expr__, body__)        \
+    ebm::StatementBody loop_stmt;                                                       \
+    {                                                                                   \
+        MAYBE(bool_type, get_bool_type());                                              \
+        EBM_BINARY_OP(cmp, ebm::BinaryOp::less, bool_type, counter_name, limit_expr__); \
+        ebm::Block loop_body;                                                           \
+        loop_body.container.reserve(2);                                                 \
+        append(loop_body, body__);                                                      \
+        MAYBE(counter_type, get_counter_type());                                        \
+        EBM_INCREMENT(inc, counter_name, counter_type);                                 \
+        append(loop_body, inc);                                                         \
+        EBM_BLOCK(loop_block, std::move(loop_body));                                    \
+        loop_stmt = make_while_loop(cmp, loop_block);                                   \
     }
 
     ebm::ExpressionBody make_array_size(ebm::TypeRef type, ebm::ExpressionRef array_expr);
@@ -196,5 +229,10 @@ namespace ebmgen {
     ebm::StatementBody make_error_return(ebm::ExpressionRef value);
 #define EBM_ERROR_RETURN(ref_name, value) \
     EBM_AST_STATEMENT(ref_name, make_error_return, value)
+
+    ebm::ExpressionBody make_max_value(ebm::TypeRef type, ebm::ExpressionRef lowered_expr);
+
+#define EBM_MAX_VALUE(ref_name, type, lowered_expr) \
+    EBM_AST_EXPRESSION(ref_name, make_max_value, type, lowered_expr)
 
 }  // namespace ebmgen

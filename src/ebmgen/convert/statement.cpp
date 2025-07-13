@@ -1,27 +1,212 @@
 #include "../converter.hpp"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
+#include "ebm/extended_binary_module.hpp"
 #include "helper.hpp"
 
 namespace ebmgen {
+
+    expected<std::pair<size_t, bool>> get_integral_size_and_sign(auto& type_repo, ebm::TypeRef type) {
+        for (;;) {
+            auto type_ref = type_repo.get(type);
+            if (!type_ref) {
+                return unexpect_error("Invalid type reference for max value");
+            }
+            if (type_ref->body.kind == ebm::TypeKind::INT || type_ref->body.kind == ebm::TypeKind::UINT) {
+                return std::make_pair(*type_ref->body.size(), type_ref->body.kind == ebm::TypeKind::INT);
+            }
+            else if (type_ref->body.kind == ebm::TypeKind::ENUM) {
+                auto base_type = type_ref->body.base_type();
+                if (!base_type || base_type->id.value() == 0) {
+                    return unexpect_error("Enum type must have a base type");
+                }
+                type = *base_type;
+            }
+            else {
+                return unexpect_error("Unsupported type for max value: {}", to_string(type_ref->body.kind));
+            }
+        }
+    }
+
+    expected<ebm::ExpressionRef> Converter::get_max_value_expr(ebm::TypeRef type) {
+        MAYBE(size_and_signed, get_integral_size_and_sign(type_repo, type));
+        auto [size, is_signed] = size_and_signed;
+        MAYBE(value_type, get_unsigned_n_int(size));
+        EBM_NEW_OBJECT(zero, value_type);
+        EBM_UNARY_OP(max_unsigned, ebm::UnaryOp::bit_not, value_type, zero);
+        auto result = max_unsigned;
+        if (is_signed) {
+            MAYBE(one, get_int_literal(1));
+            EBM_BINARY_OP(max_signed, ebm::BinaryOp::right_shift, value_type, max_unsigned, one);
+            result = max_signed;
+        }
+        EBM_CAST(max_value_lowered, type, value_type, result);
+
+        EBM_MAX_VALUE(max_value_expr, type, max_value_lowered);
+        return max_value_expr;
+    }
+
+    expected<ebm::StatementBody> Converter::convert_loop_body(const std::shared_ptr<ast::Loop>& node) {
+        auto inner_block = [&] {
+            return foreach_node(m, node->body->elements, [&](auto& n) {
+                return eval(m, n);
+            });
+        };
+        if (node->init) {
+            if (auto bop = ast::as<ast::Binary>(node->init);
+                bop && bop->op == ast::BinaryOp::in_assign) {  // `for x in y`
+                auto ident = ast::as<ast::Ident>(bop->left);
+                if (!ident) {
+                    return unexpect_error("Invalid loop init target :{}", node_type_to_string(bop->left->node_type));
+                }
+                MAYBE(target, convert_expr(bop->right));
+                if (ast::as<ast::IntType>(bop->right->expr_type)) {
+                    EBM_COUNTER_LOOP_START(i);
+                    MAYBE(ident_ref, add_identifier(ident->ident));
+                    MAYBE(expr_type, convert_type(bop->left->expr_type));
+                    EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true);
+                    visited_nodes.emplace(node->init, identifier_def);
+                    MAYBE(inner_block_ref, convert_statement(node->body));
+                    MAYBE(bool_type, get_bool_type());
+                    EBM_COUNTER_LOOP_END_BODY(loop_stmt, i, target, inner_block_ref);
+                    return loop_stmt;
+                }
+                else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
+                    auto l = range->range.lock();
+                    ebm::ExpressionRef start, end;
+                    MAYBE(base_type, convert_type(range->base_type));
+                    if (l->start) {
+                        MAYBE(s, convert_expr(l->start));
+                        start = s;
+                    }
+                    else {
+                        EBM_NEW_OBJECT(start_literal, base_type);
+                        start = start_literal;
+                    }
+                    if (l->end) {
+                        MAYBE(e, convert_expr(l->end));
+                        end = e;
+                    }
+                    else {
+                        MAYBE(max_value_expr, get_max_value_expr(base_type));
+                        end = max_value_expr;
+                    }
+                    MAYBE(size_and_signed, get_integral_size_and_sign(type_repo, base_type));
+                    auto [n, is_signed] = size_and_signed;
+                    MAYBE(counter_type, get_unsigned_n_int(n));
+                    EBM_CAST(start_casted, counter_type, base_type, start);
+
+                    EBM_DEFINE_ANONYMOUS_VARIABLE(iter, counter_type, start_casted);
+                    if (end.value() != 0) {
+                        BM_BINARY_NODE(m.op, id, l->op == ast::BinaryOp::range_inclusive ? BinaryOp::less_or_eq : BinaryOp::less, *tmp_var, end, node);
+                        m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+                            c.ref(id);
+                        });
+                    }
+                    else {
+                        m.op(AbstractOp::LOOP_INFINITE);
+                    }
+                    auto err = inner_block();
+                    if (err) {
+                        return err;
+                    }
+                    m.op(AbstractOp::INC, [&](Code& c) {
+                        c.ref(*tmp_var);
+                    });
+                    m.op(AbstractOp::END_LOOP);
+                }
+                else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
+                    auto size_id = m.new_id(nullptr);
+                    if (!size_id) {
+                        return size_id.error();
+                    }
+                    m.op(AbstractOp::ARRAY_SIZE, [&](Code& c) {
+                        c.ident(*size_id);
+                        c.ref(*target);
+                    });
+                    return counter_loop(m, *size_id, [&](Varint counter) {
+                        BM_INDEX(m.op, idx, *target, counter);
+                        BM_LOOKUP_IDENT(ident, m, ast::cast_to<ast::Ident>(bop->left));
+                        m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
+                            c.ident(ident);
+                            c.ref(idx);
+                        });
+                        auto err = inner_block();
+                        if (err) {
+                            return err;
+                        }
+                        return none;
+                    });
+                }
+                else if (auto lit = ast::as<ast::StrLiteral>(bop->right)) {
+                    auto str_id = static_str(m, ast::cast_to<ast::StrLiteral>(bop->right));
+                    if (!str_id) {
+                        return str_id.error();
+                    }
+                    auto len = varint(lit->length);
+                    if (!len) {
+                        return len.error();
+                    }
+                    return counter_loop(m, *len, [&](Varint counter) {
+                        BM_INDEX(m.op, id, *str_id, counter);
+                        BM_LOOKUP_IDENT(ident, m, ast::cast_to<ast::Ident>(bop->left));
+                        m.op(AbstractOp::DEFINE_VARIABLE_REF, [&](Code& c) {
+                            c.ident(ident);
+                            c.ref(id);
+                        });
+                        auto err = inner_block();
+                        if (err) {
+                            return err;
+                        }
+                        return none;
+                    });
+                }
+                else {
+                    return error("Invalid loop init type : {}", node_type_to_string(bop->right->expr_type->node_type));
+                }
+            }
+            auto err = eval(m, node->init);
+            if (err) {
+                return err;
+            }
+        }
+        if (node->cond) {
+            BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, &node->cond->loc);
+            BM_GET_EXPR(cond, m, node->cond);
+            BM_END_COND_BLOCK(m.op, m.code, cond_block, cond);
+            m.op(AbstractOp::LOOP_CONDITION, [&](Code& c) {
+                c.ref(cond);
+            });
+        }
+        else {
+            m.op(AbstractOp::LOOP_INFINITE);
+        }
+        auto err = inner_block();
+        if (err) {
+            return err;
+        }
+        if (node->step) {
+            auto err = eval(m, node->step);
+            if (err) {
+                return err;
+            }
+        }
+        m.op(AbstractOp::END_LOOP);
+        return none;
+    }
+
     expected<ebm::StatementRef> Converter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
         ebm::StatementBody body;
         if (auto assert_stmt = ast::as<ast::Assert>(node)) {
-            body.statement_kind = ebm::StatementOp::ASSERT;
-            auto cond_ref = convert_expr(assert_stmt->cond);
-            if (!cond_ref) {
-                return unexpect_error(std::move(cond_ref.error()));
-            }
-            body.condition(*cond_ref);
+            MAYBE(cond, convert_expr(assert_stmt->cond));
+            MAYBE(body_, assert_statement_body(cond));
+            body = std::move(body_);
         }
         else if (auto return_stmt = ast::as<ast::Return>(node)) {
             body.statement_kind = ebm::StatementOp::RETURN;
             if (return_stmt->expr) {
-                auto expr_ref = convert_expr(return_stmt->expr);
-                if (!expr_ref) {
-                    return unexpect_error(std::move(expr_ref.error()));
-                }
-                body.value(*expr_ref);
+                MAYBE(expr_ref, convert_expr(return_stmt->expr));
+                body.value(expr_ref);
             }
             else {
                 body.value(ebm::ExpressionRef{});
@@ -35,29 +220,19 @@ namespace ebmgen {
         }
         else if (auto if_stmt = ast::as<ast::If>(node)) {
             body.statement_kind = ebm::StatementOp::IF_STATEMENT;
-            ebm::IfStatement ebm_if_stmt;
-            auto cond_ref = convert_expr(if_stmt->cond->expr);
-            if (!cond_ref) {
-                return unexpect_error(std::move(cond_ref.error()));
-            }
-            ebm_if_stmt.condition = *cond_ref;
+            MAYBE(cond_ref, convert_expr(if_stmt->cond->expr));
 
             // Convert then block
             MAYBE(then_block, convert_statement(if_stmt->then));
-            ebm_if_stmt.then_block = std::move(then_block);
 
             // Convert else block
             ebm::StatementRef else_block;
             if (if_stmt->els) {
-                auto else_ref = convert_statement(if_stmt->els);
-                if (!else_ref) {
-                    return unexpect_error(std::move(else_ref.error()));
-                }
-                else_block = *else_ref;
+                MAYBE(else_block_, convert_statement(if_stmt->els));
+                else_block = else_block_;
             }
-            ebm_if_stmt.else_block = std::move(else_block);
 
-            body.if_statement(std::move(ebm_if_stmt));
+            body = make_if_statement(cond_ref, then_block, else_block);
         }
         else if (auto loop_stmt = ast::as<ast::Loop>(node)) {
             body.statement_kind = ebm::StatementOp::LOOP_STATEMENT;
@@ -171,7 +346,6 @@ namespace ebmgen {
                         }
                         append(struct_decl.fields, *stmt_ref);
                     }
-                    // TODO: Handle other Member types within Format body if necessary (e.g., functions)
                 }
             }
             body.struct_decl(std::move(struct_decl));

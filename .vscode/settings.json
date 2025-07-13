@@ -142,6 +142,7 @@
     }
   },
   "clangd.arguments": [
-    "-compile-commands-dir=${workspaceFolder}/built/native/Debug"
+    "-compile-commands-dir=${workspaceFolder}/built/native/Debug",
+    "--fallback-style=none"
   ]
 }

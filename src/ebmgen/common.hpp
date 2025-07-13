@@ -4,7 +4,7 @@
 #include <helper/expected.h>
 #include <format>
 #include <ebm/extended_binary_module.hpp>
-#include <stacktrace>
+#include <source_location>
 namespace brgen::ast {}
 
 namespace ebmgen {
@@ -22,14 +22,39 @@ namespace ebmgen {
         };
     }
 
+    struct LocationInfoError {
+        std::source_location loc;
+        void error(auto&& pb) const {
+            futils::strutil::append(pb, " at ");
+            futils::strutil::append(pb, loc.file_name());
+            futils::strutil::append(pb, ':');
+            futils::number::to_string(pb, loc.line());
+            futils::strutil::append(pb, ':');
+            futils::number::to_string(pb, loc.column());
+            futils::strutil::append(pb, " in ");
+            futils::strutil::append(pb, loc.function_name());
+        }
+    };
+
     template <typename... Args>
-    futils::helper::either::unexpected<Error> unexpect_error(FORMAT_ARG fmt, Args&&... args) {
-        return futils::helper::either::unexpected(error(fmt, std::forward<Args>(args)...));
+    futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, FORMAT_ARG fmt, Args&&... args) {
+        return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
+            .err = LocationInfoError{loc},
+            .before = error(fmt, std::forward<Args>(args)...),
+            .sep = '\n',
+        }));
     }
 
-    inline futils::helper::either::unexpected<Error> unexpect_error(Error&& err) {
-        return futils::helper::either::unexpected(std::forward<decltype(err)>(err));
+    inline futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, Error&& err) {
+        return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
+            .err = LocationInfoError{loc},
+            .before = std::move(err),
+            .sep = '\n',
+        }));
     }
+
+#define unexpect_error(...) \
+    unexpect_error_with_loc(std::source_location::current(), __VA_ARGS__)
 
     constexpr auto none = Error();
 

@@ -192,6 +192,10 @@ namespace ebmgen {
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 
         expected<ebm::StatementRef> assert_statement(ebm::ExpressionRef condition);
+        expected<ebm::StatementBody> assert_statement_body(ebm::ExpressionRef condition);
+
+        expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
+        expected<ebm::ExpressionRef> get_max_value_expr(ebm::TypeRef type);
 
         Error set_lengths();
 

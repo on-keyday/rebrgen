@@ -174,4 +174,64 @@ namespace ebmgen {
         }
         return add_type(std::move(body));
     }
+
+    expected<ebm::TypeRef> Converter::get_unsigned_n_int(size_t n) {
+        ebm::TypeBody typ;
+        typ.kind = ebm::TypeKind::UINT;
+        typ.size(n);
+        auto utyp = type_repo.add(ident_source, std::move(typ));
+        if (!utyp) {
+            return unexpect_error(std::move(utyp.error()));
+        }
+        return utyp;
+    }
+
+    expected<ebm::TypeRef> Converter::get_counter_type() {
+        return get_unsigned_n_int(64);
+    }
+
+    expected<ebm::ExpressionRef> Converter::get_int_literal(std::uint64_t value) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::LITERAL_INT;
+        body.int_value(value);
+        auto int_literal = add_expr(std::move(body));
+        if (!int_literal) {
+            return unexpect_error(std::move(int_literal.error()));
+        }
+        return *int_literal;
+    }
+
+    expected<ebm::TypeRef> get_single_type(ebm::TypeKind kind, auto& type_repo, IdentifierSource& ident_source) {
+        ebm::TypeBody typ;
+        typ.kind = kind;
+        return type_repo.add(ident_source, std::move(typ));
+    }
+
+    expected<ebm::TypeRef> Converter::get_bool_type() {
+        return get_single_type(ebm::TypeKind::BOOL, type_repo, ident_source);
+    }
+
+    expected<ebm::TypeRef> Converter::get_void_type() {
+        return get_single_type(ebm::TypeKind::VOID, type_repo, ident_source);
+    }
+
+    expected<ebm::TypeRef> Converter::get_encoder_return_type() {
+        return get_single_type(ebm::TypeKind::ENCODER_RETURN, type_repo, ident_source);
+    }
+    expected<ebm::TypeRef> Converter::get_decoder_return_type() {
+        return get_single_type(ebm::TypeKind::DECODER_RETURN, type_repo, ident_source);
+    }
+
+    expected<ebm::TypeRef> Converter::get_u8_n_array(size_t n) {
+        auto u8typ = get_unsigned_n_int(8);
+        if (!u8typ) {
+            return unexpect_error(std::move(u8typ.error()));
+        }
+        ebm::TypeBody typ;
+        typ.kind = ebm::TypeKind::ARRAY;
+        typ.element_type(*u8typ);
+        typ.length(*varint(n));
+        return type_repo.add(ident_source, std::move(typ));
+    }
+
 }  // namespace ebmgen

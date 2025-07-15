@@ -3,7 +3,7 @@
 #include "helper.hpp"
 
 namespace ebmgen {
-    expected<ebm::TypeRef> Converter::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
+    expected<ebm::TypeRef> TypeConverter::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
         ebm::TypeBody body;
         if (auto int_type = ast::as<ast::IntType>(type)) {
             if (int_type->is_signed) {
@@ -77,7 +77,7 @@ namespace ebmgen {
         }
         else if (auto str_literal_type = ast::as<ast::StrLiteralType>(type)) {
             body.kind = ebm::TypeKind::ARRAY;
-            MAYBE(element_type, get_unsigned_n_int(8));
+            MAYBE(element_type, ctx.get_unsigned_n_int(8));
             body.element_type(element_type);
             if (str_literal_type->bit_size) {
                 MAYBE(length, varint(*str_literal_type->bit_size / 8));
@@ -87,10 +87,7 @@ namespace ebmgen {
         else if (auto enum_type = ast::as<ast::EnumType>(type)) {
             body.kind = ebm::TypeKind::ENUM;
             if (auto locked_enum = enum_type->base.lock()) {
-                auto name_ref = add_identifier(locked_enum->ident->ident);
-                if (!name_ref) {
-                    return unexpect_error(std::move(name_ref.error()));
-                }
+                MAYBE(stmt, )
                 body.id(ebm::StatementRef{name_ref->id});
                 if (locked_enum->base_type) {
                     auto base_type_ref = convert_type(locked_enum->base_type);

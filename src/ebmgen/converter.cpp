@@ -75,4 +75,42 @@ namespace ebmgen {
         return set_lengths();
     }
 
+    ConverterContext::ConverterContext() {
+        statement_converter = std::make_shared<StatementConverter>(*this);
+        expression_converter = std::make_shared<ExpressionConverter>(*this);
+        encoder_converter = std::make_shared<EncoderConverter>(*this);
+        decoder_converter = std::make_shared<DecoderConverter>(*this);
+        type_converter = std::make_shared<TypeConverter>(*this);
+    }
+
+    StatementConverter& ConverterContext::get_statement_converter() {
+        return *statement_converter;
+    }
+
+    ExpressionConverter& ConverterContext::get_expression_converter() {
+        return *expression_converter;
+    }
+
+    EncoderConverter& ConverterContext::get_encoder_converter() {
+        return *encoder_converter;
+    }
+
+    DecoderConverter& ConverterContext::get_decoder_converter() {
+        return *decoder_converter;
+    }
+
+    TypeConverter& ConverterContext::get_type_converter() {
+        return *type_converter;
+    }
+
+    expected<ebm::StatementRef> ConverterContext::convert_statement(const std::shared_ptr<ast::Node>& node) {
+        return statement_converter->convert_statement(node);
+    }
+    expected<ebm::ExpressionRef> ConverterContext::convert_expr(const std::shared_ptr<ast::Expr>& node) {
+        return expression_converter->convert_expr(node);
+    }
+    expected<ebm::TypeRef> ConverterContext::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
+        return type_converter->convert_type(type, field);
+    }
+
 }  // namespace ebmgen

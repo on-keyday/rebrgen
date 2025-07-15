@@ -23,7 +23,7 @@ namespace ebmgen {
     IO_MACRO(io_ref, (make_io_data(buffer, u8_n_array, endian, io_size))); \
     MAYBE(u8_t, get_unsigned_n_int(8));
 
-    expected<ebm::StatementRef> Converter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
+    expected<ebm::StatementRef> EncoderConverter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
         COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref);
         EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
 

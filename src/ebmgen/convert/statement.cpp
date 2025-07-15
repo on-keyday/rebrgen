@@ -46,7 +46,7 @@ namespace ebmgen {
         return max_value_expr;
     }
 
-    expected<ebm::StatementBody> Converter::convert_loop_body(const std::shared_ptr<ast::Loop>& node) {
+    expected<ebm::StatementBody> StatementConverter::convert_loop_body(const std::shared_ptr<ast::Loop>& node) {
         ebm::LoopStatement result_loop_stmt;
         std::optional<ebm::StatementRef> init_v, step_v;
         std::optional<ebm::ExpressionRef> cond_v;
@@ -58,16 +58,16 @@ namespace ebmgen {
                 if (!ident) {
                     return unexpect_error("Invalid loop init target :{}", node_type_to_string(bop->left->node_type));
                 }
-                MAYBE(target, convert_expr(bop->right));
-                MAYBE(ident_ref, add_identifier(ident->ident));
+                EBMA_CONVERT_EXPRESSION(target, bop->right);
+                EBMA_ADD_IDENTIFIER(ident_ref, ident->ident);
                 result_loop_stmt.collection(target);
                 if (ast::as<ast::IntType>(bop->right->expr_type)) {
-                    MAYBE(expr_type, convert_type(bop->left->expr_type));
+                    MAYBE(expr_type, ctx.convert_type(bop->left->expr_type));
                     EBM_COUNTER_LOOP_START_CUSTOM(i, expr_type);
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true, false);
-                    visited_nodes.emplace(node->init, identifier_def);
+                    ctx.add_visited_node(node->init, identifier_def);
                     MAYBE(inner_block_ref, convert_statement(node->body));
-                    MAYBE(bool_type, get_bool_type());
+                    EBMU_BOOL_TYPE(bool_type);
                     EBM_COUNTER_LOOP_END(lowered_loop, i, target, inner_block_ref);
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = lowered_loop;
@@ -75,9 +75,9 @@ namespace ebmgen {
                 else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
                     auto l = range->range.lock();
                     ebm::ExpressionRef start, end;
-                    MAYBE(base_type, convert_type(range->base_type));
+                    MAYBE(base_type, ctx.convert_type(range->base_type));
                     if (l->start) {
-                        MAYBE(s, convert_expr(l->start));
+                        MAYBE(s, ctx.convert_expr(l->start));
                         start = s;
                     }
                     else {
@@ -85,11 +85,11 @@ namespace ebmgen {
                         start = start_literal;
                     }
                     if (l->end) {
-                        MAYBE(e, convert_expr(l->end));
+                        MAYBE(e, ctx.convert_expr(l->end));
                         end = e;
                     }
                     else {
-                        MAYBE(max_value_expr, get_max_value_expr(base_type));
+                        MAYBE(max_value_expr, ctx.get_max_value_expr(base_type));
                         end = max_value_expr;
                     }
                     MAYBE(size_and_signed, get_integral_size_and_sign(type_repo, base_type));
@@ -99,11 +99,11 @@ namespace ebmgen {
                     EBM_CAST(end_casted, counter_type, base_type, end);
 
                     EBM_DEFINE_ANONYMOUS_VARIABLE(iter, counter_type, start_casted);
-                    MAYBE(bool_type, get_bool_type());
+                    EBMU_BOOL_TYPE(bool_type);
                     EBM_BINARY_OP(cond, l->op == ast::BinaryOp::range_inclusive ? ebm::BinaryOp::less_or_eq : ebm::BinaryOp::less, bool_type, iter, end_casted);
 
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, counter_type, iter, true, false);
-                    visited_nodes.emplace(node->init, identifier_def);
+                    ctx.add_visited_node(node->init, identifier_def);
                     MAYBE(body, convert_statement(node->body));
 
                     EBM_INCREMENT(inc, iter, counter_type);
@@ -128,11 +128,11 @@ namespace ebmgen {
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
                     EBM_ARRAY_SIZE(array_size, target);
-                    MAYBE(element_type, convert_type(bop->left->expr_type));
+                    EBMA_CONVERT_TYPE(element_type, bop->left->expr_type);
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(indexed, element_type, target, i);
                     EBM_DEFINE_VARIABLE(element, ident_ref, element_type, indexed, false, true);
-                    visited_nodes.emplace(node->init, element_def);
+                    ctx.add_visited_node(node->init, element_def);
                     MAYBE(inner_block_ref, convert_statement(node->body));
                     EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, inner_block_ref);
                     result_loop_stmt.item_var(element_def);
@@ -142,8 +142,8 @@ namespace ebmgen {
                     // note: representation of string is encoded as base64 in bop->right->binary_value because
                     //       src2json generates AST as json
                     MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(bop->right)));
-                    MAYBE(u8_t, get_unsigned_n_int(8));
-                    MAYBE(u8_n_array, get_u8_n_array(candidate.size()));
+                    EBMU_UINT_TYPE(u8_t, 8);
+                    EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
                     EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
                     EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
                     ebm::Block block;
@@ -153,9 +153,9 @@ namespace ebmgen {
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(array_index, u8_t, buffer, i);
                     EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, true, true);
-                    visited_nodes.emplace(node->init, element_def);
+                    ctx.add_visited_node(node->init, element_def);
                     MAYBE(inner_block_ref, convert_statement(node->body));
-                    MAYBE(len, get_int_literal(candidate.size()));
+                    EBMU_INT_LITERAL(len, candidate.size());
                     EBM_COUNTER_LOOP_END(loop_stmt, i, len, inner_block_ref);
                     append(block, loop_stmt);
                     EBM_BLOCK(block_ref, std::move(block));
@@ -203,7 +203,7 @@ namespace ebmgen {
         return make_loop(std::move(result_loop_stmt));
     }
 
-    expected<ebm::StatementRef> Converter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
+    expected<ebm::StatementRef> StatementConverter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
         ebm::StatementBody body;
         if (auto assert_stmt = ast::as<ast::Assert>(node)) {
             MAYBE(cond, convert_expr(assert_stmt->cond));

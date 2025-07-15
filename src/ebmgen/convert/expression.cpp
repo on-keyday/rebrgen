@@ -115,13 +115,10 @@ namespace ebmgen {
         return ebm::CastType::OTHER;
     }
 
-    expected<ebm::ExpressionRef> Converter::convert_expr(const std::shared_ptr<ast::Expr>& node) {
+    expected<ebm::ExpressionRef> ExpressionConverter::convert_expr(const std::shared_ptr<ast::Expr>& node) {
         ebm::ExpressionBody body;
-        auto type_ref = convert_type(node->expr_type);
-        if (!type_ref) {
-            return unexpect_error(std::move(type_ref.error()));
-        }
-        body.type = *type_ref;
+        EBMA_CONVERT_TYPE(type_ref, node->expr_type);
+        body.type = type_ref;
 
         if (auto literal = ast::as<ast::IntLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_INT;
@@ -136,17 +133,14 @@ namespace ebmgen {
             body.bool_value(literal->value);
         }
         else if (auto literal = ast::as<ast::StrLiteral>(node)) {
-            std::string candidate;
-            if (!futils::base64::decode(literal->binary_value, candidate)) {
-                return unexpect_error("Invalid base64 string: {}", literal->binary_value);
-            }
+            MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(node)));
             body.op = ebm::ExpressionOp::LITERAL_STRING;
-            MAYBE(str_ref, add_string(candidate));
+            EBMA_ADD_STRING(str_ref, candidate);
             body.string_value(str_ref);
         }
         else if (auto literal = ast::as<ast::TypeLiteral>(node)) {
             body.op = ebm::ExpressionOp::LITERAL_TYPE;
-            MAYBE(type_ref, convert_type(literal->type_literal));
+            EBMA_CONVERT_TYPE(type_ref, literal->type_literal)
             body.type_ref(type_ref);
         }
         else if (auto ident = ast::as<ast::Ident>(node)) {
@@ -155,7 +149,7 @@ namespace ebmgen {
             if (!base) {
                 return unexpect_error("Identifier {} not found", ident->ident);
             }
-            MAYBE(id_ref, convert_statement(base->first->base.lock()));
+            EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
             body.id(id_ref);
         }
         else if (auto binary = ast::as<ast::Binary>(node)) {
@@ -324,25 +318,25 @@ namespace ebmgen {
         return add_expr(std::move(body));
     }
 
-    expected<ebm::ExpressionRef> Converter::get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type) {
+    expected<ebm::ExpressionRef> ExpressionConverter::get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type) {
         if (alignment_bytes == 0) {
             return unexpect_error("0 is not valid alignment");
         }
         if (alignment_bytes == 1) {
-            return get_int_literal(0);
+            return ctx.get_int_literal(0);
         }
         ebm::ExpressionBody body;
-        MAYBE(counter_type, get_counter_type());
+        EBMU_COUNTER_TYPE(counter_type);
         body.type = counter_type;
         body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
         body.stream_type(type);
         body.unit(ebm::SizeUnit::BYTE_FIXED);
-        MAYBE(stream_offset, add_expr(std::move(body)));
+        EBMA_ADD_EXPR(stream_offset, std::move(body));
 
-        MAYBE(alignment, get_int_literal(alignment_bytes));
+        EBMU_INT_LITERAL(alignment, alignment_bytes);
 
         if (std::popcount(alignment_bytes) == 1) {
-            MAYBE(alignment_bitmask, get_int_literal(alignment_bytes - 1));
+            EBMU_INT_LITERAL(alignment_bitmask, alignment_bytes - 1);
             // size(=offset) & (alignment - 1)
             EBM_BINARY_OP(mod, ebm::BinaryOp::bit_and, counter_type, stream_offset, alignment_bitmask);
             // alignment - (size & (alignment-1))

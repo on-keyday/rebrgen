@@ -5,6 +5,7 @@
 #include <ebm/extended_binary_module.hpp>
 #include <memory>
 #include <unordered_map>
+#include "convert/helper.hpp"
 #include "handler_registry.hpp"
 
 namespace ebmgen {
@@ -96,12 +97,133 @@ namespace ebmgen {
         IdentifierSource ident_source;
         GenerateType current_generate_type = GenerateType::Normal;
         std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
+        std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
 
         ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String> identifier_repo;
         ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String> string_repo;
         ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
         ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
         ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
+
+        ebm::Endian global_endian = ebm::Endian::big;
+        ebm::Endian local_endian = ebm::Endian::unspec;
+        ebm::StatementRef current_dynamic_endian = ebm::StatementRef{};
+        bool on_function = false;
+
+       public:
+        ConverterContext() = default;
+
+        IdentifierSource& get_identifier_source() {
+            return ident_source;
+        }
+
+        GenerateType get_current_generate_type() const {
+            return current_generate_type;
+        }
+
+        void set_current_generate_type(GenerateType type) {
+            current_generate_type = type;
+        }
+
+        ebm::Endian get_global_endian() const {
+            return global_endian;
+        }
+
+        void set_global_endian(ebm::Endian e) {
+            global_endian = e;
+        }
+
+        ebm::Endian get_local_endian() const {
+            return local_endian;
+        }
+
+        void set_local_endian(ebm::Endian e) {
+            local_endian = e;
+        }
+
+        ebm::StatementRef get_current_dynamic_endian() const {
+            return current_dynamic_endian;
+        }
+
+        void set_current_dynamic_endian(ebm::StatementRef ref) {
+            current_dynamic_endian = ref;
+        }
+
+        bool is_on_function() const {
+            return on_function;
+        }
+
+        void set_on_function(bool value) {
+            on_function = value;
+        }
+
+        void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,
+                                      ebm::StatementRef encode,
+                                      ebm::TypeRef encode_type,
+                                      ebm::StatementRef decode,
+                                      ebm::TypeRef decode_type) {
+            format_encode_decode[node] = FormatEncodeDecode{
+                encode,
+                encode_type,
+                decode,
+                decode_type,
+            };
+        }
+
+        expected<FormatEncodeDecode> get_format_encode_decode(const std::shared_ptr<ast::Node>& node) {
+            auto it = format_encode_decode.find(node);
+            if (it != format_encode_decode.end()) {
+                return it->second;
+            }
+            return unexpect_error("Format encode/decode not found for node");
+        }
+
+        expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
+            auto len = varint(name.size());
+            if (!len) {
+                return unexpect_error("Failed to create varint for identifier length: {}", len.error().error());
+            }
+            ebm::String string_literal;
+            string_literal.data = name;
+            string_literal.length = *len;
+            return identifier_repo.add(ident_source, std::move(string_literal));
+        }
+
+        expected<ebm::TypeRef> add_type(ebm::TypeBody&& body) {
+            return type_repo.add(ident_source, std::move(body));
+        }
+
+        expected<ebm::StatementRef> add_statement(ebm::StatementRef id, ebm::StatementBody&& body) {
+            return statement_repo.add(id, std::move(body));
+        }
+
+        expected<ebm::StatementRef> add_statement(ebm::StatementBody&& body) {
+            return statement_repo.add(ident_source, std::move(body));
+        }
+
+        expected<ebm::StringRef> add_string(const std::string& str) {
+            auto len = varint(str.size());
+            if (!len) {
+                return unexpect_error("Failed to create varint for string length: {}", len.error().error());
+            }
+            ebm::String string_literal;
+            string_literal.data = str;
+            string_literal.length = *len;
+            return string_repo.add(ident_source, std::move(string_literal));
+        }
+
+        expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
+            return expression_repo.add(ident_source, std::move(body));
+        }
+
+        expected<ebm::TypeRef> get_unsigned_n_int(size_t n);
+        expected<ebm::TypeRef> get_u8_n_array(size_t n);
+        expected<ebm::TypeRef> get_bool_type();
+        expected<ebm::TypeRef> get_void_type();
+        expected<ebm::TypeRef> get_encoder_return_type();
+        expected<ebm::TypeRef> get_decoder_return_type();
+
+        expected<ebm::ExpressionRef> get_int_literal(std::uint64_t value);
     };
 
     expected<std::string> decode_base64(const std::shared_ptr<ast::StrLiteral>& lit);
@@ -246,22 +368,15 @@ namespace ebmgen {
                 if (!is_little_ref) {
                     return unexpect_error(std::move(is_little_ref.error()));
                 }
-                ebm::IfStatement if_stmt;
-                if_stmt.condition = *is_little_ref;
                 expected<ebm::StatementRef> then_block = on_little_endian();
                 if (!then_block) {
                     return unexpect_error(std::move(then_block.error()));
                 }
-                if_stmt.then_block = *then_block;
                 expected<ebm::StatementRef> else_block = on_big_endian();
                 if (!else_block) {
                     return unexpect_error(std::move(else_block.error()));
                 }
-                if_stmt.else_block = *else_block;
-                ebm::StatementBody body;
-                body.statement_kind = ebm::StatementOp::IF_STATEMENT;
-                body.if_statement(std::move(if_stmt));
-                auto res = add_statement(std::move(body));
+                auto res = add_statement(make_if_statement(*is_little_ref, *then_block, *else_block));
                 if (!res) {
                     return unexpect_error(std::move(res.error()));
                 }

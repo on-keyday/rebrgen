@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ebm/extended_binary_module.hpp"
+#include "../common.hpp"
 namespace ebmgen {
 #define MAYBE_VOID(out, expr)                                \
     auto out##____ = expr;                                   \
@@ -38,28 +39,28 @@ namespace ebmgen {
 #define EBM_NEW_OBJECT(ref_name, typ) \
     EBM_AST_EXPRESSION(ref_name, make_new_object_body, typ)
 
-    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const);
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const, bool is_reference);
 
     ebm::ExpressionBody make_identifier_expr(ebm::StatementRef id, ebm::TypeRef type);
 
 #define EBM_IDENTIFIER(ref_name, id, typ) \
     EBM_AST_EXPRESSION(ref_name, make_identifier_expr, id, typ)
 
-#define EBM_DEFINE_VARIABLE(ref_name, id, typ, initial_ref, is_const)                           \
-    EBM_AST_VARIABLE_REF(ref_name) {                                                            \
-        MAYBE(new_var_ref_, add_statement(make_variable_decl(id, typ, initial_ref, is_const))); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                       \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                        \
+#define EBM_DEFINE_VARIABLE(ref_name, id, typ, initial_ref, is_const, is_reference)                           \
+    EBM_AST_VARIABLE_REF(ref_name) {                                                                          \
+        MAYBE(new_var_ref_, add_statement(make_variable_decl(id, typ, initial_ref, is_const, is_reference))); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                     \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
     }
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                        \
-    ebm::ExpressionRef ref_name;                                                                         \
-    ebm::StatementRef ref_name##_def;                                                                    \
-    {                                                                                                    \
-        MAYBE(temporary_name, identifier_repo.new_id(ident_source));                                     \
-        MAYBE(new_var_ref_, add_statement(make_variable_decl(temporary_name, typ, initial_ref, false))); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                 \
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                               \
+    ebm::ExpressionRef ref_name;                                                                                \
+    ebm::StatementRef ref_name##_def;                                                                           \
+    {                                                                                                           \
+        MAYBE(temporary_name, identifier_repo.new_id(ident_source));                                            \
+        MAYBE(new_var_ref_, add_statement(make_variable_decl(temporary_name, typ, initial_ref, false, false))); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                       \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                        \
     }
 
     ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);
@@ -121,6 +122,11 @@ namespace ebmgen {
 
 #define EBM_BLOCK(ref_name, block_body__) \
     EBM_AST_STATEMENT(ref_name, make_block, block_body__)
+
+    ebm::StatementBody make_loop(ebm::LoopStatement&& loop_stmt);
+
+#define EBM_LOOP(ref_name, loop_stmt__) \
+    EBM_AST_STATEMENT(ref_name, make_loop, std::move(loop_stmt__))
 
     ebm::StatementBody make_while_loop(ebm::ExpressionRef condition, ebm::StatementRef body);
 
@@ -235,4 +241,8 @@ namespace ebmgen {
 #define EBM_MAX_VALUE(ref_name, type, lowered_expr) \
     EBM_AST_EXPRESSION(ref_name, make_max_value, type, lowered_expr)
 
+    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size);
+
+    expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
+    expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
 }  // namespace ebmgen

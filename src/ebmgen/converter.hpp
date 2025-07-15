@@ -90,12 +90,27 @@ namespace ebmgen {
         ebm::StatementRef decode;
         ebm::TypeRef decode_type;
     };
+
+    struct ConverterContext {
+       private:
+        IdentifierSource ident_source;
+        GenerateType current_generate_type = GenerateType::Normal;
+        std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
+
+        ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String> identifier_repo;
+        ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String> string_repo;
+        ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
+        ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
+        ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
+    };
+
+    expected<std::string> decode_base64(const std::shared_ptr<ast::StrLiteral>& lit);
     class Converter {
        public:
         Converter(ebm::ExtendedBinaryModule& ebm)
             : ebm(ebm) {}
 
-        Error convert(const std::shared_ptr<brgen::ast::Node>& ast_root);
+        expected<void> convert(const std::shared_ptr<brgen::ast::Node>& ast_root);
 
        private:
         friend struct ConverterProxy;
@@ -176,7 +191,6 @@ namespace ebmgen {
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
 
-        void convert_node(const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
         expected<ebm::StatementRef> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
@@ -188,6 +202,7 @@ namespace ebmgen {
         expected<void> encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
         expected<ebm::StatementRef> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
         expected<ebm::ExpressionRef> get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type);
+        expected<void> construct_string_array(ebm::Block& block, ebm::ExpressionRef n_array, const std::string& candidate);
 
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 
@@ -197,7 +212,7 @@ namespace ebmgen {
         expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
         expected<ebm::ExpressionRef> get_max_value_expr(ebm::TypeRef type);
 
-        Error set_lengths();
+        expected<void> set_lengths();
 
         ebm::Endian global_endian = ebm::Endian::big;
         ebm::Endian local_endian = ebm::Endian::unspec;

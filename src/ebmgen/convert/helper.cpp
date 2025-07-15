@@ -167,7 +167,7 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::StatementRef member) {
+    ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::ExpressionRef member) {
         ebm::ExpressionBody body;
         body.op = ebm::ExpressionOp::MEMBER_ACCESS;
         body.type = type;
@@ -211,6 +211,42 @@ namespace ebmgen {
         body.type = type;
         body.lowered_expr(lowered_expr);
         return body;
+    }
+
+    ebm::StatementBody make_loop(ebm::LoopStatement&& loop_stmt) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::LOOP_STATEMENT;
+        body.loop(std::move(loop_stmt));
+        return body;
+    }
+
+    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size) {
+        return ebm::IOData{
+            .target = target,
+            .data_type = data_type,
+            .endian = endian,
+            .size = size,
+            .lowered_stmt = ebm::StatementRef{},
+        };
+    }
+
+    expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit) {
+        ebm::Size size;
+        size.unit = unit;
+        MAYBE(size_val, varint(n));
+        if (!size.size(size_val)) {
+            return unexpect_error("Unit {} is not fixed", to_string(unit));
+        }
+        return size;
+    }
+
+    expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit) {
+        ebm::Size size;
+        size.unit = unit;
+        if (!size.ref(ref)) {
+            return unexpect_error("Unit {} is not dynamic", to_string(unit));
+        }
+        return size;
     }
 
 }  // namespace ebmgen

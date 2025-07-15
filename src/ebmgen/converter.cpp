@@ -1,6 +1,6 @@
 #include "converter.hpp"
 #include <core/ast/traverse.h>
-
+#include "convert/helper.hpp"
 namespace ebmgen {
 
     expected<ebm::StatementRef> Converter::convert_statement(const std::shared_ptr<ast::Node>& node) {
@@ -15,59 +15,63 @@ namespace ebmgen {
         return convert_statement_impl(*new_ref, node);
     }
 
-    void Converter::convert_node(const std::shared_ptr<ast::Node>& node) {
-        if (err) return;
-        auto r = convert_statement(node);
-        if (!r) {
-            err = std::move(r.error());
+    expected<ebm::EndianExpr> Converter::get_endian(ebm::Endian base, bool sign) {
+        ebm::EndianExpr e;
+        e.sign(sign);
+        e.endian(base);
+        if (base != ebm::Endian::unspec) {
+            return e;
         }
+        e.endian(global_endian);
+        if (on_function) {
+            e.endian(local_endian);
+        }
+        if (e.endian() == ebm::Endian::dynamic) {
+            e.dynamic_ref = current_dynamic_endian;
+        }
+        return e;
     }
 
-    Error Converter::set_lengths() {
-        auto identifiers_len = varint(identifier_repo.get_all().size());
-        if (!identifiers_len) {
-            return identifiers_len.error();
+    bool Converter::set_endian(ebm::Endian e, ebm::StatementRef id) {
+        if (on_function) {
+            local_endian = e;
+            current_dynamic_endian = id;
+            return true;
         }
-        ebm.identifiers_len = *identifiers_len;
+        if (e == ebm::Endian::dynamic) {
+            return false;
+        }
+        global_endian = e;
+        return true;
+    }
+
+    expected<void> Converter::set_lengths() {
+        MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
+        ebm.identifiers_len = identifiers_len;
         ebm.identifiers = std::move(identifier_repo.get_all());
 
-        auto strings_len = varint(string_repo.get_all().size());
-        if (!strings_len) {
-            return strings_len.error();
-        }
-        ebm.strings_len = *strings_len;
+        MAYBE(strings_len, varint(string_repo.get_all().size()));
+        ebm.strings_len = strings_len;
         ebm.strings = std::move(string_repo.get_all());
 
-        auto types_len = varint(type_repo.get_all().size());
-        if (!types_len) {
-            return types_len.error();
-        }
-        ebm.types_len = *types_len;
+        MAYBE(types_len, varint(type_repo.get_all().size()));
+        ebm.types_len = types_len;
         ebm.types = std::move(type_repo.get_all());
 
-        auto statements_len = varint(statement_repo.get_all().size());
-        if (!statements_len) {
-            return statements_len.error();
-        }
-        ebm.statements_len = *statements_len;
+        MAYBE(statements_len, varint(statement_repo.get_all().size()));
+        ebm.statements_len = statements_len;
         ebm.statements = std::move(statement_repo.get_all());
 
-        auto expressions_len = varint(expression_repo.get_all().size());
-        if (!expressions_len) {
-            return expressions_len.error();
-        }
-        ebm.expressions_len = *expressions_len;
+        MAYBE(expressions_len, varint(expression_repo.get_all().size()));
+        ebm.expressions_len = expressions_len;
         ebm.expressions = std::move(expression_repo.get_all());
 
-        return Error();
+        return {};
     }
 
-    Error Converter::convert(const std::shared_ptr<brgen::ast::Node>& ast_root) {
+    expected<void> Converter::convert(const std::shared_ptr<brgen::ast::Node>& ast_root) {
         root = ast_root;
-        convert_node(ast_root);
-        if (err) {
-            return err;
-        }
+        MAYBE_VOID(ok, convert_statement(ast_root));
         return set_lengths();
     }
 

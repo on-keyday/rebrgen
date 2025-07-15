@@ -28,7 +28,10 @@ Your role is code analyzer.
 - you should read bmgen/ as old project directory.
 - you should provide advice for refactoring based on current best practice and code knowledge
 - you should help debug
-- writing files are not recommended
+
+Because this code is under development, there are code states that appear to be inconsistent. Always seek human assistance to identify possible inconsistencies. Never make arbitrary decisions.
+This is a very important instruction. I repeat: Never make arbitrary decisions. This is a very important instruction.
+When analyzing code, always keep a critical eye on it, as we are not looking for familiarity.
 
 #### 4. Building and Running `ebmgen`
 
@@ -47,3 +50,5 @@ Once built, you can run `ebmgen` by providing an input `brgen` AST JSON file and
 ```
 
 Replace `<path/to/input.json>` with the absolute path to your `brgen` AST JSON file and `<path/to/output.ebm>` with the desired absolute path for the generated EBM file. Currently, you might use `./save/simple.json` as input and `./save/out.ebm` as output.
+
+Also there are a command at `src/ebm/ebm.ps1`. it generates `src/ebm/extended_binary_module.hpp` and `src/ebm/extended_binary_module.cpp` from `src/ebm/extended_binary_module.bgn`

@@ -207,16 +207,10 @@ namespace ebmgen {
         }
         else if (auto member_access = ast::as<ast::MemberAccess>(node)) {
             body.op = ebm::ExpressionOp::MEMBER_ACCESS;
-            auto base_ref = convert_expr(member_access->target);
-            if (!base_ref) {
-                return unexpect_error(std::move(base_ref.error()));
-            }
-            auto member_ref = add_identifier(member_access->member->ident);
-            if (!member_ref) {
-                return unexpect_error(std::move(member_ref.error()));
-            }
-            body.base(*base_ref);
-            body.member(*member_ref);
+            MAYBE(base_ref, convert_expr(member_access->target));
+            MAYBE(member_ref, convert_expr(member_access->member));
+            body.base(base_ref);
+            body.member(member_ref);
         }
         else if (auto cast_expr = ast::as<ast::Cast>(node)) {
             body.op = ebm::ExpressionOp::TYPE_CAST;
@@ -250,9 +244,123 @@ namespace ebmgen {
             body.start(start);
             body.end(end);
         }
+        else if (auto io_op_stmt = ast::as<ast::IOOperation>(node)) {
+            switch (io_op_stmt->method) {
+                case ast::IOMethod::input_get: {
+                    body.op = ebm::ExpressionOp::READ_DATA;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
+                    if (!data_type_ref) {
+                        return unexpect_error(std::move(data_type_ref.error()));
+                    }
+                    body.data_type(*data_type_ref);
+                    // TODO: Handle endian, bit_size, and fallback_stmt
+                    break;
+                }
+                case ast::IOMethod::output_put: {
+                    body.statement_kind = ebm::StatementOp::WRITE_DATA;
+                    auto source_expr_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!source_expr_ref) {
+                        return unexpect_error(std::move(source_expr_ref.error()));
+                    }
+                    body.source_expr(*source_expr_ref);
+                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
+                    if (!data_type_ref) {
+                        return unexpect_error(std::move(data_type_ref.error()));
+                    }
+                    body.data_type(*data_type_ref);
+                    // TODO: Handle endian, bit_size, and fallback_stmt
+                    break;
+                }
+                case ast::IOMethod::input_offset:
+                case ast::IOMethod::input_bit_offset: {
+                    body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
+                    body.stream_type(ebm::StreamType::INPUT);
+                    body.unit(io_op_stmt->method == ast::IOMethod::input_bit_offset ? ebm::SizeUnit::BIT_FIXED : ebm::SizeUnit::BYTE_FIXED);
+                    break;
+                }
+                case ast::IOMethod::input_remain: {
+                    body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                case ast::IOMethod::input_subrange: {  // Assuming input_subrange maps to SEEK_STREAM
+                    body.statement_kind = ebm::StatementOp::SEEK_STREAM;
+                    auto offset_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!offset_ref) {
+                        return unexpect_error(std::move(offset_ref.error()));
+                    }
+                    body.offset(*offset_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                case ast::IOMethod::input_peek: {  // Assuming input_peek maps to CAN_READ_STREAM
+                    body.statement_kind = ebm::StatementOp::CAN_READ_STREAM;
+                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
+                    if (!target_var_ref) {
+                        return unexpect_error(std::move(target_var_ref.error()));
+                    }
+                    body.target_var(*target_var_ref);
+                    auto num_bytes_ref = convert_expr(io_op_stmt->arguments[1]);
+                    if (!num_bytes_ref) {
+                        return unexpect_error(std::move(num_bytes_ref.error()));
+                    }
+                    body.num_bytes(*num_bytes_ref);
+                    body.stream_type(ebm::StreamType::INPUT);
+                    break;
+                }
+                default: {
+                    return unexpect_error("Unhandled IOMethod: {}", ast::to_string(io_op_stmt->method));
+                }
+            }
+        }
         else {
             return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
         }
         return add_expr(std::move(body));
+    }
+
+    expected<ebm::ExpressionRef> Converter::get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type) {
+        if (alignment_bytes == 0) {
+            return unexpect_error("0 is not valid alignment");
+        }
+        if (alignment_bytes == 1) {
+            return get_int_literal(0);
+        }
+        ebm::ExpressionBody body;
+        MAYBE(counter_type, get_counter_type());
+        body.type = counter_type;
+        body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
+        body.stream_type(type);
+        body.unit(ebm::SizeUnit::BYTE_FIXED);
+        MAYBE(stream_offset, add_expr(std::move(body)));
+
+        MAYBE(alignment, get_int_literal(alignment_bytes));
+
+        if (std::popcount(alignment_bytes) == 1) {
+            MAYBE(alignment_bitmask, get_int_literal(alignment_bytes - 1));
+            // size(=offset) & (alignment - 1)
+            EBM_BINARY_OP(mod, ebm::BinaryOp::bit_and, counter_type, stream_offset, alignment_bitmask);
+            // alignment - (size & (alignment-1))
+            EBM_BINARY_OP(cmp, ebm::BinaryOp::sub, counter_type, alignment, mod);
+            // (alignment - (size & (alignment-1))) & (alignment - 1)
+            EBM_BINARY_OP(req_size, ebm::BinaryOp::bit_and, counter_type, cmp, alignment_bitmask);
+            return req_size;
+        }
+        else {
+            // size(=offset) % alignment
+            EBM_BINARY_OP(mod, ebm::BinaryOp::mod, counter_type, stream_offset, alignment);
+
+            // alignment - (size % alignment)
+            EBM_BINARY_OP(cmp, ebm::BinaryOp::sub, counter_type, alignment, mod);
+
+            // (alignment - (size % alignment)) % alignment
+            EBM_BINARY_OP(req_size, ebm::BinaryOp::mod, counter_type, cmp, alignment);
+            return req_size;
+        }
     }
 }  // namespace ebmgen

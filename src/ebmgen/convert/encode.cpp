@@ -1,6 +1,5 @@
 /*license*/
 #pragma once
-#include <bit>
 #include <cstddef>
 #include <memory>
 #include "../converter.hpp"
@@ -13,103 +12,6 @@
 #include <fnet/util/base64.h>
 
 namespace ebmgen {
-    expected<ebm::EndianExpr> Converter::get_endian(ebm::Endian base, bool sign) {
-        ebm::EndianExpr e;
-        e.sign(sign);
-        e.endian(base);
-        if (base != ebm::Endian::unspec) {
-            return e;
-        }
-        e.endian(global_endian);
-        if (on_function) {
-            e.endian(local_endian);
-        }
-        if (e.endian() == ebm::Endian::dynamic) {
-            e.dynamic_ref = current_dynamic_endian;
-        }
-        return e;
-    }
-
-    bool Converter::set_endian(ebm::Endian e, ebm::StatementRef id) {
-        if (on_function) {
-            local_endian = e;
-            current_dynamic_endian = id;
-            return true;
-        }
-        if (e == ebm::Endian::dynamic) {
-            return false;
-        }
-        global_endian = e;
-        return true;
-    }
-
-    expected<ebm::ExpressionRef> Converter::get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type) {
-        if (alignment_bytes == 0) {
-            return unexpect_error("0 is not valid alignment");
-        }
-        if (alignment_bytes == 1) {
-            return get_int_literal(0);
-        }
-        ebm::ExpressionBody body;
-        MAYBE(counter_type, get_counter_type());
-        body.type = counter_type;
-        body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
-        body.stream_type(type);
-        MAYBE(stream_offset, add_expr(std::move(body)));
-
-        MAYBE(alignment, get_int_literal(alignment_bytes));
-
-        if (std::popcount(alignment_bytes) == 1) {
-            MAYBE(alignment_bitmask, get_int_literal(alignment_bytes - 1));
-            // size(=offset) & (alignment - 1)
-            EBM_BINARY_OP(mod, ebm::BinaryOp::bit_and, counter_type, stream_offset, alignment_bitmask);
-            // alignment - (size & (alignment-1))
-            EBM_BINARY_OP(cmp, ebm::BinaryOp::sub, counter_type, alignment, mod);
-            // (alignment - (size & (alignment-1))) & (alignment - 1)
-            EBM_BINARY_OP(req_size, ebm::BinaryOp::bit_and, counter_type, cmp, alignment_bitmask);
-            return req_size;
-        }
-        else {
-            // size(=offset) % alignment
-            EBM_BINARY_OP(mod, ebm::BinaryOp::mod, counter_type, stream_offset, alignment);
-
-            // alignment - (size % alignment)
-            EBM_BINARY_OP(cmp, ebm::BinaryOp::sub, counter_type, alignment, mod);
-
-            // (alignment - (size % alignment)) % alignment
-            EBM_BINARY_OP(req_size, ebm::BinaryOp::mod, counter_type, cmp, alignment);
-            return req_size;
-        }
-    }
-
-    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size) {
-        return ebm::IOData{
-            .target = target,
-            .data_type = data_type,
-            .endian = endian,
-            .size = size,
-            .lowered_stmt = ebm::StatementRef{},
-        };
-    }
-
-    expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit) {
-        ebm::Size size;
-        size.unit = unit;
-        MAYBE(size_val, varint(n));
-        if (!size.size(size_val)) {
-            return unexpect_error("Unit {} is not fixed", to_string(unit));
-        }
-        return size;
-    }
-
-    expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit) {
-        ebm::Size size;
-        size.unit = unit;
-        if (!size.ref(ref)) {
-            return unexpect_error("Unit {} is not dynamic", to_string(unit));
-        }
-        return size;
-    }
 
 #define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                              \
     MAYBE(u8_n_array, get_u8_n_array(n));                                  \
@@ -450,27 +352,40 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> Converter::encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        std::string candidate;
-        if (!futils::base64::decode(typ->strong_ref->binary_value, candidate)) {
-            return unexpect_error("Invalid base64 string: {}", typ->strong_ref->binary_value);
-        }
-        MAYBE(u8_n_array, get_u8_n_array(candidate.size()));
-        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
-        EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
+    expected<void> Converter::construct_string_array(ebm::Block& block, ebm::ExpressionRef n_array, const std::string& candidate) {
         MAYBE(u8_t, get_unsigned_n_int(8));
-        MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
-        io_desc.size = io_size;
-        EBM_WRITE_DATA(write_ref, make_io_data(buffer, u8_n_array, io_desc.endian, io_size));
-        ebm::Block block;
-        append(block, buffer_def);
         for (size_t i = 0; i < candidate.size(); i++) {
             MAYBE(i_ref, get_int_literal(i));
             MAYBE(literal, get_int_literal(static_cast<unsigned char>(candidate[i])));
-            EBM_INDEX(array_index, u8_t, buffer, i_ref);
+            EBM_INDEX(array_index, u8_t, n_array, i_ref);
             EBM_ASSIGNMENT(assign, array_index, literal);
             append(block, assign);
         }
+        return {};
+    }
+
+    expected<std::string> decode_base64(const std::shared_ptr<ast::StrLiteral>& lit) {
+        std::string candidate;
+        if (!futils::base64::decode(lit->binary_value, candidate)) {
+            return unexpect_error("Invalid base64 string: {}", lit->binary_value);
+        }
+        return candidate;
+    }
+
+    expected<void> Converter::encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
+        MAYBE(candidate, decode_base64(typ->strong_ref));
+
+        MAYBE(u8_n_array, get_u8_n_array(candidate.size()));
+        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
+
+        MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
+        io_desc.size = io_size;
+        EBM_WRITE_DATA(write_ref, make_io_data(buffer, u8_n_array, io_desc.endian, io_size));
+
+        ebm::Block block;
+        append(block, buffer_def);
+        MAYBE_VOID(ok, construct_string_array(block, buffer, candidate));
         append(block, write_ref);
         EBM_BLOCK(block_ref, std::move(block));
         append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));

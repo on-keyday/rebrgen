@@ -78,3 +78,10 @@ Also there are a command at `src/ebm/ebm.ps1`. it generates `src/ebm/extended_bi
    20 ├── load_json.hpp        # Header for the brgen AST loading functionality
    21 └── main.cpp             # Entry point for the ebmgen executable
 ```
+
+BEFORE YOU ACT, YOU MUST READ ALL OF THESE FILES for consistency
+
+#### 6. Note
+
+- Codebase uses macro (almost defined in helper.hpp).
+  - This was a deliberate design. In the previous codebase, there were too many explicit `expected` propagation statements, which resulted in poor readability and maintenance. In this codebase, error handling is transparently done using macros. Think of it like Haskell's do notation or Rust's ? operator.

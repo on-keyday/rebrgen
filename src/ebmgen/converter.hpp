@@ -472,9 +472,6 @@ namespace ebmgen {
        private:
         expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
 
-        expected<ebm::StatementRef> assert_statement(ebm::ExpressionRef condition);
-        expected<ebm::StatementBody> assert_statement_body(ebm::ExpressionRef condition);
-
         expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
     };
 

@@ -3,6 +3,7 @@
 #include "core/ast/node/expr.h"
 #include "ebm/extended_binary_module.hpp"
 #include "helper.hpp"
+#include <core/ast/traverse.h>
 
 namespace ebmgen {
 
@@ -172,7 +173,7 @@ namespace ebmgen {
             init_v = init_ref;
         }
         if (node->cond) {
-            MAYBE(cond_ref, convert_expr(node->cond));
+            EBMA_CONVERT_EXPRESSION(cond_ref, node->cond);
             cond_v = cond_ref;
         }
         MAYBE(body, convert_statement(node->body));
@@ -205,435 +206,323 @@ namespace ebmgen {
 
     expected<ebm::StatementRef> StatementConverter::convert_statement_impl(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
         ebm::StatementBody body;
-        if (auto assert_stmt = ast::as<ast::Assert>(node)) {
-            MAYBE(cond, convert_expr(assert_stmt->cond));
-            MAYBE(body_, assert_statement_body(cond));
-            body = std::move(body_);
-        }
-        else if (auto return_stmt = ast::as<ast::Return>(node)) {
-            body.statement_kind = ebm::StatementOp::RETURN;
-            if (return_stmt->expr) {
-                MAYBE(expr_ref, convert_expr(return_stmt->expr));
-                body.value(expr_ref);
+        expected<void> result = {};  // To capture errors from within the lambda
+
+        brgen::ast::visit(node, [&](auto&& n) -> expected<void> {
+            using T = std::decay_t<decltype(n)>;
+            if constexpr (std::is_same_v<T, std::shared_ptr<ast::Assert>>) {
+                MAYBE(cond, ctx.convert_expr(n->cond));
+                MAYBE(body_, assert_statement_body(ctx, cond));
+                body = std::move(body_);
             }
-            else {
-                body.value(ebm::ExpressionRef{});
-            }
-        }
-        else if (auto break_stmt = ast::as<ast::Break>(node)) {
-            body.statement_kind = ebm::StatementOp::BREAK;
-        }
-        else if (auto continue_stmt = ast::as<ast::Continue>(node)) {
-            body.statement_kind = ebm::StatementOp::CONTINUE;
-        }
-        else if (auto if_stmt = ast::as<ast::If>(node)) {
-            body.statement_kind = ebm::StatementOp::IF_STATEMENT;
-            MAYBE(cond_ref, convert_expr(if_stmt->cond->expr));
-
-            // Convert then block
-            MAYBE(then_block, convert_statement(if_stmt->then));
-
-            // Convert else block
-            ebm::StatementRef else_block;
-            if (if_stmt->els) {
-                MAYBE(else_block_, convert_statement(if_stmt->els));
-                else_block = else_block_;
-            }
-
-            body = make_if_statement(cond_ref, then_block, else_block);
-        }
-        else if (auto loop_stmt = ast::as<ast::Loop>(node)) {
-            MAYBE(loop_body, convert_loop_body(ast::cast_to<ast::Loop>(node)));
-            body = std::move(loop_body);
-        }
-        else if (auto match_stmt = ast::as<ast::Match>(node)) {
-            body.statement_kind = ebm::StatementOp::MATCH_STATEMENT;
-            ebm::MatchStatement ebm_match_stmt;
-
-            auto target_ref = convert_expr(match_stmt->cond->expr);
-            if (!target_ref) {
-                return unexpect_error(std::move(target_ref.error()));
-            }
-            ebm_match_stmt.target = *target_ref;
-            ebm_match_stmt.is_exhaustive(match_stmt->struct_union_type->exhaustive);
-
-            for (auto& branch : match_stmt->branch) {
-                auto branch_ref = convert_statement(branch);
-                if (!branch_ref) {
-                    return unexpect_error(std::move(branch_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Return>>) {
+                body.statement_kind = ebm::StatementOp::RETURN;
+                if (n->expr) {
+                    MAYBE(expr_ref, ctx.convert_expr(n->expr));
+                    body.value(expr_ref);
                 }
-                append(ebm_match_stmt.branches, *branch_ref);
-            }
-            body.match_statement(std::move(ebm_match_stmt));
-        }
-        else if (auto indent_block = ast::as<ast::IndentBlock>(node)) {
-            body.statement_kind = ebm::StatementOp::BLOCK;
-            ebm::Block block_body;
-            for (auto& element : indent_block->elements) {
-                auto stmt_ref = convert_statement(element);
-                if (!stmt_ref) {
-                    return unexpect_error(std::move(stmt_ref.error()));
+                else {
+                    body.value(ebm::ExpressionRef{});
                 }
-                append(block_body, *stmt_ref);
             }
-            body.block(std::move(block_body));
-        }
-        else if (auto match_branch = ast::as<ast::MatchBranch>(node)) {
-            ebm::MatchBranch ebm_branch;
-            auto cond_ref = convert_expr(match_branch->cond->expr);
-            if (!cond_ref) {
-                return unexpect_error(std::move(cond_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Break>>) {
+                body.statement_kind = ebm::StatementOp::BREAK;
             }
-            ebm_branch.condition = *cond_ref;
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Continue>>) {
+                body.statement_kind = ebm::StatementOp::CONTINUE;
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::If>>) {
+                body.statement_kind = ebm::StatementOp::IF_STATEMENT;
+                MAYBE(cond_ref, ctx.convert_expr(n->cond->expr));
 
-            ebm::StatementRef branch_body_block;
-            if (match_branch->then) {
-                auto stmt_ref = convert_statement(match_branch->then);
-                if (!stmt_ref) {
-                    return unexpect_error(std::move(stmt_ref.error()));
-                }
-                branch_body_block = *stmt_ref;
-            }
-            ebm_branch.body = branch_body_block;
-            body.match_branch(std::move(ebm_branch));
-        }
-        else if (auto program_stmt = ast::as<ast::Program>(node)) {
-            body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
+                // Convert then block
+                MAYBE(then_block, ctx.convert_statement(n->then));
 
-            ebm::Block program_body_block;
-            for (auto& p : program_stmt->elements) {
-                auto stmt_ref = convert_statement(p);
-                if (!stmt_ref) {
-                    return unexpect_error(std::move(stmt_ref.error()));
+                // Convert else block
+                ebm::StatementRef else_block;
+                if (n->els) {
+                    MAYBE(else_block_, ctx.convert_statement(n->els));
+                    else_block = else_block_;
                 }
-                append(program_body_block, *stmt_ref);
+
+                body = make_if_statement(cond_ref, then_block, else_block);
             }
-            body.block(std::move(program_body_block));
-        }
-        else if (auto format = ast::as<ast::Format>(node)) {
-            body.statement_kind = ebm::StatementOp::STRUCT_DECL;
-            ebm::StructDecl struct_decl;
-            auto name_ref = add_identifier(format->ident->ident);
-            if (!name_ref) {
-                return unexpect_error(std::move(name_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Loop>>) {
+                MAYBE(loop_body, convert_loop_body(ast::cast_to<ast::Loop>(n)));
+                body = std::move(loop_body);
             }
-            struct_decl.name = *name_ref;
-            if (format->body) {
-                for (auto& element : format->body->struct_type->fields) {
-                    if (ast::as<ast::Field>(element)) {
-                        auto field_element_shared_ptr = std::static_pointer_cast<ast::Field>(element);
-                        auto node_to_convert = std::static_pointer_cast<ast::Node>(field_element_shared_ptr);
-                        auto stmt_ref = convert_statement(node_to_convert);
-                        if (!stmt_ref) {
-                            return unexpect_error(std::move(stmt_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Match>>) {
+                body.statement_kind = ebm::StatementOp::MATCH_STATEMENT;
+                ebm::MatchStatement ebm_match_stmt;
+
+                MAYBE(target_ref, ctx.convert_expr(n->cond->expr));
+                ebm_match_stmt.target = target_ref;
+                ebm_match_stmt.is_exhaustive(n->struct_union_type->exhaustive);
+
+                for (auto& branch : n->branch) {
+                    MAYBE(branch_ref, ctx.convert_statement(branch));
+                    append(ebm_match_stmt.branches, branch_ref);
+                }
+                body.match_statement(std::move(ebm_match_stmt));
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::IndentBlock>>) {
+                body.statement_kind = ebm::StatementOp::BLOCK;
+                ebm::Block block_body;
+                for (auto& element : n->elements) {
+                    MAYBE(stmt_ref, ctx.convert_statement(element));
+                    append(block_body, stmt_ref);
+                }
+                body.block(std::move(block_body));
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::MatchBranch>>) {
+                ebm::MatchBranch ebm_branch;
+                MAYBE(cond_ref, ctx.convert_expr(n->cond->expr));
+                ebm_branch.condition = cond_ref;
+
+                ebm::StatementRef branch_body_block;
+                if (n->then) {
+                    MAYBE(stmt_ref, ctx.convert_statement(n->then));
+                    branch_body_block = stmt_ref;
+                }
+                ebm_branch.body = branch_body_block;
+                body.match_branch(std::move(ebm_branch));
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Program>>) {
+                body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
+
+                ebm::Block program_body_block;
+                for (auto& p : n->elements) {
+                    MAYBE(stmt_ref, ctx.convert_statement(p));
+                    append(program_body_block, stmt_ref);
+                }
+                body.block(std::move(program_body_block));
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Format>>) {
+                body.statement_kind = ebm::StatementOp::STRUCT_DECL;
+                ebm::StructDecl struct_decl;
+                MAYBE(name_ref, ctx.add_identifier(n->ident->ident));
+                struct_decl.name = name_ref;
+                if (n->body) {
+                    for (auto& element : n->body->struct_type->fields) {
+                        if (ast::as<ast::Field>(element)) {
+                            auto field_element_shared_ptr = std::static_pointer_cast<ast::Field>(element);
+                            auto node_to_convert = std::static_pointer_cast<ast::Node>(field_element_shared_ptr);
+                            MAYBE(stmt_ref, ctx.convert_statement(node_to_convert));
+                            append(struct_decl.fields, stmt_ref);
                         }
-                        append(struct_decl.fields, *stmt_ref);
                     }
                 }
+                body.struct_decl(std::move(struct_decl));
             }
-            body.struct_decl(std::move(struct_decl));
-        }
-        else if (auto enum_decl = ast::as<ast::Enum>(node)) {
-            body.statement_kind = ebm::StatementOp::ENUM_DECL;
-            ebm::EnumDecl ebm_enum_decl;
-            auto name_ref = add_identifier(enum_decl->ident->ident);
-            if (!name_ref) {
-                return unexpect_error(std::move(name_ref.error()));
-            }
-            ebm_enum_decl.name = *name_ref;
-            if (enum_decl->base_type) {
-                auto base_type_ref = convert_type(enum_decl->base_type);
-                if (!base_type_ref) {
-                    return unexpect_error(std::move(base_type_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Enum>>) {
+                body.statement_kind = ebm::StatementOp::ENUM_DECL;
+                ebm::EnumDecl ebm_enum_decl;
+                MAYBE(name_ref, ctx.add_identifier(n->ident->ident));
+                ebm_enum_decl.name = name_ref;
+                if (n->base_type) {
+                    MAYBE(base_type_ref, ctx.convert_type(n->base_type));
+                    ebm_enum_decl.base_type = base_type_ref;
                 }
-                ebm_enum_decl.base_type = *base_type_ref;
-            }
-            for (auto& member : enum_decl->members) {
-                auto ebm_enum_member_ref = convert_statement(member);
-                if (!ebm_enum_member_ref) {
-                    return unexpect_error(std::move(ebm_enum_member_ref.error()));
+                for (auto& member : n->members) {
+                    MAYBE(ebm_enum_member_ref, ctx.convert_statement(member));
+                    // Append the enum member reference to the enum declaration
+                    append(ebm_enum_decl.members, ebm_enum_member_ref);
                 }
-                // Append the enum member reference to the enum declaration
-                append(ebm_enum_decl.members, *ebm_enum_member_ref);
+                body.enum_decl(std::move(ebm_enum_decl));
             }
-            body.enum_decl(std::move(ebm_enum_decl));
-        }
-        else if (auto enum_member = ast::as<ast::EnumMember>(node)) {
-            ebm::EnumMemberDecl ebm_enum_member_decl;
-            auto member_name_ref = add_identifier(enum_member->ident->ident);
-            if (!member_name_ref) {
-                return unexpect_error(std::move(member_name_ref.error()));
-            }
-            ebm_enum_member_decl.name = *member_name_ref;
-            if (enum_member->value) {
-                auto value_expr_ref = convert_expr(enum_member->value);
-                if (!value_expr_ref) {
-                    return unexpect_error(std::move(value_expr_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::EnumMember>>) {
+                ebm::EnumMemberDecl ebm_enum_member_decl;
+                MAYBE(member_name_ref, ctx.add_identifier(n->ident->ident));
+                ebm_enum_member_decl.name = member_name_ref;
+                if (n->value) {
+                    MAYBE(value_expr_ref, ctx.convert_expr(n->value));
+                    ebm_enum_member_decl.value = value_expr_ref;
                 }
-                ebm_enum_member_decl.value = *value_expr_ref;
-            }
-            if (enum_member->str_literal) {
-                auto str_ref = add_string(enum_member->str_literal->value);
-                if (!str_ref) {
-                    return unexpect_error(std::move(str_ref.error()));
+                if (n->str_literal) {
+                    MAYBE(str_ref, ctx.add_string(n->str_literal->value));
+                    ebm_enum_member_decl.string_repr = str_ref;
                 }
-                ebm_enum_member_decl.string_repr = *str_ref;
+                body.statement_kind = ebm::StatementOp::ENUM_MEMBER_DECL;
+                body.enum_member_decl(std::move(ebm_enum_member_decl));
             }
-            body.statement_kind = ebm::StatementOp::ENUM_MEMBER_DECL;
-            body.enum_member_decl(std::move(ebm_enum_member_decl));
-        }
-        else if (auto func = ast::as<ast::Function>(node)) {
-            body.statement_kind = ebm::StatementOp::FUNCTION_DECL;
-            ebm::FunctionDecl func_decl;
-            auto name_ref = add_identifier(func->ident->ident);
-            if (!name_ref) {
-                return unexpect_error(std::move(name_ref.error()));
-            }
-            func_decl.name = *name_ref;
-            if (func->return_type) {
-                auto return_type_ref = convert_type(func->return_type);
-                if (!return_type_ref) {
-                    return unexpect_error(std::move(return_type_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Function>>) {
+                body.statement_kind = ebm::StatementOp::FUNCTION_DECL;
+                ebm::FunctionDecl func_decl;
+                MAYBE(name_ref, ctx.add_identifier(n->ident->ident));
+                func_decl.name = name_ref;
+                if (n->return_type) {
+                    MAYBE(return_type_ref, ctx.convert_type(n->return_type));
+                    func_decl.return_type = return_type_ref;
                 }
-                func_decl.return_type = *return_type_ref;
-            }
-            for (auto& param : func->parameters) {
-                ebm::VariableDecl param_decl;
-                auto param_name_ref = add_identifier(param->ident->ident);
-                if (!param_name_ref) {
-                    return unexpect_error(std::move(param_name_ref.error()));
+                for (auto& param : n->parameters) {
+                    ebm::VariableDecl param_decl;
+                    MAYBE(param_name_ref, ctx.add_identifier(param->ident->ident));
+                    param_decl.name = param_name_ref;
+                    MAYBE(param_type_ref, ctx.convert_type(param->field_type));
+                    param_decl.var_type = param_type_ref;
+                    ebm::StatementBody param_body;
+                    param_body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
+                    param_body.var_decl(std::move(param_decl));
+                    MAYBE(param_ref, ctx.add_statement(std::move(param_body)));
+                    append(func_decl.params, param_ref);
                 }
-                param_decl.name = *param_name_ref;
-                auto param_type_ref = convert_type(param->field_type);
-                if (!param_type_ref) {
-                    return unexpect_error(std::move(param_type_ref.error()));
-                }
-                param_decl.var_type = *param_type_ref;
-                ebm::StatementBody param_body;
-                param_body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
-                param_body.var_decl(std::move(param_decl));
-                auto param_ref = add_statement(std::move(param_body));
-                if (!param_ref) {
-                    return unexpect_error(std::move(param_ref.error()));
-                }
-                append(func_decl.params, *param_ref);
+                body.func_decl(std::move(func_decl));
             }
-            body.func_decl(std::move(func_decl));
-        }
-        else if (auto metadata_stmt = ast::as<ast::Metadata>(node)) {
-            body.statement_kind = ebm::StatementOp::METADATA;
-            ebm::Metadata ebm_metadata;
-            auto name_ref = add_identifier(metadata_stmt->name);
-            if (!name_ref) {
-                return unexpect_error(std::move(name_ref.error()));
-            }
-            ebm_metadata.name = *name_ref;
-            for (auto& value : metadata_stmt->values) {
-                auto value_expr_ref = convert_expr(value);
-                if (!value_expr_ref) {
-                    return unexpect_error(std::move(value_expr_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Metadata>>) {
+                body.statement_kind = ebm::StatementOp::METADATA;
+                ebm::Metadata ebm_metadata;
+                MAYBE(name_ref, ctx.add_identifier(n->name));
+                ebm_metadata.name = name_ref;
+                for (auto& value : n->values) {
+                    MAYBE(value_expr_ref, ctx.convert_expr(value));
+                    append(ebm_metadata.values, value_expr_ref);
                 }
-                append(ebm_metadata.values, *value_expr_ref);
+                body.metadata(std::move(ebm_metadata));
             }
-            body.metadata(std::move(ebm_metadata));
-        }
-        else if (auto state_stmt = ast::as<ast::State>(node)) {
-            body.statement_kind = ebm::StatementOp::STATE_DECL;
-            ebm::StatementBody state_decl_body;
-            ebm::StateDecl state_decl;
-            auto name_ref = add_identifier(state_stmt->ident->ident);
-            if (!name_ref) {
-                return unexpect_error(std::move(name_ref.error()));
-            }
-            state_decl.name = *name_ref;
-            ebm::Block state_body_block;
-            for (auto& element : state_stmt->body->elements) {
-                auto stmt_ref = convert_statement(element);
-                if (!stmt_ref) {
-                    return unexpect_error(std::move(stmt_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::State>>) {
+                body.statement_kind = ebm::StatementOp::STATE_DECL;
+                ebm::StatementBody state_decl_body;
+                ebm::StateDecl state_decl;
+                MAYBE(name_ref, ctx.add_identifier(n->ident->ident));
+                state_decl.name = name_ref;
+                ebm::Block state_body_block;
+                for (auto& element : n->body->elements) {
+                    MAYBE(stmt_ref, ctx.convert_statement(element));
+                    append(state_body_block, stmt_ref);
                 }
-                append(state_body_block, *stmt_ref);
+                state_decl.body = std::move(state_body_block);
+                body.state_decl(std::move(state_decl));
             }
-            state_decl.body = std::move(state_body_block);
-            body.state_decl(std::move(state_decl));
-        }
-        else if (auto field = ast::as<ast::Field>(node)) {
-            if (auto union_type = ast::as<ast::UnionType>(field->field_type)) {
-                body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
-                ebm::PropertyDecl prop_decl;
-                auto field_name_ref = add_identifier(field->ident->ident);
-                if (!field_name_ref) {
-                    return unexpect_error(std::move(field_name_ref.error()));
-                }
-                prop_decl.name = *field_name_ref;
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Field>>) {
+                if (auto union_type = ast::as<ast::UnionType>(n->field_type)) {
+                    body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
+                    ebm::PropertyDecl prop_decl;
+                    MAYBE(field_name_ref, ctx.add_identifier(n->ident->ident));
+                    prop_decl.name = field_name_ref;
 
-                auto property_type_ref = convert_type(field->field_type);
-                if (!property_type_ref) {
-                    return unexpect_error(std::move(property_type_ref.error()));
-                }
-                prop_decl.property_type = *property_type_ref;
+                    MAYBE(property_type_ref, ctx.convert_type(n->field_type));
+                    prop_decl.property_type = property_type_ref;
 
-                if (auto parent_member = field->belong.lock()) {
-                    auto statement_ref = convert_statement(parent_member);
-                    if (!statement_ref) {
-                        return unexpect_error(std::move(statement_ref.error()));
+                    if (auto parent_member = n->belong.lock()) {
+                        MAYBE(statement_ref, ctx.convert_statement(parent_member));
+                        prop_decl.parent_format = statement_ref;
                     }
-                    prop_decl.parent_format = *statement_ref;
+                    else {
+                        prop_decl.parent_format = ebm::StatementRef{};
+                    }
+
+                    prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
+
+                    body.property_decl(std::move(prop_decl));
+                }
+                else if (n->bit_alignment != n->eventual_bit_alignment) {
+                    body.statement_kind = ebm::StatementOp::BIT_FIELD_DECL;
+                    ebm::BitFieldDecl bit_field_decl;
+                    MAYBE(name_ref, ctx.add_identifier(n->ident->ident));
+                    bit_field_decl.name = name_ref;
+
+                    if (auto parent_member = n->belong.lock()) {
+                        MAYBE(statement_ref, ctx.convert_statement(parent_member));
+                        bit_field_decl.parent_format = statement_ref;
+                    }
+                    else {
+                        bit_field_decl.parent_format = ebm::StatementRef{};
+                    }
+
+                    if (n->field_type->bit_size) {
+                        MAYBE(bit_size_val, varint(*n->field_type->bit_size));
+                        bit_field_decl.bit_size = bit_size_val;
+                    }
+                    else {
+                        return unexpect_error("Bit field type has no bit size");
+                    }
+
+                    bit_field_decl.packed_op_type = ebm::PackedOpType::FIXED;  // Default to FIXED for now
+
+                    body.bit_field_decl(std::move(bit_field_decl));
                 }
                 else {
-                    prop_decl.parent_format = ebm::StatementRef{};
-                }
-
-                prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
-
-                body.property_decl(std::move(prop_decl));
-            }
-            else if (field->bit_alignment != field->eventual_bit_alignment) {
-                body.statement_kind = ebm::StatementOp::BIT_FIELD_DECL;
-                ebm::BitFieldDecl bit_field_decl;
-                auto name_ref = add_identifier(field->ident->ident);
-                if (!name_ref) {
-                    return unexpect_error(std::move(name_ref.error()));
-                }
-                bit_field_decl.name = *name_ref;
-
-                if (auto parent_member = field->belong.lock()) {
-                    auto statement_ref = convert_statement(parent_member);
-                    if (!statement_ref) {
-                        return unexpect_error(std::move(statement_ref.error()));
+                    body.statement_kind = ebm::StatementOp::FIELD_DECL;
+                    ebm::FieldDecl field_decl;
+                    if (n->ident) {
+                        MAYBE(field_name_ref, ctx.add_identifier(n->ident->ident));
+                        field_decl.name = field_name_ref;
                     }
-                    bit_field_decl.parent_format = *statement_ref;
-                }
-                else {
-                    bit_field_decl.parent_format = ebm::StatementRef{};
-                }
-
-                if (field->field_type->bit_size) {
-                    auto bit_size_val = varint(*field->field_type->bit_size);
-                    if (!bit_size_val) {
-                        return unexpect_error(std::move(bit_size_val.error()));
+                    else {
+                        field_decl.name = ebm::IdentifierRef{};  // Anonymous field
                     }
-                    bit_field_decl.bit_size = *bit_size_val;
+                    MAYBE(type_ref, ctx.convert_type(n->field_type));
+                    field_decl.field_type = type_ref;
+                    // TODO: Handle parent_struct and is_state_variable
+                    body.field_decl(std::move(field_decl));
                 }
-                else {
-                    return unexpect_error("Bit field type has no bit size");
-                }
-
-                bit_field_decl.packed_op_type = ebm::PackedOpType::FIXED;  // Default to FIXED for now
-
-                body.bit_field_decl(std::move(bit_field_decl));
             }
-            else {
-                body.statement_kind = ebm::StatementOp::FIELD_DECL;
-                ebm::FieldDecl field_decl;
-                if (field->ident) {
-                    auto field_name_ref = add_identifier(field->ident->ident);
-                    if (!field_name_ref) {
-                        return unexpect_error(std::move(field_name_ref.error()));
-                    }
-                    field_decl.name = *field_name_ref;
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::ExplicitError>>) {
+                body.statement_kind = ebm::StatementOp::ERROR_REPORT;
+                ebm::ErrorReport error_report;
+                MAYBE(message_str_ref, ctx.add_string(n->message->value));
+                error_report.message = message_str_ref;
+                for (auto& arg : n->base->arguments) {
+                    MAYBE(arg_expr_ref, ctx.convert_expr(arg));
+                    append(error_report.arguments, arg_expr_ref);
                 }
-                else {
-                    field_decl.name = ebm::IdentifierRef{};  // Anonymous field
-                }
-                auto type_ref = convert_type(field->field_type);
-                if (!type_ref) {
-                    return unexpect_error(std::move(type_ref.error()));
-                }
-                field_decl.field_type = *type_ref;
-                // TODO: Handle parent_struct and is_state_variable
-                body.field_decl(std::move(field_decl));
+                body.error_report(std::move(error_report));
             }
-        }
-        else if (auto explicit_error_stmt = ast::as<ast::ExplicitError>(node)) {
-            body.statement_kind = ebm::StatementOp::ERROR_REPORT;
-            ebm::ErrorReport error_report;
-            auto message_str_ref = add_string(explicit_error_stmt->message->value);
-            if (!message_str_ref) {
-                return unexpect_error(std::move(message_str_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Import>>) {
+                body.statement_kind = ebm::StatementOp::IMPORT_MODULE;
+                MAYBE(module_name_ref, ctx.add_identifier(n->path));
+                body.module_name(module_name_ref);
             }
-            error_report.message = *message_str_ref;
-            for (auto& arg : explicit_error_stmt->base->arguments) {
-                auto arg_expr_ref = convert_expr(arg);
-                if (!arg_expr_ref) {
-                    return unexpect_error(std::move(arg_expr_ref.error()));
-                }
-                append(error_report.arguments, *arg_expr_ref);
-            }
-            body.error_report(std::move(error_report));
-        }
-        else if (auto import_stmt = ast::as<ast::Import>(node)) {
-            body.statement_kind = ebm::StatementOp::IMPORT_MODULE;
-            auto module_name_ref = add_identifier(import_stmt->path);
-            if (!module_name_ref) {
-                return unexpect_error(std::move(module_name_ref.error()));
-            }
-            body.module_name(*module_name_ref);
-        }
-        else if (auto implicit_yield_stmt = ast::as<ast::ImplicitYield>(node)) {
-            body.statement_kind = ebm::StatementOp::EXPRESSION;
-            auto expr_ref = convert_expr(implicit_yield_stmt->expr);
-            if (!expr_ref) {
-                return unexpect_error(std::move(expr_ref.error()));
-            }
-            body.expression(*expr_ref);
-        }
-        else if (auto binary_expr = ast::as<ast::Binary>(node)) {
-            if (binary_expr->op == ast::BinaryOp::assign) {
-                body.statement_kind = ebm::StatementOp::ASSIGNMENT;
-                auto target_ref = convert_expr(binary_expr->left);
-                if (!target_ref) {
-                    return unexpect_error(std::move(target_ref.error()));
-                }
-                body.target(*target_ref);
-                auto value_ref = convert_expr(binary_expr->right);
-                if (!value_ref) {
-                    return unexpect_error(std::move(value_ref.error()));
-                }
-                body.value(*value_ref);
-            }
-            else if (binary_expr->op == ast::BinaryOp::define_assign || binary_expr->op == ast::BinaryOp::const_assign) {
-                body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
-                ebm::VariableDecl var_decl;
-                auto name_ident = ast::as<ast::Ident>(binary_expr->left);
-                if (!name_ident) {
-                    return unexpect_error("Left-hand side of define_assign/const_assign must be an identifier");
-                }
-                auto name_ref = add_identifier(name_ident->ident);
-                if (!name_ref) {
-                    return unexpect_error(std::move(name_ref.error()));
-                }
-                var_decl.name = *name_ref;
-
-                auto type_ref = convert_type(binary_expr->left->expr_type);
-                if (!type_ref) {
-                    return unexpect_error(std::move(type_ref.error()));
-                }
-                var_decl.var_type = *type_ref;
-
-                if (binary_expr->right) {
-                    auto initial_value_ref = convert_expr(binary_expr->right);
-                    if (!initial_value_ref) {
-                        return unexpect_error(std::move(initial_value_ref.error()));
-                    }
-                    var_decl.initial_value = *initial_value_ref;
-                }
-                var_decl.is_constant(binary_expr->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
-                body.var_decl(std::move(var_decl));
-            }
-            else {
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::ImplicitYield>>) {
                 body.statement_kind = ebm::StatementOp::EXPRESSION;
-                auto expr_ref = convert_expr(ast::cast_to<ast::Expr>(node));
-                if (!expr_ref) {
-                    return unexpect_error(std::move(expr_ref.error()));
-                }
-                body.expression(*expr_ref);
+                MAYBE(expr_ref, ctx.convert_expr(n->expr));
+                body.expression(expr_ref);
             }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Binary>>) {
+                if (n->op == ast::BinaryOp::assign) {
+                    body.statement_kind = ebm::StatementOp::ASSIGNMENT;
+                    MAYBE(target_ref, ctx.convert_expr(n->left));
+                    body.target(target_ref);
+                    MAYBE(value_ref, ctx.convert_expr(n->right));
+                    body.value(value_ref);
+                }
+                else if (n->op == ast::BinaryOp::define_assign || n->op == ast::BinaryOp::const_assign) {
+                    body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
+                    ebm::VariableDecl var_decl;
+                    auto name_ident = ast::as<ast::Ident>(n->left);
+                    if (!name_ident) {
+                        return unexpect_error("Left-hand side of define_assign/const_assign must be an identifier");
+                    }
+                    MAYBE(name_ref, ctx.add_identifier(name_ident->ident));
+                    var_decl.name = name_ref;
+
+                    MAYBE(type_ref, ctx.convert_type(n->left->expr_type));
+                    var_decl.var_type = type_ref;
+
+                    if (n->right) {
+                        MAYBE(initial_value_ref, ctx.convert_expr(n->right));
+                        var_decl.initial_value = initial_value_ref;
+                    }
+                    var_decl.is_constant(n->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
+                    body.var_decl(std::move(var_decl));
+                }
+                else {
+                    body.statement_kind = ebm::StatementOp::EXPRESSION;
+                    MAYBE(expr_ref, ctx.convert_expr(ast::cast_to<ast::Expr>(n)));
+                    body.expression(expr_ref);
+                }
+            }
+            else {
+                // Debug print to identify unhandled node types
+                return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
+            }
+            return {};  // Success
+        });
+
+        if (!result) {
+            return unexpect_error(std::move(result.error()));
         }
-        else {
-            // Debug print to identify unhandled node types
-            return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
-        }
-        return add_statement(new_id, std::move(body));
+
+        return ctx.add_statement(new_id, std::move(body));
     }
 }  // namespace ebmgen

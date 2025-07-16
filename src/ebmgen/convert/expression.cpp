@@ -2,6 +2,7 @@
 #include <core/ast/tool/ident.h>
 #include "helper.hpp"
 #include <fnet/util/base64.h>
+#include <core/ast/traverse.h>
 
 namespace ebmgen {
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op) {
@@ -120,201 +121,156 @@ namespace ebmgen {
         EBMA_CONVERT_TYPE(type_ref, node->expr_type);
         body.type = type_ref;
 
-        if (auto literal = ast::as<ast::IntLiteral>(node)) {
-            body.op = ebm::ExpressionOp::LITERAL_INT;
-            auto value = literal->parse_as<std::uint64_t>();
-            if (!value) {
-                return unexpect_error("cannot parse int literal");
-            }
-            body.int_value(*value);
-        }
-        else if (auto literal = ast::as<ast::BoolLiteral>(node)) {
-            body.op = ebm::ExpressionOp::LITERAL_BOOL;
-            body.bool_value(literal->value);
-        }
-        else if (auto literal = ast::as<ast::StrLiteral>(node)) {
-            MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(node)));
-            body.op = ebm::ExpressionOp::LITERAL_STRING;
-            EBMA_ADD_STRING(str_ref, candidate);
-            body.string_value(str_ref);
-        }
-        else if (auto literal = ast::as<ast::TypeLiteral>(node)) {
-            body.op = ebm::ExpressionOp::LITERAL_TYPE;
-            EBMA_CONVERT_TYPE(type_ref, literal->type_literal)
-            body.type_ref(type_ref);
-        }
-        else if (auto ident = ast::as<ast::Ident>(node)) {
-            body.op = ebm::ExpressionOp::IDENTIFIER;
-            auto base = ast::tool::lookup_base(ast::cast_to<ast::Ident>(node));
-            if (!base) {
-                return unexpect_error("Identifier {} not found", ident->ident);
-            }
-            EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
-            body.id(id_ref);
-        }
-        else if (auto binary = ast::as<ast::Binary>(node)) {
-            if (binary->op == ast::BinaryOp::define_assign || binary->op == ast::BinaryOp::const_assign) {
-                return unexpect_error("define_assign/const_assign should be handled as a statement, not an expression");
-            }
-            body.op = ebm::ExpressionOp::BINARY_OP;
-            auto left_ref = convert_expr(binary->left);
-            if (!left_ref) {
-                return unexpect_error(std::move(left_ref.error()));
-            }
-            auto right_ref = convert_expr(binary->right);
-            if (!right_ref) {
-                return unexpect_error(std::move(right_ref.error()));
-            }
-            body.left(*left_ref);
-            body.right(*right_ref);
-            auto bop = convert_binary_op(binary->op);
-            if (!bop) {
-                return unexpect_error(std::move(bop.error()));
-            }
-            body.bop(*bop);
-        }
-        else if (auto unary = ast::as<ast::Unary>(node)) {
-            body.op = ebm::ExpressionOp::UNARY_OP;
-            auto operand_ref = convert_expr(unary->expr);
-            if (!operand_ref) {
-                return unexpect_error(std::move(operand_ref.error()));
-            }
-            body.operand(*operand_ref);
-            auto uop = convert_unary_op(unary->op);
-            if (!uop) {
-                return unexpect_error(std::move(uop.error()));
-            }
-            body.uop(*uop);
-        }
-        else if (auto index_expr = ast::as<ast::Index>(node)) {
-            body.op = ebm::ExpressionOp::INDEX_ACCESS;
-            auto base_ref = convert_expr(index_expr->expr);
-            if (!base_ref) {
-                return unexpect_error(std::move(base_ref.error()));
-            }
-            auto index_ref = convert_expr(index_expr->index);
-            if (!index_ref) {
-                return unexpect_error(std::move(index_ref.error()));
-            }
-            body.base(*base_ref);
-            body.index(*index_ref);
-        }
-        else if (auto member_access = ast::as<ast::MemberAccess>(node)) {
-            body.op = ebm::ExpressionOp::MEMBER_ACCESS;
-            MAYBE(base_ref, convert_expr(member_access->target));
-            MAYBE(member_ref, convert_expr(member_access->member));
-            body.base(base_ref);
-            body.member(member_ref);
-        }
-        else if (auto cast_expr = ast::as<ast::Cast>(node)) {
-            body.op = ebm::ExpressionOp::TYPE_CAST;
-            MAYBE(source_expr_ref, convert_expr(cast_expr->arguments[0]));
-            MAYBE(source_expr_type_ref, convert_type(cast_expr->arguments[0]->expr_type));
-            body.source_expr(source_expr_ref);
-            body.from_type(source_expr_type_ref);
-            auto cast_kind = get_cast_type(body.type, source_expr_type_ref);
-            if (!cast_kind) {
-                return unexpect_error(std::move(cast_kind.error()));
-            }
-            body.cast_kind(*cast_kind);
-        }
-        else if (auto range = ast::as<ast::Range>(node)) {
-            body.op = ebm::ExpressionOp::RANGE;
-            ebm::ExpressionRef start, end;
-            if (range->start) {
-                auto start_ref = convert_expr(range->start);
-                if (!start_ref) {
-                    return unexpect_error(std::move(start_ref.error()));
+        expected<void> result = {};  // To capture errors from within the lambda
+
+        brgen::ast::visit(node, [&](auto&& n) -> expected<void> {
+            using T = std::decay_t<decltype(n)>;
+            if constexpr (std::is_same_v<T, std::shared_ptr<ast::IntLiteral>>) {
+                body.op = ebm::ExpressionOp::LITERAL_INT;
+                auto value = n->template parse_as<std::uint64_t>();
+                if (!value) {
+                    return unexpect_error("cannot parse int literal");
                 }
-                start = *start_ref;
+                body.int_value(*value);
             }
-            if (range->end) {
-                auto end_ref = convert_expr(range->end);
-                if (!end_ref) {
-                    return unexpect_error(std::move(end_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::BoolLiteral>>) {
+                body.op = ebm::ExpressionOp::LITERAL_BOOL;
+                body.bool_value(n->value);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StrLiteral>>) {
+                MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(n)));
+                body.op = ebm::ExpressionOp::LITERAL_STRING;
+                EBMA_ADD_STRING(str_ref, candidate);
+                body.string_value(str_ref);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::TypeLiteral>>) {
+                body.op = ebm::ExpressionOp::LITERAL_TYPE;
+                EBMA_CONVERT_TYPE(type_ref_inner, n->type_literal)
+                body.type_ref(type_ref_inner);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Ident>>) {
+                body.op = ebm::ExpressionOp::IDENTIFIER;
+                auto base = ast::tool::lookup_base(ast::cast_to<ast::Ident>(n));
+                if (!base) {
+                    return unexpect_error("Identifier {} not found", n->ident);
                 }
-                end = *end_ref;
+                EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
+                body.id(id_ref);
             }
-            body.start(start);
-            body.end(end);
-        }
-        else if (auto io_op_stmt = ast::as<ast::IOOperation>(node)) {
-            switch (io_op_stmt->method) {
-                case ast::IOMethod::input_get: {
-                    body.op = ebm::ExpressionOp::READ_DATA;
-                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
-                    if (!target_var_ref) {
-                        return unexpect_error(std::move(target_var_ref.error()));
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Binary>>) {
+                if (n->op == ast::BinaryOp::define_assign || n->op == ast::BinaryOp::const_assign) {
+                    return unexpect_error("define_assign/const_assign should be handled as a statement, not an expression");
+                }
+                MAYBE(left_ref, convert_expr(n->left));
+                MAYBE(right_ref, convert_expr(n->right));
+                MAYBE(bop, convert_binary_op(n->op));
+                body = make_binary_op(bop, type_ref, left_ref, right_ref);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Unary>>) {
+                MAYBE(operand_ref, convert_expr(n->expr));
+                MAYBE(uop, convert_unary_op(n->op));
+                body = make_unary_op(uop, type_ref, operand_ref);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Index>>) {
+                body.op = ebm::ExpressionOp::INDEX_ACCESS;
+                MAYBE(base_ref, convert_expr(n->expr));
+                MAYBE(index_ref, convert_expr(n->index));
+                body.base(base_ref);
+                body.index(index_ref);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::MemberAccess>>) {
+                body.op = ebm::ExpressionOp::MEMBER_ACCESS;
+                MAYBE(base_ref, convert_expr(n->target));
+                MAYBE(member_ref, convert_expr(n->member));
+                body.base(base_ref);
+                body.member(member_ref);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Cast>>) {
+                body.op = ebm::ExpressionOp::TYPE_CAST;
+                MAYBE(source_expr_ref, convert_expr(n->arguments[0]));
+                MAYBE(source_expr_type_ref, convert_type(n->arguments[0]->expr_type));
+                body.source_expr(source_expr_ref);
+                body.from_type(source_expr_type_ref);
+                MAYBE(cast_kind, ctx.get_type_converter().get_cast_type(body.type, source_expr_type_ref));
+                body.cast_kind(cast_kind);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::Range>>) {
+                body.op = ebm::ExpressionOp::RANGE;
+                ebm::ExpressionRef start, end;
+                if (n->start) {
+                    MAYBE(start_ref, convert_expr(n->start));
+                    start = start_ref;
+                }
+                if (n->end) {
+                    MAYBE(end_ref, convert_expr(n->end));
+                    end = end_ref;
+                }
+                body.start(start);
+                body.end(end);
+            }
+            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::IOOperation>>) {
+                switch (n->method) {
+                    case ast::IOMethod::input_get: {
+                        body.op = ebm::ExpressionOp::READ_DATA;
+                        MAYBE(target_var_ref, convert_expr(n->arguments[0]));
+                        body.target_var(target_var_ref);
+                        MAYBE(data_type_ref, convert_type(n->arguments[0]->expr_type));
+                        body.data_type(data_type_ref);
+                        // TODO: Handle endian, bit_size, and fallback_stmt
+                        break;
                     }
-                    body.target_var(*target_var_ref);
-                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
-                    if (!data_type_ref) {
-                        return unexpect_error(std::move(data_type_ref.error()));
+                    case ast::IOMethod::output_put: {
+                        body.op = ebm::ExpressionOp::WRITE_DATA;
+                        MAYBE(source_expr_ref, convert_expr(n->arguments[0]));
+                        body.source_expr(source_expr_ref);
+                        MAYBE(data_type_ref, convert_type(n->arguments[0]->expr_type));
+                        body.data_type(data_type_ref);
+                        // TODO: Handle endian, bit_size, and fallback_stmt
+                        break;
                     }
-                    body.data_type(*data_type_ref);
-                    // TODO: Handle endian, bit_size, and fallback_stmt
-                    break;
-                }
-                case ast::IOMethod::output_put: {
-                    body.statement_kind = ebm::StatementOp::WRITE_DATA;
-                    auto source_expr_ref = convert_expr(io_op_stmt->arguments[0]);
-                    if (!source_expr_ref) {
-                        return unexpect_error(std::move(source_expr_ref.error()));
+                    case ast::IOMethod::input_offset:
+                    case ast::IOMethod::input_bit_offset: {
+                        body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
+                        body.stream_type(ebm::StreamType::INPUT);
+                        body.unit(n->method == ast::IOMethod::input_bit_offset ? ebm::SizeUnit::BIT_FIXED : ebm::SizeUnit::BYTE_FIXED);
+                        break;
                     }
-                    body.source_expr(*source_expr_ref);
-                    auto data_type_ref = convert_type(io_op_stmt->arguments[0]->expr_type);
-                    if (!data_type_ref) {
-                        return unexpect_error(std::move(data_type_ref.error()));
+                    case ast::IOMethod::input_remain: {
+                        body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
+                        body.stream_type(ebm::StreamType::INPUT);
+                        break;
                     }
-                    body.data_type(*data_type_ref);
-                    // TODO: Handle endian, bit_size, and fallback_stmt
-                    break;
-                }
-                case ast::IOMethod::input_offset:
-                case ast::IOMethod::input_bit_offset: {
-                    body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
-                    body.stream_type(ebm::StreamType::INPUT);
-                    body.unit(io_op_stmt->method == ast::IOMethod::input_bit_offset ? ebm::SizeUnit::BIT_FIXED : ebm::SizeUnit::BYTE_FIXED);
-                    break;
-                }
-                case ast::IOMethod::input_remain: {
-                    body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
-                    body.stream_type(ebm::StreamType::INPUT);
-                    break;
-                }
-                case ast::IOMethod::input_subrange: {  // Assuming input_subrange maps to SEEK_STREAM
-                    body.statement_kind = ebm::StatementOp::SEEK_STREAM;
-                    auto offset_ref = convert_expr(io_op_stmt->arguments[0]);
-                    if (!offset_ref) {
-                        return unexpect_error(std::move(offset_ref.error()));
+                    case ast::IOMethod::input_subrange: {
+                        body.op = ebm::ExpressionOp::SEEK_STREAM;
+                        MAYBE(offset_ref, convert_expr(n->arguments[0]));
+                        body.offset(offset_ref);
+                        body.stream_type(ebm::StreamType::INPUT);
+                        break;
                     }
-                    body.offset(*offset_ref);
-                    body.stream_type(ebm::StreamType::INPUT);
-                    break;
-                }
-                case ast::IOMethod::input_peek: {  // Assuming input_peek maps to CAN_READ_STREAM
-                    body.statement_kind = ebm::StatementOp::CAN_READ_STREAM;
-                    auto target_var_ref = convert_expr(io_op_stmt->arguments[0]);
-                    if (!target_var_ref) {
-                        return unexpect_error(std::move(target_var_ref.error()));
+                    case ast::IOMethod::input_peek: {
+                        body.op = ebm::ExpressionOp::CAN_READ_STREAM;
+                        MAYBE(target_var_ref, convert_expr(n->arguments[0]));
+                        body.target_var(target_var_ref);
+                        MAYBE(num_bytes_ref, convert_expr(n->arguments[1]));
+                        body.num_bytes(num_bytes_ref);
+                        body.stream_type(ebm::StreamType::INPUT);
+                        break;
                     }
-                    body.target_var(*target_var_ref);
-                    auto num_bytes_ref = convert_expr(io_op_stmt->arguments[1]);
-                    if (!num_bytes_ref) {
-                        return unexpect_error(std::move(num_bytes_ref.error()));
+                    default: {
+                        return unexpect_error("Unhandled IOMethod: {}", ast::to_string(n->method));
                     }
-                    body.num_bytes(*num_bytes_ref);
-                    body.stream_type(ebm::StreamType::INPUT);
-                    break;
-                }
-                default: {
-                    return unexpect_error("Unhandled IOMethod: {}", ast::to_string(io_op_stmt->method));
                 }
             }
+            else {
+                return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
+            }
+            return {};  // Success
+        });
+
+        if (!result) {
+            return unexpect_error(std::move(result.error()));
         }
-        else {
-            return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
-        }
+
         return ctx.add_expr(std::move(body));
     }
 

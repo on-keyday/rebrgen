@@ -67,6 +67,9 @@ namespace ebmgen {
 #define EBMU_BOOL_TYPE(ref_name) \
     MAYBE(ref_name, ctx.get_bool_type())
 
+#define EBMU_VOID_TYPE(ref_name) \
+    MAYBE(ref_name, ctx.get_void_type())
+
 #define EBMU_COUNTER_TYPE(ref_name) \
     MAYBE(ref_name, ctx.get_counter_type())
 

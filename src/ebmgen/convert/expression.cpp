@@ -58,9 +58,9 @@ namespace ebmgen {
         }
     }
 
-    expected<ebm::CastType> Converter::get_cast_type(ebm::TypeRef dest_ref, ebm::TypeRef src_ref) {
-        auto dest = type_repo.get(dest_ref);
-        auto src = type_repo.get(src_ref);
+    expected<ebm::CastType> TypeConverter::get_cast_type(ebm::TypeRef dest_ref, ebm::TypeRef src_ref) {
+        auto dest = ctx.get_type(dest_ref);
+        auto src = ctx.get_type(src_ref);
 
         if (!dest || !src) {
             return unexpect_error("Invalid type reference for cast");
@@ -315,10 +315,10 @@ namespace ebmgen {
         else {
             return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
         }
-        return add_expr(std::move(body));
+        return ctx.add_expr(std::move(body));
     }
 
-    expected<ebm::ExpressionRef> ExpressionConverter::get_alignment_requirement(std::uint64_t alignment_bytes, ebm::StreamType type) {
+    expected<ebm::ExpressionRef> get_alignment_requirement(ConverterContext& ctx, std::uint64_t alignment_bytes, ebm::StreamType type) {
         if (alignment_bytes == 0) {
             return unexpect_error("0 is not valid alignment");
         }

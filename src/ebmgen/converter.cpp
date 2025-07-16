@@ -1,21 +1,19 @@
 #include "converter.hpp"
 #include <core/ast/traverse.h>
+#include <functional>
 #include "convert/helper.hpp"
 namespace ebmgen {
 
-    expected<ebm::StatementRef> Converter::convert_statement(const std::shared_ptr<ast::Node>& node) {
-        if (auto it = visited_nodes.find(node); it != visited_nodes.end()) {
-            return it->second;
+    expected<ebm::StatementRef> StatementConverter::convert_statement(const std::shared_ptr<ast::Node>& node) {
+        if (auto it = ctx.is_visited(node)) {
+            return *it;
         }
-        auto new_ref = statement_repo.new_id(ident_source);
-        if (!new_ref) {
-            return unexpect_error("Failed to create new statement ID: {}", new_ref.error().error());
-        }
-        visited_nodes[node] = *new_ref;
-        return convert_statement_impl(*new_ref, node);
+        MAYBE(new_ref, ctx.new_statement_id());
+        ctx.add_visited_node(node, new_ref);
+        return convert_statement_impl(new_ref, node);
     }
 
-    expected<ebm::EndianExpr> Converter::get_endian(ebm::Endian base, bool sign) {
+    expected<ebm::EndianExpr> ConverterContext::get_endian(ebm::Endian base, bool sign) {
         ebm::EndianExpr e;
         e.sign(sign);
         e.endian(base);
@@ -32,7 +30,7 @@ namespace ebmgen {
         return e;
     }
 
-    bool Converter::set_endian(ebm::Endian e, ebm::StatementRef id) {
+    bool ConverterContext::set_endian(ebm::Endian e, ebm::StatementRef id) {
         if (on_function) {
             local_endian = e;
             current_dynamic_endian = id;
@@ -45,7 +43,7 @@ namespace ebmgen {
         return true;
     }
 
-    expected<void> Converter::set_lengths() {
+    expected<void> ConverterContext::finalize(ebm::ExtendedBinaryModule& ebm) {
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
         ebm.identifiers_len = identifiers_len;
         ebm.identifiers = std::move(identifier_repo.get_all());
@@ -66,13 +64,12 @@ namespace ebmgen {
         ebm.expressions_len = expressions_len;
         ebm.expressions = std::move(expression_repo.get_all());
 
-        return {};
-    }
+        MAYBE(loc_len, varint(debug_locs.size()));
 
-    expected<void> Converter::convert(const std::shared_ptr<brgen::ast::Node>& ast_root) {
-        root = ast_root;
-        MAYBE_VOID(ok, convert_statement(ast_root));
-        return set_lengths();
+        ebm.debug_info.locs = std::move(debug_locs);
+        ebm.debug_info.len_locs = loc_len;
+
+        return {};
     }
 
     ConverterContext::ConverterContext() {
@@ -111,6 +108,33 @@ namespace ebmgen {
     }
     expected<ebm::TypeRef> ConverterContext::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
         return type_converter->convert_type(type, field);
+    }
+
+    expected<ebm::StatementRef> add_endian_specific(ConverterContext& ctx, ebm::EndianExpr endian, std::function<expected<ebm::StatementRef>()> on_little_endian, std::function<expected<ebm::StatementRef>()> on_big_endian) {
+        ebm::StatementRef ref;
+        const auto is_native_or_dynamic = endian.endian() == ebm::Endian::native || endian.endian() == ebm::Endian::dynamic;
+        if (is_native_or_dynamic) {
+            ebm::ExpressionBody is_little;
+            is_little.op = ebm::ExpressionOp::IS_LITTLE_ENDIAN;
+            is_little.endian_expr(endian.dynamic_ref);  // if native, this will be empty
+            EBMA_ADD_EXPR(is_little_ref, std::move(is_little));
+            MAYBE(then_block, on_little_endian());
+            MAYBE(else_block, on_big_endian());
+            EBM_IF_STATEMENT(res, is_little_ref, then_block, else_block);
+            ref = res;
+        }
+        else if (endian.endian() == ebm::Endian::little) {
+            MAYBE(res, on_little_endian());
+            ref = res;
+        }
+        else if (endian.endian() == ebm::Endian::big) {
+            MAYBE(res, on_big_endian());
+            ref = res;
+        }
+        else {
+            return unexpect_error("Unsupported endian type: {}", to_string(endian.endian()));
+        }
+        return ref;
     }
 
 }  // namespace ebmgen

@@ -6,9 +6,9 @@
 
 namespace ebmgen {
 
-    expected<std::pair<size_t, bool>> get_integral_size_and_sign(auto& type_repo, ebm::TypeRef type) {
+    expected<std::pair<size_t, bool>> get_integral_size_and_sign(ConverterContext& ctx, ebm::TypeRef type) {
         for (;;) {
-            auto type_ref = type_repo.get(type);
+            auto type_ref = ctx.get_type(type);
             if (!type_ref) {
                 return unexpect_error("Invalid type reference for max value");
             }
@@ -28,15 +28,15 @@ namespace ebmgen {
         }
     }
 
-    expected<ebm::ExpressionRef> Converter::get_max_value_expr(ebm::TypeRef type) {
-        MAYBE(size_and_signed, get_integral_size_and_sign(type_repo, type));
+    expected<ebm::ExpressionRef> get_max_value_expr(ConverterContext& ctx, ebm::TypeRef type) {
+        MAYBE(size_and_signed, get_integral_size_and_sign(ctx, type));
         auto [size, is_signed] = size_and_signed;
-        MAYBE(value_type, get_unsigned_n_int(size));
+        EBMU_UINT_TYPE(value_type, size);
         EBM_NEW_OBJECT(zero, value_type);
         EBM_UNARY_OP(max_unsigned, ebm::UnaryOp::bit_not, value_type, zero);
         auto result = max_unsigned;
         if (is_signed) {
-            MAYBE(one, get_int_literal(1));
+            EBMU_INT_LITERAL(one, 1);
             EBM_BINARY_OP(max_signed, ebm::BinaryOp::right_shift, value_type, max_unsigned, one);
             result = max_signed;
         }
@@ -89,12 +89,12 @@ namespace ebmgen {
                         end = e;
                     }
                     else {
-                        MAYBE(max_value_expr, ctx.get_max_value_expr(base_type));
+                        MAYBE(max_value_expr, get_max_value_expr(ctx, base_type));
                         end = max_value_expr;
                     }
-                    MAYBE(size_and_signed, get_integral_size_and_sign(type_repo, base_type));
+                    MAYBE(size_and_signed, get_integral_size_and_sign(ctx, base_type));
                     auto [n, is_signed] = size_and_signed;
-                    MAYBE(counter_type, get_unsigned_n_int(n));
+                    EBMU_COUNTER_TYPE(counter_type);
                     EBM_CAST(start_casted, counter_type, base_type, start);
                     EBM_CAST(end_casted, counter_type, base_type, end);
 
@@ -149,7 +149,7 @@ namespace ebmgen {
                     ebm::Block block;
                     block.container.reserve(2 + candidate.size());
                     append(block, buffer_def);
-                    MAYBE_VOID(ok, construct_string_array(block, buffer, candidate));
+                    MAYBE_VOID(ok, construct_string_array(ctx, block, buffer, candidate));
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(array_index, u8_t, buffer, i);
                     EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, true, true);

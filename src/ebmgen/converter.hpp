@@ -480,7 +480,20 @@ namespace ebmgen {
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
 
        private:
-        expected<ebm::ExpressionBody> convert_expr_impl(const std::shared_ptr<ast::Expr>& node);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::IntLiteral>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::BoolLiteral>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::StrLiteral>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::TypeLiteral>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Ident>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Binary>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Unary>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Index>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Cast>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Range>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body);
+        // Fallback for unhandled types
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body);
     };
 
     expected<ebm::ExpressionRef> get_alignment_requirement(ConverterContext& ctx, std::uint64_t alignment_bytes, ebm::StreamType type);

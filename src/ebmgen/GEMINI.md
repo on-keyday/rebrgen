@@ -84,4 +84,4 @@ BEFORE YOU ACT, YOU MUST READ ALL OF THESE FILES for consistency
 #### 6. Note
 
 - Codebase uses macro (almost defined in helper.hpp).
-  - This was a deliberate design. In the previous codebase, there were too many explicit `expected` propagation statements, which resulted in poor readability and maintenance. In this codebase, error handling is transparently done using macros. Think of it like Haskell's do notation or Rust's ? operator.
+  - This is a deliberate design. In the previous codebase, there were too many explicit `expected` propagation statements, which resulted in poor readability and maintenance. In this codebase, error handling is transparently done using macros. Think of it like Haskell's do notation or Rust's ? operator.

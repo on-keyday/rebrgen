@@ -951,11 +951,31 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 0;
+        constexpr static const char* visitor_name = "Varint";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "prefix",(*this).prefix());
+            v(v, "value",(*this).value());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "prefix",(*this).prefix());
+            v(v, "value",(*this).value());
+        }
     };
     struct EBM_API StatementRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StatementRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API EndianExpr{
         ::futils::binary::flags_t<std::uint8_t, 3, 1, 4> flags_2_;
@@ -966,32 +986,94 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "EndianExpr";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "endian",(*this).endian());
+            v(v, "sign",(*this).sign());
+            v(v, "reserved",(*this).reserved());
+            v(v, "dynamic_ref",(*this).dynamic_ref);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "endian",(*this).endian());
+            v(v, "sign",(*this).sign());
+            v(v, "reserved",(*this).reserved());
+            v(v, "dynamic_ref",(*this).dynamic_ref);
+        }
     };
     struct EBM_API String{
         Varint length;
         std::string data;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "String";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "length",(*this).length);
+            v(v, "data",(*this).data);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "length",(*this).length);
+            v(v, "data",(*this).data);
+        }
     };
     struct EBM_API IdentifierRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "IdentifierRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API TypeRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "TypeRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API ExpressionRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "ExpressionRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API StringRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StringRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API LoweredStatement{
         LoweringType lowering_type{};
@@ -999,6 +1081,17 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "LoweredStatement";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "lowering_type",(*this).lowering_type);
+            v(v, "block",(*this).block);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "lowering_type",(*this).lowering_type);
+            v(v, "block",(*this).block);
+        }
     };
     struct EBM_API LoweredExpression{
         LoweringType lowering_type{};
@@ -1006,34 +1099,96 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "LoweredExpression";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "lowering_type",(*this).lowering_type);
+            v(v, "expression",(*this).expression);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "lowering_type",(*this).lowering_type);
+            v(v, "expression",(*this).expression);
+        }
     };
     struct EBM_API LoopFlowControl{
         StatementRef related_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LoopFlowControl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "related_statement",(*this).related_statement);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "related_statement",(*this).related_statement);
+        }
     };
     struct EBM_API PhiParam{
         ExpressionRef condition;
         ExpressionRef value;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "PhiParam";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "condition",(*this).condition);
+            v(v, "value",(*this).value);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "condition",(*this).condition);
+            v(v, "value",(*this).value);
+        }
     };
     struct EBM_API AnyRef{
         Varint id;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "AnyRef";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
     };
     struct EBM_API Expressions{
         Varint len;
         std::vector<ExpressionRef> container;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Expressions";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
     };
     struct EBM_API CallDesc{
         ExpressionRef callee;
         Expressions arguments;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "CallDesc";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "callee",(*this).callee);
+            v(v, "arguments",(*this).arguments);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "callee",(*this).callee);
+            v(v, "arguments",(*this).arguments);
+        }
     };
     struct EBM_API ExpressionBody{
         TypeRef type;
@@ -1224,12 +1379,90 @@ namespace ebm {
         bool uop(const UnaryOp& v);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "ExpressionBody";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "type",(*this).type);
+            v(v, "op",(*this).op);
+            v(v, "array_expr",(*this).array_expr());
+            v(v, "base",(*this).base());
+            v(v, "bool_value",(*this).bool_value());
+            v(v, "bop",(*this).bop());
+            v(v, "call_desc",(*this).call_desc());
+            v(v, "cast_kind",(*this).cast_kind());
+            v(v, "end",(*this).end());
+            v(v, "endian_expr",(*this).endian_expr());
+            v(v, "from_type",(*this).from_type());
+            v(v, "id",(*this).id());
+            v(v, "index",(*this).index());
+            v(v, "int_value",(*this).int_value());
+            v(v, "io_statement",(*this).io_statement());
+            v(v, "left",(*this).left());
+            v(v, "lowered_expr",(*this).lowered_expr());
+            v(v, "member",(*this).member());
+            v(v, "num_bytes",(*this).num_bytes());
+            v(v, "operand",(*this).operand());
+            v(v, "right",(*this).right());
+            v(v, "source_expr",(*this).source_expr());
+            v(v, "start",(*this).start());
+            v(v, "stream_type",(*this).stream_type());
+            v(v, "string_value",(*this).string_value());
+            v(v, "target",(*this).target());
+            v(v, "target_expr",(*this).target_expr());
+            v(v, "type_ref",(*this).type_ref());
+            v(v, "unit",(*this).unit());
+            v(v, "uop",(*this).uop());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "type",(*this).type);
+            v(v, "op",(*this).op);
+            v(v, "array_expr",(*this).array_expr());
+            v(v, "base",(*this).base());
+            v(v, "bool_value",(*this).bool_value());
+            v(v, "bop",(*this).bop());
+            v(v, "call_desc",(*this).call_desc());
+            v(v, "cast_kind",(*this).cast_kind());
+            v(v, "end",(*this).end());
+            v(v, "endian_expr",(*this).endian_expr());
+            v(v, "from_type",(*this).from_type());
+            v(v, "id",(*this).id());
+            v(v, "index",(*this).index());
+            v(v, "int_value",(*this).int_value());
+            v(v, "io_statement",(*this).io_statement());
+            v(v, "left",(*this).left());
+            v(v, "lowered_expr",(*this).lowered_expr());
+            v(v, "member",(*this).member());
+            v(v, "num_bytes",(*this).num_bytes());
+            v(v, "operand",(*this).operand());
+            v(v, "right",(*this).right());
+            v(v, "source_expr",(*this).source_expr());
+            v(v, "start",(*this).start());
+            v(v, "stream_type",(*this).stream_type());
+            v(v, "string_value",(*this).string_value());
+            v(v, "target",(*this).target());
+            v(v, "target_expr",(*this).target_expr());
+            v(v, "type_ref",(*this).type_ref());
+            v(v, "unit",(*this).unit());
+            v(v, "uop",(*this).uop());
+        }
     };
     struct EBM_API Expression{
         ExpressionRef id;
         ExpressionBody body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Expression";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API LoopStatement{
         LoopType loop_type{};
@@ -1273,6 +1506,29 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "LoopStatement";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "loop_type",(*this).loop_type);
+            v(v, "collection",(*this).collection());
+            v(v, "condition",(*this).condition());
+            v(v, "increment",(*this).increment());
+            v(v, "init",(*this).init());
+            v(v, "item_var",(*this).item_var());
+            v(v, "body",(*this).body);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "loop_type",(*this).loop_type);
+            v(v, "collection",(*this).collection());
+            v(v, "condition",(*this).condition());
+            v(v, "increment",(*this).increment());
+            v(v, "init",(*this).init());
+            v(v, "item_var",(*this).item_var());
+            v(v, "body",(*this).body);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
     };
     struct EBM_API IfStatement{
         ExpressionRef condition;
@@ -1280,12 +1536,36 @@ namespace ebm {
         StatementRef else_block;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "IfStatement";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "condition",(*this).condition);
+            v(v, "then_block",(*this).then_block);
+            v(v, "else_block",(*this).else_block);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "condition",(*this).condition);
+            v(v, "then_block",(*this).then_block);
+            v(v, "else_block",(*this).else_block);
+        }
     };
     struct EBM_API Block{
         Varint len;
         std::vector<StatementRef> container;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Block";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
     };
     struct EBM_API MatchStatement{
         ExpressionRef target;
@@ -1295,6 +1575,21 @@ namespace ebm {
         Block branches;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "MatchStatement";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "target",(*this).target);
+            v(v, "is_exhaustive",(*this).is_exhaustive());
+            v(v, "reserved",(*this).reserved());
+            v(v, "branches",(*this).branches);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "target",(*this).target);
+            v(v, "is_exhaustive",(*this).is_exhaustive());
+            v(v, "reserved",(*this).reserved());
+            v(v, "branches",(*this).branches);
+        }
     };
     struct EBM_API StructDecl{
         IdentifierRef name;
@@ -1304,36 +1599,106 @@ namespace ebm {
         bits_flag_alias_method(flags_32_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StructDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "fields",(*this).fields);
+            v(v, "is_recursive",(*this).is_recursive());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "fields",(*this).fields);
+            v(v, "is_recursive",(*this).is_recursive());
+            v(v, "reserved",(*this).reserved());
+        }
     };
     struct EBM_API StateDecl{
         IdentifierRef name;
         Block body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StateDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API Metadata{
         IdentifierRef name;
         Expressions values;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Metadata";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "values",(*this).values);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "values",(*this).values);
+        }
     };
     struct EBM_API LoweredStatements{
         Varint len;
         std::vector<LoweredStatement> container;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LoweredStatements";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
     };
     struct EBM_API LoweredExpressions{
         Varint len;
         std::vector<LoweredExpression> container;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LoweredExpressions";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
     };
     struct EBM_API AssertDesc{
         ExpressionRef condition;
         StatementRef lowered_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "AssertDesc";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "condition",(*this).condition);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "condition",(*this).condition);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
     };
     struct EBM_API Size{
         SizeUnit unit{};
@@ -1369,6 +1734,19 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "Size";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "unit",(*this).unit);
+            v(v, "ref",(*this).ref());
+            v(v, "size",(*this).size());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "unit",(*this).unit);
+            v(v, "ref",(*this).ref());
+            v(v, "size",(*this).size());
+        }
     };
     struct EBM_API IOData{
         ExpressionRef target;
@@ -1378,12 +1756,40 @@ namespace ebm {
         StatementRef lowered_stmt;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "IOData";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "target",(*this).target);
+            v(v, "data_type",(*this).data_type);
+            v(v, "endian",(*this).endian);
+            v(v, "size",(*this).size);
+            v(v, "lowered_stmt",(*this).lowered_stmt);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "target",(*this).target);
+            v(v, "data_type",(*this).data_type);
+            v(v, "endian",(*this).endian);
+            v(v, "size",(*this).size);
+            v(v, "lowered_stmt",(*this).lowered_stmt);
+        }
     };
     struct EBM_API MatchBranch{
         ExpressionRef condition;
         StatementRef body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "MatchBranch";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "condition",(*this).condition);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "condition",(*this).condition);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API FunctionDecl{
         IdentifierRef name;
@@ -1392,6 +1798,21 @@ namespace ebm {
         StatementRef parent_format;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "FunctionDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "return_type",(*this).return_type);
+            v(v, "params",(*this).params);
+            v(v, "parent_format",(*this).parent_format);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "return_type",(*this).return_type);
+            v(v, "params",(*this).params);
+            v(v, "parent_format",(*this).parent_format);
+        }
     };
     struct EBM_API VariableDecl{
         IdentifierRef name;
@@ -1403,6 +1824,25 @@ namespace ebm {
         bits_flag_alias_method(flags_42_,2,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "VariableDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "var_type",(*this).var_type);
+            v(v, "initial_value",(*this).initial_value);
+            v(v, "is_constant",(*this).is_constant());
+            v(v, "is_reference",(*this).is_reference());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "var_type",(*this).var_type);
+            v(v, "initial_value",(*this).initial_value);
+            v(v, "is_constant",(*this).is_constant());
+            v(v, "is_reference",(*this).is_reference());
+            v(v, "reserved",(*this).reserved());
+        }
     };
     struct EBM_API FieldDecl{
         IdentifierRef name;
@@ -1413,6 +1853,23 @@ namespace ebm {
         bits_flag_alias_method(flags_43_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "FieldDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "field_type",(*this).field_type);
+            v(v, "parent_struct",(*this).parent_struct);
+            v(v, "is_state_variable",(*this).is_state_variable());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "field_type",(*this).field_type);
+            v(v, "parent_struct",(*this).parent_struct);
+            v(v, "is_state_variable",(*this).is_state_variable());
+            v(v, "reserved",(*this).reserved());
+        }
     };
     struct EBM_API EnumDecl{
         IdentifierRef name;
@@ -1420,6 +1877,19 @@ namespace ebm {
         Block members;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "EnumDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "base_type",(*this).base_type);
+            v(v, "members",(*this).members);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "base_type",(*this).base_type);
+            v(v, "members",(*this).members);
+        }
     };
     struct EBM_API EnumMemberDecl{
         IdentifierRef name;
@@ -1427,6 +1897,19 @@ namespace ebm {
         StringRef string_repr;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "EnumMemberDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "value",(*this).value);
+            v(v, "string_repr",(*this).string_repr);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "value",(*this).value);
+            v(v, "string_repr",(*this).string_repr);
+        }
     };
     struct EBM_API UnionDecl{
         IdentifierRef name;
@@ -1434,6 +1917,19 @@ namespace ebm {
         Block members;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "UnionDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "parent_field",(*this).parent_field);
+            v(v, "members",(*this).members);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "parent_field",(*this).parent_field);
+            v(v, "members",(*this).members);
+        }
     };
     struct EBM_API UnionMemberDecl{
         IdentifierRef name;
@@ -1444,6 +1940,23 @@ namespace ebm {
         StatementRef parent_union;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "UnionMemberDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "field_type",(*this).field_type);
+            v(v, "is_state_variable",(*this).is_state_variable());
+            v(v, "reserved",(*this).reserved());
+            v(v, "parent_union",(*this).parent_union);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "field_type",(*this).field_type);
+            v(v, "is_state_variable",(*this).is_state_variable());
+            v(v, "reserved",(*this).reserved());
+            v(v, "parent_union",(*this).parent_union);
+        }
     };
     struct EBM_API BitFieldDecl{
         IdentifierRef name;
@@ -1452,6 +1965,21 @@ namespace ebm {
         PackedOpType packed_op_type{};
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "BitFieldDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "parent_format",(*this).parent_format);
+            v(v, "bit_size",(*this).bit_size);
+            v(v, "packed_op_type",(*this).packed_op_type);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "parent_format",(*this).parent_format);
+            v(v, "bit_size",(*this).bit_size);
+            v(v, "packed_op_type",(*this).packed_op_type);
+        }
     };
     struct EBM_API PropertyDecl{
         IdentifierRef name;
@@ -1460,12 +1988,38 @@ namespace ebm {
         MergeMode merge_mode{};
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "PropertyDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "parent_format",(*this).parent_format);
+            v(v, "property_type",(*this).property_type);
+            v(v, "merge_mode",(*this).merge_mode);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "parent_format",(*this).parent_format);
+            v(v, "property_type",(*this).property_type);
+            v(v, "merge_mode",(*this).merge_mode);
+        }
     };
     struct EBM_API ErrorReport{
         StringRef message;
         Expressions arguments;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "ErrorReport";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "message",(*this).message);
+            v(v, "arguments",(*this).arguments);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "message",(*this).message);
+            v(v, "arguments",(*this).arguments);
+        }
     };
     struct EBM_API StatementBody{
         StatementOp statement_kind{};
@@ -1715,18 +2269,119 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "StatementBody";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "statement_kind",(*this).statement_kind);
+            v(v, "alias",(*this).alias());
+            v(v, "assert_desc",(*this).assert_desc());
+            v(v, "bit_field_decl",(*this).bit_field_decl());
+            v(v, "block",(*this).block());
+            v(v, "break_",(*this).break_());
+            v(v, "continue_",(*this).continue_());
+            v(v, "enum_decl",(*this).enum_decl());
+            v(v, "enum_member_decl",(*this).enum_member_decl());
+            v(v, "error_report",(*this).error_report());
+            v(v, "expression",(*this).expression());
+            v(v, "field_decl",(*this).field_decl());
+            v(v, "func_decl",(*this).func_decl());
+            v(v, "if_statement",(*this).if_statement());
+            v(v, "loop",(*this).loop());
+            v(v, "lowered_statements",(*this).lowered_statements());
+            v(v, "match_branch",(*this).match_branch());
+            v(v, "match_statement",(*this).match_statement());
+            v(v, "metadata",(*this).metadata());
+            v(v, "module_name",(*this).module_name());
+            v(v, "offset",(*this).offset());
+            v(v, "params",(*this).params());
+            v(v, "params_len",(*this).params_len());
+            v(v, "previous_assignment",(*this).previous_assignment());
+            v(v, "property_decl",(*this).property_decl());
+            v(v, "read_data",(*this).read_data());
+            v(v, "state_decl",(*this).state_decl());
+            v(v, "stream_type",(*this).stream_type());
+            v(v, "struct_decl",(*this).struct_decl());
+            v(v, "target",(*this).target());
+            v(v, "target_var",(*this).target_var());
+            v(v, "union_decl",(*this).union_decl());
+            v(v, "union_member_decl",(*this).union_member_decl());
+            v(v, "value",(*this).value());
+            v(v, "var_decl",(*this).var_decl());
+            v(v, "write_data",(*this).write_data());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "statement_kind",(*this).statement_kind);
+            v(v, "alias",(*this).alias());
+            v(v, "assert_desc",(*this).assert_desc());
+            v(v, "bit_field_decl",(*this).bit_field_decl());
+            v(v, "block",(*this).block());
+            v(v, "break_",(*this).break_());
+            v(v, "continue_",(*this).continue_());
+            v(v, "enum_decl",(*this).enum_decl());
+            v(v, "enum_member_decl",(*this).enum_member_decl());
+            v(v, "error_report",(*this).error_report());
+            v(v, "expression",(*this).expression());
+            v(v, "field_decl",(*this).field_decl());
+            v(v, "func_decl",(*this).func_decl());
+            v(v, "if_statement",(*this).if_statement());
+            v(v, "loop",(*this).loop());
+            v(v, "lowered_statements",(*this).lowered_statements());
+            v(v, "match_branch",(*this).match_branch());
+            v(v, "match_statement",(*this).match_statement());
+            v(v, "metadata",(*this).metadata());
+            v(v, "module_name",(*this).module_name());
+            v(v, "offset",(*this).offset());
+            v(v, "params",(*this).params());
+            v(v, "params_len",(*this).params_len());
+            v(v, "previous_assignment",(*this).previous_assignment());
+            v(v, "property_decl",(*this).property_decl());
+            v(v, "read_data",(*this).read_data());
+            v(v, "state_decl",(*this).state_decl());
+            v(v, "stream_type",(*this).stream_type());
+            v(v, "struct_decl",(*this).struct_decl());
+            v(v, "target",(*this).target());
+            v(v, "target_var",(*this).target_var());
+            v(v, "union_decl",(*this).union_decl());
+            v(v, "union_member_decl",(*this).union_member_decl());
+            v(v, "value",(*this).value());
+            v(v, "var_decl",(*this).var_decl());
+            v(v, "write_data",(*this).write_data());
+        }
     };
     struct EBM_API Statement{
         StatementRef id;
         StatementBody body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Statement";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API Types{
         Varint len;
         std::vector<TypeRef> container;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Types";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
@@ -1830,12 +2485,56 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "TypeBody";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "kind",(*this).kind);
+            v(v, "base_type",(*this).base_type());
+            v(v, "common_type",(*this).common_type());
+            v(v, "element_type",(*this).element_type());
+            v(v, "id",(*this).id());
+            v(v, "inner_type",(*this).inner_type());
+            v(v, "length",(*this).length());
+            v(v, "members",(*this).members());
+            v(v, "params",(*this).params());
+            v(v, "pointee_type",(*this).pointee_type());
+            v(v, "property_type",(*this).property_type());
+            v(v, "return_type",(*this).return_type());
+            v(v, "size",(*this).size());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "kind",(*this).kind);
+            v(v, "base_type",(*this).base_type());
+            v(v, "common_type",(*this).common_type());
+            v(v, "element_type",(*this).element_type());
+            v(v, "id",(*this).id());
+            v(v, "inner_type",(*this).inner_type());
+            v(v, "length",(*this).length());
+            v(v, "members",(*this).members());
+            v(v, "params",(*this).params());
+            v(v, "pointee_type",(*this).pointee_type());
+            v(v, "property_type",(*this).property_type());
+            v(v, "return_type",(*this).return_type());
+            v(v, "size",(*this).size());
+        }
     };
     struct EBM_API Type{
         TypeRef id;
         TypeBody body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Type";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API Loc{
         AnyRef ident;
@@ -1846,18 +2545,59 @@ namespace ebm {
         Varint end;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Loc";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "ident",(*this).ident);
+            v(v, "file_id",(*this).file_id);
+            v(v, "line",(*this).line);
+            v(v, "column",(*this).column);
+            v(v, "start",(*this).start);
+            v(v, "end",(*this).end);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "ident",(*this).ident);
+            v(v, "file_id",(*this).file_id);
+            v(v, "line",(*this).line);
+            v(v, "column",(*this).column);
+            v(v, "start",(*this).start);
+            v(v, "end",(*this).end);
+        }
     };
     struct EBM_API Identifier{
         IdentifierRef id;
         String body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Identifier";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API StringLiteral{
         StringRef id;
         String body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StringLiteral";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+            v(v, "body",(*this).body);
+        }
     };
     struct EBM_API DebugInfo{
         Varint len_files;
@@ -1866,6 +2606,21 @@ namespace ebm {
         std::vector<Loc> locs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "DebugInfo";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "len_files",(*this).len_files);
+            v(v, "files",(*this).files);
+            v(v, "len_locs",(*this).len_locs);
+            v(v, "locs",(*this).locs);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "len_files",(*this).len_files);
+            v(v, "files",(*this).files);
+            v(v, "len_locs",(*this).len_locs);
+            v(v, "locs",(*this).locs);
+        }
     };
     struct EBM_API ExtendedBinaryModule{
         //"EBMG" (4 bytes)
@@ -1885,6 +2640,41 @@ namespace ebm {
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 5;
+        constexpr static const char* visitor_name = "ExtendedBinaryModule";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "magic","EBMG");
+            v(v, "version",(*this).version);
+            v(v, "max_id",(*this).max_id);
+            v(v, "identifiers_len",(*this).identifiers_len);
+            v(v, "identifiers",(*this).identifiers);
+            v(v, "strings_len",(*this).strings_len);
+            v(v, "strings",(*this).strings);
+            v(v, "types_len",(*this).types_len);
+            v(v, "types",(*this).types);
+            v(v, "statements_len",(*this).statements_len);
+            v(v, "statements",(*this).statements);
+            v(v, "expressions_len",(*this).expressions_len);
+            v(v, "expressions",(*this).expressions);
+            v(v, "debug_info",(*this).debug_info);
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "magic","EBMG");
+            v(v, "version",(*this).version);
+            v(v, "max_id",(*this).max_id);
+            v(v, "identifiers_len",(*this).identifiers_len);
+            v(v, "identifiers",(*this).identifiers);
+            v(v, "strings_len",(*this).strings_len);
+            v(v, "strings",(*this).strings);
+            v(v, "types_len",(*this).types_len);
+            v(v, "types",(*this).types);
+            v(v, "statements_len",(*this).statements_len);
+            v(v, "statements",(*this).statements);
+            v(v, "expressions_len",(*this).expressions_len);
+            v(v, "expressions",(*this).expressions);
+            v(v, "debug_info",(*this).debug_info);
+        }
     };
 } // namespace ebm
 

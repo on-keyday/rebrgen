@@ -8,7 +8,7 @@ namespace ebmgen {
         ebm::TypeBody body;
         expected<void> result = {};  // To capture errors from within the lambda
 
-        brgen::ast::visit(type, [&](auto&& n) -> expected<void> {
+        brgen::ast::visit(ast::cast_to<ast::Node>(type), [&](auto&& n) -> expected<void> {
             using T = std::decay_t<decltype(n)>;
             if constexpr (std::is_same_v<T, std::shared_ptr<ast::IntType>>) {
                 if (n->is_signed) {

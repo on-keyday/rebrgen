@@ -117,6 +117,11 @@ namespace ebmgen {
         return ebm::CastType::OTHER;
     }
 
+    template <class T>
+    concept has_convert_expr_impl = requires(T t) {
+        { convert_expr_impl(std::declval<std::shared_ptr<T>>(), std::declval<ebm::ExpressionBody&>()) } -> std::same_as<expected<void>>;
+    };
+
     expected<ebm::ExpressionRef> ExpressionConverter::convert_expr(const std::shared_ptr<ast::Expr>& node) {
         ebm::ExpressionBody body;
         EBMA_CONVERT_TYPE(type_ref, node->expr_type);
@@ -124,8 +129,8 @@ namespace ebmgen {
 
         expected<void> result = unexpect_error("Unsupported expression type: {}", node_type_to_string(node->node_type));
 
-        brgen::ast::visit(node, [&](auto&& n) {
-            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
+        brgen::ast::visit(ast::cast_to<ast::Node>(node), [&](auto&& n) {
+            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(n)>, std::shared_ptr>::template param_at<0>;
             if constexpr (std::is_base_of_v<ast::Expr, T>) {
                 result = convert_expr_impl(n, body);
             }
@@ -287,17 +292,14 @@ namespace ebmgen {
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body) {
         switch (node->method) {
             case ast::IOMethod::input_get: {
-                body.op = ebm::ExpressionOp::READ_DATA;
-                ctx.get_encoder_converter().encode_field_type(, );
-                // TODO: Handle endian, bit_size, and fallback_stmt
-                break;
+                return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
             }
             case ast::IOMethod::output_put: {
-                body.op = ebm::ExpressionOp::WRITE_DATA;
-                MAYBE(source_expr_ref, convert_expr(node->arguments[0]));
-                body.source_expr(source_expr_ref);
-                MAYBE(data_type_ref, convert_type(node->arguments[0]->expr_type));
-                body.data_type(data_type_ref);
+                // body.op = ebm::ExpressionOp::WRITE_DATA;
+                // MAYBE(source_expr_ref, convert_expr(node->arguments[0]));
+                // body.source_expr(source_expr_ref);
+                // MAYBE(data_type_ref, convert_type(node->arguments[0]->expr_type));
+                // body.data_type(data_type_ref);
                 // TODO: Handle endian, bit_size, and fallback_stmt
                 break;
             }
@@ -314,20 +316,16 @@ namespace ebmgen {
                 break;
             }
             case ast::IOMethod::input_subrange: {
-                body.op = ebm::ExpressionOp::SEEK_STREAM;
-                MAYBE(offset_ref, convert_expr(node->arguments[0]));
-                body.offset(offset_ref);
-                body.stream_type(ebm::StreamType::INPUT);
-                break;
+                return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
             }
             case ast::IOMethod::input_peek: {
-                body.op = ebm::ExpressionOp::CAN_READ_STREAM;
-                MAYBE(target_var_ref, convert_expr(node->arguments[0]));
-                body.target_var(target_var_ref);
-                MAYBE(num_bytes_ref, convert_expr(node->arguments[1]));
-                body.num_bytes(num_bytes_ref);
-                body.stream_type(ebm::StreamType::INPUT);
-                break;
+                // body.op = ebm::ExpressionOp::CAN_READ_STREAM;
+                // MAYBE(target_var_ref, convert_expr(node->arguments[0]));
+                // body.target_var(target_var_ref);
+                // MAYBE(num_bytes_ref, convert_expr(node->arguments[1]));
+                // body.num_bytes(num_bytes_ref);
+                // body.stream_type(ebm::StreamType::INPUT);
+                return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
             }
             default: {
                 return unexpect_error("Unhandled IOMethod: {}", ast::to_string(node->method));

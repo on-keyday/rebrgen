@@ -288,10 +288,7 @@ namespace ebmgen {
         switch (node->method) {
             case ast::IOMethod::input_get: {
                 body.op = ebm::ExpressionOp::READ_DATA;
-                MAYBE(target_var_ref, convert_expr(node->arguments[0]));
-                body.target_var(target_var_ref);
-                MAYBE(data_type_ref, convert_type(node->arguments[0]->expr_type));
-                body.data_type(data_type_ref);
+                ctx.get_encoder_converter().encode_field_type(, );
                 // TODO: Handle endian, bit_size, and fallback_stmt
                 break;
             }

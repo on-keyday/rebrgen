@@ -27,9 +27,9 @@ namespace ebmgen {
         void error(auto&& pb) const {
             futils::strutil::append(pb, " at ");
             futils::strutil::append(pb, loc.file_name());
-            futils::strutil::append(pb, ':');
+            futils::strutil::append(pb, ":");
             futils::number::to_string(pb, loc.line());
-            futils::strutil::append(pb, ':');
+            futils::strutil::append(pb, ":");
             futils::number::to_string(pb, loc.column());
             futils::strutil::append(pb, " in ");
             futils::strutil::append(pb, loc.function_name());

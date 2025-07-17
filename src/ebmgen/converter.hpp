@@ -470,7 +470,31 @@ namespace ebmgen {
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 
        private:
-        expected<ebm::StatementRef> convert_statement_impl(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Break>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Continue>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::If>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Loop>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::MatchBranch>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Program>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Enum>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::EnumMember>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Metadata>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::ExplicitError>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementBody& body);
+        // Fallback for unhandled types
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementBody& body);
+
+        expected<ebm::StatementRef> convert_statement_internal(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
 
         expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
     };
@@ -500,7 +524,7 @@ namespace ebmgen {
 
     struct EncoderConverter {
         ConverterContext& ctx;
-        expected<ebm::StatementRef> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<ebm::StatementBody> encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
 
        private:
         expected<void> encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);

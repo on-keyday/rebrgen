@@ -8,62 +8,65 @@
 #endif
 #include "extended_binary_module.hpp"
 namespace ebm {
-    std::optional<ExpressionRef> ExpressionBody::array_expr() const {
+    const ExpressionRef* ExpressionBody::array_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::ARRAY_SIZE==(*this).op) {
         if(!std::holds_alternative<union_struct_21>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<17>((*this).union_variant_4).array_expr;
+        return std::addressof(std::get<17>((*this).union_variant_4).array_expr);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::array_expr() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).array_expr());
     }
     bool ExpressionBody::array_expr(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -181,44 +184,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::base() const {
+    const ExpressionRef* ExpressionBody::base() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
         if(!std::holds_alternative<union_struct_13>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<9>((*this).union_variant_4).base;
+        return std::addressof(std::get<9>((*this).union_variant_4).base);
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
         if(!std::holds_alternative<union_struct_14>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<10>((*this).union_variant_4).base;
+        return std::addressof(std::get<10>((*this).union_variant_4).base);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::base() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).base());
     }
     bool ExpressionBody::base(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -302,17 +308,20 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<std::uint8_t> ExpressionBody::bool_value() const {
+    const std::uint8_t* ExpressionBody::bool_value() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
         if(!std::holds_alternative<union_struct_6>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_4).bool_value;
+        return std::addressof(std::get<2>((*this).union_variant_4).bool_value);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    std::uint8_t* ExpressionBody::bool_value() {
+        return const_cast<std::uint8_t*>(std::as_const(*this).bool_value());
     }
     bool ExpressionBody::bool_value(const std::uint8_t& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -340,29 +349,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<BinaryOp> ExpressionBody::bop() const {
+    const BinaryOp* ExpressionBody::bop() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
         if(!std::holds_alternative<union_struct_10>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_4).bop;
+        return std::addressof(std::get<6>((*this).union_variant_4).bop);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    BinaryOp* ExpressionBody::bop() {
+        return const_cast<BinaryOp*>(std::as_const(*this).bop());
     }
     bool ExpressionBody::bop(const BinaryOp& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -414,35 +426,38 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<CallDesc> ExpressionBody::call_desc() const {
+    const CallDesc* ExpressionBody::call_desc() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
         if(!std::holds_alternative<union_struct_12>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<8>((*this).union_variant_4).call_desc;
+        return std::addressof(std::get<8>((*this).union_variant_4).call_desc);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    CallDesc* ExpressionBody::call_desc() {
+        return const_cast<CallDesc*>(std::as_const(*this).call_desc());
     }
     bool ExpressionBody::call_desc(const CallDesc& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -506,44 +521,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<CastType> ExpressionBody::cast_kind() const {
+    const CastType* ExpressionBody::cast_kind() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
         if(!std::holds_alternative<union_struct_15>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<11>((*this).union_variant_4).cast_kind;
+        return std::addressof(std::get<11>((*this).union_variant_4).cast_kind);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    CastType* ExpressionBody::cast_kind() {
+        return const_cast<CastType*>(std::as_const(*this).cast_kind());
     }
     bool ExpressionBody::cast_kind(const CastType& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -625,47 +643,50 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::end() const {
+    const ExpressionRef* ExpressionBody::end() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
         if(!std::holds_alternative<union_struct_16>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<12>((*this).union_variant_4).end;
+        return std::addressof(std::get<12>((*this).union_variant_4).end);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::end() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).end());
     }
     bool ExpressionBody::end(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -753,50 +774,53 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> ExpressionBody::endian_expr() const {
+    const StatementRef* ExpressionBody::endian_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
         if(!std::holds_alternative<union_struct_17>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<13>((*this).union_variant_4).endian_expr;
+        return std::addressof(std::get<13>((*this).union_variant_4).endian_expr);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* ExpressionBody::endian_expr() {
+        return const_cast<StatementRef*>(std::as_const(*this).endian_expr());
     }
     bool ExpressionBody::endian_expr(const StatementRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -890,44 +914,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> ExpressionBody::from_type() const {
+    const TypeRef* ExpressionBody::from_type() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
         if(!std::holds_alternative<union_struct_15>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<11>((*this).union_variant_4).from_type;
+        return std::addressof(std::get<11>((*this).union_variant_4).from_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* ExpressionBody::from_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).from_type());
     }
     bool ExpressionBody::from_type(const TypeRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1009,26 +1036,29 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> ExpressionBody::id() const {
+    const StatementRef* ExpressionBody::id() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
         if(!std::holds_alternative<union_struct_9>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<5>((*this).union_variant_4).id;
+        return std::addressof(std::get<5>((*this).union_variant_4).id);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* ExpressionBody::id() {
+        return const_cast<StatementRef*>(std::as_const(*this).id());
     }
     bool ExpressionBody::id(const StatementRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1074,38 +1104,41 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::index() const {
+    const ExpressionRef* ExpressionBody::index() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
         if(!std::holds_alternative<union_struct_13>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<9>((*this).union_variant_4).index;
+        return std::addressof(std::get<9>((*this).union_variant_4).index);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::index() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).index());
     }
     bool ExpressionBody::index(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1175,14 +1208,17 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<std::uint64_t> ExpressionBody::int_value() const {
+    const std::uint64_t* ExpressionBody::int_value() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
         if(!std::holds_alternative<union_struct_5>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<1>((*this).union_variant_4).int_value;
+        return std::addressof(std::get<1>((*this).union_variant_4).int_value);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    std::uint64_t* ExpressionBody::int_value() {
+        return const_cast<std::uint64_t*>(std::as_const(*this).int_value());
     }
     bool ExpressionBody::int_value(const std::uint64_t& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1204,71 +1240,74 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> ExpressionBody::io_statement() const {
+    const StatementRef* ExpressionBody::io_statement() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::ARRAY_SIZE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_ERROR==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MAX_VALUE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::READ_DATA==(*this).op) {
         if(!std::holds_alternative<union_struct_24>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<20>((*this).union_variant_4).io_statement;
+        return std::addressof(std::get<20>((*this).union_variant_4).io_statement);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* ExpressionBody::io_statement() {
+        return const_cast<StatementRef*>(std::as_const(*this).io_statement());
     }
     bool ExpressionBody::io_statement(const StatementRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1404,29 +1443,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::left() const {
+    const ExpressionRef* ExpressionBody::left() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
         if(!std::holds_alternative<union_struct_10>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_4).left;
+        return std::addressof(std::get<6>((*this).union_variant_4).left);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::left() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).left());
     }
     bool ExpressionBody::left(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1478,68 +1520,71 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::lowered_expr() const {
+    const ExpressionRef* ExpressionBody::lowered_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::ARRAY_SIZE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_ERROR==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MAX_VALUE==(*this).op) {
         if(!std::holds_alternative<union_struct_23>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<19>((*this).union_variant_4).lowered_expr;
+        return std::addressof(std::get<19>((*this).union_variant_4).lowered_expr);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::lowered_expr() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).lowered_expr());
     }
     bool ExpressionBody::lowered_expr(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1669,41 +1714,44 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::member() const {
+    const ExpressionRef* ExpressionBody::member() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
         if(!std::holds_alternative<union_struct_14>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<10>((*this).union_variant_4).member;
+        return std::addressof(std::get<10>((*this).union_variant_4).member);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::member() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).member());
     }
     bool ExpressionBody::member(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1779,59 +1827,62 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::num_bytes() const {
+    const ExpressionRef* ExpressionBody::num_bytes() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
         if(!std::holds_alternative<union_struct_20>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<16>((*this).union_variant_4).num_bytes;
+        return std::addressof(std::get<16>((*this).union_variant_4).num_bytes);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::num_bytes() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).num_bytes());
     }
     bool ExpressionBody::num_bytes(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -1943,32 +1994,35 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::operand() const {
+    const ExpressionRef* ExpressionBody::operand() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
         if(!std::holds_alternative<union_struct_11>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<7>((*this).union_variant_4).operand;
+        return std::addressof(std::get<7>((*this).union_variant_4).operand);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::operand() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).operand());
     }
     bool ExpressionBody::operand(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2026,29 +2080,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::right() const {
+    const ExpressionRef* ExpressionBody::right() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
         if(!std::holds_alternative<union_struct_10>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_4).right;
+        return std::addressof(std::get<6>((*this).union_variant_4).right);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::right() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).right());
     }
     bool ExpressionBody::right(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2100,44 +2157,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::source_expr() const {
+    const ExpressionRef* ExpressionBody::source_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
         if(!std::holds_alternative<union_struct_15>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<11>((*this).union_variant_4).source_expr;
+        return std::addressof(std::get<11>((*this).union_variant_4).source_expr);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::source_expr() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).source_expr());
     }
     bool ExpressionBody::source_expr(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2219,47 +2279,50 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::start() const {
+    const ExpressionRef* ExpressionBody::start() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
         if(!std::holds_alternative<union_struct_16>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<12>((*this).union_variant_4).start;
+        return std::addressof(std::get<12>((*this).union_variant_4).start);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::start() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).start());
     }
     bool ExpressionBody::start(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2347,65 +2410,68 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StreamType> ExpressionBody::stream_type() const {
+    const StreamType* ExpressionBody::stream_type() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
         if(!std::holds_alternative<union_struct_18>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<14>((*this).union_variant_4).stream_type;
+        return std::addressof(std::get<14>((*this).union_variant_4).stream_type);
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
         if(!std::holds_alternative<union_struct_19>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<15>((*this).union_variant_4).stream_type;
+        return std::addressof(std::get<15>((*this).union_variant_4).stream_type);
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
         if(!std::holds_alternative<union_struct_20>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<16>((*this).union_variant_4).stream_type;
+        return std::addressof(std::get<16>((*this).union_variant_4).stream_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StreamType* ExpressionBody::stream_type() {
+        return const_cast<StreamType*>(std::as_const(*this).stream_type());
     }
     bool ExpressionBody::stream_type(const StreamType& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2533,20 +2599,23 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StringRef> ExpressionBody::string_value() const {
+    const StringRef* ExpressionBody::string_value() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
         if(!std::holds_alternative<union_struct_7>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_4).string_value;
+        return std::addressof(std::get<3>((*this).union_variant_4).string_value);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StringRef* ExpressionBody::string_value() {
+        return const_cast<StringRef*>(std::as_const(*this).string_value());
     }
     bool ExpressionBody::string_value(const StringRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2580,71 +2649,74 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> ExpressionBody::target() const {
+    const StatementRef* ExpressionBody::target() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::ARRAY_SIZE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_ERROR==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MAX_VALUE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::READ_DATA==(*this).op) {
         if(!std::holds_alternative<union_struct_24>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<20>((*this).union_variant_4).target;
+        return std::addressof(std::get<20>((*this).union_variant_4).target);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* ExpressionBody::target() {
+        return const_cast<StatementRef*>(std::as_const(*this).target());
     }
     bool ExpressionBody::target(const StatementRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2780,65 +2852,68 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> ExpressionBody::target_expr() const {
+    const ExpressionRef* ExpressionBody::target_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::ARRAY_SIZE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_ERROR==(*this).op) {
         if(!std::holds_alternative<union_struct_22>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<18>((*this).union_variant_4).target_expr;
+        return std::addressof(std::get<18>((*this).union_variant_4).target_expr);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* ExpressionBody::target_expr() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).target_expr());
     }
     bool ExpressionBody::target_expr(const ExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -2962,23 +3037,26 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> ExpressionBody::type_ref() const {
+    const TypeRef* ExpressionBody::type_ref() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
         if(!std::holds_alternative<union_struct_8>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_4).type_ref;
+        return std::addressof(std::get<4>((*this).union_variant_4).type_ref);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* ExpressionBody::type_ref() {
+        return const_cast<TypeRef*>(std::as_const(*this).type_ref());
     }
     bool ExpressionBody::type_ref(const TypeRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -3018,53 +3096,56 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<SizeUnit> ExpressionBody::unit() const {
+    const SizeUnit* ExpressionBody::unit() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::CALL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::INDEX_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::TYPE_CAST==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::RANGE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
         if(!std::holds_alternative<union_struct_18>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<14>((*this).union_variant_4).unit;
+        return std::addressof(std::get<14>((*this).union_variant_4).unit);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    SizeUnit* ExpressionBody::unit() {
+        return const_cast<SizeUnit*>(std::as_const(*this).unit());
     }
     bool ExpressionBody::unit(const SizeUnit& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -3164,32 +3245,35 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<UnaryOp> ExpressionBody::uop() const {
+    const UnaryOp* ExpressionBody::uop() const {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_BOOL==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_STRING==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::LITERAL_TYPE==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::IDENTIFIER==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::BINARY_OP==(*this).op) {
-        return std::nullopt;
+        return nullptr;
         }
         if (ExpressionOp::UNARY_OP==(*this).op) {
         if(!std::holds_alternative<union_struct_11>(union_variant_4)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<7>((*this).union_variant_4).uop;
+        return std::addressof(std::get<7>((*this).union_variant_4).uop);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    UnaryOp* ExpressionBody::uop() {
+        return const_cast<UnaryOp*>(std::as_const(*this).uop());
     }
     bool ExpressionBody::uop(const UnaryOp& v) {
         if (ExpressionOp::LITERAL_INT==(*this).op) {
@@ -3247,20 +3331,23 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> LoopStatement::collection() const {
+    const ExpressionRef* LoopStatement::collection() const {
         if (LoopType::INFINITE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::WHILE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR_EACH==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_29>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_26).collection;
+        return std::addressof(std::get<3>((*this).union_variant_26).collection);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* LoopStatement::collection() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).collection());
     }
     bool LoopStatement::collection(const ExpressionRef& v) {
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -3294,26 +3381,29 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> LoopStatement::condition() const {
+    const ExpressionRef* LoopStatement::condition() const {
         if (LoopType::INFINITE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::WHILE==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_28>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_26).condition;
+        return std::addressof(std::get<2>((*this).union_variant_26).condition);
         }
         if (LoopType::FOR_EACH==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_30>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_26).condition;
+        return std::addressof(std::get<4>((*this).union_variant_26).condition);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* LoopStatement::condition() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).condition());
     }
     bool LoopStatement::condition(const ExpressionRef& v) {
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -3361,23 +3451,26 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> LoopStatement::increment() const {
+    const StatementRef* LoopStatement::increment() const {
         if (LoopType::INFINITE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::WHILE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR_EACH==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_30>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_26).increment;
+        return std::addressof(std::get<4>((*this).union_variant_26).increment);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* LoopStatement::increment() {
+        return const_cast<StatementRef*>(std::as_const(*this).increment());
     }
     bool LoopStatement::increment(const StatementRef& v) {
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -3417,23 +3510,26 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> LoopStatement::init() const {
+    const StatementRef* LoopStatement::init() const {
         if (LoopType::INFINITE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::WHILE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR_EACH==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_30>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_26).init;
+        return std::addressof(std::get<4>((*this).union_variant_26).init);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* LoopStatement::init() {
+        return const_cast<StatementRef*>(std::as_const(*this).init());
     }
     bool LoopStatement::init(const StatementRef& v) {
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -3473,20 +3569,23 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> LoopStatement::item_var() const {
+    const StatementRef* LoopStatement::item_var() const {
         if (LoopType::INFINITE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::WHILE==(*this).loop_type) {
-        return std::nullopt;
+        return nullptr;
         }
         if (LoopType::FOR_EACH==(*this).loop_type) {
         if(!std::holds_alternative<union_struct_29>(union_variant_26)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_26).item_var;
+        return std::addressof(std::get<3>((*this).union_variant_26).item_var);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* LoopStatement::item_var() {
+        return const_cast<StatementRef*>(std::as_const(*this).item_var());
     }
     bool LoopStatement::item_var(const StatementRef& v) {
         if (LoopType::INFINITE==(*this).loop_type) {
@@ -3520,38 +3619,41 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> Size::ref() const {
+    const ExpressionRef* Size::ref() const {
         if (SizeUnit::UNKNOWN==(*this).unit) {
-        return std::nullopt;
+        return nullptr;
         }
         if (SizeUnit::BIT_FIXED==(*this).unit) {
-        return std::nullopt;
+        return nullptr;
         }
         if (SizeUnit::BYTE_FIXED==(*this).unit) {
-        return std::nullopt;
+        return nullptr;
         }
         if (SizeUnit::ELEMENT_FIXED==(*this).unit) {
-        return std::nullopt;
+        return nullptr;
         }
         if (SizeUnit::BIT_DYNAMIC==(*this).unit) {
         if(!std::holds_alternative<union_struct_39>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<5>((*this).union_variant_34).ref;
+        return std::addressof(std::get<5>((*this).union_variant_34).ref);
         }
         if (SizeUnit::BYTE_DYNAMIC==(*this).unit) {
         if(!std::holds_alternative<union_struct_40>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_34).ref;
+        return std::addressof(std::get<6>((*this).union_variant_34).ref);
         }
         if (SizeUnit::ELEMENT_DYNAMIC==(*this).unit) {
         if(!std::holds_alternative<union_struct_41>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<7>((*this).union_variant_34).ref;
+        return std::addressof(std::get<7>((*this).union_variant_34).ref);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* Size::ref() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).ref());
     }
     bool Size::ref(const ExpressionRef& v) {
         if (SizeUnit::UNKNOWN==(*this).unit) {
@@ -3625,29 +3727,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Varint> Size::size() const {
+    const Varint* Size::size() const {
         if (SizeUnit::UNKNOWN==(*this).unit) {
-        return std::nullopt;
+        return nullptr;
         }
         if (SizeUnit::BIT_FIXED==(*this).unit) {
         if(!std::holds_alternative<union_struct_36>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_34).size;
+        return std::addressof(std::get<2>((*this).union_variant_34).size);
         }
         if (SizeUnit::BYTE_FIXED==(*this).unit) {
         if(!std::holds_alternative<union_struct_37>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_34).size;
+        return std::addressof(std::get<3>((*this).union_variant_34).size);
         }
         if (SizeUnit::ELEMENT_FIXED==(*this).unit) {
         if(!std::holds_alternative<union_struct_38>(union_variant_34)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_34).size;
+        return std::addressof(std::get<4>((*this).union_variant_34).size);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Varint* Size::size() {
+        return const_cast<Varint*>(std::as_const(*this).size());
     }
     bool Size::size(const Varint& v) {
         if (SizeUnit::UNKNOWN==(*this).unit) {
@@ -3703,95 +3808,98 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<IdentifierRef> StatementBody::alias() const {
+    const IdentifierRef* StatementBody::alias() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_74>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<28>((*this).union_variant_46).alias;
+        return std::addressof(std::get<28>((*this).union_variant_46).alias);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    IdentifierRef* StatementBody::alias() {
+        return const_cast<IdentifierRef*>(std::as_const(*this).alias());
     }
     bool StatementBody::alias(const IdentifierRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -3975,26 +4083,29 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<AssertDesc> StatementBody::assert_desc() const {
+    const AssertDesc* StatementBody::assert_desc() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_51>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<5>((*this).union_variant_46).assert_desc;
+        return std::addressof(std::get<5>((*this).union_variant_46).assert_desc);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    AssertDesc* StatementBody::assert_desc() {
+        return const_cast<AssertDesc*>(std::as_const(*this).assert_desc());
     }
     bool StatementBody::assert_desc(const AssertDesc& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4040,86 +4151,89 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<BitFieldDecl> StatementBody::bit_field_decl() const {
+    const BitFieldDecl* StatementBody::bit_field_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_71>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<25>((*this).union_variant_46).bit_field_decl;
+        return std::addressof(std::get<25>((*this).union_variant_46).bit_field_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    BitFieldDecl* StatementBody::bit_field_decl() {
+        return const_cast<BitFieldDecl*>(std::as_const(*this).bit_field_decl());
     }
     bool StatementBody::bit_field_decl(const BitFieldDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4285,83 +4399,86 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Block> StatementBody::block() const {
+    const Block* StatementBody::block() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_47>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<1>((*this).union_variant_46).block;
+        return std::addressof(std::get<1>((*this).union_variant_46).block);
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_69>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<23>((*this).union_variant_46).block;
+        return std::addressof(std::get<23>((*this).union_variant_46).block);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Block* StatementBody::block() {
+        return const_cast<Block*>(std::as_const(*this).block());
     }
     bool StatementBody::block(const Block& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4523,50 +4640,53 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<LoopFlowControl> StatementBody::break_() const {
+    const LoopFlowControl* StatementBody::break_() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_59>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<13>((*this).union_variant_46).break_;
+        return std::addressof(std::get<13>((*this).union_variant_46).break_);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    LoopFlowControl* StatementBody::break_() {
+        return const_cast<LoopFlowControl*>(std::as_const(*this).break_());
     }
     bool StatementBody::break_(const LoopFlowControl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4660,53 +4780,56 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<LoopFlowControl> StatementBody::continue_() const {
+    const LoopFlowControl* StatementBody::continue_() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_60>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<14>((*this).union_variant_46).continue_;
+        return std::addressof(std::get<14>((*this).union_variant_46).continue_);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    LoopFlowControl* StatementBody::continue_() {
+        return const_cast<LoopFlowControl*>(std::as_const(*this).continue_());
     }
     bool StatementBody::continue_(const LoopFlowControl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4806,65 +4929,68 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<EnumDecl> StatementBody::enum_decl() const {
+    const EnumDecl* StatementBody::enum_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_64>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<18>((*this).union_variant_46).enum_decl;
+        return std::addressof(std::get<18>((*this).union_variant_46).enum_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    EnumDecl* StatementBody::enum_decl() {
+        return const_cast<EnumDecl*>(std::as_const(*this).enum_decl());
     }
     bool StatementBody::enum_decl(const EnumDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -4988,68 +5114,71 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<EnumMemberDecl> StatementBody::enum_member_decl() const {
+    const EnumMemberDecl* StatementBody::enum_member_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_65>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<19>((*this).union_variant_46).enum_member_decl;
+        return std::addressof(std::get<19>((*this).union_variant_46).enum_member_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    EnumMemberDecl* StatementBody::enum_member_decl() {
+        return const_cast<EnumMemberDecl*>(std::as_const(*this).enum_member_decl());
     }
     bool StatementBody::enum_member_decl(const EnumMemberDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -5179,101 +5308,104 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ErrorReport> StatementBody::error_report() const {
+    const ErrorReport* StatementBody::error_report() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_76>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<30>((*this).union_variant_46).error_report;
+        return std::addressof(std::get<30>((*this).union_variant_46).error_report);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ErrorReport* StatementBody::error_report() {
+        return const_cast<ErrorReport*>(std::as_const(*this).error_report());
     }
     bool StatementBody::error_report(const ErrorReport& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -5469,104 +5601,107 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> StatementBody::expression() const {
+    const ExpressionRef* StatementBody::expression() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::EXPRESSION==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_77>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<31>((*this).union_variant_46).expression;
+        return std::addressof(std::get<31>((*this).union_variant_46).expression);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* StatementBody::expression() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).expression());
     }
     bool StatementBody::expression(const ExpressionRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -5768,62 +5903,65 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<FieldDecl> StatementBody::field_decl() const {
+    const FieldDecl* StatementBody::field_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_63>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<17>((*this).union_variant_46).field_decl;
+        return std::addressof(std::get<17>((*this).union_variant_46).field_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    FieldDecl* StatementBody::field_decl() {
+        return const_cast<FieldDecl*>(std::as_const(*this).field_decl());
     }
     bool StatementBody::field_decl(const FieldDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -5941,56 +6079,59 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<FunctionDecl> StatementBody::func_decl() const {
+    const FunctionDecl* StatementBody::func_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_61>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<15>((*this).union_variant_46).func_decl;
+        return std::addressof(std::get<15>((*this).union_variant_46).func_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    FunctionDecl* StatementBody::func_decl() {
+        return const_cast<FunctionDecl*>(std::as_const(*this).func_decl());
     }
     bool StatementBody::func_decl(const FunctionDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6096,38 +6237,41 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<IfStatement> StatementBody::if_statement() const {
+    const IfStatement* StatementBody::if_statement() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_55>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<9>((*this).union_variant_46).if_statement;
+        return std::addressof(std::get<9>((*this).union_variant_46).if_statement);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    IfStatement* StatementBody::if_statement() {
+        return const_cast<IfStatement*>(std::as_const(*this).if_statement());
     }
     bool StatementBody::if_statement(const IfStatement& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6197,41 +6341,44 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<LoopStatement> StatementBody::loop() const {
+    const LoopStatement* StatementBody::loop() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_56>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<10>((*this).union_variant_46).loop;
+        return std::addressof(std::get<10>((*this).union_variant_46).loop);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    LoopStatement* StatementBody::loop() {
+        return const_cast<LoopStatement*>(std::as_const(*this).loop());
     }
     bool StatementBody::loop(const LoopStatement& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6307,107 +6454,110 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<LoweredStatements> StatementBody::lowered_statements() const {
+    const LoweredStatements* StatementBody::lowered_statements() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::EXPRESSION==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_78>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<32>((*this).union_variant_46).lowered_statements;
+        return std::addressof(std::get<32>((*this).union_variant_46).lowered_statements);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    LoweredStatements* StatementBody::lowered_statements() {
+        return const_cast<LoweredStatements*>(std::as_const(*this).lowered_statements());
     }
     bool StatementBody::lowered_statements(const LoweredStatements& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6615,47 +6765,50 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<MatchBranch> StatementBody::match_branch() const {
+    const MatchBranch* StatementBody::match_branch() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_58>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<12>((*this).union_variant_46).match_branch;
+        return std::addressof(std::get<12>((*this).union_variant_46).match_branch);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    MatchBranch* StatementBody::match_branch() {
+        return const_cast<MatchBranch*>(std::as_const(*this).match_branch());
     }
     bool StatementBody::match_branch(const MatchBranch& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6743,44 +6896,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<MatchStatement> StatementBody::match_statement() const {
+    const MatchStatement* StatementBody::match_statement() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_57>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<11>((*this).union_variant_46).match_statement;
+        return std::addressof(std::get<11>((*this).union_variant_46).match_statement);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    MatchStatement* StatementBody::match_statement() {
+        return const_cast<MatchStatement*>(std::as_const(*this).match_statement());
     }
     bool StatementBody::match_statement(const MatchStatement& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -6862,92 +7018,95 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Metadata> StatementBody::metadata() const {
+    const Metadata* StatementBody::metadata() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_73>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<27>((*this).union_variant_46).metadata;
+        return std::addressof(std::get<27>((*this).union_variant_46).metadata);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Metadata* StatementBody::metadata() {
+        return const_cast<Metadata*>(std::as_const(*this).metadata());
     }
     bool StatementBody::metadata(const Metadata& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -7125,95 +7284,98 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<IdentifierRef> StatementBody::module_name() const {
+    const IdentifierRef* StatementBody::module_name() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_74>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<28>((*this).union_variant_46).module_name;
+        return std::addressof(std::get<28>((*this).union_variant_46).module_name);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    IdentifierRef* StatementBody::module_name() {
+        return const_cast<IdentifierRef*>(std::as_const(*this).module_name());
     }
     bool StatementBody::module_name(const IdentifierRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -7397,35 +7559,38 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> StatementBody::offset() const {
+    const ExpressionRef* StatementBody::offset() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_54>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<8>((*this).union_variant_46).offset;
+        return std::addressof(std::get<8>((*this).union_variant_46).offset);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* StatementBody::offset() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).offset());
     }
     bool StatementBody::offset(const ExpressionRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -7489,98 +7654,101 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<std::vector<PhiParam>> StatementBody::params() const {
+    const std::vector<PhiParam>* StatementBody::params() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_75>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<29>((*this).union_variant_46).params;
+        return std::addressof(std::get<29>((*this).union_variant_46).params);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    std::vector<PhiParam>* StatementBody::params() {
+        return const_cast<std::vector<PhiParam>*>(std::as_const(*this).params());
     }
     bool StatementBody::params(const std::vector<PhiParam>& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -7770,98 +7938,101 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Varint> StatementBody::params_len() const {
+    const Varint* StatementBody::params_len() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_75>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<29>((*this).union_variant_46).params_len;
+        return std::addressof(std::get<29>((*this).union_variant_46).params_len);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Varint* StatementBody::params_len() {
+        return const_cast<Varint*>(std::as_const(*this).params_len());
     }
     bool StatementBody::params_len(const Varint& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8051,17 +8222,20 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> StatementBody::previous_assignment() const {
+    const StatementRef* StatementBody::previous_assignment() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_48>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_46).previous_assignment;
+        return std::addressof(std::get<2>((*this).union_variant_46).previous_assignment);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* StatementBody::previous_assignment() {
+        return const_cast<StatementRef*>(std::as_const(*this).previous_assignment());
     }
     bool StatementBody::previous_assignment(const StatementRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8089,89 +8263,92 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<PropertyDecl> StatementBody::property_decl() const {
+    const PropertyDecl* StatementBody::property_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_72>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<26>((*this).union_variant_46).property_decl;
+        return std::addressof(std::get<26>((*this).union_variant_46).property_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    PropertyDecl* StatementBody::property_decl() {
+        return const_cast<PropertyDecl*>(std::as_const(*this).property_decl());
     }
     bool StatementBody::property_decl(const PropertyDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8343,29 +8520,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<IOData> StatementBody::read_data() const {
+    const IOData* StatementBody::read_data() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_52>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_46).read_data;
+        return std::addressof(std::get<6>((*this).union_variant_46).read_data);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    IOData* StatementBody::read_data() {
+        return const_cast<IOData*>(std::as_const(*this).read_data());
     }
     bool StatementBody::read_data(const IOData& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8417,83 +8597,86 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StateDecl> StatementBody::state_decl() const {
+    const StateDecl* StatementBody::state_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_70>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<24>((*this).union_variant_46).state_decl;
+        return std::addressof(std::get<24>((*this).union_variant_46).state_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StateDecl* StatementBody::state_decl() {
+        return const_cast<StateDecl*>(std::as_const(*this).state_decl());
     }
     bool StatementBody::state_decl(const StateDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8653,35 +8836,38 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StreamType> StatementBody::stream_type() const {
+    const StreamType* StatementBody::stream_type() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_54>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<8>((*this).union_variant_46).stream_type;
+        return std::addressof(std::get<8>((*this).union_variant_46).stream_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StreamType* StatementBody::stream_type() {
+        return const_cast<StreamType*>(std::as_const(*this).stream_type());
     }
     bool StatementBody::stream_type(const StreamType& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8745,71 +8931,74 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StructDecl> StatementBody::struct_decl() const {
+    const StructDecl* StatementBody::struct_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_66>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<20>((*this).union_variant_46).struct_decl;
+        return std::addressof(std::get<20>((*this).union_variant_46).struct_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StructDecl* StatementBody::struct_decl() {
+        return const_cast<StructDecl*>(std::as_const(*this).struct_decl());
     }
     bool StatementBody::struct_decl(const StructDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8945,17 +9134,20 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> StatementBody::target() const {
+    const ExpressionRef* StatementBody::target() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_48>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_46).target;
+        return std::addressof(std::get<2>((*this).union_variant_46).target);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* StatementBody::target() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).target());
     }
     bool StatementBody::target(const ExpressionRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -8983,98 +9175,101 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> StatementBody::target_var() const {
+    const ExpressionRef* StatementBody::target_var() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STATE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::METADATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::PHI_NODE==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_75>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<29>((*this).union_variant_46).target_var;
+        return std::addressof(std::get<29>((*this).union_variant_46).target_var);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* StatementBody::target_var() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).target_var());
     }
     bool StatementBody::target_var(const ExpressionRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -9264,74 +9459,77 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<UnionDecl> StatementBody::union_decl() const {
+    const UnionDecl* StatementBody::union_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_67>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<21>((*this).union_variant_46).union_decl;
+        return std::addressof(std::get<21>((*this).union_variant_46).union_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    UnionDecl* StatementBody::union_decl() {
+        return const_cast<UnionDecl*>(std::as_const(*this).union_decl());
     }
     bool StatementBody::union_decl(const UnionDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -9473,77 +9671,80 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<UnionMemberDecl> StatementBody::union_member_decl() const {
+    const UnionMemberDecl* StatementBody::union_member_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FIELD_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_68>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<22>((*this).union_variant_46).union_member_decl;
+        return std::addressof(std::get<22>((*this).union_variant_46).union_member_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    UnionMemberDecl* StatementBody::union_member_decl() {
+        return const_cast<UnionMemberDecl*>(std::as_const(*this).union_member_decl());
     }
     bool StatementBody::union_member_decl(const UnionMemberDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -9691,29 +9892,32 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<ExpressionRef> StatementBody::value() const {
+    const ExpressionRef* StatementBody::value() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_48>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_46).value;
+        return std::addressof(std::get<2>((*this).union_variant_46).value);
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_49>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_46).value;
+        return std::addressof(std::get<3>((*this).union_variant_46).value);
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_50>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<4>((*this).union_variant_46).value;
+        return std::addressof(std::get<4>((*this).union_variant_46).value);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    ExpressionRef* StatementBody::value() {
+        return const_cast<ExpressionRef*>(std::as_const(*this).value());
     }
     bool StatementBody::value(const ExpressionRef& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -9769,59 +9973,62 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<VariableDecl> StatementBody::var_decl() const {
+    const VariableDecl* StatementBody::var_decl() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::BREAK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::CONTINUE==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_62>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<16>((*this).union_variant_46).var_decl;
+        return std::addressof(std::get<16>((*this).union_variant_46).var_decl);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    VariableDecl* StatementBody::var_decl() {
+        return const_cast<VariableDecl*>(std::as_const(*this).var_decl());
     }
     bool StatementBody::var_decl(const VariableDecl& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -9933,32 +10140,35 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<IOData> StatementBody::write_data() const {
+    const IOData* StatementBody::write_data() const {
         if (StatementOp::BLOCK==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::ASSERT==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::READ_DATA==(*this).statement_kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (StatementOp::WRITE_DATA==(*this).statement_kind) {
         if(!std::holds_alternative<union_struct_53>(union_variant_46)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<7>((*this).union_variant_46).write_data;
+        return std::addressof(std::get<7>((*this).union_variant_46).write_data);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    IOData* StatementBody::write_data() {
+        return const_cast<IOData*>(std::as_const(*this).write_data());
     }
     bool StatementBody::write_data(const IOData& v) {
         if (StatementOp::BLOCK==(*this).statement_kind) {
@@ -10016,56 +10226,59 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::base_type() const {
+    const TypeRef* TypeBody::base_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
         if(!std::holds_alternative<union_struct_89>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<9>((*this).union_variant_80).base_type;
+        return std::addressof(std::get<9>((*this).union_variant_80).base_type);
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::OPTIONAL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PTR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RANGE==(*this).kind) {
         if(!std::holds_alternative<union_struct_94>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<14>((*this).union_variant_80).base_type;
+        return std::addressof(std::get<14>((*this).union_variant_80).base_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::base_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).base_type());
     }
     bool TypeBody::base_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10173,41 +10386,44 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::common_type() const {
+    const TypeRef* TypeBody::common_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
         if(!std::holds_alternative<union_struct_90>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<10>((*this).union_variant_80).common_type;
+        return std::addressof(std::get<10>((*this).union_variant_80).common_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::common_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).common_type());
     }
     bool TypeBody::common_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10283,32 +10499,35 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::element_type() const {
+    const TypeRef* TypeBody::element_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
         if(!std::holds_alternative<union_struct_85>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<5>((*this).union_variant_80).element_type;
+        return std::addressof(std::get<5>((*this).union_variant_80).element_type);
         }
         if (TypeKind::VECTOR==(*this).kind) {
         if(!std::holds_alternative<union_struct_86>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<6>((*this).union_variant_80).element_type;
+        return std::addressof(std::get<6>((*this).union_variant_80).element_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::element_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).element_type());
     }
     bool TypeBody::element_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10368,44 +10587,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<StatementRef> TypeBody::id() const {
+    const StatementRef* TypeBody::id() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
         if(!std::holds_alternative<union_struct_87>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<7>((*this).union_variant_80).id;
+        return std::addressof(std::get<7>((*this).union_variant_80).id);
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
         if(!std::holds_alternative<union_struct_88>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<8>((*this).union_variant_80).id;
+        return std::addressof(std::get<8>((*this).union_variant_80).id);
         }
         if (TypeKind::ENUM==(*this).kind) {
         if(!std::holds_alternative<union_struct_89>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<9>((*this).union_variant_80).id;
+        return std::addressof(std::get<9>((*this).union_variant_80).id);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    StatementRef* TypeBody::id() {
+        return const_cast<StatementRef*>(std::as_const(*this).id());
     }
     bool TypeBody::id(const StatementRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10491,47 +10713,50 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::inner_type() const {
+    const TypeRef* TypeBody::inner_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::OPTIONAL==(*this).kind) {
         if(!std::holds_alternative<union_struct_92>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<12>((*this).union_variant_80).inner_type;
+        return std::addressof(std::get<12>((*this).union_variant_80).inner_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::inner_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).inner_type());
     }
     bool TypeBody::inner_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10619,26 +10844,29 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Varint> TypeBody::length() const {
+    const Varint* TypeBody::length() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
         if(!std::holds_alternative<union_struct_85>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<5>((*this).union_variant_80).length;
+        return std::addressof(std::get<5>((*this).union_variant_80).length);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Varint* TypeBody::length() {
+        return const_cast<Varint*>(std::as_const(*this).length());
     }
     bool TypeBody::length(const Varint& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10684,41 +10912,44 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Types> TypeBody::members() const {
+    const Types* TypeBody::members() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
         if(!std::holds_alternative<union_struct_90>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<10>((*this).union_variant_80).members;
+        return std::addressof(std::get<10>((*this).union_variant_80).members);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Types* TypeBody::members() {
+        return const_cast<Types*>(std::as_const(*this).members());
     }
     bool TypeBody::members(const Types& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10794,56 +11025,59 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<Types> TypeBody::params() const {
+    const Types* TypeBody::params() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::OPTIONAL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PTR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RANGE==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FUNCTION==(*this).kind) {
         if(!std::holds_alternative<union_struct_95>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<15>((*this).union_variant_80).params;
+        return std::addressof(std::get<15>((*this).union_variant_80).params);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    Types* TypeBody::params() {
+        return const_cast<Types*>(std::as_const(*this).params());
     }
     bool TypeBody::params(const Types& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -10949,50 +11183,53 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::pointee_type() const {
+    const TypeRef* TypeBody::pointee_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::OPTIONAL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PTR==(*this).kind) {
         if(!std::holds_alternative<union_struct_93>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<13>((*this).union_variant_80).pointee_type;
+        return std::addressof(std::get<13>((*this).union_variant_80).pointee_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::pointee_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).pointee_type());
     }
     bool TypeBody::pointee_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -11086,44 +11323,47 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::property_type() const {
+    const TypeRef* TypeBody::property_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
         if(!std::holds_alternative<union_struct_91>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<11>((*this).union_variant_80).property_type;
+        return std::addressof(std::get<11>((*this).union_variant_80).property_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::property_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).property_type());
     }
     bool TypeBody::property_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -11205,56 +11445,59 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<TypeRef> TypeBody::return_type() const {
+    const TypeRef* TypeBody::return_type() const {
         if (TypeKind::INT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::UINT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FLOAT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::BOOL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ARRAY==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VECTOR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RECURSIVE_STRUCT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::ENUM==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::VARIANT==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PROPERTY_SETTER_RETURN==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::OPTIONAL==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::PTR==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::RANGE==(*this).kind) {
-        return std::nullopt;
+        return nullptr;
         }
         if (TypeKind::FUNCTION==(*this).kind) {
         if(!std::holds_alternative<union_struct_95>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<15>((*this).union_variant_80).return_type;
+        return std::addressof(std::get<15>((*this).union_variant_80).return_type);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    TypeRef* TypeBody::return_type() {
+        return const_cast<TypeRef*>(std::as_const(*this).return_type());
     }
     bool TypeBody::return_type(const TypeRef& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -11360,26 +11603,29 @@ namespace ebm {
         }
         return false;
     }
-    std::optional<std::uint8_t> TypeBody::size() const {
+    const std::uint8_t* TypeBody::size() const {
         if (TypeKind::INT==(*this).kind) {
         if(!std::holds_alternative<union_struct_81>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<1>((*this).union_variant_80).size;
+        return std::addressof(std::get<1>((*this).union_variant_80).size);
         }
         if (TypeKind::UINT==(*this).kind) {
         if(!std::holds_alternative<union_struct_82>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<2>((*this).union_variant_80).size;
+        return std::addressof(std::get<2>((*this).union_variant_80).size);
         }
         if (TypeKind::FLOAT==(*this).kind) {
         if(!std::holds_alternative<union_struct_83>(union_variant_80)) {
-            return std::nullopt;
+            return nullptr;
         }
-        return std::get<3>((*this).union_variant_80).size;
+        return std::addressof(std::get<3>((*this).union_variant_80).size);
         }
-        return std::nullopt;
+        return nullptr;
+    }
+    std::uint8_t* TypeBody::size() {
+        return const_cast<std::uint8_t*>(std::as_const(*this).size());
     }
     bool TypeBody::size(const std::uint8_t& v) {
         if (TypeKind::INT==(*this).kind) {
@@ -11429,56 +11675,6 @@ namespace ebm {
         }
         return false;
     }
-    //sort DEBUG: struct Varint code
-    //sort DEBUG: struct StatementRef code
-    //sort DEBUG: struct EndianExpr code
-    //sort DEBUG: struct String code
-    //sort DEBUG: struct IdentifierRef code
-    //sort DEBUG: struct TypeRef code
-    //sort DEBUG: struct ExpressionRef code
-    //sort DEBUG: struct StringRef code
-    //sort DEBUG: struct LoweredStatement code
-    //sort DEBUG: struct LoweredExpression code
-    //sort DEBUG: struct LoopFlowControl code
-    //sort DEBUG: struct PhiParam code
-    //sort DEBUG: struct AnyRef code
-    //sort DEBUG: struct Expressions code
-    //sort DEBUG: struct CallDesc code
-    //sort DEBUG: struct ExpressionBody code
-    //sort DEBUG: struct Expression code
-    //sort DEBUG: struct LoopStatement code
-    //sort DEBUG: struct IfStatement code
-    //sort DEBUG: struct Block code
-    //sort DEBUG: struct MatchStatement code
-    //sort DEBUG: struct StructDecl code
-    //sort DEBUG: struct StateDecl code
-    //sort DEBUG: struct Metadata code
-    //sort DEBUG: struct LoweredStatements code
-    //sort DEBUG: struct LoweredExpressions code
-    //sort DEBUG: struct AssertDesc code
-    //sort DEBUG: struct Size code
-    //sort DEBUG: struct IOData code
-    //sort DEBUG: struct MatchBranch code
-    //sort DEBUG: struct FunctionDecl code
-    //sort DEBUG: struct VariableDecl code
-    //sort DEBUG: struct FieldDecl code
-    //sort DEBUG: struct EnumDecl code
-    //sort DEBUG: struct EnumMemberDecl code
-    //sort DEBUG: struct UnionDecl code
-    //sort DEBUG: struct UnionMemberDecl code
-    //sort DEBUG: struct BitFieldDecl code
-    //sort DEBUG: struct PropertyDecl code
-    //sort DEBUG: struct ErrorReport code
-    //sort DEBUG: struct StatementBody code
-    //sort DEBUG: struct Statement code
-    //sort DEBUG: struct Types code
-    //sort DEBUG: struct TypeBody code
-    //sort DEBUG: struct Type code
-    //sort DEBUG: struct Loc code
-    //sort DEBUG: struct Identifier code
-    //sort DEBUG: struct StringLiteral code
-    //sort DEBUG: struct DebugInfo code
-    //sort DEBUG: struct ExtendedBinaryModule code
     ::futils::error::Error<> Varint::encode(::futils::binary::writer& w) const {
         if((*this).prefix()==0) {
             std::uint8_t tmp96 = 0;

@@ -4,15 +4,6 @@
 #include "convert/helper.hpp"
 namespace ebmgen {
 
-    expected<ebm::StatementRef> StatementConverter::convert_statement(const std::shared_ptr<ast::Node>& node) {
-        if (auto it = ctx.is_visited(node)) {
-            return *it;
-        }
-        MAYBE(new_ref, ctx.new_statement_id());
-        ctx.add_visited_node(node, new_ref);
-        return convert_statement_impl(new_ref, node);
-    }
-
     expected<ebm::EndianExpr> ConverterContext::get_endian(ebm::Endian base, bool sign) {
         ebm::EndianExpr e;
         e.sign(sign);

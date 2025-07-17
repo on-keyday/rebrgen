@@ -50,12 +50,13 @@ namespace ebmgen {
                 EBMA_CONVERT_TYPE(to_ty, locked_enum->base_type);
                 EBM_CAST(casted, to_ty, io_desc.data_type, base_ref);
                 MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, nullptr));
-                auto copy = *ctx.get_statement(encode_info)->body.write_data();
-                io_desc.endian = copy.endian;
-                io_desc.size = copy.size;
+                EBMA_ADD_STATEMENT(encode_stmt, std::move(encode_info));
+                auto io_data = ctx.get_statement(encode_stmt)->body.write_data();
+                io_desc.endian = io_data->endian;
+                io_desc.size = io_data->size;
                 ebm::LoweredStatement lowered;
                 lowered.lowering_type = ebm::LoweringType::NAIVE;
-                lowered.block = encode_info;
+                lowered.block = encode_stmt;
                 append(lowered_stmts, std::move(lowered));
             }
             else {
@@ -173,7 +174,8 @@ namespace ebmgen {
         EBM_COUNTER_LOOP_START(counter);
         EBM_INDEX(indexed, element_type, base_ref, counter);
         MAYBE(encode_info, encode_field_type(aty->element_type, indexed, nullptr));
-        EBM_COUNTER_LOOP_END(loop_stmt, counter, length, encode_info);
+        EBMA_ADD_STATEMENT(encode_stmt, std::move(encode_info));
+        EBM_COUNTER_LOOP_END(loop_stmt, counter, length, encode_stmt);
 
         ebm::Block block;
         block.container.reserve(2 + (assert_.id.value() != 0));
@@ -267,7 +269,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::StatementRef> EncoderConverter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
+    expected<ebm::StatementBody> EncoderConverter::encode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
             return encode_field_type(ity->base.lock(), base_ref, field);
         }
@@ -298,7 +300,7 @@ namespace ebmgen {
             EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
             io_desc.lowered_stmt = lowered_stmt;
         }
-        return ctx.add_statement(make_write_data(std::move(io_desc)));
+        return make_write_data(std::move(io_desc));
     }
 
     expected<ebm::StatementRef> EncoderConverter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {

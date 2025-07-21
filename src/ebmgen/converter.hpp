@@ -108,10 +108,14 @@ namespace ebmgen {
         }
 
         Instance* get(const ID& id) {
-            if (id.id.value() == 0 || identifier_map.find(id.id.value()) == identifier_map.end()) {
+            auto it = identifier_map.find(id.id.value());
+            if (it == identifier_map.end()) {
                 return nullptr;
             }
-            return &instances[identifier_map[id.id.value()]];
+            if (it->second >= instances.size()) {
+                return nullptr;  // for safety
+            }
+            return &instances[it->second];
         }
 
         std::vector<Instance>& get_all() {
@@ -218,6 +222,7 @@ namespace ebmgen {
         std::vector<ebm::Loc> debug_locs;
 
        public:
+        // after this call, getter functions will
         expected<void> finalize(ebm::ExtendedBinaryModule& mod);
 
         template <AnyRef T>

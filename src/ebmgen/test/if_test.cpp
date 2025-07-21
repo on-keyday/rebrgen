@@ -19,7 +19,13 @@ TEST(IntegrationTest, SimpleIf) {
     auto block = program->body.block();
     ASSERT_TRUE(block) << "Program block is empty";
     ASSERT_EQ(block->container.size(), 1) << "Expected one statement in the program block";
-    auto if_stmt = ctx.repository().get_statement(block->container[0]);
+    auto struct_decl_stmt = ctx.repository().get_statement(block->container[0]);
+    ASSERT_TRUE(struct_decl_stmt) << "Failed to retrieve the STRUCT_DECL statement";
+    ASSERT_EQ(struct_decl_stmt->body.statement_kind, ebm::StatementOp::STRUCT_DECL);
+    auto struct_decl_body = struct_decl_stmt->body.struct_decl();
+    ASSERT_TRUE(struct_decl_body) << "STRUCT_DECL body is empty";
+    ASSERT_EQ(struct_decl_body->fields.container.size(), 2) << "Expected one field in the STRUCT_DECL";
+    auto if_stmt = ctx.repository().get_statement(struct_decl_body->fields.container[0]);
     ASSERT_TRUE(if_stmt) << "Failed to retrieve the IF statement";
     ASSERT_EQ(if_stmt->body.statement_kind, ebm::StatementOp::IF_STATEMENT);
     auto if_body = if_stmt->body.if_statement();

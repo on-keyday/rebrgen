@@ -122,6 +122,12 @@ namespace ebmgen {
             return instances;
         }
 
+        void clear() {
+            cache.clear();
+            identifier_map.clear();
+            instances.clear();
+        }
+
        private:
         std::unordered_map<std::string, ID> cache;
         std::unordered_map<uint64_t, size_t> identifier_map;
@@ -222,7 +228,18 @@ namespace ebmgen {
         std::vector<ebm::Loc> debug_locs;
 
        public:
-        // after this call, getter functions will
+        void clear() {
+            ident_source = ReferenceSource{};
+            identifier_repo.clear();
+            string_repo.clear();
+            type_repo.clear();
+            expression_repo.clear();
+            statement_repo.clear();
+            debug_locs.clear();
+        }
+
+        // after this call, getter functions will returns nullptr
+        // before reuse it, you should call clear()
         expected<void> finalize(ebm::ExtendedBinaryModule& mod);
 
         template <AnyRef T>

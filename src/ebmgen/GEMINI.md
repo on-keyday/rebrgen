@@ -84,4 +84,92 @@ BEFORE YOU ACT, YOU MUST READ ALL OF THESE FILES for consistency
 #### 6. Note
 
 - Codebase uses macro (almost defined in helper.hpp).
+
   - This is a deliberate design. In the previous codebase, there were too many explicit `expected` propagation statements, which resulted in poor readability and maintenance. In this codebase, error handling is transparently done using macros. Think of it like Haskell's do notation or Rust's ? operator.
+    Summary of the Debate on Macro Usage
+
+Here is discussion about the macro usage. Please understand why macro is used in this project.
+
+```
+The core of the discussion was whether the extensive use of C++ macros, particularly the MAYBE macro for error handling, constitutes a "technical debt" or a well-reasoned design choice within the ebmgen project.
+
+---
+
+Arguments Against Macros (The Anti-Macro Stance)
+
+My initial position was that the macros are a technical debt, based on the following software engineering
+principles:
+
+1.  Poor Debuggability and Readability:
+
+    - Macros obscure control flow. The MAYBE macro hides a return statement, making the code's execution
+      path non-obvious.
+    - This makes step-through debugging impossible, as you cannot step "into" a macro. A developer sees a
+      single line, but the debugger executes multiple statements, including a potential jump out of the
+      current function.
+
+2.  Safety Concerns and Unpredictable Behavior:
+
+    - RAII Destruction (Incorrect Argument): My primary, but flawed, argument was that the macro's hidden
+      return could bypass RAII, preventing destructors from running and leading to resource leaks.
+    - Unhygienic Nature: I argued that macros are not "hygienic," meaning their internal implementation
+      details (like variable names) could clash with the code where they are used, leading to
+      hard-to-diagnose bugs.
+    - Multiple Argument Evaluation: Macros can evaluate their arguments more than once, creating severe
+      bugs if an argument has side effects (e.g., i++).
+
+3.  High Cognitive Load and Leaky Abstractions:
+
+    - The macros represent a project-specific "dialect" that new developers must learn.
+    - To use them safely, a developer must know their internal implementation (the hidden return, the
+      potential for multiple evaluations). This is a "leaky abstraction," as the implementation details are
+      not properly encapsulated.
+    - In contrast, standard C++ constructs like if statements are universal, require no special knowledge,
+      and have no hidden behavior.
+
+4.  Inflexibility for Maintenance:
+    - If the project's error handling policy changes (e.g., to add logging), macros are too rigid. A global
+      change to the macro definition applies the change indiscriminately everywhere.
+    - Handling exceptions (e.g., "don't log this specific type of error") would be impossible without
+      breaking the uniformity of the macro.
+
+---
+
+Counter-Arguments in Defense of the Macros (The Pro-Macro Stance)
+
+Your counter-arguments systematically dismantled the points above, proving them to be either incorrect or
+irrelevant in this specific context.
+
+1.  Lower Cognitive Load and Superior Readability:
+
+    - Writing a verbose if block for every single fallible operation creates significant visual noise,
+      obscuring the "happy path" (the main logic of the function).
+    - Remembering a single, consistent pattern like MAYBE(result, expr) is cognitively easier than writing
+      and parsing a multi-line if block each time.
+
+2.  Correctness and Safety:
+
+    - RAII is Preserved (Correct Rebuttal): You correctly pointed out that a return statement expanded from
+      a macro is a standard C++ return. It correctly triggers stack unwinding, and all RAII-managed
+      objects in scope have their destructors called. RAII is not broken.
+    - Scope is Respected: The use of {} blocks within the macro definitions correctly scopes internal
+      variables, preventing them from polluting the calling scope.
+
+3.  Pragmatic Flexibility:
+
+    - The macro is intended for the vast majority of common cases. For the rare, exceptional case where
+      custom error handling (like special logging) is needed, a developer can simply forgo the macro and
+      write a standard if block. The system is not rigid; it allows for both convention and exception.
+
+4.  Superior Maintainability via `Error::as<U>()` (The Decisive Point):
+    - This was the critical piece of information that invalidated my core argument about inflexibility. You
+      revealed that the Error type has a built-in method, as<U>(), to inspect its dynamic type.
+    - This means the MAYBE macro can be modified to handle context-aware logic. For example, to suppress
+      logging for a NetworkError, the macro definition can be changed to: if (!error.as<NetworkError>()) {
+      log(); }.
+    - This allows for a sophisticated, project-wide change in error-handling policy by modifying a single
+      location (the macro definition), which is vastly superior in cost, speed, and safety compared to
+      attempting a risky search-and-replace operation on thousands of individual if statements.
+
+In conclusion, the debate revealed that the MAYBE macro, far from being a simple trick, is a sophisticated mechanism that works in tandem with a well-designed Error type. It provides the readability of monadic error handling (like Haskell's do notation) while retaining the flexibility needed for long-term maintenance, proving it to be a powerful and well-reasoned feature of the codebase, not a technical debt.
+```

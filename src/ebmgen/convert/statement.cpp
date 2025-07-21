@@ -63,7 +63,7 @@ namespace ebmgen {
                 EBMA_ADD_IDENTIFIER(ident_ref, ident->ident);
                 result_loop_stmt.collection(target);
                 if (ast::as<ast::IntType>(bop->right->expr_type)) {
-                    MAYBE(expr_type, ctx.convert_type(bop->left->expr_type));
+                    EBMA_CONVERT_TYPE(expr_type, bop->left->expr_type);
                     EBM_COUNTER_LOOP_START_CUSTOM(i, expr_type);
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true, false);
                     ctx.add_visited_node(node->init, identifier_def);
@@ -76,7 +76,7 @@ namespace ebmgen {
                 else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
                     auto l = range->range.lock();
                     ebm::ExpressionRef start, end;
-                    MAYBE(base_type, ctx.convert_type(range->base_type));
+                    EBMA_CONVERT_TYPE(base_type, range->base_type);
                     if (l->start) {
                         MAYBE(s, ctx.convert_expr(l->start));
                         start = s;
@@ -219,9 +219,7 @@ namespace ebmgen {
 
         brgen::ast::visit(node, [&](auto&& n) {
             using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
-            if constexpr (std::is_base_of_v<ast::Node, T>) {  // Use ast::Node as base for statements
-                result = convert_statement_impl(n, body);
-            }
+            result = convert_statement_impl(n, body);
         });
 
         if (!result) {
@@ -363,7 +361,7 @@ namespace ebmgen {
         MAYBE(name_ref, ctx.add_identifier(node->ident->ident));
         ebm_enum_decl.name = name_ref;
         if (node->base_type) {
-            MAYBE(base_type_ref, ctx.convert_type(node->base_type));
+            EBMA_CONVERT_TYPE(base_type_ref, node->base_type);
             ebm_enum_decl.base_type = base_type_ref;
         }
         for (auto& member : node->members) {
@@ -398,14 +396,14 @@ namespace ebmgen {
         MAYBE(name_ref, ctx.add_identifier(node->ident->ident));
         func_decl.name = name_ref;
         if (node->return_type) {
-            MAYBE(return_type_ref, ctx.convert_type(node->return_type));
+            EBMA_CONVERT_TYPE(return_type_ref, node->return_type);
             func_decl.return_type = return_type_ref;
         }
         for (auto& param : node->parameters) {
             ebm::VariableDecl param_decl;
             MAYBE(param_name_ref, ctx.add_identifier(param->ident->ident));
             param_decl.name = param_name_ref;
-            MAYBE(param_type_ref, ctx.convert_type(param->field_type));
+            EBMA_CONVERT_TYPE(param_type_ref, param->field_type);
             param_decl.var_type = param_type_ref;
             ebm::StatementBody param_body;
             param_body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
@@ -452,7 +450,7 @@ namespace ebmgen {
             MAYBE(field_name_ref, ctx.add_identifier(node->ident->ident));
             prop_decl.name = field_name_ref;
 
-            MAYBE(property_type_ref, ctx.convert_type(node->field_type));
+            EBMA_CONVERT_TYPE(property_type_ref, node->field_type);
             prop_decl.property_type = property_type_ref;
 
             if (auto parent_member = node->belong.lock()) {
@@ -503,9 +501,9 @@ namespace ebmgen {
             else {
                 field_decl.name = ebm::IdentifierRef{};  // Anonymous field
             }
-            MAYBE(type_ref, ctx.convert_type(node->field_type));
+            EBMA_CONVERT_TYPE(type_ref, node->field_type);
             field_decl.field_type = type_ref;
-            // TODO: Handle parent_struct and is_state_variable
+            field_decl.is_state_variable(node->is_state_variable);
             body.field_decl(std::move(field_decl));
         }
         return {};
@@ -556,7 +554,7 @@ namespace ebmgen {
             MAYBE(name_ref, ctx.add_identifier(name_ident->ident));
             var_decl.name = name_ref;
 
-            MAYBE(type_ref, ctx.convert_type(node->left->expr_type));
+            EBMA_CONVERT_TYPE(type_ref, node->left->expr_type);
             var_decl.var_type = type_ref;
 
             if (node->right) {

@@ -24,7 +24,18 @@ namespace ebmgen {
 
     struct LocationInfoError {
         std::source_location loc;
+        const char* expr;
+        const char* output;
         void error(auto&& pb) const {
+            if (expr) {
+                futils::strutil::append(pb, "Expression: ");
+                if (output) {
+                    futils::strutil::append(pb, output);
+                    futils::strutil::append(pb, " = ");
+                }
+                futils::strutil::append(pb, expr);
+                futils::strutil::append(pb, "<");
+            }
             futils::strutil::append(pb, " at ");
             futils::strutil::append(pb, loc.file_name());
             futils::strutil::append(pb, ":");
@@ -39,15 +50,15 @@ namespace ebmgen {
     template <typename... Args>
     futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, FORMAT_ARG fmt, Args&&... args) {
         return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
-            .err = LocationInfoError{loc},
+            .err = LocationInfoError{.loc = loc},
             .before = error(fmt, std::forward<Args>(args)...),
             .sep = '\n',
         }));
     }
 
-    inline futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, Error&& err) {
+    inline futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, Error&& err, const char* output = nullptr, const char* expr_str = nullptr) {
         return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
-            .err = LocationInfoError{loc},
+            .err = LocationInfoError{loc, expr_str, output},
             .before = std::move(err),
             .sep = '\n',
         }));

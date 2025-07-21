@@ -8,7 +8,7 @@ namespace ebmgen {
         ebm::TypeBody body;
         expected<void> result = {};  // To capture errors from within the lambda
 
-        brgen::ast::visit(ast::cast_to<ast::Node>(type), [&](auto&& n) -> expected<void> {
+        auto fn = [&](auto&& n) -> expected<void> {
             using T = std::decay_t<decltype(n)>;
             if constexpr (std::is_same_v<T, std::shared_ptr<ast::IntType>>) {
                 if (n->is_signed) {
@@ -34,7 +34,7 @@ namespace ebmgen {
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::IdentType>>) {
                 if (auto locked = n->base.lock()) {
-                    MAYBE(converted_type, convert_type(locked, field));
+                    EBMA_CONVERT_TYPE(converted_type, locked, field);
                     body = ctx.get_type(converted_type)->body;  // Copy the body from the converted type
                 }
                 else {
@@ -42,7 +42,7 @@ namespace ebmgen {
                 }
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::ArrayType>>) {
-                MAYBE(element_type, convert_type(n->element_type));
+                EBMA_CONVERT_TYPE(element_type, n->element_type);
                 body.kind = ebm::TypeKind::VECTOR;
                 if (n->length_value) {
                     body.kind = ebm::TypeKind::ARRAY;
@@ -84,7 +84,7 @@ namespace ebmgen {
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StrLiteralType>>) {
                 body.kind = ebm::TypeKind::ARRAY;
-                MAYBE(element_type, ctx.get_unsigned_n_int(8));
+                EBMU_U8(element_type);
                 body.element_type(element_type);
                 if (n->bit_size) {
                     MAYBE(length, varint(*n->bit_size / 8));
@@ -97,7 +97,7 @@ namespace ebmgen {
                     MAYBE(stmt_ref, ctx.convert_statement(locked_enum));  // Convert the enum declaration
                     body.id(stmt_ref);                                    // Use the ID of the enum declaration
                     if (locked_enum->base_type) {
-                        MAYBE(base_type_ref, convert_type(locked_enum->base_type));
+                        EBMA_CONVERT_TYPE(base_type_ref, locked_enum->base_type);
                         body.base_type(base_type_ref);
                     }
                     else {
@@ -122,7 +122,7 @@ namespace ebmgen {
                 body.kind = ebm::TypeKind::VARIANT;
                 ebm::Types members;
                 for (auto& struct_member : n->structs) {
-                    MAYBE(member_type_ref, convert_type(struct_member));
+                    EBMA_CONVERT_TYPE(member_type_ref, struct_member);
                     append(members, member_type_ref);
                 }
                 body.members(std::move(members));
@@ -136,7 +136,7 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::RangeType>>) {
                 body.kind = ebm::TypeKind::RANGE;
                 if (n->base_type) {
-                    MAYBE(base_type_ref, convert_type(n->base_type));
+                    EBMA_CONVERT_TYPE(base_type_ref, n->base_type);
                     body.base_type(base_type_ref);
                 }
                 else {
@@ -146,17 +146,17 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::FunctionType>>) {
                 body.kind = ebm::TypeKind::FUNCTION;
                 if (n->return_type) {
-                    MAYBE(return_type, convert_type(n->return_type));
+                    EBMA_CONVERT_TYPE(return_type, n->return_type);
                     body.return_type(return_type);
                 }
                 else {
-                    MAYBE(void_type, ctx.get_void_type());
+                    EBMU_VOID_TYPE(void_type);
                     body.return_type(void_type);
                 }
 
                 ebm::Types params;
                 for (const auto& param : n->parameters) {
-                    MAYBE(param_type, convert_type(param));
+                    EBMA_CONVERT_TYPE(param_type, param);
                     append(params, param_type);
                 }
                 body.params(std::move(params));
@@ -165,6 +165,10 @@ namespace ebmgen {
                 return unexpect_error("Unsupported type for conversion: {}", node_type_to_string(type->node_type));
             }
             return {};  // Success
+        };
+
+        brgen::ast::visit(ast::cast_to<ast::Node>(type), [&](auto&& n) {
+            result = fn(std::forward<decltype(n)>(n));
         });
 
         if (!result) {

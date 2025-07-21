@@ -10,7 +10,7 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const) {
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const, bool is_reference) {
         ebm::StatementBody body;
         body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
         ebm::VariableDecl var_decl;
@@ -18,6 +18,7 @@ namespace ebmgen {
         var_decl.var_type = type;
         var_decl.initial_value = initial_ref;
         var_decl.is_constant(is_const);
+        var_decl.is_reference(is_reference);
         body.var_decl(std::move(var_decl));
         return body;
     }

@@ -148,7 +148,8 @@ namespace ebmgen {
             return unexpect_error("0 is not valid alignment");
         }
         if (alignment_bytes == 1) {
-            return ctx.get_int_literal(0);
+            EBMU_INT_LITERAL(lit, 1);
+            return lit;
         }
         ebm::ExpressionBody body;
         EBMU_COUNTER_TYPE(counter_type);

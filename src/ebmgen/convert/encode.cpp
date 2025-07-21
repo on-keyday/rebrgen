@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include <cstddef>
 #include <memory>
 #include "../converter.hpp"
@@ -253,7 +252,7 @@ namespace ebmgen {
         call_desc.callee = enc_access;
         // TODO: add arguments
         EBM_CALL(call_ref, std::move(call_desc));
-        MAYBE(typ_ref, ctx.get_encoder_return_type());
+        MAYBE(typ_ref, get_encoder_return_type(ctx));
         EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ_ref, call_ref);
         EBM_IS_ERROR(is_error, result);
         EBM_ERROR_RETURN(error_return, result);
@@ -273,7 +272,7 @@ namespace ebmgen {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
             return encode_field_type(ity->base.lock(), base_ref, field);
         }
-        MAYBE(typ_ref, ctx.convert_type(typ, field));
+        EBMA_CONVERT_TYPE(typ_ref, typ, field);
         ebm::IOData io_desc = make_io_data(base_ref, typ_ref, ebm::EndianExpr{}, ebm::Size{});
         ebm::LoweredStatements lowered_stmts;  // omit if empty
 

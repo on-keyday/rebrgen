@@ -4,10 +4,10 @@
 #include "ebm/extended_binary_module.hpp"
 #include "../common.hpp"
 namespace ebmgen {
-#define MAYBE_VOID(out, expr)                                \
-    auto out##____ = expr;                                   \
-    if (!out##____) {                                        \
-        return unexpect_error(std::move(out##____.error())); \
+#define MAYBE_VOID(out, expr)                                             \
+    auto out##____ = expr;                                                \
+    if (!out##____) {                                                     \
+        return unexpect_error(std::move(out##____.error()), #out, #expr); \
     }
 
 #define MAYBE(out, expr)  \
@@ -41,8 +41,8 @@ namespace ebmgen {
 #define EBMA_CONVERT_EXPRESSION(ref_name, expr) \
     MAYBE(ref_name, ctx.convert_expr(expr));
 
-#define EBMA_CONVERT_TYPE(ref_name, type) \
-    MAYBE(ref_name, ctx.convert_type(type));
+#define EBMA_CONVERT_TYPE(ref_name, ...) \
+    MAYBE(ref_name, ctx.convert_type(__VA_ARGS__));
 
 #define EBMA_CONVERT_STATEMENT(ref_name, node) \
     MAYBE(ref_name, ctx.convert_statement(node));
@@ -65,25 +65,25 @@ namespace ebmgen {
     // ebm utility
 
 #define EBMU_BOOL_TYPE(ref_name) \
-    MAYBE(ref_name, ctx.get_bool_type())
+    MAYBE(ref_name, get_bool_type(ctx))
 
 #define EBMU_VOID_TYPE(ref_name) \
-    MAYBE(ref_name, ctx.get_void_type())
+    MAYBE(ref_name, get_void_type(ctx))
 
 #define EBMU_COUNTER_TYPE(ref_name) \
-    MAYBE(ref_name, ctx.get_counter_type())
+    MAYBE(ref_name, get_counter_type(ctx))
 
 #define EBMU_UINT_TYPE(ref_name, n) \
-    MAYBE(ref_name, ctx.get_unsigned_n_int(n))
+    MAYBE(ref_name, get_unsigned_n_int(ctx, n))
 
 #define EBMU_U8(ref_name) \
     EBMU_UINT_TYPE(ref_name, 8)
 
 #define EBMU_U8_N_ARRAY(ref_name, n) \
-    MAYBE(ref_name, ctx.get_u8_n_array(n))
+    MAYBE(ref_name, get_u8_n_array(ctx, n))
 
 #define EBMU_INT_LITERAL(ref_name, value) \
-    MAYBE(ref_name, ctx.get_int_literal(value))
+    MAYBE(ref_name, get_int_literal(ctx, value))
 
     // main converter functions
 
@@ -263,7 +263,7 @@ namespace ebmgen {
 #define EBM_ASSERT(ref_name, condition__, lowered_statement__) \
     EBM_AST_STATEMENT(ref_name, make_assert_statement, condition__, lowered_statement__)
 
-    ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::StatementRef member);
+    ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::ExpressionRef member);
 #define EBM_MEMBER_ACCESS(ref_name, type, base__, member__) \
     EBM_AST_EXPRESSION(ref_name, make_member_access, type, base__, member__)
 

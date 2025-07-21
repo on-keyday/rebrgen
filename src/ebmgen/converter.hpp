@@ -33,9 +33,9 @@ namespace ebmgen {
     expected<std::string> serialize(const T& body) {
         std::string buffer;
         futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
-        auto err = body.encode(w);
+        Error err = body.encode(w);
         if (err) {
-            return unexpect_error(err);
+            return unexpect_error(std::move(err));
         }
         return buffer;
     }
@@ -47,13 +47,24 @@ namespace ebmgen {
                 return ID{id};
             });
         }
-        expected<ID> add(ID id, Body&& body) {
+
+       private:
+        expected<ID> add_internal(ID id, Body&& body) {
             identifier_map[id.id.value()] = instances.size();
             Instance instance;
             instance.id = id;
             instance.body = std::move(body);
             instances.push_back(std::move(instance));
             return id;
+        }
+
+       public:
+        expected<ID> add(ID id, Body&& body) {
+            auto serialized = serialize(body);
+            if (!serialized) {
+                return unexpect_error(std::move(serialized.error()));
+            }
+            return add_internal(id, std::move(body));
         }
 
         expected<ID> add(IdentifierSource& source, Body&& body) {
@@ -68,7 +79,7 @@ namespace ebmgen {
             if (!id) {
                 return unexpect_error(std::move(id.error()));
             }
-            return add(*id, std::move(body));
+            return add_internal(*id, std::move(body));
         }
 
         Instance* get(const ID& id) {
@@ -319,6 +330,7 @@ namespace ebmgen {
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementBody& body);
         expected<void> convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementBody& body);
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementBody& body);
         // Fallback for unhandled types
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementBody& body);
 

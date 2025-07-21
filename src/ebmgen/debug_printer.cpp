@@ -1,7 +1,10 @@
 #include "debug_printer.hpp"
 
+#include <cstdint>
 #include <iostream>
 #include <string>
+#include <type_traits>
+#include "ebm/extended_binary_module.hpp"
 #include "helper/template_instance.h"
 
 namespace ebmgen {
@@ -69,20 +72,26 @@ namespace ebmgen {
     template <typename T>
     void DebugPrinter::print_value(const T& value) const {
         if constexpr (std::is_enum_v<T>) {
-            os_ << ebm::to_string(value);
+            os_ << ebm::to_string(value) << "\n";
         }
         else if constexpr (std::is_same_v<T, bool>) {
-            os_ << (value ? "true" : "false");
+            os_ << (value ? "true" : "false") << "\n";
         }
         else if constexpr (futils::helper::is_template_instance_of<T, std::vector>) {
+            if (value.empty()) {
+                os_ << "(empty vector)\n";
+                return;
+            }
             os_ << "\n";
             indent_level_++;
             for (const auto& elem : value) {
                 indent();
                 print_value(elem);
-                os_ << "\n";
             }
             indent_level_--;
+        }
+        else if constexpr (std::is_same_v<T, ebm::Varint>) {
+            os_ << value.value() << "\n";
         }
         else if constexpr (has_visit<T, DummyFn>) {
             os_ << value.visitor_name << "\n";
@@ -92,8 +101,11 @@ namespace ebmgen {
             });
             indent_level_--;
         }
+        else if constexpr (std::is_same_v<T, std::uint8_t>) {
+            os_ << static_cast<uint32_t>(value) << "\n";
+        }
         else {
-            os_ << value;
+            os_ << value << "\n";
         }
     }
 
@@ -102,13 +114,17 @@ namespace ebmgen {
         indent();
         os_ << name << ": ";
         print_value(value);
-        os_ << std::endl;
     }
 
     template <typename T>
     void DebugPrinter::print_named_value(const char* name, const T* value) const {
         if (value) {
-            print_named_value(name, *value);
+            if constexpr (std::is_same_v<T, char>) {
+                print_named_value(name, std::string(value));
+            }
+            else {
+                print_named_value(name, *value);
+            }
         }
     }
 

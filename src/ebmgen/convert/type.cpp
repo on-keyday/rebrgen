@@ -94,8 +94,8 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::EnumType>>) {
                 body.kind = ebm::TypeKind::ENUM;
                 if (auto locked_enum = n->base.lock()) {
-                    MAYBE(stmt_ref, ctx.convert_statement(locked_enum));  // Convert the enum declaration
-                    body.id(stmt_ref);                                    // Use the ID of the enum declaration
+                    EBMA_CONVERT_STATEMENT(stmt_ref, locked_enum);  // Convert the enum declaration
+                    body.id(stmt_ref);                              // Use the ID of the enum declaration
                     if (locked_enum->base_type) {
                         EBMA_CONVERT_TYPE(base_type_ref, locked_enum->base_type);
                         body.base_type(base_type_ref);
@@ -111,8 +111,8 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructType>>) {
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
                 if (auto locked_base = n->base.lock()) {
-                    MAYBE(name_ref, ctx.convert_statement(locked_base));  // Convert the struct declaration
-                    body.id(name_ref);                                    // Use the ID of the struct declaration
+                    EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
+                    body.id(name_ref);                              // Use the ID of the struct declaration
                 }
                 else {
                     return unexpect_error("StructType has no base");

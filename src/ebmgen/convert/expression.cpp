@@ -229,8 +229,8 @@ namespace ebmgen {
         if (node->op == ast::BinaryOp::define_assign || node->op == ast::BinaryOp::const_assign) {
             return unexpect_error("define_assign/const_assign should be handled as a statement, not an expression");
         }
-        MAYBE(left_ref, convert_expr(node->left));
-        MAYBE(right_ref, convert_expr(node->right));
+        EBMA_CONVERT_EXPRESSION(left_ref, node->left);
+        EBMA_CONVERT_EXPRESSION(right_ref, node->right);
         MAYBE(bop, convert_binary_op(node->op));
         body = make_binary_op(bop, body.type, left_ref, right_ref);
         return {};
@@ -238,7 +238,7 @@ namespace ebmgen {
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Unary>& node, ebm::ExpressionBody& body) {
         body.op = ebm::ExpressionOp::UNARY_OP;
-        MAYBE(operand_ref, convert_expr(node->expr));
+        EBMA_CONVERT_EXPRESSION(operand_ref, node->expr);
         body.operand(operand_ref);
         MAYBE(uop, convert_unary_op(node->op));
         body.uop(uop);
@@ -247,8 +247,8 @@ namespace ebmgen {
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Index>& node, ebm::ExpressionBody& body) {
         body.op = ebm::ExpressionOp::INDEX_ACCESS;
-        MAYBE(base_ref, convert_expr(node->expr));
-        MAYBE(index_ref, convert_expr(node->index));
+        EBMA_CONVERT_EXPRESSION(base_ref, node->expr);
+        EBMA_CONVERT_EXPRESSION(index_ref, node->index);
         body.base(base_ref);
         body.index(index_ref);
         return {};
@@ -256,8 +256,8 @@ namespace ebmgen {
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body) {
         body.op = ebm::ExpressionOp::MEMBER_ACCESS;
-        MAYBE(base_ref, convert_expr(node->target));
-        MAYBE(member_ref, convert_expr(node->member));
+        EBMA_CONVERT_EXPRESSION(base_ref, node->target);
+        EBMA_CONVERT_EXPRESSION(member_ref, node->member);
         body.base(base_ref);
         body.member(member_ref);
         return {};
@@ -265,7 +265,7 @@ namespace ebmgen {
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cast>& node, ebm::ExpressionBody& body) {
         body.op = ebm::ExpressionOp::TYPE_CAST;
-        MAYBE(source_expr_ref, convert_expr(node->arguments[0]));
+        EBMA_CONVERT_EXPRESSION(source_expr_ref, node->arguments[0]);
         EBMA_CONVERT_TYPE(source_expr_type_ref, node->arguments[0]->expr_type);
         body.source_expr(source_expr_ref);
         body.from_type(source_expr_type_ref);
@@ -278,11 +278,11 @@ namespace ebmgen {
         body.op = ebm::ExpressionOp::RANGE;
         ebm::ExpressionRef start, end;
         if (node->start) {
-            MAYBE(start_ref, convert_expr(node->start));
+            EBMA_CONVERT_EXPRESSION(start_ref, node->start);
             start = start_ref;
         }
         if (node->end) {
-            MAYBE(end_ref, convert_expr(node->end));
+            EBMA_CONVERT_EXPRESSION(end_ref, node->end);
             end = end_ref;
         }
         body.start(start);
@@ -297,7 +297,7 @@ namespace ebmgen {
             }
             case ast::IOMethod::output_put: {
                 // body.op = ebm::ExpressionOp::WRITE_DATA;
-                // MAYBE(source_expr_ref, convert_expr(node->arguments[0]));
+                // EBMA_CONVERT_EXPRESSION(source_expr_ref,node->arguments[0]);
                 // body.source_expr(source_expr_ref);
                 // MAYBE(data_type_ref, convert_type(node->arguments[0]->expr_type));
                 // body.data_type(data_type_ref);
@@ -321,9 +321,9 @@ namespace ebmgen {
             }
             case ast::IOMethod::input_peek: {
                 // body.op = ebm::ExpressionOp::CAN_READ_STREAM;
-                // MAYBE(target_var_ref, convert_expr(node->arguments[0]));
+                // EBMA_CONVERT_EXPRESSION(target_var_ref,node->arguments[0]);
                 // body.target_var(target_var_ref);
-                // MAYBE(num_bytes_ref, convert_expr(node->arguments[1]));
+                // EBMA_CONVERT_EXPRESSION(num_bytes_ref,node->arguments[1]);
                 // body.num_bytes(num_bytes_ref);
                 // body.stream_type(ebm::StreamType::INPUT);
                 return unexpect_error("not implemented yet: {}", ast::to_string(node->method));

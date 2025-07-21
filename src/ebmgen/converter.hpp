@@ -292,6 +292,10 @@ namespace ebmgen {
             return statement_repo.get(ref);
         }
 
+        ebm::Expression* get_expression(const ebm::ExpressionRef& ref) {
+            return expression_repo.get(ref);
+        }
+
         ebm::Type* get_type(const ebm::TypeRef& ref) {
             return type_repo.get(ref);
         }

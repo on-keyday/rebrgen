@@ -35,7 +35,7 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::IdentType>>) {
                 if (auto locked = n->base.lock()) {
                     EBMA_CONVERT_TYPE(converted_type, locked, field);
-                    body = ctx.get_type(converted_type)->body;  // Copy the body from the converted type
+                    body = ctx.repository().get_type(converted_type)->body;  // Copy the body from the converted type
                 }
                 else {
                     return unexpect_error("IdentType has no base type");
@@ -175,7 +175,8 @@ namespace ebmgen {
             return unexpect_error(std::move(result.error()));
         }
 
-        return ctx.add_type(std::move(body));
+        EBMA_ADD_TYPE(ref, std::move(body));
+        return ref;  // Return the type reference
     }
 
 }  // namespace ebmgen

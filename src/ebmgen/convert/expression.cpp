@@ -61,8 +61,8 @@ namespace ebmgen {
     }
 
     expected<ebm::CastType> TypeConverter::get_cast_type(ebm::TypeRef dest_ref, ebm::TypeRef src_ref) {
-        auto dest = ctx.get_type(dest_ref);
-        auto src = ctx.get_type(src_ref);
+        auto dest = ctx.repository().get_type(dest_ref);
+        auto src = ctx.repository().get_type(src_ref);
 
         if (!dest || !src) {
             return unexpect_error("Invalid type reference for cast");
@@ -140,7 +140,8 @@ namespace ebmgen {
             return unexpect_error(std::move(result.error()));
         }
 
-        return ctx.add_expr(std::move(body));
+        EBMA_ADD_EXPR(ref, std::move(body));
+        return ref;
     }
 
     expected<ebm::ExpressionRef> get_alignment_requirement(ConverterContext& ctx, std::uint64_t alignment_bytes, ebm::StreamType type) {

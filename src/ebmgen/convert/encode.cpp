@@ -22,7 +22,7 @@ namespace ebmgen {
     }
 
     expected<void> EncoderConverter::encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& ity, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        MAYBE(endian, ctx.get_endian(ebm::Endian(ity->endian), ity->is_signed));
+        MAYBE(endian, ctx.state().get_endian(ebm::Endian(ity->endian), ity->is_signed));
         io_desc.endian = endian;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
@@ -33,7 +33,7 @@ namespace ebmgen {
     }
 
     expected<void> EncoderConverter::encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& fty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        MAYBE(endian, ctx.get_endian(ebm::Endian(fty->endian), false));
+        MAYBE(endian, ctx.state().get_endian(ebm::Endian(fty->endian), false));
         io_desc.endian = endian;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
@@ -50,7 +50,7 @@ namespace ebmgen {
                 EBM_CAST(casted, to_ty, io_desc.data_type, base_ref);
                 MAYBE(encode_info, encode_field_type(locked_enum->base_type, casted, nullptr));
                 EBMA_ADD_STATEMENT(encode_stmt, std::move(encode_info));
-                auto io_data = ctx.get_statement(encode_stmt)->body.write_data();
+                auto io_data = ctx.repository().get_statement(encode_stmt)->body.write_data();
                 io_desc.endian = io_data->endian;
                 io_desc.size = io_data->size;
                 ebm::LoweredStatement lowered;
@@ -111,7 +111,7 @@ namespace ebmgen {
 
     expected<void> EncoderConverter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
         EBMA_CONVERT_TYPE(element_type, aty->element_type);
-        const auto elem_body = ctx.get_type(element_type);
+        const auto elem_body = ctx.repository().get_type(element_type);
         const auto is_byte = elem_body->body.kind == ebm::TypeKind::UINT && *elem_body->body.size() == 8;
         auto fixed_unit = [is_byte]() -> ebm::SizeUnit {
             return is_byte ? ebm::SizeUnit::BYTE_FIXED : ebm::SizeUnit::ELEMENT_FIXED;
@@ -247,7 +247,7 @@ namespace ebmgen {
         ebm::CallDesc call_desc;
         // force convert encode and decode functions
         EBMA_CONVERT_STATEMENT(ok, base);
-        MAYBE(encdec, ctx.get_format_encode_decode(base));
+        MAYBE(encdec, ctx.state().get_format_encode_decode(base));
         EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
         call_desc.callee = enc_access;
         // TODO: add arguments

@@ -9,7 +9,7 @@ namespace ebmgen {
 
     expected<std::pair<size_t, bool>> get_integral_size_and_sign(ConverterContext& ctx, ebm::TypeRef type) {
         for (;;) {
-            auto type_ref = ctx.get_type(type);
+            auto type_ref = ctx.repository().get_type(type);
             if (!type_ref) {
                 return unexpect_error("Invalid type reference for max value");
             }
@@ -52,6 +52,9 @@ namespace ebmgen {
         std::optional<ebm::StatementRef> init_v, step_v;
         std::optional<ebm::ExpressionRef> cond_v;
         if (node->init) {
+            auto make_init_visited = [&](ebm::StatementRef ident_def) {
+                ctx.state().add_visited_node(node->init, ident_def);
+            };
             if (auto bop = ast::as<ast::Binary>(node->init);
                 bop && bop->op == ast::BinaryOp::in_assign) {  // `for x in y`
                 result_loop_stmt.loop_type = ebm::LoopType::FOR_EACH;
@@ -66,7 +69,7 @@ namespace ebmgen {
                     EBMA_CONVERT_TYPE(expr_type, bop->left->expr_type);
                     EBM_COUNTER_LOOP_START_CUSTOM(i, expr_type);
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true, false);
-                    ctx.add_visited_node(node->init, identifier_def);
+                    make_init_visited(identifier_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
                     EBMU_BOOL_TYPE(bool_type);
                     EBM_COUNTER_LOOP_END(lowered_loop, i, target, inner_block_ref);
@@ -104,7 +107,7 @@ namespace ebmgen {
                     EBM_BINARY_OP(cond, l->op == ast::BinaryOp::range_inclusive ? ebm::BinaryOp::less_or_eq : ebm::BinaryOp::less, bool_type, iter, end_casted);
 
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, counter_type, iter, true, false);
-                    ctx.add_visited_node(node->init, identifier_def);
+                    make_init_visited(identifier_def);
                     EBMA_CONVERT_STATEMENT(body, node->body);
 
                     EBM_INCREMENT(inc, iter, counter_type);
@@ -133,7 +136,7 @@ namespace ebmgen {
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(indexed, element_type, target, i);
                     EBM_DEFINE_VARIABLE(element, ident_ref, element_type, indexed, false, true);
-                    ctx.add_visited_node(node->init, element_def);
+                    make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
                     EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, inner_block_ref);
                     result_loop_stmt.item_var(element_def);
@@ -154,7 +157,7 @@ namespace ebmgen {
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(array_index, u8_t, buffer, i);
                     EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, true, true);
-                    ctx.add_visited_node(node->init, element_def);
+                    make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
                     EBMU_INT_LITERAL(len, candidate.size());
                     EBM_COUNTER_LOOP_END(loop_stmt, i, len, inner_block_ref);
@@ -205,11 +208,11 @@ namespace ebmgen {
     }
 
     expected<ebm::StatementRef> StatementConverter::convert_statement(const std::shared_ptr<ast::Node>& node) {
-        if (auto it = ctx.is_visited(node)) {
+        if (auto it = ctx.state().is_visited(node)) {
             return *it;
         }
-        MAYBE(new_ref, ctx.new_statement_id());
-        ctx.add_visited_node(node, new_ref);
+        MAYBE(new_ref, ctx.repository().new_statement_id());
+        ctx.state().add_visited_node(node, new_ref);
         return convert_statement_internal(new_ref, node);
     }
 
@@ -226,7 +229,7 @@ namespace ebmgen {
             return unexpect_error(std::move(result.error()));
         }
 
-        MAYBE(ref, ctx.add_statement(new_id, std::move(body)));
+        EBMA_ADD_STATEMENT(ref, new_id, std::move(body));
         return ref;
     }
 
@@ -407,7 +410,7 @@ namespace ebmgen {
             ebm::StatementBody param_body;
             param_body.statement_kind = ebm::StatementOp::VARIABLE_DECL;
             param_body.var_decl(std::move(param_decl));
-            MAYBE(param_ref, ctx.add_statement(std::move(param_body)));
+            EBMA_ADD_STATEMENT(param_ref, std::move(param_body));
             append(func_decl.params, param_ref);
         }
         body.func_decl(std::move(func_decl));

@@ -22,10 +22,10 @@ namespace ebmgen {
     }
 
 #define EBM_AST_STATEMENT(ref_name, make_func, ...) \
-    EBM_AST_CONSTRUCTOR(ref_name, StatementRef, ctx.add_statement, make_func, __VA_ARGS__)
+    EBM_AST_CONSTRUCTOR(ref_name, StatementRef, ctx.repository().add_statement, make_func, __VA_ARGS__)
 
 #define EBM_AST_EXPRESSION(ref_name, make_func, ...) \
-    EBM_AST_CONSTRUCTOR(ref_name, ExpressionRef, ctx.add_expr, make_func, __VA_ARGS__)
+    EBM_AST_CONSTRUCTOR(ref_name, ExpressionRef, ctx.repository().add_expr, make_func, __VA_ARGS__)
 
 #define EBM_AST_EXPRESSION_REF(ref_name) ebm::ExpressionRef ref_name;
 #define EBM_AST_STATEMENT_REF(ref_name) ebm::StatementRef ref_name;
@@ -48,19 +48,19 @@ namespace ebmgen {
     MAYBE(ref_name, ctx.convert_statement(node));
 
 #define EBMA_ADD_IDENTIFIER(ref_name, ident) \
-    MAYBE(ref_name, ctx.add_identifier(ident));
+    MAYBE(ref_name, ctx.repository().add_identifier(ident));
 
 #define EBMA_ADD_STRING(ref_name, candidate) \
-    MAYBE(ref_name, ctx.add_string(candidate));
+    MAYBE(ref_name, ctx.repository().add_string(candidate));
 
 #define EBMA_ADD_TYPE(ref_name, type) \
-    MAYBE(ref_name, ctx.add_type(type));
+    MAYBE(ref_name, ctx.repository().add_type(type));
 
-#define EBMA_ADD_STATEMENT(ref_name, stmt) \
-    MAYBE(ref_name, ctx.add_statement(stmt));
+#define EBMA_ADD_STATEMENT(ref_name, ...) \
+    MAYBE(ref_name, ctx.repository().add_statement(__VA_ARGS__));
 
 #define EBMA_ADD_EXPR(ref_name, expr) \
-    MAYBE(ref_name, ctx.add_expr(expr));
+    MAYBE(ref_name, ctx.repository().add_expr(expr));
 
     // ebm utility
 
@@ -106,29 +106,29 @@ namespace ebmgen {
         EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
     }
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                                   \
-    ebm::ExpressionRef ref_name;                                                                                    \
-    ebm::StatementRef ref_name##_def;                                                                               \
-    {                                                                                                               \
-        MAYBE(temporary_name, ctx.anonymous_identifier());                                                          \
-        MAYBE(new_var_ref_, ctx.add_statement(make_variable_decl(temporary_name, typ, initial_ref, false, false))); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                           \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                            \
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                             \
+    ebm::ExpressionRef ref_name;                                                                              \
+    ebm::StatementRef ref_name##_def;                                                                         \
+    {                                                                                                         \
+        MAYBE(temporary_name, ctx.repository().anonymous_identifier());                                       \
+        EBMA_ADD_STATEMENT(new_var_ref_, make_variable_decl(temporary_name, typ, initial_ref, false, false)); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                     \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
     }
 
     ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);
 
-#define EBM_CAST(ref_name, to_typ, from_typ, expr)                                                       \
-    ebm::ExpressionRef ref_name;                                                                         \
-    {                                                                                                    \
-        if (from_typ.id.value() != to_typ.id.value()) {                                                  \
-            MAYBE(cast_kind________, ctx.get_type_converter().get_cast_type(to_typ, from_typ));          \
-            MAYBE(cast_ref________, ctx.add_expr(make_cast(to_typ, from_typ, expr, cast_kind________))); \
-            ref_name = cast_ref________;                                                                 \
-        }                                                                                                \
-        else {                                                                                           \
-            ref_name = expr;                                                                             \
-        }                                                                                                \
+#define EBM_CAST(ref_name, to_typ, from_typ, expr)                                                 \
+    ebm::ExpressionRef ref_name;                                                                   \
+    {                                                                                              \
+        if (from_typ.id.value() != to_typ.id.value()) {                                            \
+            MAYBE(cast_kind________, ctx.get_type_converter().get_cast_type(to_typ, from_typ));    \
+            EBMA_ADD_EXPR(cast_ref________, make_cast(to_typ, from_typ, expr, cast_kind________)); \
+            ref_name = cast_ref________;                                                           \
+        }                                                                                          \
+        else {                                                                                     \
+            ref_name = expr;                                                                       \
+        }                                                                                          \
     }
 
     ebm::ExpressionBody make_binary_op(ebm::BinaryOp bop, ebm::TypeRef type, ebm::ExpressionRef left, ebm::ExpressionRef right);

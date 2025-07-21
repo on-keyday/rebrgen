@@ -5,7 +5,7 @@
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
 
-    expected<ebm::EndianExpr> ConverterContext::get_endian(ebm::Endian base, bool sign) {
+    expected<ebm::EndianExpr> ConverterState::get_endian(ebm::Endian base, bool sign) {
         ebm::EndianExpr e;
         e.sign(sign);
         e.endian(base);
@@ -22,7 +22,7 @@ namespace ebmgen {
         return e;
     }
 
-    bool ConverterContext::set_endian(ebm::Endian e, ebm::StatementRef id) {
+    bool ConverterState::set_endian(ebm::Endian e, ebm::StatementRef id) {
         if (on_function) {
             local_endian = e;
             current_dynamic_endian = id;
@@ -35,7 +35,7 @@ namespace ebmgen {
         return true;
     }
 
-    expected<void> ConverterContext::finalize(ebm::ExtendedBinaryModule& ebm) {
+    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm) {
         MAYBE(max_id, ident_source.current_id());
         ebm.max_id = ebm::AnyRef{.id = max_id};
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));

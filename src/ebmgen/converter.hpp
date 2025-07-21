@@ -13,6 +13,24 @@ namespace ebmgen {
         Encode,
         Decode,
     };
+    struct VisitedKey {
+        std::shared_ptr<ast::Node> node;
+        GenerateType type;
+
+        friend constexpr auto operator<=>(const VisitedKey& a, const VisitedKey& b) noexcept = default;
+    };
+}  // namespace ebmgen
+
+namespace std {
+    template <>
+    struct hash<ebmgen::VisitedKey> {
+        size_t operator()(const ebmgen::VisitedKey& key) const {
+            return std::hash<std::shared_ptr<brgen::ast::Node>>{}(key.node) ^ std::hash<int>{}(static_cast<int>(key.type));
+        }
+    };
+}  // namespace std
+
+namespace ebmgen {
 
     struct ReferenceSource {
        private:
@@ -125,77 +143,17 @@ namespace ebmgen {
         { t.id } -> std::convertible_to<ebm::Varint>;
     };
 
-    struct ConverterContext {
+    struct ConverterState {
        private:
-        ReferenceSource ident_source;
-        GenerateType current_generate_type = GenerateType::Normal;
-        std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
-        std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
-
-        ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String> identifier_repo;
-        ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String> string_repo;
-        ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
-        ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
-        ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
-
-        std::vector<ebm::Loc> debug_locs;
-
         ebm::Endian global_endian = ebm::Endian::big;
         ebm::Endian local_endian = ebm::Endian::unspec;
         ebm::StatementRef current_dynamic_endian = ebm::StatementRef{};
         bool on_function = false;
-
-        std::shared_ptr<StatementConverter> statement_converter;
-        std::shared_ptr<ExpressionConverter> expression_converter;
-        std::shared_ptr<EncoderConverter> encoder_converter;
-        std::shared_ptr<DecoderConverter> decoder_converter;
-        std::shared_ptr<TypeConverter> type_converter;
+        GenerateType current_generate_type = GenerateType::Normal;
+        std::unordered_map<VisitedKey, ebm::StatementRef> visited_nodes;
+        std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
 
        public:
-        ConverterContext();
-
-        expected<void> finalize(ebm::ExtendedBinaryModule& mod);
-
-        template <AnyRef T>
-        expected<void> add_debug_loc(brgen::lexer::Loc loc, T ref) {
-            ebm::Loc debug_loc;
-            MAYBE(file_id, varint(loc.file));
-            MAYBE(line, varint(loc.line));
-            MAYBE(column, varint(loc.col));
-            MAYBE(start, varint(loc.pos.begin));
-            MAYBE(end, varint(loc.pos.end));
-            debug_loc.ident = ebm::AnyRef{ref.id};
-            debug_loc.file_id = file_id;
-            debug_loc.line = line;
-            debug_loc.column = column;
-            debug_loc.start = start;
-            debug_loc.end = end;
-            debug_locs.push_back(std::move(debug_loc));
-            return {};
-        }
-
-        StatementConverter& get_statement_converter();
-
-        ExpressionConverter& get_expression_converter();
-
-        EncoderConverter& get_encoder_converter();
-
-        DecoderConverter& get_decoder_converter();
-
-        TypeConverter& get_type_converter();
-
-        expected<ebm::IdentifierRef> anonymous_identifier() {
-            return identifier_repo.new_id(ident_source);
-        }
-
-        expected<ebm::StatementRef> new_statement_id() {
-            return statement_repo.new_id(ident_source);
-        }
-
-        ReferenceSource& get_identifier_source() {
-            return ident_source;
-        }
-
         GenerateType get_current_generate_type() const {
             return current_generate_type;
         }
@@ -216,11 +174,11 @@ namespace ebmgen {
         }
 
         void add_visited_node(const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref) {
-            visited_nodes[node] = ref;
+            visited_nodes[{node, current_generate_type}] = ref;
         }
 
         std::optional<ebm::StatementRef> is_visited(const std::shared_ptr<ast::Node>& node) const {
-            auto it = visited_nodes.find(node);
+            auto it = visited_nodes.find({node, current_generate_type});
             if (it != visited_nodes.end()) {
                 return it->second;
             }
@@ -246,6 +204,50 @@ namespace ebmgen {
                 return it->second;
             }
             return unexpect_error("Format encode/decode not found for node");
+        }
+    };
+
+    struct EBMRepository {
+       private:
+        ReferenceSource ident_source;
+        ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String> identifier_repo;
+        ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String> string_repo;
+        ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
+        ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
+        ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
+        std::vector<ebm::Loc> debug_locs;
+
+       public:
+        expected<void> finalize(ebm::ExtendedBinaryModule& mod);
+
+        template <AnyRef T>
+        expected<void> add_debug_loc(brgen::lexer::Loc loc, T ref) {
+            ebm::Loc debug_loc;
+            MAYBE(file_id, varint(loc.file));
+            MAYBE(line, varint(loc.line));
+            MAYBE(column, varint(loc.col));
+            MAYBE(start, varint(loc.pos.begin));
+            MAYBE(end, varint(loc.pos.end));
+            debug_loc.ident = ebm::AnyRef{ref.id};
+            debug_loc.file_id = file_id;
+            debug_loc.line = line;
+            debug_loc.column = column;
+            debug_loc.start = start;
+            debug_loc.end = end;
+            debug_locs.push_back(std::move(debug_loc));
+            return {};
+        }
+
+        expected<ebm::IdentifierRef> anonymous_identifier() {
+            return identifier_repo.new_id(ident_source);
+        }
+
+        expected<ebm::StatementRef> new_statement_id() {
+            return statement_repo.new_id(ident_source);
+        }
+
+        ReferenceSource& get_identifier_source() {
+            return ident_source;
         }
 
         expected<ebm::IdentifierRef> add_identifier(const std::string& name) {
@@ -286,11 +288,6 @@ namespace ebmgen {
             return expression_repo.add(ident_source, std::move(body));
         }
 
-        // shorthand for creating a type with a single kind
-        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
-        expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
-        expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
-
         ebm::Statement* get_statement(const ebm::StatementRef& ref) {
             return statement_repo.get(ref);
         }
@@ -298,6 +295,44 @@ namespace ebmgen {
         ebm::Type* get_type(const ebm::TypeRef& ref) {
             return type_repo.get(ref);
         }
+    };
+
+    struct ConverterContext {
+       private:
+        std::shared_ptr<StatementConverter> statement_converter;
+        std::shared_ptr<ExpressionConverter> expression_converter;
+        std::shared_ptr<EncoderConverter> encoder_converter;
+        std::shared_ptr<DecoderConverter> decoder_converter;
+        std::shared_ptr<TypeConverter> type_converter;
+
+        EBMRepository repo_;
+        ConverterState state_;
+
+       public:
+        ConverterContext();
+
+        EBMRepository& repository() {
+            return repo_;
+        }
+
+        ConverterState& state() {
+            return state_;
+        }
+
+        StatementConverter& get_statement_converter();
+
+        ExpressionConverter& get_expression_converter();
+
+        EncoderConverter& get_encoder_converter();
+
+        DecoderConverter& get_decoder_converter();
+
+        TypeConverter& get_type_converter();
+
+        // shorthand for creating a type with a single kind
+        expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+        expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
+        expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
     };
 
     expected<ebm::TypeRef> get_counter_type(ConverterContext& ctx);

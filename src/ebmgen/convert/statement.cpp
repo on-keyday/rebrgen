@@ -503,19 +503,28 @@ namespace ebmgen {
             body.bit_field_decl(std::move(bit_field_decl));
         }
         else {
-            body.statement_kind = ebm::StatementOp::FIELD_DECL;
-            ebm::FieldDecl field_decl;
-            if (node->ident) {
-                EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
-                field_decl.name = field_name_ref;
+            if (ctx.state().get_current_generate_type() == GenerateType::Encode) {
+                MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
+                auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
+                EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+                MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+                body = std::move(body_);
             }
             else {
-                field_decl.name = ebm::IdentifierRef{};  // Anonymous field
+                body.statement_kind = ebm::StatementOp::FIELD_DECL;
+                ebm::FieldDecl field_decl;
+                if (node->ident) {
+                    EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
+                    field_decl.name = field_name_ref;
+                }
+                else {
+                    field_decl.name = ebm::IdentifierRef{};  // Anonymous field
+                }
+                EBMA_CONVERT_TYPE(type_ref, node->field_type);
+                field_decl.field_type = type_ref;
+                field_decl.is_state_variable(node->is_state_variable);
+                body.field_decl(std::move(field_decl));
             }
-            EBMA_CONVERT_TYPE(type_ref, node->field_type);
-            field_decl.field_type = type_ref;
-            field_decl.is_state_variable(node->is_state_variable);
-            body.field_decl(std::move(field_decl));
         }
         return {};
     }

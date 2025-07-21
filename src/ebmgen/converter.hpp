@@ -187,12 +187,15 @@ namespace ebmgen {
             visited_nodes[{node, current_generate_type}] = ref;
         }
 
-        std::optional<ebm::StatementRef> is_visited(const std::shared_ptr<ast::Node>& node) const {
-            auto it = visited_nodes.find({node, current_generate_type});
+        expected<ebm::StatementRef> is_visited(const std::shared_ptr<ast::Node>& node, std::optional<GenerateType> t = std::nullopt) const {
+            if (!t.has_value()) {
+                t = current_generate_type;
+            }
+            auto it = visited_nodes.find({node, *t});
             if (it != visited_nodes.end()) {
                 return it->second;
             }
-            return std::nullopt;
+            return unexpect_error("Node not visited: {}", !node ? "(null)" : node_type_to_string(node->node_type));
         }
 
         void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,

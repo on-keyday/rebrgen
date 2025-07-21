@@ -311,6 +311,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::MatchBranch>& node, ebm::StatementBody& body) {
+        body.statement_kind = ebm::StatementOp::MATCH_BRANCH;
         ebm::MatchBranch ebm_branch;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
         ebm_branch.condition = cond_ref;

@@ -14,7 +14,7 @@ namespace ebmgen {
         Decode,
     };
 
-    struct IdentifierSource {
+    struct ReferenceSource {
        private:
         std::uint64_t next_id = 1;
 
@@ -26,6 +26,13 @@ namespace ebmgen {
             }
             next_id++;
             return v;
+        }
+
+        expected<ebm::Varint> current_id() const {
+            if (next_id == 1) {
+                return null_varint;
+            }
+            return varint(next_id - 1);
         }
     };
 
@@ -42,7 +49,7 @@ namespace ebmgen {
 
     template <class ID, class Instance, class Body>
     struct ReferenceRepository {
-        expected<ID> new_id(IdentifierSource& source) {
+        expected<ID> new_id(ReferenceSource& source) {
             return source.new_id().and_then([this](ebm::Varint id) -> expected<ID> {
                 return ID{id};
             });
@@ -67,7 +74,7 @@ namespace ebmgen {
             return add_internal(id, std::move(body));
         }
 
-        expected<ID> add(IdentifierSource& source, Body&& body) {
+        expected<ID> add(ReferenceSource& source, Body&& body) {
             auto serialized = serialize(body);
             if (!serialized) {
                 return unexpect_error(std::move(serialized.error()));
@@ -120,7 +127,7 @@ namespace ebmgen {
 
     struct ConverterContext {
        private:
-        IdentifierSource ident_source;
+        ReferenceSource ident_source;
         GenerateType current_generate_type = GenerateType::Normal;
         std::unordered_map<std::shared_ptr<ast::Node>, ebm::StatementRef> visited_nodes;
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
@@ -185,7 +192,7 @@ namespace ebmgen {
             return statement_repo.new_id(ident_source);
         }
 
-        IdentifierSource& get_identifier_source() {
+        ReferenceSource& get_identifier_source() {
             return ident_source;
         }
 

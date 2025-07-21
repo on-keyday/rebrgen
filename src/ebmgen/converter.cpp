@@ -2,6 +2,7 @@
 #include <core/ast/traverse.h>
 #include <functional>
 #include "convert/helper.hpp"
+#include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
 
     expected<ebm::EndianExpr> ConverterContext::get_endian(ebm::Endian base, bool sign) {
@@ -35,6 +36,8 @@ namespace ebmgen {
     }
 
     expected<void> ConverterContext::finalize(ebm::ExtendedBinaryModule& ebm) {
+        MAYBE(max_id, ident_source.current_id());
+        ebm.max_id = ebm::AnyRef{.id = max_id};
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
         ebm.identifiers_len = identifiers_len;
         ebm.identifiers = std::move(identifier_repo.get_all());

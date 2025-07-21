@@ -1,9 +1,21 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(rebrgen)
+enable_testing()   
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 23)
+
+set(INSTALL_GTEST OFF)
+include(FetchContent)  
+FetchContent_Declare( 
+    googletest
+    DOWNLOAD_EXTRACT_TIMESTAMP true
+    # Specify the commit you depend on and update it regularly.
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip 
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE) 
+FetchContent_MakeAvailable(googletest)
 
 if("$ENV{BUILD_MODE}" STREQUAL "web")
 add_compile_options(-fexperimental-library)
@@ -23,6 +35,8 @@ include_directories("brgen/src")
 include_directories("$ENV{FUTILS_DIR}/src/include")
 link_directories("$ENV{FUTILS_DIR}/lib")
 include_directories("src")
+
+
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
@@ -53,6 +67,9 @@ add_executable(bmgen
 
 add_executable(ebmgen
     "src/ebmgen/main.cpp"
+)
+
+add_library(ebmgen_lib STATIC
     "src/ebmgen/convert.cpp"
     "src/ebmgen/converter.cpp"
     "src/ebmgen/load_json.cpp"
@@ -64,6 +81,9 @@ add_executable(ebmgen
     "src/ebmgen/convert/encode.cpp"
     "src/ebmgen/convert/decode.cpp"
 )
+
+target_link_libraries(ebmgen_lib ebm futils)
+target_link_libraries(ebmgen ebmgen_lib)
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"
@@ -82,6 +102,7 @@ add_executable(gen_template2
 )
 
 add_subdirectory("src")
+add_subdirectory("src/ebmgen/test")
 
 target_link_libraries(bmgen futils bm)
 target_link_libraries(ebmgen futils ebm)

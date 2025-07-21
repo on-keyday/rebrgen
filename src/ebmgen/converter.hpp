@@ -436,4 +436,6 @@ namespace ebmgen {
 
     expected<ebm::StatementBody> assert_statement_body(ConverterContext& ctx, ebm::ExpressionRef condition);
     expected<ebm::StatementRef> assert_statement(ConverterContext& ctx, ebm::ExpressionRef condition);
+
+    expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
 }  // namespace ebmgen

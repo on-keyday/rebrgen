@@ -8,7 +8,7 @@ namespace ebmgen {
         if (!s) {
             return s.error();
         }
-        auto fin = converter.finalize(ebm);
+        auto fin = converter.repository().finalize(ebm);
         if (!fin) {
             return fin.error();
         }

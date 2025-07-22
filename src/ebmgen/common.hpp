@@ -100,4 +100,9 @@ namespace ebmgen {
         container.container.push_back(value);
         container.len = varint(container.container.size()).value();
     }
+
+    template <typename T>
+    concept AnyRef = requires(T t) {
+        { t.id } -> std::convertible_to<ebm::Varint>;
+    };
 }  // namespace ebmgen

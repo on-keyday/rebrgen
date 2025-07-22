@@ -6,6 +6,7 @@
 #include <type_traits>
 #include "ebm/extended_binary_module.hpp"
 #include "helper/template_instance.h"
+#include "common.hpp"
 
 namespace ebmgen {
 
@@ -68,6 +69,77 @@ namespace ebmgen {
         void operator()(auto&&, const char*, auto&&) const {}
     };
 
+    void DebugPrinter::print_resolved_reference(const ebm::IdentifierRef& ref) const {
+        const auto* ident = get_identifier(ref);
+        os_ << ebm::Identifier::visitor_name << " ";
+        if (ident) {
+            os_ << ident->body.data;
+        }
+        else {
+            os_ << "(unknown identifier)";
+        }
+    }
+    void DebugPrinter::print_resolved_reference(const ebm::StringRef& ref) const {
+        os_ << ebm::StringLiteral::visitor_name << " ";
+        const auto* str_lit = get_string_literal(ref);
+        if (str_lit) {
+            os_ << str_lit->body.data;
+        }
+        else {
+            os_ << "(unknown string literal)";
+        }
+    }
+    void DebugPrinter::print_resolved_reference(const ebm::TypeRef& ref) const {
+        os_ << ebm::Type::visitor_name << " ";
+        const auto* type = get_type(ref);
+        if (type) {
+            os_ << to_string(type->body.kind);
+        }
+        else {
+            os_ << "(unknown type)";
+        }
+    }
+    void DebugPrinter::print_resolved_reference(const ebm::StatementRef& ref) const {
+        os_ << ebm::Statement::visitor_name << " ";
+        const auto* stmt = get_statement(ref);
+        if (stmt) {
+            os_ << to_string(stmt->body.statement_kind);
+        }
+        else {
+            os_ << "(unknown statement)";
+        }
+    }
+    void DebugPrinter::print_resolved_reference(const ebm::ExpressionRef& ref) const {
+        os_ << ebm::Expression::visitor_name << " ";
+        const auto* expr = get_expression(ref);
+        if (expr) {
+            os_ << to_string(expr->body.op);
+        }
+        else {
+            os_ << "(unknown expression)";
+        }
+    }
+    void DebugPrinter::print_resolved_reference(const ebm::AnyRef& ref) const {
+        if (const auto* ident = get_identifier(ebm::IdentifierRef{ref.id})) {
+            print_resolved_reference(ebm::IdentifierRef{ref.id});
+        }
+        else if (const auto* str_lit = get_string_literal(ebm::StringRef{ref.id})) {
+            print_resolved_reference(ebm::StringRef{ref.id});
+        }
+        else if (const auto* type = get_type(ebm::TypeRef{ref.id})) {
+            print_resolved_reference(ebm::TypeRef{ref.id});
+        }
+        else if (const auto* stmt = get_statement(ebm::StatementRef{ref.id})) {
+            print_resolved_reference(ebm::StatementRef{ref.id});
+        }
+        else if (const auto* expr = get_expression(ebm::ExpressionRef{ref.id})) {
+            print_resolved_reference(ebm::ExpressionRef{ref.id});
+        }
+        else {
+            os_ << "(unknown reference)";
+        }
+    }
+
     // --- Generic print helpers ---
     template <typename T>
     void DebugPrinter::print_value(const T& value) const {
@@ -94,12 +166,25 @@ namespace ebmgen {
             os_ << value.value() << "\n";
         }
         else if constexpr (has_visit<T, DummyFn>) {
-            os_ << value.visitor_name << "\n";
-            indent_level_++;
-            value.visit([&](auto&& visitor, const char* name, auto&& val) {
-                print_named_value(name, val);
-            });
-            indent_level_--;
+            os_ << value.visitor_name;
+            if constexpr (AnyRef<T>) {
+                os_ << " (ID: " << value.id.value() << " ";
+                if (value.id.value() == 0) {
+                    os_ << "(null)";
+                }
+                else {
+                    print_resolved_reference(value);
+                }
+                os_ << ")\n";
+            }
+            else {
+                os_ << "\n";
+                indent_level_++;
+                value.visit([&](auto&& visitor, const char* name, auto&& val) {
+                    print_named_value(name, val);
+                });
+                indent_level_--;
+            }
         }
         else if constexpr (std::is_same_v<T, std::uint8_t>) {
             os_ << static_cast<uint32_t>(value) << "\n";

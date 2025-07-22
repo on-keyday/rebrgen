@@ -4,8 +4,6 @@
 #include <iostream>
 #include <map>
 #include <ostream>
-#include <string>
-#include <vector>
 
 #include "ebm/extended_binary_module.hpp"
 
@@ -35,6 +33,13 @@ namespace ebmgen {
         const ebm::Type* get_type(const ebm::TypeRef& ref) const;
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
+
+        void print_resolved_reference(const ebm::IdentifierRef& ref) const;
+        void print_resolved_reference(const ebm::StringRef& ref) const;
+        void print_resolved_reference(const ebm::TypeRef& ref) const;
+        void print_resolved_reference(const ebm::StatementRef& ref) const;
+        void print_resolved_reference(const ebm::ExpressionRef& ref) const;
+        void print_resolved_reference(const ebm::AnyRef& ref) const;
 
         // Indentation helper
         mutable int indent_level_ = 0;

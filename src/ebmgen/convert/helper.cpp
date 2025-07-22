@@ -250,4 +250,28 @@ namespace ebmgen {
         return size;
     }
 
+    ebm::ExpressionBody make_can_read_stream(ebm::StreamType stream_type, ebm::Size num_bytes) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::CAN_READ_STREAM;
+        body.stream_type(stream_type);
+        body.num_bytes(num_bytes);
+        return body;
+    }
+
+    ebm::StatementBody make_append(ebm::ExpressionRef target, ebm::ExpressionRef value) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::APPEND;
+        body.target(target);
+        body.value(value);
+        return body;
+    }
+
+    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type) {
+        ebm::ExpressionBody body;
+        body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
+        body.type = type;
+        body.stream_type(stream_type);
+        return body;
+    }
+
 }  // namespace ebmgen

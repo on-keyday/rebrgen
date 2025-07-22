@@ -294,6 +294,22 @@ namespace ebmgen {
 #define EBM_MAX_VALUE(ref_name, type, lowered_expr) \
     EBM_AST_EXPRESSION(ref_name, make_max_value, type, lowered_expr)
 
+    ebm::ExpressionBody make_can_read_stream(ebm::TypeRef type, ebm::StreamType stream_type, ebm::Size num_bytes);
+
+#define EBM_CAN_READ_STREAM(ref_name, stream_type, num_bytes) \
+    EBMU_BOOL_TYPE(ref_name##_type_____);                     \
+    EBM_AST_EXPRESSION(ref_name, make_can_read_stream, ref_name##_type_____, stream_type, num_bytes);
+
+    ebm::StatementBody make_append(ebm::ExpressionRef target, ebm::ExpressionRef value);
+#define EBM_APPEND(ref_name, target, value) \
+    EBM_AST_STATEMENT(ref_name, make_append, target, value)
+
+    ebm::ExpressionBody make_get_remaining_bytes(ebm::TypeRef type, ebm::StreamType stream_type);
+
+#define EBM_GET_REMAINING_BYTES(ref_name, stream_type) \
+    EBMU_COUNTER_TYPE(ref_name##_type_____);           \
+    EBM_AST_EXPRESSION(ref_name, make_get_remaining_bytes, ref_name##_type_____, stream_type)
+
     ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);

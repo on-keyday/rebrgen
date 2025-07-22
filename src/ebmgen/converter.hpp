@@ -305,6 +305,9 @@ namespace ebmgen {
         }
 
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
+            if (body.type.id.value() == 0) {
+                return unexpect_error("Expression type is not set");
+            }
             return expression_repo.add(ident_source, std::move(body));
         }
 
@@ -440,12 +443,14 @@ namespace ebmgen {
         expected<void> encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
         expected<void> encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
 
+        // internally, this method casts base_ref to unsigned n int type if necessary
+        // so no need to cast it before calling this method
         expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
     };
 
     struct DecoderConverter {
         ConverterContext& ctx;
-        expected<ebm::StatementRef> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<ebm::StatementBody> decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
 
        private:
         expected<void> decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);

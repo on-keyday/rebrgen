@@ -53,7 +53,8 @@ enum Endian:
 format EndianExpr:
     endian :Endian
     sign :u1 # 0 for unsigned, 1 for signed (for storage optimization)
-    reserved :u4
+    is_peek :u1 # 0 for non-peek, 1 for peek (for storage optimization)
+    reserved :u3
     dynamic_ref :StatementRef # ref to dynamic endian or null
 
 
@@ -160,7 +161,7 @@ format ExpressionBody:
             stream_type :StreamType
         ExpressionOp.CAN_READ_STREAM:
             stream_type :StreamType
-            num_bytes :ExpressionRef # Number of bytes to check
+            num_bytes :Size
         ExpressionOp.ARRAY_SIZE:
             array_expr :ExpressionRef # Reference to the array or vector expression
         ExpressionOp.IS_ERROR:
@@ -307,6 +308,7 @@ enum StatementOp:
     :u8
     BLOCK # Block of statements
     ASSIGNMENT
+    APPEND # append to vector
     RETURN
     ERROR_RETURN # for encoder/decoder return value
     ASSERT
@@ -397,6 +399,9 @@ format StatementBody:
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
             previous_assignment :StatementRef # Previous assignment or phi node (optional)
+        StatementOp.APPEND:
+            target :ExpressionRef # Target vector to append to
+            value :ExpressionRef # Value to append
         StatementOp.RETURN:
             value :ExpressionRef # Return value (optional)
         StatementOp.ERROR_RETURN:

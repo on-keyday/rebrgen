@@ -222,7 +222,7 @@ namespace ebmgen {
 
         brgen::ast::visit(node, [&](auto&& n) {
             using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node)>, std::shared_ptr>::template param_at<0>;
-            result = convert_statement_impl(n, body);
+            result = convert_statement_impl(n, new_id, body);
         });
 
         if (!result) {
@@ -233,14 +233,14 @@ namespace ebmgen {
         return ref;
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         EBMA_CONVERT_EXPRESSION(cond, node->cond);
         MAYBE(body_, assert_statement_body(ctx, cond));
         body = std::move(body_);
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::RETURN;
         if (node->expr) {
             EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
@@ -252,17 +252,17 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Break>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Break>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::BREAK;
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Continue>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Continue>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::CONTINUE;
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::If>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::If>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::IF_STATEMENT;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
 
@@ -280,13 +280,13 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Loop>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Loop>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         MAYBE(loop_body, convert_loop_body(ast::cast_to<ast::Loop>(node)));
         body = std::move(loop_body);
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::MATCH_STATEMENT;
         ebm::MatchStatement ebm_match_stmt;
 
@@ -302,7 +302,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::BLOCK;
         ebm::Block block_body;
         for (auto& element : node->elements) {
@@ -313,7 +313,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::MatchBranch>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::MatchBranch>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::MATCH_BRANCH;
         ebm::MatchBranch ebm_branch;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
@@ -329,7 +329,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Program>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Program>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
 
         ebm::Block program_body_block;
@@ -341,7 +341,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::STRUCT_DECL;
         ebm::StructDecl struct_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
@@ -358,7 +358,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Enum>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Enum>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::ENUM_DECL;
         ebm::EnumDecl ebm_enum_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
@@ -375,7 +375,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::EnumMember>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::EnumMember>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         ebm::EnumMemberDecl ebm_enum_member_decl;
         EBMA_ADD_IDENTIFIER(member_name_ref, node->ident->ident);
         ebm_enum_member_decl.name = member_name_ref;
@@ -392,7 +392,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::FUNCTION_DECL;
         ebm::FunctionDecl func_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
@@ -417,7 +417,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Metadata>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Metadata>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::METADATA;
         ebm::Metadata ebm_metadata;
         EBMA_ADD_IDENTIFIER(name_ref, node->name);
@@ -430,16 +430,16 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         expected<void> result;
         ast::visit(node->statement, [&](auto&& n) {
             using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node->statement)>, std::shared_ptr>::template param_at<0>;
-            result = convert_statement_impl(n, body);
+            result = convert_statement_impl(n, id, body);
         });
         return result;
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::STATE_DECL;
         ebm::StateDecl state_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
@@ -454,7 +454,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         if (auto union_type = ast::as<ast::UnionType>(node->field_type)) {
             body.statement_kind = ebm::StatementOp::PROPERTY_DECL;
             ebm::PropertyDecl prop_decl;
@@ -529,7 +529,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ExplicitError>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ExplicitError>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::ERROR_REPORT;
         ebm::ErrorReport error_report;
         EBMA_ADD_STRING(message_str_ref, node->message->value);
@@ -542,21 +542,21 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::IMPORT_MODULE;
         EBMA_ADD_IDENTIFIER(module_name_ref, node->path);
         body.module_name(module_name_ref);
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::EXPRESSION;
         EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
         body.expression(expr_ref);
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         if (node->op == ast::BinaryOp::assign) {
             body.statement_kind = ebm::StatementOp::ASSIGNMENT;
             EBMA_CONVERT_EXPRESSION(target_ref, node->left);
@@ -592,7 +592,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementBody& body) {
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
 

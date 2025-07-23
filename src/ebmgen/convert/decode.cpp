@@ -395,8 +395,11 @@ namespace ebmgen {
         else if (auto aty = ast::as<ast::ArrayType>(typ)) {
             MAYBE_VOID(ok, decode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts, field));
         }
+        else if (auto sty = ast::as<ast::StructType>(typ)) {
+            MAYBE_VOID(ok, decode_struct_type(io_desc, ast::cast_to<ast::StructType>(typ), base_ref, lowered_stmts, field));
+        }
         else {
-            return unexpect_error("Unsupported type for encoding: {}", node_type_to_string(typ->node_type));
+            return unexpect_error("Unsupported type for decoding: {}", node_type_to_string(typ->node_type));
         }
         assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
         if (lowered_stmts.container.size()) {

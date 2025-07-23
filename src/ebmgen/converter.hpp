@@ -65,8 +65,11 @@ namespace ebmgen {
         return buffer;
     }
 
-    template <class ID, class Instance, class Body>
+    template <AnyRef ID, class Instance, class Body, ebm::AliasHint hint>
     struct ReferenceRepository {
+        ReferenceRepository(std::vector<ebm::RefAlias>& aliases)
+            : aliases(aliases) {}
+
         expected<ID> new_id(ReferenceSource& source) {
             return source.new_id().and_then([this](ebm::Varint id) -> expected<ID> {
                 return ID{id};
@@ -89,6 +92,16 @@ namespace ebmgen {
             if (!serialized) {
                 return unexpect_error(std::move(serialized.error()));
             }
+            if (auto it = cache.find(*serialized); it != cache.end()) {
+                // add alias if the same body is already present
+                aliases.push_back(ebm::RefAlias{
+                    .hint = hint,
+                    .from = ebm::AnyRef{id.id},
+                    .to = ebm::AnyRef{it->second.id},
+                });
+                return it->second;
+            }
+            cache[*serialized] = id;
             return add_internal(id, std::move(body));
         }
 
@@ -133,6 +146,7 @@ namespace ebmgen {
         std::unordered_map<std::string, ID> cache;
         std::unordered_map<uint64_t, size_t> identifier_map;
         std::vector<Instance> instances;
+        std::vector<ebm::RefAlias>& aliases;  // for aliasing references
     };
     bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
 
@@ -219,14 +233,21 @@ namespace ebmgen {
     struct EBMRepository {
        private:
         ReferenceSource ident_source;
-        ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String> identifier_repo;
-        ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String> string_repo;
-        ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody> type_repo;
-        ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody> expression_repo;
-        ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody> statement_repo;
+        std::vector<ebm::RefAlias> aliases;
+        ReferenceRepository<ebm::IdentifierRef, ebm::Identifier, ebm::String, ebm::AliasHint::IDENTIFIER> identifier_repo{aliases};
+        ReferenceRepository<ebm::StringRef, ebm::StringLiteral, ebm::String, ebm::AliasHint::STRING> string_repo{aliases};
+        ReferenceRepository<ebm::TypeRef, ebm::Type, ebm::TypeBody, ebm::AliasHint::TYPE> type_repo{aliases};
+        ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody, ebm::AliasHint::EXPRESSION> expression_repo{aliases};
+        ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody, ebm::AliasHint::STATEMENT> statement_repo{aliases};
         std::vector<ebm::Loc> debug_locs;
 
        public:
+        EBMRepository() = default;
+        EBMRepository(const EBMRepository&) = delete;
+        EBMRepository& operator=(const EBMRepository&) = delete;
+        EBMRepository(EBMRepository&&) = delete;
+        EBMRepository& operator=(EBMRepository&&) = delete;
+
         void clear() {
             ident_source = ReferenceSource{};
             identifier_repo.clear();
@@ -307,7 +328,7 @@ namespace ebmgen {
 
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
             if (body.type.id.value() == 0) {
-                return unexpect_error("Expression type is not set");
+                return unexpect_error("Expression type is not set: {}", to_string(body.op));
             }
             return expression_repo.add(ident_source, std::move(body));
         }
@@ -371,6 +392,7 @@ namespace ebmgen {
     expected<ebm::TypeRef> get_encoder_return_type(ConverterContext& ctx);
     expected<ebm::TypeRef> get_decoder_return_type(ConverterContext& ctx);
     expected<ebm::ExpressionRef> get_int_literal(ConverterContext& ctx, std::uint64_t value);
+    ebm::ExpressionBody get_int_literal_body(ebm::TypeRef type, std::uint64_t value);
 
     expected<std::string> decode_base64(const std::shared_ptr<ast::StrLiteral>& lit);
 

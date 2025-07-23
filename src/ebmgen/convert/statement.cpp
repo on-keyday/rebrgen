@@ -510,6 +510,13 @@ namespace ebmgen {
                 MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
                 body = std::move(body_);
             }
+            else if (ctx.state().get_current_generate_type() == GenerateType::Decode) {
+                MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
+                auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
+                EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+                MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+                body = std::move(body_);
+            }
             else {
                 body.statement_kind = ebm::StatementOp::FIELD_DECL;
                 ebm::FieldDecl field_decl;
@@ -523,6 +530,8 @@ namespace ebmgen {
                 EBMA_CONVERT_TYPE(type_ref, node->field_type);
                 field_decl.field_type = type_ref;
                 field_decl.is_state_variable(node->is_state_variable);
+                MAYBE(parent_member_ref, ctx.state().is_visited(node->belong.lock(), GenerateType::Normal));
+                field_decl.parent_struct = parent_member_ref;
                 body.field_decl(std::move(field_decl));
             }
         }

@@ -27,9 +27,9 @@ namespace ebmgen {
             case ast::BinaryOp::less_or_eq:
                 return ebm::BinaryOp::less_or_eq;
             case ast::BinaryOp::grater:
-                return ebm::BinaryOp::grater;
+                return ebm::BinaryOp::greater;
             case ast::BinaryOp::grater_or_eq:
-                return ebm::BinaryOp::grater_or_eq;
+                return ebm::BinaryOp::greater_or_eq;
             case ast::BinaryOp::logical_and:
                 return ebm::BinaryOp::logical_and;
             case ast::BinaryOp::logical_or:
@@ -185,12 +185,11 @@ namespace ebmgen {
         }
     }
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::IntLiteral>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::LITERAL_INT;
         auto value = node->parse_as<std::uint64_t>();
         if (!value) {
             return unexpect_error("cannot parse int literal");
         }
-        body.int_value(*value);
+        body = get_int_literal_body(body.type, *value);
         return {};
     }
 

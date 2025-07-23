@@ -1,6 +1,7 @@
 #include "converter.hpp"
 #include <core/ast/traverse.h>
 #include <functional>
+#include "binary/log2i.h"
 #include "convert/helper.hpp"
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
@@ -57,6 +58,10 @@ namespace ebmgen {
         MAYBE(expressions_len, varint(expression_repo.get_all().size()));
         ebm.expressions_len = expressions_len;
         ebm.expressions = std::move(expression_repo.get_all());
+
+        MAYBE(aliases_len, varint(aliases.size()));
+        ebm.aliases_len = aliases_len;
+        ebm.aliases = std::move(aliases);
 
         MAYBE(loc_len, varint(debug_locs.size()));
 
@@ -143,10 +148,23 @@ namespace ebmgen {
         return get_unsigned_n_int(ctx, 64);
     }
 
+    ebm::ExpressionBody get_int_literal_body(ebm::TypeRef type, std::uint64_t value) {
+        ebm::ExpressionBody body;
+        body.type = type;
+        body.op = value >= (std::uint64_t(1) << 62) ? ebm::ExpressionOp::LITERAL_INT64 : ebm::ExpressionOp::LITERAL_INT;
+        if (body.op == ebm::ExpressionOp::LITERAL_INT64) {
+            body.int64_value(value);
+        }
+        else {
+            body.int_value(varint(value).value());  // failure at here is fatal, so we can use .value() directly
+        }
+        return body;
+    }
+
     expected<ebm::ExpressionRef> get_int_literal(ConverterContext& ctx, std::uint64_t value) {
         ebm::ExpressionBody body;
-        body.op = ebm::ExpressionOp::LITERAL_INT;
-        body.int_value(value);
+        MAYBE(t, get_unsigned_n_int(ctx, value == 0 ? 1 : futils::binary::log2i(value)));
+        body = get_int_literal_body(t, value);
         EBMA_ADD_EXPR(int_literal, std::move(body));
         return int_literal;
     }

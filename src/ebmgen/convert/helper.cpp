@@ -250,9 +250,10 @@ namespace ebmgen {
         return size;
     }
 
-    ebm::ExpressionBody make_can_read_stream(ebm::StreamType stream_type, ebm::Size num_bytes) {
+    ebm::ExpressionBody make_can_read_stream(ebm::TypeRef type, ebm::StreamType stream_type, ebm::Size num_bytes) {
         ebm::ExpressionBody body;
         body.op = ebm::ExpressionOp::CAN_READ_STREAM;
+        body.type = type;
         body.stream_type(stream_type);
         body.num_bytes(num_bytes);
         return body;

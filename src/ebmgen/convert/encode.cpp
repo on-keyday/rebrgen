@@ -291,6 +291,9 @@ namespace ebmgen {
         else if (auto aty = ast::as<ast::ArrayType>(typ)) {
             MAYBE_VOID(ok, encode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts, field));
         }
+        else if (auto sty = ast::as<ast::StructType>(typ)) {
+            MAYBE_VOID(ok, encode_struct_type(io_desc, ast::cast_to<ast::StructType>(typ), base_ref, lowered_stmts, field));
+        }
         else {
             return unexpect_error("Unsupported type for encoding: {}", node_type_to_string(typ->node_type));
         }

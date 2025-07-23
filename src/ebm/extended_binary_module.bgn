@@ -84,6 +84,7 @@ format StatementRef:
 enum ExpressionOp:
     :u8
     LITERAL_INT 
+    LITERAL_INT64
     LITERAL_BOOL 
     LITERAL_STRING 
     LITERAL_TYPE 
@@ -119,7 +120,9 @@ format ExpressionBody:
     op :ExpressionOp
     match op:
         ExpressionOp.LITERAL_INT:
-            int_value :u64
+            int_value :Varint
+        ExpressionOp.LITERAL_INT64:
+            int64_value :u64 # 64-bit integer value
         ExpressionOp.LITERAL_BOOL:
             bool_value :u8 # 0: false, 1: true other values are invalid
             bool_value == 0 || bool_value == 1
@@ -611,6 +614,19 @@ format StringLiteral:
     id :StringRef # Reference to this string in the string table
     body :String # String value
 
+enum AliasHint:
+    :u8
+    IDENTIFIER = 0 # Alias for an identifier
+    STRING = 1 # Alias for a string literal
+    TYPE = 2 # Alias for a type
+    EXPRESSION = 3 # Alias for an expression
+    STATEMENT = 4 # Alias for a statement
+
+format RefAlias:
+    hint :AliasHint # Type of alias
+    from :AnyRef # Reference to the original identifier, type, or expression
+    to :AnyRef # Reference to the alias identifier, type, or expression
+
 format ExtendedBinaryModule:
     magic: "EBMG" # Magic number for EBM format
     version :u8
@@ -625,5 +641,7 @@ format ExtendedBinaryModule:
     statements :[statements_len.value]Statement # Centralized statement table
     expressions_len :Varint # Number of expressions
     expressions :[expressions_len.value]Expression # Centralized expression table
+    aliases_len :Varint # Number of aliases
+    aliases :[aliases_len.value]RefAlias # Centralized alias table
     debug_info :DebugInfo # Debugging information
 

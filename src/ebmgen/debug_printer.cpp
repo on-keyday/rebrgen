@@ -33,6 +33,25 @@ namespace ebmgen {
         for (const auto& expr : module_.expressions) {
             expression_map_[expr.id.id.value()] = &expr;
         }
+        for (const auto& alias : module_.aliases) {
+            switch (alias.hint) {
+                case ebm::AliasHint::IDENTIFIER:
+                    identifier_map_[alias.from.id.value()] = identifier_map_[alias.to.id.value()];
+                    break;
+                case ebm::AliasHint::STRING:
+                    string_literal_map_[alias.from.id.value()] = string_literal_map_[alias.to.id.value()];
+                    break;
+                case ebm::AliasHint::TYPE:
+                    type_map_[alias.from.id.value()] = type_map_[alias.to.id.value()];
+                    break;
+                case ebm::AliasHint::EXPRESSION:
+                    expression_map_[alias.from.id.value()] = expression_map_[alias.to.id.value()];
+                    break;
+                case ebm::AliasHint::STATEMENT:
+                    statement_map_[alias.from.id.value()] = statement_map_[alias.to.id.value()];
+                    break;
+            }
+        }
     }
 
     // --- Helper functions to get objects from references ---

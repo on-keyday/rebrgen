@@ -87,10 +87,10 @@ namespace ebmgen {
 
     // main converter functions
 
-    ebm::ExpressionBody make_new_object_body(ebm::TypeRef type);
+    ebm::ExpressionBody make_default_value(ebm::TypeRef type);
 
-#define EBM_NEW_OBJECT(ref_name, typ) \
-    EBM_AST_EXPRESSION(ref_name, make_new_object_body, typ)
+#define EBM_DEFAULT_VALUE(ref_name, typ) \
+    EBM_AST_EXPRESSION(ref_name, make_default_value, typ)
 
     ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const, bool is_reference);
 
@@ -310,6 +310,14 @@ namespace ebmgen {
     EBMU_COUNTER_TYPE(ref_name##_type_____);           \
     EBM_AST_EXPRESSION(ref_name, make_get_remaining_bytes, ref_name##_type_____, stream_type)
 
+    ebm::StatementBody make_break(ebm::StatementRef loop_id);
+    ebm::StatementBody make_continue(ebm::StatementRef loop_id);
+
+#define EBM_BREAK(ref_name, loop_id) \
+    EBM_AST_STATEMENT(ref_name, make_break, loop_id)
+#define EBM_CONTINUE(ref_name, loop_id) \
+    EBM_AST_STATEMENT(ref_name, make_continue, loop_id)
+
     ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
@@ -318,7 +326,7 @@ namespace ebmgen {
 
 #define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                              \
     EBMU_U8_N_ARRAY(u8_n_array, n);                                        \
-    EBM_NEW_OBJECT(new_obj_ref, u8_n_array);                               \
+    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                            \
     EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);        \
     EBMU_UINT_TYPE(value_type, n * 8);                                     \
     EBMU_INT_LITERAL(zero, 0);                                             \

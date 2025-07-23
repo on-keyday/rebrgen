@@ -215,7 +215,7 @@ namespace ebmgen {
         MAYBE(candidate, decode_base64(typ->strong_ref));
 
         EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
-        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
+        EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);
         EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
 
         MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));

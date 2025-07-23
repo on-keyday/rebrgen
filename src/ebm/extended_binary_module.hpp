@@ -37,8 +37,8 @@ namespace ebm {
         not_equal = 11,
         less = 12,
         less_or_eq = 13,
-        grater = 14,
-        grater_or_eq = 15,
+        greater = 14,
+        greater_or_eq = 15,
         logical_and = 16,
         logical_or = 17,
     };
@@ -58,8 +58,8 @@ namespace ebm {
             case BinaryOp::not_equal: return "!=";
             case BinaryOp::less: return "<";
             case BinaryOp::less_or_eq: return "<=";
-            case BinaryOp::grater: return ">";
-            case BinaryOp::grater_or_eq: return ">=";
+            case BinaryOp::greater: return ">";
+            case BinaryOp::greater_or_eq: return ">=";
             case BinaryOp::logical_and: return "&&";
             case BinaryOp::logical_or: return "||";
         }
@@ -113,10 +113,10 @@ namespace ebm {
             return BinaryOp::less_or_eq;
         }
         if (str == ">") {
-            return BinaryOp::grater;
+            return BinaryOp::greater;
         }
         if (str == ">=") {
-            return BinaryOp::grater_or_eq;
+            return BinaryOp::greater_or_eq;
         }
         if (str == "&&") {
             return BinaryOp::logical_and;
@@ -207,7 +207,7 @@ namespace ebm {
         MEMBER_ACCESS = 9,
         TYPE_CAST = 10,
         RANGE = 11,
-        NEW_OBJECT = 12,
+        DEFAULT_VALUE = 12,
         IS_LITTLE_ENDIAN = 13,
         GET_STREAM_OFFSET = 14,
         GET_REMAINING_BYTES = 15,
@@ -231,7 +231,7 @@ namespace ebm {
             case ExpressionOp::MEMBER_ACCESS: return "MEMBER_ACCESS";
             case ExpressionOp::TYPE_CAST: return "TYPE_CAST";
             case ExpressionOp::RANGE: return "RANGE";
-            case ExpressionOp::NEW_OBJECT: return "NEW_OBJECT";
+            case ExpressionOp::DEFAULT_VALUE: return "DEFAULT_VALUE";
             case ExpressionOp::IS_LITTLE_ENDIAN: return "IS_LITTLE_ENDIAN";
             case ExpressionOp::GET_STREAM_OFFSET: return "GET_STREAM_OFFSET";
             case ExpressionOp::GET_REMAINING_BYTES: return "GET_REMAINING_BYTES";
@@ -284,8 +284,8 @@ namespace ebm {
         if (str == "RANGE") {
             return ExpressionOp::RANGE;
         }
-        if (str == "NEW_OBJECT") {
-            return ExpressionOp::NEW_OBJECT;
+        if (str == "DEFAULT_VALUE") {
+            return ExpressionOp::DEFAULT_VALUE;
         }
         if (str == "IS_LITTLE_ENDIAN") {
             return ExpressionOp::IS_LITTLE_ENDIAN;

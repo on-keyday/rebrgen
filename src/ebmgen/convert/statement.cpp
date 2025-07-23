@@ -33,7 +33,7 @@ namespace ebmgen {
         MAYBE(size_and_signed, get_integral_size_and_sign(ctx, type));
         auto [size, is_signed] = size_and_signed;
         EBMU_UINT_TYPE(value_type, size);
-        EBM_NEW_OBJECT(zero, value_type);
+        EBM_DEFAULT_VALUE(zero, value_type);
         EBM_UNARY_OP(max_unsigned, ebm::UnaryOp::bit_not, value_type, zero);
         auto result = max_unsigned;
         if (is_signed) {
@@ -85,7 +85,7 @@ namespace ebmgen {
                         start = s;
                     }
                     else {
-                        EBM_NEW_OBJECT(start_literal, base_type);
+                        EBM_DEFAULT_VALUE(start_literal, base_type);
                         start = start_literal;
                     }
                     if (l->end) {
@@ -148,7 +148,7 @@ namespace ebmgen {
                     MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(bop->right)));
                     EBMU_UINT_TYPE(u8_t, 8);
                     EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
-                    EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
+                    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);
                     EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
                     ebm::Block block;
                     block.container.reserve(2 + candidate.size());

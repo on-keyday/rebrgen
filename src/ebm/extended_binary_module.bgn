@@ -31,8 +31,8 @@ enum BinaryOp:
     not_equal = "!="
     less = "<"
     less_or_eq = "<="
-    grater = ">"
-    grater_or_eq = ">="
+    greater = ">"
+    greater_or_eq = ">="
     logical_and = "&&"
     logical_or = "||"
 
@@ -95,7 +95,7 @@ enum ExpressionOp:
     MEMBER_ACCESS 
     TYPE_CAST
     RANGE
-    NEW_OBJECT
+    DEFAULT_VALUE
     IS_LITTLE_ENDIAN # Check if the system or current context is little-endian
     GET_STREAM_OFFSET
     GET_REMAINING_BYTES

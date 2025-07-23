@@ -104,6 +104,7 @@ namespace ebmgen {
             if (!id) {
                 return unexpect_error(std::move(id.error()));
             }
+            cache[*serialized] = id.value();
             return add_internal(*id, std::move(body));
         }
 

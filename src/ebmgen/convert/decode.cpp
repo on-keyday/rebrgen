@@ -108,8 +108,8 @@ namespace ebmgen {
         if (auto locked_enum = ety->base.lock()) {
             if (locked_enum->base_type) {
                 EBMA_CONVERT_TYPE(to_ty, locked_enum->base_type);
-                EBM_NEW_OBJECT(new_, to_ty);
-                EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_var, to_ty, new_);
+                EBM_DEFAULT_VALUE(default_, to_ty);
+                EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_var, to_ty, default_);
                 MAYBE(decode_info, decode_field_type(locked_enum->base_type, tmp_var, nullptr));
                 EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
                 EBM_CAST(casted, io_desc.data_type, to_ty, tmp_var);
@@ -158,8 +158,9 @@ namespace ebmgen {
             return {};
         };
         std::optional<ebm::ExpressionRef> length;
+        std::optional<ebm::StatementRef> cond_loop;
         auto underlying_decoder = [&] -> expected<ebm::StatementRef> {
-            EBM_NEW_OBJECT(new_, element_type);
+            EBM_DEFAULT_VALUE(new_, element_type);
             EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_var, element_type, new_);
             MAYBE(decode_info, decode_field_type(aty->element_type, tmp_var, nullptr));
             EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
@@ -193,134 +194,78 @@ namespace ebmgen {
                 }
                 else if (field->eventual_follow == ast::Follow::fixed) {
                     auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
+                    EBMU_INT_LITERAL(last, tail);
                     EBM_GET_REMAINING_BYTES(remain_bytes, ebm::StreamType::INPUT);
-                    auto imm = immediate(m, tail);
-                    if (!imm) {
-                        return imm.error();
-                    }
-                    BM_NEW_ID(next_id, error, nullptr);
-                    m.op(AbstractOp::REMAIN_BYTES, [&](Code& c) {
-                        c.ident(next_id);
-                    });
-                    if (elem_is_int) {
-                        // remain_bytes = REMAIN_BYTES - tail
-                        // assert remain_bytes % elem_size == 0
-                        // decode_int_vector(read_bytes / elem_size)
-                        BM_BINARY(m.op, new_id, BinaryOp::sub, next_id, *imm);
-                        auto elem_size = immediate(m, *elem_is_int->bit_size / futils::bit_per_byte);
-                        if (!elem_size) {
-                            return elem_size.error();
-                        }
-                        auto imm0 = immediate(m, 0);
-                        if (!imm0) {
-                            return imm0.error();
-                        }
-                        BM_BINARY(m.op, mod, BinaryOp::mod, new_id, *elem_size);
-                        BM_BINARY(m.op, assert_expr, BinaryOp::equal, mod, *imm0);
-                        m.op(AbstractOp::ASSERT, [&](Code& c) {
-                            c.ref(assert_expr);
-                            c.belong(m.get_function());
-                        });
-                        BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-                        m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
-                            c.left_ref(base_ref);
-                            c.right_ref(new_id);
-                            c.endian(endian);
-                            c.bit_size(*varint(*elem_is_int->bit_size));
-                            c.belong(get_field_ref(m, field));
-                        });
-                        return none;
-                    }
-                    EBM_BINARY_OP(m.op, new_id, BinaryOp::grater, next_id, *imm);
-                    return conditional_loop(m, new_id, undelying_decoder);
+                    EBMU_BOOL_TYPE(bool_type);
+                    EBM_BINARY_OP(cond, ebm::BinaryOp::greater, bool_type, remain_bytes, last);
+                    MAYBE(element_decoder, underlying_decoder());
+                    EBM_WHILE_LOOP(loop, cond, element_decoder);
+                    cond_loop = loop;
                 }
                 else if (field->follow == ast::Follow::constant) {
                     auto next = field->next.lock();
                     if (!next) {
-                        return error("Invalid next field");
+                        return unexpect_error("Invalid next field");
                     }
                     auto str = ast::cast_to<ast::StrLiteralType>(next->field_type);
-                    auto str_ref = static_str(m, str->strong_ref);
-                    auto imm = immediate(m, *str->bit_size / futils::bit_per_byte);
-                    if (!imm) {
-                        return imm.error();
-                    }
+                    MAYBE(candidate, decode_base64(str->strong_ref));
+                    EBMU_U8_N_ARRAY(array_type, candidate.size());
+                    EBM_DEFAULT_VALUE(array_default, array_type);
+                    EBM_DEFINE_ANONYMOUS_VARIABLE(temporary_read_buffer, array_type, array_default);
 
-                    Storages s;
-                    s.length.value(2);
-                    s.storages.push_back(Storage{.type = StorageType::ARRAY});
-                    s.storages.back().size(*varint(*str->bit_size / futils::bit_per_byte));
-                    s.storages.push_back(Storage{.type = StorageType::UINT});
-                    s.storages.back().size(*varint(8));
-                    auto ref = m.get_storage_ref(s, &next->loc);
-                    if (!ref) {
-                        return ref.error();
-                    }
-                    BM_NEW_OBJECT(m.op, new_id, *ref);
-                    auto temporary_read_holder = define_typed_tmp_var(m, new_id, *ref, ast::ConstantLevel::variable);
-                    if (!temporary_read_holder) {
-                        return temporary_read_holder.error();
-                    }
-                    m.op(AbstractOp::LOOP_INFINITE);
-                    {
-                        auto endian = m.get_endian(Endian::unspec, false);
-                        if (!endian) {
-                            return endian.error();
+                    MAYBE(size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
+
+                    auto peek_io = make_io_data(temporary_read_buffer, array_type, io_desc.endian, size);
+                    peek_io.endian.is_peek(true);
+                    EBM_READ_DATA(temporary_read, std::move(peek_io));
+
+                    ebm::ExpressionRef cond;
+                    EBMU_BOOL_TYPE(bool_type);
+                    for (size_t i = 0; i < candidate.size(); i++) {
+                        EBMU_INT_LITERAL(i_ref, i);
+                        EBMU_INT_LITERAL(literal, static_cast<unsigned char>(candidate[i]));
+                        EBM_INDEX(array_index, array_type, temporary_read_buffer, i_ref);
+                        EBM_BINARY_OP(check, ebm::BinaryOp::equal, bool_type, array_index, literal);
+                        if (i == 0) {
+                            cond = check;
                         }
-                        m.op(AbstractOp::PEEK_INT_VECTOR, [&](Code& c) {
-                            c.left_ref(*temporary_read_holder);
-                            c.right_ref(*imm);
-                            c.endian(*endian);
-                            c.bit_size(*varint(8));
-                            c.belong(get_field_ref(m, field));
-                        });
-                        Storages isOkFlag;
-                        isOkFlag.length.value(1);
-                        isOkFlag.storages.push_back(Storage{.type = StorageType::BOOL});
-                        BM_GET_STORAGE_REF_WITH_LOC(gen, error, isOkFlag, &next->loc);
-                        BM_NEW_OBJECT(m.op, flagObj, gen);
-                        BM_ERROR_WRAP(isOK, error, (define_bool_tmp_var(m, flagObj, ast::ConstantLevel::variable)));
-                        auto immTrue = immediate_bool(m, true);
-                        if (!immTrue) {
-                            return immTrue.error();
-                        }
-                        auto immFalse = immediate_bool(m, false);
-                        if (!immFalse) {
-                            return immFalse.error();
-                        }
-                        auto err = do_assign(m, nullptr, nullptr, isOK, *immTrue);
-                        if (err) {
-                            return err;
-                        }
-                        err = counter_loop(m, *imm, [&](Varint i) {
-                            BM_BEGIN_COND_BLOCK(m.op, m.code, cond_block, nullptr);
-                            BM_INDEX(m.op, index_str, *str_ref, i);
-                            BM_INDEX(m.op, index_peek, *temporary_read_holder, i);
-                            BM_BINARY(m.op, cmp, BinaryOp::not_equal, index_str, index_peek);
-                            BM_END_COND_BLOCK(m.op, m.code, cond_block, cmp);
-                            m.init_phi_stack(cmp.value());
-                            BM_REF(m.op, AbstractOp::IF, cond_block);
-                            err = do_assign(m, nullptr, nullptr, isOK, *immFalse);
-                            m.op(AbstractOp::BREAK);
-                            m.op(AbstractOp::END_IF);
-                            return insert_phi(m, m.end_phi_stack());
-                        });
-                        if (err) {
-                            return err;
-                        }
-                        BM_REF(m.op, AbstractOp::IF, isOK);
-                        m.op(AbstractOp::BREAK);
-                        m.op(AbstractOp::END_IF);
-                        err = undelying_decoder();
-                        if (err) {
-                            return err;
+                        else {
+                            EBM_BINARY_OP(new_cond, ebm::BinaryOp::logical_and, bool_type, cond, check);
+                            cond = new_cond;
                         }
                     }
-                    m.op(AbstractOp::END_LOOP);
-                    return none;
+                    if (cond.id.value() == 0) {
+                        return unexpect_error("Condition expression is empty");
+                    }
+                    MAYBE(loop_id, ctx.repository().new_statement_id());
+                    EBM_BREAK(break_stmt, loop_id);
+
+                    EBM_IF_STATEMENT(if_stmt, cond, break_stmt, {});
+                    MAYBE(data_decoder, underlying_decoder());
+
+                    ebm::LoopStatement loop_stmt;
+                    loop_stmt.loop_type = ebm::LoopType::INFINITE;
+                    // for:
+                    //    temporary_read_buffer = peek(candidate.size())
+                    //    if temporary_read_buffer == candidate:
+                    //        break
+                    //    data = decode_element()
+                    //    append(base_ref, data)
+                    ebm::Block loop_body;
+                    append(loop_body, temporary_read_buffer_def);
+                    append(loop_body, temporary_read);
+                    append(loop_body, if_stmt);
+                    append(loop_body, data_decoder);
+                    EBM_BLOCK(loop_body_ref, std::move(loop_body));
+                    loop_stmt.body = loop_body_ref;
+
+                    auto loop = make_loop(std::move(loop_stmt));
+
+                    EBMA_ADD_STATEMENT(loop_ref, loop_id, std::move(loop));
+                    cond_loop = loop_ref;
                 }
                 else {
-                    return error("Invalid follow type");
+                    return unexpect_error("Invalid follow type");
                 }
             }
             else {
@@ -328,39 +273,33 @@ namespace ebmgen {
             }
         }
         else {
-            BM_GET_EXPR(id, m, arr->length);
-            auto expr_type = arr->length->expr_type;
-            if (auto u = ast::as<ast::UnionType>(expr_type)) {
-                if (!u->common_type) {
-                    return error("Union type must have common type");
-                }
-                expr_type = u->common_type;
+            EBMA_CONVERT_EXPRESSION(length_v, aty->length);
+            auto body = ctx.repository().get_expression(length_v);
+            if (!body) {
+                return unexpect_error("Array length expression is not found");
             }
-            BM_DEFINE_STORAGE(s, m, expr_type);
-            auto len_ident = define_typed_tmp_var(m, id, s, ast::ConstantLevel::immutable_variable);
-            if (!len_ident) {
-                return len_ident.error();
-            }
-            if (elem_is_int) {
-                BM_GET_ENDIAN(endian, elem_is_int->endian, elem_is_int->is_signed);
-                m.op(AbstractOp::DECODE_INT_VECTOR, [&](Code& c) {
-                    c.left_ref(base_ref);
-                    c.right_ref(*len_ident);
-                    c.endian(endian);
-                    c.bit_size(*varint(*elem_is_int->bit_size));
-                    c.belong(get_field_ref(m, field));
-                });
-                return none;
-            }
-            m.op(AbstractOp::RESERVE_SIZE, [&](Code& c) {
-                c.left_ref(base_ref);
-                c.right_ref(*len_ident);
-                c.reserve_type(ReserveType::DYNAMIC);
-            });
-            return counter_loop(m, *len_ident, [&](Varint) {
-                return undelying_decoder();
-            });
+            EBMU_COUNTER_TYPE(counter_type);
+            EBM_CAST(casted_length, counter_type, body->body.type, length_v);
+            MAYBE_VOID(ok, set_dynamic_size(casted_length));
+            length = casted_length;
         }
+        if (length && cond_loop) {
+            return unexpect_error("Both length and cond_loop are set, which is not allowed; maybe BUG");
+        }
+        if (cond_loop) {
+            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, *cond_loop));
+        }
+        else if (length) {
+            MAYBE(decode_info, underlying_decoder());
+            EBMU_COUNTER_TYPE(counter_type);
+            EBM_COUNTER_LOOP_START(counter);
+            EBM_COUNTER_LOOP_END(lowered_stmt, counter, *length, decode_info);
+            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_stmt));
+        }
+        else {
+            return unexpect_error("Neither length nor cond_loop is set, which is not allowed; maybe BUG");
+        }
+        return {};
     }
 
     expected<void> compare_string_array(ConverterContext& ctx, ebm::Block& block, ebm::ExpressionRef n_array, const std::string& candidate) {
@@ -380,7 +319,7 @@ namespace ebmgen {
         MAYBE(candidate, decode_base64(typ->strong_ref));
 
         EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
-        EBM_NEW_OBJECT(new_obj_ref, u8_n_array);
+        EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);
         EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);
 
         MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
@@ -431,6 +370,40 @@ namespace ebmgen {
 
         append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));
         return {};
+    }
+
+    expected<ebm::StatementBody> DecoderConverter::decode_field_type(const std::shared_ptr<ast::Type>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
+        if (auto ity = ast::as<ast::IdentType>(typ)) {
+            return decode_field_type(ity->base.lock(), base_ref, field);
+        }
+        EBMA_CONVERT_TYPE(typ_ref, typ, field);
+        ebm::IOData io_desc = make_io_data(base_ref, typ_ref, ebm::EndianExpr{}, ebm::Size{});
+        ebm::LoweredStatements lowered_stmts;  // omit if empty
+
+        if (auto ity = ast::as<ast::IntType>(typ)) {
+            MAYBE_VOID(ok, decode_int_type(io_desc, ast::cast_to<ast::IntType>(typ), base_ref, lowered_stmts));
+        }
+        else if (auto fty = ast::as<ast::FloatType>(typ)) {
+            MAYBE_VOID(ok, decode_float_type(io_desc, ast::cast_to<ast::FloatType>(typ), base_ref, lowered_stmts));
+        }
+        else if (auto str_lit = ast::as<ast::StrLiteralType>(typ)) {
+            MAYBE_VOID(ok, decode_str_literal_type(io_desc, ast::cast_to<ast::StrLiteralType>(typ), base_ref, lowered_stmts));
+        }
+        else if (auto ety = ast::as<ast::EnumType>(typ)) {
+            MAYBE_VOID(ok, decode_enum_type(io_desc, ast::cast_to<ast::EnumType>(typ), base_ref, lowered_stmts, field));
+        }
+        else if (auto aty = ast::as<ast::ArrayType>(typ)) {
+            MAYBE_VOID(ok, decode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts, field));
+        }
+        else {
+            return unexpect_error("Unsupported type for encoding: {}", node_type_to_string(typ->node_type));
+        }
+        assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
+        if (lowered_stmts.container.size()) {
+            EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
+            io_desc.lowered_stmt = lowered_stmt;
+        }
+        return make_read_data(std::move(io_desc));
     }
 
 }  // namespace ebmgen

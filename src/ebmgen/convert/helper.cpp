@@ -3,9 +3,9 @@
 #include "ebm/extended_binary_module.hpp"
 
 namespace ebmgen {
-    ebm::ExpressionBody make_new_object_body(ebm::TypeRef type) {
+    ebm::ExpressionBody make_default_value(ebm::TypeRef type) {
         ebm::ExpressionBody body;
-        body.op = ebm::ExpressionOp::NEW_OBJECT;
+        body.op = ebm::ExpressionOp::DEFAULT_VALUE;
         body.type = type;
         return body;
     }
@@ -271,6 +271,19 @@ namespace ebmgen {
         body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
         body.type = type;
         body.stream_type(stream_type);
+        return body;
+    }
+
+    ebm::StatementBody make_break(ebm::StatementRef loop_id) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::BREAK;
+        body.break_(ebm::LoopFlowControl{.related_statement = loop_id});
+        return body;
+    }
+    ebm::StatementBody make_continue(ebm::StatementRef loop_id) {
+        ebm::StatementBody body;
+        body.statement_kind = ebm::StatementOp::CONTINUE;
+        body.continue_(ebm::LoopFlowControl{.related_statement = loop_id});
         return body;
     }
 

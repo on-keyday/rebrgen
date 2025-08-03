@@ -25,7 +25,7 @@ namespace rebgn {
 
         // Dummy BinaryModule
         rebgn::BinaryModule bm;
-        bm.code.reserve(30); // Reserve some space
+        bm.code.reserve(30);  // Reserve some space
 
         // Populate identifiers.refs and ident_indexes.refs for dummy data
         // This simulates the data that would be loaded into Context
@@ -36,7 +36,7 @@ namespace rebgn {
 
         rebgn::IdentIndex ident_index_456;
         ident_index_456.ident = rebgn::Varint(456);
-        ident_index_456.index = rebgn::Varint(1); // Index of IMMEDIATE_STRING
+        ident_index_456.index = rebgn::Varint(1);  // Index of IMMEDIATE_STRING
         bm.ident_indexes.refs.push_back(ident_index_456);
 
         rebgn::StringRef string_ref_789;
@@ -46,7 +46,7 @@ namespace rebgn {
 
         rebgn::IdentIndex ident_index_789;
         ident_index_789.ident = rebgn::Varint(789);
-        ident_index_789.index = rebgn::Varint(18); // Index of DEFINE_VARIABLE
+        ident_index_789.index = rebgn::Varint(18);  // Index of DEFINE_VARIABLE
         bm.ident_indexes.refs.push_back(ident_index_789);
 
         // Add IdentIndex for IMMEDIATE_INT at index 2
@@ -110,13 +110,13 @@ namespace rebgn {
         bm.identifiers.refs.push_back(error_string_ref);
 
         rebgn::Param error_param;
-        error_param.refs.push_back(rebgn::Varint(220)); // Reference to the string literal
+        error_param.refs.push_back(rebgn::Varint(220));  // Reference to the string literal
 
         // Dummy Context setup
-        std::vector<unsigned char> buffer; // Buffer for dummy_writer
-        futils::binary::writer dummy_writer{futils::view::wvec(buffer)}; // Create a dummy writer
-        bm2::Output dummy_output; // Create a dummy output
-        auto dummy_escape_ident = [](bm2::Context& ctx, std::uint64_t id, std::string& s){ /* do nothing */ };
+        std::vector<unsigned char> buffer;                                // Buffer for dummy_writer
+        futils::binary::writer dummy_writer{futils::view::wvec(buffer)};  // Create a dummy writer
+        bm2::Output dummy_output;                                         // Create a dummy output
+        auto dummy_escape_ident = [](bm2::Context& ctx, std::uint64_t id, std::string& s) { /* do nothing */ };
         bm2::Context ctx(dummy_writer, bm, dummy_output, "r", "w", "this", dummy_escape_ident);
 
         // 0: IMMEDIATE_INT 123
@@ -143,8 +143,8 @@ namespace rebgn {
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::BINARY;
         bm.code.back().bop(rebgn::BinaryOp::add);
-        bm.code.back().left_ref(rebgn::Varint(2)); // refers to code[2] (IMMEDIATE_INT 10)
-        bm.code.back().right_ref(rebgn::Varint(3)); // refers to code[3] (IMMEDIATE_INT 20)
+        bm.code.back().left_ref(rebgn::Varint(2));   // refers to code[2] (IMMEDIATE_INT 10)
+        bm.code.back().right_ref(rebgn::Varint(3));  // refers to code[3] (IMMEDIATE_INT 20)
 
         // 5: IMMEDIATE_INT 5 (for unary op)
         bm.code.emplace_back();
@@ -155,7 +155,7 @@ namespace rebgn {
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::UNARY;
         bm.code.back().uop(rebgn::UnaryOp::minus_sign);
-        bm.code.back().ref(rebgn::Varint(5)); // refers to code[5] (IMMEDIATE_INT 5)
+        bm.code.back().ref(rebgn::Varint(5));  // refers to code[5] (IMMEDIATE_INT 5)
 
         // 7: IMMEDIATE_INT 1 (for if condition and loop condition)
         bm.code.emplace_back();
@@ -165,7 +165,7 @@ namespace rebgn {
         // 8: IF (condition ref=7)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::IF;
-        bm.code.back().ref(rebgn::Varint(7)); // refers to code[7] (IMMEDIATE_INT 1)
+        bm.code.back().ref(rebgn::Varint(7));  // refers to code[7] (IMMEDIATE_INT 1)
 
         // 9: IMMEDIATE_INT 100 (then block content)
         bm.code.emplace_back();
@@ -175,7 +175,7 @@ namespace rebgn {
         // 10: ELIF (condition ref=7)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::ELIF;
-        bm.code.back().ref(rebgn::Varint(7)); // refers to code[7] (IMMEDIATE_INT 1)
+        bm.code.back().ref(rebgn::Varint(7));  // refers to code[7] (IMMEDIATE_INT 1)
 
         // 11: IMMEDIATE_INT 200 (elif then block content)
         bm.code.emplace_back();
@@ -202,7 +202,7 @@ namespace rebgn {
         // 16: LOOP_CONDITION (condition ref=7)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::LOOP_CONDITION;
-        bm.code.back().ref(rebgn::Varint(7)); // refers to code[7] (IMMEDIATE_INT 1)
+        bm.code.back().ref(rebgn::Varint(7));  // refers to code[7] (IMMEDIATE_INT 1)
 
         // 17: RETURN_TYPE (no expression for now)
         bm.code.emplace_back();
@@ -212,7 +212,7 @@ namespace rebgn {
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::DEFINE_VARIABLE;
         bm.code.back().ident(rebgn::Varint(789));
-        bm.code.back().ref(rebgn::Varint(2)); // refers to code[2] (IMMEDIATE_INT 10)
+        bm.code.back().ref(rebgn::Varint(2));  // refers to code[2] (IMMEDIATE_INT 10)
 
         // Test with IMMEDIATE_INT
         generated_expr = generate_expression_from_code(ctx, 0, flags);
@@ -271,8 +271,8 @@ namespace rebgn {
         // 19: PROPERTY_ASSIGN (left_ref=2, right_ref=3)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::PROPERTY_ASSIGN;
-        bm.code.back().left_ref(rebgn::Varint(2)); // refers to code[2] (IMMEDIATE_INT 10)
-        bm.code.back().right_ref(rebgn::Varint(3)); // refers to code[3] (IMMEDIATE_INT 20)
+        bm.code.back().left_ref(rebgn::Varint(2));   // refers to code[2] (IMMEDIATE_INT 10)
+        bm.code.back().right_ref(rebgn::Varint(3));  // refers to code[3] (IMMEDIATE_INT 20)
 
         // Test with PROPERTY_ASSIGN
         generated_expr = generate_expression_from_code(ctx, 19, flags);
@@ -283,7 +283,7 @@ namespace rebgn {
         // 20: ASSERT (ref=7)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::ASSERT;
-        bm.code.back().ref(rebgn::Varint(7)); // refers to code[7] (IMMEDIATE_INT 1)
+        bm.code.back().ref(rebgn::Varint(7));  // refers to code[7] (IMMEDIATE_INT 1)
 
         // Test with ASSERT
         generated_stmt = generate_statement_from_code(ctx, 20, flags);
@@ -294,8 +294,8 @@ namespace rebgn {
         // 21: LENGTH_CHECK (left_ref=2, right_ref=3)
         bm.code.emplace_back();
         bm.code.back().op = rebgn::AbstractOp::LENGTH_CHECK;
-        bm.code.back().left_ref(rebgn::Varint(2)); // refers to code[2] (IMMEDIATE_INT 10)
-        bm.code.back().right_ref(rebgn::Varint(3)); // refers to code[3] (IMMEDIATE_INT 20)
+        bm.code.back().left_ref(rebgn::Varint(2));   // refers to code[2] (IMMEDIATE_INT 10)
+        bm.code.back().right_ref(rebgn::Varint(3));  // refers to code[3] (IMMEDIATE_INT 20)
 
         // Test with LENGTH_CHECK
         generated_stmt = generate_statement_from_code(ctx, 21, flags);
@@ -557,7 +557,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 }
 
 int main(int argc, char** argv) {
+#ifdef _WIN32
     _set_error_mode(_OUT_TO_STDERR);
+#endif
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags, [](auto&& str, bool err) { cout << str; },

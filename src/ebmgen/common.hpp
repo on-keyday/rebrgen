@@ -1,0 +1,108 @@
+/*license*/
+#pragma once
+#include <error/error.h>
+#include <helper/expected.h>
+#include <format>
+#include <ebm/extended_binary_module.hpp>
+#include <source_location>
+namespace brgen::ast {}
+
+namespace ebmgen {
+    namespace ast = brgen::ast;
+    using Error = futils::error::Error<std::allocator<char>, std::string>;
+
+    template <typename T>
+    using expected = futils::helper::either::expected<T, Error>;
+
+#define FORMAT_ARG std::format_string<Args...>
+    template <typename... Args>
+    Error error(FORMAT_ARG fmt, Args&&... args) {
+        return futils::error::StrError{
+            std::format(fmt, std::forward<Args>(args)...),
+        };
+    }
+
+    struct LocationInfoError {
+        std::source_location loc;
+        const char* expr;
+        const char* output;
+        void error(auto&& pb) const {
+            if (expr) {
+                futils::strutil::append(pb, "Expression: ");
+                if (output) {
+                    futils::strutil::append(pb, output);
+                    futils::strutil::append(pb, " = ");
+                }
+                futils::strutil::append(pb, expr);
+                futils::strutil::append(pb, "<");
+            }
+            futils::strutil::append(pb, " at ");
+            futils::strutil::append(pb, loc.file_name());
+            futils::strutil::append(pb, ":");
+            futils::number::to_string(pb, loc.line());
+            futils::strutil::append(pb, ":");
+            futils::number::to_string(pb, loc.column());
+            futils::strutil::append(pb, " in ");
+            futils::strutil::append(pb, loc.function_name());
+        }
+    };
+
+    template <typename... Args>
+    futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, FORMAT_ARG fmt, Args&&... args) {
+        return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
+            .err = LocationInfoError{.loc = loc},
+            .before = error(fmt, std::forward<Args>(args)...),
+            .sep = '\n',
+        }));
+    }
+
+    inline futils::helper::either::unexpected<Error> unexpect_error_with_loc(std::source_location loc, Error&& err, const char* output = nullptr, const char* expr_str = nullptr) {
+        return futils::helper::either::unexpected(Error(futils::error::ErrList<Error>{
+            .err = LocationInfoError{loc, expr_str, output},
+            .before = std::move(err),
+            .sep = '\n',
+        }));
+    }
+
+#define unexpect_error(...) \
+    unexpect_error_with_loc(std::source_location::current(), __VA_ARGS__)
+
+    constexpr auto none = Error();
+
+    constexpr ebm::Varint null_varint = ebm::Varint();
+
+    constexpr expected<ebm::Varint> varint(std::uint64_t n) {
+        ebm::Varint v;
+        if (n < 0x40) {
+            v.prefix(0);
+            v.value(n);
+        }
+        else if (n < 0x4000) {
+            v.prefix(1);
+            v.value(n);
+        }
+        else if (n < 0x40000000) {
+            v.prefix(2);
+            v.value(n);
+        }
+        else if (n < 0x4000000000000000) {
+            v.prefix(3);
+            v.value(n);
+        }
+        else {
+            return unexpect_error("Invalid varint value: {}", n);
+        }
+        return v;
+    }
+
+    template <class T>
+    void append(T& container, const typename decltype(T::container)::value_type& value) {
+        container.container.push_back(value);
+        container.len = varint(container.container.size()).value();
+    }
+
+    template <typename T>
+    concept AnyRef = requires(T t) {
+        { t.id } -> std::convertible_to<ebm::Varint>;
+    };
+}  // namespace ebmgen

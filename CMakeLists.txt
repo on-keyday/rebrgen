@@ -1,9 +1,21 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(rebrgen)
-
+enable_testing()   
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 23)
+
+set(INSTALL_GTEST OFF)
+include(FetchContent)  
+FetchContent_Declare( 
+    googletest
+    DOWNLOAD_EXTRACT_TIMESTAMP true
+    # Specify the commit you depend on and update it regularly.
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip 
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE) 
+FetchContent_MakeAvailable(googletest)
 
 if("$ENV{BUILD_MODE}" STREQUAL "web")
 add_compile_options(-fexperimental-library)
@@ -24,9 +36,13 @@ include_directories("$ENV{FUTILS_DIR}/src/include")
 link_directories("$ENV{FUTILS_DIR}/lib")
 include_directories("src")
 
+
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
 add_library(bm SHARED "src/bm/binary_module.cpp")
+
+add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
 
 add_executable(bmgen
     "src/bmgen/main.cpp" 
@@ -49,6 +65,25 @@ add_executable(bmgen
     "src/bmgen/transform/fallback/endian.cpp"
 )
 
+add_executable(ebmgen
+    "src/ebmgen/main.cpp"
+)
+
+add_library(ebmgen_lib STATIC
+    "src/ebmgen/convert.cpp"
+    "src/ebmgen/converter.cpp"
+    "src/ebmgen/load_json.cpp"
+    "src/ebmgen/convert/statement.cpp"
+    "src/ebmgen/convert/expression.cpp"
+    "src/ebmgen/convert/type.cpp"
+    "src/ebmgen/debug_printer.cpp"
+    "src/ebmgen/convert/helper.cpp"
+    "src/ebmgen/convert/encode.cpp"
+    "src/ebmgen/convert/decode.cpp"
+)
+
+target_link_libraries(ebmgen_lib ebm futils)
+target_link_libraries(ebmgen ebmgen_lib)
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"
@@ -62,15 +97,25 @@ add_executable(gen_template
     "src/bm2/gen_template/hook_load.cpp"
 )
 
+#add_executable(gen_template2
+#    "src/bm2/gen_template2/main.cpp"
+#)
+
 add_subdirectory("src")
+#add_subdirectory("src/ebmgen/test")
 
 target_link_libraries(bmgen futils bm)
+target_link_libraries(ebmgen futils ebm)
 target_link_libraries(gen_template futils)
+#target_link_libraries(gen_template2 futils bm)
 if(UNIX)
 set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
+#set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
 endif()
 install(TARGETS bmgen bm DESTINATION tool)
+install(TARGETS ebmgen ebm DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
+#install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 if(UNIX)

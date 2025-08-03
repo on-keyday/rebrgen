@@ -100,12 +100,34 @@
       "name": "Debug gen_template",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/gen_template",
+      "program": "${workspaceRoot}/tool/gen_template2",
       "args": [
+        "--lang",
+        "test",
         "--config-file",
         "src/bm2python/config.json",
         "--hook-dir",
         "src/bm2python/hook"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}",
+      "environment": [],
+      "console": "integratedTerminal"
+      //"preLaunchTask": "build",
+      //"symbolSearchPath": "lib\\"
+    },
+    {
+      "name": "Debug ebmgen",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tool/ebmgen",
+      "args": [
+        "-i",
+        "${workspaceRoot}/save/simple.json",
+        "-o",
+        "${workspaceRoot}/save/out.ebm",
+        "-d",
+        "${workspaceRoot}/save/debug_output.txt"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

@@ -354,7 +354,90 @@ namespace ebmgen {
                 }
             }
         }
+        /*
         body.struct_decl(std::move(struct_decl));
+        {
+            auto fmt_ident = m.lookup_ident(node->ident);
+            if (!fmt_ident) {
+                return fmt_ident.error();
+            }
+            auto fn = node->encode_fn.lock();
+            if (fn) {
+                auto ident = m.lookup_ident(fn->ident);
+                if (!ident) {
+                    return ident.error();
+                }
+                m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
+                    c.left_ref(*fmt_ident);
+                    c.right_ref(*ident);
+                });
+                return none;
+            }
+            auto temporary_ident = std::make_shared<ast::Ident>(node->loc, "encode");
+            temporary_ident->base = node;  // for lookup
+            auto new_id = m.lookup_ident(temporary_ident);
+            if (!new_id) {
+                return new_id.error();
+            }
+            m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
+                c.ident(*new_id);
+                c.belong(*fmt_ident);
+                c.func_type(FunctionType::ENCODE);
+            });
+            auto typ = m.get_storage_ref(Storages{
+                                             .length = varint(1).value(),
+                                             .storages = {
+                                                 Storage{.type = StorageType::CODER_RETURN},
+                                             },
+                                         },
+                                         &node->loc);
+            if (!typ) {
+                return typ.error();
+            }
+            m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
+                c.type(*typ);
+            });
+            m.on_encode_fn = true;
+            m.init_phi_stack(0);  // make it temporary
+            auto f = m.enter_function(*new_id);
+            auto err = foreach_node(m, node->body->elements, [&](auto& n) {
+                if (auto found = m.bit_field_begin.find(n);
+                    found != m.bit_field_begin.end()) {
+                    auto new_id = m.new_id(nullptr);
+                    if (!new_id) {
+                        return error("Failed to generate new id");
+                    }
+                    auto typ = m.bit_field_variability[n];
+                    auto field = ast::as<ast::Field>(n);
+                    m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
+                        c.ident(*new_id);
+                        c.belong(found->second);
+                        c.packed_op_type(typ);
+                        c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr), false));
+                    });
+                }
+                auto err = convert_node_encode(m, n);
+                if (m.bit_field_end.contains(n)) {
+                    m.op(AbstractOp::END_ENCODE_PACKED_OPERATION);
+                }
+                return err;
+            });
+            if (err) {
+                return err;
+            }
+            f.execute();
+            m.op(AbstractOp::RET_SUCCESS, [&](Code& c) {
+                c.belong(*new_id);
+            });
+            m.op(AbstractOp::END_FUNCTION);
+            m.end_phi_stack();  // remove temporary
+            m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
+                c.left_ref(*fmt_ident);
+                c.right_ref(*new_id);
+            });
+            return none;
+        }
+        */
         return {};
     }
 

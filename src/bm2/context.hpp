@@ -37,11 +37,13 @@ namespace bm2 {
 
         std::vector<std::string> current_r;
         std::vector<std::string> current_w;
+        std::vector<std::string> current_offset;
 
         bool on_assign = false;
 
         std::string root_r = "r";
         std::string root_w = "w";
+        std::string root_offset = "*offset";
         std::string root_this = "(*this)";
 
         std::string r() {
@@ -49,6 +51,13 @@ namespace bm2 {
                 return root_r;
             }
             return current_r.back();
+        }
+
+        std::string offset() {
+            if (current_offset.empty()) {
+                return root_offset;
+            }
+            return current_offset.back();
         }
 
         std::string w() {

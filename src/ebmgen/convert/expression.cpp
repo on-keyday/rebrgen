@@ -55,8 +55,6 @@ namespace ebmgen {
                 return ebm::UnaryOp::logical_not;
             case ast::UnaryOp::minus_sign:
                 return ebm::UnaryOp::minus_sign;
-            case ast::UnaryOp::bit_not:
-                return ebm::UnaryOp::bit_not;
             default:
                 return unexpect_error("Unsupported unary operator");
         }

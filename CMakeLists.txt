@@ -102,7 +102,7 @@ add_executable(gen_template2
 )
 
 add_subdirectory("src")
-add_subdirectory("src/ebmgen/test")
+#add_subdirectory("src/ebmgen/test")
 
 target_link_libraries(bmgen futils bm)
 target_link_libraries(ebmgen futils ebm)

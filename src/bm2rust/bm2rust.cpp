@@ -2792,6 +2792,38 @@ namespace bm2rust {
                         scope.execute();
                         ctx.cw.writeln("}");
 
+                        count = 0;
+                        ctx.cw.writeln("impl std::convert::From<", ident, "> for std::option::Option<&str> {");
+                        {
+                            auto scope0 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("fn from(e: ", ident, ") -> Self {");
+
+                            auto scope1 = ctx.cw.indent_scope();
+                            ctx.cw.writeln("match e {");
+                            auto scope2 = ctx.cw.indent_scope();
+                            for (size_t j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
+                                if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
+                                    auto member = ctx.ident_table[bm.code[j].ident().value().value()];
+                                    auto str_ref = bm.code[j].right_ref().value().value();
+                                    if (str_ref != 0) {
+                                        auto str = ctx.string_table[str_ref];
+                                        ctx.cw.writeln(evaluated[count], " => Some(\"", str, "\"),");
+                                    }
+                                    else {
+                                        ctx.cw.writeln(evaluated[count], " => Some(\"", member, "\"),");
+                                    }
+                                    count++;
+                                }
+                            }
+                            ctx.cw.writeln("_ =>  None,");
+                            scope2.execute();
+                            ctx.cw.writeln("}");
+                            scope1.execute();
+                            ctx.cw.writeln("}");
+                            scope0.execute();
+                        }
+                        ctx.cw.writeln("}");
+
                         ctx.cw.writeln("impl ", ident, " {");
                         auto scope3 = ctx.cw.indent_scope();
                         ctx.cw.writeln("pub fn is_known(&self) -> bool {");

@@ -170,3 +170,8 @@ format Match:
         value :u32
     else:
         value :u64
+
+enum NoBaseEnum:
+    A
+    B
+    

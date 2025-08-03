@@ -1305,7 +1305,8 @@ namespace bm2rust {
                                 else {
                                     value = "if value {1} else {0}";
                                 }
-                                w2.writeln("self.", field_name, " |= (", value, " as ", type, ") << ", std::format("{}", bit_size - consumed_size), ";");
+                                auto shift = std::format("{}", bit_size - consumed_size);
+                                w2.writeln("self.", field_name, " = self.", field_name, "& !(", mask, "<< ", shift, ") | ((", value, " as ", type, ") << ", shift, ");");
                                 w2.writeln("true");
                                 scope3.execute();
                                 w2.writeln("}");
@@ -2726,12 +2727,13 @@ namespace bm2rust {
                         break;
                     }
                     case rebgn::AbstractOp::DECLARE_ENUM: {
-                        auto& ident = ctx.ident_table[code.ref().value().value()];
+                        auto& enum_name = ctx.ident_table[code.ref().value().value()];
                         TmpCodeWriter tmp;
                         std::string base_type;
                         auto def = ctx.ident_index_table[code.ref().value().value()];
                         size_t count = 0;
                         std::vector<std::string> evaluated;
+                        std::vector<std::string> enum_members;
                         auto base_type_ref = ctx.bm.code[def].type().value();
                         if (base_type_ref.ref.value() != 0) {
                             base_type = type_to_string(ctx, base_type_ref);
@@ -2741,33 +2743,41 @@ namespace bm2rust {
                                 auto ident = ctx.ident_table[bm.code[j].ident().value().value()];
                                 auto init = ctx.ident_index_table[bm.code[j].left_ref().value().value()];
                                 auto ev = eval(bm.code[init], ctx);
-                                if (count == 0) {
+                                if (count == 0 && !base_type.size()) {
                                     tmp.writeln("#[default]");
                                 }
                                 count++;
-                                tmp.writeln(ident, " = ", ev.back(), ",");
+                                if (base_type.size()) {
+                                    tmp.writeln("pub const ", ident, ":Self = Self(", ev.back(), ");");
+                                }
+                                else {
+                                    tmp.writeln(ident, " = ", ev.back(), ",");
+                                }
                                 evaluated.push_back(std::move(ev.back()));
+                                enum_members.push_back(std::format("{}::{}", enum_name, ident));
                             }
                         }
                         ctx.cw.writeln("#[derive(Debug,Default, Clone, Copy, PartialEq, Eq)]");
                         if (base_type.size() > 0) {
-                            ctx.cw.writeln("#[repr(", base_type, ")]");
+                            ctx.cw.writeln("#[repr(transparent)]");
+                            ctx.cw.writeln("pub struct ", enum_name, "(", base_type, ");");
+                            ctx.cw.write("impl ", enum_name, " ");
                         }
                         else {
                             base_type = "usize";
+                            ctx.cw.write("pub enum ", enum_name);
                         }
-                        ctx.cw.write("pub enum ", ident);
                         ctx.cw.writeln(" {");
                         auto d = ctx.cw.indent_scope();
                         ctx.cw.write_unformatted(tmp.out());
                         d.execute();
                         ctx.cw.writeln("}");
-                        ctx.cw.writeln("impl std::fmt::Display for ", ident, " {");
+                        ctx.cw.writeln("impl std::fmt::Display for ", enum_name, " {");
                         auto scope = ctx.cw.indent_scope();
                         ctx.cw.writeln("fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {");
                         auto scope1 = ctx.cw.indent_scope();
                         auto cast_to = base_type.size() ? base_type : "usize";
-                        ctx.cw.writeln("match *self as ", cast_to, " {");
+                        ctx.cw.writeln("match *self {");
                         auto scope2 = ctx.cw.indent_scope();
                         count = 0;
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
@@ -2776,15 +2786,20 @@ namespace bm2rust {
                                 auto str_ref = bm.code[j].right_ref().value().value();
                                 if (str_ref != 0) {
                                     auto str = ctx.string_table[str_ref];
-                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", \"", str, "\"),");
+                                    ctx.cw.writeln(enum_members[count], " => write!(f, \"{}\", \"", str, "\"),");
                                 }
                                 else {
-                                    ctx.cw.writeln(evaluated[count], " => write!(f, \"{}\", \"", member, "\"),");
+                                    ctx.cw.writeln(enum_members[count], " => write!(f, \"{}\", \"", member, "\"),");
                                 }
                                 count++;
                             }
                         }
-                        ctx.cw.writeln("_ => write!(f, \"", ident, "({})\",*self as ", cast_to, "),");
+                        if (base_type == "usize") {
+                            ctx.cw.writeln("_ => write!(f, \"", enum_name, "({})\",*self as usize),");
+                        }
+                        else {
+                            ctx.cw.writeln("_ => write!(f, \"", enum_name, "({})\",self.0),");
+                        }
                         scope2.execute();
                         ctx.cw.writeln("}");
                         scope1.execute();
@@ -2793,10 +2808,10 @@ namespace bm2rust {
                         ctx.cw.writeln("}");
 
                         count = 0;
-                        ctx.cw.writeln("impl std::convert::From<", ident, "> for std::option::Option<&str> {");
+                        ctx.cw.writeln("impl std::convert::From<", enum_name, "> for std::option::Option<&str> {");
                         {
                             auto scope0 = ctx.cw.indent_scope();
-                            ctx.cw.writeln("fn from(e: ", ident, ") -> Self {");
+                            ctx.cw.writeln("fn from(e: ", enum_name, ") -> Self {");
 
                             auto scope1 = ctx.cw.indent_scope();
                             ctx.cw.writeln("match e {");
@@ -2807,10 +2822,10 @@ namespace bm2rust {
                                     auto str_ref = bm.code[j].right_ref().value().value();
                                     if (str_ref != 0) {
                                         auto str = ctx.string_table[str_ref];
-                                        ctx.cw.writeln(evaluated[count], " => Some(\"", str, "\"),");
+                                        ctx.cw.writeln(enum_members[count], " => Some(\"", str, "\"),");
                                     }
                                     else {
-                                        ctx.cw.writeln(evaluated[count], " => Some(\"", member, "\"),");
+                                        ctx.cw.writeln(enum_members[count], " => Some(\"", member, "\"),");
                                     }
                                     count++;
                                 }
@@ -2824,17 +2839,17 @@ namespace bm2rust {
                         }
                         ctx.cw.writeln("}");
 
-                        ctx.cw.writeln("impl ", ident, " {");
+                        ctx.cw.writeln("impl ", enum_name, " {");
                         auto scope3 = ctx.cw.indent_scope();
                         ctx.cw.writeln("pub fn is_known(&self) -> bool {");
                         auto scope4 = ctx.cw.indent_scope();
-                        ctx.cw.writeln("match *self as ", cast_to, " {");
+                        ctx.cw.writeln("match *self {");
                         auto scope5 = ctx.cw.indent_scope();
                         count = 0;
                         for (auto j = def + 1; bm.code[j].op != rebgn::AbstractOp::END_ENUM; j++) {
                             if (bm.code[j].op == rebgn::AbstractOp::DEFINE_ENUM_MEMBER) {
                                 auto member = ctx.ident_table[bm.code[j].ident().value().value()];
-                                ctx.cw.writeln(evaluated[count], " => true,");
+                                ctx.cw.writeln(enum_members[count], " => true,");
                                 count++;
                             }
                         }
@@ -2847,21 +2862,21 @@ namespace bm2rust {
                         ctx.cw.writeln("}");
 
                         if (base_type != "usize") {
-                            ctx.cw.writeln("impl std::convert::From<", base_type, "> for ", ident, " {");
+                            ctx.cw.writeln("impl std::convert::From<", base_type, "> for ", enum_name, " {");
                             auto scope6 = ctx.cw.indent_scope();
                             ctx.cw.writeln("fn from(e: ", base_type, ") -> Self {");
                             auto scope7 = ctx.cw.indent_scope();
-                            ctx.cw.writeln("unsafe { std::mem::transmute(e) }");
+                            ctx.cw.writeln("Self(e)");
                             scope7.execute();
                             ctx.cw.writeln("}");
                             scope6.execute();
                             ctx.cw.writeln("}");
 
-                            ctx.cw.writeln("impl std::convert::From<", ident, "> for ", base_type, " {");
+                            ctx.cw.writeln("impl std::convert::From<", enum_name, "> for ", base_type, " {");
                             auto scope8 = ctx.cw.indent_scope();
-                            ctx.cw.writeln("fn from(e: ", ident, ") -> Self {");
+                            ctx.cw.writeln("fn from(e: ", enum_name, ") -> Self {");
                             auto scope9 = ctx.cw.indent_scope();
-                            ctx.cw.writeln("unsafe { std::mem::transmute(e) }");
+                            ctx.cw.writeln("e.0");
                             scope9.execute();
                             ctx.cw.writeln("}");
                             scope8.execute();

@@ -6,13 +6,11 @@
 #include <memory>
 #include <unordered_map>
 #include "convert/helper.hpp"
+#include "core/ast/node/base.h"
+#include <wrap/cout.h>
 
 namespace ebmgen {
-    enum class GenerateType {
-        Normal,
-        Encode,
-        Decode,
-    };
+    using GenerateType = ebm::GenerateType;
     struct VisitedKey {
         std::shared_ptr<ast::Node> node;
         GenerateType type;
@@ -181,6 +179,16 @@ namespace ebmgen {
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
         ebm::Block* current_block = nullptr;
 
+        void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref) const {
+            auto member = ast::as<ast::Member>(node);
+            const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
+            futils::wrap::cout_wrap() << action << ": (" << node_type_to_string(node->node_type) << " " << ident << "(" << node.get() << "), " << to_string(current_generate_type) << ")";
+            if (ref.id.value() != 0) {
+                futils::wrap::cout_wrap() << " -> " << ref.id.value();
+            }
+            futils::wrap::cout_wrap() << '\n';
+        }
+
        public:
         [[nodiscard]] auto set_current_block(ebm::Block* block) {
             auto old = current_block;
@@ -215,6 +223,7 @@ namespace ebmgen {
 
         void add_visited_node(const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref) {
             visited_nodes[{node, current_generate_type}] = ref;
+            debug_visited("Add", node, ref);
         }
 
         expected<ebm::StatementRef> is_visited(const std::shared_ptr<ast::Node>& node, std::optional<GenerateType> t = std::nullopt) const {
@@ -223,9 +232,12 @@ namespace ebmgen {
             }
             auto it = visited_nodes.find({node, *t});
             if (it != visited_nodes.end()) {
+                debug_visited("Found", node, it->second);
                 return it->second;
             }
-            return unexpect_error("Node not visited: {}", !node ? "(null)" : node_type_to_string(node->node_type));
+            debug_visited("Not found", node, ebm::StatementRef{});
+            auto ident = ast::as<ast::Member>(node);
+            return unexpect_error("Node not visited: {} {}", !node ? "(null)" : node_type_to_string(node->node_type), ident && ident->ident ? ident->ident->ident : "(no ident)");
         }
 
         void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,

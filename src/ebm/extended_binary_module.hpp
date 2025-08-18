@@ -22,6 +22,35 @@
 #endif
 #endif
 namespace ebm {
+    enum class GenerateType {
+        Normal = 0,
+        Encode = 1,
+        Decode = 2,
+    };
+    constexpr const char* to_string(GenerateType e) {
+        switch(e) {
+            case GenerateType::Normal: return "Normal";
+            case GenerateType::Encode: return "Encode";
+            case GenerateType::Decode: return "Decode";
+        }
+        return "";
+    }
+    
+    constexpr std::optional<GenerateType> GenerateType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "Normal") {
+            return GenerateType::Normal;
+        }
+        if (str == "Encode") {
+            return GenerateType::Encode;
+        }
+        if (str == "Decode") {
+            return GenerateType::Decode;
+        }
+        return std::nullopt;
+    }
     enum class BinaryOp : std::uint8_t {
         mul = 0,
         div = 1,

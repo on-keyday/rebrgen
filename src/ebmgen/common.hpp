@@ -22,28 +22,31 @@ namespace ebmgen {
         };
     }
 
+    extern bool verbose_error;
+
     struct LocationInfoError {
         std::source_location loc;
         const char* expr;
         const char* output;
         void error(auto&& pb) const {
-            if (expr) {
-                futils::strutil::append(pb, "Expression: ");
-                if (output) {
-                    futils::strutil::append(pb, output);
-                    futils::strutil::append(pb, " = ");
-                }
-                futils::strutil::append(pb, expr);
-                futils::strutil::append(pb, "<");
-            }
             futils::strutil::append(pb, " at ");
             futils::strutil::append(pb, loc.file_name());
             futils::strutil::append(pb, ":");
             futils::number::to_string(pb, loc.line());
             futils::strutil::append(pb, ":");
             futils::number::to_string(pb, loc.column());
-            futils::strutil::append(pb, " in ");
-            futils::strutil::append(pb, loc.function_name());
+            if (verbose_error) {
+                futils::strutil::append(pb, " in ");
+                futils::strutil::append(pb, loc.function_name());
+                if (expr) {
+                    futils::strutil::append(pb, " Expression: ");
+                    if (output) {
+                        futils::strutil::append(pb, output);
+                        futils::strutil::append(pb, " = ");
+                    }
+                    futils::strutil::append(pb, expr);
+                }
+            }
         }
     };
 

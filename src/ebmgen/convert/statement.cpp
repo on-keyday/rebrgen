@@ -358,10 +358,13 @@ namespace ebmgen {
         ebm::StructDecl struct_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         struct_decl.name = name_ref;
-        for (auto& element : node->body->struct_type->fields) {
-            if (ast::as<ast::Field>(element)) {
-                EBMA_CONVERT_STATEMENT(stmt_ref, element);
-                append(struct_decl.fields, stmt_ref);
+        {
+            const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
+            for (auto& element : node->body->struct_type->fields) {
+                if (ast::as<ast::Field>(element)) {
+                    EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                    append(struct_decl.fields, stmt_ref);
+                }
             }
         }
         auto handle = [&](ebm::StatementRef& fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
@@ -515,36 +518,10 @@ namespace ebmgen {
                 EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
                 prop_decl.parent_format = statement_ref;
             }
-            else {
-                prop_decl.parent_format = ebm::StatementRef{};
-            }
 
             prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
 
             body.property_decl(std::move(prop_decl));
-        }
-        else if (node->bit_alignment != node->eventual_bit_alignment) {
-            body.statement_kind = ebm::StatementOp::BIT_FIELD_DECL;
-            ebm::BitFieldDecl bit_field_decl;
-            EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
-            bit_field_decl.name = name_ref;
-
-            if (auto parent_member = node->belong.lock()) {
-                EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
-                bit_field_decl.parent_format = statement_ref;
-            }
-
-            if (node->field_type->bit_size) {
-                MAYBE(bit_size_val, varint(*node->field_type->bit_size));
-                bit_field_decl.bit_size = bit_size_val;
-            }
-            else {
-                return unexpect_error("Bit field type has no bit size");
-            }
-
-            bit_field_decl.packed_op_type = ebm::PackedOpType::FIXED;  // Default to FIXED for now
-
-            body.bit_field_decl(std::move(bit_field_decl));
         }
         else {
             if (ctx.state().get_current_generate_type() == GenerateType::Encode) {

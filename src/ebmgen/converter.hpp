@@ -78,7 +78,7 @@ namespace ebmgen {
 
        private:
         expected<ID> add_internal(ID id, Body&& body) {
-            identifier_map[id.id.value()] = instances.size();
+            id_index_map[id.id.value()] = instances.size();
             Instance instance;
             instance.id = id;
             instance.body = std::move(body);
@@ -99,7 +99,8 @@ namespace ebmgen {
                     .from = ebm::AnyRef{id.id},
                     .to = ebm::AnyRef{it->second.id},
                 });
-                return it->second;
+                alias_id_map[id.id.value()] = it->second.id.value();
+                return id;
             }
             cache[*serialized] = id;
             return add_internal(id, std::move(body));
@@ -122,8 +123,12 @@ namespace ebmgen {
         }
 
         Instance* get(const ID& id) {
-            auto it = identifier_map.find(id.id.value());
-            if (it == identifier_map.end()) {
+            auto ref = id.id.value();
+            if (auto found = alias_id_map.find(ref); found != alias_id_map.end()) {
+                ref = found->second;
+            }
+            auto it = id_index_map.find(ref);
+            if (it == id_index_map.end()) {
                 return nullptr;
             }
             if (it->second >= instances.size()) {
@@ -138,15 +143,17 @@ namespace ebmgen {
 
         void clear() {
             cache.clear();
-            identifier_map.clear();
+            id_index_map.clear();
             instances.clear();
+            alias_id_map.clear();
         }
 
        private:
         std::unordered_map<std::string, ID> cache;
-        std::unordered_map<uint64_t, size_t> identifier_map;
+        std::unordered_map<uint64_t, size_t> id_index_map;
         std::vector<Instance> instances;
         std::vector<ebm::RefAlias>& aliases;  // for aliasing references
+        std::unordered_map<uint64_t, uint64_t> alias_id_map;
     };
     bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
 
@@ -187,8 +194,12 @@ namespace ebmgen {
             return current_generate_type;
         }
 
-        void set_current_generate_type(GenerateType type) {
+        [[nodiscard]] auto set_current_generate_type(GenerateType type) {
+            auto old = current_generate_type;
             current_generate_type = type;
+            return futils::helper::defer([this, old]() {
+                current_generate_type = old;
+            });
         }
 
         expected<ebm::IOAttribute> get_io_attribute(ebm::Endian base, bool sign);

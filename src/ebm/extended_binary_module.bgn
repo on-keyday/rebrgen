@@ -238,6 +238,8 @@ format FieldDecl:
 format StructDecl:
     name :IdentifierRef # Struct name
     fields :Block # List of fields
+    encode_fn :StatementRef
+    decode_fn :StatementRef
     is_recursive :u1 # 0: no, 1: yes (for recursive structs)
     reserved :u7 # Reserved for future use
 
@@ -262,12 +264,15 @@ format PropertyDecl:
     parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
-    
+
+
+
 format FunctionDecl:
     name :IdentifierRef # Function name
     return_type :TypeRef # Return type of the function
     params: Block
     parent_format :StatementRef # Reference to parent format (maybe null) (e.g., struct, union)
+    body :StatementRef
 
 format EnumDecl:
     name :IdentifierRef # Enum name

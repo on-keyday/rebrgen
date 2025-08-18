@@ -1,9 +1,12 @@
+#include "core/ast/node/statement.h"
 #include "../converter.hpp"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/common.hpp"
 #include "helper.hpp"
 #include <core/ast/traverse.h>
+#include <memory>
 
 namespace ebmgen {
 
@@ -343,103 +346,49 @@ namespace ebmgen {
         return {};
     }
 
+    expected<ebm::TypeRef> get_coder_return(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
+        EBMA_ADD_TYPE(coder_return, std::move(b));
+        return coder_return;
+    }
+
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::STRUCT_DECL;
         ebm::StructDecl struct_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         struct_decl.name = name_ref;
-        if (node->body) {
-            for (auto& element : node->body->struct_type->fields) {
-                if (ast::as<ast::Field>(element)) {
-                    EBMA_CONVERT_STATEMENT(stmt_ref, element);
-                    append(struct_decl.fields, stmt_ref);
-                }
+        for (auto& element : node->body->struct_type->fields) {
+            if (ast::as<ast::Field>(element)) {
+                EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                append(struct_decl.fields, stmt_ref);
             }
         }
-        /*
+        auto handle = [&](ebm::StatementRef& fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
+            const auto _mode = ctx.state().set_current_generate_type(typ);
+            if (auto enc = node->encode_fn.lock()) {
+                EBMA_CONVERT_STATEMENT(enc_fn, enc);
+                fn_ref = enc_fn;
+            }
+            else {
+                ebm::FunctionDecl derived_fn;
+                EBMA_ADD_IDENTIFIER(enc_name, typ == GenerateType::Encode ? "encode" : "decode");
+                MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
+                derived_fn.name = enc_name;
+                derived_fn.return_type = coder_return;
+                EBMA_CONVERT_STATEMENT(body, node->body);
+                derived_fn.body = body;
+                ebm::StatementBody b;
+                b.statement_kind = ebm::StatementOp::FUNCTION_DECL;
+                b.func_decl(std::move(derived_fn));
+                EBMA_ADD_STATEMENT(stmt, std::move(b));
+                fn_ref = stmt;
+            }
+            return {};
+        };
+        MAYBE_VOID(ok1, handle(struct_decl.encode_fn, node->encode_fn.lock(), GenerateType::Encode));
+        MAYBE_VOID(ok2, handle(struct_decl.decode_fn, node->decode_fn.lock(), GenerateType::Decode));
         body.struct_decl(std::move(struct_decl));
-        {
-            auto fmt_ident = m.lookup_ident(node->ident);
-            if (!fmt_ident) {
-                return fmt_ident.error();
-            }
-            auto fn = node->encode_fn.lock();
-            if (fn) {
-                auto ident = m.lookup_ident(fn->ident);
-                if (!ident) {
-                    return ident.error();
-                }
-                m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
-                    c.left_ref(*fmt_ident);
-                    c.right_ref(*ident);
-                });
-                return none;
-            }
-            auto temporary_ident = std::make_shared<ast::Ident>(node->loc, "encode");
-            temporary_ident->base = node;  // for lookup
-            auto new_id = m.lookup_ident(temporary_ident);
-            if (!new_id) {
-                return new_id.error();
-            }
-            m.op(AbstractOp::DEFINE_FUNCTION, [&](Code& c) {
-                c.ident(*new_id);
-                c.belong(*fmt_ident);
-                c.func_type(FunctionType::ENCODE);
-            });
-            auto typ = m.get_storage_ref(Storages{
-                                             .length = varint(1).value(),
-                                             .storages = {
-                                                 Storage{.type = StorageType::CODER_RETURN},
-                                             },
-                                         },
-                                         &node->loc);
-            if (!typ) {
-                return typ.error();
-            }
-            m.op(AbstractOp::RETURN_TYPE, [&](Code& c) {
-                c.type(*typ);
-            });
-            m.on_encode_fn = true;
-            m.init_phi_stack(0);  // make it temporary
-            auto f = m.enter_function(*new_id);
-            auto err = foreach_node(m, node->body->elements, [&](auto& n) {
-                if (auto found = m.bit_field_begin.find(n);
-                    found != m.bit_field_begin.end()) {
-                    auto new_id = m.new_id(nullptr);
-                    if (!new_id) {
-                        return error("Failed to generate new id");
-                    }
-                    auto typ = m.bit_field_variability[n];
-                    auto field = ast::as<ast::Field>(n);
-                    m.op(AbstractOp::BEGIN_ENCODE_PACKED_OPERATION, [&](Code& c) {
-                        c.ident(*new_id);
-                        c.belong(found->second);
-                        c.packed_op_type(typ);
-                        c.endian(*m.get_endian(get_type_endian(field ? field->field_type : nullptr), false));
-                    });
-                }
-                auto err = convert_node_encode(m, n);
-                if (m.bit_field_end.contains(n)) {
-                    m.op(AbstractOp::END_ENCODE_PACKED_OPERATION);
-                }
-                return err;
-            });
-            if (err) {
-                return err;
-            }
-            f.execute();
-            m.op(AbstractOp::RET_SUCCESS, [&](Code& c) {
-                c.belong(*new_id);
-            });
-            m.op(AbstractOp::END_FUNCTION);
-            m.end_phi_stack();  // remove temporary
-            m.op(AbstractOp::DEFINE_ENCODER, [&](Code& c) {
-                c.left_ref(*fmt_ident);
-                c.right_ref(*new_id);
-            });
-            return none;
-        }
-        */
         return {};
     }
 
@@ -482,9 +431,20 @@ namespace ebmgen {
         ebm::FunctionDecl func_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;
-        if (node->return_type) {
-            EBMA_CONVERT_TYPE(return_type_ref, node->return_type);
-            func_decl.return_type = return_type_ref;
+        if (auto typ = ctx.state().get_current_generate_type();
+            typ == GenerateType::Encode || typ == GenerateType::Decode) {
+            MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
+            func_decl.return_type = coder_return;
+        }
+        else {
+            if (node->return_type) {
+                EBMA_CONVERT_TYPE(return_type_ref, node->return_type);
+                func_decl.return_type = return_type_ref;
+            }
+            else {
+                EBMU_VOID_TYPE(void_);
+                func_decl.return_type = void_;
+            }
         }
         for (auto& param : node->parameters) {
             ebm::VariableDecl param_decl;
@@ -498,6 +458,8 @@ namespace ebmgen {
             EBMA_ADD_STATEMENT(param_ref, std::move(param_body));
             append(func_decl.params, param_ref);
         }
+        EBMA_CONVERT_STATEMENT(fn_body, node->body);
+        func_decl.body = fn_body;
         body.func_decl(std::move(func_decl));
         return {};
     }
@@ -571,9 +533,6 @@ namespace ebmgen {
                 EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
                 bit_field_decl.parent_format = statement_ref;
             }
-            else {
-                bit_field_decl.parent_format = ebm::StatementRef{};
-            }
 
             if (node->field_type->bit_size) {
                 MAYBE(bit_size_val, varint(*node->field_type->bit_size));
@@ -608,9 +567,6 @@ namespace ebmgen {
                 if (node->ident) {
                     EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
                     field_decl.name = field_name_ref;
-                }
-                else {
-                    field_decl.name = ebm::IdentifierRef{};  // Anonymous field
                 }
                 EBMA_CONVERT_TYPE(type_ref, node->field_type);
                 field_decl.field_type = type_ref;

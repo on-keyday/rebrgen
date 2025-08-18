@@ -13478,30 +13478,6 @@ namespace ebm {
         }
         return ::futils::error::Error<>();
     }
-    ::futils::error::Error<> StructDecl::encode(::futils::binary::writer& w) const {
-        if (auto err = (*this).name.encode(w)) {
-            return err;
-        }
-        if (auto err = (*this).fields.encode(w)) {
-            return err;
-        }
-        if (!::futils::binary::write_num(w,flags_43_.as_value() ,true)) {
-            return ::futils::error::Error<>("encode: StructDecl::reserved: write bit field failed",::futils::error::Category::lib);
-        }
-        return ::futils::error::Error<>();
-    }
-    ::futils::error::Error<> StructDecl::decode(::futils::binary::reader& r) {
-        if (auto err = (*this).name.decode(r)) {
-            return err;
-        }
-        if (auto err = (*this).fields.decode(r)) {
-            return err;
-        }
-        if (!::futils::binary::read_num(r,flags_43_.as_value() ,true)) {
-            return ::futils::error::Error<>("decode: StructDecl::reserved: read bit field failed",::futils::error::Category::lib);
-        }
-        return ::futils::error::Error<>();
-    }
     ::futils::error::Error<> StateDecl::encode(::futils::binary::writer& w) const {
         if (auto err = (*this).name.encode(w)) {
             return err;
@@ -13683,6 +13659,9 @@ namespace ebm {
         if (auto err = (*this).parent_format.encode(w)) {
             return err;
         }
+        if (auto err = (*this).body.encode(w)) {
+            return err;
+        }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> FunctionDecl::decode(::futils::binary::reader& r) {
@@ -13698,6 +13677,9 @@ namespace ebm {
         if (auto err = (*this).parent_format.decode(r)) {
             return err;
         }
+        if (auto err = (*this).body.decode(r)) {
+            return err;
+        }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> VariableDecl::encode(::futils::binary::writer& w) const {
@@ -13710,7 +13692,7 @@ namespace ebm {
         if (auto err = (*this).initial_value.encode(w)) {
             return err;
         }
-        if (!::futils::binary::write_num(w,flags_44_.as_value() ,true)) {
+        if (!::futils::binary::write_num(w,flags_43_.as_value() ,true)) {
             return ::futils::error::Error<>("encode: VariableDecl::reserved: write bit field failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -13725,7 +13707,7 @@ namespace ebm {
         if (auto err = (*this).initial_value.decode(r)) {
             return err;
         }
-        if (!::futils::binary::read_num(r,flags_44_.as_value() ,true)) {
+        if (!::futils::binary::read_num(r,flags_43_.as_value() ,true)) {
             return ::futils::error::Error<>("decode: VariableDecl::reserved: read bit field failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -13740,7 +13722,7 @@ namespace ebm {
         if (auto err = (*this).parent_struct.encode(w)) {
             return err;
         }
-        if (!::futils::binary::write_num(w,flags_45_.as_value() ,true)) {
+        if (!::futils::binary::write_num(w,flags_44_.as_value() ,true)) {
             return ::futils::error::Error<>("encode: FieldDecl::reserved: write bit field failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -13755,7 +13737,7 @@ namespace ebm {
         if (auto err = (*this).parent_struct.decode(r)) {
             return err;
         }
-        if (!::futils::binary::read_num(r,flags_45_.as_value() ,true)) {
+        if (!::futils::binary::read_num(r,flags_44_.as_value() ,true)) {
             return ::futils::error::Error<>("decode: FieldDecl::reserved: read bit field failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
@@ -13805,6 +13787,42 @@ namespace ebm {
         }
         if (auto err = (*this).string_repr.decode(r)) {
             return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> StructDecl::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).name.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).fields.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).encode_fn.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).decode_fn.encode(w)) {
+            return err;
+        }
+        if (!::futils::binary::write_num(w,flags_45_.as_value() ,true)) {
+            return ::futils::error::Error<>("encode: StructDecl::reserved: write bit field failed",::futils::error::Category::lib);
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> StructDecl::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).name.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).fields.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).encode_fn.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).decode_fn.decode(r)) {
+            return err;
+        }
+        if (!::futils::binary::read_num(r,flags_45_.as_value() ,true)) {
+            return ::futils::error::Error<>("decode: StructDecl::reserved: read bit field failed",::futils::error::Category::lib);
         }
         return ::futils::error::Error<>();
     }

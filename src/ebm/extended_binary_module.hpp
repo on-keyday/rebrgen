@@ -971,7 +971,6 @@ namespace ebm {
     struct IfStatement;
     struct Block;
     struct MatchStatement;
-    struct StructDecl;
     struct StateDecl;
     struct Metadata;
     struct LoweredStatements;
@@ -984,6 +983,7 @@ namespace ebm {
     struct FieldDecl;
     struct EnumDecl;
     struct EnumMemberDecl;
+    struct StructDecl;
     struct UnionDecl;
     struct UnionMemberDecl;
     struct BitFieldDecl;
@@ -1731,30 +1731,6 @@ namespace ebm {
             v(v, "branches",(*this).branches);
         }
     };
-    struct EBM_API StructDecl{
-        IdentifierRef name;
-        Block fields;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_43_;
-        bits_flag_alias_method(flags_43_,0,is_recursive);
-        bits_flag_alias_method(flags_43_,1,reserved);
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        constexpr static const char* visitor_name = "StructDecl";
-        template<typename Visitor>
-        void visit(Visitor&& v) {
-            v(v, "name",(*this).name);
-            v(v, "fields",(*this).fields);
-            v(v, "is_recursive",(*this).is_recursive());
-            v(v, "reserved",(*this).reserved());
-        }
-        template<typename Visitor>
-        void visit(Visitor&& v) const {
-            v(v, "name",(*this).name);
-            v(v, "fields",(*this).fields);
-            v(v, "is_recursive",(*this).is_recursive());
-            v(v, "reserved",(*this).reserved());
-        }
-    };
     struct EBM_API StateDecl{
         IdentifierRef name;
         Block body;
@@ -1888,6 +1864,7 @@ namespace ebm {
         TypeRef return_type;
         Block params;
         StatementRef parent_format;
+        StatementRef body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FunctionDecl";
@@ -1897,6 +1874,7 @@ namespace ebm {
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
             v(v, "parent_format",(*this).parent_format);
+            v(v, "body",(*this).body);
         }
         template<typename Visitor>
         void visit(Visitor&& v) const {
@@ -1904,16 +1882,17 @@ namespace ebm {
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
             v(v, "parent_format",(*this).parent_format);
+            v(v, "body",(*this).body);
         }
     };
     struct EBM_API VariableDecl{
         IdentifierRef name;
         TypeRef var_type;
         ExpressionRef initial_value;
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_44_;
-        bits_flag_alias_method(flags_44_,0,is_constant);
-        bits_flag_alias_method(flags_44_,1,is_reference);
-        bits_flag_alias_method(flags_44_,2,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_43_;
+        bits_flag_alias_method(flags_43_,0,is_constant);
+        bits_flag_alias_method(flags_43_,1,is_reference);
+        bits_flag_alias_method(flags_43_,2,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "VariableDecl";
@@ -1940,9 +1919,9 @@ namespace ebm {
         IdentifierRef name;
         TypeRef field_type;
         StatementRef parent_struct;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_45_;
-        bits_flag_alias_method(flags_45_,0,is_state_variable);
-        bits_flag_alias_method(flags_45_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_44_;
+        bits_flag_alias_method(flags_44_,0,is_state_variable);
+        bits_flag_alias_method(flags_44_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FieldDecl";
@@ -2001,6 +1980,36 @@ namespace ebm {
             v(v, "name",(*this).name);
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
+        }
+    };
+    struct EBM_API StructDecl{
+        IdentifierRef name;
+        Block fields;
+        StatementRef encode_fn;
+        StatementRef decode_fn;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_45_;
+        bits_flag_alias_method(flags_45_,0,is_recursive);
+        bits_flag_alias_method(flags_45_,1,reserved);
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "StructDecl";
+        template<typename Visitor>
+        void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "fields",(*this).fields);
+            v(v, "encode_fn",(*this).encode_fn);
+            v(v, "decode_fn",(*this).decode_fn);
+            v(v, "is_recursive",(*this).is_recursive());
+            v(v, "reserved",(*this).reserved());
+        }
+        template<typename Visitor>
+        void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "fields",(*this).fields);
+            v(v, "encode_fn",(*this).encode_fn);
+            v(v, "decode_fn",(*this).decode_fn);
+            v(v, "is_recursive",(*this).is_recursive());
+            v(v, "reserved",(*this).reserved());
         }
     };
     struct EBM_API UnionDecl{

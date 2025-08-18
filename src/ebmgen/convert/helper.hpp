@@ -318,7 +318,7 @@ namespace ebmgen {
 #define EBM_CONTINUE(ref_name, loop_id) \
     EBM_AST_STATEMENT(ref_name, make_continue, loop_id)
 
-    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size);
+    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);

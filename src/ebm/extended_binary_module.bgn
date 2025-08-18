@@ -50,7 +50,7 @@ enum Endian:
     dynamic
     native
 
-format EndianExpr:
+format IOAttribute:
     endian :Endian
     sign :u1 # 0 for unsigned, 1 for signed (for storage optimization)
     is_peek :u1 # 0 for non-peek, 1 for peek (for storage optimization)
@@ -105,6 +105,7 @@ enum ExpressionOp:
     IS_ERROR # check if encoder/decoder value is error
     MAX_VALUE # Get the maximum value of a type (e.g., u8, u16, u32, u64)
     READ_DATA # this is for input.get(u8)
+    WRITE_DATA # this is for output.put(x)
 
 
 format Expression:
@@ -172,8 +173,11 @@ format ExpressionBody:
         ExpressionOp.MAX_VALUE:
             lowered_expr :ExpressionRef # Optional lowered expression for the maximum value
         ExpressionOp.READ_DATA:
-            target :StatementRef # reference to variable to read data into
+            target_stmt :StatementRef # reference to variable to read data into
             io_statement :StatementRef # Reference to the IOData statement for reading data
+        ExpressionOp.WRITE_DATA:
+            target_expr :ExpressionRef # Expression to write data from
+            io_statement :StatementRef # Reference to the IOData statement for writing data
 
 enum LoopType:
     :u8
@@ -389,7 +393,7 @@ format Size:
 format IOData:
     target :ExpressionRef # Variable to store read/write data
     data_type :TypeRef # Type of the data to read/write
-    endian :EndianExpr # Endianness for write
+    attribute :IOAttribute # Endianness for write
     size :Size # Size information for read/write
     lowered_stmt :StatementRef # Optional lowered statements for read/write operations
 

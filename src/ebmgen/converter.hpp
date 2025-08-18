@@ -172,8 +172,17 @@ namespace ebmgen {
         GenerateType current_generate_type = GenerateType::Normal;
         std::unordered_map<VisitedKey, ebm::StatementRef> visited_nodes;
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
+        ebm::Block* current_block = nullptr;
 
        public:
+        [[nodiscard]] auto set_current_block(ebm::Block* block) {
+            auto old = current_block;
+            current_block = block;
+            return futils::helper::defer([this, old]() {
+                current_block = old;
+            });
+        }
+
         GenerateType get_current_generate_type() const {
             return current_generate_type;
         }
@@ -182,7 +191,7 @@ namespace ebmgen {
             current_generate_type = type;
         }
 
-        expected<ebm::EndianExpr> get_endian(ebm::Endian base, bool sign);
+        expected<ebm::IOAttribute> get_io_attribute(ebm::Endian base, bool sign);
         bool set_endian(ebm::Endian e, ebm::StatementRef id = ebm::StatementRef{});
 
         bool is_on_function() const {
@@ -468,7 +477,7 @@ namespace ebmgen {
 
         // internally, this method casts base_ref to unsigned n int type if necessary
         // so no need to cast it before calling this method
-        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
+        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
     };
 
     struct DecoderConverter {
@@ -482,7 +491,7 @@ namespace ebmgen {
         expected<void> decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
         expected<void> decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
         expected<void> decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
+        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
     };
 
     struct TypeConverter {
@@ -491,7 +500,7 @@ namespace ebmgen {
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
     };
 
-    expected<ebm::StatementRef> add_endian_specific(ConverterContext& ctx, ebm::EndianExpr endian, std::function<expected<ebm::StatementRef>()> on_little_endian, std::function<expected<ebm::StatementRef>()> on_big_endian);
+    expected<ebm::StatementRef> add_endian_specific(ConverterContext& ctx, ebm::IOAttribute endian, std::function<expected<ebm::StatementRef>()> on_little_endian, std::function<expected<ebm::StatementRef>()> on_big_endian);
     expected<void> construct_string_array(ConverterContext& ctx, ebm::Block& block, ebm::ExpressionRef n_array, const std::string& candidate);
 
     expected<ebm::StatementBody> assert_statement_body(ConverterContext& ctx, ebm::ExpressionRef condition);

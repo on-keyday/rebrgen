@@ -4,7 +4,7 @@
 #include "../converter.hpp"
 
 namespace ebmgen {
-    expected<ebm::StatementRef> DecoderConverter::decode_multi_byte_int_with_fixed_array(size_t n, ebm::EndianExpr endian, ebm::ExpressionRef to, ebm::TypeRef cast_to) {
+    expected<ebm::StatementRef> DecoderConverter::decode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to) {
         COMMON_BUFFER_SETUP(EBM_READ_DATA, read_ref);
 
         if (n == 1) {  // special case for 1 byte
@@ -83,22 +83,22 @@ namespace ebmgen {
     }
 
     expected<void> DecoderConverter::decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& ity, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        MAYBE(endian, ctx.state().get_endian(ebm::Endian(ity->endian), ity->is_signed));
-        io_desc.endian = endian;
+        MAYBE(attr, ctx.state().get_io_attribute(ebm::Endian(ity->endian), ity->is_signed));
+        io_desc.attribute = attr;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(*ity->bit_size / 8, endian, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(*ity->bit_size / 8, attr, base_ref, io_desc.data_type));
             append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
     }
 
     expected<void> DecoderConverter::decode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& fty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
-        MAYBE(endian, ctx.state().get_endian(ebm::Endian(fty->endian), false));
-        io_desc.endian = endian;
+        MAYBE(attr, ctx.state().get_io_attribute(ebm::Endian(fty->endian), false));
+        io_desc.attribute = attr;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(*fty->bit_size / 8, endian, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(*fty->bit_size / 8, attr, base_ref, io_desc.data_type));
             append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
@@ -120,7 +120,7 @@ namespace ebmgen {
                 append(block, assign);
                 EBM_BLOCK(block_ref, std::move(block));
                 auto io_data = ctx.repository().get_statement(decode_stmt)->body.read_data();
-                io_desc.endian = io_data->endian;
+                io_desc.attribute = io_data->attribute;
                 io_desc.size = io_data->size;
                 ebm::LoweredStatement lowered;
                 lowered.lowering_type = ebm::LoweringType::NAIVE;
@@ -215,8 +215,8 @@ namespace ebmgen {
 
                     MAYBE(size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
 
-                    auto peek_io = make_io_data(temporary_read_buffer, array_type, io_desc.endian, size);
-                    peek_io.endian.is_peek(true);
+                    auto peek_io = make_io_data(temporary_read_buffer, array_type, io_desc.attribute, size);
+                    peek_io.attribute.is_peek(true);
                     EBM_READ_DATA(temporary_read, std::move(peek_io));
 
                     ebm::ExpressionRef cond;
@@ -324,7 +324,7 @@ namespace ebmgen {
 
         MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
         io_desc.size = io_size;
-        EBM_READ_DATA(read_ref, make_io_data(buffer, u8_n_array, io_desc.endian, io_size));
+        EBM_READ_DATA(read_ref, make_io_data(buffer, u8_n_array, io_desc.attribute, io_size));
 
         ebm::Block block;
         append(block, buffer_def);
@@ -377,7 +377,7 @@ namespace ebmgen {
             return decode_field_type(ity->base.lock(), base_ref, field);
         }
         EBMA_CONVERT_TYPE(typ_ref, typ, field);
-        ebm::IOData io_desc = make_io_data(base_ref, typ_ref, ebm::EndianExpr{}, ebm::Size{});
+        ebm::IOData io_desc = make_io_data(base_ref, typ_ref, ebm::IOAttribute{}, ebm::Size{});
         ebm::LoweredStatements lowered_stmts;  // omit if empty
 
         if (auto ity = ast::as<ast::IntType>(typ)) {

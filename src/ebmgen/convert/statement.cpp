@@ -305,6 +305,7 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::BLOCK;
         ebm::Block block_body;
+        const auto _scope = ctx.state().set_current_block(&block_body);
         for (auto& element : node->elements) {
             EBMA_CONVERT_STATEMENT(stmt_ref, element);
             append(block_body, stmt_ref);
@@ -333,6 +334,7 @@ namespace ebmgen {
         body.statement_kind = ebm::StatementOp::PROGRAM_DECL;
 
         ebm::Block program_body_block;
+        const auto _scope = ctx.state().set_current_block(&program_body_block);
         for (auto& p : node->elements) {
             EBMA_CONVERT_STATEMENT(stmt_ref, p);
             append(program_body_block, stmt_ref);

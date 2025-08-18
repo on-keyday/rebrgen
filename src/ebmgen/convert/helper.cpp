@@ -221,11 +221,11 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::EndianExpr endian, ebm::Size size) {
+    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size) {
         return ebm::IOData{
             .target = target,
             .data_type = data_type,
-            .endian = endian,
+            .attribute = attr,
             .size = size,
             .lowered_stmt = ebm::StatementRef{},
         };

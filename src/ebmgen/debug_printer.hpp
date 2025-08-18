@@ -20,13 +20,13 @@ namespace ebmgen {
         std::ostream& os_;  // Reference to the output stream
 
         // Caches for faster lookups
-        mutable std::map<std::uint64_t, const ebm::Identifier*> identifier_map_;
-        mutable std::map<std::uint64_t, const ebm::StringLiteral*> string_literal_map_;
-        mutable std::map<std::uint64_t, const ebm::Type*> type_map_;
-        mutable std::map<std::uint64_t, const ebm::Statement*> statement_map_;
-        mutable std::map<std::uint64_t, const ebm::Expression*> expression_map_;
+        std::map<std::uint64_t, const ebm::Identifier*> identifier_map_;
+        std::map<std::uint64_t, const ebm::StringLiteral*> string_literal_map_;
+        std::map<std::uint64_t, const ebm::Type*> type_map_;
+        std::map<std::uint64_t, const ebm::Statement*> statement_map_;
+        std::map<std::uint64_t, const ebm::Expression*> expression_map_;
 
-        void build_maps() const;
+        void build_maps();
 
         const ebm::Identifier* get_identifier(const ebm::IdentifierRef& ref) const;
         const ebm::StringLiteral* get_string_literal(const ebm::StringRef& ref) const;

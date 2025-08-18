@@ -6,8 +6,8 @@
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
 
-    expected<ebm::EndianExpr> ConverterState::get_endian(ebm::Endian base, bool sign) {
-        ebm::EndianExpr e;
+    expected<ebm::IOAttribute> ConverterState::get_io_attribute(ebm::Endian base, bool sign) {
+        ebm::IOAttribute e;
         e.sign(sign);
         e.endian(base);
         if (base != ebm::Endian::unspec) {
@@ -109,7 +109,7 @@ namespace ebmgen {
         return type_converter->convert_type(type, field);
     }
 
-    expected<ebm::StatementRef> add_endian_specific(ConverterContext& ctx, ebm::EndianExpr endian, std::function<expected<ebm::StatementRef>()> on_little_endian, std::function<expected<ebm::StatementRef>()> on_big_endian) {
+    expected<ebm::StatementRef> add_endian_specific(ConverterContext& ctx, ebm::IOAttribute endian, std::function<expected<ebm::StatementRef>()> on_little_endian, std::function<expected<ebm::StatementRef>()> on_big_endian) {
         ebm::StatementRef ref;
         const auto is_native_or_dynamic = endian.endian() == ebm::Endian::native || endian.endian() == ebm::Endian::dynamic;
         if (is_native_or_dynamic) {

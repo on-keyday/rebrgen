@@ -17,38 +17,38 @@ namespace ebmgen {
     }
 
     // Builds maps from vector data for faster access
-    void DebugPrinter::build_maps() const {
-        for (const auto& ident : module_.identifiers) {
-            identifier_map_[ident.id.id.value()] = &ident;
-        }
-        for (const auto& str_lit : module_.strings) {
-            string_literal_map_[str_lit.id.id.value()] = &str_lit;
-        }
-        for (const auto& type : module_.types) {
-            type_map_[type.id.id.value()] = &type;
-        }
-        for (const auto& stmt : module_.statements) {
-            statement_map_[stmt.id.id.value()] = &stmt;
-        }
-        for (const auto& expr : module_.expressions) {
-            expression_map_[expr.id.id.value()] = &expr;
-        }
+    void DebugPrinter::build_maps() {
+        auto map_to = [&](auto& map, const auto& vec) {
+            for (const auto& item : vec) {
+                map[item.id.id.value()] = &item;
+            }
+        };
+        map_to(identifier_map_, module_.identifiers);
+        map_to(string_literal_map_, module_.strings);
+        map_to(type_map_, module_.types);
+        map_to(statement_map_, module_.statements);
+        map_to(expression_map_, module_.expressions);
+
+        auto map_alias = [&](auto& map, const auto& alias) {
+            map[alias.from.id.value()] = map[alias.to.id.value()];
+        };
+
         for (const auto& alias : module_.aliases) {
             switch (alias.hint) {
                 case ebm::AliasHint::IDENTIFIER:
-                    identifier_map_[alias.from.id.value()] = identifier_map_[alias.to.id.value()];
+                    map_alias(identifier_map_, alias);
                     break;
                 case ebm::AliasHint::STRING:
-                    string_literal_map_[alias.from.id.value()] = string_literal_map_[alias.to.id.value()];
+                    map_alias(string_literal_map_, alias);
                     break;
                 case ebm::AliasHint::TYPE:
-                    type_map_[alias.from.id.value()] = type_map_[alias.to.id.value()];
+                    map_alias(type_map_, alias);
                     break;
                 case ebm::AliasHint::EXPRESSION:
-                    expression_map_[alias.from.id.value()] = expression_map_[alias.to.id.value()];
+                    map_alias(expression_map_, alias);
                     break;
                 case ebm::AliasHint::STATEMENT:
-                    statement_map_[alias.from.id.value()] = statement_map_[alias.to.id.value()];
+                    map_alias(statement_map_, alias);
                     break;
             }
         }

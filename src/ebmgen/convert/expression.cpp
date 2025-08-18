@@ -1,5 +1,8 @@
 #include "../converter.hpp"
 #include <core/ast/tool/ident.h>
+#include "core/ast/node/ast_enum.h"
+#include "core/ast/node/literal.h"
+#include "ebm/extended_binary_module.hpp"
 #include "helper.hpp"
 #include <fnet/util/base64.h>
 #include <core/ast/traverse.h>
@@ -292,16 +295,32 @@ namespace ebmgen {
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body) {
         switch (node->method) {
-            case ast::IOMethod::input_get: {
-                return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
+            case ast::IOMethod::input_get:
+            case ast::IOMethod::input_peek: {
+                body.op = ebm::ExpressionOp::READ_DATA;
+                auto typ = ast::as<ast::TypeLiteral>(node->arguments[0]);
+                if (!typ) {
+                    return unexpect_error("Expected TypeLiteral for input_get, got {}", node_type_to_string(node->arguments[0]->node_type));
+                }
+                EBMA_CONVERT_TYPE(type_ref, typ->type_literal);
+                EBM_DEFAULT_VALUE(default_, type_ref);
+                EBM_DEFINE_ANONYMOUS_VARIABLE(var, type_ref, default_);
+                body.target_stmt(var_def);
+                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(typ->type_literal, var, nullptr));
+                if (node->method == ast::IOMethod::input_peek) {
+                    decode_info.read_data()->attribute.is_peek(true);
+                }
+                EBMA_ADD_STATEMENT(io_statement_ref, std::move(decode_info));
+                body.io_statement(io_statement_ref);
+                break;
             }
             case ast::IOMethod::output_put: {
-                // body.op = ebm::ExpressionOp::WRITE_DATA;
-                // EBMA_CONVERT_EXPRESSION(source_expr_ref,node->arguments[0]);
-                // body.source_expr(source_expr_ref);
-                // MAYBE(data_type_ref, convert_type(node->arguments[0]->expr_type));
-                // body.data_type(data_type_ref);
-                // TODO: Handle endian, bit_size, and fallback_stmt
+                body.op = ebm::ExpressionOp::WRITE_DATA;
+                EBMA_CONVERT_EXPRESSION(output, node->arguments[0]);
+                body.target_expr(output);
+                MAYBE(encode_info, ctx.get_encoder_converter().encode_field_type(node->arguments[0]->expr_type, output, nullptr));
+                EBMA_ADD_STATEMENT(io_statement_ref, std::move(encode_info));
+                body.io_statement(io_statement_ref);
                 break;
             }
             case ast::IOMethod::input_offset:
@@ -317,15 +336,6 @@ namespace ebmgen {
                 break;
             }
             case ast::IOMethod::input_subrange: {
-                return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
-            }
-            case ast::IOMethod::input_peek: {
-                // body.op = ebm::ExpressionOp::CAN_READ_STREAM;
-                // EBMA_CONVERT_EXPRESSION(target_var_ref,node->arguments[0]);
-                // body.target_var(target_var_ref);
-                // EBMA_CONVERT_EXPRESSION(num_bytes_ref,node->arguments[1]);
-                // body.num_bytes(num_bytes_ref);
-                // body.stream_type(ebm::StreamType::INPUT);
                 return unexpect_error("not implemented yet: {}", ast::to_string(node->method));
             }
             default: {

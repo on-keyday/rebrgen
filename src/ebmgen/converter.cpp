@@ -104,6 +104,10 @@ namespace ebmgen {
     expected<ebm::StatementRef> ConverterContext::convert_statement(const std::shared_ptr<ast::Node>& node) {
         return statement_converter->convert_statement(node);
     }
+
+    expected<ebm::StatementRef> ConverterContext::convert_statement(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node) {
+        return statement_converter->convert_statement(ref, node);
+    }
     expected<ebm::ExpressionRef> ConverterContext::convert_expr(const std::shared_ptr<ast::Expr>& node) {
         return expression_converter->convert_expr(node);
     }

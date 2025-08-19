@@ -191,6 +191,10 @@ namespace ebmgen {
                     EBM_CAN_READ_STREAM(can_read, ebm::StreamType::INPUT, single_byte);
                     MAYBE(element_decoder, underlying_decoder());
                     EBM_WHILE_LOOP(loop, can_read, element_decoder);
+                    cond_loop = loop;
+
+                    EBM_GET_REMAINING_BYTES(remain_size, ebm::StreamType::INPUT);
+                    MAYBE_VOID(ok, set_dynamic_size(remain_size));
                 }
                 else if (field->eventual_follow == ast::Follow::fixed) {
                     auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
@@ -201,6 +205,10 @@ namespace ebmgen {
                     MAYBE(element_decoder, underlying_decoder());
                     EBM_WHILE_LOOP(loop, cond, element_decoder);
                     cond_loop = loop;
+
+                    EBMU_COUNTER_TYPE(counter_type);
+                    EBM_BINARY_OP(remain_size, ebm::BinaryOp::sub, counter_type, remain_bytes, last);
+                    MAYBE_VOID(ok, set_dynamic_size(remain_size));
                 }
                 else if (field->follow == ast::Follow::constant) {
                     auto next = field->next.lock();
@@ -355,8 +363,8 @@ namespace ebmgen {
         EBM_MEMBER_ACCESS(dec_access, encdec.decode_type, base_ref, encdec.decode);
         call_desc.callee = dec_access;
         // TODO: add arguments
-        EBM_CALL(call_ref, std::move(call_desc));
-        MAYBE(typ_ref, get_encoder_return_type(ctx));
+        MAYBE(typ_ref, get_decoder_return_type(ctx));
+        EBM_CALL(call_ref, typ_ref, std::move(call_desc));
         EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ_ref, call_ref);
         EBM_IS_ERROR(is_error, result);
         EBM_ERROR_RETURN(error_return, result);

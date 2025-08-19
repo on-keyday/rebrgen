@@ -180,10 +180,10 @@ namespace ebmgen {
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
         ebm::Block* current_block = nullptr;
 
-        void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref) const {
+        void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
             auto member = ast::as<ast::Member>(node);
             const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
-            futils::wrap::cout_wrap() << action << ": (" << node_type_to_string(node->node_type) << " " << ident << "(" << node.get() << "), " << to_string(current_generate_type) << ")";
+            futils::wrap::cout_wrap() << action << ": (" << node_type_to_string(node->node_type) << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
             if (ref.id.value() != 0) {
                 futils::wrap::cout_wrap() << " -> " << ref.id.value();
             }
@@ -224,7 +224,7 @@ namespace ebmgen {
 
         void add_visited_node(const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref) {
             visited_nodes[{node, current_generate_type}] = ref;
-            debug_visited("Add", node, ref);
+            debug_visited("Add", node, ref, current_generate_type);
         }
 
         expected<ebm::StatementRef> is_visited(const std::shared_ptr<ast::Node>& node, std::optional<GenerateType> t = std::nullopt) const {
@@ -233,10 +233,10 @@ namespace ebmgen {
             }
             auto it = visited_nodes.find({node, *t});
             if (it != visited_nodes.end()) {
-                debug_visited("Found", node, it->second);
+                debug_visited("Found", node, it->second, *t);
                 return it->second;
             }
-            debug_visited("Not found", node, ebm::StatementRef{});
+            debug_visited("Not found", node, ebm::StatementRef{}, *t);
             auto ident = ast::as<ast::Member>(node);
             return unexpect_error("Node not visited: {} {}", !node ? "(null)" : node_type_to_string(node->node_type), ident && ident->ident ? ident->ident->ident : "(no ident)");
         }
@@ -413,6 +413,7 @@ namespace ebmgen {
 
         // shorthand for creating a type with a single kind
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+        expected<ebm::StatementRef> convert_statement(ebm::StatementRef, const std::shared_ptr<ast::Node>& node);
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
     };
@@ -434,6 +435,7 @@ namespace ebmgen {
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
 
         expected<ebm::StructDecl> convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node);
+        expected<ebm::StatementRef> convert_statement(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
 
        private:
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementRef id, ebm::StatementBody& body);
@@ -460,8 +462,6 @@ namespace ebmgen {
         expected<void> convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementRef id, ebm::StatementBody& body);
         // Fallback for unhandled types
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body);
-
-        expected<ebm::StatementRef> convert_statement_internal(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
 
         expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
     };
@@ -523,6 +523,8 @@ namespace ebmgen {
     struct TypeConverter {
         ConverterContext& ctx;
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
+        expected<ebm::TypeBody> convert_function_type(const std::shared_ptr<ast::FunctionType>& type);
+
         expected<ebm::CastType> get_cast_type(ebm::TypeRef dest, ebm::TypeRef src);
     };
 

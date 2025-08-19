@@ -44,8 +44,8 @@ namespace ebmgen {
 #define EBMA_CONVERT_TYPE(ref_name, ...) \
     MAYBE(ref_name, ctx.convert_type(__VA_ARGS__));
 
-#define EBMA_CONVERT_STATEMENT(ref_name, node) \
-    MAYBE(ref_name, ctx.convert_statement(node));
+#define EBMA_CONVERT_STATEMENT(ref_name, ...) \
+    MAYBE(ref_name, ctx.convert_statement(__VA_ARGS__));
 
 #define EBMA_ADD_IDENTIFIER(ref_name, ident) \
     MAYBE(ref_name, ctx.repository().add_identifier(ident));
@@ -267,9 +267,9 @@ namespace ebmgen {
 #define EBM_MEMBER_ACCESS(ref_name, type, base__, member__) \
     EBM_AST_EXPRESSION(ref_name, make_member_access, type, base__, member__)
 
-    ebm::ExpressionBody make_call(ebm::CallDesc&& call_desc);
-#define EBM_CALL(ref_name, call_desc__) \
-    EBM_AST_EXPRESSION(ref_name, make_call, call_desc__)
+    ebm::ExpressionBody make_call(ebm::TypeRef typ, ebm::CallDesc&& call_desc);
+#define EBM_CALL(ref_name, typ, call_desc__) \
+    EBM_AST_EXPRESSION(ref_name, make_call, typ, call_desc__)
 
     ebm::StatementBody make_expression_statement(ebm::ExpressionRef expr);
 

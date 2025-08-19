@@ -6,6 +6,27 @@
 #include <core/ast/traverse.h>
 
 namespace ebmgen {
+    expected<ebm::TypeBody> TypeConverter::convert_function_type(const std::shared_ptr<ast::FunctionType>& n) {
+        ebm::TypeBody body;
+        body.kind = ebm::TypeKind::FUNCTION;
+        if (n->return_type) {
+            EBMA_CONVERT_TYPE(return_type, n->return_type);
+            body.return_type(return_type);
+        }
+        else {
+            EBMU_VOID_TYPE(void_type);
+            body.return_type(void_type);
+        }
+
+        ebm::Types params;
+        for (const auto& param : n->parameters) {
+            EBMA_CONVERT_TYPE(param_type, param);
+            append(params, param_type);
+        }
+        body.params(std::move(params));
+        return body;
+    }
+
     expected<ebm::TypeRef> TypeConverter::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
         ebm::TypeBody body;
         expected<void> result = {};  // To capture errors from within the lambda
@@ -114,17 +135,11 @@ namespace ebmgen {
                         EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
                         body.id(name_ref);                              // Use the ID of the struct declaration
                     }
-                    else if (auto br = ast::as<ast::MatchBranch>(locked_base)) {
+                    else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
                         ebm::StatementBody stmt;
                         stmt.statement_kind = ebm::StatementOp::STRUCT_DECL;
-                        if (auto c = ast::as<ast::ScopedStatement>(br->then)) {
-                            MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, c->struct_type));
-                            stmt.struct_decl(std::move(struct_decl));
-                        }
-                        else if (auto i = ast::as<ast::IndentBlock>(br->then)) {
-                            MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, i->struct_type));
-                            stmt.struct_decl(std::move(struct_decl));
-                        }
+                        MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, n));
+                        stmt.struct_decl(std::move(struct_decl));
                         EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
                         body.id(name_ref);  // Use the ID of the struct declaration
                     }
@@ -162,22 +177,8 @@ namespace ebmgen {
                 }
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::FunctionType>>) {
-                body.kind = ebm::TypeKind::FUNCTION;
-                if (n->return_type) {
-                    EBMA_CONVERT_TYPE(return_type, n->return_type);
-                    body.return_type(return_type);
-                }
-                else {
-                    EBMU_VOID_TYPE(void_type);
-                    body.return_type(void_type);
-                }
-
-                ebm::Types params;
-                for (const auto& param : n->parameters) {
-                    EBMA_CONVERT_TYPE(param_type, param);
-                    append(params, param_type);
-                }
-                body.params(std::move(params));
+                MAYBE(body_, convert_function_type(n));
+                body = std::move(body_);
             }
             else {
                 return unexpect_error("Unsupported type for conversion: {}", node_type_to_string(type->node_type));

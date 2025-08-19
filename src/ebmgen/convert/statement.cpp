@@ -216,10 +216,10 @@ namespace ebmgen {
         }
         MAYBE(new_ref, ctx.repository().new_statement_id());
         ctx.state().add_visited_node(node, new_ref);
-        return convert_statement_internal(new_ref, node);
+        return convert_statement(new_ref, node);
     }
 
-    expected<ebm::StatementRef> StatementConverter::convert_statement_internal(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
+    expected<ebm::StatementRef> StatementConverter::convert_statement(ebm::StatementRef new_id, const std::shared_ptr<ast::Node>& node) {
         ebm::StatementBody body;
         expected<void> result = unexpect_error("Unsupported statement type: {}", node_type_to_string(node->node_type));
 
@@ -371,11 +371,34 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::STRUCT_DECL;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
+        auto get_type = [&](std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<ebm::TypeRef> {
+            ebm::TypeBody b;
+            b.kind = typ == GenerateType::Encode ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
+            EBMA_ADD_TYPE(fn_return, std::move(b));
+            if (fn) {
+                MAYBE(fn_type_body, ctx.get_type_converter().convert_function_type(fn->func_type));
+                fn_type_body.return_type(fn_return);
+                b = std::move(fn_type_body);
+            }
+            else {
+                b.kind = ebm::TypeKind::FUNCTION;
+                b.return_type(fn_return);
+            }
+            EBMA_ADD_TYPE(fn_typ, std::move(b));
+            return fn_typ;
+        };
+        MAYBE(enc_id, ctx.repository().new_statement_id());
+        MAYBE(dec_id, ctx.repository().new_statement_id());
+        MAYBE(enc_type, get_type(node->encode_fn.lock(), GenerateType::Encode));
+        MAYBE(dec_type, get_type(node->decode_fn.lock(), GenerateType::Decode));
+        EBM_IDENTIFIER(encode, enc_id, enc_type);
+        EBM_IDENTIFIER(decode, dec_id, dec_type);
         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
-        auto handle = [&](ebm::StatementRef& fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
+        ctx.state().add_format_encode_decode(node, encode, enc_type, decode, dec_type);
+        auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
-            if (auto enc = node->encode_fn.lock()) {
-                EBMA_CONVERT_STATEMENT(enc_fn, enc);
+            if (fn) {
+                EBMA_CONVERT_STATEMENT(enc_fn, enc_id, fn);
                 fn_ref = enc_fn;
             }
             else {
@@ -389,13 +412,15 @@ namespace ebmgen {
                 ebm::StatementBody b;
                 b.statement_kind = ebm::StatementOp::FUNCTION_DECL;
                 b.func_decl(std::move(derived_fn));
-                EBMA_ADD_STATEMENT(stmt, std::move(b));
+                EBMA_ADD_STATEMENT(stmt, enc_id, std::move(b));
                 fn_ref = stmt;
             }
             return {};
         };
-        MAYBE_VOID(ok1, handle(struct_decl.encode_fn, node->encode_fn.lock(), GenerateType::Encode));
-        MAYBE_VOID(ok2, handle(struct_decl.decode_fn, node->decode_fn.lock(), GenerateType::Decode));
+        MAYBE_VOID(ok1, handle(enc_id, node->encode_fn.lock(), GenerateType::Encode));
+        MAYBE_VOID(ok2, handle(dec_id, node->decode_fn.lock(), GenerateType::Decode));
+        struct_decl.encode_fn = enc_id;
+        struct_decl.decode_fn = dec_id;
         body.struct_decl(std::move(struct_decl));
         return {};
     }

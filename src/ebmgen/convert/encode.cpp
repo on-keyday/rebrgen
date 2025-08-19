@@ -251,8 +251,9 @@ namespace ebmgen {
         EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
         call_desc.callee = enc_access;
         // TODO: add arguments
-        EBM_CALL(call_ref, std::move(call_desc));
         MAYBE(typ_ref, get_encoder_return_type(ctx));
+
+        EBM_CALL(call_ref, typ_ref, std::move(call_desc));
         EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ_ref, call_ref);
         EBM_IS_ERROR(is_error, result);
         EBM_ERROR_RETURN(error_return, result);

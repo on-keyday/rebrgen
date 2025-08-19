@@ -177,8 +177,9 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::ExpressionBody make_call(ebm::CallDesc&& call_desc) {
+    ebm::ExpressionBody make_call(ebm::TypeRef type, ebm::CallDesc&& call_desc) {
         ebm::ExpressionBody body;
+        body.type = type;
         body.op = ebm::ExpressionOp::CALL;
         body.call_desc(std::move(call_desc));
         return body;

@@ -353,20 +353,25 @@ namespace ebmgen {
         return coder_return;
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.statement_kind = ebm::StatementOp::STRUCT_DECL;
+    expected<ebm::StructDecl> StatementConverter::convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node) {
         ebm::StructDecl struct_decl;
-        EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
-        struct_decl.name = name_ref;
+        struct_decl.name = name;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
-            for (auto& element : node->body->struct_type->fields) {
+            for (auto& element : node->fields) {
                 if (ast::as<ast::Field>(element)) {
                     EBMA_CONVERT_STATEMENT(stmt_ref, element);
                     append(struct_decl.fields, stmt_ref);
                 }
             }
         }
+        return struct_decl;
+    }
+
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        body.statement_kind = ebm::StatementOp::STRUCT_DECL;
+        EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
+        MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
         auto handle = [&](ebm::StatementRef& fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
             if (auto enc = node->encode_fn.lock()) {

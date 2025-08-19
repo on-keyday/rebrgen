@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "convert/helper.hpp"
 #include "core/ast/node/base.h"
+#include "core/ast/node/type.h"
 #include <wrap/cout.h>
 
 namespace ebmgen {
@@ -431,6 +432,8 @@ namespace ebmgen {
     struct StatementConverter {
         ConverterContext& ctx;
         expected<ebm::StatementRef> convert_statement(const std::shared_ptr<ast::Node>& node);
+
+        expected<ebm::StructDecl> convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node);
 
        private:
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementRef id, ebm::StatementBody& body);

@@ -1,4 +1,6 @@
 #include "../converter.hpp"
+#include "core/ast/node/base.h"
+#include "core/ast/node/expr.h"
 #include "ebm/extended_binary_module.hpp"
 #include "helper.hpp"
 #include <core/ast/traverse.h>
@@ -100,9 +102,6 @@ namespace ebmgen {
                         EBMA_CONVERT_TYPE(base_type_ref, locked_enum->base_type);
                         body.base_type(base_type_ref);
                     }
-                    else {
-                        body.base_type(ebm::TypeRef{});
-                    }
                 }
                 else {
                     return unexpect_error("EnumType has no base enum");
@@ -111,8 +110,27 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructType>>) {
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
                 if (auto locked_base = n->base.lock()) {
-                    EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
-                    body.id(name_ref);                              // Use the ID of the struct declaration
+                    if (ast::as<ast::Format>(locked_base) || ast::as<ast::State>(locked_base)) {
+                        EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
+                        body.id(name_ref);                              // Use the ID of the struct declaration
+                    }
+                    else if (auto br = ast::as<ast::MatchBranch>(locked_base)) {
+                        ebm::StatementBody stmt;
+                        stmt.statement_kind = ebm::StatementOp::STRUCT_DECL;
+                        if (auto c = ast::as<ast::ScopedStatement>(br->then)) {
+                            MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, c->struct_type));
+                            stmt.struct_decl(std::move(struct_decl));
+                        }
+                        else if (auto i = ast::as<ast::IndentBlock>(br->then)) {
+                            MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, i->struct_type));
+                            stmt.struct_decl(std::move(struct_decl));
+                        }
+                        EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
+                        body.id(name_ref);  // Use the ID of the struct declaration
+                    }
+                    else {
+                        return unexpect_error("StructType base must be a Format or State :{}", node_type_to_string(locked_base->node_type));
+                    }
                 }
                 else {
                     return unexpect_error("StructType has no base");

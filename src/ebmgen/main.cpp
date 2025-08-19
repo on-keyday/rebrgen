@@ -68,7 +68,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 1;
     }
 
-    cout << "ebmgen finished successfully!\n";
+    cout << "ebmgen finished successfully!\n"
+         << "Output written to: " << flags.output << '\n';
     return 0;
 }
 

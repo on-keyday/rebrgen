@@ -117,6 +117,7 @@ namespace ebmgen {
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::EnumType>>) {
                 body.kind = ebm::TypeKind::ENUM;
                 if (auto locked_enum = n->base.lock()) {
+                    const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
                     EBMA_CONVERT_STATEMENT(stmt_ref, locked_enum);  // Convert the enum declaration
                     body.id(stmt_ref);                              // Use the ID of the enum declaration
                     if (locked_enum->base_type) {
@@ -129,6 +130,7 @@ namespace ebmgen {
                 }
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructType>>) {
+                const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
                 if (auto locked_base = n->base.lock()) {
                     if (ast::as<ast::Format>(locked_base) || ast::as<ast::State>(locked_base)) {

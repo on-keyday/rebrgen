@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <type_traits>
 #include "ebm/extended_binary_module.hpp"
@@ -9,6 +10,13 @@
 #include "common.hpp"
 
 namespace ebmgen {
+    template <class T, class U>
+    concept has_visit = requires(T t, U u) {
+        { t.visit(u) };
+    };
+    struct DummyFn {
+        void operator()(auto&&, const char*, auto&&) const {}
+    };
 
     // Constructor: Initializes maps for quick lookups
     DebugPrinter::DebugPrinter(const ebm::ExtendedBinaryModule& module, std::ostream& os)
@@ -16,11 +24,40 @@ namespace ebmgen {
         build_maps();
     }
 
+    template <class T>
+    concept is_container = requires(T t) {
+        { t.container };
+    };
+
     // Builds maps from vector data for faster access
     void DebugPrinter::build_maps() {
         auto map_to = [&](auto& map, const auto& vec) {
             for (const auto& item : vec) {
                 map[item.id.id.value()] = &item;
+                item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
+                    if constexpr (AnyRef<decltype(val)>) {
+                        if (val.id.value() != 0) {
+                            inverse_refs_[val.id.value()].push_back(InverseRef{
+                                .name = name,
+                                .index = index,
+                                .ref = ebm::AnyRef{item.id.id},
+                            });
+                        }
+                    }
+                    else if constexpr (is_container<decltype(val)>) {
+                        for (size_t i = 0; i < val.container.size(); ++i) {
+                            visitor(visitor, name, val.container[i], i);
+                        }
+                    }
+                    else if constexpr (has_visit<decltype(val), decltype(visitor)>) {
+                        val.visit(visitor);
+                    }
+                    else if constexpr (std::is_pointer_v<std::decay_t<decltype(val)>>) {
+                        if (val) {
+                            visitor(visitor, name, *val, index);
+                        }
+                    }
+                });
             }
         };
         map_to(identifier_map_, module_.identifiers);
@@ -79,14 +116,6 @@ namespace ebmgen {
         auto it = expression_map_.find(ref.id.value());
         return (it != expression_map_.end()) ? it->second : nullptr;
     }
-
-    template <class T, class U>
-    concept has_visit = requires(T t, U u) {
-        { t.visit(u) };
-    };
-    struct DummyFn {
-        void operator()(auto&&, const char*, auto&&) const {}
-    };
 
     void DebugPrinter::print_resolved_reference(const ebm::IdentifierRef& ref) const {
         const auto* ident = get_identifier(ref);
@@ -159,6 +188,17 @@ namespace ebmgen {
         }
     }
 
+    void DebugPrinter::print_any_ref(auto value) const {
+        os_ << " (ID: " << value.id.value() << " ";
+        if (value.id.value() == 0) {
+            os_ << "(null)";
+        }
+        else {
+            print_resolved_reference(value);
+        }
+        os_ << ")";
+    }
+
     // --- Generic print helpers ---
     template <typename T>
     void DebugPrinter::print_value(const T& value) const {
@@ -187,14 +227,8 @@ namespace ebmgen {
         else if constexpr (has_visit<T, DummyFn>) {
             os_ << value.visitor_name;
             if constexpr (AnyRef<T>) {
-                os_ << " (ID: " << value.id.value() << " ";
-                if (value.id.value() == 0) {
-                    os_ << "(null)";
-                }
-                else {
-                    print_resolved_reference(value);
-                }
-                os_ << ")\n";
+                print_any_ref(value);
+                os_ << "\n";
             }
             else {
                 os_ << "\n";
@@ -235,6 +269,29 @@ namespace ebmgen {
     // --- Main print methods ---
     void DebugPrinter::print_module() const {
         print_value(module_);
+        os_ << "Inverse references:\n";
+        indent_level_++;
+        for (std::uint64_t i = 1; i <= module_.max_id.id.value(); ++i) {
+            print_any_ref(ebm::AnyRef{i});
+            auto found = inverse_refs_.find(i);
+            if (found == inverse_refs_.end()) {
+                os_ << ": (no references)\n";
+                continue;
+            }
+            os_ << ":\n";
+            indent_level_++;
+            for (const auto& ref : found->second) {
+                indent();
+                print_any_ref(ref.ref);
+                os_ << " (from: " << ref.name;
+                if (ref.index) {
+                    os_ << "[" << *ref.index << "]";
+                }
+                os_ << ")\n";
+            }
+            indent_level_--;
+        }
+        indent_level_--;
     }
 
 }  // namespace ebmgen

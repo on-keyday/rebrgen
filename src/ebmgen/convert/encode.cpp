@@ -234,10 +234,7 @@ namespace ebmgen {
     expected<void> EncoderConverter::encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
         auto base = typ->base.lock();
         auto fmt = ast::as<ast::Format>(base);
-        if (!fmt) {
-            return unexpect_error("Struct type must have a format");
-        }
-        if (typ->bit_size && !(fmt->encode_fn.lock() || fmt->decode_fn.lock())) {
+        if (typ->bit_size && (!fmt || !(fmt->encode_fn.lock() || fmt->decode_fn.lock()))) {
             auto size = get_size(*typ->bit_size);
             io_desc.size = size;
         }

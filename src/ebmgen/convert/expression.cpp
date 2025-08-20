@@ -2,13 +2,43 @@
 #include <core/ast/tool/ident.h>
 #include "core/ast/node/ast_enum.h"
 #include "core/ast/node/literal.h"
+#include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/common.hpp"
 #include "helper.hpp"
 #include <fnet/util/base64.h>
 #include <core/ast/traverse.h>
+#include <memory>
 #include <type_traits>
 
 namespace ebmgen {
+    expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op) {
+        switch (op) {
+            case ast::BinaryOp::add_assign:
+                return ebm::BinaryOp::add;
+            case ast::BinaryOp::sub_assign:
+                return ebm::BinaryOp::sub;
+            case ast::BinaryOp::mul_assign:
+                return ebm::BinaryOp::mul;
+            case ast::BinaryOp::div_assign:
+                return ebm::BinaryOp::div;
+            case ast::BinaryOp::mod_assign:
+                return ebm::BinaryOp::mod;
+            case ast::BinaryOp::bit_and_assign:
+                return ebm::BinaryOp::bit_and;
+            case ast::BinaryOp::bit_or_assign:
+                return ebm::BinaryOp::bit_or;
+            case ast::BinaryOp::bit_xor_assign:
+                return ebm::BinaryOp::bit_xor;
+            case ast::BinaryOp::left_logical_shift_assign:
+                return ebm::BinaryOp::left_shift;
+            case ast::BinaryOp::right_logical_shift_assign:
+                return ebm::BinaryOp::right_shift;
+            default:
+                return unexpect_error("Unsupported binary operator: {}", to_string(op));
+        }
+    }
+
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op) {
         switch (op) {
             case ast::BinaryOp::add:
@@ -48,7 +78,7 @@ namespace ebmgen {
             case ast::BinaryOp::bit_xor:
                 return ebm::BinaryOp::bit_xor;
             default:
-                return unexpect_error("Unsupported binary operator: {}", to_string(op));
+                return convert_assignment_binary_op(op);
         }
     }
 
@@ -298,15 +328,26 @@ namespace ebmgen {
             case ast::IOMethod::input_get:
             case ast::IOMethod::input_peek: {
                 body.op = ebm::ExpressionOp::READ_DATA;
-                auto typ = ast::as<ast::TypeLiteral>(node->arguments[0]);
-                if (!typ) {
-                    return unexpect_error("Expected TypeLiteral for input_get, got {}", node_type_to_string(node->arguments[0]->node_type));
+                ebm::TypeRef type_ref;
+                std::shared_ptr<ast::Type> typ_lit;
+                if (node->arguments.size() != 0) {
+                    auto typ = ast::as<ast::TypeLiteral>(node->arguments[0]);
+                    if (!typ) {
+                        return unexpect_error("Expected TypeLiteral for input_get, got {}", node_type_to_string(node->arguments[0]->node_type));
+                    }
+                    EBMA_CONVERT_TYPE(type_ref_, typ->type_literal);
+                    type_ref = type_ref_;
+                    typ_lit = typ->type_literal;
                 }
-                EBMA_CONVERT_TYPE(type_ref, typ->type_literal);
+                else {
+                    EBMU_U8(u8_t);
+                    type_ref = u8_t;
+                    typ_lit = std::make_shared<ast::IntType>(node->loc, 8, ast::Endian::unspec, false);
+                }
                 EBM_DEFAULT_VALUE(default_, type_ref);
                 EBM_DEFINE_ANONYMOUS_VARIABLE(var, type_ref, default_);
                 body.target_stmt(var_def);
-                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(typ->type_literal, var, nullptr));
+                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(typ_lit, var, nullptr));
                 if (node->method == ast::IOMethod::input_peek) {
                     decode_info.read_data()->attribute.is_peek(true);
                 }
@@ -343,6 +384,20 @@ namespace ebmgen {
             }
         }
         return {};
+    }
+
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Paren>& node, ebm::ExpressionBody& body) {
+        expected<void> result = unexpect_error("Expected expression inside parentheses, got {}", node_type_to_string(node->expr->node_type));
+        brgen::ast::visit(ast::cast_to<ast::Node>(node->expr), [&](auto&& n) {
+            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(n)>, std::shared_ptr>::template param_at<0>;
+            if constexpr (std::is_base_of_v<ast::Expr, T>) {
+                result = convert_expr_impl(n, body);
+            }
+            else {
+                result = unexpect_error("Expected expression inside parentheses, got {}", node_type_to_string(node->expr->node_type));
+            }
+        });
+        return result;
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {

@@ -106,14 +106,13 @@ namespace ebmgen {
         EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
     }
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                             \
-    ebm::ExpressionRef ref_name;                                                                              \
-    ebm::StatementRef ref_name##_def;                                                                         \
-    {                                                                                                         \
-        MAYBE(temporary_name, ctx.repository().anonymous_identifier());                                       \
-        EBMA_ADD_STATEMENT(new_var_ref_, make_variable_decl(temporary_name, typ, initial_ref, false, false)); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                     \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                 \
+    ebm::ExpressionRef ref_name;                                                                  \
+    ebm::StatementRef ref_name##_def;                                                             \
+    {                                                                                             \
+        EBMA_ADD_STATEMENT(new_var_ref_, make_variable_decl({}, typ, initial_ref, false, false)); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                         \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                          \
     }
 
     ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);

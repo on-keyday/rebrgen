@@ -9,6 +9,12 @@
 
 namespace ebmgen {
 
+    struct InverseRef {
+        const char* name;
+        std::optional<size_t> index;
+        ebm::AnyRef ref;
+    };
+
     class DebugPrinter {
        public:
         DebugPrinter(const ebm::ExtendedBinaryModule& module, std::ostream& os);
@@ -25,6 +31,7 @@ namespace ebmgen {
         std::map<std::uint64_t, const ebm::Type*> type_map_;
         std::map<std::uint64_t, const ebm::Statement*> statement_map_;
         std::map<std::uint64_t, const ebm::Expression*> expression_map_;
+        std::map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
 
         void build_maps();
 
@@ -40,6 +47,8 @@ namespace ebmgen {
         void print_resolved_reference(const ebm::StatementRef& ref) const;
         void print_resolved_reference(const ebm::ExpressionRef& ref) const;
         void print_resolved_reference(const ebm::AnyRef& ref) const;
+
+        void print_any_ref(auto ref) const;
 
         // Indentation helper
         mutable int indent_level_ = 0;

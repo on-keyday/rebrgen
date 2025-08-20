@@ -6,7 +6,9 @@
 #include <memory>
 #include <unordered_map>
 #include "convert/helper.hpp"
+#include "core/ast/node/ast_enum.h"
 #include "core/ast/node/base.h"
+#include "core/ast/node/expr.h"
 #include "core/ast/node/type.h"
 #include <wrap/cout.h>
 
@@ -147,6 +149,13 @@ namespace ebmgen {
             alias_id_map.clear();
         }
 
+        void recalculate_id_index_map() {
+            id_index_map.clear();
+            for (size_t i = 0; i < instances.size(); ++i) {
+                id_index_map[instances[i].id.id.value()] = i;
+            }
+        }
+
        private:
         std::unordered_map<std::string, ID> cache;
         std::unordered_map<uint64_t, size_t> id_index_map;
@@ -181,9 +190,10 @@ namespace ebmgen {
         ebm::Block* current_block = nullptr;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
+            return;
             auto member = ast::as<ast::Member>(node);
             const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
-            futils::wrap::cout_wrap() << action << ": (" << node_type_to_string(node->node_type) << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
+            futils::wrap::cout_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
             if (ref.id.value() != 0) {
                 futils::wrap::cout_wrap() << " -> " << ref.id.value();
             }
@@ -483,6 +493,7 @@ namespace ebmgen {
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Cast>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Range>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Paren>& node, ebm::ExpressionBody& body);
         // Fallback for unhandled types
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body);
     };
@@ -534,5 +545,6 @@ namespace ebmgen {
     expected<ebm::StatementBody> assert_statement_body(ConverterContext& ctx, ebm::ExpressionRef condition);
     expected<ebm::StatementRef> assert_statement(ConverterContext& ctx, ebm::ExpressionRef condition);
 
+    expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op);
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
 }  // namespace ebmgen

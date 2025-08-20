@@ -1,5 +1,6 @@
 #include "core/ast/node/statement.h"
 #include "../converter.hpp"
+#include "core/ast/ast.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
 #include "ebm/extended_binary_module.hpp"
@@ -398,7 +399,7 @@ namespace ebmgen {
         auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
             if (fn) {
-                EBMA_CONVERT_STATEMENT(enc_fn, enc_id, fn);
+                EBMA_CONVERT_STATEMENT(enc_fn, fn_ref, fn);
                 fn_ref = enc_fn;
             }
             else {
@@ -412,7 +413,7 @@ namespace ebmgen {
                 ebm::StatementBody b;
                 b.statement_kind = ebm::StatementOp::FUNCTION_DECL;
                 b.func_decl(std::move(derived_fn));
-                EBMA_ADD_STATEMENT(stmt, enc_id, std::move(b));
+                EBMA_ADD_STATEMENT(stmt, fn_ref, std::move(b));
                 fn_ref = stmt;
             }
             return {};
@@ -554,14 +555,14 @@ namespace ebmgen {
             body.property_decl(std::move(prop_decl));
         }
         else {
-            if (ctx.state().get_current_generate_type() == GenerateType::Encode) {
+            if (!node->is_state_variable && ctx.state().get_current_generate_type() == GenerateType::Encode) {
                 MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
                 auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
                 EBM_IDENTIFIER(def_id, def_ref, def->field_type);
                 MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
                 body = std::move(body_);
             }
-            else if (ctx.state().get_current_generate_type() == GenerateType::Decode) {
+            else if (!node->is_state_variable && ctx.state().get_current_generate_type() == GenerateType::Decode) {
                 MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
                 auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
                 EBM_IDENTIFIER(def_id, def_ref, def->field_type);
@@ -578,8 +579,10 @@ namespace ebmgen {
                 EBMA_CONVERT_TYPE(type_ref, node->field_type);
                 field_decl.field_type = type_ref;
                 field_decl.is_state_variable(node->is_state_variable);
-                MAYBE(parent_member_ref, ctx.state().is_visited(node->belong.lock(), GenerateType::Normal));
-                field_decl.parent_struct = parent_member_ref;
+                if (auto locked = node->belong.lock()) {
+                    MAYBE(parent_member_ref, ctx.state().is_visited(locked, GenerateType::Normal));
+                    field_decl.parent_struct = parent_member_ref;
+                }
                 body.field_decl(std::move(field_decl));
             }
         }
@@ -589,7 +592,8 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ExplicitError>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.statement_kind = ebm::StatementOp::ERROR_REPORT;
         ebm::ErrorReport error_report;
-        EBMA_ADD_STRING(message_str_ref, node->message->value);
+        MAYBE(decoded, decode_base64(node->message));
+        EBMA_ADD_STRING(message_str_ref, decoded);
         error_report.message = message_str_ref;
         for (auto& arg : node->base->arguments) {
             EBMA_CONVERT_EXPRESSION(arg_expr_ref, arg);
@@ -614,6 +618,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        auto assign_with_op = convert_assignment_binary_op(node->op);
         if (node->op == ast::BinaryOp::assign) {
             body.statement_kind = ebm::StatementOp::ASSIGNMENT;
             EBMA_CONVERT_EXPRESSION(target_ref, node->left);
@@ -641,6 +646,13 @@ namespace ebmgen {
             var_decl.is_constant(node->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
             body.var_decl(std::move(var_decl));
         }
+        else if (assign_with_op) {
+            body.statement_kind = ebm::StatementOp::ASSIGNMENT;
+            EBMA_CONVERT_EXPRESSION(calc, ast::cast_to<ast::Expr>(node));
+            EBMA_CONVERT_EXPRESSION(target_ref, node->left);
+            body.target(target_ref);
+            body.value(calc);
+        }
         else {
             body.statement_kind = ebm::StatementOp::EXPRESSION;
             EBMA_CONVERT_EXPRESSION(expr_ref, ast::cast_to<ast::Expr>(node));
@@ -650,6 +662,12 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        if (ast::as<ast::Expr>(node)) {
+            body.statement_kind = ebm::StatementOp::EXPRESSION;
+            EBMA_CONVERT_EXPRESSION(expr_ref, ast::cast_to<ast::Expr>(node));
+            body.expression(expr_ref);
+            return {};
+        }
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
 

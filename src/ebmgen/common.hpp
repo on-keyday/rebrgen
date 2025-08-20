@@ -5,6 +5,7 @@
 #include <format>
 #include <ebm/extended_binary_module.hpp>
 #include <source_location>
+#include <type_traits>
 namespace brgen::ast {}
 
 namespace ebmgen {
@@ -107,5 +108,6 @@ namespace ebmgen {
     template <typename T>
     concept AnyRef = requires(T t) {
         { t.id } -> std::convertible_to<ebm::Varint>;
+        { std::integral_constant<bool, sizeof(T) == sizeof(ebm::AnyRef)>{} } -> std::same_as<std::true_type>;
     };
 }  // namespace ebmgen

@@ -137,6 +137,19 @@
       //"symbolSearchPath": "lib\\"
     },
     {
+      "name": "Debug ebmcodegen",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tool/ebmcodegen",
+      "args": ["-i", "${workspaceRoot}/save/out.ebm"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}",
+      "environment": [],
+      "console": "integratedTerminal"
+      //"preLaunchTask": "build",
+      //"symbolSearchPath": "lib\\"
+    },
+    {
       "name": "Attach",
       "type": "cppvsdbg",
       "request": "attach",

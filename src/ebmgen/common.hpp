@@ -125,12 +125,18 @@ namespace ebmgen {
     };
 
 #define VISITOR_RECURSE(visitor, name, value)                              \
-    if constexpr (has_visit<decltype(value), decltype(visitor)>) {         \
+    if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) { \
         value.visit(visitor);                                              \
     }                                                                      \
     else if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) { \
         if (value) {                                                       \
             visitor(visitor, name, *value);                                \
         }                                                                  \
+    }
+#define VISITOR_RECURSE_ARRAY(visitor, name, value)                                                      \
+    if constexpr (futils::helper::is_template_instance_of<std::decay_t<decltype(value)>, std::vector>) { \
+        for (auto& elem : value) {                                                                       \
+            visitor(visitor, name, elem);                                                                \
+        }                                                                                                \
     }
 }  // namespace ebmgen

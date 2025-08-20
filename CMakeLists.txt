@@ -77,6 +77,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert/expression.cpp"
     "src/ebmgen/convert/type.cpp"
     "src/ebmgen/debug_printer.cpp"
+    "src/ebmgen/mapping.cpp"
     "src/ebmgen/convert/helper.cpp"
     "src/ebmgen/convert/encode.cpp"
     "src/ebmgen/convert/decode.cpp"
@@ -85,6 +86,13 @@ add_library(ebmgen_lib STATIC
 
 target_link_libraries(ebmgen_lib ebm futils)
 target_link_libraries(ebmgen ebmgen_lib)
+
+add_executable(ebmcodegen
+    "src/ebmcodegen/main.cpp"
+    "src/ebmgen/mapping.cpp"
+)
+
+target_link_libraries(ebmcodegen ebm futils)
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"
@@ -114,7 +122,7 @@ set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}
 #set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
 endif()
 install(TARGETS bmgen bm DESTINATION tool)
-install(TARGETS ebmgen ebm DESTINATION tool)
+install(TARGETS ebmgen ebm ebmcodegen DESTINATION tool)
 install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 #install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")

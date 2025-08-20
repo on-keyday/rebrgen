@@ -53,6 +53,10 @@ namespace ebmgen {
             }
             return varint(next_id - 1);
         }
+
+        void set_current_id(std::uint64_t id) {
+            next_id = id + 1;
+        }
     };
 
     template <typename T>
@@ -576,6 +580,24 @@ namespace ebmgen {
 
         auto& string_repository() {
             return ctx.repository().string_repo;
+        }
+
+        auto& alias_vector() {
+            return ctx.repository().aliases;
+        }
+
+        auto max_id() const {
+            return ctx.repository().ident_source.current_id();
+        }
+
+        void set_max_id(std::uint64_t id) {
+            ctx.repository().ident_source.set_current_id(id);
+        }
+
+        expected<ebm::AnyRef> new_id() {
+            return ctx.repository().ident_source.new_id().transform([](ebm::Varint id) {
+                return ebm::AnyRef{id};
+            });
         }
 
         auto& context() {

@@ -50,6 +50,10 @@ namespace ebmgen {
 
         auto map_alias = [&](auto& map, const auto& alias) {
             map[alias.from.id.value()] = map[alias.to.id.value()];
+            inverse_refs_[alias.to.id.value()].push_back(InverseRef{
+                .name = to_string(alias.hint),
+                .ref = ebm::AnyRef{alias.from.id},
+            });
         };
 
         for (const auto& alias : module_.aliases) {

@@ -1,5 +1,6 @@
 /*license*/
 #include "transform.hpp"
+#include <algorithm>
 #include <functional>
 #include <type_traits>
 #include "../common.hpp"
@@ -7,12 +8,14 @@
 #include "ebmgen/convert/helper.hpp"
 #include "ebmgen/converter.hpp"
 #include "wrap/cout.h"
+#include <set>
 
 namespace ebmgen {
     expected<void> vectorized_io(TransformContext& tctx, bool write) {
         // Implementation of the grouping I/O transformation
         auto& all_statements = tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
+        auto current_alias = tctx.alias_vector().size();
         std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
         auto get_block = [&](ebm::StatementBody& body) {
             ebm::Block* block = nullptr;
@@ -163,14 +166,163 @@ namespace ebmgen {
                     VISITOR_RECURSE(visitor, name, value)
             });
         }
+        for (size_t i = 0; i < current_alias; i++) {
+            auto& alias = tctx.alias_vector()[i];
+            if (alias.hint == ebm::AliasHint::STATEMENT) {
+                auto found = map_statements.find(alias.to.id.value());
+                if (found != map_statements.end()) {
+                    alias.to.id = found->second.id;
+                }
+            }
+        }
         return {};
     }
 
-    expected<void> remove_unused(TransformContext& ctx) {}
+    expected<void> remove_unused(TransformContext& ctx) {
+        MAYBE(max_id, ctx.max_id());
+        std::map<size_t, std::vector<ebm::AnyRef>> used_refs;
+        auto trial = [&] -> size_t {
+            used_refs.clear();
+            auto map_to = [&](const auto& vec) {
+                for (const auto& item : vec) {
+                    item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
+                        if constexpr (AnyRef<decltype(val)>) {
+                            if (val.id.value() != 0) {
+                                used_refs[val.id.value()].push_back(ebm::AnyRef{item.id.id});
+                            }
+                        }
+                        else if constexpr (is_container<decltype(val)>) {
+                            for (size_t i = 0; i < val.container.size(); ++i) {
+                                visitor(visitor, name, val.container[i], i);
+                            }
+                        }
+                        else
+                            VISITOR_RECURSE(visitor, name, val)
+                    });
+                }
+            };
+            map_to(ctx.statement_repository().get_all());
+            map_to(ctx.identifier_repository().get_all());
+            map_to(ctx.type_repository().get_all());
+            map_to(ctx.string_repository().get_all());
+            map_to(ctx.expression_repository().get_all());
+            for (auto& alias : ctx.alias_vector()) {
+                if (used_refs.find(alias.from.id.value()) == used_refs.end()) {
+                    futils::wrap::cout_wrap() << "Removing unused alias: " << alias.from.id.value() << "\n";
+                    continue;  // Skip unused aliases
+                }
+                switch (alias.hint) {
+                    case ebm::AliasHint::IDENTIFIER:
+                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        break;
+                    case ebm::AliasHint::STATEMENT:
+                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        break;
+                    case ebm::AliasHint::STRING:
+                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        break;
+                    case ebm::AliasHint::EXPRESSION:
+                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        break;
+                    case ebm::AliasHint::TYPE:
+                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        break;
+                }
+            }
+            std::set<std::uint64_t> should_remove;
+            for (size_t i = 2 /*0 is nil, 1 is root node*/; i < max_id.value(); i++) {
+                auto found = used_refs.find(i);
+                if (found != used_refs.end()) {
+                    continue;
+                }
+                should_remove.insert(i);
+            }
+            // simply remove
+            auto remove = [&](auto&& rem) {
+                std::erase_if(rem, [&](const auto& item) {
+                    if (should_remove.find(item.id.id.value()) != should_remove.end()) {
+                        futils::wrap::cout_wrap() << "Removing unused item: " << item.id.id.value() << "\n";
+                        return true;
+                    }
+                    return false;
+                });
+            };
+            remove(ctx.statement_repository().get_all());
+            remove(ctx.identifier_repository().get_all());
+            remove(ctx.type_repository().get_all());
+            remove(ctx.string_repository().get_all());
+            remove(ctx.expression_repository().get_all());
+            std::erase_if(ctx.alias_vector(), [&](const auto& alias) {
+                return should_remove.find(alias.from.id.value()) != should_remove.end() ||
+                       should_remove.find(alias.to.id.value()) != should_remove.end();
+            });
+            return used_refs.size();
+        };
+        auto first_size = trial();
+        auto second_size = trial();
+        while (first_size != second_size) {
+            first_size = second_size;
+            second_size = trial();
+        }
+        std::vector<std::tuple<ebm::AnyRef, size_t>> most_used;
+        for (const auto& [id, refs] : used_refs) {
+            most_used.emplace_back(ebm::AnyRef{id}, refs.size());
+        }
+        std::stable_sort(most_used.begin(), most_used.end(), [](const auto& a, const auto& b) {
+            return std::get<1>(a) > std::get<1>(b);
+        });
+        std::map<size_t, ebm::AnyRef> old_to_new;
+        ctx.set_max_id(0);  // reset
+        for (auto& mapping : most_used) {
+            MAYBE(new_id, ctx.new_id());
+            old_to_new[std::get<0>(mapping).id.value()] = new_id;
+        }
+        MAYBE(entry_id, ctx.new_id());
+        old_to_new[1] = entry_id;
+        auto remap = [&](auto& vec) {
+            for (auto& item : vec) {
+                if (auto it = old_to_new.find(item.id.id.value()); it != old_to_new.end()) {
+                    item.id.id = it->second.id;
+                }
+                item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
+                    if constexpr (AnyRef<decltype(val)>) {
+                        if (val.id.value() != 0) {
+                            auto it = old_to_new.find(val.id.value());
+                            if (it != old_to_new.end()) {
+                                val.id = it->second.id;
+                            }
+                        }
+                    }
+                    else if constexpr (is_container<decltype(val)>) {
+                        for (size_t i = 0; i < val.container.size(); ++i) {
+                            visitor(visitor, name, val.container[i], i);
+                        }
+                    }
+                    else
+                        VISITOR_RECURSE(visitor, name, val)
+                });
+            }
+        };
+        remap(ctx.statement_repository().get_all());
+        remap(ctx.identifier_repository().get_all());
+        remap(ctx.type_repository().get_all());
+        remap(ctx.string_repository().get_all());
+        remap(ctx.expression_repository().get_all());
+        for (auto& alias : ctx.alias_vector()) {
+            if (auto it = old_to_new.find(alias.from.id.value()); it != old_to_new.end()) {
+                alias.from.id = it->second.id;
+            }
+            if (auto it = old_to_new.find(alias.to.id.value()); it != old_to_new.end()) {
+                alias.to.id = it->second.id;
+            }
+        }
+        return {};
+    }
 
     expected<void> transform(TransformContext& ctx) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
+        MAYBE_VOID(remove_unused, remove_unused(ctx));
         return {};
     }
 }  // namespace ebmgen

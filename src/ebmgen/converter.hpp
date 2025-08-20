@@ -284,6 +284,8 @@ namespace ebmgen {
         ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody, ebm::AliasHint::STATEMENT> statement_repo{aliases};
         std::vector<ebm::Loc> debug_locs;
 
+        friend struct TransformContext;
+
        public:
         EBMRepository() = default;
         EBMRepository(const EBMRepository&) = delete;
@@ -547,4 +549,37 @@ namespace ebmgen {
 
     expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op);
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
+
+    struct TransformContext {
+       private:
+        ConverterContext& ctx;
+
+       public:
+        TransformContext(ConverterContext& ctx)
+            : ctx(ctx) {}
+
+        auto& type_repository() {
+            return ctx.repository().type_repo;
+        }
+
+        auto& statement_repository() {
+            return ctx.repository().statement_repo;
+        }
+
+        auto& expression_repository() {
+            return ctx.repository().expression_repo;
+        }
+
+        auto& identifier_repository() {
+            return ctx.repository().identifier_repo;
+        }
+
+        auto& string_repository() {
+            return ctx.repository().string_repo;
+        }
+
+        auto& context() {
+            return ctx;
+        }
+    };
 }  // namespace ebmgen

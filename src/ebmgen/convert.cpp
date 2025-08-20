@@ -1,4 +1,5 @@
 #include "converter.hpp"
+#include "transform/transform.hpp"
 
 namespace ebmgen {
 
@@ -7,6 +8,11 @@ namespace ebmgen {
         auto s = converter.convert_statement(ast_root);
         if (!s) {
             return s.error();
+        }
+        TransformContext transform_ctx(converter);
+        auto t = transform(transform_ctx);
+        if (!t) {
+            return t.error();
         }
         auto fin = converter.repository().finalize(ebm);
         if (!fin) {

@@ -57,9 +57,10 @@ enum Endian:
 
 format IOAttribute:
     endian :Endian
-    sign :u1 # 0 for unsigned, 1 for signed (for storage optimization)
-    is_peek :u1 # 0 for non-peek, 1 for peek (for storage optimization)
-    reserved :u3
+    sign :u1 # 0 for unsigned, 1 for signed 
+    is_peek :u1 # 0 for non-peek, 1 for peek 
+    vectorized :u1 # this is marker for several data is into single io data. lowered_statement is a block contains original io data
+    reserved :u2
     dynamic_ref :StatementRef # ref to dynamic endian or null
 
 

@@ -110,4 +110,27 @@ namespace ebmgen {
         { t.id } -> std::convertible_to<ebm::Varint>;
         { std::integral_constant<bool, sizeof(T) == sizeof(ebm::AnyRef)>{} } -> std::same_as<std::true_type>;
     };
+
+    template <class T, class U>
+    concept has_visit = requires(T t, U u) {
+        { t.visit(u) };
+    };
+    struct DummyFn {
+        void operator()(auto&&, const char*, auto&&) const {}
+    };
+
+    template <class T>
+    concept is_container = requires(T t) {
+        { t.container };
+    };
+
+#define VISITOR_RECURSE(visitor, name, value)                              \
+    if constexpr (has_visit<decltype(value), decltype(visitor)>) {         \
+        value.visit(visitor);                                              \
+    }                                                                      \
+    else if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) { \
+        if (value) {                                                       \
+            visitor(visitor, name, *value);                                \
+        }                                                                  \
+    }
 }  // namespace ebmgen

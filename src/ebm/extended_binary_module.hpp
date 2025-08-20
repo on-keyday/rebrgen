@@ -1062,11 +1062,12 @@ namespace ebm {
         }
     };
     struct EBM_API IOAttribute{
-        ::futils::binary::flags_t<std::uint8_t, 3, 1, 1, 3> flags_2_;
+        ::futils::binary::flags_t<std::uint8_t, 3, 1, 1, 1, 2> flags_2_;
         bits_flag_alias_method_with_enum(flags_2_,0,endian,Endian);
         bits_flag_alias_method(flags_2_,1,sign);
         bits_flag_alias_method(flags_2_,2,is_peek);
-        bits_flag_alias_method(flags_2_,3,reserved);
+        bits_flag_alias_method(flags_2_,3,vectorized);
+        bits_flag_alias_method(flags_2_,4,reserved);
         StatementRef dynamic_ref;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
@@ -1077,6 +1078,7 @@ namespace ebm {
             v(v, "endian",(*this).endian());
             v(v, "sign",(*this).sign());
             v(v, "is_peek",(*this).is_peek());
+            v(v, "vectorized",(*this).vectorized());
             v(v, "reserved",(*this).reserved());
             v(v, "dynamic_ref",(*this).dynamic_ref);
         }
@@ -1085,6 +1087,7 @@ namespace ebm {
             v(v, "endian",(*this).endian());
             v(v, "sign",(*this).sign());
             v(v, "is_peek",(*this).is_peek());
+            v(v, "vectorized",(*this).vectorized());
             v(v, "reserved",(*this).reserved());
             v(v, "dynamic_ref",(*this).dynamic_ref);
         }

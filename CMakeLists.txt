@@ -80,6 +80,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert/helper.cpp"
     "src/ebmgen/convert/encode.cpp"
     "src/ebmgen/convert/decode.cpp"
+    "src/ebmgen/transform/transform.cpp"
 )
 
 target_link_libraries(ebmgen_lib ebm futils)

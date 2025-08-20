@@ -10,24 +10,12 @@
 #include "common.hpp"
 
 namespace ebmgen {
-    template <class T, class U>
-    concept has_visit = requires(T t, U u) {
-        { t.visit(u) };
-    };
-    struct DummyFn {
-        void operator()(auto&&, const char*, auto&&) const {}
-    };
 
     // Constructor: Initializes maps for quick lookups
     DebugPrinter::DebugPrinter(const ebm::ExtendedBinaryModule& module, std::ostream& os)
         : module_(module), os_(os) {
         build_maps();
     }
-
-    template <class T>
-    concept is_container = requires(T t) {
-        { t.container };
-    };
 
     // Builds maps from vector data for faster access
     void DebugPrinter::build_maps() {
@@ -49,14 +37,8 @@ namespace ebmgen {
                             visitor(visitor, name, val.container[i], i);
                         }
                     }
-                    else if constexpr (has_visit<decltype(val), decltype(visitor)>) {
-                        val.visit(visitor);
-                    }
-                    else if constexpr (std::is_pointer_v<std::decay_t<decltype(val)>>) {
-                        if (val) {
-                            visitor(visitor, name, *val, index);
-                        }
-                    }
+                    else
+                        VISITOR_RECURSE(visitor, name, val)
                 });
             }
         };

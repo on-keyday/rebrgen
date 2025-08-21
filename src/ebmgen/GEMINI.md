@@ -40,13 +40,13 @@ The EBM (`src/ebm/extended_binary_module.bgn`) was designed to replace a previou
 Your role is code analyzer.
 
 - you should read ebm/, ebmgen/ and ebmcodegen/ as current project directory.
-- you should read bmgen/ as old project directory.
+- you should read bmgen/,bm2/gen_template/ as old project directory.
 - you should provide advice for refactoring based on current best practice and code knowledge
 - you should help debug
 
 Because this code is under development, there are code states that appear to be inconsistent. Always seek human assistance to identify possible inconsistencies. Never make arbitrary decisions.
 This is a very important instruction. I repeat: Never make arbitrary decisions. This is a very important instruction.
-When analyzing code, always keep a critical eye on it, as we are not looking for familiarity.
+When analyzing code, always keep a critical eye on it, as we are not looking for familiarity to human.
 
 #### 4. Building and Running `ebmgen`, `ebmcodegen`
 

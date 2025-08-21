@@ -101,4 +101,11 @@ namespace ebmgen {
     const ebm::Statement* MappingTable::get_entry_point() const {
         return get_statement(ebm::StatementRef{module_.max_id.id});
     }
+
+    std::string MappingTable::get_identifier_or(const ebm::IdentifierRef& ref, const ebm::AnyRef& default_ref, std::string_view prefix) const {
+        if (const ebm::Identifier* id = get_identifier(ref)) {
+            return id->body.data;
+        }
+        return std::format("{}{}", prefix, default_ref.id.value());
+    }
 }  // namespace ebmgen

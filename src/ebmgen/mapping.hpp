@@ -24,6 +24,8 @@ namespace ebmgen {
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
+        std::string get_identifier_or(const ebm::IdentifierRef& ref, const ebm::AnyRef& default_ref, std::string_view prefix = "tmp") const;
+
         // same as get_statement(ebm::StatementRef{module().max_id.id})
         const ebm::Statement* get_entry_point() const;
 

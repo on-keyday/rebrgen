@@ -38,18 +38,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().block()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_BLOCK(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_BLOCK(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BLOCK_pre_validate.hpp")
+        #include "visitor/Statement_BLOCK_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BLOCK_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BLOCK_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.block()) {
             return unexpect_error("Unexpected null pointer for StatementBody::block");
         }
         auto& block = *in.body.block();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BLOCK_pre_visit.hpp")
+        #include "visitor/Statement_BLOCK_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BLOCK_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BLOCK_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_BLOCK<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_BLOCK(in.id,kind,block));
         }
         else if constexpr (has_visitor_Statement_BLOCK_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,block));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BLOCK_post_visit.hpp")
+        #include "visitor/Statement_BLOCK_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BLOCK_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BLOCK_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -61,7 +91,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().previous_assignment(),*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ASSIGNMENT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ASSIGNMENT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate.hpp")
+        #include "visitor/Statement_ASSIGNMENT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSIGNMENT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSIGNMENT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.previous_assignment()) {
             return unexpect_error("Unexpected null pointer for StatementBody::previous_assignment");
@@ -75,12 +115,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
         auto& value = *in.body.value();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit.hpp")
+        #include "visitor/Statement_ASSIGNMENT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSIGNMENT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSIGNMENT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ASSIGNMENT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ASSIGNMENT(in.id,kind,previous_assignment,target,value));
         }
         else if constexpr (has_visitor_Statement_ASSIGNMENT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,previous_assignment,target,value));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSIGNMENT_post_visit.hpp")
+        #include "visitor/Statement_ASSIGNMENT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSIGNMENT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSIGNMENT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -92,7 +152,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_APPEND(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_APPEND(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_APPEND_pre_validate.hpp")
+        #include "visitor/Statement_APPEND_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_APPEND_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_APPEND_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.target()) {
             return unexpect_error("Unexpected null pointer for StatementBody::target");
@@ -102,12 +172,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
         auto& value = *in.body.value();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_APPEND_pre_visit.hpp")
+        #include "visitor/Statement_APPEND_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_APPEND_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_APPEND_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_APPEND<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_APPEND(in.id,kind,target,value));
         }
         else if constexpr (has_visitor_Statement_APPEND_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,target,value));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_APPEND_post_visit.hpp")
+        #include "visitor/Statement_APPEND_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_APPEND_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_APPEND_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -119,18 +209,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_RETURN(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_RETURN(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_RETURN_pre_validate.hpp")
+        #include "visitor/Statement_RETURN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_RETURN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_RETURN_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.value()) {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
         auto& value = *in.body.value();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_RETURN_pre_visit.hpp")
+        #include "visitor/Statement_RETURN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_RETURN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_RETURN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_RETURN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_RETURN(in.id,kind,value));
         }
         else if constexpr (has_visitor_Statement_RETURN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,value));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_RETURN_post_visit.hpp")
+        #include "visitor/Statement_RETURN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_RETURN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_RETURN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -142,18 +262,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ERROR_RETURN(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ERROR_RETURN(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate.hpp")
+        #include "visitor/Statement_ERROR_RETURN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_RETURN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_RETURN_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.value()) {
             return unexpect_error("Unexpected null pointer for StatementBody::value");
         }
         auto& value = *in.body.value();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit.hpp")
+        #include "visitor/Statement_ERROR_RETURN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_RETURN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_RETURN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ERROR_RETURN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ERROR_RETURN(in.id,kind,value));
         }
         else if constexpr (has_visitor_Statement_ERROR_RETURN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,value));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_RETURN_post_visit.hpp")
+        #include "visitor/Statement_ERROR_RETURN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_RETURN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_RETURN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -165,18 +315,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().assert_desc()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ASSERT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ASSERT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSERT_pre_validate.hpp")
+        #include "visitor/Statement_ASSERT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSERT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSERT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.assert_desc()) {
             return unexpect_error("Unexpected null pointer for StatementBody::assert_desc");
         }
         auto& assert_desc = *in.body.assert_desc();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSERT_pre_visit.hpp")
+        #include "visitor/Statement_ASSERT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSERT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSERT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ASSERT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ASSERT(in.id,kind,assert_desc));
         }
         else if constexpr (has_visitor_Statement_ASSERT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,assert_desc));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ASSERT_post_visit.hpp")
+        #include "visitor/Statement_ASSERT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ASSERT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ASSERT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -188,18 +368,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().read_data()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_READ_DATA(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_READ_DATA(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_READ_DATA_pre_validate.hpp")
+        #include "visitor/Statement_READ_DATA_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_READ_DATA_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_READ_DATA_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.read_data()) {
             return unexpect_error("Unexpected null pointer for StatementBody::read_data");
         }
         auto& read_data = *in.body.read_data();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_READ_DATA_pre_visit.hpp")
+        #include "visitor/Statement_READ_DATA_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_READ_DATA_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_READ_DATA_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_READ_DATA<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_READ_DATA(in.id,kind,read_data));
         }
         else if constexpr (has_visitor_Statement_READ_DATA_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,read_data));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_READ_DATA_post_visit.hpp")
+        #include "visitor/Statement_READ_DATA_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_READ_DATA_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_READ_DATA_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -211,18 +421,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().write_data()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_WRITE_DATA(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_WRITE_DATA(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_WRITE_DATA_pre_validate.hpp")
+        #include "visitor/Statement_WRITE_DATA_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_WRITE_DATA_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_WRITE_DATA_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.write_data()) {
             return unexpect_error("Unexpected null pointer for StatementBody::write_data");
         }
         auto& write_data = *in.body.write_data();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_WRITE_DATA_pre_visit.hpp")
+        #include "visitor/Statement_WRITE_DATA_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_WRITE_DATA_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_WRITE_DATA_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_WRITE_DATA<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_WRITE_DATA(in.id,kind,write_data));
         }
         else if constexpr (has_visitor_Statement_WRITE_DATA_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,write_data));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_WRITE_DATA_post_visit.hpp")
+        #include "visitor/Statement_WRITE_DATA_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_WRITE_DATA_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_WRITE_DATA_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -234,7 +474,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().offset(),*std::declval<const ebm::StatementBody&>().stream_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_SEEK_STREAM(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate.hpp")
+        #include "visitor/Statement_SEEK_STREAM_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_SEEK_STREAM_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_SEEK_STREAM_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.offset()) {
             return unexpect_error("Unexpected null pointer for StatementBody::offset");
@@ -244,12 +494,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for StatementBody::stream_type");
         }
         auto& stream_type = *in.body.stream_type();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit.hpp")
+        #include "visitor/Statement_SEEK_STREAM_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_SEEK_STREAM_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_SEEK_STREAM_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_SEEK_STREAM<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_SEEK_STREAM(in.id,kind,offset,stream_type));
         }
         else if constexpr (has_visitor_Statement_SEEK_STREAM_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,offset,stream_type));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit.hpp")
+        #include "visitor/Statement_SEEK_STREAM_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_SEEK_STREAM_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_SEEK_STREAM_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -261,18 +531,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().if_statement()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_IF_STATEMENT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_IF_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate.hpp")
+        #include "visitor/Statement_IF_STATEMENT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IF_STATEMENT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IF_STATEMENT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.if_statement()) {
             return unexpect_error("Unexpected null pointer for StatementBody::if_statement");
         }
         auto& if_statement = *in.body.if_statement();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit.hpp")
+        #include "visitor/Statement_IF_STATEMENT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IF_STATEMENT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IF_STATEMENT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_IF_STATEMENT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_IF_STATEMENT(in.id,kind,if_statement));
         }
         else if constexpr (has_visitor_Statement_IF_STATEMENT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,if_statement));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IF_STATEMENT_post_visit.hpp")
+        #include "visitor/Statement_IF_STATEMENT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IF_STATEMENT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IF_STATEMENT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -284,18 +584,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().loop()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_LOOP_STATEMENT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_LOOP_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate.hpp")
+        #include "visitor/Statement_LOOP_STATEMENT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.loop()) {
             return unexpect_error("Unexpected null pointer for StatementBody::loop");
         }
         auto& loop = *in.body.loop();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit.hpp")
+        #include "visitor/Statement_LOOP_STATEMENT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_LOOP_STATEMENT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_LOOP_STATEMENT(in.id,kind,loop));
         }
         else if constexpr (has_visitor_Statement_LOOP_STATEMENT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,loop));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit.hpp")
+        #include "visitor/Statement_LOOP_STATEMENT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOOP_STATEMENT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -307,18 +637,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().match_statement()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_MATCH_STATEMENT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_MATCH_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate.hpp")
+        #include "visitor/Statement_MATCH_STATEMENT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.match_statement()) {
             return unexpect_error("Unexpected null pointer for StatementBody::match_statement");
         }
         auto& match_statement = *in.body.match_statement();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit.hpp")
+        #include "visitor/Statement_MATCH_STATEMENT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_MATCH_STATEMENT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_MATCH_STATEMENT(in.id,kind,match_statement));
         }
         else if constexpr (has_visitor_Statement_MATCH_STATEMENT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,match_statement));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit.hpp")
+        #include "visitor/Statement_MATCH_STATEMENT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_STATEMENT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -330,18 +690,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().match_branch()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_MATCH_BRANCH(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_MATCH_BRANCH(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate.hpp")
+        #include "visitor/Statement_MATCH_BRANCH_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_BRANCH_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_BRANCH_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.match_branch()) {
             return unexpect_error("Unexpected null pointer for StatementBody::match_branch");
         }
         auto& match_branch = *in.body.match_branch();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit.hpp")
+        #include "visitor/Statement_MATCH_BRANCH_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_BRANCH_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_BRANCH_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_MATCH_BRANCH<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_MATCH_BRANCH(in.id,kind,match_branch));
         }
         else if constexpr (has_visitor_Statement_MATCH_BRANCH_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,match_branch));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit.hpp")
+        #include "visitor/Statement_MATCH_BRANCH_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_MATCH_BRANCH_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_MATCH_BRANCH_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -353,18 +743,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().break_()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_BREAK(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_BREAK(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BREAK_pre_validate.hpp")
+        #include "visitor/Statement_BREAK_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BREAK_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BREAK_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.break_()) {
             return unexpect_error("Unexpected null pointer for StatementBody::break_");
         }
         auto& break_ = *in.body.break_();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BREAK_pre_visit.hpp")
+        #include "visitor/Statement_BREAK_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BREAK_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BREAK_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_BREAK<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_BREAK(in.id,kind,break_));
         }
         else if constexpr (has_visitor_Statement_BREAK_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,break_));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BREAK_post_visit.hpp")
+        #include "visitor/Statement_BREAK_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BREAK_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BREAK_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -376,18 +796,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().continue_()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_CONTINUE(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_CONTINUE(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_CONTINUE_pre_validate.hpp")
+        #include "visitor/Statement_CONTINUE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_CONTINUE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_CONTINUE_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.continue_()) {
             return unexpect_error("Unexpected null pointer for StatementBody::continue_");
         }
         auto& continue_ = *in.body.continue_();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_CONTINUE_pre_visit.hpp")
+        #include "visitor/Statement_CONTINUE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_CONTINUE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_CONTINUE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_CONTINUE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_CONTINUE(in.id,kind,continue_));
         }
         else if constexpr (has_visitor_Statement_CONTINUE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,continue_));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_CONTINUE_post_visit.hpp")
+        #include "visitor/Statement_CONTINUE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_CONTINUE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_CONTINUE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -399,18 +849,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().func_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_FUNCTION_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_FUNCTION_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate.hpp")
+        #include "visitor/Statement_FUNCTION_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FUNCTION_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FUNCTION_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.func_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::func_decl");
         }
         auto& func_decl = *in.body.func_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit.hpp")
+        #include "visitor/Statement_FUNCTION_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FUNCTION_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FUNCTION_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_FUNCTION_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_FUNCTION_DECL(in.id,kind,func_decl));
         }
         else if constexpr (has_visitor_Statement_FUNCTION_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,func_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit.hpp")
+        #include "visitor/Statement_FUNCTION_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FUNCTION_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FUNCTION_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -422,18 +902,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().var_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_VARIABLE_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_VARIABLE_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate.hpp")
+        #include "visitor/Statement_VARIABLE_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_VARIABLE_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_VARIABLE_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.var_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::var_decl");
         }
         auto& var_decl = *in.body.var_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit.hpp")
+        #include "visitor/Statement_VARIABLE_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_VARIABLE_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_VARIABLE_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_VARIABLE_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_VARIABLE_DECL(in.id,kind,var_decl));
         }
         else if constexpr (has_visitor_Statement_VARIABLE_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,var_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit.hpp")
+        #include "visitor/Statement_VARIABLE_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_VARIABLE_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_VARIABLE_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -445,18 +955,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().field_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_FIELD_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FIELD_DECL_pre_validate.hpp")
+        #include "visitor/Statement_FIELD_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FIELD_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FIELD_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.field_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::field_decl");
         }
         auto& field_decl = *in.body.field_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FIELD_DECL_pre_visit.hpp")
+        #include "visitor/Statement_FIELD_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FIELD_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FIELD_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_FIELD_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_FIELD_DECL(in.id,kind,field_decl));
         }
         else if constexpr (has_visitor_Statement_FIELD_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,field_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_FIELD_DECL_post_visit.hpp")
+        #include "visitor/Statement_FIELD_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_FIELD_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_FIELD_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -468,18 +1008,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().enum_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ENUM_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ENUM_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_DECL_pre_validate.hpp")
+        #include "visitor/Statement_ENUM_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.enum_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::enum_decl");
         }
         auto& enum_decl = *in.body.enum_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_DECL_pre_visit.hpp")
+        #include "visitor/Statement_ENUM_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ENUM_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ENUM_DECL(in.id,kind,enum_decl));
         }
         else if constexpr (has_visitor_Statement_ENUM_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,enum_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_DECL_post_visit.hpp")
+        #include "visitor/Statement_ENUM_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -491,18 +1061,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().enum_member_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ENUM_MEMBER_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ENUM_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp")
+        #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.enum_member_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::enum_member_decl");
         }
         auto& enum_member_decl = *in.body.enum_member_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp")
+        #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ENUM_MEMBER_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ENUM_MEMBER_DECL(in.id,kind,enum_member_decl));
         }
         else if constexpr (has_visitor_Statement_ENUM_MEMBER_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,enum_member_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp")
+        #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -514,18 +1114,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().struct_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_STRUCT_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_STRUCT_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate.hpp")
+        #include "visitor/Statement_STRUCT_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STRUCT_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STRUCT_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.struct_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::struct_decl");
         }
         auto& struct_decl = *in.body.struct_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit.hpp")
+        #include "visitor/Statement_STRUCT_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STRUCT_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STRUCT_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_STRUCT_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_STRUCT_DECL(in.id,kind,struct_decl));
         }
         else if constexpr (has_visitor_Statement_STRUCT_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,struct_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STRUCT_DECL_post_visit.hpp")
+        #include "visitor/Statement_STRUCT_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STRUCT_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STRUCT_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -537,18 +1167,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_UNION_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_UNION_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_DECL_pre_validate.hpp")
+        #include "visitor/Statement_UNION_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.union_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::union_decl");
         }
         auto& union_decl = *in.body.union_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_DECL_pre_visit.hpp")
+        #include "visitor/Statement_UNION_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_UNION_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_UNION_DECL(in.id,kind,union_decl));
         }
         else if constexpr (has_visitor_Statement_UNION_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,union_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_DECL_post_visit.hpp")
+        #include "visitor/Statement_UNION_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -560,18 +1220,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_member_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_UNION_MEMBER_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_UNION_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp")
+        #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.union_member_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::union_member_decl");
         }
         auto& union_member_decl = *in.body.union_member_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp")
+        #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_UNION_MEMBER_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_UNION_MEMBER_DECL(in.id,kind,union_member_decl));
         }
         else if constexpr (has_visitor_Statement_UNION_MEMBER_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,union_member_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp")
+        #include "visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -583,18 +1273,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().block()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_PROGRAM_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_PROGRAM_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate.hpp")
+        #include "visitor/Statement_PROGRAM_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROGRAM_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROGRAM_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.block()) {
             return unexpect_error("Unexpected null pointer for StatementBody::block");
         }
         auto& block = *in.body.block();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit.hpp")
+        #include "visitor/Statement_PROGRAM_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROGRAM_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROGRAM_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_PROGRAM_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_PROGRAM_DECL(in.id,kind,block));
         }
         else if constexpr (has_visitor_Statement_PROGRAM_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,block));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit.hpp")
+        #include "visitor/Statement_PROGRAM_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROGRAM_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROGRAM_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -606,18 +1326,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().state_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_STATE_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_STATE_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STATE_DECL_pre_validate.hpp")
+        #include "visitor/Statement_STATE_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.state_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::state_decl");
         }
         auto& state_decl = *in.body.state_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STATE_DECL_pre_visit.hpp")
+        #include "visitor/Statement_STATE_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_STATE_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_STATE_DECL(in.id,kind,state_decl));
         }
         else if constexpr (has_visitor_Statement_STATE_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,state_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_STATE_DECL_post_visit.hpp")
+        #include "visitor/Statement_STATE_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -629,18 +1379,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().bit_field_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_BIT_FIELD_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_BIT_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp")
+        #include "visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.bit_field_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::bit_field_decl");
         }
         auto& bit_field_decl = *in.body.bit_field_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp")
+        #include "visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_BIT_FIELD_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_BIT_FIELD_DECL(in.id,kind,bit_field_decl));
         }
         else if constexpr (has_visitor_Statement_BIT_FIELD_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,bit_field_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_BIT_FIELD_DECL_post_visit.hpp")
+        #include "visitor/Statement_BIT_FIELD_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_BIT_FIELD_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -652,18 +1432,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().property_decl()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_PROPERTY_DECL(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_PROPERTY_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate.hpp")
+        #include "visitor/Statement_PROPERTY_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROPERTY_DECL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROPERTY_DECL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.property_decl()) {
             return unexpect_error("Unexpected null pointer for StatementBody::property_decl");
         }
         auto& property_decl = *in.body.property_decl();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit.hpp")
+        #include "visitor/Statement_PROPERTY_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROPERTY_DECL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROPERTY_DECL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_PROPERTY_DECL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_PROPERTY_DECL(in.id,kind,property_decl));
         }
         else if constexpr (has_visitor_Statement_PROPERTY_DECL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,property_decl));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit.hpp")
+        #include "visitor/Statement_PROPERTY_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PROPERTY_DECL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PROPERTY_DECL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -675,18 +1485,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().metadata()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_METADATA(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_METADATA(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_METADATA_pre_validate.hpp")
+        #include "visitor/Statement_METADATA_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_METADATA_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_METADATA_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.metadata()) {
             return unexpect_error("Unexpected null pointer for StatementBody::metadata");
         }
         auto& metadata = *in.body.metadata();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_METADATA_pre_visit.hpp")
+        #include "visitor/Statement_METADATA_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_METADATA_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_METADATA_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_METADATA<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_METADATA(in.id,kind,metadata));
         }
         else if constexpr (has_visitor_Statement_METADATA_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,metadata));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_METADATA_post_visit.hpp")
+        #include "visitor/Statement_METADATA_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_METADATA_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_METADATA_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -698,7 +1538,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().alias(),*std::declval<const ebm::StatementBody&>().module_name()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_IMPORT_MODULE(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_IMPORT_MODULE(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate.hpp")
+        #include "visitor/Statement_IMPORT_MODULE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IMPORT_MODULE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IMPORT_MODULE_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.alias()) {
             return unexpect_error("Unexpected null pointer for StatementBody::alias");
@@ -708,12 +1558,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for StatementBody::module_name");
         }
         auto& module_name = *in.body.module_name();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit.hpp")
+        #include "visitor/Statement_IMPORT_MODULE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IMPORT_MODULE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IMPORT_MODULE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_IMPORT_MODULE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_IMPORT_MODULE(in.id,kind,alias,module_name));
         }
         else if constexpr (has_visitor_Statement_IMPORT_MODULE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,alias,module_name));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit.hpp")
+        #include "visitor/Statement_IMPORT_MODULE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_IMPORT_MODULE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_IMPORT_MODULE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -725,18 +1595,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().expression()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_EXPRESSION(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_EXPRESSION(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_EXPRESSION_pre_validate.hpp")
+        #include "visitor/Statement_EXPRESSION_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_EXPRESSION_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_EXPRESSION_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.expression()) {
             return unexpect_error("Unexpected null pointer for StatementBody::expression");
         }
         auto& expression = *in.body.expression();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_EXPRESSION_pre_visit.hpp")
+        #include "visitor/Statement_EXPRESSION_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_EXPRESSION_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_EXPRESSION_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_EXPRESSION<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_EXPRESSION(in.id,kind,expression));
         }
         else if constexpr (has_visitor_Statement_EXPRESSION_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,expression));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_EXPRESSION_post_visit.hpp")
+        #include "visitor/Statement_EXPRESSION_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_EXPRESSION_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_EXPRESSION_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -748,7 +1648,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().params(),*std::declval<const ebm::StatementBody&>().params_len(),*std::declval<const ebm::StatementBody&>().target_var()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_PHI_NODE(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_PHI_NODE(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PHI_NODE_pre_validate.hpp")
+        #include "visitor/Statement_PHI_NODE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PHI_NODE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PHI_NODE_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.params()) {
             return unexpect_error("Unexpected null pointer for StatementBody::params");
@@ -762,12 +1672,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for StatementBody::target_var");
         }
         auto& target_var = *in.body.target_var();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PHI_NODE_pre_visit.hpp")
+        #include "visitor/Statement_PHI_NODE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PHI_NODE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PHI_NODE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_PHI_NODE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_PHI_NODE(in.id,kind,params,params_len,target_var));
         }
         else if constexpr (has_visitor_Statement_PHI_NODE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,params,params_len,target_var));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PHI_NODE_post_visit.hpp")
+        #include "visitor/Statement_PHI_NODE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_PHI_NODE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_PHI_NODE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -779,18 +1709,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().error_report()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_ERROR_REPORT(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_ERROR_REPORT(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate.hpp")
+        #include "visitor/Statement_ERROR_REPORT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_REPORT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_REPORT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.error_report()) {
             return unexpect_error("Unexpected null pointer for StatementBody::error_report");
         }
         auto& error_report = *in.body.error_report();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit.hpp")
+        #include "visitor/Statement_ERROR_REPORT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_REPORT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_REPORT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_ERROR_REPORT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_ERROR_REPORT(in.id,kind,error_report));
         }
         else if constexpr (has_visitor_Statement_ERROR_REPORT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,error_report));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_ERROR_REPORT_post_visit.hpp")
+        #include "visitor/Statement_ERROR_REPORT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_ERROR_REPORT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_ERROR_REPORT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -802,21 +1762,51 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_statements()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Statement_LOWERED_STATEMENTS(Visitor&& visitor, const ebm::Statement& in) {
+    expected<void> visit_Statement_LOWERED_STATEMENTS(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp")
+        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.lowered_statements()) {
             return unexpect_error("Unexpected null pointer for StatementBody::lowered_statements");
         }
         auto& lowered_statements = *in.body.lowered_statements();
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp")
+        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Statement_LOWERED_STATEMENTS<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Statement_LOWERED_STATEMENTS(in.id,kind,lowered_statements));
         }
         else if constexpr (has_visitor_Statement_LOWERED_STATEMENTS_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,lowered_statements));
         }
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp")
+        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp"
+        #endif
         return {};
     }
-    template <typename Visitor>
+    template<typename Visitor>
     expected<void> visit_Statement(Visitor&& visitor,const ebm::Statement& in) {
         switch (in.body.kind) {
         case ebm::StatementOp::BLOCK:
@@ -900,19 +1890,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().int_value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_LITERAL_INT(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_LITERAL_INT(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT_pre_validate.hpp")
+        #include "visitor/Expression_LITERAL_INT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.int_value()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::int_value");
         }
         auto& int_value = *in.body.int_value();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT_pre_visit.hpp")
+        #include "visitor/Expression_LITERAL_INT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_LITERAL_INT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_LITERAL_INT(in.id,type,kind,int_value));
         }
         else if constexpr (has_visitor_Expression_LITERAL_INT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,int_value));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT_post_visit.hpp")
+        #include "visitor/Expression_LITERAL_INT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -924,19 +1944,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().int64_value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_LITERAL_INT64(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_LITERAL_INT64(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate.hpp")
+        #include "visitor/Expression_LITERAL_INT64_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT64_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT64_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.int64_value()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::int64_value");
         }
         auto& int64_value = *in.body.int64_value();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit.hpp")
+        #include "visitor/Expression_LITERAL_INT64_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT64_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT64_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_LITERAL_INT64<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_LITERAL_INT64(in.id,type,kind,int64_value));
         }
         else if constexpr (has_visitor_Expression_LITERAL_INT64_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,int64_value));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_INT64_post_visit.hpp")
+        #include "visitor/Expression_LITERAL_INT64_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_INT64_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_INT64_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -948,19 +1998,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().bool_value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_LITERAL_BOOL(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_LITERAL_BOOL(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate.hpp")
+        #include "visitor/Expression_LITERAL_BOOL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_BOOL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_BOOL_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.bool_value()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::bool_value");
         }
         auto& bool_value = *in.body.bool_value();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit.hpp")
+        #include "visitor/Expression_LITERAL_BOOL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_BOOL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_BOOL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_LITERAL_BOOL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_LITERAL_BOOL(in.id,type,kind,bool_value));
         }
         else if constexpr (has_visitor_Expression_LITERAL_BOOL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,bool_value));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit.hpp")
+        #include "visitor/Expression_LITERAL_BOOL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_BOOL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_BOOL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -972,19 +2052,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().string_value()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_LITERAL_STRING(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_LITERAL_STRING(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate.hpp")
+        #include "visitor/Expression_LITERAL_STRING_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_STRING_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_STRING_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.string_value()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::string_value");
         }
         auto& string_value = *in.body.string_value();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit.hpp")
+        #include "visitor/Expression_LITERAL_STRING_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_STRING_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_STRING_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_LITERAL_STRING<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_LITERAL_STRING(in.id,type,kind,string_value));
         }
         else if constexpr (has_visitor_Expression_LITERAL_STRING_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,string_value));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_STRING_post_visit.hpp")
+        #include "visitor/Expression_LITERAL_STRING_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_STRING_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_STRING_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -996,19 +2106,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().type_ref()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_LITERAL_TYPE(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_LITERAL_TYPE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate.hpp")
+        #include "visitor/Expression_LITERAL_TYPE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_TYPE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_TYPE_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.type_ref()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::type_ref");
         }
         auto& type_ref = *in.body.type_ref();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit.hpp")
+        #include "visitor/Expression_LITERAL_TYPE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_TYPE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_TYPE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_LITERAL_TYPE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_LITERAL_TYPE(in.id,type,kind,type_ref));
         }
         else if constexpr (has_visitor_Expression_LITERAL_TYPE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,type_ref));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit.hpp")
+        #include "visitor/Expression_LITERAL_TYPE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_LITERAL_TYPE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_LITERAL_TYPE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1020,19 +2160,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().id()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_IDENTIFIER(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_IDENTIFIER(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IDENTIFIER_pre_validate.hpp")
+        #include "visitor/Expression_IDENTIFIER_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IDENTIFIER_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IDENTIFIER_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.id()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::id");
         }
         auto& id = *in.body.id();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IDENTIFIER_pre_visit.hpp")
+        #include "visitor/Expression_IDENTIFIER_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IDENTIFIER_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IDENTIFIER_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_IDENTIFIER<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_IDENTIFIER(in.id,type,kind,id));
         }
         else if constexpr (has_visitor_Expression_IDENTIFIER_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,id));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IDENTIFIER_post_visit.hpp")
+        #include "visitor/Expression_IDENTIFIER_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IDENTIFIER_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IDENTIFIER_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1044,7 +2214,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().bop(),*std::declval<const ebm::ExpressionBody&>().left(),*std::declval<const ebm::ExpressionBody&>().right()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_BINARY_OP(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_BINARY_OP(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_BINARY_OP_pre_validate.hpp")
+        #include "visitor/Expression_BINARY_OP_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_BINARY_OP_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_BINARY_OP_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.bop()) {
@@ -1059,12 +2239,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::right");
         }
         auto& right = *in.body.right();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_BINARY_OP_pre_visit.hpp")
+        #include "visitor/Expression_BINARY_OP_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_BINARY_OP_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_BINARY_OP_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_BINARY_OP<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_BINARY_OP(in.id,type,kind,bop,left,right));
         }
         else if constexpr (has_visitor_Expression_BINARY_OP_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,bop,left,right));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_BINARY_OP_post_visit.hpp")
+        #include "visitor/Expression_BINARY_OP_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_BINARY_OP_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_BINARY_OP_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1076,7 +2276,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().operand(),*std::declval<const ebm::ExpressionBody&>().uop()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_UNARY_OP(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_UNARY_OP(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_UNARY_OP_pre_validate.hpp")
+        #include "visitor/Expression_UNARY_OP_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_UNARY_OP_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_UNARY_OP_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.operand()) {
@@ -1087,12 +2297,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::uop");
         }
         auto& uop = *in.body.uop();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_UNARY_OP_pre_visit.hpp")
+        #include "visitor/Expression_UNARY_OP_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_UNARY_OP_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_UNARY_OP_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_UNARY_OP<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_UNARY_OP(in.id,type,kind,operand,uop));
         }
         else if constexpr (has_visitor_Expression_UNARY_OP_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,operand,uop));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_UNARY_OP_post_visit.hpp")
+        #include "visitor/Expression_UNARY_OP_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_UNARY_OP_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_UNARY_OP_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1104,19 +2334,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().call_desc()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_CALL(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_CALL(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CALL_pre_validate.hpp")
+        #include "visitor/Expression_CALL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CALL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CALL_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.call_desc()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::call_desc");
         }
         auto& call_desc = *in.body.call_desc();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CALL_pre_visit.hpp")
+        #include "visitor/Expression_CALL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CALL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CALL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_CALL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_CALL(in.id,type,kind,call_desc));
         }
         else if constexpr (has_visitor_Expression_CALL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,call_desc));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CALL_post_visit.hpp")
+        #include "visitor/Expression_CALL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CALL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CALL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1128,7 +2388,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().base(),*std::declval<const ebm::ExpressionBody&>().index()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_INDEX_ACCESS(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_INDEX_ACCESS(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate.hpp")
+        #include "visitor/Expression_INDEX_ACCESS_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_INDEX_ACCESS_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_INDEX_ACCESS_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.base()) {
@@ -1139,12 +2409,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::index");
         }
         auto& index = *in.body.index();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit.hpp")
+        #include "visitor/Expression_INDEX_ACCESS_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_INDEX_ACCESS_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_INDEX_ACCESS_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_INDEX_ACCESS<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_INDEX_ACCESS(in.id,type,kind,base,index));
         }
         else if constexpr (has_visitor_Expression_INDEX_ACCESS_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,base,index));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit.hpp")
+        #include "visitor/Expression_INDEX_ACCESS_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_INDEX_ACCESS_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_INDEX_ACCESS_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1156,7 +2446,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().base(),*std::declval<const ebm::ExpressionBody&>().member()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_MEMBER_ACCESS(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_MEMBER_ACCESS(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate.hpp")
+        #include "visitor/Expression_MEMBER_ACCESS_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.base()) {
@@ -1167,12 +2467,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::member");
         }
         auto& member = *in.body.member();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit.hpp")
+        #include "visitor/Expression_MEMBER_ACCESS_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_MEMBER_ACCESS<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_MEMBER_ACCESS(in.id,type,kind,base,member));
         }
         else if constexpr (has_visitor_Expression_MEMBER_ACCESS_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,base,member));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit.hpp")
+        #include "visitor/Expression_MEMBER_ACCESS_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MEMBER_ACCESS_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1184,7 +2504,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().cast_kind(),*std::declval<const ebm::ExpressionBody&>().from_type(),*std::declval<const ebm::ExpressionBody&>().source_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_TYPE_CAST(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_TYPE_CAST(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_TYPE_CAST_pre_validate.hpp")
+        #include "visitor/Expression_TYPE_CAST_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_TYPE_CAST_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_TYPE_CAST_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.cast_kind()) {
@@ -1199,12 +2529,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::source_expr");
         }
         auto& source_expr = *in.body.source_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_TYPE_CAST_pre_visit.hpp")
+        #include "visitor/Expression_TYPE_CAST_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_TYPE_CAST_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_TYPE_CAST_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_TYPE_CAST<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_TYPE_CAST(in.id,type,kind,cast_kind,from_type,source_expr));
         }
         else if constexpr (has_visitor_Expression_TYPE_CAST_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,cast_kind,from_type,source_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_TYPE_CAST_post_visit.hpp")
+        #include "visitor/Expression_TYPE_CAST_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_TYPE_CAST_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_TYPE_CAST_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1216,7 +2566,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().end(),*std::declval<const ebm::ExpressionBody&>().start()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_RANGE(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_RANGE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_RANGE_pre_validate.hpp")
+        #include "visitor/Expression_RANGE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_RANGE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_RANGE_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.end()) {
@@ -1227,12 +2587,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::start");
         }
         auto& start = *in.body.start();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_RANGE_pre_visit.hpp")
+        #include "visitor/Expression_RANGE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_RANGE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_RANGE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_RANGE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_RANGE(in.id,type,kind,end,start));
         }
         else if constexpr (has_visitor_Expression_RANGE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,end,start));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_RANGE_post_visit.hpp")
+        #include "visitor/Expression_RANGE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_RANGE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_RANGE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1244,15 +2624,45 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_DEFAULT_VALUE(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_DEFAULT_VALUE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate.hpp")
+        #include "visitor/Expression_DEFAULT_VALUE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit.hpp")
+        #include "visitor/Expression_DEFAULT_VALUE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_DEFAULT_VALUE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_DEFAULT_VALUE(in.id,type,kind));
         }
         else if constexpr (has_visitor_Expression_DEFAULT_VALUE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit.hpp")
+        #include "visitor/Expression_DEFAULT_VALUE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_DEFAULT_VALUE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1264,19 +2674,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().endian_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_IS_LITTLE_ENDIAN(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_IS_LITTLE_ENDIAN(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp")
+        #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.endian_expr()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::endian_expr");
         }
         auto& endian_expr = *in.body.endian_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp")
+        #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_IS_LITTLE_ENDIAN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_IS_LITTLE_ENDIAN(in.id,type,kind,endian_expr));
         }
         else if constexpr (has_visitor_Expression_IS_LITTLE_ENDIAN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,endian_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp")
+        #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1288,7 +2728,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().stream_type(),*std::declval<const ebm::ExpressionBody&>().unit()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_GET_STREAM_OFFSET(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_GET_STREAM_OFFSET(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp")
+        #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.stream_type()) {
@@ -1299,12 +2749,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::unit");
         }
         auto& unit = *in.body.unit();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp")
+        #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_GET_STREAM_OFFSET<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_GET_STREAM_OFFSET(in.id,type,kind,stream_type,unit));
         }
         else if constexpr (has_visitor_Expression_GET_STREAM_OFFSET_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,stream_type,unit));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp")
+        #include "visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1316,19 +2786,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_GET_REMAINING_BYTES(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_GET_REMAINING_BYTES(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp")
+        #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.stream_type()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::stream_type");
         }
         auto& stream_type = *in.body.stream_type();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp")
+        #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_GET_REMAINING_BYTES<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_GET_REMAINING_BYTES(in.id,type,kind,stream_type));
         }
         else if constexpr (has_visitor_Expression_GET_REMAINING_BYTES_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,stream_type));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp")
+        #include "visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1340,7 +2840,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().num_bytes(),*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_CAN_READ_STREAM(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_CAN_READ_STREAM(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate.hpp")
+        #include "visitor/Expression_CAN_READ_STREAM_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.num_bytes()) {
@@ -1351,12 +2861,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::stream_type");
         }
         auto& stream_type = *in.body.stream_type();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit.hpp")
+        #include "visitor/Expression_CAN_READ_STREAM_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_CAN_READ_STREAM<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_CAN_READ_STREAM(in.id,type,kind,num_bytes,stream_type));
         }
         else if constexpr (has_visitor_Expression_CAN_READ_STREAM_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,num_bytes,stream_type));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit.hpp")
+        #include "visitor/Expression_CAN_READ_STREAM_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_CAN_READ_STREAM_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1368,19 +2898,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().array_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_ARRAY_SIZE(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_ARRAY_SIZE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate.hpp")
+        #include "visitor/Expression_ARRAY_SIZE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_ARRAY_SIZE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_ARRAY_SIZE_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.array_expr()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::array_expr");
         }
         auto& array_expr = *in.body.array_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit.hpp")
+        #include "visitor/Expression_ARRAY_SIZE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_ARRAY_SIZE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_ARRAY_SIZE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_ARRAY_SIZE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_ARRAY_SIZE(in.id,type,kind,array_expr));
         }
         else if constexpr (has_visitor_Expression_ARRAY_SIZE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,array_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit.hpp")
+        #include "visitor/Expression_ARRAY_SIZE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_ARRAY_SIZE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_ARRAY_SIZE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1392,19 +2952,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_IS_ERROR(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_IS_ERROR(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_ERROR_pre_validate.hpp")
+        #include "visitor/Expression_IS_ERROR_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_ERROR_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_ERROR_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.target_expr()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::target_expr");
         }
         auto& target_expr = *in.body.target_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_ERROR_pre_visit.hpp")
+        #include "visitor/Expression_IS_ERROR_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_ERROR_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_ERROR_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_IS_ERROR<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_IS_ERROR(in.id,type,kind,target_expr));
         }
         else if constexpr (has_visitor_Expression_IS_ERROR_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,target_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_IS_ERROR_post_visit.hpp")
+        #include "visitor/Expression_IS_ERROR_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_IS_ERROR_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_IS_ERROR_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1416,19 +3006,49 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_MAX_VALUE(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_MAX_VALUE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MAX_VALUE_pre_validate.hpp")
+        #include "visitor/Expression_MAX_VALUE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MAX_VALUE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MAX_VALUE_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.lowered_expr()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::lowered_expr");
         }
         auto& lowered_expr = *in.body.lowered_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MAX_VALUE_pre_visit.hpp")
+        #include "visitor/Expression_MAX_VALUE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MAX_VALUE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MAX_VALUE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_MAX_VALUE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_MAX_VALUE(in.id,type,kind,lowered_expr));
         }
         else if constexpr (has_visitor_Expression_MAX_VALUE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,lowered_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_MAX_VALUE_post_visit.hpp")
+        #include "visitor/Expression_MAX_VALUE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_MAX_VALUE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_MAX_VALUE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1440,7 +3060,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_statement(),*std::declval<const ebm::ExpressionBody&>().target_stmt()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_READ_DATA(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_READ_DATA(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_READ_DATA_pre_validate.hpp")
+        #include "visitor/Expression_READ_DATA_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_READ_DATA_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_READ_DATA_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.io_statement()) {
@@ -1451,12 +3081,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::target_stmt");
         }
         auto& target_stmt = *in.body.target_stmt();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_READ_DATA_pre_visit.hpp")
+        #include "visitor/Expression_READ_DATA_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_READ_DATA_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_READ_DATA_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_READ_DATA<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_READ_DATA(in.id,type,kind,io_statement,target_stmt));
         }
         else if constexpr (has_visitor_Expression_READ_DATA_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,io_statement,target_stmt));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_READ_DATA_post_visit.hpp")
+        #include "visitor/Expression_READ_DATA_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_READ_DATA_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_READ_DATA_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1468,7 +3118,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_statement(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Expression_WRITE_DATA(Visitor&& visitor, const ebm::Expression& in) {
+    expected<void> visit_Expression_WRITE_DATA(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Expression_WRITE_DATA_pre_validate.hpp")
+        #include "visitor/Expression_WRITE_DATA_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_WRITE_DATA_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Expression_WRITE_DATA_pre_validate.hpp"
+        #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
         if (!in.body.io_statement()) {
@@ -1479,15 +3139,35 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for ExpressionBody::target_expr");
         }
         auto& target_expr = *in.body.target_expr();
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_WRITE_DATA_pre_visit.hpp")
+        #include "visitor/Expression_WRITE_DATA_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_WRITE_DATA_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_WRITE_DATA_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Expression_WRITE_DATA<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Expression_WRITE_DATA(in.id,type,kind,io_statement,target_expr));
         }
         else if constexpr (has_visitor_Expression_WRITE_DATA_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,type,kind,io_statement,target_expr));
         }
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Expression_WRITE_DATA_post_visit.hpp")
+        #include "visitor/Expression_WRITE_DATA_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Expression_WRITE_DATA_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Expression_WRITE_DATA_post_visit.hpp"
+        #endif
         return {};
     }
-    template <typename Visitor>
+    template<typename Visitor>
     expected<void> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
         switch (in.body.kind) {
         case ebm::ExpressionOp::LITERAL_INT:
@@ -1551,18 +3231,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_INT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_INT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_INT_pre_validate.hpp")
+        #include "visitor/Type_INT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_INT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_INT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.size()) {
             return unexpect_error("Unexpected null pointer for TypeBody::size");
         }
         auto& size = *in.body.size();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_INT_pre_visit.hpp")
+        #include "visitor/Type_INT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_INT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_INT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_INT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_INT(in.id,kind,size));
         }
         else if constexpr (has_visitor_Type_INT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,size));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_INT_post_visit.hpp")
+        #include "visitor/Type_INT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_INT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_INT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1574,18 +3284,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_UINT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_UINT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_UINT_pre_validate.hpp")
+        #include "visitor/Type_UINT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_UINT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_UINT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.size()) {
             return unexpect_error("Unexpected null pointer for TypeBody::size");
         }
         auto& size = *in.body.size();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_UINT_pre_visit.hpp")
+        #include "visitor/Type_UINT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_UINT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_UINT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_UINT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_UINT(in.id,kind,size));
         }
         else if constexpr (has_visitor_Type_UINT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,size));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_UINT_post_visit.hpp")
+        #include "visitor/Type_UINT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_UINT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_UINT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1597,18 +3337,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_FLOAT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_FLOAT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_FLOAT_pre_validate.hpp")
+        #include "visitor/Type_FLOAT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FLOAT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_FLOAT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.size()) {
             return unexpect_error("Unexpected null pointer for TypeBody::size");
         }
         auto& size = *in.body.size();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_FLOAT_pre_visit.hpp")
+        #include "visitor/Type_FLOAT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FLOAT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_FLOAT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_FLOAT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_FLOAT(in.id,kind,size));
         }
         else if constexpr (has_visitor_Type_FLOAT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,size));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_FLOAT_post_visit.hpp")
+        #include "visitor/Type_FLOAT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FLOAT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_FLOAT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1620,18 +3390,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_STRUCT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_STRUCT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_STRUCT_pre_validate.hpp")
+        #include "visitor/Type_STRUCT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_STRUCT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_STRUCT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.id()) {
             return unexpect_error("Unexpected null pointer for TypeBody::id");
         }
         auto& id = *in.body.id();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_STRUCT_pre_visit.hpp")
+        #include "visitor/Type_STRUCT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_STRUCT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_STRUCT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_STRUCT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_STRUCT(in.id,kind,id));
         }
         else if constexpr (has_visitor_Type_STRUCT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,id));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_STRUCT_post_visit.hpp")
+        #include "visitor/Type_STRUCT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_STRUCT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_STRUCT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1643,18 +3443,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_RECURSIVE_STRUCT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_RECURSIVE_STRUCT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp")
+        #include "visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.id()) {
             return unexpect_error("Unexpected null pointer for TypeBody::id");
         }
         auto& id = *in.body.id();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp")
+        #include "visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_RECURSIVE_STRUCT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_RECURSIVE_STRUCT(in.id,kind,id));
         }
         else if constexpr (has_visitor_Type_RECURSIVE_STRUCT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,id));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit.hpp")
+        #include "visitor/Type_RECURSIVE_STRUCT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_RECURSIVE_STRUCT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1666,14 +3496,44 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_BOOL(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_BOOL(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_BOOL_pre_validate.hpp")
+        #include "visitor/Type_BOOL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_BOOL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_BOOL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_BOOL_pre_visit.hpp")
+        #include "visitor/Type_BOOL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_BOOL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_BOOL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_BOOL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_BOOL(in.id,kind));
         }
         else if constexpr (has_visitor_Type_BOOL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_BOOL_post_visit.hpp")
+        #include "visitor/Type_BOOL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_BOOL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_BOOL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1685,14 +3545,44 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_VOID(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_VOID(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_VOID_pre_validate.hpp")
+        #include "visitor/Type_VOID_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VOID_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_VOID_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VOID_pre_visit.hpp")
+        #include "visitor/Type_VOID_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VOID_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VOID_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_VOID<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_VOID(in.id,kind));
         }
         else if constexpr (has_visitor_Type_VOID_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VOID_post_visit.hpp")
+        #include "visitor/Type_VOID_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VOID_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VOID_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1704,14 +3594,44 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_META(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_META(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_META_pre_validate.hpp")
+        #include "visitor/Type_META_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_META_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_META_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_META_pre_visit.hpp")
+        #include "visitor/Type_META_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_META_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_META_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_META<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_META(in.id,kind));
         }
         else if constexpr (has_visitor_Type_META_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_META_post_visit.hpp")
+        #include "visitor/Type_META_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_META_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_META_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1723,7 +3643,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().base_type(),*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_ENUM(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_ENUM(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENUM_pre_validate.hpp")
+        #include "visitor/Type_ENUM_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENUM_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENUM_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.base_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::base_type");
@@ -1733,12 +3663,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for TypeBody::id");
         }
         auto& id = *in.body.id();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENUM_pre_visit.hpp")
+        #include "visitor/Type_ENUM_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENUM_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENUM_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_ENUM<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_ENUM(in.id,kind,base_type,id));
         }
         else if constexpr (has_visitor_Type_ENUM_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,base_type,id));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENUM_post_visit.hpp")
+        #include "visitor/Type_ENUM_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENUM_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENUM_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1750,7 +3700,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().element_type(),*std::declval<const ebm::TypeBody&>().length()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_ARRAY(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_ARRAY(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_ARRAY_pre_validate.hpp")
+        #include "visitor/Type_ARRAY_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ARRAY_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_ARRAY_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.element_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::element_type");
@@ -1760,12 +3720,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for TypeBody::length");
         }
         auto& length = *in.body.length();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ARRAY_pre_visit.hpp")
+        #include "visitor/Type_ARRAY_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ARRAY_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ARRAY_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_ARRAY<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_ARRAY(in.id,kind,element_type,length));
         }
         else if constexpr (has_visitor_Type_ARRAY_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,element_type,length));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ARRAY_post_visit.hpp")
+        #include "visitor/Type_ARRAY_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ARRAY_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ARRAY_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1777,18 +3757,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().element_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_VECTOR(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_VECTOR(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_VECTOR_pre_validate.hpp")
+        #include "visitor/Type_VECTOR_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VECTOR_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_VECTOR_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.element_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::element_type");
         }
         auto& element_type = *in.body.element_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VECTOR_pre_visit.hpp")
+        #include "visitor/Type_VECTOR_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VECTOR_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VECTOR_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_VECTOR<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_VECTOR(in.id,kind,element_type));
         }
         else if constexpr (has_visitor_Type_VECTOR_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,element_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VECTOR_post_visit.hpp")
+        #include "visitor/Type_VECTOR_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VECTOR_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VECTOR_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1800,7 +3810,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_VARIANT(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_VARIANT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_VARIANT_pre_validate.hpp")
+        #include "visitor/Type_VARIANT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VARIANT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_VARIANT_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.common_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::common_type");
@@ -1810,12 +3830,32 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for TypeBody::members");
         }
         auto& members = *in.body.members();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VARIANT_pre_visit.hpp")
+        #include "visitor/Type_VARIANT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VARIANT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VARIANT_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_VARIANT<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_VARIANT(in.id,kind,common_type,members));
         }
         else if constexpr (has_visitor_Type_VARIANT_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,common_type,members));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_VARIANT_post_visit.hpp")
+        #include "visitor/Type_VARIANT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_VARIANT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_VARIANT_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1827,18 +3867,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().base_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_RANGE(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_RANGE(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_RANGE_pre_validate.hpp")
+        #include "visitor/Type_RANGE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RANGE_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_RANGE_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.base_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::base_type");
         }
         auto& base_type = *in.body.base_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_RANGE_pre_visit.hpp")
+        #include "visitor/Type_RANGE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RANGE_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_RANGE_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_RANGE<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_RANGE(in.id,kind,base_type));
         }
         else if constexpr (has_visitor_Type_RANGE_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,base_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_RANGE_post_visit.hpp")
+        #include "visitor/Type_RANGE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_RANGE_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_RANGE_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1850,14 +3920,44 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_ENCODER_RETURN(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_ENCODER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate.hpp")
+        #include "visitor/Type_ENCODER_RETURN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_RETURN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_RETURN_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit.hpp")
+        #include "visitor/Type_ENCODER_RETURN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_RETURN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_RETURN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_ENCODER_RETURN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_ENCODER_RETURN(in.id,kind));
         }
         else if constexpr (has_visitor_Type_ENCODER_RETURN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_RETURN_post_visit.hpp")
+        #include "visitor/Type_ENCODER_RETURN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_RETURN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_RETURN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1869,14 +3969,44 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_DECODER_RETURN(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_DECODER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_RETURN_pre_validate.hpp")
+        #include "visitor/Type_DECODER_RETURN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_RETURN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_RETURN_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_RETURN_pre_visit.hpp")
+        #include "visitor/Type_DECODER_RETURN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_RETURN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_RETURN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_DECODER_RETURN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_DECODER_RETURN(in.id,kind));
         }
         else if constexpr (has_visitor_Type_DECODER_RETURN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_RETURN_post_visit.hpp")
+        #include "visitor/Type_DECODER_RETURN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_RETURN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_RETURN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1888,18 +4018,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().property_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp")
+        #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.property_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::property_type");
         }
         auto& property_type = *in.body.property_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp")
+        #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_PROPERTY_SETTER_RETURN(in.id,kind,property_type));
         }
         else if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,property_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp")
+        #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1911,18 +4071,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().inner_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_OPTIONAL(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_OPTIONAL(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_OPTIONAL_pre_validate.hpp")
+        #include "visitor/Type_OPTIONAL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_OPTIONAL_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_OPTIONAL_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.inner_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::inner_type");
         }
         auto& inner_type = *in.body.inner_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_OPTIONAL_pre_visit.hpp")
+        #include "visitor/Type_OPTIONAL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_OPTIONAL_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_OPTIONAL_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_OPTIONAL<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_OPTIONAL(in.id,kind,inner_type));
         }
         else if constexpr (has_visitor_Type_OPTIONAL_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,inner_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_OPTIONAL_post_visit.hpp")
+        #include "visitor/Type_OPTIONAL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_OPTIONAL_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_OPTIONAL_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1934,18 +4124,48 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().pointee_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_PTR(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_PTR(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_PTR_pre_validate.hpp")
+        #include "visitor/Type_PTR_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PTR_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_PTR_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.pointee_type()) {
             return unexpect_error("Unexpected null pointer for TypeBody::pointee_type");
         }
         auto& pointee_type = *in.body.pointee_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_PTR_pre_visit.hpp")
+        #include "visitor/Type_PTR_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PTR_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_PTR_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_PTR<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_PTR(in.id,kind,pointee_type));
         }
         else if constexpr (has_visitor_Type_PTR_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,pointee_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_PTR_post_visit.hpp")
+        #include "visitor/Type_PTR_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_PTR_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_PTR_post_visit.hpp"
+        #endif
         return {};
     }
     template<typename Visitor>
@@ -1957,7 +4177,17 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().params(),*std::declval<const ebm::TypeBody&>().return_type()) } -> std::convertible_to<expected<void>>;
     };
     template<typename Visitor>
-    expected<void> visit_Type_FUNCTION(Visitor&& visitor, const ebm::Type& in) {
+    expected<void> visit_Type_FUNCTION(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_FUNCTION_pre_validate.hpp")
+        #include "visitor/Type_FUNCTION_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FUNCTION_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_FUNCTION_pre_validate.hpp"
+        #endif
         auto& kind = in.body.kind;
         if (!in.body.params()) {
             return unexpect_error("Unexpected null pointer for TypeBody::params");
@@ -1967,15 +4197,35 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for TypeBody::return_type");
         }
         auto& return_type = *in.body.return_type();
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_FUNCTION_pre_visit.hpp")
+        #include "visitor/Type_FUNCTION_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FUNCTION_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_FUNCTION_pre_visit.hpp"
+        #endif
         if constexpr (has_visitor_Type_FUNCTION<Visitor>) {
             MAYBE_VOID(result, visitor.visit_Type_FUNCTION(in.id,kind,params,return_type));
         }
         else if constexpr (has_visitor_Type_FUNCTION_call<Visitor>) {
             MAYBE_VOID(result,visitor(in.id,kind,params,return_type));
         }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_FUNCTION_post_visit.hpp")
+        #include "visitor/Type_FUNCTION_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_FUNCTION_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_FUNCTION_post_visit.hpp"
+        #endif
         return {};
     }
-    template <typename Visitor>
+    template<typename Visitor>
     expected<void> visit_Type(Visitor&& visitor,const ebm::Type& in) {
         switch (in.body.kind) {
         case ebm::TypeKind::INT:
@@ -2023,8 +4273,13 @@ namespace ebm2python {
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";
         ebmgen::MappingTable module_;
-        futils::code::CodeWriter<futils::binary::writer&> w;
-        Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w) : module_(m), w{w} {}
+        futils::code::CodeWriter<futils::binary::writer&> root;
+        Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w) : module_(m), root{w} {}
+        #if __has_include("visitor/Visitor.hpp")
+        #include "visitor/Visitor.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Visitor.hpp")
+        #include "ebmcodegen/default_visitor/Visitor.hpp"
+        #endif
         expected<void> entry() {
             #if __has_include("visitor/entry.hpp")
             #include "visitor/entry.hpp"

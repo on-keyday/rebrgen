@@ -9,7 +9,22 @@ The goal for `rebrgen` project is making code generator more easier and standard
 To achieve this goal, we are trying two way now; building IR and writing code-generator-generator
 
 This subproject, `ebmgen`, is a part of IR project. This is successor of `bmgen` and `BinaryModule(bm)`.
-It converts the`brgen` Abstract Syntax Tree (AST) into a superior Intermediate Representation (IR) called the \*\*`ExtendedBinaryModule` (EBM)\*\*.
+It converts the `brgen` Abstract Syntax Tree (AST) into a superior Intermediate Representation (IR) called the \*\*`ExtendedBinaryModule` (EBM)\*\*.
+
+Also, subproject `ebmcodegen` is a code-generator-generator project. This is successor of `bm2/gen_template` projects.
+It scans the `ExtendedBinaryModule` with reflection mechanism based on visitor pattern and generates C++ code
+that become the spine of code generator.
+
+Here is workflow overview
+
+```
+[] - program
+
+brgen AST(json) -input-> [ebmgen] -output-> EBM -input-> [code generator] -output-> each language code -integrated with -> [user program]
+                                                              ↑
+                                                              |generate C++ code
+                                                         [ebmcodegen] + customized code
+```
 
 #### 2. The EBM: A Superior Intermediate Representation
 
@@ -24,7 +39,7 @@ The EBM (`src/ebm/extended_binary_module.bgn`) was designed to replace a previou
 
 Your role is code analyzer.
 
-- you should read ebm/ and ebmgen/ as current project directory.
+- you should read ebm/, ebmgen/ and ebmcodegen/ as current project directory.
 - you should read bmgen/ as old project directory.
 - you should provide advice for refactoring based on current best practice and code knowledge
 - you should help debug
@@ -33,9 +48,9 @@ Because this code is under development, there are code states that appear to be 
 This is a very important instruction. I repeat: Never make arbitrary decisions. This is a very important instruction.
 When analyzing code, always keep a critical eye on it, as we are not looking for familiarity.
 
-#### 4. Building and Running `ebmgen`
+#### 4. Building and Running `ebmgen`, `ebmcodegen`
 
-To build the `ebmgen` executable, navigate to the root of the `rebrgen` directory and use the `script/build.py` script:
+To build the `ebmgen` or `ebmcodegen` executable, navigate to the root of the `rebrgen` directory and use the `script/build.py` script:
 
 ```bash
 python script/build.py native Debug
@@ -46,37 +61,67 @@ This command will build the project in `Debug` mode for your native platform. Th
 Once built, you can run `ebmgen` by providing an input `brgen` AST JSON file and specifying an output EBM file.
 
 ```bash
-./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>
+./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>
 ```
 
-Replace `<path/to/input.json>` with the absolute path to your `brgen` AST JSON file and `<path/to/output.ebm>` with the desired absolute path for the generated EBM file. Currently, you might use `./save/simple.json` as input and `./save/out.ebm` as output.
+Replace `<path/to/input.json>` with the absolute path to your `brgen` AST JSON file, `<path/to/output.ebm>` with the desired absolute path for the generated EBM file and `<path/to/debug_output.txt>` with the desired absolute path for the generated EBM file debug information file. Currently, you might use `./save/simple.json` as input, `./save/out.ebm` as output, and `./save/debug_output3.txt` as debug output
+
+Also you can run `ebmcodegen` like below
+
+```bash
+./tool/ebmcodegen > <path/to/generated_code.cpp>
+```
+
+`<path/to/generated_code.cpp>` is specific to each code generator
+
+when you update EBM structure, you should rebuild `ebmcodegen` and then run below (at root of `rebrgen` project directory):
+
+```bash
+./tool/ebmcodegen --body-validate > src/ebmcodegen/body_subset.cpp
+```
+
+then rebuild `ebmcodegen` again and finally regenerate each generator files.
 
 Also there are a command at `src/ebm/ebm.ps1`. it generates `src/ebm/extended_binary_module.hpp` and `src/ebm/extended_binary_module.cpp` from `src/ebm/extended_binary_module.bgn`
 
 #### 5. Code structure
 
 ```
-  1 ebmgen/
-    2 ├── convert/
-    3 │   ├── decode.cpp       # Implements logic for decoding data
-    4 │   ├── encdec.cpp       # Implements common logic for encoding and decoding
-    5 │   ├── encode.cpp       # Implements logic for encoding data
-    6 │   ├── expression.cpp   # Handles conversion of AST expressions to EBM expressions
-    7 │   ├── helper.cpp       # Implementation of helper functions for conversion
-    8 │   ├── helper.hpp       # Declarations of helper functions for conversion
-    9 │   ├── statement.cpp    # Handles conversion of AST statements to EBM statements
-   10 │   └── type.cpp         # Handles conversion of type definitions
-   11 ├── common.hpp           # Common definitions and headers used across the project
-   12 ├── convert.cpp          # Implements the conversion process
-   13 ├── convert.hpp          # Interface for the conversion process
-   14 ├── converter.cpp        # Implements the main converter class
-   15 ├── converter.hpp        # Defines the main converter class
-   16 ├── debug_printer.cpp    # Implements functionality to debug-print EBM contents
-   17 ├── debug_printer.hpp    # Header for the EBM debug-printing functionality
-   18 ├── GEMINI.md            # Project context information (for this AI interaction)
-   19 ├── load_json.cpp        # Implements loading of the brgen AST (in JSON format)
-   20 ├── load_json.hpp        # Header for the brgen AST loading functionality
-   21 └── main.cpp             # Entry point for the ebmgen executable
+  1 ebm/
+  2 ├── extended_binary_module.bgn    # The brgen source file defining the EBM structure itself
+  3 ├── extended_binary_module.cpp    # Generated C++ code for EBM
+  4 ├── extended_binary_module.hpp    # Generated C++ header for EBM
+  5 └── ebm.ps1                       # PowerShell script to generate the C++ files from the .bgn file
+  6 
+  7 ebmcodegen/
+  8 ├── stub/                         # Contains templates or stubs for code generation
+  9 ├── body_subset.cpp               # Logic for generating specific parts of the code generator's body
+ 10 └── main.cpp                      # Entry point for the ebmcodegen executable
+ 11 
+ 12 ebmgen/
+ 13 ├── convert/
+ 14 │   ├── decode.cpp       # Implements logic for decoding EBM data
+ 15 │   ├── encode.cpp       # Implements logic for encoding EBM data
+ 16 │   ├── expression.cpp   # Handles conversion of AST expressions to EBM expressions
+ 17 │   ├── helper.cpp       # Implementation of helper functions for conversion
+ 18 │   ├── helper.hpp       # Declarations of helper functions for conversion
+ 19 │   ├── statement.cpp    # Handles conversion of AST statements to EBM statements
+ 20 │   └── type.cpp         # Handles conversion of type definitions
+ 21 ├── test/                # Contains test files
+ 22 ├── transform/           # Contains code for transforming EBM
+ 23 ├── common.hpp           # Common definitions and headers used across the project
+ 24 ├── convert.cpp          # Implements the conversion process
+ 25 ├── convert.hpp          # Interface for the conversion process
+ 26 ├── converter.cpp        # Implements the main converter class
+ 27 ├── converter.hpp        # Defines the main converter class
+ 28 ├── debug_printer.cpp    # Implements functionality to debug-print EBM contents
+ 29 ├── debug_printer.hpp    # Header for the EBM debug-printing functionality
+ 30 ├── GEMINI.md            # Project context information (for this AI interaction)
+ 31 ├── load_json.cpp        # Implements loading of the brgen AST (in JSON format)
+ 32 ├── load_json.hpp        # Header for the brgen AST loading functionality
+ 33 ├── main.cpp             # Entry point for the ebmgen executable
+ 34 ├── mapping.cpp          # Implementation for mapping EBM elements
+ 35 └── mapping.hpp          # Header for mapping EBM elements
 ```
 
 BEFORE YOU ACT, YOU MUST READ ALL OF THESE FILES for consistency

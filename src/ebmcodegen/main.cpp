@@ -232,10 +232,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln();  // line for end of #include
 
     w.writeln("struct Flags : ebmcodegen::Flags {");
-    insert_include(w, flags.visitor_impl_dir, "Flags", ".hpp");
+    insert_include(w, "Flags", ".hpp");
     w.writeln("};");
     w.writeln("struct Output : ebmcodegen::Output {");
-    insert_include(w, flags.visitor_impl_dir, "Output", ".hpp");
+    insert_include(w, "Output", ".hpp");
     w.writeln("};");
 
     auto ns_name = std::format("ebm{}gen", flags.lang);

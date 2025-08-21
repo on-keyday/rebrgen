@@ -124,8 +124,8 @@ format CallDesc:
 
 format ExpressionBody:
     type :TypeRef # Type of the expression
-    op :ExpressionOp
-    match op:
+    kind :ExpressionOp
+    match kind:
         ExpressionOp.LITERAL_INT:
             int_value :Varint
         ExpressionOp.LITERAL_INT64:
@@ -409,8 +409,8 @@ format IOData:
     lowered_stmt :StatementRef # Optional lowered statements for read/write operations
 
 format StatementBody:
-    statement_kind :StatementOp
-    match statement_kind:
+    kind :StatementOp
+    match kind:
         StatementOp.BLOCK:
             block :Block # List of statements
         StatementOp.ASSIGNMENT:

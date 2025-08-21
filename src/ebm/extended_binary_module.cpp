@@ -198,58 +198,58 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::array_expr() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
         if(!std::holds_alternative<union_struct_31>(union_variant_13)) {
             return nullptr;
         }
@@ -261,58 +261,58 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).array_expr());
     }
     bool ExpressionBody::array_expr(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             if(!std::holds_alternative<union_struct_31>(union_variant_13)) {
                 union_variant_13 = union_struct_31();
             }
@@ -322,58 +322,58 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::array_expr(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             if(!std::holds_alternative<union_struct_31>(union_variant_13)) {
                 union_variant_13 = union_struct_31();
             }
@@ -383,40 +383,40 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::base() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
             return nullptr;
         }
         return std::addressof(std::get<10>((*this).union_variant_13).base);
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
             return nullptr;
         }
@@ -428,41 +428,41 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).base());
     }
     bool ExpressionBody::base(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 union_variant_13 = union_struct_23();
             }
             std::get<10>((*this).union_variant_13).base = v;
             return true;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 union_variant_13 = union_struct_24();
             }
@@ -472,41 +472,41 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::base(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 union_variant_13 = union_struct_23();
             }
             std::get<10>((*this).union_variant_13).base = std::move(v);
             return true;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 union_variant_13 = union_struct_24();
             }
@@ -516,13 +516,13 @@ namespace ebm {
         return false;
     }
     const std::uint8_t* ExpressionBody::bool_value() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         if(!std::holds_alternative<union_struct_16>(union_variant_13)) {
             return nullptr;
         }
@@ -534,13 +534,13 @@ namespace ebm {
         return const_cast<std::uint8_t*>(std::as_const(*this).bool_value());
     }
     bool ExpressionBody::bool_value(const std::uint8_t& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             if(!std::holds_alternative<union_struct_16>(union_variant_13)) {
                 union_variant_13 = union_struct_16();
             }
@@ -550,13 +550,13 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::bool_value(std::uint8_t&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             if(!std::holds_alternative<union_struct_16>(union_variant_13)) {
                 union_variant_13 = union_struct_16();
             }
@@ -566,25 +566,25 @@ namespace ebm {
         return false;
     }
     const BinaryOp* ExpressionBody::bop() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
             return nullptr;
         }
@@ -596,25 +596,25 @@ namespace ebm {
         return const_cast<BinaryOp*>(std::as_const(*this).bop());
     }
     bool ExpressionBody::bop(const BinaryOp& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -624,25 +624,25 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::bop(BinaryOp&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -652,31 +652,31 @@ namespace ebm {
         return false;
     }
     const CallDesc* ExpressionBody::call_desc() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         if(!std::holds_alternative<union_struct_22>(union_variant_13)) {
             return nullptr;
         }
@@ -688,31 +688,31 @@ namespace ebm {
         return const_cast<CallDesc*>(std::as_const(*this).call_desc());
     }
     bool ExpressionBody::call_desc(const CallDesc& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             if(!std::holds_alternative<union_struct_22>(union_variant_13)) {
                 union_variant_13 = union_struct_22();
             }
@@ -722,31 +722,31 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::call_desc(CallDesc&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             if(!std::holds_alternative<union_struct_22>(union_variant_13)) {
                 union_variant_13 = union_struct_22();
             }
@@ -756,40 +756,40 @@ namespace ebm {
         return false;
     }
     const CastType* ExpressionBody::cast_kind() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
             return nullptr;
         }
@@ -801,40 +801,40 @@ namespace ebm {
         return const_cast<CastType*>(std::as_const(*this).cast_kind());
     }
     bool ExpressionBody::cast_kind(const CastType& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -844,40 +844,40 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::cast_kind(CastType&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -887,43 +887,43 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::end() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
             return nullptr;
         }
@@ -935,43 +935,43 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).end());
     }
     bool ExpressionBody::end(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 union_variant_13 = union_struct_26();
             }
@@ -981,43 +981,43 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::end(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 union_variant_13 = union_struct_26();
             }
@@ -1027,46 +1027,46 @@ namespace ebm {
         return false;
     }
     const StatementRef* ExpressionBody::endian_expr() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         if(!std::holds_alternative<union_struct_27>(union_variant_13)) {
             return nullptr;
         }
@@ -1078,46 +1078,46 @@ namespace ebm {
         return const_cast<StatementRef*>(std::as_const(*this).endian_expr());
     }
     bool ExpressionBody::endian_expr(const StatementRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             if(!std::holds_alternative<union_struct_27>(union_variant_13)) {
                 union_variant_13 = union_struct_27();
             }
@@ -1127,46 +1127,46 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::endian_expr(StatementRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             if(!std::holds_alternative<union_struct_27>(union_variant_13)) {
                 union_variant_13 = union_struct_27();
             }
@@ -1176,40 +1176,40 @@ namespace ebm {
         return false;
     }
     const TypeRef* ExpressionBody::from_type() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
             return nullptr;
         }
@@ -1221,40 +1221,40 @@ namespace ebm {
         return const_cast<TypeRef*>(std::as_const(*this).from_type());
     }
     bool ExpressionBody::from_type(const TypeRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -1264,40 +1264,40 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::from_type(TypeRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -1307,22 +1307,22 @@ namespace ebm {
         return false;
     }
     const StatementRef* ExpressionBody::id() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         if(!std::holds_alternative<union_struct_19>(union_variant_13)) {
             return nullptr;
         }
@@ -1334,22 +1334,22 @@ namespace ebm {
         return const_cast<StatementRef*>(std::as_const(*this).id());
     }
     bool ExpressionBody::id(const StatementRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             if(!std::holds_alternative<union_struct_19>(union_variant_13)) {
                 union_variant_13 = union_struct_19();
             }
@@ -1359,22 +1359,22 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::id(StatementRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             if(!std::holds_alternative<union_struct_19>(union_variant_13)) {
                 union_variant_13 = union_struct_19();
             }
@@ -1384,34 +1384,34 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::index() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
             return nullptr;
         }
@@ -1423,34 +1423,34 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).index());
     }
     bool ExpressionBody::index(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 union_variant_13 = union_struct_23();
             }
@@ -1460,34 +1460,34 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::index(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 union_variant_13 = union_struct_23();
             }
@@ -1497,10 +1497,10 @@ namespace ebm {
         return false;
     }
     const std::uint64_t* ExpressionBody::int64_value() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         if(!std::holds_alternative<union_struct_15>(union_variant_13)) {
             return nullptr;
         }
@@ -1512,10 +1512,10 @@ namespace ebm {
         return const_cast<std::uint64_t*>(std::as_const(*this).int64_value());
     }
     bool ExpressionBody::int64_value(const std::uint64_t& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             if(!std::holds_alternative<union_struct_15>(union_variant_13)) {
                 union_variant_13 = union_struct_15();
             }
@@ -1525,10 +1525,10 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::int64_value(std::uint64_t&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             if(!std::holds_alternative<union_struct_15>(union_variant_13)) {
                 union_variant_13 = union_struct_15();
             }
@@ -1538,7 +1538,7 @@ namespace ebm {
         return false;
     }
     const Varint* ExpressionBody::int_value() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         if(!std::holds_alternative<union_struct_14>(union_variant_13)) {
             return nullptr;
         }
@@ -1550,7 +1550,7 @@ namespace ebm {
         return const_cast<Varint*>(std::as_const(*this).int_value());
     }
     bool ExpressionBody::int_value(const Varint& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_14>(union_variant_13)) {
                 union_variant_13 = union_struct_14();
             }
@@ -1560,7 +1560,7 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::int_value(Varint&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_14>(union_variant_13)) {
                 union_variant_13 = union_struct_14();
             }
@@ -1570,73 +1570,73 @@ namespace ebm {
         return false;
     }
     const StatementRef* ExpressionBody::io_statement() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
             return nullptr;
         }
         return std::addressof(std::get<21>((*this).union_variant_13).io_statement);
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
             return nullptr;
         }
@@ -1648,74 +1648,74 @@ namespace ebm {
         return const_cast<StatementRef*>(std::as_const(*this).io_statement());
     }
     bool ExpressionBody::io_statement(const StatementRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 union_variant_13 = union_struct_34();
             }
             std::get<21>((*this).union_variant_13).io_statement = v;
             return true;
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 union_variant_13 = union_struct_35();
             }
@@ -1725,74 +1725,74 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::io_statement(StatementRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 union_variant_13 = union_struct_34();
             }
             std::get<21>((*this).union_variant_13).io_statement = std::move(v);
             return true;
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 union_variant_13 = union_struct_35();
             }
@@ -1802,25 +1802,25 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::left() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
             return nullptr;
         }
@@ -1832,25 +1832,25 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).left());
     }
     bool ExpressionBody::left(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -1860,25 +1860,25 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::left(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -1888,64 +1888,64 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::lowered_expr() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
         if(!std::holds_alternative<union_struct_33>(union_variant_13)) {
             return nullptr;
         }
@@ -1957,64 +1957,64 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).lowered_expr());
     }
     bool ExpressionBody::lowered_expr(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_33>(union_variant_13)) {
                 union_variant_13 = union_struct_33();
             }
@@ -2024,64 +2024,64 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::lowered_expr(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_33>(union_variant_13)) {
                 union_variant_13 = union_struct_33();
             }
@@ -2091,37 +2091,37 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::member() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
             return nullptr;
         }
@@ -2133,37 +2133,37 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).member());
     }
     bool ExpressionBody::member(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 union_variant_13 = union_struct_24();
             }
@@ -2173,37 +2173,37 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::member(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 union_variant_13 = union_struct_24();
             }
@@ -2213,55 +2213,55 @@ namespace ebm {
         return false;
     }
     const Size* ExpressionBody::num_bytes() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
             return nullptr;
         }
@@ -2273,55 +2273,55 @@ namespace ebm {
         return const_cast<Size*>(std::as_const(*this).num_bytes());
     }
     bool ExpressionBody::num_bytes(const Size& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 union_variant_13 = union_struct_30();
             }
@@ -2331,55 +2331,55 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::num_bytes(Size&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 union_variant_13 = union_struct_30();
             }
@@ -2389,28 +2389,28 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::operand() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
             return nullptr;
         }
@@ -2422,28 +2422,28 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).operand());
     }
     bool ExpressionBody::operand(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 union_variant_13 = union_struct_21();
             }
@@ -2453,28 +2453,28 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::operand(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 union_variant_13 = union_struct_21();
             }
@@ -2484,25 +2484,25 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::right() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
             return nullptr;
         }
@@ -2514,25 +2514,25 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).right());
     }
     bool ExpressionBody::right(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -2542,25 +2542,25 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::right(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -2570,40 +2570,40 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::source_expr() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
             return nullptr;
         }
@@ -2615,40 +2615,40 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).source_expr());
     }
     bool ExpressionBody::source_expr(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -2658,40 +2658,40 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::source_expr(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -2701,43 +2701,43 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::start() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
             return nullptr;
         }
@@ -2749,43 +2749,43 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).start());
     }
     bool ExpressionBody::start(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 union_variant_13 = union_struct_26();
             }
@@ -2795,43 +2795,43 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::start(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 union_variant_13 = union_struct_26();
             }
@@ -2841,61 +2841,61 @@ namespace ebm {
         return false;
     }
     const StreamType* ExpressionBody::stream_type() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
             return nullptr;
         }
         return std::addressof(std::get<15>((*this).union_variant_13).stream_type);
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         if(!std::holds_alternative<union_struct_29>(union_variant_13)) {
             return nullptr;
         }
         return std::addressof(std::get<16>((*this).union_variant_13).stream_type);
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
             return nullptr;
         }
@@ -2907,63 +2907,63 @@ namespace ebm {
         return const_cast<StreamType*>(std::as_const(*this).stream_type());
     }
     bool ExpressionBody::stream_type(const StreamType& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 union_variant_13 = union_struct_28();
             }
             std::get<15>((*this).union_variant_13).stream_type = v;
             return true;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_29>(union_variant_13)) {
                 union_variant_13 = union_struct_29();
             }
             std::get<16>((*this).union_variant_13).stream_type = v;
             return true;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 union_variant_13 = union_struct_30();
             }
@@ -2973,63 +2973,63 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::stream_type(StreamType&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 union_variant_13 = union_struct_28();
             }
             std::get<15>((*this).union_variant_13).stream_type = std::move(v);
             return true;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_29>(union_variant_13)) {
                 union_variant_13 = union_struct_29();
             }
             std::get<16>((*this).union_variant_13).stream_type = std::move(v);
             return true;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 union_variant_13 = union_struct_30();
             }
@@ -3039,16 +3039,16 @@ namespace ebm {
         return false;
     }
     const StringRef* ExpressionBody::string_value() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         if(!std::holds_alternative<union_struct_17>(union_variant_13)) {
             return nullptr;
         }
@@ -3060,16 +3060,16 @@ namespace ebm {
         return const_cast<StringRef*>(std::as_const(*this).string_value());
     }
     bool ExpressionBody::string_value(const StringRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             if(!std::holds_alternative<union_struct_17>(union_variant_13)) {
                 union_variant_13 = union_struct_17();
             }
@@ -3079,16 +3079,16 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::string_value(StringRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             if(!std::holds_alternative<union_struct_17>(union_variant_13)) {
                 union_variant_13 = union_struct_17();
             }
@@ -3098,73 +3098,73 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* ExpressionBody::target_expr() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
         if(!std::holds_alternative<union_struct_32>(union_variant_13)) {
             return nullptr;
         }
         return std::addressof(std::get<19>((*this).union_variant_13).target_expr);
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
             return nullptr;
         }
@@ -3176,74 +3176,74 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).target_expr());
     }
     bool ExpressionBody::target_expr(const ExpressionRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             if(!std::holds_alternative<union_struct_32>(union_variant_13)) {
                 union_variant_13 = union_struct_32();
             }
             std::get<19>((*this).union_variant_13).target_expr = v;
             return true;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 union_variant_13 = union_struct_35();
             }
@@ -3253,74 +3253,74 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::target_expr(ExpressionRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             if(!std::holds_alternative<union_struct_32>(union_variant_13)) {
                 union_variant_13 = union_struct_32();
             }
             std::get<19>((*this).union_variant_13).target_expr = std::move(v);
             return true;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::WRITE_DATA==(*this).op) {
+        if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 union_variant_13 = union_struct_35();
             }
@@ -3330,67 +3330,67 @@ namespace ebm {
         return false;
     }
     const StatementRef* ExpressionBody::target_stmt() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
             return nullptr;
         }
@@ -3402,67 +3402,67 @@ namespace ebm {
         return const_cast<StatementRef*>(std::as_const(*this).target_stmt());
     }
     bool ExpressionBody::target_stmt(const StatementRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 union_variant_13 = union_struct_34();
             }
@@ -3472,67 +3472,67 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::target_stmt(StatementRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_ERROR==(*this).op) {
+        if (ExpressionOp::IS_ERROR==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MAX_VALUE==(*this).op) {
+        if (ExpressionOp::MAX_VALUE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::READ_DATA==(*this).op) {
+        if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 union_variant_13 = union_struct_34();
             }
@@ -3542,19 +3542,19 @@ namespace ebm {
         return false;
     }
     const TypeRef* ExpressionBody::type_ref() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         if(!std::holds_alternative<union_struct_18>(union_variant_13)) {
             return nullptr;
         }
@@ -3566,19 +3566,19 @@ namespace ebm {
         return const_cast<TypeRef*>(std::as_const(*this).type_ref());
     }
     bool ExpressionBody::type_ref(const TypeRef& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             if(!std::holds_alternative<union_struct_18>(union_variant_13)) {
                 union_variant_13 = union_struct_18();
             }
@@ -3588,19 +3588,19 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::type_ref(TypeRef&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             if(!std::holds_alternative<union_struct_18>(union_variant_13)) {
                 union_variant_13 = union_struct_18();
             }
@@ -3610,49 +3610,49 @@ namespace ebm {
         return false;
     }
     const SizeUnit* ExpressionBody::unit() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
         if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
             return nullptr;
         }
@@ -3664,49 +3664,49 @@ namespace ebm {
         return const_cast<SizeUnit*>(std::as_const(*this).unit());
     }
     bool ExpressionBody::unit(const SizeUnit& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 union_variant_13 = union_struct_28();
             }
@@ -3716,49 +3716,49 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::unit(SizeUnit&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::CALL==(*this).op) {
+        if (ExpressionOp::CALL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::TYPE_CAST==(*this).op) {
+        if (ExpressionOp::TYPE_CAST==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::RANGE==(*this).op) {
+        if (ExpressionOp::RANGE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 union_variant_13 = union_struct_28();
             }
@@ -3768,28 +3768,28 @@ namespace ebm {
         return false;
     }
     const UnaryOp* ExpressionBody::uop() const {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
         return nullptr;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
         if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
             return nullptr;
         }
@@ -3801,28 +3801,28 @@ namespace ebm {
         return const_cast<UnaryOp*>(std::as_const(*this).uop());
     }
     bool ExpressionBody::uop(const UnaryOp& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 union_variant_13 = union_struct_21();
             }
@@ -3832,28 +3832,28 @@ namespace ebm {
         return false;
     }
     bool ExpressionBody::uop(UnaryOp&& v) {
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::IDENTIFIER==(*this).op) {
+        if (ExpressionOp::IDENTIFIER==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::BINARY_OP==(*this).op) {
+        if (ExpressionOp::BINARY_OP==(*this).kind) {
             return false;
         }
-        if (ExpressionOp::UNARY_OP==(*this).op) {
+        if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 union_variant_13 = union_struct_21();
             }
@@ -4151,91 +4151,91 @@ namespace ebm {
         return false;
     }
     const IdentifierRef* StatementBody::alias() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
             return nullptr;
         }
@@ -4247,91 +4247,91 @@ namespace ebm {
         return const_cast<IdentifierRef*>(std::as_const(*this).alias());
     }
     bool StatementBody::alias(const IdentifierRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 union_variant_48 = union_struct_77();
             }
@@ -4341,91 +4341,91 @@ namespace ebm {
         return false;
     }
     bool StatementBody::alias(IdentifierRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 union_variant_48 = union_struct_77();
             }
@@ -4435,22 +4435,22 @@ namespace ebm {
         return false;
     }
     const AssertDesc* StatementBody::assert_desc() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         if(!std::holds_alternative<union_struct_54>(union_variant_48)) {
             return nullptr;
         }
@@ -4462,22 +4462,22 @@ namespace ebm {
         return const_cast<AssertDesc*>(std::as_const(*this).assert_desc());
     }
     bool StatementBody::assert_desc(const AssertDesc& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             if(!std::holds_alternative<union_struct_54>(union_variant_48)) {
                 union_variant_48 = union_struct_54();
             }
@@ -4487,22 +4487,22 @@ namespace ebm {
         return false;
     }
     bool StatementBody::assert_desc(AssertDesc&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             if(!std::holds_alternative<union_struct_54>(union_variant_48)) {
                 union_variant_48 = union_struct_54();
             }
@@ -4512,82 +4512,82 @@ namespace ebm {
         return false;
     }
     const BitFieldDecl* StatementBody::bit_field_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_74>(union_variant_48)) {
             return nullptr;
         }
@@ -4599,82 +4599,82 @@ namespace ebm {
         return const_cast<BitFieldDecl*>(std::as_const(*this).bit_field_decl());
     }
     bool StatementBody::bit_field_decl(const BitFieldDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_74>(union_variant_48)) {
                 union_variant_48 = union_struct_74();
             }
@@ -4684,82 +4684,82 @@ namespace ebm {
         return false;
     }
     bool StatementBody::bit_field_decl(BitFieldDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_74>(union_variant_48)) {
                 union_variant_48 = union_struct_74();
             }
@@ -4769,79 +4769,79 @@ namespace ebm {
         return false;
     }
     const Block* StatementBody::block() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         if(!std::holds_alternative<union_struct_49>(union_variant_48)) {
             return nullptr;
         }
         return std::addressof(std::get<1>((*this).union_variant_48).block);
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_72>(union_variant_48)) {
             return nullptr;
         }
@@ -4853,80 +4853,80 @@ namespace ebm {
         return const_cast<Block*>(std::as_const(*this).block());
     }
     bool StatementBody::block(const Block& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             if(!std::holds_alternative<union_struct_49>(union_variant_48)) {
                 union_variant_48 = union_struct_49();
             }
             std::get<1>((*this).union_variant_48).block = v;
             return true;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_72>(union_variant_48)) {
                 union_variant_48 = union_struct_72();
             }
@@ -4936,80 +4936,80 @@ namespace ebm {
         return false;
     }
     bool StatementBody::block(Block&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             if(!std::holds_alternative<union_struct_49>(union_variant_48)) {
                 union_variant_48 = union_struct_49();
             }
             std::get<1>((*this).union_variant_48).block = std::move(v);
             return true;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_72>(union_variant_48)) {
                 union_variant_48 = union_struct_72();
             }
@@ -5019,46 +5019,46 @@ namespace ebm {
         return false;
     }
     const LoopFlowControl* StatementBody::break_() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         if(!std::holds_alternative<union_struct_62>(union_variant_48)) {
             return nullptr;
         }
@@ -5070,46 +5070,46 @@ namespace ebm {
         return const_cast<LoopFlowControl*>(std::as_const(*this).break_());
     }
     bool StatementBody::break_(const LoopFlowControl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             if(!std::holds_alternative<union_struct_62>(union_variant_48)) {
                 union_variant_48 = union_struct_62();
             }
@@ -5119,46 +5119,46 @@ namespace ebm {
         return false;
     }
     bool StatementBody::break_(LoopFlowControl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             if(!std::holds_alternative<union_struct_62>(union_variant_48)) {
                 union_variant_48 = union_struct_62();
             }
@@ -5168,49 +5168,49 @@ namespace ebm {
         return false;
     }
     const LoopFlowControl* StatementBody::continue_() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         if(!std::holds_alternative<union_struct_63>(union_variant_48)) {
             return nullptr;
         }
@@ -5222,49 +5222,49 @@ namespace ebm {
         return const_cast<LoopFlowControl*>(std::as_const(*this).continue_());
     }
     bool StatementBody::continue_(const LoopFlowControl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_63>(union_variant_48)) {
                 union_variant_48 = union_struct_63();
             }
@@ -5274,49 +5274,49 @@ namespace ebm {
         return false;
     }
     bool StatementBody::continue_(LoopFlowControl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_63>(union_variant_48)) {
                 union_variant_48 = union_struct_63();
             }
@@ -5326,61 +5326,61 @@ namespace ebm {
         return false;
     }
     const EnumDecl* StatementBody::enum_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_67>(union_variant_48)) {
             return nullptr;
         }
@@ -5392,61 +5392,61 @@ namespace ebm {
         return const_cast<EnumDecl*>(std::as_const(*this).enum_decl());
     }
     bool StatementBody::enum_decl(const EnumDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_67>(union_variant_48)) {
                 union_variant_48 = union_struct_67();
             }
@@ -5456,61 +5456,61 @@ namespace ebm {
         return false;
     }
     bool StatementBody::enum_decl(EnumDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_67>(union_variant_48)) {
                 union_variant_48 = union_struct_67();
             }
@@ -5520,64 +5520,64 @@ namespace ebm {
         return false;
     }
     const EnumMemberDecl* StatementBody::enum_member_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_68>(union_variant_48)) {
             return nullptr;
         }
@@ -5589,64 +5589,64 @@ namespace ebm {
         return const_cast<EnumMemberDecl*>(std::as_const(*this).enum_member_decl());
     }
     bool StatementBody::enum_member_decl(const EnumMemberDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_68>(union_variant_48)) {
                 union_variant_48 = union_struct_68();
             }
@@ -5656,64 +5656,64 @@ namespace ebm {
         return false;
     }
     bool StatementBody::enum_member_decl(EnumMemberDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_68>(union_variant_48)) {
                 union_variant_48 = union_struct_68();
             }
@@ -5723,97 +5723,97 @@ namespace ebm {
         return false;
     }
     const ErrorReport* StatementBody::error_report() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
         if(!std::holds_alternative<union_struct_79>(union_variant_48)) {
             return nullptr;
         }
@@ -5825,97 +5825,97 @@ namespace ebm {
         return const_cast<ErrorReport*>(std::as_const(*this).error_report());
     }
     bool StatementBody::error_report(const ErrorReport& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             if(!std::holds_alternative<union_struct_79>(union_variant_48)) {
                 union_variant_48 = union_struct_79();
             }
@@ -5925,97 +5925,97 @@ namespace ebm {
         return false;
     }
     bool StatementBody::error_report(ErrorReport&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             if(!std::holds_alternative<union_struct_79>(union_variant_48)) {
                 union_variant_48 = union_struct_79();
             }
@@ -6025,100 +6025,100 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* StatementBody::expression() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
         if(!std::holds_alternative<union_struct_80>(union_variant_48)) {
             return nullptr;
         }
@@ -6130,100 +6130,100 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).expression());
     }
     bool StatementBody::expression(const ExpressionRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             return false;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
             if(!std::holds_alternative<union_struct_80>(union_variant_48)) {
                 union_variant_48 = union_struct_80();
             }
@@ -6233,100 +6233,100 @@ namespace ebm {
         return false;
     }
     bool StatementBody::expression(ExpressionRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             return false;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
             if(!std::holds_alternative<union_struct_80>(union_variant_48)) {
                 union_variant_48 = union_struct_80();
             }
@@ -6336,58 +6336,58 @@ namespace ebm {
         return false;
     }
     const FieldDecl* StatementBody::field_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_66>(union_variant_48)) {
             return nullptr;
         }
@@ -6399,58 +6399,58 @@ namespace ebm {
         return const_cast<FieldDecl*>(std::as_const(*this).field_decl());
     }
     bool StatementBody::field_decl(const FieldDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_66>(union_variant_48)) {
                 union_variant_48 = union_struct_66();
             }
@@ -6460,58 +6460,58 @@ namespace ebm {
         return false;
     }
     bool StatementBody::field_decl(FieldDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_66>(union_variant_48)) {
                 union_variant_48 = union_struct_66();
             }
@@ -6521,52 +6521,52 @@ namespace ebm {
         return false;
     }
     const FunctionDecl* StatementBody::func_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_64>(union_variant_48)) {
             return nullptr;
         }
@@ -6578,52 +6578,52 @@ namespace ebm {
         return const_cast<FunctionDecl*>(std::as_const(*this).func_decl());
     }
     bool StatementBody::func_decl(const FunctionDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_64>(union_variant_48)) {
                 union_variant_48 = union_struct_64();
             }
@@ -6633,52 +6633,52 @@ namespace ebm {
         return false;
     }
     bool StatementBody::func_decl(FunctionDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_64>(union_variant_48)) {
                 union_variant_48 = union_struct_64();
             }
@@ -6688,34 +6688,34 @@ namespace ebm {
         return false;
     }
     const IfStatement* StatementBody::if_statement() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_58>(union_variant_48)) {
             return nullptr;
         }
@@ -6727,34 +6727,34 @@ namespace ebm {
         return const_cast<IfStatement*>(std::as_const(*this).if_statement());
     }
     bool StatementBody::if_statement(const IfStatement& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_58>(union_variant_48)) {
                 union_variant_48 = union_struct_58();
             }
@@ -6764,34 +6764,34 @@ namespace ebm {
         return false;
     }
     bool StatementBody::if_statement(IfStatement&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_58>(union_variant_48)) {
                 union_variant_48 = union_struct_58();
             }
@@ -6801,37 +6801,37 @@ namespace ebm {
         return false;
     }
     const LoopStatement* StatementBody::loop() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_59>(union_variant_48)) {
             return nullptr;
         }
@@ -6843,37 +6843,37 @@ namespace ebm {
         return const_cast<LoopStatement*>(std::as_const(*this).loop());
     }
     bool StatementBody::loop(const LoopStatement& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_59>(union_variant_48)) {
                 union_variant_48 = union_struct_59();
             }
@@ -6883,37 +6883,37 @@ namespace ebm {
         return false;
     }
     bool StatementBody::loop(LoopStatement&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_59>(union_variant_48)) {
                 union_variant_48 = union_struct_59();
             }
@@ -6923,103 +6923,103 @@ namespace ebm {
         return false;
     }
     const LoweredStatements* StatementBody::lowered_statements() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
+        if (StatementOp::LOWERED_STATEMENTS==(*this).kind) {
         if(!std::holds_alternative<union_struct_81>(union_variant_48)) {
             return nullptr;
         }
@@ -7031,103 +7031,103 @@ namespace ebm {
         return const_cast<LoweredStatements*>(std::as_const(*this).lowered_statements());
     }
     bool StatementBody::lowered_statements(const LoweredStatements& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             return false;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
+        if (StatementOp::LOWERED_STATEMENTS==(*this).kind) {
             if(!std::holds_alternative<union_struct_81>(union_variant_48)) {
                 union_variant_48 = union_struct_81();
             }
@@ -7137,103 +7137,103 @@ namespace ebm {
         return false;
     }
     bool StatementBody::lowered_statements(LoweredStatements&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        if (StatementOp::ERROR_REPORT==(*this).kind) {
             return false;
         }
-        if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        if (StatementOp::EXPRESSION==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
+        if (StatementOp::LOWERED_STATEMENTS==(*this).kind) {
             if(!std::holds_alternative<union_struct_81>(union_variant_48)) {
                 union_variant_48 = union_struct_81();
             }
@@ -7243,43 +7243,43 @@ namespace ebm {
         return false;
     }
     const MatchBranch* StatementBody::match_branch() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         if(!std::holds_alternative<union_struct_61>(union_variant_48)) {
             return nullptr;
         }
@@ -7291,43 +7291,43 @@ namespace ebm {
         return const_cast<MatchBranch*>(std::as_const(*this).match_branch());
     }
     bool StatementBody::match_branch(const MatchBranch& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             if(!std::holds_alternative<union_struct_61>(union_variant_48)) {
                 union_variant_48 = union_struct_61();
             }
@@ -7337,43 +7337,43 @@ namespace ebm {
         return false;
     }
     bool StatementBody::match_branch(MatchBranch&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             if(!std::holds_alternative<union_struct_61>(union_variant_48)) {
                 union_variant_48 = union_struct_61();
             }
@@ -7383,40 +7383,40 @@ namespace ebm {
         return false;
     }
     const MatchStatement* StatementBody::match_statement() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_60>(union_variant_48)) {
             return nullptr;
         }
@@ -7428,40 +7428,40 @@ namespace ebm {
         return const_cast<MatchStatement*>(std::as_const(*this).match_statement());
     }
     bool StatementBody::match_statement(const MatchStatement& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_60>(union_variant_48)) {
                 union_variant_48 = union_struct_60();
             }
@@ -7471,40 +7471,40 @@ namespace ebm {
         return false;
     }
     bool StatementBody::match_statement(MatchStatement&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_60>(union_variant_48)) {
                 union_variant_48 = union_struct_60();
             }
@@ -7514,88 +7514,88 @@ namespace ebm {
         return false;
     }
     const Metadata* StatementBody::metadata() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_76>(union_variant_48)) {
             return nullptr;
         }
@@ -7607,88 +7607,88 @@ namespace ebm {
         return const_cast<Metadata*>(std::as_const(*this).metadata());
     }
     bool StatementBody::metadata(const Metadata& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_76>(union_variant_48)) {
                 union_variant_48 = union_struct_76();
             }
@@ -7698,88 +7698,88 @@ namespace ebm {
         return false;
     }
     bool StatementBody::metadata(Metadata&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_76>(union_variant_48)) {
                 union_variant_48 = union_struct_76();
             }
@@ -7789,91 +7789,91 @@ namespace ebm {
         return false;
     }
     const IdentifierRef* StatementBody::module_name() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
             return nullptr;
         }
@@ -7885,91 +7885,91 @@ namespace ebm {
         return const_cast<IdentifierRef*>(std::as_const(*this).module_name());
     }
     bool StatementBody::module_name(const IdentifierRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 union_variant_48 = union_struct_77();
             }
@@ -7979,91 +7979,91 @@ namespace ebm {
         return false;
     }
     bool StatementBody::module_name(IdentifierRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 union_variant_48 = union_struct_77();
             }
@@ -8073,31 +8073,31 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* StatementBody::offset() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
             return nullptr;
         }
@@ -8109,31 +8109,31 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).offset());
     }
     bool StatementBody::offset(const ExpressionRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 union_variant_48 = union_struct_57();
             }
@@ -8143,31 +8143,31 @@ namespace ebm {
         return false;
     }
     bool StatementBody::offset(ExpressionRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 union_variant_48 = union_struct_57();
             }
@@ -8177,94 +8177,94 @@ namespace ebm {
         return false;
     }
     const std::vector<PhiParam>* StatementBody::params() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
             return nullptr;
         }
@@ -8276,94 +8276,94 @@ namespace ebm {
         return const_cast<std::vector<PhiParam>*>(std::as_const(*this).params());
     }
     bool StatementBody::params(const std::vector<PhiParam>& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -8373,94 +8373,94 @@ namespace ebm {
         return false;
     }
     bool StatementBody::params(std::vector<PhiParam>&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -8470,94 +8470,94 @@ namespace ebm {
         return false;
     }
     const Varint* StatementBody::params_len() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
             return nullptr;
         }
@@ -8569,94 +8569,94 @@ namespace ebm {
         return const_cast<Varint*>(std::as_const(*this).params_len());
     }
     bool StatementBody::params_len(const Varint& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -8666,94 +8666,94 @@ namespace ebm {
         return false;
     }
     bool StatementBody::params_len(Varint&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -8763,10 +8763,10 @@ namespace ebm {
         return false;
     }
     const StatementRef* StatementBody::previous_assignment() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
             return nullptr;
         }
@@ -8778,10 +8778,10 @@ namespace ebm {
         return const_cast<StatementRef*>(std::as_const(*this).previous_assignment());
     }
     bool StatementBody::previous_assignment(const StatementRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
@@ -8791,10 +8791,10 @@ namespace ebm {
         return false;
     }
     bool StatementBody::previous_assignment(StatementRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
@@ -8804,85 +8804,85 @@ namespace ebm {
         return false;
     }
     const PropertyDecl* StatementBody::property_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_75>(union_variant_48)) {
             return nullptr;
         }
@@ -8894,85 +8894,85 @@ namespace ebm {
         return const_cast<PropertyDecl*>(std::as_const(*this).property_decl());
     }
     bool StatementBody::property_decl(const PropertyDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_75>(union_variant_48)) {
                 union_variant_48 = union_struct_75();
             }
@@ -8982,85 +8982,85 @@ namespace ebm {
         return false;
     }
     bool StatementBody::property_decl(PropertyDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_75>(union_variant_48)) {
                 union_variant_48 = union_struct_75();
             }
@@ -9070,25 +9070,25 @@ namespace ebm {
         return false;
     }
     const IOData* StatementBody::read_data() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_55>(union_variant_48)) {
             return nullptr;
         }
@@ -9100,25 +9100,25 @@ namespace ebm {
         return const_cast<IOData*>(std::as_const(*this).read_data());
     }
     bool StatementBody::read_data(const IOData& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_55>(union_variant_48)) {
                 union_variant_48 = union_struct_55();
             }
@@ -9128,25 +9128,25 @@ namespace ebm {
         return false;
     }
     bool StatementBody::read_data(IOData&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_55>(union_variant_48)) {
                 union_variant_48 = union_struct_55();
             }
@@ -9156,79 +9156,79 @@ namespace ebm {
         return false;
     }
     const StateDecl* StatementBody::state_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_73>(union_variant_48)) {
             return nullptr;
         }
@@ -9240,79 +9240,79 @@ namespace ebm {
         return const_cast<StateDecl*>(std::as_const(*this).state_decl());
     }
     bool StatementBody::state_decl(const StateDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_73>(union_variant_48)) {
                 union_variant_48 = union_struct_73();
             }
@@ -9322,79 +9322,79 @@ namespace ebm {
         return false;
     }
     bool StatementBody::state_decl(StateDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_73>(union_variant_48)) {
                 union_variant_48 = union_struct_73();
             }
@@ -9404,31 +9404,31 @@ namespace ebm {
         return false;
     }
     const StreamType* StatementBody::stream_type() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
             return nullptr;
         }
@@ -9440,31 +9440,31 @@ namespace ebm {
         return const_cast<StreamType*>(std::as_const(*this).stream_type());
     }
     bool StatementBody::stream_type(const StreamType& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 union_variant_48 = union_struct_57();
             }
@@ -9474,31 +9474,31 @@ namespace ebm {
         return false;
     }
     bool StatementBody::stream_type(StreamType&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 union_variant_48 = union_struct_57();
             }
@@ -9508,67 +9508,67 @@ namespace ebm {
         return false;
     }
     const StructDecl* StatementBody::struct_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_69>(union_variant_48)) {
             return nullptr;
         }
@@ -9580,67 +9580,67 @@ namespace ebm {
         return const_cast<StructDecl*>(std::as_const(*this).struct_decl());
     }
     bool StatementBody::struct_decl(const StructDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_69>(union_variant_48)) {
                 union_variant_48 = union_struct_69();
             }
@@ -9650,67 +9650,67 @@ namespace ebm {
         return false;
     }
     bool StatementBody::struct_decl(StructDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_69>(union_variant_48)) {
                 union_variant_48 = union_struct_69();
             }
@@ -9720,16 +9720,16 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* StatementBody::target() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
             return nullptr;
         }
         return std::addressof(std::get<2>((*this).union_variant_48).target);
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
             return nullptr;
         }
@@ -9741,17 +9741,17 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).target());
     }
     bool StatementBody::target(const ExpressionRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
             std::get<2>((*this).union_variant_48).target = v;
             return true;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 union_variant_48 = union_struct_51();
             }
@@ -9761,17 +9761,17 @@ namespace ebm {
         return false;
     }
     bool StatementBody::target(ExpressionRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
             std::get<2>((*this).union_variant_48).target = std::move(v);
             return true;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 union_variant_48 = union_struct_51();
             }
@@ -9781,94 +9781,94 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* StatementBody::target_var() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
         if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
             return nullptr;
         }
@@ -9880,94 +9880,94 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).target_var());
     }
     bool StatementBody::target_var(const ExpressionRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -9977,94 +9977,94 @@ namespace ebm {
         return false;
     }
     bool StatementBody::target_var(ExpressionRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        if (StatementOp::PROGRAM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        if (StatementOp::STATE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        if (StatementOp::PROPERTY_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::METADATA==(*this).statement_kind) {
+        if (StatementOp::METADATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        if (StatementOp::IMPORT_MODULE==(*this).kind) {
             return false;
         }
-        if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -10074,70 +10074,70 @@ namespace ebm {
         return false;
     }
     const UnionDecl* StatementBody::union_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_70>(union_variant_48)) {
             return nullptr;
         }
@@ -10149,70 +10149,70 @@ namespace ebm {
         return const_cast<UnionDecl*>(std::as_const(*this).union_decl());
     }
     bool StatementBody::union_decl(const UnionDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_70>(union_variant_48)) {
                 union_variant_48 = union_struct_70();
             }
@@ -10222,70 +10222,70 @@ namespace ebm {
         return false;
     }
     bool StatementBody::union_decl(UnionDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_70>(union_variant_48)) {
                 union_variant_48 = union_struct_70();
             }
@@ -10295,73 +10295,73 @@ namespace ebm {
         return false;
     }
     const UnionMemberDecl* StatementBody::union_member_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_71>(union_variant_48)) {
             return nullptr;
         }
@@ -10373,73 +10373,73 @@ namespace ebm {
         return const_cast<UnionMemberDecl*>(std::as_const(*this).union_member_decl());
     }
     bool StatementBody::union_member_decl(const UnionMemberDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_71>(union_variant_48)) {
                 union_variant_48 = union_struct_71();
             }
@@ -10449,73 +10449,73 @@ namespace ebm {
         return false;
     }
     bool StatementBody::union_member_decl(UnionMemberDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        if (StatementOp::FIELD_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        if (StatementOp::STRUCT_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_71>(union_variant_48)) {
                 union_variant_48 = union_struct_71();
             }
@@ -10525,28 +10525,28 @@ namespace ebm {
         return false;
     }
     const ExpressionRef* StatementBody::value() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
             return nullptr;
         }
         return std::addressof(std::get<2>((*this).union_variant_48).value);
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
             return nullptr;
         }
         return std::addressof(std::get<3>((*this).union_variant_48).value);
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         if(!std::holds_alternative<union_struct_52>(union_variant_48)) {
             return nullptr;
         }
         return std::addressof(std::get<4>((*this).union_variant_48).value);
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         if(!std::holds_alternative<union_struct_53>(union_variant_48)) {
             return nullptr;
         }
@@ -10558,31 +10558,31 @@ namespace ebm {
         return const_cast<ExpressionRef*>(std::as_const(*this).value());
     }
     bool StatementBody::value(const ExpressionRef& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
             std::get<2>((*this).union_variant_48).value = v;
             return true;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 union_variant_48 = union_struct_51();
             }
             std::get<3>((*this).union_variant_48).value = v;
             return true;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_52>(union_variant_48)) {
                 union_variant_48 = union_struct_52();
             }
             std::get<4>((*this).union_variant_48).value = v;
             return true;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_53>(union_variant_48)) {
                 union_variant_48 = union_struct_53();
             }
@@ -10592,31 +10592,31 @@ namespace ebm {
         return false;
     }
     bool StatementBody::value(ExpressionRef&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
             std::get<2>((*this).union_variant_48).value = std::move(v);
             return true;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 union_variant_48 = union_struct_51();
             }
             std::get<3>((*this).union_variant_48).value = std::move(v);
             return true;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_52>(union_variant_48)) {
                 union_variant_48 = union_struct_52();
             }
             std::get<4>((*this).union_variant_48).value = std::move(v);
             return true;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_53>(union_variant_48)) {
                 union_variant_48 = union_struct_53();
             }
@@ -10626,55 +10626,55 @@ namespace ebm {
         return false;
     }
     const VariableDecl* StatementBody::var_decl() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
         if(!std::holds_alternative<union_struct_65>(union_variant_48)) {
             return nullptr;
         }
@@ -10686,55 +10686,55 @@ namespace ebm {
         return const_cast<VariableDecl*>(std::as_const(*this).var_decl());
     }
     bool StatementBody::var_decl(const VariableDecl& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_65>(union_variant_48)) {
                 union_variant_48 = union_struct_65();
             }
@@ -10744,55 +10744,55 @@ namespace ebm {
         return false;
     }
     bool StatementBody::var_decl(VariableDecl&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        if (StatementOp::SEEK_STREAM==(*this).kind) {
             return false;
         }
-        if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::IF_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        if (StatementOp::MATCH_BRANCH==(*this).kind) {
             return false;
         }
-        if (StatementOp::BREAK==(*this).statement_kind) {
+        if (StatementOp::BREAK==(*this).kind) {
             return false;
         }
-        if (StatementOp::CONTINUE==(*this).statement_kind) {
+        if (StatementOp::CONTINUE==(*this).kind) {
             return false;
         }
-        if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        if (StatementOp::FUNCTION_DECL==(*this).kind) {
             return false;
         }
-        if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        if (StatementOp::VARIABLE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_65>(union_variant_48)) {
                 union_variant_48 = union_struct_65();
             }
@@ -10802,28 +10802,28 @@ namespace ebm {
         return false;
     }
     const IOData* StatementBody::write_data() const {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
         return nullptr;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
         if(!std::holds_alternative<union_struct_56>(union_variant_48)) {
             return nullptr;
         }
@@ -10835,28 +10835,28 @@ namespace ebm {
         return const_cast<IOData*>(std::as_const(*this).write_data());
     }
     bool StatementBody::write_data(const IOData& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_56>(union_variant_48)) {
                 union_variant_48 = union_struct_56();
             }
@@ -10866,28 +10866,28 @@ namespace ebm {
         return false;
     }
     bool StatementBody::write_data(IOData&& v) {
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        if (StatementOp::ASSIGNMENT==(*this).kind) {
             return false;
         }
-        if (StatementOp::APPEND==(*this).statement_kind) {
+        if (StatementOp::APPEND==(*this).kind) {
             return false;
         }
-        if (StatementOp::RETURN==(*this).statement_kind) {
+        if (StatementOp::RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        if (StatementOp::ERROR_RETURN==(*this).kind) {
             return false;
         }
-        if (StatementOp::ASSERT==(*this).statement_kind) {
+        if (StatementOp::ASSERT==(*this).kind) {
             return false;
         }
-        if (StatementOp::READ_DATA==(*this).statement_kind) {
+        if (StatementOp::READ_DATA==(*this).kind) {
             return false;
         }
-        if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        if (StatementOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_56>(union_variant_48)) {
                 union_variant_48 = union_struct_56();
             }
@@ -12808,11 +12808,11 @@ namespace ebm {
         if (auto err = (*this).type.encode(w)) {
             return err;
         }
-        auto tmp_120_ = static_cast<std::uint8_t>((*this).op);
+        auto tmp_120_ = static_cast<std::uint8_t>((*this).kind);
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_120_) ,true)) {
-            return ::futils::error::Error<>("encode: ExpressionBody::op: write std::uint8_t failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("encode: ExpressionBody::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_14>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_14 is not set",::futils::error::Category::lib);
             }
@@ -12820,7 +12820,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        else if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             if(!std::holds_alternative<union_struct_15>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_15 is not set",::futils::error::Category::lib);
             }
@@ -12828,7 +12828,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: ExpressionBody::int64_value: write std::uint64_t failed",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        else if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             if(!std::holds_alternative<union_struct_16>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_16 is not set",::futils::error::Category::lib);
             }
@@ -12839,7 +12839,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: ExpressionBody: assertion failed; (std::get<3>((*this).union_variant_13).bool_value == 0) || (std::get<3>((*this).union_variant_13).bool_value == 1)",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        else if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             if(!std::holds_alternative<union_struct_17>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_17 is not set",::futils::error::Category::lib);
             }
@@ -12847,7 +12847,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        else if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             if(!std::holds_alternative<union_struct_18>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_18 is not set",::futils::error::Category::lib);
             }
@@ -12855,7 +12855,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IDENTIFIER==(*this).op) {
+        else if (ExpressionOp::IDENTIFIER==(*this).kind) {
             if(!std::holds_alternative<union_struct_19>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_19 is not set",::futils::error::Category::lib);
             }
@@ -12863,7 +12863,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::BINARY_OP==(*this).op) {
+        else if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_20 is not set",::futils::error::Category::lib);
             }
@@ -12878,7 +12878,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::UNARY_OP==(*this).op) {
+        else if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_21 is not set",::futils::error::Category::lib);
             }
@@ -12890,7 +12890,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::CALL==(*this).op) {
+        else if (ExpressionOp::CALL==(*this).kind) {
             if(!std::holds_alternative<union_struct_22>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_22 is not set",::futils::error::Category::lib);
             }
@@ -12898,7 +12898,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        else if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_23 is not set",::futils::error::Category::lib);
             }
@@ -12909,7 +12909,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        else if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_24 is not set",::futils::error::Category::lib);
             }
@@ -12920,7 +12920,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::TYPE_CAST==(*this).op) {
+        else if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_25 is not set",::futils::error::Category::lib);
             }
@@ -12935,7 +12935,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: ExpressionBody::cast_kind: write std::uint8_t failed",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::RANGE==(*this).op) {
+        else if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_26 is not set",::futils::error::Category::lib);
             }
@@ -12946,7 +12946,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        else if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             if(!std::holds_alternative<union_struct_27>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_27 is not set",::futils::error::Category::lib);
             }
@@ -12954,7 +12954,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        else if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_28 is not set",::futils::error::Category::lib);
             }
@@ -12970,7 +12970,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: ExpressionBody: assertion failed; (std::get<15>((*this).union_variant_13).unit == SizeUnit::BIT_FIXED) || (std::get<15>((*this).union_variant_13).unit == SizeUnit::BYTE_FIXED)",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        else if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_29>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_29 is not set",::futils::error::Category::lib);
             }
@@ -12979,7 +12979,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: ExpressionBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        else if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_30 is not set",::futils::error::Category::lib);
             }
@@ -12991,7 +12991,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        else if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             if(!std::holds_alternative<union_struct_31>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_31 is not set",::futils::error::Category::lib);
             }
@@ -12999,7 +12999,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IS_ERROR==(*this).op) {
+        else if (ExpressionOp::IS_ERROR==(*this).kind) {
             if(!std::holds_alternative<union_struct_32>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_32 is not set",::futils::error::Category::lib);
             }
@@ -13007,7 +13007,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::MAX_VALUE==(*this).op) {
+        else if (ExpressionOp::MAX_VALUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_33>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_33 is not set",::futils::error::Category::lib);
             }
@@ -13015,7 +13015,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::READ_DATA==(*this).op) {
+        else if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_34 is not set",::futils::error::Category::lib);
             }
@@ -13026,7 +13026,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::WRITE_DATA==(*this).op) {
+        else if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 return ::futils::error::Error<>("encode: ExpressionBody: union_variant_13 variant alternative union_struct_35 is not set",::futils::error::Category::lib);
             }
@@ -13045,10 +13045,10 @@ namespace ebm {
         }
         std::uint8_t tmp_128_ = 0;
         if (!::futils::binary::read_num(r,tmp_128_ ,true)) {
-            return ::futils::error::Error<>("decode: ExpressionBody::op: read int failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("decode: ExpressionBody::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).op = static_cast<ExpressionOp>(tmp_128_);
-        if (ExpressionOp::LITERAL_INT==(*this).op) {
+        (*this).kind = static_cast<ExpressionOp>(tmp_128_);
+        if (ExpressionOp::LITERAL_INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_14>(union_variant_13)) {
                 union_variant_13 = union_struct_14();
             }
@@ -13056,7 +13056,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::LITERAL_INT64==(*this).op) {
+        else if (ExpressionOp::LITERAL_INT64==(*this).kind) {
             if(!std::holds_alternative<union_struct_15>(union_variant_13)) {
                 union_variant_13 = union_struct_15();
             }
@@ -13064,7 +13064,7 @@ namespace ebm {
                 return ::futils::error::Error<>("decode: ExpressionBody::int64_value: read int failed",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::LITERAL_BOOL==(*this).op) {
+        else if (ExpressionOp::LITERAL_BOOL==(*this).kind) {
             if(!std::holds_alternative<union_struct_16>(union_variant_13)) {
                 union_variant_13 = union_struct_16();
             }
@@ -13075,7 +13075,7 @@ namespace ebm {
                 return ::futils::error::Error<>("decode: ExpressionBody: assertion failed; (std::get<3>((*this).union_variant_13).bool_value == 0) || (std::get<3>((*this).union_variant_13).bool_value == 1)",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::LITERAL_STRING==(*this).op) {
+        else if (ExpressionOp::LITERAL_STRING==(*this).kind) {
             if(!std::holds_alternative<union_struct_17>(union_variant_13)) {
                 union_variant_13 = union_struct_17();
             }
@@ -13083,7 +13083,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::LITERAL_TYPE==(*this).op) {
+        else if (ExpressionOp::LITERAL_TYPE==(*this).kind) {
             if(!std::holds_alternative<union_struct_18>(union_variant_13)) {
                 union_variant_13 = union_struct_18();
             }
@@ -13091,7 +13091,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IDENTIFIER==(*this).op) {
+        else if (ExpressionOp::IDENTIFIER==(*this).kind) {
             if(!std::holds_alternative<union_struct_19>(union_variant_13)) {
                 union_variant_13 = union_struct_19();
             }
@@ -13099,7 +13099,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::BINARY_OP==(*this).op) {
+        else if (ExpressionOp::BINARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_20>(union_variant_13)) {
                 union_variant_13 = union_struct_20();
             }
@@ -13115,7 +13115,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::UNARY_OP==(*this).op) {
+        else if (ExpressionOp::UNARY_OP==(*this).kind) {
             if(!std::holds_alternative<union_struct_21>(union_variant_13)) {
                 union_variant_13 = union_struct_21();
             }
@@ -13128,7 +13128,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::CALL==(*this).op) {
+        else if (ExpressionOp::CALL==(*this).kind) {
             if(!std::holds_alternative<union_struct_22>(union_variant_13)) {
                 union_variant_13 = union_struct_22();
             }
@@ -13136,7 +13136,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::INDEX_ACCESS==(*this).op) {
+        else if (ExpressionOp::INDEX_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_23>(union_variant_13)) {
                 union_variant_13 = union_struct_23();
             }
@@ -13147,7 +13147,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::MEMBER_ACCESS==(*this).op) {
+        else if (ExpressionOp::MEMBER_ACCESS==(*this).kind) {
             if(!std::holds_alternative<union_struct_24>(union_variant_13)) {
                 union_variant_13 = union_struct_24();
             }
@@ -13158,7 +13158,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::TYPE_CAST==(*this).op) {
+        else if (ExpressionOp::TYPE_CAST==(*this).kind) {
             if(!std::holds_alternative<union_struct_25>(union_variant_13)) {
                 union_variant_13 = union_struct_25();
             }
@@ -13174,7 +13174,7 @@ namespace ebm {
             }
             std::get<12>((*this).union_variant_13).cast_kind = static_cast<CastType>(tmp_131_);
         }
-        else if (ExpressionOp::RANGE==(*this).op) {
+        else if (ExpressionOp::RANGE==(*this).kind) {
             if(!std::holds_alternative<union_struct_26>(union_variant_13)) {
                 union_variant_13 = union_struct_26();
             }
@@ -13185,7 +13185,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).op) {
+        else if (ExpressionOp::IS_LITTLE_ENDIAN==(*this).kind) {
             if(!std::holds_alternative<union_struct_27>(union_variant_13)) {
                 union_variant_13 = union_struct_27();
             }
@@ -13193,7 +13193,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::GET_STREAM_OFFSET==(*this).op) {
+        else if (ExpressionOp::GET_STREAM_OFFSET==(*this).kind) {
             if(!std::holds_alternative<union_struct_28>(union_variant_13)) {
                 union_variant_13 = union_struct_28();
             }
@@ -13211,7 +13211,7 @@ namespace ebm {
                 return ::futils::error::Error<>("decode: ExpressionBody: assertion failed; (std::get<15>((*this).union_variant_13).unit == SizeUnit::BIT_FIXED) || (std::get<15>((*this).union_variant_13).unit == SizeUnit::BYTE_FIXED)",::futils::error::Category::lib);
             }
         }
-        else if (ExpressionOp::GET_REMAINING_BYTES==(*this).op) {
+        else if (ExpressionOp::GET_REMAINING_BYTES==(*this).kind) {
             if(!std::holds_alternative<union_struct_29>(union_variant_13)) {
                 union_variant_13 = union_struct_29();
             }
@@ -13221,7 +13221,7 @@ namespace ebm {
             }
             std::get<16>((*this).union_variant_13).stream_type = static_cast<StreamType>(tmp_134_);
         }
-        else if (ExpressionOp::CAN_READ_STREAM==(*this).op) {
+        else if (ExpressionOp::CAN_READ_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_30>(union_variant_13)) {
                 union_variant_13 = union_struct_30();
             }
@@ -13234,7 +13234,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::ARRAY_SIZE==(*this).op) {
+        else if (ExpressionOp::ARRAY_SIZE==(*this).kind) {
             if(!std::holds_alternative<union_struct_31>(union_variant_13)) {
                 union_variant_13 = union_struct_31();
             }
@@ -13242,7 +13242,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::IS_ERROR==(*this).op) {
+        else if (ExpressionOp::IS_ERROR==(*this).kind) {
             if(!std::holds_alternative<union_struct_32>(union_variant_13)) {
                 union_variant_13 = union_struct_32();
             }
@@ -13250,7 +13250,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::MAX_VALUE==(*this).op) {
+        else if (ExpressionOp::MAX_VALUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_33>(union_variant_13)) {
                 union_variant_13 = union_struct_33();
             }
@@ -13258,7 +13258,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::READ_DATA==(*this).op) {
+        else if (ExpressionOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_34>(union_variant_13)) {
                 union_variant_13 = union_struct_34();
             }
@@ -13269,7 +13269,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (ExpressionOp::WRITE_DATA==(*this).op) {
+        else if (ExpressionOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_35>(union_variant_13)) {
                 union_variant_13 = union_struct_35();
             }
@@ -13965,11 +13965,11 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> StatementBody::encode(::futils::binary::writer& w) const {
-        auto tmp_157_ = static_cast<std::uint8_t>((*this).statement_kind);
+        auto tmp_157_ = static_cast<std::uint8_t>((*this).kind);
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_157_) ,true)) {
-            return ::futils::error::Error<>("encode: StatementBody::statement_kind: write std::uint8_t failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("encode: StatementBody::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        if (StatementOp::BLOCK==(*this).kind) {
             if(!std::holds_alternative<union_struct_49>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_49 is not set",::futils::error::Category::lib);
             }
@@ -13977,7 +13977,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        else if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_50 is not set",::futils::error::Category::lib);
             }
@@ -13991,7 +13991,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::APPEND==(*this).statement_kind) {
+        else if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_51 is not set",::futils::error::Category::lib);
             }
@@ -14002,7 +14002,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::RETURN==(*this).statement_kind) {
+        else if (StatementOp::RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_52>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_52 is not set",::futils::error::Category::lib);
             }
@@ -14010,7 +14010,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        else if (StatementOp::ERROR_RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_53>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_53 is not set",::futils::error::Category::lib);
             }
@@ -14018,7 +14018,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ASSERT==(*this).statement_kind) {
+        else if (StatementOp::ASSERT==(*this).kind) {
             if(!std::holds_alternative<union_struct_54>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_54 is not set",::futils::error::Category::lib);
             }
@@ -14026,7 +14026,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::READ_DATA==(*this).statement_kind) {
+        else if (StatementOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_55>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_55 is not set",::futils::error::Category::lib);
             }
@@ -14034,7 +14034,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        else if (StatementOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_56>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_56 is not set",::futils::error::Category::lib);
             }
@@ -14042,7 +14042,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        else if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_57 is not set",::futils::error::Category::lib);
             }
@@ -14054,7 +14054,7 @@ namespace ebm {
                 return ::futils::error::Error<>("encode: StatementBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
         }
-        else if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::IF_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_58>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_58 is not set",::futils::error::Category::lib);
             }
@@ -14062,7 +14062,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_59>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_59 is not set",::futils::error::Category::lib);
             }
@@ -14070,7 +14070,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_60>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_60 is not set",::futils::error::Category::lib);
             }
@@ -14078,7 +14078,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        else if (StatementOp::MATCH_BRANCH==(*this).kind) {
             if(!std::holds_alternative<union_struct_61>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_61 is not set",::futils::error::Category::lib);
             }
@@ -14086,7 +14086,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::BREAK==(*this).statement_kind) {
+        else if (StatementOp::BREAK==(*this).kind) {
             if(!std::holds_alternative<union_struct_62>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_62 is not set",::futils::error::Category::lib);
             }
@@ -14094,7 +14094,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::CONTINUE==(*this).statement_kind) {
+        else if (StatementOp::CONTINUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_63>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_63 is not set",::futils::error::Category::lib);
             }
@@ -14102,7 +14102,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        else if (StatementOp::FUNCTION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_64>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_64 is not set",::futils::error::Category::lib);
             }
@@ -14110,7 +14110,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        else if (StatementOp::VARIABLE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_65>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_65 is not set",::futils::error::Category::lib);
             }
@@ -14118,7 +14118,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        else if (StatementOp::FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_66>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_66 is not set",::futils::error::Category::lib);
             }
@@ -14126,7 +14126,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        else if (StatementOp::ENUM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_67>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_67 is not set",::futils::error::Category::lib);
             }
@@ -14134,7 +14134,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        else if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_68>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_68 is not set",::futils::error::Category::lib);
             }
@@ -14142,7 +14142,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        else if (StatementOp::STRUCT_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_69>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_69 is not set",::futils::error::Category::lib);
             }
@@ -14150,7 +14150,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        else if (StatementOp::UNION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_70>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_70 is not set",::futils::error::Category::lib);
             }
@@ -14158,7 +14158,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        else if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_71>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_71 is not set",::futils::error::Category::lib);
             }
@@ -14166,7 +14166,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        else if (StatementOp::PROGRAM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_72>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_72 is not set",::futils::error::Category::lib);
             }
@@ -14174,7 +14174,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        else if (StatementOp::STATE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_73>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_73 is not set",::futils::error::Category::lib);
             }
@@ -14182,7 +14182,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        else if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_74>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_74 is not set",::futils::error::Category::lib);
             }
@@ -14190,7 +14190,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        else if (StatementOp::PROPERTY_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_75>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_75 is not set",::futils::error::Category::lib);
             }
@@ -14198,7 +14198,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::METADATA==(*this).statement_kind) {
+        else if (StatementOp::METADATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_76>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_76 is not set",::futils::error::Category::lib);
             }
@@ -14206,7 +14206,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        else if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_77 is not set",::futils::error::Category::lib);
             }
@@ -14217,7 +14217,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        else if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_78 is not set",::futils::error::Category::lib);
             }
@@ -14237,7 +14237,7 @@ namespace ebm {
                 }
             }
         }
-        else if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        else if (StatementOp::ERROR_REPORT==(*this).kind) {
             if(!std::holds_alternative<union_struct_79>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_79 is not set",::futils::error::Category::lib);
             }
@@ -14245,7 +14245,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        else if (StatementOp::EXPRESSION==(*this).kind) {
             if(!std::holds_alternative<union_struct_80>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_80 is not set",::futils::error::Category::lib);
             }
@@ -14253,7 +14253,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
+        else if (StatementOp::LOWERED_STATEMENTS==(*this).kind) {
             if(!std::holds_alternative<union_struct_81>(union_variant_48)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_48 variant alternative union_struct_81 is not set",::futils::error::Category::lib);
             }
@@ -14266,10 +14266,10 @@ namespace ebm {
     ::futils::error::Error<> StatementBody::decode(::futils::binary::reader& r) {
         std::uint8_t tmp_161_ = 0;
         if (!::futils::binary::read_num(r,tmp_161_ ,true)) {
-            return ::futils::error::Error<>("decode: StatementBody::statement_kind: read int failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("decode: StatementBody::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).statement_kind = static_cast<StatementOp>(tmp_161_);
-        if (StatementOp::BLOCK==(*this).statement_kind) {
+        (*this).kind = static_cast<StatementOp>(tmp_161_);
+        if (StatementOp::BLOCK==(*this).kind) {
             if(!std::holds_alternative<union_struct_49>(union_variant_48)) {
                 union_variant_48 = union_struct_49();
             }
@@ -14277,7 +14277,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ASSIGNMENT==(*this).statement_kind) {
+        else if (StatementOp::ASSIGNMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_50>(union_variant_48)) {
                 union_variant_48 = union_struct_50();
             }
@@ -14291,7 +14291,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::APPEND==(*this).statement_kind) {
+        else if (StatementOp::APPEND==(*this).kind) {
             if(!std::holds_alternative<union_struct_51>(union_variant_48)) {
                 union_variant_48 = union_struct_51();
             }
@@ -14302,7 +14302,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::RETURN==(*this).statement_kind) {
+        else if (StatementOp::RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_52>(union_variant_48)) {
                 union_variant_48 = union_struct_52();
             }
@@ -14310,7 +14310,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ERROR_RETURN==(*this).statement_kind) {
+        else if (StatementOp::ERROR_RETURN==(*this).kind) {
             if(!std::holds_alternative<union_struct_53>(union_variant_48)) {
                 union_variant_48 = union_struct_53();
             }
@@ -14318,7 +14318,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ASSERT==(*this).statement_kind) {
+        else if (StatementOp::ASSERT==(*this).kind) {
             if(!std::holds_alternative<union_struct_54>(union_variant_48)) {
                 union_variant_48 = union_struct_54();
             }
@@ -14326,7 +14326,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::READ_DATA==(*this).statement_kind) {
+        else if (StatementOp::READ_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_55>(union_variant_48)) {
                 union_variant_48 = union_struct_55();
             }
@@ -14334,7 +14334,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::WRITE_DATA==(*this).statement_kind) {
+        else if (StatementOp::WRITE_DATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_56>(union_variant_48)) {
                 union_variant_48 = union_struct_56();
             }
@@ -14342,7 +14342,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::SEEK_STREAM==(*this).statement_kind) {
+        else if (StatementOp::SEEK_STREAM==(*this).kind) {
             if(!std::holds_alternative<union_struct_57>(union_variant_48)) {
                 union_variant_48 = union_struct_57();
             }
@@ -14355,7 +14355,7 @@ namespace ebm {
             }
             std::get<9>((*this).union_variant_48).stream_type = static_cast<StreamType>(tmp_162_);
         }
-        else if (StatementOp::IF_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::IF_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_58>(union_variant_48)) {
                 union_variant_48 = union_struct_58();
             }
@@ -14363,7 +14363,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::LOOP_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::LOOP_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_59>(union_variant_48)) {
                 union_variant_48 = union_struct_59();
             }
@@ -14371,7 +14371,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::MATCH_STATEMENT==(*this).statement_kind) {
+        else if (StatementOp::MATCH_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_60>(union_variant_48)) {
                 union_variant_48 = union_struct_60();
             }
@@ -14379,7 +14379,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::MATCH_BRANCH==(*this).statement_kind) {
+        else if (StatementOp::MATCH_BRANCH==(*this).kind) {
             if(!std::holds_alternative<union_struct_61>(union_variant_48)) {
                 union_variant_48 = union_struct_61();
             }
@@ -14387,7 +14387,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::BREAK==(*this).statement_kind) {
+        else if (StatementOp::BREAK==(*this).kind) {
             if(!std::holds_alternative<union_struct_62>(union_variant_48)) {
                 union_variant_48 = union_struct_62();
             }
@@ -14395,7 +14395,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::CONTINUE==(*this).statement_kind) {
+        else if (StatementOp::CONTINUE==(*this).kind) {
             if(!std::holds_alternative<union_struct_63>(union_variant_48)) {
                 union_variant_48 = union_struct_63();
             }
@@ -14403,7 +14403,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::FUNCTION_DECL==(*this).statement_kind) {
+        else if (StatementOp::FUNCTION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_64>(union_variant_48)) {
                 union_variant_48 = union_struct_64();
             }
@@ -14411,7 +14411,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::VARIABLE_DECL==(*this).statement_kind) {
+        else if (StatementOp::VARIABLE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_65>(union_variant_48)) {
                 union_variant_48 = union_struct_65();
             }
@@ -14419,7 +14419,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::FIELD_DECL==(*this).statement_kind) {
+        else if (StatementOp::FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_66>(union_variant_48)) {
                 union_variant_48 = union_struct_66();
             }
@@ -14427,7 +14427,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ENUM_DECL==(*this).statement_kind) {
+        else if (StatementOp::ENUM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_67>(union_variant_48)) {
                 union_variant_48 = union_struct_67();
             }
@@ -14435,7 +14435,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::ENUM_MEMBER_DECL==(*this).statement_kind) {
+        else if (StatementOp::ENUM_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_68>(union_variant_48)) {
                 union_variant_48 = union_struct_68();
             }
@@ -14443,7 +14443,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::STRUCT_DECL==(*this).statement_kind) {
+        else if (StatementOp::STRUCT_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_69>(union_variant_48)) {
                 union_variant_48 = union_struct_69();
             }
@@ -14451,7 +14451,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::UNION_DECL==(*this).statement_kind) {
+        else if (StatementOp::UNION_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_70>(union_variant_48)) {
                 union_variant_48 = union_struct_70();
             }
@@ -14459,7 +14459,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::UNION_MEMBER_DECL==(*this).statement_kind) {
+        else if (StatementOp::UNION_MEMBER_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_71>(union_variant_48)) {
                 union_variant_48 = union_struct_71();
             }
@@ -14467,7 +14467,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PROGRAM_DECL==(*this).statement_kind) {
+        else if (StatementOp::PROGRAM_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_72>(union_variant_48)) {
                 union_variant_48 = union_struct_72();
             }
@@ -14475,7 +14475,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::STATE_DECL==(*this).statement_kind) {
+        else if (StatementOp::STATE_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_73>(union_variant_48)) {
                 union_variant_48 = union_struct_73();
             }
@@ -14483,7 +14483,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::BIT_FIELD_DECL==(*this).statement_kind) {
+        else if (StatementOp::BIT_FIELD_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_74>(union_variant_48)) {
                 union_variant_48 = union_struct_74();
             }
@@ -14491,7 +14491,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PROPERTY_DECL==(*this).statement_kind) {
+        else if (StatementOp::PROPERTY_DECL==(*this).kind) {
             if(!std::holds_alternative<union_struct_75>(union_variant_48)) {
                 union_variant_48 = union_struct_75();
             }
@@ -14499,7 +14499,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::METADATA==(*this).statement_kind) {
+        else if (StatementOp::METADATA==(*this).kind) {
             if(!std::holds_alternative<union_struct_76>(union_variant_48)) {
                 union_variant_48 = union_struct_76();
             }
@@ -14507,7 +14507,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::IMPORT_MODULE==(*this).statement_kind) {
+        else if (StatementOp::IMPORT_MODULE==(*this).kind) {
             if(!std::holds_alternative<union_struct_77>(union_variant_48)) {
                 union_variant_48 = union_struct_77();
             }
@@ -14518,7 +14518,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::PHI_NODE==(*this).statement_kind) {
+        else if (StatementOp::PHI_NODE==(*this).kind) {
             if(!std::holds_alternative<union_struct_78>(union_variant_48)) {
                 union_variant_48 = union_struct_78();
             }
@@ -14538,7 +14538,7 @@ namespace ebm {
                 std::get<30>((*this).union_variant_48).params.push_back(std::move(tmp_164_));
             }
         }
-        else if (StatementOp::ERROR_REPORT==(*this).statement_kind) {
+        else if (StatementOp::ERROR_REPORT==(*this).kind) {
             if(!std::holds_alternative<union_struct_79>(union_variant_48)) {
                 union_variant_48 = union_struct_79();
             }
@@ -14546,7 +14546,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::EXPRESSION==(*this).statement_kind) {
+        else if (StatementOp::EXPRESSION==(*this).kind) {
             if(!std::holds_alternative<union_struct_80>(union_variant_48)) {
                 union_variant_48 = union_struct_80();
             }
@@ -14554,7 +14554,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (StatementOp::LOWERED_STATEMENTS==(*this).statement_kind) {
+        else if (StatementOp::LOWERED_STATEMENTS==(*this).kind) {
             if(!std::holds_alternative<union_struct_81>(union_variant_48)) {
                 union_variant_48 = union_struct_81();
             }

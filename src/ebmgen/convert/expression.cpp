@@ -188,7 +188,7 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         EBMU_COUNTER_TYPE(counter_type);
         body.type = counter_type;
-        body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
+        body.kind = ebm::ExpressionOp::GET_STREAM_OFFSET;
         body.stream_type(type);
         body.unit(ebm::SizeUnit::BYTE_FIXED);
         EBMA_ADD_EXPR(stream_offset, std::move(body));
@@ -227,28 +227,28 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::BoolLiteral>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::LITERAL_BOOL;
+        body.kind = ebm::ExpressionOp::LITERAL_BOOL;
         body.bool_value(node->value);
         return {};
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::StrLiteral>& node, ebm::ExpressionBody& body) {
         MAYBE(candidate, decode_base64(ast::cast_to<ast::StrLiteral>(node)));
-        body.op = ebm::ExpressionOp::LITERAL_STRING;
+        body.kind = ebm::ExpressionOp::LITERAL_STRING;
         EBMA_ADD_STRING(str_ref, candidate);
         body.string_value(str_ref);
         return {};
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::TypeLiteral>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::LITERAL_TYPE;
+        body.kind = ebm::ExpressionOp::LITERAL_TYPE;
         EBMA_CONVERT_TYPE(type_ref_inner, node->type_literal)
         body.type_ref(type_ref_inner);
         return {};
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Ident>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::IDENTIFIER;
+        body.kind = ebm::ExpressionOp::IDENTIFIER;
         auto base = ast::tool::lookup_base(ast::cast_to<ast::Ident>(node));
         if (!base) {
             return unexpect_error("Identifier {} not found", node->ident);
@@ -270,7 +270,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Unary>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::UNARY_OP;
+        body.kind = ebm::ExpressionOp::UNARY_OP;
         EBMA_CONVERT_EXPRESSION(operand_ref, node->expr);
         body.operand(operand_ref);
         MAYBE(uop, convert_unary_op(node->op));
@@ -279,7 +279,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Index>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::INDEX_ACCESS;
+        body.kind = ebm::ExpressionOp::INDEX_ACCESS;
         EBMA_CONVERT_EXPRESSION(base_ref, node->expr);
         EBMA_CONVERT_EXPRESSION(index_ref, node->index);
         body.base(base_ref);
@@ -288,7 +288,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::MEMBER_ACCESS;
+        body.kind = ebm::ExpressionOp::MEMBER_ACCESS;
         EBMA_CONVERT_EXPRESSION(base_ref, node->target);
         EBMA_CONVERT_EXPRESSION(member_ref, node->member);
         body.base(base_ref);
@@ -297,7 +297,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cast>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::TYPE_CAST;
+        body.kind = ebm::ExpressionOp::TYPE_CAST;
         EBMA_CONVERT_EXPRESSION(source_expr_ref, node->arguments[0]);
         EBMA_CONVERT_TYPE(source_expr_type_ref, node->arguments[0]->expr_type);
         body.source_expr(source_expr_ref);
@@ -308,7 +308,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Range>& node, ebm::ExpressionBody& body) {
-        body.op = ebm::ExpressionOp::RANGE;
+        body.kind = ebm::ExpressionOp::RANGE;
         ebm::ExpressionRef start, end;
         if (node->start) {
             EBMA_CONVERT_EXPRESSION(start_ref, node->start);
@@ -327,7 +327,7 @@ namespace ebmgen {
         switch (node->method) {
             case ast::IOMethod::input_get:
             case ast::IOMethod::input_peek: {
-                body.op = ebm::ExpressionOp::READ_DATA;
+                body.kind = ebm::ExpressionOp::READ_DATA;
                 ebm::TypeRef type_ref;
                 std::shared_ptr<ast::Type> typ_lit;
                 if (node->arguments.size() != 0) {
@@ -356,7 +356,7 @@ namespace ebmgen {
                 break;
             }
             case ast::IOMethod::output_put: {
-                body.op = ebm::ExpressionOp::WRITE_DATA;
+                body.kind = ebm::ExpressionOp::WRITE_DATA;
                 EBMA_CONVERT_EXPRESSION(output, node->arguments[0]);
                 body.target_expr(output);
                 MAYBE(encode_info, ctx.get_encoder_converter().encode_field_type(node->arguments[0]->expr_type, output, nullptr));
@@ -366,13 +366,13 @@ namespace ebmgen {
             }
             case ast::IOMethod::input_offset:
             case ast::IOMethod::input_bit_offset: {
-                body.op = ebm::ExpressionOp::GET_STREAM_OFFSET;
+                body.kind = ebm::ExpressionOp::GET_STREAM_OFFSET;
                 body.stream_type(ebm::StreamType::INPUT);
                 body.unit(node->method == ast::IOMethod::input_bit_offset ? ebm::SizeUnit::BIT_FIXED : ebm::SizeUnit::BYTE_FIXED);
                 break;
             }
             case ast::IOMethod::input_remain: {
-                body.op = ebm::ExpressionOp::GET_REMAINING_BYTES;
+                body.kind = ebm::ExpressionOp::GET_REMAINING_BYTES;
                 body.stream_type(ebm::StreamType::INPUT);
                 break;
             }

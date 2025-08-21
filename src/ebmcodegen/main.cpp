@@ -3,56 +3,189 @@
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
 #include "../ebm/extended_binary_module.hpp"
+#include "helper/template_instance.h"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <file/file_view.h>
 #include <code/code_writer.h>
 #include <ebmgen/common.hpp>
 #include <ebmgen/mapping.hpp>
+#include <string>
+#include <string_view>
 
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
+    std::string_view lang;
+    bool body_validate = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
-        ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
+        ctx.VarString<true>(&input, "i,input", "input file", "FILE");
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");  // Bind new flag
+        ctx.VarString<true>(&lang, "l,lang", "language for output", "LANG");
+        ctx.VarBool(&body_validate, "body-validate", "generate code for body validation");
     }
 };
 
 auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
+enum TypeAttribute {
+    NONE = 0,
+    ARRAY = 0x1,
+    PTR = 0x2,
+};
+struct StructField {
+    std::string_view name;
+    std::string_view type;
+    TypeAttribute attr = NONE;
+};
+
+struct Struct {
+    std::string_view name;
+    std::vector<StructField> fields;
+};
+
+std::map<std::string_view, Struct> make_struct_map() {
+    std::vector<Struct> structs;
+    structs.push_back({
+        ebm::ExtendedBinaryModule::visitor_name,
+    });
+    std::map<std::string_view, Struct> struct_map;
+
+    ebm::ExtendedBinaryModule::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
+        using T = typename decltype(tag)::type;
+        if constexpr (ebmgen::has_visit<T, decltype(visitor)>) {
+            structs.back().fields.push_back({
+                name,
+                T::visitor_name,
+                dispatch,
+            });
+            if constexpr (!ebmgen::AnyRef<T>) {
+                structs.push_back({
+                    T::visitor_name,
+                });
+                T::visit_static(visitor);
+                auto s = std::move(structs.back());
+                structs.pop_back();
+                struct_map[s.name] = std::move(s);
+            }
+        }
+        else if constexpr (futils::helper::is_template_instance_of<T, std::vector>) {
+            using P = typename futils::helper::template_instance_of_t<T, std::vector>::template param_at<0>;
+            visitor(visitor, name, ebm::ExtendedBinaryModule::visitor_tag<P>{}, TypeAttribute(dispatch | TypeAttribute::ARRAY));
+        }
+        else if constexpr (std::is_pointer_v<T>) {
+            using P = std::remove_pointer_t<T>;
+            visitor(visitor, name, ebm::ExtendedBinaryModule::visitor_tag<P>{}, TypeAttribute(dispatch | TypeAttribute::PTR));
+        }
+        else if constexpr (std::is_enum_v<T>) {
+            constexpr const char* enum_name = visit_enum(T{});
+            structs.back().fields.push_back({
+                name,
+                enum_name,
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, std::uint64_t>) {
+            structs.back().fields.push_back({
+                name,
+                "std::uint64_t",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, std::uint8_t>) {
+            structs.back().fields.push_back({
+                name,
+                "std::uint8_t",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, bool>) {
+            structs.back().fields.push_back({
+                name,
+                "bool",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, std::string>) {
+            structs.back().fields.push_back({
+                name,
+                "std::string",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, const char(&)[5]>) {  // skip
+        }
+        else {
+            static_assert(std::is_same_v<T, void>, "Unsupported type");
+        }
+    });
+    struct_map["ExtendedBinaryModule"] = std::move(structs[0]);
+    return struct_map;
+}
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
-    ebm::ExtendedBinaryModule ebm;
-    futils::file::View view;
-    if (auto res = view.open(flags.input); !res) {
-        cerr << "Failed to open input file: " << flags.input << ": " << res.error().error<std::string>() << '\n';
-    }
-    futils::binary::reader reader{view};
-    auto err = ebm.decode(reader);
-    if (err) {
-        cerr << "Failed to decode EBM: " << err.error<std::string>() << '\n';
-        return 1;
-    }
-    ebmgen::MappingTable mod{ebm};
-    auto entry_point = mod.get_statement(ebm::StatementRef{ebm.max_id.id});
-    if (!entry_point) {
-        cerr << "No entry point found\n";
-        return 1;
-    }
-    futils::code::CodeWriter<std::string> w;
+    using CodeWriter = futils::code::CodeWriter<std::string>;
+    CodeWriter w;
     w.writeln("// Code generated by ebmcodegen at https://github.com/on-keyday/rebrgen");
+
+    auto struct_map = make_struct_map();
+    if (flags.body_validate) {
+        w.writeln("#include <ebm/extended_binary_module.hpp>");
+        w.writeln("namespace ebmcodegen {");
+        {
+            auto scope = w.indent_scope();
+        }
+        w.writeln("} // namespace ebmcodegen");
+    }
+
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");
     w.writeln();
+
     w.writeln("struct Flags : ebmcodegen::Flags {};");
     w.writeln("struct Output : ebmcodegen::Output {};");
+
+    auto ns_name = std::format("ebm{}gen", flags.lang);
+
+    w.writeln("namespace ", ns_name, " {");
+    auto ns_scope = w.indent_scope();
+
+    auto dispatcher = [&](auto t, std::string_view kind) {
+        using T = std::decay_t<decltype(t)>;
+        CodeWriter stmt_dispatcher;
+        stmt_dispatcher.writeln("expected<void> visit_", kind, "(ebm::", kind, "& in) {");
+        auto scope_ = stmt_dispatcher.indent_scope();
+        stmt_dispatcher.writeln("switch (in.body.kind) {");
+
+        for (size_t i = 0; to_string(T(i))[0]; i++) {
+            w.writeln("expected<void> visit_", kind, "_", to_string(T(i)), "(ebm::", kind, "& in) {");
+            w.indent_writeln("return {};");
+            w.writeln("}");
+            stmt_dispatcher.writeln("case ebm::", visit_enum(t), "::", to_string(T(i)), ":");
+            stmt_dispatcher.indent_writeln("return visit_", kind, "_", to_string(T(i)), "(in);");
+        }
+        stmt_dispatcher.writeln("default:");
+        stmt_dispatcher.indent_writeln("return unexpect_error(\"Unknown ", kind, " kind: {}\", to_string(in.body.kind));");
+        stmt_dispatcher.writeln("}");
+        scope_.execute();
+        stmt_dispatcher.writeln("}");
+
+        w.write_unformatted(stmt_dispatcher.out());
+    };
+
+    dispatcher(ebm::StatementOp{}, "Statement");
+    dispatcher(ebm::ExpressionOp{}, "Expression");
+    dispatcher(ebm::TypeKind{}, "Type");
+
+    ns_scope.execute();
+    w.writeln("}  // namespace ", ns_name);
+
     w.writeln("DEFINE_ENTRY(Flags,Output) {}");
     cout << w.out();
-    entry_point->body.block();
+
     return 0;
 }
 

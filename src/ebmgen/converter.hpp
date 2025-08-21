@@ -377,7 +377,7 @@ namespace ebmgen {
 
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
             if (body.type.id.value() == 0) {
-                return unexpect_error("Expression type is not set: {}", to_string(body.op));
+                return unexpect_error("Expression type is not set: {}", to_string(body.kind));
             }
             return expression_repo.add(ident_source, std::move(body));
         }

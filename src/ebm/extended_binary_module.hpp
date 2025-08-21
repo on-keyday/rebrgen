@@ -51,6 +51,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(GenerateType) {
+        return "GenerateType";
+    }
     enum class BinaryOp : std::uint8_t {
         mul = 0,
         div = 1,
@@ -155,6 +158,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(BinaryOp) {
+        return "BinaryOp";
+    }
     enum class UnaryOp : std::uint8_t {
         logical_not = 0,
         minus_sign = 1,
@@ -183,6 +189,9 @@ namespace ebm {
             return UnaryOp::bit_not;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(UnaryOp) {
+        return "UnaryOp";
     }
     enum class Endian : std::uint8_t {
         unspec = 0,
@@ -222,6 +231,9 @@ namespace ebm {
             return Endian::native;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(Endian) {
+        return "Endian";
     }
     enum class ExpressionOp : std::uint8_t {
         LITERAL_INT = 0,
@@ -352,6 +364,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(ExpressionOp) {
+        return "ExpressionOp";
+    }
     enum class LoopType : std::uint8_t {
         INFINITE = 0,
         WHILE = 1,
@@ -386,6 +401,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(LoopType) {
+        return "LoopType";
+    }
     enum class PackedOpType : std::uint8_t {
         FIXED = 0,
         VARIABLE = 1,
@@ -409,6 +427,9 @@ namespace ebm {
             return PackedOpType::VARIABLE;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(PackedOpType) {
+        return "PackedOpType";
     }
     enum class LoweringType : std::uint8_t {
         NAIVE = 0,
@@ -443,6 +464,9 @@ namespace ebm {
             return LoweringType::ASSEMBLY;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(LoweringType) {
+        return "LoweringType";
     }
     enum class StatementOp : std::uint8_t {
         BLOCK = 0,
@@ -623,6 +647,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(StatementOp) {
+        return "StatementOp";
+    }
     enum class StreamType : std::uint8_t {
         INPUT = 0,
         OUTPUT = 1,
@@ -646,6 +673,9 @@ namespace ebm {
             return StreamType::OUTPUT;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(StreamType) {
+        return "StreamType";
     }
     enum class SizeUnit : std::uint8_t {
         UNKNOWN = 0,
@@ -700,6 +730,9 @@ namespace ebm {
             return SizeUnit::DYNAMIC;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(SizeUnit) {
+        return "SizeUnit";
     }
     enum class CastType : std::uint8_t {
         ENUM_TO_INT = 0,
@@ -800,6 +833,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(CastType) {
+        return "CastType";
+    }
     enum class MergeMode : std::uint8_t {
         COMMON_TYPE = 0,
         STRICT_TYPE = 1,
@@ -828,6 +864,9 @@ namespace ebm {
             return MergeMode::STRICT_COMMON_TYPE;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(MergeMode) {
+        return "MergeMode";
     }
     enum class TypeKind : std::uint8_t {
         INT = 0,
@@ -938,6 +977,9 @@ namespace ebm {
         }
         return std::nullopt;
     }
+    constexpr const char* visit_enum(TypeKind) {
+        return "TypeKind";
+    }
     enum class AliasHint : std::uint8_t {
         IDENTIFIER = 0,
         STRING = 1,
@@ -976,6 +1018,9 @@ namespace ebm {
             return AliasHint::STATEMENT;
         }
         return std::nullopt;
+    }
+    constexpr const char* visit_enum(AliasHint) {
+        return "AliasHint";
     }
     struct Varint;
     struct StatementRef;
@@ -1037,14 +1082,23 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 0;
         constexpr static const char* visitor_name = "Varint";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "prefix",(*this).prefix());
             v(v, "value",(*this).value());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "prefix",(*this).prefix());
             v(v, "value",(*this).value());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "prefix",visitor_tag<decltype(std::declval<Varint>().prefix())>{});
+            v(v, "value",visitor_tag<decltype(std::declval<Varint>().value())>{});
         }
     };
     struct EBM_API StatementRef{
@@ -1053,12 +1107,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StatementRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<StatementRef>().id)>{});
         }
     };
     struct EBM_API IOAttribute{
@@ -1074,7 +1136,7 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "IOAttribute";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "endian",(*this).endian());
             v(v, "sign",(*this).sign());
             v(v, "is_peek",(*this).is_peek());
@@ -1083,13 +1145,26 @@ namespace ebm {
             v(v, "dynamic_ref",(*this).dynamic_ref);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "endian",(*this).endian());
             v(v, "sign",(*this).sign());
             v(v, "is_peek",(*this).is_peek());
             v(v, "vectorized",(*this).vectorized());
             v(v, "reserved",(*this).reserved());
             v(v, "dynamic_ref",(*this).dynamic_ref);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "endian",visitor_tag<decltype(std::declval<IOAttribute>().endian())>{});
+            v(v, "sign",visitor_tag<decltype(std::declval<IOAttribute>().sign())>{});
+            v(v, "is_peek",visitor_tag<decltype(std::declval<IOAttribute>().is_peek())>{});
+            v(v, "vectorized",visitor_tag<decltype(std::declval<IOAttribute>().vectorized())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<IOAttribute>().reserved())>{});
+            v(v, "dynamic_ref",visitor_tag<decltype(std::declval<IOAttribute>().dynamic_ref)>{});
         }
     };
     struct EBM_API String{
@@ -1099,14 +1174,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "String";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "length",(*this).length);
             v(v, "data",(*this).data);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "length",(*this).length);
             v(v, "data",(*this).data);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "length",visitor_tag<decltype(std::declval<String>().length)>{});
+            v(v, "data",visitor_tag<decltype(std::declval<String>().data)>{});
         }
     };
     struct EBM_API IdentifierRef{
@@ -1115,12 +1199,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "IdentifierRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<IdentifierRef>().id)>{});
         }
     };
     struct EBM_API TypeRef{
@@ -1129,12 +1221,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "TypeRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<TypeRef>().id)>{});
         }
     };
     struct EBM_API ExpressionRef{
@@ -1143,12 +1243,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "ExpressionRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<ExpressionRef>().id)>{});
         }
     };
     struct EBM_API StringRef{
@@ -1157,12 +1265,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StringRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<StringRef>().id)>{});
         }
     };
     struct EBM_API LoweredStatement{
@@ -1173,14 +1289,23 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "LoweredStatement";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "block",(*this).block);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "block",(*this).block);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredStatement>().lowering_type)>{});
+            v(v, "block",visitor_tag<decltype(std::declval<LoweredStatement>().block)>{});
         }
     };
     struct EBM_API LoweredExpression{
@@ -1191,14 +1316,23 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "LoweredExpression";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "expression",(*this).expression);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "expression",(*this).expression);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredExpression>().lowering_type)>{});
+            v(v, "expression",visitor_tag<decltype(std::declval<LoweredExpression>().expression)>{});
         }
     };
     struct EBM_API LoopFlowControl{
@@ -1207,12 +1341,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "LoopFlowControl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "related_statement",(*this).related_statement);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "related_statement",(*this).related_statement);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "related_statement",visitor_tag<decltype(std::declval<LoopFlowControl>().related_statement)>{});
         }
     };
     struct EBM_API PhiParam{
@@ -1222,14 +1364,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "PhiParam";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "condition",(*this).condition);
             v(v, "value",(*this).value);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "condition",(*this).condition);
             v(v, "value",(*this).value);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "condition",visitor_tag<decltype(std::declval<PhiParam>().condition)>{});
+            v(v, "value",visitor_tag<decltype(std::declval<PhiParam>().value)>{});
         }
     };
     struct EBM_API AnyRef{
@@ -1238,12 +1389,20 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "AnyRef";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<AnyRef>().id)>{});
         }
     };
     struct EBM_API RefAlias{
@@ -1255,16 +1414,26 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "RefAlias";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "hint",(*this).hint);
             v(v, "from",(*this).from);
             v(v, "to",(*this).to);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "hint",(*this).hint);
             v(v, "from",(*this).from);
             v(v, "to",(*this).to);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "hint",visitor_tag<decltype(std::declval<RefAlias>().hint)>{});
+            v(v, "from",visitor_tag<decltype(std::declval<RefAlias>().from)>{});
+            v(v, "to",visitor_tag<decltype(std::declval<RefAlias>().to)>{});
         }
     };
     struct EBM_API Expressions{
@@ -1274,14 +1443,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Expressions";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<Expressions>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Expressions>().container)>{});
         }
     };
     struct EBM_API CallDesc{
@@ -1291,14 +1469,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "CallDesc";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "callee",(*this).callee);
             v(v, "arguments",(*this).arguments);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "callee",(*this).callee);
             v(v, "arguments",(*this).arguments);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "callee",visitor_tag<decltype(std::declval<CallDesc>().callee)>{});
+            v(v, "arguments",visitor_tag<decltype(std::declval<CallDesc>().arguments)>{});
         }
     };
     struct EBM_API Size{
@@ -1337,21 +1524,31 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "Size";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "unit",(*this).unit);
             v(v, "ref",(*this).ref());
             v(v, "size",(*this).size());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "unit",(*this).unit);
             v(v, "ref",(*this).ref());
             v(v, "size",(*this).size());
         }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "unit",visitor_tag<decltype(std::declval<Size>().unit)>{});
+            v(v, "ref",visitor_tag<decltype(std::declval<Size>().ref())>{});
+            v(v, "size",visitor_tag<decltype(std::declval<Size>().size())>{});
+        }
     };
     struct EBM_API ExpressionBody{
         TypeRef type;
-        ExpressionOp op{};
+        ExpressionOp kind{};
         struct EBM_API union_struct_14{
             Varint int_value;
         };
@@ -1551,9 +1748,9 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "ExpressionBody";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "type",(*this).type);
-            v(v, "op",(*this).op);
+            v(v, "kind",(*this).kind);
             v(v, "array_expr",(*this).array_expr());
             v(v, "base",(*this).base());
             v(v, "bool_value",(*this).bool_value());
@@ -1585,9 +1782,9 @@ namespace ebm {
             v(v, "uop",(*this).uop());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "type",(*this).type);
-            v(v, "op",(*this).op);
+            v(v, "kind",(*this).kind);
             v(v, "array_expr",(*this).array_expr());
             v(v, "base",(*this).base());
             v(v, "bool_value",(*this).bool_value());
@@ -1617,6 +1814,44 @@ namespace ebm {
             v(v, "type_ref",(*this).type_ref());
             v(v, "unit",(*this).unit());
             v(v, "uop",(*this).uop());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "type",visitor_tag<decltype(std::declval<ExpressionBody>().type)>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<ExpressionBody>().kind)>{});
+            v(v, "array_expr",visitor_tag<decltype(std::declval<ExpressionBody>().array_expr())>{});
+            v(v, "base",visitor_tag<decltype(std::declval<ExpressionBody>().base())>{});
+            v(v, "bool_value",visitor_tag<decltype(std::declval<ExpressionBody>().bool_value())>{});
+            v(v, "bop",visitor_tag<decltype(std::declval<ExpressionBody>().bop())>{});
+            v(v, "call_desc",visitor_tag<decltype(std::declval<ExpressionBody>().call_desc())>{});
+            v(v, "cast_kind",visitor_tag<decltype(std::declval<ExpressionBody>().cast_kind())>{});
+            v(v, "end",visitor_tag<decltype(std::declval<ExpressionBody>().end())>{});
+            v(v, "endian_expr",visitor_tag<decltype(std::declval<ExpressionBody>().endian_expr())>{});
+            v(v, "from_type",visitor_tag<decltype(std::declval<ExpressionBody>().from_type())>{});
+            v(v, "id",visitor_tag<decltype(std::declval<ExpressionBody>().id())>{});
+            v(v, "index",visitor_tag<decltype(std::declval<ExpressionBody>().index())>{});
+            v(v, "int64_value",visitor_tag<decltype(std::declval<ExpressionBody>().int64_value())>{});
+            v(v, "int_value",visitor_tag<decltype(std::declval<ExpressionBody>().int_value())>{});
+            v(v, "io_statement",visitor_tag<decltype(std::declval<ExpressionBody>().io_statement())>{});
+            v(v, "left",visitor_tag<decltype(std::declval<ExpressionBody>().left())>{});
+            v(v, "lowered_expr",visitor_tag<decltype(std::declval<ExpressionBody>().lowered_expr())>{});
+            v(v, "member",visitor_tag<decltype(std::declval<ExpressionBody>().member())>{});
+            v(v, "num_bytes",visitor_tag<decltype(std::declval<ExpressionBody>().num_bytes())>{});
+            v(v, "operand",visitor_tag<decltype(std::declval<ExpressionBody>().operand())>{});
+            v(v, "right",visitor_tag<decltype(std::declval<ExpressionBody>().right())>{});
+            v(v, "source_expr",visitor_tag<decltype(std::declval<ExpressionBody>().source_expr())>{});
+            v(v, "start",visitor_tag<decltype(std::declval<ExpressionBody>().start())>{});
+            v(v, "stream_type",visitor_tag<decltype(std::declval<ExpressionBody>().stream_type())>{});
+            v(v, "string_value",visitor_tag<decltype(std::declval<ExpressionBody>().string_value())>{});
+            v(v, "target_expr",visitor_tag<decltype(std::declval<ExpressionBody>().target_expr())>{});
+            v(v, "target_stmt",visitor_tag<decltype(std::declval<ExpressionBody>().target_stmt())>{});
+            v(v, "type_ref",visitor_tag<decltype(std::declval<ExpressionBody>().type_ref())>{});
+            v(v, "unit",visitor_tag<decltype(std::declval<ExpressionBody>().unit())>{});
+            v(v, "uop",visitor_tag<decltype(std::declval<ExpressionBody>().uop())>{});
         }
     };
     struct EBM_API Expression{
@@ -1626,14 +1861,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Expression";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<Expression>().id)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Expression>().body)>{});
         }
     };
     struct EBM_API LoopStatement{
@@ -1680,7 +1924,7 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "LoopStatement";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "loop_type",(*this).loop_type);
             v(v, "collection",(*this).collection());
             v(v, "condition",(*this).condition());
@@ -1691,7 +1935,7 @@ namespace ebm {
             v(v, "lowered_statement",(*this).lowered_statement);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "loop_type",(*this).loop_type);
             v(v, "collection",(*this).collection());
             v(v, "condition",(*this).condition());
@@ -1700,6 +1944,21 @@ namespace ebm {
             v(v, "item_var",(*this).item_var());
             v(v, "body",(*this).body);
             v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "loop_type",visitor_tag<decltype(std::declval<LoopStatement>().loop_type)>{});
+            v(v, "collection",visitor_tag<decltype(std::declval<LoopStatement>().collection())>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<LoopStatement>().condition())>{});
+            v(v, "increment",visitor_tag<decltype(std::declval<LoopStatement>().increment())>{});
+            v(v, "init",visitor_tag<decltype(std::declval<LoopStatement>().init())>{});
+            v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var())>{});
+            v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body)>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement)>{});
         }
     };
     struct EBM_API IfStatement{
@@ -1710,16 +1969,26 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "IfStatement";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "condition",(*this).condition);
             v(v, "then_block",(*this).then_block);
             v(v, "else_block",(*this).else_block);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "condition",(*this).condition);
             v(v, "then_block",(*this).then_block);
             v(v, "else_block",(*this).else_block);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "condition",visitor_tag<decltype(std::declval<IfStatement>().condition)>{});
+            v(v, "then_block",visitor_tag<decltype(std::declval<IfStatement>().then_block)>{});
+            v(v, "else_block",visitor_tag<decltype(std::declval<IfStatement>().else_block)>{});
         }
     };
     struct EBM_API Block{
@@ -1729,14 +1998,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Block";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<Block>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Block>().container)>{});
         }
     };
     struct EBM_API MatchStatement{
@@ -1749,18 +2027,29 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "MatchStatement";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "target",(*this).target);
             v(v, "is_exhaustive",(*this).is_exhaustive());
             v(v, "reserved",(*this).reserved());
             v(v, "branches",(*this).branches);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "target",(*this).target);
             v(v, "is_exhaustive",(*this).is_exhaustive());
             v(v, "reserved",(*this).reserved());
             v(v, "branches",(*this).branches);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "target",visitor_tag<decltype(std::declval<MatchStatement>().target)>{});
+            v(v, "is_exhaustive",visitor_tag<decltype(std::declval<MatchStatement>().is_exhaustive())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<MatchStatement>().reserved())>{});
+            v(v, "branches",visitor_tag<decltype(std::declval<MatchStatement>().branches)>{});
         }
     };
     struct EBM_API StateDecl{
@@ -1770,14 +2059,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StateDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<StateDecl>().name)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<StateDecl>().body)>{});
         }
     };
     struct EBM_API Metadata{
@@ -1787,14 +2085,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Metadata";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "values",(*this).values);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "values",(*this).values);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<Metadata>().name)>{});
+            v(v, "values",visitor_tag<decltype(std::declval<Metadata>().values)>{});
         }
     };
     struct EBM_API LoweredStatements{
@@ -1804,14 +2111,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "LoweredStatements";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<LoweredStatements>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<LoweredStatements>().container)>{});
         }
     };
     struct EBM_API LoweredExpressions{
@@ -1821,14 +2137,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "LoweredExpressions";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<LoweredExpressions>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<LoweredExpressions>().container)>{});
         }
     };
     struct EBM_API AssertDesc{
@@ -1838,14 +2163,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "AssertDesc";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "condition",(*this).condition);
             v(v, "lowered_statement",(*this).lowered_statement);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "condition",(*this).condition);
             v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "condition",visitor_tag<decltype(std::declval<AssertDesc>().condition)>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<AssertDesc>().lowered_statement)>{});
         }
     };
     struct EBM_API IOData{
@@ -1858,7 +2192,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "IOData";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "target",(*this).target);
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
@@ -1866,12 +2200,24 @@ namespace ebm {
             v(v, "lowered_stmt",(*this).lowered_stmt);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "target",(*this).target);
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
             v(v, "size",(*this).size);
             v(v, "lowered_stmt",(*this).lowered_stmt);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "target",visitor_tag<decltype(std::declval<IOData>().target)>{});
+            v(v, "data_type",visitor_tag<decltype(std::declval<IOData>().data_type)>{});
+            v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute)>{});
+            v(v, "size",visitor_tag<decltype(std::declval<IOData>().size)>{});
+            v(v, "lowered_stmt",visitor_tag<decltype(std::declval<IOData>().lowered_stmt)>{});
         }
     };
     struct EBM_API MatchBranch{
@@ -1881,14 +2227,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "MatchBranch";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "condition",(*this).condition);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "condition",(*this).condition);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "condition",visitor_tag<decltype(std::declval<MatchBranch>().condition)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<MatchBranch>().body)>{});
         }
     };
     struct EBM_API FunctionDecl{
@@ -1901,7 +2256,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FunctionDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
@@ -1909,12 +2264,24 @@ namespace ebm {
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
             v(v, "parent_format",(*this).parent_format);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<FunctionDecl>().name)>{});
+            v(v, "return_type",visitor_tag<decltype(std::declval<FunctionDecl>().return_type)>{});
+            v(v, "params",visitor_tag<decltype(std::declval<FunctionDecl>().params)>{});
+            v(v, "parent_format",visitor_tag<decltype(std::declval<FunctionDecl>().parent_format)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<FunctionDecl>().body)>{});
         }
     };
     struct EBM_API VariableDecl{
@@ -1929,7 +2296,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "VariableDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "var_type",(*this).var_type);
             v(v, "initial_value",(*this).initial_value);
@@ -1938,13 +2305,26 @@ namespace ebm {
             v(v, "reserved",(*this).reserved());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "var_type",(*this).var_type);
             v(v, "initial_value",(*this).initial_value);
             v(v, "is_constant",(*this).is_constant());
             v(v, "is_reference",(*this).is_reference());
             v(v, "reserved",(*this).reserved());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<VariableDecl>().name)>{});
+            v(v, "var_type",visitor_tag<decltype(std::declval<VariableDecl>().var_type)>{});
+            v(v, "initial_value",visitor_tag<decltype(std::declval<VariableDecl>().initial_value)>{});
+            v(v, "is_constant",visitor_tag<decltype(std::declval<VariableDecl>().is_constant())>{});
+            v(v, "is_reference",visitor_tag<decltype(std::declval<VariableDecl>().is_reference())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<VariableDecl>().reserved())>{});
         }
     };
     struct EBM_API FieldDecl{
@@ -1958,7 +2338,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FieldDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "field_type",(*this).field_type);
             v(v, "parent_struct",(*this).parent_struct);
@@ -1966,12 +2346,24 @@ namespace ebm {
             v(v, "reserved",(*this).reserved());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "field_type",(*this).field_type);
             v(v, "parent_struct",(*this).parent_struct);
             v(v, "is_state_variable",(*this).is_state_variable());
             v(v, "reserved",(*this).reserved());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<FieldDecl>().name)>{});
+            v(v, "field_type",visitor_tag<decltype(std::declval<FieldDecl>().field_type)>{});
+            v(v, "parent_struct",visitor_tag<decltype(std::declval<FieldDecl>().parent_struct)>{});
+            v(v, "is_state_variable",visitor_tag<decltype(std::declval<FieldDecl>().is_state_variable())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<FieldDecl>().reserved())>{});
         }
     };
     struct EBM_API EnumDecl{
@@ -1982,16 +2374,26 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "EnumDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "base_type",(*this).base_type);
             v(v, "members",(*this).members);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "base_type",(*this).base_type);
             v(v, "members",(*this).members);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<EnumDecl>().name)>{});
+            v(v, "base_type",visitor_tag<decltype(std::declval<EnumDecl>().base_type)>{});
+            v(v, "members",visitor_tag<decltype(std::declval<EnumDecl>().members)>{});
         }
     };
     struct EBM_API EnumMemberDecl{
@@ -2002,16 +2404,26 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "EnumMemberDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<EnumMemberDecl>().name)>{});
+            v(v, "value",visitor_tag<decltype(std::declval<EnumMemberDecl>().value)>{});
+            v(v, "string_repr",visitor_tag<decltype(std::declval<EnumMemberDecl>().string_repr)>{});
         }
     };
     struct EBM_API StructDecl{
@@ -2026,7 +2438,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StructDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "fields",(*this).fields);
             v(v, "encode_fn",(*this).encode_fn);
@@ -2035,13 +2447,26 @@ namespace ebm {
             v(v, "reserved",(*this).reserved());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "fields",(*this).fields);
             v(v, "encode_fn",(*this).encode_fn);
             v(v, "decode_fn",(*this).decode_fn);
             v(v, "is_recursive",(*this).is_recursive());
             v(v, "reserved",(*this).reserved());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<StructDecl>().name)>{});
+            v(v, "fields",visitor_tag<decltype(std::declval<StructDecl>().fields)>{});
+            v(v, "encode_fn",visitor_tag<decltype(std::declval<StructDecl>().encode_fn)>{});
+            v(v, "decode_fn",visitor_tag<decltype(std::declval<StructDecl>().decode_fn)>{});
+            v(v, "is_recursive",visitor_tag<decltype(std::declval<StructDecl>().is_recursive())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<StructDecl>().reserved())>{});
         }
     };
     struct EBM_API UnionDecl{
@@ -2052,16 +2477,26 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "UnionDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "parent_field",(*this).parent_field);
             v(v, "members",(*this).members);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "parent_field",(*this).parent_field);
             v(v, "members",(*this).members);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<UnionDecl>().name)>{});
+            v(v, "parent_field",visitor_tag<decltype(std::declval<UnionDecl>().parent_field)>{});
+            v(v, "members",visitor_tag<decltype(std::declval<UnionDecl>().members)>{});
         }
     };
     struct EBM_API UnionMemberDecl{
@@ -2075,7 +2510,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "UnionMemberDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "field_type",(*this).field_type);
             v(v, "is_state_variable",(*this).is_state_variable());
@@ -2083,12 +2518,24 @@ namespace ebm {
             v(v, "parent_union",(*this).parent_union);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "field_type",(*this).field_type);
             v(v, "is_state_variable",(*this).is_state_variable());
             v(v, "reserved",(*this).reserved());
             v(v, "parent_union",(*this).parent_union);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<UnionMemberDecl>().name)>{});
+            v(v, "field_type",visitor_tag<decltype(std::declval<UnionMemberDecl>().field_type)>{});
+            v(v, "is_state_variable",visitor_tag<decltype(std::declval<UnionMemberDecl>().is_state_variable())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<UnionMemberDecl>().reserved())>{});
+            v(v, "parent_union",visitor_tag<decltype(std::declval<UnionMemberDecl>().parent_union)>{});
         }
     };
     struct EBM_API BitFieldDecl{
@@ -2100,18 +2547,29 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "BitFieldDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "parent_format",(*this).parent_format);
             v(v, "bit_size",(*this).bit_size);
             v(v, "packed_op_type",(*this).packed_op_type);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "parent_format",(*this).parent_format);
             v(v, "bit_size",(*this).bit_size);
             v(v, "packed_op_type",(*this).packed_op_type);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<BitFieldDecl>().name)>{});
+            v(v, "parent_format",visitor_tag<decltype(std::declval<BitFieldDecl>().parent_format)>{});
+            v(v, "bit_size",visitor_tag<decltype(std::declval<BitFieldDecl>().bit_size)>{});
+            v(v, "packed_op_type",visitor_tag<decltype(std::declval<BitFieldDecl>().packed_op_type)>{});
         }
     };
     struct EBM_API PropertyDecl{
@@ -2123,18 +2581,29 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "PropertyDecl";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<PropertyDecl>().name)>{});
+            v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format)>{});
+            v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type)>{});
+            v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode)>{});
         }
     };
     struct EBM_API ErrorReport{
@@ -2144,18 +2613,27 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "ErrorReport";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "message",(*this).message);
             v(v, "arguments",(*this).arguments);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "message",(*this).message);
             v(v, "arguments",(*this).arguments);
         }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "message",visitor_tag<decltype(std::declval<ErrorReport>().message)>{});
+            v(v, "arguments",visitor_tag<decltype(std::declval<ErrorReport>().arguments)>{});
+        }
     };
     struct EBM_API StatementBody{
-        StatementOp statement_kind{};
+        StatementOp kind{};
         struct EBM_API union_struct_49{
             Block block;
         };
@@ -2408,8 +2886,8 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "StatementBody";
         template<typename Visitor>
-        void visit(Visitor&& v) {
-            v(v, "statement_kind",(*this).statement_kind);
+        constexpr void visit(Visitor&& v) {
+            v(v, "kind",(*this).kind);
             v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
             v(v, "bit_field_decl",(*this).bit_field_decl());
@@ -2447,8 +2925,8 @@ namespace ebm {
             v(v, "write_data",(*this).write_data());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
-            v(v, "statement_kind",(*this).statement_kind);
+        constexpr void visit(Visitor&& v) const {
+            v(v, "kind",(*this).kind);
             v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
             v(v, "bit_field_decl",(*this).bit_field_decl());
@@ -2484,6 +2962,49 @@ namespace ebm {
             v(v, "value",(*this).value());
             v(v, "var_decl",(*this).var_decl());
             v(v, "write_data",(*this).write_data());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "kind",visitor_tag<decltype(std::declval<StatementBody>().kind)>{});
+            v(v, "alias",visitor_tag<decltype(std::declval<StatementBody>().alias())>{});
+            v(v, "assert_desc",visitor_tag<decltype(std::declval<StatementBody>().assert_desc())>{});
+            v(v, "bit_field_decl",visitor_tag<decltype(std::declval<StatementBody>().bit_field_decl())>{});
+            v(v, "block",visitor_tag<decltype(std::declval<StatementBody>().block())>{});
+            v(v, "break_",visitor_tag<decltype(std::declval<StatementBody>().break_())>{});
+            v(v, "continue_",visitor_tag<decltype(std::declval<StatementBody>().continue_())>{});
+            v(v, "enum_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_decl())>{});
+            v(v, "enum_member_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_member_decl())>{});
+            v(v, "error_report",visitor_tag<decltype(std::declval<StatementBody>().error_report())>{});
+            v(v, "expression",visitor_tag<decltype(std::declval<StatementBody>().expression())>{});
+            v(v, "field_decl",visitor_tag<decltype(std::declval<StatementBody>().field_decl())>{});
+            v(v, "func_decl",visitor_tag<decltype(std::declval<StatementBody>().func_decl())>{});
+            v(v, "if_statement",visitor_tag<decltype(std::declval<StatementBody>().if_statement())>{});
+            v(v, "loop",visitor_tag<decltype(std::declval<StatementBody>().loop())>{});
+            v(v, "lowered_statements",visitor_tag<decltype(std::declval<StatementBody>().lowered_statements())>{});
+            v(v, "match_branch",visitor_tag<decltype(std::declval<StatementBody>().match_branch())>{});
+            v(v, "match_statement",visitor_tag<decltype(std::declval<StatementBody>().match_statement())>{});
+            v(v, "metadata",visitor_tag<decltype(std::declval<StatementBody>().metadata())>{});
+            v(v, "module_name",visitor_tag<decltype(std::declval<StatementBody>().module_name())>{});
+            v(v, "offset",visitor_tag<decltype(std::declval<StatementBody>().offset())>{});
+            v(v, "params",visitor_tag<decltype(std::declval<StatementBody>().params())>{});
+            v(v, "params_len",visitor_tag<decltype(std::declval<StatementBody>().params_len())>{});
+            v(v, "previous_assignment",visitor_tag<decltype(std::declval<StatementBody>().previous_assignment())>{});
+            v(v, "property_decl",visitor_tag<decltype(std::declval<StatementBody>().property_decl())>{});
+            v(v, "read_data",visitor_tag<decltype(std::declval<StatementBody>().read_data())>{});
+            v(v, "state_decl",visitor_tag<decltype(std::declval<StatementBody>().state_decl())>{});
+            v(v, "stream_type",visitor_tag<decltype(std::declval<StatementBody>().stream_type())>{});
+            v(v, "struct_decl",visitor_tag<decltype(std::declval<StatementBody>().struct_decl())>{});
+            v(v, "target",visitor_tag<decltype(std::declval<StatementBody>().target())>{});
+            v(v, "target_var",visitor_tag<decltype(std::declval<StatementBody>().target_var())>{});
+            v(v, "union_decl",visitor_tag<decltype(std::declval<StatementBody>().union_decl())>{});
+            v(v, "union_member_decl",visitor_tag<decltype(std::declval<StatementBody>().union_member_decl())>{});
+            v(v, "value",visitor_tag<decltype(std::declval<StatementBody>().value())>{});
+            v(v, "var_decl",visitor_tag<decltype(std::declval<StatementBody>().var_decl())>{});
+            v(v, "write_data",visitor_tag<decltype(std::declval<StatementBody>().write_data())>{});
         }
     };
     struct EBM_API Statement{
@@ -2493,14 +3014,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Statement";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<Statement>().id)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Statement>().body)>{});
         }
     };
     struct EBM_API Types{
@@ -2510,14 +3040,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Types";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<Types>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Types>().container)>{});
         }
     };
     struct EBM_API TypeBody{
@@ -2624,7 +3163,7 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 1;
         constexpr static const char* visitor_name = "TypeBody";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "kind",(*this).kind);
             v(v, "base_type",(*this).base_type());
             v(v, "common_type",(*this).common_type());
@@ -2640,7 +3179,7 @@ namespace ebm {
             v(v, "size",(*this).size());
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "kind",(*this).kind);
             v(v, "base_type",(*this).base_type());
             v(v, "common_type",(*this).common_type());
@@ -2654,6 +3193,26 @@ namespace ebm {
             v(v, "property_type",(*this).property_type());
             v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "kind",visitor_tag<decltype(std::declval<TypeBody>().kind)>{});
+            v(v, "base_type",visitor_tag<decltype(std::declval<TypeBody>().base_type())>{});
+            v(v, "common_type",visitor_tag<decltype(std::declval<TypeBody>().common_type())>{});
+            v(v, "element_type",visitor_tag<decltype(std::declval<TypeBody>().element_type())>{});
+            v(v, "id",visitor_tag<decltype(std::declval<TypeBody>().id())>{});
+            v(v, "inner_type",visitor_tag<decltype(std::declval<TypeBody>().inner_type())>{});
+            v(v, "length",visitor_tag<decltype(std::declval<TypeBody>().length())>{});
+            v(v, "members",visitor_tag<decltype(std::declval<TypeBody>().members())>{});
+            v(v, "params",visitor_tag<decltype(std::declval<TypeBody>().params())>{});
+            v(v, "pointee_type",visitor_tag<decltype(std::declval<TypeBody>().pointee_type())>{});
+            v(v, "property_type",visitor_tag<decltype(std::declval<TypeBody>().property_type())>{});
+            v(v, "return_type",visitor_tag<decltype(std::declval<TypeBody>().return_type())>{});
+            v(v, "size",visitor_tag<decltype(std::declval<TypeBody>().size())>{});
         }
     };
     struct EBM_API Type{
@@ -2663,14 +3222,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Type";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<Type>().id)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Type>().body)>{});
         }
     };
     struct EBM_API Loc{
@@ -2684,7 +3252,7 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Loc";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "ident",(*this).ident);
             v(v, "file_id",(*this).file_id);
             v(v, "line",(*this).line);
@@ -2693,13 +3261,26 @@ namespace ebm {
             v(v, "end",(*this).end);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "ident",(*this).ident);
             v(v, "file_id",(*this).file_id);
             v(v, "line",(*this).line);
             v(v, "column",(*this).column);
             v(v, "start",(*this).start);
             v(v, "end",(*this).end);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "ident",visitor_tag<decltype(std::declval<Loc>().ident)>{});
+            v(v, "file_id",visitor_tag<decltype(std::declval<Loc>().file_id)>{});
+            v(v, "line",visitor_tag<decltype(std::declval<Loc>().line)>{});
+            v(v, "column",visitor_tag<decltype(std::declval<Loc>().column)>{});
+            v(v, "start",visitor_tag<decltype(std::declval<Loc>().start)>{});
+            v(v, "end",visitor_tag<decltype(std::declval<Loc>().end)>{});
         }
     };
     struct EBM_API Identifier{
@@ -2709,14 +3290,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "Identifier";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<Identifier>().id)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Identifier>().body)>{});
         }
     };
     struct EBM_API StringLiteral{
@@ -2726,14 +3316,23 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StringLiteral";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<StringLiteral>().id)>{});
+            v(v, "body",visitor_tag<decltype(std::declval<StringLiteral>().body)>{});
         }
     };
     struct EBM_API DebugInfo{
@@ -2745,18 +3344,29 @@ namespace ebm {
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "DebugInfo";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "len_files",(*this).len_files);
             v(v, "files",(*this).files);
             v(v, "len_locs",(*this).len_locs);
             v(v, "locs",(*this).locs);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "len_files",(*this).len_files);
             v(v, "files",(*this).files);
             v(v, "len_locs",(*this).len_locs);
             v(v, "locs",(*this).locs);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len_files",visitor_tag<decltype(std::declval<DebugInfo>().len_files)>{});
+            v(v, "files",visitor_tag<decltype(std::declval<DebugInfo>().files)>{});
+            v(v, "len_locs",visitor_tag<decltype(std::declval<DebugInfo>().len_locs)>{});
+            v(v, "locs",visitor_tag<decltype(std::declval<DebugInfo>().locs)>{});
         }
     };
     struct EBM_API ExtendedBinaryModule{
@@ -2781,7 +3391,7 @@ namespace ebm {
         static constexpr size_t fixed_header_size = 5;
         constexpr static const char* visitor_name = "ExtendedBinaryModule";
         template<typename Visitor>
-        void visit(Visitor&& v) {
+        constexpr void visit(Visitor&& v) {
             v(v, "magic","EBMG");
             v(v, "version",(*this).version);
             v(v, "max_id",(*this).max_id);
@@ -2800,7 +3410,7 @@ namespace ebm {
             v(v, "debug_info",(*this).debug_info);
         }
         template<typename Visitor>
-        void visit(Visitor&& v) const {
+        constexpr void visit(Visitor&& v) const {
             v(v, "magic","EBMG");
             v(v, "version",(*this).version);
             v(v, "max_id",(*this).max_id);
@@ -2817,6 +3427,29 @@ namespace ebm {
             v(v, "aliases_len",(*this).aliases_len);
             v(v, "aliases",(*this).aliases);
             v(v, "debug_info",(*this).debug_info);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "magic",visitor_tag<decltype("EBMG")>{});
+            v(v, "version",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().version)>{});
+            v(v, "max_id",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().max_id)>{});
+            v(v, "identifiers_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers_len)>{});
+            v(v, "identifiers",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers)>{});
+            v(v, "strings_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings_len)>{});
+            v(v, "strings",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings)>{});
+            v(v, "types_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types_len)>{});
+            v(v, "types",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types)>{});
+            v(v, "statements_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements_len)>{});
+            v(v, "statements",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements)>{});
+            v(v, "expressions_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions_len)>{});
+            v(v, "expressions",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions)>{});
+            v(v, "aliases_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases_len)>{});
+            v(v, "aliases",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases)>{});
+            v(v, "debug_info",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().debug_info)>{});
         }
     };
 } // namespace ebm

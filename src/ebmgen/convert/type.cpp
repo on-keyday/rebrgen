@@ -139,7 +139,7 @@ namespace ebmgen {
                     }
                     else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
                         ebm::StatementBody stmt;
-                        stmt.statement_kind = ebm::StatementOp::STRUCT_DECL;
+                        stmt.kind = ebm::StatementOp::STRUCT_DECL;
                         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, n));
                         stmt.struct_decl(std::move(struct_decl));
                         EBMA_ADD_STATEMENT(name_ref, std::move(stmt));

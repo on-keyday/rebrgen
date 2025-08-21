@@ -50,7 +50,7 @@ namespace ebmgen {
         os_ << ebm::Statement::visitor_name << " ";
         const auto* stmt = module_.get_statement(ref);
         if (stmt) {
-            os_ << to_string(stmt->body.statement_kind);
+            os_ << to_string(stmt->body.kind);
         }
         else {
             os_ << "(unknown statement)";
@@ -60,7 +60,7 @@ namespace ebmgen {
         os_ << ebm::Expression::visitor_name << " ";
         const auto* expr = module_.get_expression(ref);
         if (expr) {
-            os_ << to_string(expr->body.op);
+            os_ << to_string(expr->body.kind);
         }
         else {
             os_ << "(unknown expression)";

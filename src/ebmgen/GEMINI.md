@@ -92,12 +92,12 @@ Also there are a command at `src/ebm/ebm.ps1`. it generates `src/ebm/extended_bi
   3 ├── extended_binary_module.cpp    # Generated C++ code for EBM
   4 ├── extended_binary_module.hpp    # Generated C++ header for EBM
   5 └── ebm.ps1                       # PowerShell script to generate the C++ files from the .bgn file
-  6 
+  6
   7 ebmcodegen/
   8 ├── stub/                         # Contains templates or stubs for code generation
-  9 ├── body_subset.cpp               # Logic for generating specific parts of the code generator's body
+  9 ├── body_subset.cpp               # Generated code that detects subset of accessible fields of each kind of Statement,Expression and Type
  10 └── main.cpp                      # Entry point for the ebmcodegen executable
- 11 
+ 11
  12 ebmgen/
  13 ├── convert/
  14 │   ├── decode.cpp       # Implements logic for decoding EBM data

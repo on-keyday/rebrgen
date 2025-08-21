@@ -254,6 +254,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     visitor_stub.writeln("return {};");  // Placeholder for entry function
     entry_scope.execute();
     visitor_stub.writeln("}");
+
+    insert_include(w, "includes");
     w.writeln();  // line for end of #include
 
     w.writeln("struct Flags : ebmcodegen::Flags {");

@@ -5,6 +5,11 @@
 #include <ebmgen/convert/helper.hpp>
 #include <ebmgen/mapping.hpp>
 #include <code/code_writer.h>
+#if __has_include("visitor/includes.hpp")
+#include "visitor/includes.hpp"
+#elif __has_include("ebmcodegen/default_visitor/includes.hpp")
+#include "ebmcodegen/default_visitor/includes.hpp"
+#endif
 
 struct Flags : ebmcodegen::Flags {
 #if __has_include("visitor/Flags.hpp")

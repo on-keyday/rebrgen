@@ -2,7 +2,16 @@
 
 // Helper function to convert EBM type to Python type string
 expected<std::string> type_to_python_str(const ebm::TypeRef& type_ref) {
-    MAYBE(type, module_.get_type(type_ref)); // Get the actual type object
+    // Handle null TypeRef (id.value() == 0)
+    if (type_ref.id.value() == 0) {
+        return "None";
+    }
+
+    const auto* type_ptr = module_.get_type(type_ref); // Get raw pointer
+    if (type_ptr == nullptr) {
+        return unexpect_error("Failed to get type for TypeRef ID: {}", type_ref.id.value());
+    }
+    const auto& type = *type_ptr; // Dereference to get the actual type object
 
     switch (type.body.kind) {
         case ebm::TypeKind::INT:
@@ -43,11 +52,13 @@ expected<std::string> type_to_python_str(const ebm::TypeRef& type_ref) {
         case ebm::TypeKind::ENCODER_RETURN:
         case ebm::TypeKind::DECODER_RETURN:
             return "bytes"; // Or some other appropriate type for return values
+        case ebm::TypeKind::ENCODER_INPUT: // Add this case
+        case ebm::TypeKind::DECODER_INPUT: // Add this case
+            return "bytes"; // Map encoder/decoder input to bytes
         case ebm::TypeKind::FUNCTION: {
             // For functions, return a Callable type hint
             MAYBE(return_type_str, type_to_python_str(*type.body.return_type()));
-            std::string params_str = "";
-            // TODO: Iterate through type.body.params() to get parameter types
+            std::string params_str = ""; // Reverted: params_str is empty here
             return "Callable[[" + params_str + "], " + return_type_str + "]";
         }
         case ebm::TypeKind::VARIANT: {

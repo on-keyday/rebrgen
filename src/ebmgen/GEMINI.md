@@ -264,3 +264,8 @@ After you modified some code, please run these before you do next edit and confi
 5. run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
 6. run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`
 7. run `src/ebm/ebm`
+
+IMPORTANT!!!:
+YOU MUST SEE DEFINITION (ESPECIALLY TYPE DEFINITION) WHILE YOU FIX COMPILE ERROR.
+99% OF ERROR IS BECAUSE OF MISUNDERSTANDING OF IT.
+YOU MAY SEE A LOT OF MACRO EXPAND, BUT THEY ARE ALMOST ONLY A NOISE, SO IGNORE UNLESS STRONGLY CONFIRM IT IS THE CAUSE.

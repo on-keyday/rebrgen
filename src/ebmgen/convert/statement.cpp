@@ -505,7 +505,7 @@ namespace ebmgen {
         }
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
         func_decl.body = fn_body;
-        return {};
+        return func_decl;
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {

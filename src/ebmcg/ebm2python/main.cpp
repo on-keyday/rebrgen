@@ -3955,6 +3955,104 @@ namespace ebm2python {
         return {};
     }
     template<typename Visitor>
+    concept has_visitor_Type_ENCODER_INPUT = requires(Visitor v) {
+         { v.visit_Type_ENCODER_INPUT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Type_ENCODER_INPUT_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
+    };
+    template<typename Visitor>
+    expected<void> visit_Type_ENCODER_INPUT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate.hpp")
+        #include "visitor/Type_ENCODER_INPUT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_INPUT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_INPUT_pre_validate.hpp"
+        #endif
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit.hpp")
+        #include "visitor/Type_ENCODER_INPUT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_INPUT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_INPUT_pre_visit.hpp"
+        #endif
+        if constexpr (has_visitor_Type_ENCODER_INPUT<Visitor>) {
+            MAYBE_VOID(result, visitor.visit_Type_ENCODER_INPUT(in.id,kind));
+        }
+        else if constexpr (has_visitor_Type_ENCODER_INPUT_call<Visitor>) {
+            MAYBE_VOID(result,visitor(in.id,kind));
+        }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_ENCODER_INPUT_post_visit.hpp")
+        #include "visitor/Type_ENCODER_INPUT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_INPUT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_ENCODER_INPUT_post_visit.hpp"
+        #endif
+        return {};
+    }
+    template<typename Visitor>
+    concept has_visitor_Type_DECODER_INPUT = requires(Visitor v) {
+         { v.visit_Type_DECODER_INPUT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Type_DECODER_INPUT_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<void>>;
+    };
+    template<typename Visitor>
+    expected<void> visit_Type_DECODER_INPUT(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_validate.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_INPUT_pre_validate.hpp")
+        #include "visitor/Type_DECODER_INPUT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_INPUT_pre_validate.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_INPUT_pre_validate.hpp"
+        #endif
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_pre_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_INPUT_pre_visit.hpp")
+        #include "visitor/Type_DECODER_INPUT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_INPUT_pre_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_INPUT_pre_visit.hpp"
+        #endif
+        if constexpr (has_visitor_Type_DECODER_INPUT<Visitor>) {
+            MAYBE_VOID(result, visitor.visit_Type_DECODER_INPUT(in.id,kind));
+        }
+        else if constexpr (has_visitor_Type_DECODER_INPUT_call<Visitor>) {
+            MAYBE_VOID(result,visitor(in.id,kind));
+        }
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_post_visit.hpp"
+        #endif
+        #if __has_include("visitor/Type_DECODER_INPUT_post_visit.hpp")
+        #include "visitor/Type_DECODER_INPUT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_INPUT_post_visit.hpp")
+        #include "ebmcodegen/default_visitor/Type_DECODER_INPUT_post_visit.hpp"
+        #endif
+        return {};
+    }
+    template<typename Visitor>
     concept has_visitor_Type_PROPERTY_SETTER_RETURN = requires(Visitor v) {
          { v.visit_Type_PROPERTY_SETTER_RETURN(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().property_type()) } -> std::convertible_to<expected<void>>;
     };
@@ -4203,6 +4301,10 @@ namespace ebm2python {
             return visit_Type_ENCODER_RETURN(visitor,in);
         case ebm::TypeKind::DECODER_RETURN:
             return visit_Type_DECODER_RETURN(visitor,in);
+        case ebm::TypeKind::ENCODER_INPUT:
+            return visit_Type_ENCODER_INPUT(visitor,in);
+        case ebm::TypeKind::DECODER_INPUT:
+            return visit_Type_DECODER_INPUT(visitor,in);
         case ebm::TypeKind::PROPERTY_SETTER_RETURN:
             return visit_Type_PROPERTY_SETTER_RETURN(visitor,in);
         case ebm::TypeKind::OPTIONAL:
@@ -4793,6 +4895,22 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<void> visit_Type_ENCODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            #if __has_include("visitor/Type_ENCODER_INPUT.hpp")
+            #include "visitor/Type_ENCODER_INPUT.hpp"
+            #elif __has_include("ebmcodegen/default_visitor/Type_ENCODER_INPUT.hpp")
+            #include "ebmcodegen/default_visitor/Type_ENCODER_INPUT.hpp"
+            #endif
+            return {};
+        }
+        expected<void> visit_Type_DECODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            #if __has_include("visitor/Type_DECODER_INPUT.hpp")
+            #include "visitor/Type_DECODER_INPUT.hpp"
+            #elif __has_include("ebmcodegen/default_visitor/Type_DECODER_INPUT.hpp")
+            #include "ebmcodegen/default_visitor/Type_DECODER_INPUT.hpp"
+            #endif
+            return {};
+        }
         expected<void> visit_Type_PROPERTY_SETTER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& property_type) {
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN.hpp"
@@ -4896,6 +5014,8 @@ namespace ebm2python {
     static_assert(has_visitor_Type_RANGE<Visitor>, "Visitor does not implement visit_Type_RANGE");
     static_assert(has_visitor_Type_ENCODER_RETURN<Visitor>, "Visitor does not implement visit_Type_ENCODER_RETURN");
     static_assert(has_visitor_Type_DECODER_RETURN<Visitor>, "Visitor does not implement visit_Type_DECODER_RETURN");
+    static_assert(has_visitor_Type_ENCODER_INPUT<Visitor>, "Visitor does not implement visit_Type_ENCODER_INPUT");
+    static_assert(has_visitor_Type_DECODER_INPUT<Visitor>, "Visitor does not implement visit_Type_DECODER_INPUT");
     static_assert(has_visitor_Type_PROPERTY_SETTER_RETURN<Visitor>, "Visitor does not implement visit_Type_PROPERTY_SETTER_RETURN");
     static_assert(has_visitor_Type_OPTIONAL<Visitor>, "Visitor does not implement visit_Type_OPTIONAL");
     static_assert(has_visitor_Type_PTR<Visitor>, "Visitor does not implement visit_Type_PTR");

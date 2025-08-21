@@ -1,14 +1,26 @@
 // This code is included within the visit_Statement_STRUCT_DECL function.
 // We can use variables like `visitor` and `struct_decl` directly.
 
-auto name = module_.get_identifier_or(struct_decl.name, ebm::AnyRef{item_id.id}, "Struct");
+auto name = this->module_.get_identifier_or(struct_decl.name, ebm::AnyRef{item_id.id}, "Struct");
 
-root.writeln("class ", name, ":");
-auto scope = root.indent_scope();
+this->root.writeln("class ", name, ":");
+auto scope = this->root.indent_scope();
 
 for(auto& field_ref : struct_decl.fields.container) {
-    MAYBE(field, module_.get_statement(field_ref));
+    MAYBE(field, this->module_.get_statement(field_ref));
     MAYBE_VOID(res, ebm2python::visit_Statement(*this, field));
 }
 
-root.writeln();  // Add a blank line for readability.
+// Visit encode_fn if it exists
+if (struct_decl.encode_fn.id.value() != 0) { // Corrected: Check value() of Varint id
+    MAYBE(encode_fn_stmt, this->module_.get_statement(struct_decl.encode_fn));
+    MAYBE_VOID(res, ebm2python::visit_Statement(*this, encode_fn_stmt));
+}
+
+// Visit decode_fn if it exists
+if (struct_decl.decode_fn.id.value() != 0) { // Corrected: Check value() of Varint id
+    MAYBE(decode_fn_stmt, this->module_.get_statement(struct_decl.decode_fn));
+    MAYBE_VOID(res, ebm2python::visit_Statement(*this, decode_fn_stmt));
+}
+
+this->root.writeln();  // Add a blank line for readability.

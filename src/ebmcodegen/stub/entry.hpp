@@ -28,8 +28,8 @@ namespace ebmcodegen {
 
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
-            ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
-            ctx.VarString<true>(&output, "o,output", "output file", "FILE");
+            ctx.VarString<true>(&input, "i,input", "input EBM file", "FILE", futils::cmdline::option::CustomFlag::required);
+            ctx.VarString<true>(&output, "o,output", "output source code file (currently not working and always output to stdout)", "FILE");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
             ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
         }

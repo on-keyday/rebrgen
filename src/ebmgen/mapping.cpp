@@ -3,6 +3,7 @@
 #include "common.hpp"
 
 namespace ebmgen {
+    bool verbose_error;
     // Builds maps from vector data for faster access
     void MappingTable::build_maps() {
         auto map_to = [&](auto& map, const auto& vec) {

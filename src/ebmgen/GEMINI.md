@@ -77,7 +77,7 @@ Also you can run `ebmcodegen` like below
 when you update EBM structure, you should rebuild `ebmcodegen` and then run below (at root of `rebrgen` project directory):
 
 ```bash
-./tool/ebmcodegen --body-validate > src/ebmcodegen/body_subset.cpp
+./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp
 ```
 
 then rebuild `ebmcodegen` again and finally regenerate each generator files.

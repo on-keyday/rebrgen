@@ -6,8 +6,6 @@
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
 
-    bool verbose_error;
-
     expected<ebm::IOAttribute> ConverterState::get_io_attribute(ebm::Endian base, bool sign) {
         ebm::IOAttribute e;
         e.sign(sign);

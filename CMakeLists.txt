@@ -69,6 +69,11 @@ add_executable(ebmgen
     "src/ebmgen/main.cpp"
 )
 
+add_library(ebm_mapping STATIC
+    "src/ebmgen/mapping.cpp"
+    "src/ebmgen/debug_printer.cpp"
+)
+
 add_library(ebmgen_lib STATIC
     "src/ebmgen/convert.cpp"
     "src/ebmgen/converter.cpp"
@@ -76,20 +81,18 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert/statement.cpp"
     "src/ebmgen/convert/expression.cpp"
     "src/ebmgen/convert/type.cpp"
-    "src/ebmgen/debug_printer.cpp"
-    "src/ebmgen/mapping.cpp"
     "src/ebmgen/convert/helper.cpp"
     "src/ebmgen/convert/encode.cpp"
     "src/ebmgen/convert/decode.cpp"
     "src/ebmgen/transform/transform.cpp"
 )
 
-target_link_libraries(ebmgen_lib ebm futils)
+target_link_libraries(ebm_mapping ebm futils)
+target_link_libraries(ebmgen_lib ebm futils ebm_mapping)
 target_link_libraries(ebmgen ebmgen_lib)
 
 add_executable(ebmcodegen
     "src/ebmcodegen/main.cpp"
-    "src/ebmgen/mapping.cpp"
     "src/ebmcodegen/body_subset.cpp"
 )
 
@@ -113,6 +116,7 @@ add_executable(gen_template
 
 add_subdirectory("src")
 #add_subdirectory("src/ebmgen/test")
+add_subdirectory("src/ebmcg")
 
 target_link_libraries(bmgen futils bm)
 target_link_libraries(ebmgen futils ebm)

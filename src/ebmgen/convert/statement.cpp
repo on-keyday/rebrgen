@@ -379,6 +379,8 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementOp::STRUCT_DECL;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
+        MAYBE(encoder_input, get_coder_input(ctx, true));
+        MAYBE(decoder_input, get_coder_input(ctx, false));
         auto get_type = [&](std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<ebm::TypeRef> {
             ebm::TypeBody b;
             b.kind = typ == GenerateType::Encode ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
@@ -392,6 +394,9 @@ namespace ebmgen {
                 b.kind = ebm::TypeKind::FUNCTION;
                 b.return_type(fn_return);
             }
+            auto& param = *b.params();
+            param.len = varint(param.len.value() + 1).value();
+            param.container.insert(param.container.begin(), typ == GenerateType::Encode ? encoder_input : decoder_input);
             EBMA_ADD_TYPE(fn_typ, std::move(b));
             return fn_typ;
         };
@@ -402,8 +407,7 @@ namespace ebmgen {
         EBM_IDENTIFIER(encode, enc_id, enc_type);
         EBM_IDENTIFIER(decode, dec_id, dec_type);
         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
-        MAYBE(encoder_input, get_coder_input(ctx, true));
-        MAYBE(decoder_input, get_coder_input(ctx, false));
+
         EBM_DEFINE_ANONYMOUS_VARIABLE(writer, encoder_input, {});
         EBM_DEFINE_ANONYMOUS_VARIABLE(reader, decoder_input, {});
         ctx.state().add_format_encode_decode(node, encode, enc_type, writer, decode, dec_type, reader);

@@ -290,9 +290,6 @@ format EnumMemberDecl:
     value :ExpressionRef # Integer value (e.g., 0, 1, 2)
     string_repr :StringRef # Optional string representation (e.g., "MemberName")
 
-format StateDecl:
-    name :IdentifierRef # State name
-    body :Block # Body of the state 
 
 format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
@@ -348,7 +345,6 @@ enum StatementOp:
     UNION_DECL
     UNION_MEMBER_DECL
     PROGRAM_DECL
-    STATE_DECL
     BIT_FIELD_DECL
     PROPERTY_DECL
     METADATA
@@ -463,8 +459,6 @@ format StatementBody:
             union_member_decl :UnionMemberDecl
         StatementOp.PROGRAM_DECL:
             block :Block
-        StatementOp.STATE_DECL:
-            state_decl :StateDecl
         StatementOp.BIT_FIELD_DECL:
             bit_field_decl :BitFieldDecl
         StatementOp.PROPERTY_DECL:
@@ -550,6 +544,10 @@ enum TypeKind:
     # encoder/decoder return value (these are language specific, e.g errno + int for C, Result<T, E> for Rust, error for Go)
     ENCODER_RETURN
     DECODER_RETURN
+
+    # encoder/decoder input value (these are language specific, e.g const char* + int for C, std::io::Read or Write or &[u8] for Rust, io.Reader or io.Writer for Go)
+    ENCODER_INPUT
+    DECODER_INPUT
 
     # property setter return value
     PROPERTY_SETTER_RETURN

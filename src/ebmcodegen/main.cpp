@@ -451,7 +451,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("auto result = visitor.entry();");
     w.writeln("if (!result) {");
     auto err_scope = w.indent_scope();
-    w.writeln("futils::wrap::cerr_wrap() << \"error: \" << result.error();");
+    w.writeln("futils::wrap::cerr_wrap() << \"error: \" << result.error().error();");
     w.writeln("return 1;");
     err_scope.execute();
     w.writeln("}");

@@ -172,8 +172,10 @@ namespace ebmgen {
     struct FormatEncodeDecode {
         ebm::ExpressionRef encode;
         ebm::TypeRef encode_type;
+        ebm::ExpressionRef encoder_input;
         ebm::ExpressionRef decode;
         ebm::TypeRef decode_type;
+        ebm::ExpressionRef decoder_input;
     };
 
     struct StatementConverter;
@@ -188,6 +190,7 @@ namespace ebmgen {
         ebm::Endian local_endian = ebm::Endian::unspec;
         ebm::StatementRef current_dynamic_endian = ebm::StatementRef{};
         bool on_function = false;
+        std::shared_ptr<ast::Node> current_node;
         GenerateType current_generate_type = GenerateType::Normal;
         std::unordered_map<VisitedKey, ebm::StatementRef> visited_nodes;
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
@@ -258,14 +261,30 @@ namespace ebmgen {
         void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,
                                       ebm::ExpressionRef encode,
                                       ebm::TypeRef encode_type,
+                                      ebm::ExpressionRef encoder_input,
                                       ebm::ExpressionRef decode,
-                                      ebm::TypeRef decode_type) {
+                                      ebm::TypeRef decode_type,
+                                      ebm::ExpressionRef decoder_input) {
             format_encode_decode[node] = FormatEncodeDecode{
-                encode,
-                encode_type,
-                decode,
-                decode_type,
+                .encode = encode,
+                .encode_type = encode_type,
+                .encoder_input = encoder_input,
+                .decode = decode,
+                .decode_type = decode_type,
+                .decoder_input = decoder_input,
             };
+        }
+
+        auto set_current_node(const std::shared_ptr<ast::Node>& node) {
+            auto old = std::move(current_node);
+            current_node = node;
+            return futils::helper::defer([this, old = std::move(old)]() mutable {
+                current_node = std::move(old);
+            });
+        }
+
+        std::shared_ptr<ast::Node> get_current_node() const {
+            return current_node;
         }
 
         expected<FormatEncodeDecode> get_format_encode_decode(const std::shared_ptr<ast::Node>& node) {
@@ -452,6 +471,7 @@ namespace ebmgen {
 
         expected<ebm::StructDecl> convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node);
         expected<ebm::StatementRef> convert_statement(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
+        expected<ebm::FunctionDecl> convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref);
 
        private:
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementRef id, ebm::StatementBody& body);

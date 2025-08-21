@@ -104,6 +104,8 @@ Also there are a command at `src/ebm/ebm.ps1`. it generates `src/ebm/extended_bi
 
 #### 5. Code structure
 
+These files are in `src/` directory in `rebrgen` root directory.
+
 ```
   1 ebm/
   2 ├── extended_binary_module.bgn    # The brgen source file defining the EBM structure itself
@@ -251,13 +253,13 @@ In conclusion, the debate revealed that the MAYBE macro, far from being a simple
 
 #### 7. Development Process
 
-Here is a priority of what to do. This does NOT means you need to follow the order.
+Here is a priority of what to do. This does NOT means you need to follow the order except 1. must be run finally.
 You can choose appropriate action in the context.
 After you modified some code, please run these before you do next edit and confirm your modification does not break baseline.
 
 1. run `ebm2<lang name> -i ./save/out.ebm`
 2. run `python script/build.py native Debug`
-3. run `python .\script\ebmcodegen.py <lang name>`
+3. run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless)
 4. run `./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp`
 5. run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
 6. run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`

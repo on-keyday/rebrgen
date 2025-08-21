@@ -1318,59 +1318,6 @@ namespace ebm2python {
         return {};
     }
     template<typename Visitor>
-    concept has_visitor_Statement_STATE_DECL = requires(Visitor v) {
-         { v.visit_Statement_STATE_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().state_decl()) } -> std::convertible_to<expected<void>>;
-    };
-    template<typename Visitor>
-    concept has_visitor_Statement_STATE_DECL_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().state_decl()) } -> std::convertible_to<expected<void>>;
-    };
-    template<typename Visitor>
-    expected<void> visit_Statement_STATE_DECL(Visitor&& visitor,const ebm::Statement& in) {
-        #if __has_include("visitor/Statement_pre_validate.hpp")
-        #include "visitor/Statement_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_validate.hpp")
-        #include "ebmcodegen/default_visitor/Statement_pre_validate.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STATE_DECL_pre_validate.hpp")
-        #include "visitor/Statement_STATE_DECL_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_pre_validate.hpp")
-        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_pre_validate.hpp"
-        #endif
-        auto& kind = in.body.kind;
-        if (!in.body.state_decl()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::state_decl");
-        }
-        auto& state_decl = *in.body.state_decl();
-        #if __has_include("visitor/Statement_pre_visit.hpp")
-        #include "visitor/Statement_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_pre_visit.hpp")
-        #include "ebmcodegen/default_visitor/Statement_pre_visit.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STATE_DECL_pre_visit.hpp")
-        #include "visitor/Statement_STATE_DECL_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_pre_visit.hpp")
-        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_pre_visit.hpp"
-        #endif
-        if constexpr (has_visitor_Statement_STATE_DECL<Visitor>) {
-            MAYBE_VOID(result, visitor.visit_Statement_STATE_DECL(in.id,kind,state_decl));
-        }
-        else if constexpr (has_visitor_Statement_STATE_DECL_call<Visitor>) {
-            MAYBE_VOID(result,visitor(in.id,kind,state_decl));
-        }
-        #if __has_include("visitor/Statement_post_visit.hpp")
-        #include "visitor/Statement_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_post_visit.hpp")
-        #include "ebmcodegen/default_visitor/Statement_post_visit.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STATE_DECL_post_visit.hpp")
-        #include "visitor/Statement_STATE_DECL_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL_post_visit.hpp")
-        #include "ebmcodegen/default_visitor/Statement_STATE_DECL_post_visit.hpp"
-        #endif
-        return {};
-    }
-    template<typename Visitor>
     concept has_visitor_Statement_BIT_FIELD_DECL = requires(Visitor v) {
          { v.visit_Statement_BIT_FIELD_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().bit_field_decl()) } -> std::convertible_to<expected<void>>;
     };
@@ -1857,8 +1804,6 @@ namespace ebm2python {
             return visit_Statement_UNION_MEMBER_DECL(visitor,in);
         case ebm::StatementOp::PROGRAM_DECL:
             return visit_Statement_PROGRAM_DECL(visitor,in);
-        case ebm::StatementOp::STATE_DECL:
-            return visit_Statement_STATE_DECL(visitor,in);
         case ebm::StatementOp::BIT_FIELD_DECL:
             return visit_Statement_BIT_FIELD_DECL(visitor,in);
         case ebm::StatementOp::PROPERTY_DECL:
@@ -4480,14 +4425,6 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<void> visit_Statement_STATE_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::StateDecl& state_decl) {
-            #if __has_include("visitor/Statement_STATE_DECL.hpp")
-            #include "visitor/Statement_STATE_DECL.hpp"
-            #elif __has_include("ebmcodegen/default_visitor/Statement_STATE_DECL.hpp")
-            #include "ebmcodegen/default_visitor/Statement_STATE_DECL.hpp"
-            #endif
-            return {};
-        }
         expected<void> visit_Statement_BIT_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::BitFieldDecl& bit_field_decl) {
             #if __has_include("visitor/Statement_BIT_FIELD_DECL.hpp")
             #include "visitor/Statement_BIT_FIELD_DECL.hpp"
@@ -4913,7 +4850,6 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_UNION_DECL<Visitor>, "Visitor does not implement visit_Statement_UNION_DECL");
     static_assert(has_visitor_Statement_UNION_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_UNION_MEMBER_DECL");
     static_assert(has_visitor_Statement_PROGRAM_DECL<Visitor>, "Visitor does not implement visit_Statement_PROGRAM_DECL");
-    static_assert(has_visitor_Statement_STATE_DECL<Visitor>, "Visitor does not implement visit_Statement_STATE_DECL");
     static_assert(has_visitor_Statement_BIT_FIELD_DECL<Visitor>, "Visitor does not implement visit_Statement_BIT_FIELD_DECL");
     static_assert(has_visitor_Statement_PROPERTY_DECL<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_DECL");
     static_assert(has_visitor_Statement_METADATA<Visitor>, "Visitor does not implement visit_Statement_METADATA");
@@ -4974,7 +4910,7 @@ DEFINE_ENTRY(Flags,Output) {
     #endif
     auto result = visitor.entry();
     if (!result) {
-        futils::wrap::cerr_wrap() << "error: " << result.error();
+        futils::wrap::cerr_wrap() << "error: " << result.error().error();
         return 1;
     }
     #if __has_include("visitor/post_entry.hpp")

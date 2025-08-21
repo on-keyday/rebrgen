@@ -360,8 +360,11 @@ namespace ebmgen {
         // force convert encode and decode functions
         EBMA_CONVERT_STATEMENT(ok, base);
         MAYBE(encdec, ctx.state().get_format_encode_decode(base));
+        MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+
         EBM_MEMBER_ACCESS(dec_access, encdec.decode_type, base_ref, encdec.decode);
         call_desc.callee = dec_access;
+        append(call_desc.arguments, cur_encdec.decoder_input);
         // TODO: add arguments
         MAYBE(typ_ref, get_decoder_return_type(ctx));
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));

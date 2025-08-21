@@ -140,7 +140,7 @@
       "name": "Debug ebmcodegen",
       "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceRoot}/tool/ebmcodegen",
+      "program": "${workspaceRoot}/tool/ebm2python",
       "args": ["-i", "${workspaceRoot}/save/out.ebm"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

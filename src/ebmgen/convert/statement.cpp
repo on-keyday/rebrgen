@@ -354,6 +354,13 @@ namespace ebmgen {
         return coder_return;
     }
 
+    expected<ebm::TypeRef> get_coder_input(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_INPUT : ebm::TypeKind::DECODER_INPUT;
+        EBMA_ADD_TYPE(coder_input, std::move(b));
+        return coder_input;
+    }
+
     expected<ebm::StructDecl> StatementConverter::convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node) {
         ebm::StructDecl struct_decl;
         struct_decl.name = name;
@@ -395,31 +402,37 @@ namespace ebmgen {
         EBM_IDENTIFIER(encode, enc_id, enc_type);
         EBM_IDENTIFIER(decode, dec_id, dec_type);
         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
-        ctx.state().add_format_encode_decode(node, encode, enc_type, decode, dec_type);
-        auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<void> {
+        MAYBE(encoder_input, get_coder_input(ctx, true));
+        MAYBE(decoder_input, get_coder_input(ctx, false));
+        EBM_DEFINE_ANONYMOUS_VARIABLE(writer, encoder_input, {});
+        EBM_DEFINE_ANONYMOUS_VARIABLE(reader, decoder_input, {});
+        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, decode, dec_type, reader);
+        const auto _node = ctx.state().set_current_node(node);
+        auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, ebm::StatementRef coder_input, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
+            ebm::FunctionDecl derived_fn;
             if (fn) {
-                EBMA_CONVERT_STATEMENT(enc_fn, fn_ref, fn);
-                fn_ref = enc_fn;
+                MAYBE(decl, ctx.get_statement_converter().convert_function_decl(fn, typ, coder_input));
+                derived_fn = std::move(decl);
             }
             else {
-                ebm::FunctionDecl derived_fn;
                 EBMA_ADD_IDENTIFIER(enc_name, typ == GenerateType::Encode ? "encode" : "decode");
                 MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
                 derived_fn.name = enc_name;
                 derived_fn.return_type = coder_return;
+                append(derived_fn.params, coder_input);
                 EBMA_CONVERT_STATEMENT(body, node->body);
                 derived_fn.body = body;
-                ebm::StatementBody b;
-                b.kind = ebm::StatementOp::FUNCTION_DECL;
-                b.func_decl(std::move(derived_fn));
-                EBMA_ADD_STATEMENT(stmt, fn_ref, std::move(b));
-                fn_ref = stmt;
             }
+            ebm::StatementBody b;
+            b.kind = ebm::StatementOp::FUNCTION_DECL;
+            b.func_decl(std::move(derived_fn));
+            EBMA_ADD_STATEMENT(stmt, fn_ref, std::move(b));
+            fn_ref = stmt;
             return {};
         };
-        MAYBE_VOID(ok1, handle(enc_id, node->encode_fn.lock(), GenerateType::Encode));
-        MAYBE_VOID(ok2, handle(dec_id, node->decode_fn.lock(), GenerateType::Decode));
+        MAYBE_VOID(ok1, handle(enc_id, node->encode_fn.lock(), writer_def, GenerateType::Encode));
+        MAYBE_VOID(ok2, handle(dec_id, node->decode_fn.lock(), reader_def, GenerateType::Decode));
         struct_decl.encode_fn = enc_id;
         struct_decl.decode_fn = dec_id;
         body.struct_decl(std::move(struct_decl));
@@ -460,8 +473,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::FUNCTION_DECL;
+    expected<ebm::FunctionDecl> StatementConverter::convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref) {
         ebm::FunctionDecl func_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;
@@ -469,6 +481,7 @@ namespace ebmgen {
             typ == GenerateType::Encode || typ == GenerateType::Decode) {
             MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
             func_decl.return_type = coder_return;
+            append(func_decl.params, coder_input_ref);
         }
         else {
             if (node->return_type) {
@@ -481,20 +494,20 @@ namespace ebmgen {
             }
         }
         for (auto& param : node->parameters) {
-            ebm::VariableDecl param_decl;
             EBMA_ADD_IDENTIFIER(param_name_ref, param->ident->ident);
-            param_decl.name = param_name_ref;
             EBMA_CONVERT_TYPE(param_type_ref, param->field_type);
-            param_decl.var_type = param_type_ref;
-            ebm::StatementBody param_body;
-            param_body.kind = ebm::StatementOp::VARIABLE_DECL;
-            param_body.var_decl(std::move(param_decl));
-            EBMA_ADD_STATEMENT(param_ref, std::move(param_body));
-            append(func_decl.params, param_ref);
+            EBM_DEFINE_VARIABLE(param_ref, param_name_ref, param_type_ref, {}, true, false);
+            append(func_decl.params, param_ref_def);
         }
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
         func_decl.body = fn_body;
-        body.func_decl(std::move(func_decl));
+        return {};
+    }
+
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        body.kind = ebm::StatementOp::FUNCTION_DECL;
+        MAYBE(decl, convert_function_decl(node, GenerateType::Normal, {}));
+        body.func_decl(std::move(decl));
         return {};
     }
 
@@ -521,8 +534,8 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::STATE_DECL;
-        ebm::StateDecl state_decl;
+        body.kind = ebm::StatementOp::STRUCT_DECL;
+        ebm::StructDecl state_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         state_decl.name = name_ref;
         ebm::Block state_body_block;
@@ -530,8 +543,8 @@ namespace ebmgen {
             EBMA_CONVERT_STATEMENT(stmt_ref, element);
             append(state_body_block, stmt_ref);
         }
-        state_decl.body = std::move(state_body_block);
-        body.state_decl(std::move(state_decl));
+        state_decl.fields = std::move(state_body_block);
+        body.struct_decl(std::move(state_decl));
         return {};
     }
 

@@ -245,8 +245,10 @@ namespace ebmgen {
         // force convert encode and decode functions
         EBMA_CONVERT_STATEMENT(ok, base);
         MAYBE(encdec, ctx.state().get_format_encode_decode(base));
+        MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
         EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
         call_desc.callee = enc_access;
+        append(call_desc.arguments, cur_encdec.encoder_input);
         // TODO: add arguments
         MAYBE(typ_ref, get_encoder_return_type(ctx));
 

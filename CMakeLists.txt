@@ -90,6 +90,7 @@ target_link_libraries(ebmgen ebmgen_lib)
 add_executable(ebmcodegen
     "src/ebmcodegen/main.cpp"
     "src/ebmgen/mapping.cpp"
+    "src/ebmcodegen/body_subset.cpp"
 )
 
 target_link_libraries(ebmcodegen ebm futils)

@@ -96,4 +96,8 @@ namespace ebmgen {
         }
         return nullptr;
     }
+
+    const ebm::Statement* MappingTable::get_entry_point() const {
+        return get_statement(ebm::StatementRef{module_.max_id.id});
+    }
 }  // namespace ebmgen

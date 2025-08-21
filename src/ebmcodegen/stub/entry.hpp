@@ -83,25 +83,25 @@ namespace ebmcodegen {
     }  // namespace internal
 }  // namespace ebmcodegen
 
-#define DEFINE_ENTRY(FlagType, OutputType)                                                                                                                                                                             \
-    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, ebm::ExtendedBinaryModule& ebm, OutputType& output);                                                                   \
-    int bm2_main(int argc, char** argv) {                                                                                                                                                                              \
-        FlagType flags;                                                                                                                                                                                                \
-        OutputType output;                                                                                                                                                                                             \
-        flags.program_name = argv[0];                                                                                                                                                                                  \
-        return futils::cmdline::templ::parse_or_err<std::string>(                                                                                                                                                      \
-            argc, argv, flags, [&](auto&& str, bool err) {  if(err){ futils::wrap::cerr_wrap()<< flags.program_name << ": " <<str; } else { futils::wrap::cout_wrap() << str;} },                                                                                                                                                          \
-            [&](FlagType& flags, futils::cmdline::option::Context& ctx) { return bm2::internal::load_file(flags, output, ctx, [&](auto& w, auto& ebm, auto& output) { return Main(flags, ctx, w, ebm, output); }); }); \
-    }                                                                                                                                                                                                                  \
+#define DEFINE_ENTRY(FlagType, OutputType)                                                                                                                                                                                    \
+    int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, ebm::ExtendedBinaryModule& ebm, OutputType& output);                                                                          \
+    int ebmcodegen_main(int argc, char** argv) {                                                                                                                                                                              \
+        FlagType flags;                                                                                                                                                                                                       \
+        OutputType output;                                                                                                                                                                                                    \
+        flags.program_name = argv[0];                                                                                                                                                                                         \
+        return futils::cmdline::templ::parse_or_err<std::string>(                                                                                                                                                             \
+            argc, argv, flags, [&](auto&& str, bool err) {  if(err){ futils::wrap::cerr_wrap()<< flags.program_name << ": " <<str; } else { futils::wrap::cout_wrap() << str;} },                                                                                                                                                                 \
+            [&](FlagType& flags, futils::cmdline::option::Context& ctx) { return ebmcodegen::internal::load_file(flags, output, ctx, [&](auto& w, auto& ebm, auto& output) { return Main(flags, ctx, w, ebm, output); }); }); \
+    }                                                                                                                                                                                                                         \
     int Main(FlagType& flags, futils::cmdline::option::Context& ctx, futils::binary::writer& w, ebm::ExtendedBinaryModule& ebm, OutputType& output)
 
-int bm2_main(int argc, char** argv);
+int ebmcodegen_main(int argc, char** argv);
 #if defined(__EMSCRIPTEN__)
 extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
-    return em_main(cmdline, bm2_main);
+    return em_main(cmdline, ebmcodegen_main);
 }
 #else
 int main(int argc, char** argv) {
-    return bm2_main(argc, argv);
+    return ebmcodegen_main(argc, argv);
 }
 #endif

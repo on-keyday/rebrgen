@@ -20,10 +20,28 @@ Here is workflow overview
 ```
 [] - program
 
-brgen AST(json) -input-> [ebmgen] -output-> EBM -input-> [code generator] -output-> each language code -integrated with -> [user program]
-                                                              ↑
-                                                              |generate C++ code
-                                                         [ebmcodegen] + customized code
+.bgn file -input->[src2json(brgen repository)]-output-> brgen AST(json) -input-> [ebmgen] -output-> EBM -input-> [code generator] -output-> each language code -integrated with -> [user program]
+                                                                                                                      ↑
+                                                                                                                      |generate C++ code
+                                                                                                                [ebmcodegen] + customized code
+```
+
+```mermaid
+flowchart LR
+
+
+    bgn[".bgn file"]
+    src2json["src2json<br/>(brgen repository)"]
+    ast["brgen AST<br/>(json)"]
+    ebmgen["ebmgen"]
+    ebm["EBM"]
+    codegen["code generator"]
+    lang["each language code"]
+    user["user program"]
+    ebmcodegen["ebmcodegen<br/>+ customized code"]
+
+    bgn -->|input| src2json -->|output| ast -->|input| ebmgen -->|output| ebm -->|input| codegen -->|output| lang -->|integrated with| user
+    ebmcodegen -.->|generate C++ code| codegen
 ```
 
 #### 2. The EBM: A Superior Intermediate Representation

@@ -4,6 +4,7 @@
 #include <wrap/cout.h>
 #include "../ebm/extended_binary_module.hpp"
 #include "helper/template_instance.h"
+#include "strutil/append.h"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <file/file_view.h>
@@ -30,12 +31,14 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool body_validate = false;
     VisitorTemplate visitor_template = VisitorTemplate::CodeGenerator;
     std::string_view visitor_impl_dir = "visitor/";
+    std::string_view default_visitor_impl_dir = "ebmcodegen/default_visitor/";
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&lang, "l,lang", "language for output", "LANG");
         ctx.VarBool(&body_validate, "body-validate", "generate code for body validation");
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
+        ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
         ctx.VarMap(&visitor_template, "mode", "visitor template kind", "{codegen,interpret}",
                    std::map<std::string, VisitorTemplate>{
                        {"codegen", VisitorTemplate::CodeGenerator},
@@ -219,23 +222,26 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     auto insert_include = [&](auto& w, auto&&... path) {
-        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, std::forward<decltype(path)>(path)..., "\")");
-        w.writeln("#include \"", flags.visitor_impl_dir, std::forward<decltype(path)>(path)..., "\"");
+        auto concated = futils::strutil::concat<std::string>(std::forward<decltype(path)>(path)...);
+        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
+        w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
+        w.writeln("#include \"", flags.default_visitor_impl_dir, concated, ".hpp", "\"");
         w.writeln("#endif");
     };
     visitor_stub.writeln("expected<void> entry() {");
     auto entry_scope = visitor_stub.indent_scope();
-    insert_include(visitor_stub, "entry", ".hpp");
+    insert_include(visitor_stub, "entry");
     visitor_stub.writeln("return {};");  // Placeholder for entry function
     entry_scope.execute();
     visitor_stub.writeln("}");
     w.writeln();  // line for end of #include
 
     w.writeln("struct Flags : ebmcodegen::Flags {");
-    insert_include(w, "Flags", ".hpp");
+    insert_include(w, "Flags");
     w.writeln("};");
     w.writeln("struct Output : ebmcodegen::Output {");
-    insert_include(w, "Output", ".hpp");
+    insert_include(w, "Output");
     w.writeln("};");
 
     auto ns_name = std::format("ebm{}gen", flags.lang);
@@ -366,7 +372,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 visitor_stub.writeln(") {");
                 auto stub_include = visitor_stub.indent_scope();
-                insert_include(visitor_stub, kind, "_", to_string(T(i)), ".hpp");
+                insert_include(visitor_stub, kind, "_", to_string(T(i)));
                 visitor_stub.writeln("return {};");
                 stub_include.execute();
                 visitor_stub.writeln("}");
@@ -402,7 +408,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     else {
         w.writeln(ns_name, "::Visitor visitor{ebm};");
     }
-    insert_include(w, "pre_entry", ".hpp");
+    insert_include(w, "pre_entry");
     w.writeln("auto result = visitor.entry();");
     w.writeln("if (!result) {");
     auto err_scope = w.indent_scope();
@@ -410,7 +416,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("return 1;");
     err_scope.execute();
     w.writeln("}");
-    insert_include(w, "post_entry", ".hpp");
+    insert_include(w, "post_entry");
     w.writeln("return 0;");
     main_scope.execute();
     w.writeln("}");

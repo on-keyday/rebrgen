@@ -32,7 +32,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view lang = "cpp";
     GenerateMode mode = GenerateMode::CodeGenerator;
     std::string_view visitor_impl_dir = "visitor/";
-    std::string_view default_visitor_impl_dir = "ebmcodegen/default_visitor/";
+    std::string_view default_visitor_impl_dir = "ebmcodegen/default_codegen_visitor/";
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -234,6 +234,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.mode == GenerateMode::CodeGenerator) {
         w.writeln("#include <code/code_writer.h>");
         visitor_stub.writeln("futils::code::CodeWriter<futils::binary::writer&> root;");
+        visitor_stub.writeln("using CodeWriter = futils::code::CodeWriter<std::string>;");
         visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w) : module_(m), root{w} {}");
     }
     else {
@@ -271,12 +272,19 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     auto ns_scope = w.indent_scope();
     w.writeln("using namespace ebmgen;");
 
+    std::string result_type = "expected<void>";
+
+    if (flags.mode == GenerateMode::CodeGenerator) {
+        result_type = "expected<std::string>";
+    }
+
     auto dispatcher = [&](auto t, std::string_view kind, auto subset) {
         using T = std::decay_t<decltype(t)>;
         CodeWriter stmt_dispatcher;
+
         auto write_visit_entry = [&](auto& w, auto&&... name) {
             w.writeln("template<typename Visitor>");
-            w.write("expected<void> ", name..., "(Visitor&& visitor,const ebm::", kind, "& in)");
+            w.write(result_type, " ", name..., "(Visitor&& visitor,const ebm::", kind, "& in)");
         };
         write_visit_entry(w, "visit_", kind);
         w.writeln(";");
@@ -315,6 +323,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             auto concept_name = std::format("has_visitor_{}_{}", kind, to_string(T(i)));
             auto concept_call_name = concept_name + "_call";
             auto visitor_func_name = std::format("visit_{}_{}", kind, to_string(T(i)));
+            auto dispatch_func_name = std::format("dispatch_{}_{}", kind, to_string(T(i)));
 
             // generating concepts
             {
@@ -324,7 +333,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
                 w.write(" { v.", visitor_func_name, "(");
                 add_arguments();
-                w.writeln(") } -> std::convertible_to<expected<void>>;");
+                w.writeln(") } -> std::convertible_to<", result_type, ">;");
                 requires_scope.execute();
                 w.writeln("};");
             }
@@ -334,13 +343,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 auto requires_scope = w.indent_scope();
                 w.write(" { fn(");
                 add_arguments();
-                w.writeln(") } -> std::convertible_to<expected<void>>;");
+                w.writeln(") } -> std::convertible_to<", result_type, ">;");
                 requires_scope.execute();
                 w.writeln("};");
             }
 
-            // generating visit function
-            write_visit_entry(w, visitor_func_name);
+            // generating dispatch function
+            write_visit_entry(w, dispatch_func_name);
             w.writeln(" {");
             {
                 auto scope = w.indent_scope();
@@ -362,37 +371,38 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 insert_include(w, kind, "_", "pre_visit");
                 insert_include(w, kind, "_", to_string(T(i)), "_", "pre_visit");
+                w.writeln(result_type, " result;");
                 w.writeln("if constexpr (", concept_name, "<Visitor>) {");
                 {
                     auto scope2 = w.indent_scope();
-                    w.write("MAYBE_VOID(result, visitor.", visitor_func_name, "(");
+                    w.write("result = visitor.", visitor_func_name, "(");
                     call_arguments();
-                    w.writeln("));");
+                    w.writeln(");");
                 }
                 w.writeln("}");
                 w.writeln("else if constexpr (", concept_call_name, "<Visitor>) {");
                 {
                     auto scope3 = w.indent_scope();
-                    w.write("MAYBE_VOID(result,visitor(");
+                    w.write("result = visitor(");
                     call_arguments();
-                    w.writeln("));");
+                    w.writeln(");");
                 }
                 w.writeln("}");
                 insert_include(w, kind, "_", "post_visit");
                 insert_include(w, kind, "_", to_string(T(i)), "_", "post_visit");
-                w.writeln("return {};");
+                w.writeln("return result;");
             }
             w.writeln("}");
 
-            // generating entry point of visit function
+            // generating entry point of dispatch function
             {
                 stmt_dispatcher.writeln("case ebm::", visit_enum(t), "::", to_string(T(i)), ":");
-                stmt_dispatcher.indent_writeln("return ", visitor_func_name, "(visitor,in);");
+                stmt_dispatcher.indent_writeln("return ", dispatch_func_name, "(visitor,in);");
             }
 
             // generating visitor function
             {
-                visitor_stub.write("expected<void> ", visitor_func_name, "(const ebm::", ref_name, "& item_id");
+                visitor_stub.write(result_type, " ", visitor_func_name, "(const ebm::", ref_name, "& item_id");
                 for (auto& field : body.fields) {
                     if (!subset[T(i)].contains(field.name)) {
                         continue;

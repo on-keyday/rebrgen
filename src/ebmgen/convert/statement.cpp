@@ -420,6 +420,7 @@ namespace ebmgen {
                 derived_fn = std::move(decl);
             }
             else {
+                derived_fn.parent_format = id;
                 EBMA_ADD_IDENTIFIER(enc_name, typ == GenerateType::Encode ? "encode" : "decode");
                 MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
                 derived_fn.name = enc_name;
@@ -479,6 +480,10 @@ namespace ebmgen {
 
     expected<ebm::FunctionDecl> StatementConverter::convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref) {
         ebm::FunctionDecl func_decl;
+        if (auto parent = node->belong.lock()) {
+            EBMA_CONVERT_STATEMENT(parent_ref, parent);
+            func_decl.parent_format = parent_ref;
+        }
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;
         if (auto typ = ctx.state().get_current_generate_type();

@@ -259,13 +259,52 @@ After you modified some code, please run these before you do next edit and confi
 
 1. run `ebm2<lang name> -i ./save/out.ebm`
 2. run `python script/build.py native Debug`
-3. run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless)
+3. run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless. this command enforce update ebm2<lang name>/main.cpp file and then rebuild it)
 4. run `./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp`
 5. run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
 6. run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`
 7. run `src/ebm/ebm`
 
+note that debug_output is less helpful for AI agent because of too complex structure and too large information that causes misunderstanding frequently. it is for core developer, not for assistant.
+
 IMPORTANT!!!:
-YOU MUST SEE DEFINITION (ESPECIALLY TYPE DEFINITION) WHILE YOU FIX COMPILE ERROR.
+YOU (INCLUDING AI AGENTS, LIKE GEMINI) MUST SEE DEFINITION (ESPECIALLY TYPE DEFINITION) WHILE YOU FIX COMPILE ERROR.
 99% OF ERROR IS BECAUSE OF MISUNDERSTANDING OF IT.
-YOU MAY SEE A LOT OF MACRO EXPAND, BUT THEY ARE ALMOST ONLY A NOISE, SO IGNORE UNLESS STRONGLY CONFIRM IT IS THE CAUSE.
+YOU MAY SEE A LOT OF MACRO EXPANSION, BUT THEY ARE ALMOST ONLY A NOISE, SO IGNORE UNLESS STRONGLY CONFIRM IT IS THE CAUSE. IF YOU SEE MACRO EXPANSION WITH ERROR MESSAGE, IT IS NOT MACRO WORKS WRONG BUT YOUR UNDERSTANDING OF
+DEFINITION IS WRONG. SO WHEN YOU SEE SUCH AS `undefined symbol` OR `type mismatch` etc..., YOU FIRST READ
+THE DEFINITION. DO NOT USE CACHED KNOWLEDGE, RELOAD DATA USING `ReadFile` ACTION.
+
+#### 8. Action Mental Model
+
+When you start or resume development, first run ebm2<lang name> to check the current development stage.
+Don't skip this step, as even if you think you last ran it, humans may have made changes since then, or you'll end up with inconsistent observations.
+If there is a TODO message or a missing code fragment, I first try to find the corresponding visitor/ code. Basically, development is centered around visitor/.
+When you get a compile error like type mismatch or undefined symbol, you might be tempted to guess what it is and name it, but before that, you should get into the habit of looking at the extended_binary_module.hpp file, mapping.hpp, and other \*.hpp files to check the definitions.
+You've read it and sometimes I think there's no definition, but that just means I haven't done ReadFile yet.
+You'd like to use SearchText when searching for text.
+It's not "The file doesn't exist! That's impossible!" Even if two files are presented and you think one of them should be loaded, if you look closely at the definitions you'll notice that there are cases where neither of them will be loaded.
+"This is the only conclusion!" No, that's just narrow-mindedness. It's just a failure to recognize reality, and that's just narrow-mindedness.
+This mental model can be applied not only during development but in any interaction.
+
+#### 9. Error Fix Strategy
+
+This is example of Error fix strategy for some compile errors.
+It's usually wrong to guess what something means just by looking at the wording. It's important to check the definition carefully.
+You may claim to have tried many different solutions, but that's a lie. It's just a narrow view.
+
+Error
+`error: called object type 'SizeUnit' is not a function or function pointer`
+Code
+
+```
+   59 |     return unexpect_error("Unsupported size unit for READ_DATA operation: {}", to_string(io_data.size.unit()));
+      |                                                                                          ~~~~~~~~~~~~~~~~~^
+```
+
+Strategy
+First you have to find what is `SizeUnit`?
+You can find the definition of `SizeUnit` at `extended_binary_module.hpp`.
+Then find the definition of `io_data.size.unit`.
+You can find type of `io_data` and then lookup type definition,
+then find the member `size` and then lookup type of `size`
+and finally you can find the definition of `unit`

@@ -186,7 +186,7 @@ namespace ebmgen {
                 if (ref.index) {
                     os_ << "[" << *ref.index << "]";
                 }
-                os_ << ")\n";
+                os_ << ", hint: " << to_string(ref.hint) << ")\n";
             }
             indent_level_--;
         }

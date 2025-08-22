@@ -991,6 +991,7 @@ namespace ebm {
         TYPE = 2,
         EXPRESSION = 3,
         STATEMENT = 4,
+        ALIAS = 5,
     };
     constexpr const char* to_string(AliasHint e) {
         switch(e) {
@@ -999,6 +1000,7 @@ namespace ebm {
             case AliasHint::TYPE: return "TYPE";
             case AliasHint::EXPRESSION: return "EXPRESSION";
             case AliasHint::STATEMENT: return "STATEMENT";
+            case AliasHint::ALIAS: return "ALIAS";
         }
         return "";
     }
@@ -1021,6 +1023,9 @@ namespace ebm {
         }
         if (str == "STATEMENT") {
             return AliasHint::STATEMENT;
+        }
+        if (str == "ALIAS") {
+            return AliasHint::ALIAS;
         }
         return std::nullopt;
     }

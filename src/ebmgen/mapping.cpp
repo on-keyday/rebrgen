@@ -1,12 +1,13 @@
 /*license*/
 #include "mapping.hpp"
 #include "common.hpp"
+#include "ebm/extended_binary_module.hpp"
 
 namespace ebmgen {
     bool verbose_error;
     // Builds maps from vector data for faster access
     void MappingTable::build_maps() {
-        auto map_to = [&](auto& map, const auto& vec) {
+        auto map_to = [&](auto& map, const auto& vec, ebm::AliasHint hint) {
             for (const auto& item : vec) {
                 map[item.id.id.value()] = &item;
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
@@ -16,6 +17,7 @@ namespace ebmgen {
                                 .name = name,
                                 .index = index,
                                 .ref = ebm::AnyRef{item.id.id},
+                                .hint = hint,
                             });
                         }
                     }
@@ -29,17 +31,18 @@ namespace ebmgen {
                 });
             }
         };
-        map_to(identifier_map_, module_.identifiers);
-        map_to(string_literal_map_, module_.strings);
-        map_to(type_map_, module_.types);
-        map_to(statement_map_, module_.statements);
-        map_to(expression_map_, module_.expressions);
+        map_to(identifier_map_, module_.identifiers, ebm::AliasHint::IDENTIFIER);
+        map_to(string_literal_map_, module_.strings, ebm::AliasHint::STRING);
+        map_to(type_map_, module_.types, ebm::AliasHint::TYPE);
+        map_to(statement_map_, module_.statements, ebm::AliasHint::STATEMENT);
+        map_to(expression_map_, module_.expressions, ebm::AliasHint::EXPRESSION);
 
         auto map_alias = [&](auto& map, const auto& alias) {
             map[alias.from.id.value()] = map[alias.to.id.value()];
             inverse_refs_[alias.to.id.value()].push_back(InverseRef{
                 .name = to_string(alias.hint),
                 .ref = ebm::AnyRef{alias.from.id},
+                .hint = ebm::AliasHint::ALIAS,
             });
         };
 
@@ -59,6 +62,9 @@ namespace ebmgen {
                     break;
                 case ebm::AliasHint::STATEMENT:
                     map_alias(statement_map_, alias);
+                    break;
+                case ebm::AliasHint::ALIAS:
+                    // ALIAS hint is not used for mapping, it's just a marker
                     break;
             }
         }

@@ -1,7 +1,7 @@
 /*license*/
 #pragma once
 #include <ebm/extended_binary_module.hpp>
-#include <map>
+#include <unordered_map>
 #include <cstdint>
 #include <vector>
 #include "common.hpp"
@@ -12,6 +12,7 @@ namespace ebmgen {
         const char* name;
         std::optional<size_t> index;
         ebm::AnyRef ref;
+        ebm::AliasHint hint;
     };
 
     struct MappingTable {
@@ -68,12 +69,12 @@ namespace ebmgen {
        private:
         const ebm::ExtendedBinaryModule& module_;
         // Caches for faster lookups
-        std::map<std::uint64_t, const ebm::Identifier*> identifier_map_;
-        std::map<std::uint64_t, const ebm::StringLiteral*> string_literal_map_;
-        std::map<std::uint64_t, const ebm::Type*> type_map_;
-        std::map<std::uint64_t, const ebm::Statement*> statement_map_;
-        std::map<std::uint64_t, const ebm::Expression*> expression_map_;
-        std::map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
+        std::unordered_map<std::uint64_t, const ebm::Identifier*> identifier_map_;
+        std::unordered_map<std::uint64_t, const ebm::StringLiteral*> string_literal_map_;
+        std::unordered_map<std::uint64_t, const ebm::Type*> type_map_;
+        std::unordered_map<std::uint64_t, const ebm::Statement*> statement_map_;
+        std::unordered_map<std::uint64_t, const ebm::Expression*> expression_map_;
+        std::unordered_map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
         void build_maps();
     };
 }  // namespace ebmgen

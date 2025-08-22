@@ -181,7 +181,7 @@ namespace ebmgen {
     expected<void> remove_unused(TransformContext& ctx) {
         MAYBE(max_id, ctx.max_id());
         std::map<size_t, std::vector<ebm::AnyRef>> used_refs;
-        auto trial = [&] -> size_t {
+        auto trial = [&] -> expected<size_t> {
             used_refs.clear();
             auto map_to = [&](const auto& vec) {
                 for (const auto& item : vec) {
@@ -227,6 +227,8 @@ namespace ebmgen {
                     case ebm::AliasHint::TYPE:
                         used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
                         break;
+                    case ebm::AliasHint::ALIAS:
+                        return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", alias.from.id.value(), alias.to.id.value());
                 }
             }
             std::set<std::uint64_t> should_remove;
@@ -258,11 +260,12 @@ namespace ebmgen {
             });
             return used_refs.size();
         };
-        auto first_size = trial();
-        auto second_size = trial();
+        MAYBE(first_size, trial());
+        MAYBE(second_size, trial());
         while (first_size != second_size) {
             first_size = second_size;
-            second_size = trial();
+            MAYBE(third_size, trial());
+            second_size = third_size;
         }
         std::vector<std::tuple<ebm::AnyRef, size_t>> most_used;
         for (const auto& [id, refs] : used_refs) {

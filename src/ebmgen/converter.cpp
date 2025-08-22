@@ -2,6 +2,7 @@
 #include <core/ast/traverse.h>
 #include <functional>
 #include "binary/log2i.h"
+#include "common.hpp"
 #include "convert/helper.hpp"
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
@@ -62,6 +63,11 @@ namespace ebmgen {
         MAYBE(aliases_len, varint(aliases.size()));
         ebm.aliases_len = aliases_len;
         ebm.aliases = std::move(aliases);
+        for (auto& alias : ebm.aliases) {
+            if (alias.hint == ebm::AliasHint::ALIAS) {
+                return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", alias.from.id.value(), alias.to.id.value());
+            }
+        }
 
         MAYBE(loc_len, varint(debug_locs.size()));
 

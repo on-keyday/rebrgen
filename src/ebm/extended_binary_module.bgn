@@ -634,6 +634,7 @@ enum AliasHint:
     TYPE = 2 # Alias for a type
     EXPRESSION = 3 # Alias for an expression
     STATEMENT = 4 # Alias for a statement
+    ALIAS = 5 # Alias for a generic alias
 
 format RefAlias:
     hint :AliasHint # Type of alias

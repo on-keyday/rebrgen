@@ -241,12 +241,16 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m) : module_(m) {}");
     }
 
-    auto insert_include = [&](auto& w, auto&&... path) {
+    auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
         auto concated = futils::strutil::concat<std::string>(std::forward<decltype(path)>(path)...);
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
         w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.default_visitor_impl_dir, concated, ".hpp", "\"");
+    };
+
+    auto insert_include = [&](auto& w, auto&&... path) {
+        insert_include_without_endif(w, std::forward<decltype(path)>(path)...);
         w.writeln("#endif");
     };
     insert_include(visitor_stub, "Visitor");
@@ -291,6 +295,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         write_visit_entry(stmt_dispatcher, "visit_", kind);
         stmt_dispatcher.writeln(" {");
         auto scope_ = stmt_dispatcher.indent_scope();
+        insert_include_without_endif(stmt_dispatcher, kind, "_", "dispatch");
+        stmt_dispatcher.writeln("#else");
         stmt_dispatcher.writeln("switch (in.body.kind) {");
 
         for (size_t i = 0; to_string(T(i))[0]; i++) {
@@ -431,6 +437,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         stmt_dispatcher.writeln("default:");
         stmt_dispatcher.indent_writeln("return unexpect_error(\"Unknown ", kind, " kind: {}\", to_string(in.body.kind));");
         stmt_dispatcher.writeln("}");
+        stmt_dispatcher.writeln("#endif");
         scope_.execute();
         stmt_dispatcher.writeln("}");
 

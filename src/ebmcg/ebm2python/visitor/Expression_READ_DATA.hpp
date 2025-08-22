@@ -3,17 +3,18 @@
 
 // Get the IOData statement object from the io_statement parameter
 MAYBE(io_data_stmt_obj, this->module_.get_statement(io_statement));
-if (io_data_stmt_obj.body.kind != ebm::StatementOp::READ_DATA) { // Should be READ_DATA
+if (io_data_stmt_obj.body.kind != ebm::StatementOp::READ_DATA) {  // Should be READ_DATA
     return unexpect_error("Expected READ_DATA statement for Expression_READ_DATA");
 }
 auto& io_data = *io_data_stmt_obj.body.read_data();
 
 // Get data type string
-MAYBE(data_type_str, this->type_to_python_str(io_data.data_type));
+MAYBE(data_type, this->module_.get_type(io_data.data_type));
+MAYBE(data_type_str, visit_Type(*this, data_type));
 
 // Get target statement object from the target_stmt parameter
 MAYBE(target_stmt_obj, this->module_.get_statement(target_stmt));
-if (target_stmt_obj.body.kind != ebm::StatementOp::ASSIGNMENT) { // Should be ASSIGNMENT
+if (target_stmt_obj.body.kind != ebm::StatementOp::ASSIGNMENT) {  // Should be ASSIGNMENT
     return unexpect_error("Expected ASSIGNMENT statement for target_stmt in Expression_READ_DATA");
 }
 
@@ -30,7 +31,8 @@ if (var_decl_stmt_obj.body.kind != ebm::StatementOp::VARIABLE_DECL && var_decl_s
 ebm::IdentifierRef target_identifier_ref;
 if (var_decl_stmt_obj.body.kind == ebm::StatementOp::VARIABLE_DECL) {
     target_identifier_ref = var_decl_stmt_obj.body.var_decl()->name;
-} else { // FIELD_DECL
+}
+else {  // FIELD_DECL
     target_identifier_ref = var_decl_stmt_obj.body.field_decl()->name;
 }
 
@@ -47,20 +49,22 @@ if (io_data.size.unit == ebm::SizeUnit::BYTE_FIXED) {
         return unexpect_error("Fixed byte size is missing for READ_DATA operation.");
     }
     read_size_str = std::to_string(io_data.size.size()->value());
-} else if (io_data.size.unit == ebm::SizeUnit::BIT_FIXED) {
+}
+else if (io_data.size.unit == ebm::SizeUnit::BIT_FIXED) {
     if (!io_data.size.size()) {
         return unexpect_error("Fixed bit size is missing for READ_DATA operation.");
     }
     // Convert bits to bytes, rounding up
     read_size_str = std::to_string((io_data.size.size()->value() + 7) / 8);
-} else {
+}
+else {
     // For dynamic sizes, we'll need to evaluate the expression first.
     // For now, return an error or a placeholder.
     return unexpect_error("Unsupported size unit for READ_DATA operation: {}", to_string(io_data.size.unit));
 }
 
 // Generate the Python code
-this->root.writeln("import struct"); // Add import for struct module
+this->root.writeln("import struct");  // Add import for struct module
 this->root.writeln(target_var_name, " = struct.unpack(\", struct_format, \", stream.read(", read_size_str, "))[0]");
 
 return {};

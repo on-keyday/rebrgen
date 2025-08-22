@@ -1787,6 +1787,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<std::string> visit_Statement(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_dispatch.hpp")
+        #include "visitor/Statement_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp")
+        #include "ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp"
+        #else
         switch (in.body.kind) {
         case ebm::StatementOp::BLOCK:
             return dispatch_Statement_BLOCK(visitor,in);
@@ -1855,6 +1860,7 @@ namespace ebm2python {
         default:
             return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
         }
+        #endif
     }
     template<typename Visitor>
     expected<std::string> visit_Expression(Visitor&& visitor,const ebm::Expression& in);
@@ -3169,6 +3175,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<std::string> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_dispatch.hpp")
+        #include "visitor/Expression_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp")
+        #include "ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp"
+        #else
         switch (in.body.kind) {
         case ebm::ExpressionOp::LITERAL_INT:
             return dispatch_Expression_LITERAL_INT(visitor,in);
@@ -3219,6 +3230,7 @@ namespace ebm2python {
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
+        #endif
     }
     template<typename Visitor>
     expected<std::string> visit_Type(Visitor&& visitor,const ebm::Type& in);
@@ -4346,6 +4358,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<std::string> visit_Type(Visitor&& visitor,const ebm::Type& in) {
+        #if __has_include("visitor/Type_dispatch.hpp")
+        #include "visitor/Type_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_dispatch.hpp")
+        #include "ebmcodegen/default_codegen_visitor/Type_dispatch.hpp"
+        #else
         switch (in.body.kind) {
         case ebm::TypeKind::INT:
             return dispatch_Type_INT(visitor,in);
@@ -4392,6 +4409,7 @@ namespace ebm2python {
         default:
             return unexpect_error("Unknown Type kind: {}", to_string(in.body.kind));
         }
+        #endif
     }
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";

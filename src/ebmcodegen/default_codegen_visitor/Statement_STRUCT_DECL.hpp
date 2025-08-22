@@ -1,16 +1,14 @@
 
 
-auto name = module_.get_identifier_or(struct_decl.name, ebm::AnyRef{item_id.id});
+auto name = module_.get_identifier_or(struct_decl.name, item_id);
 
 CodeWriter w;
 
 w.writeln("struct ", name, " {");
 {
     auto scope = w.indent_scope();
-    for (auto& field : struct_decl.fields.container) {
-        MAYBE(field_ref, module_.get_statement(field));
-        MAYBE(stmt, visit_Statement(*this, field_ref));
-        w.write_unformatted(stmt);
-    }
+    MAYBE(block, visit_Block(*this, struct_decl.fields));
+    w.write_unformatted(block);
 }
 w.writeln("};");
+return w.out();

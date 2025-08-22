@@ -2,8 +2,7 @@
 // We can use variables like `visitor` and `func_decl` directly.
 CodeWriter w;
 auto func_name = this->module_.get_identifier_or(func_decl.name, ebm::AnyRef{item_id.id}, "function");
-MAYBE(return_type, this->module_.get_type(func_decl.return_type));
-MAYBE(return_type_str, visit_Type(*this, return_type));
+MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 std::string params_str = "";
 if (func_decl.parent_format.id.value() != 0) {
@@ -15,8 +14,7 @@ if (func_decl.params.container.empty() == false) {
         if (param_stmt.body.kind == ebm::StatementOp::VARIABLE_DECL) {
             auto& var_decl = *param_stmt.body.var_decl();
             auto param_name = this->module_.get_identifier_or(var_decl.name, ebm::AnyRef{param_stmt.id.id}, "param");
-            MAYBE(type, this->module_.get_type(var_decl.var_type));
-            MAYBE(param_type_str, visit_Type(*this, type));  // Correctly extract the string value
+            MAYBE(param_type_str, visit_Type(*this, var_decl.var_type));  // Correctly extract the string value
             if (!params_str.empty()) {
                 params_str += ", ";
             }
@@ -30,8 +28,7 @@ if (func_decl.params.container.empty() == false) {
 
 w.writeln("def ", func_name, "(", params_str, ") -> ", return_type_str, ":");
 auto scope = w.indent_scope();
-MAYBE(body_stmt, module_.get_statement(func_decl.body));
-MAYBE(res, visit_Statement(*this, body_stmt));
+MAYBE(res, visit_Statement(*this, func_decl.body));
 if (res.empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }

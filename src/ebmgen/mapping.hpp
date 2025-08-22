@@ -4,6 +4,7 @@
 #include <map>
 #include <cstdint>
 #include <vector>
+#include "common.hpp"
 
 namespace ebmgen {
 
@@ -24,7 +25,36 @@ namespace ebmgen {
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
+        std::optional<ebm::TypeKind> get_type_kind(const ebm::TypeRef& ref) const {
+            if (const auto* type = get_type(ref)) {
+                return type->body.kind;
+            }
+            return std::nullopt;
+        }
+
+        std::optional<ebm::StatementOp> get_statement_op(const ebm::StatementRef& ref) const {
+            if (const auto* stmt = get_statement(ref)) {
+                return stmt->body.kind;
+            }
+            return std::nullopt;
+        }
+
+        std::optional<ebm::ExpressionOp> get_expression_op(const ebm::ExpressionRef& ref) const {
+            if (const auto* expr = get_expression(ref)) {
+                return expr->body.kind;
+            }
+            return std::nullopt;
+        }
+
         std::string get_identifier_or(const ebm::IdentifierRef& ref, const ebm::AnyRef& default_ref, std::string_view prefix = "tmp") const;
+
+        template <AnyRef T>
+        std::string get_identifier_or(const ebm::IdentifierRef& ref, const T& default_ref, std::string_view prefix = "tmp") const {
+            return get_identifier_or(ref, ebm::AnyRef{default_ref.id}, prefix);
+        }
+
+        const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
+        std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "tmp") const;
 
         // same as get_statement(ebm::StatementRef{module().max_id.id})
         const ebm::Statement* get_entry_point() const;

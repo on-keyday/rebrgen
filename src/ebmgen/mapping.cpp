@@ -108,4 +108,30 @@ namespace ebmgen {
         }
         return std::format("{}{}", prefix, default_ref.id.value());
     }
+
+    const ebm::Identifier* MappingTable::get_identifier(const ebm::StatementRef& ref) const {
+        auto stmt = get_statement(ref);
+        if (!stmt) {
+            return nullptr;
+        }
+        ebm::IdentifierRef ident;
+        stmt->body.visit([&](auto&& visitor, std::string_view name, auto&& value) {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<T, ebm::IdentifierRef>) {
+                // if (name == "name") {
+                ident = value;
+                //}
+            }
+            else
+                VISITOR_RECURSE(visitor, name, value)
+        });
+        return get_identifier(ident);
+    }
+
+    std::string MappingTable::get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix) const {
+        if (const ebm::Identifier* id = get_identifier(ref)) {
+            return id->body.data;
+        }
+        return std::format("{}{}", prefix, ref.id.value());
+    }
 }  // namespace ebmgen

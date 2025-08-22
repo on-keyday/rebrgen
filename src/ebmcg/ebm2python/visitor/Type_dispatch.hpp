@@ -2,8 +2,7 @@
 const auto& type = in;  // Dereference to get the actual type object
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {
-    MAYBE(type, visitor.module_.get_type(type_ref));
-    return visit_Type(visitor, type);
+    return visit_Type(visitor, type_ref);
 };
 
 auto& module_ = visitor.module_;
@@ -20,7 +19,7 @@ switch (type.body.kind) {
     case ebm::TypeKind::RECURSIVE_STRUCT: {  // Handle RECURSIVE_STRUCT here as well
         // For structs, get the name of the struct
         MAYBE(struct_decl_stmt, module_.get_statement(*type.body.id()));
-        auto struct_name = module_.get_identifier_or(struct_decl_stmt.body.struct_decl()->name, ebm::AnyRef{type.id.id}, "Struct");
+        auto struct_name = module_.get_identifier_or(struct_decl_stmt.body.struct_decl()->name, type.id, "Struct");
         return struct_name;
     }
     case ebm::TypeKind::VOID:

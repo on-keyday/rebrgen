@@ -253,8 +253,11 @@ namespace ebmgen {
         if (!base) {
             return unexpect_error("Identifier {} not found", node->ident);
         }
-        EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
-        body.id(id_ref);
+        {
+            const auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
+            EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
+            body.id(id_ref);
+        }
         return {};
     }
 

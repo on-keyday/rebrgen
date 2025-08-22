@@ -298,10 +298,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         insert_include_without_endif(stmt_dispatcher, kind, "_", "dispatch");
         stmt_dispatcher.writeln("#else");
         stmt_dispatcher.writeln("switch (in.body.kind) {");
+        auto body_name = std::string(kind) + "Body";
+        auto ref_name = std::string(kind) + "Ref";
 
         for (size_t i = 0; to_string(T(i))[0]; i++) {
-            auto body_name = std::string(kind) + "Body";
-            auto ref_name = std::string(kind) + "Ref";
             auto& body = struct_map[body_name];
             auto add_arguments = [&] {
                 w.write("std::declval<const ebm::", ref_name, "&>()");
@@ -441,6 +441,50 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         scope_.execute();
         stmt_dispatcher.writeln("}");
 
+        auto lowered_kind = std::string(kind);
+        lowered_kind[0] = std::tolower(kind[0]);
+        stmt_dispatcher.writeln("// short-hand visitor for ", ref_name);
+        stmt_dispatcher.writeln("template<typename Visitor>");
+        stmt_dispatcher.writeln(result_type, " visit_", kind, "(Visitor&& visitor,const ebm::", ref_name, "& ref) {");
+        {
+            auto scope = stmt_dispatcher.indent_scope();
+            stmt_dispatcher.writeln("MAYBE(elem, visitor.module_.get_", lowered_kind, "(ref));");
+            stmt_dispatcher.writeln("return visit_", kind, "(visitor,elem);");
+        }
+        stmt_dispatcher.writeln("}");
+
+        auto list_name = std::format("{}s", kind);
+        if (kind == "Statement") {
+            list_name = "Block";
+        }
+
+        stmt_dispatcher.writeln("template<typename Visitor>");
+        stmt_dispatcher.writeln(result_type, " visit_", list_name, "(Visitor&& visitor,const ebm::", list_name, "& in) {");
+        {
+            auto list_scope = stmt_dispatcher.indent_scope();
+            if (flags.mode == GenerateMode::CodeGenerator) {
+                stmt_dispatcher.writeln("futils::code::CodeWriter<std::string> w;");
+            }
+            stmt_dispatcher.writeln("for(auto& elem:in.container) {");
+            {
+                auto loop_scope = stmt_dispatcher.indent_scope();
+                stmt_dispatcher.writeln("auto result = visit_", kind, "(visitor,elem);");
+                stmt_dispatcher.writeln("if (!result) {");
+                stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
+                stmt_dispatcher.writeln("}");
+                if (flags.mode == GenerateMode::CodeGenerator) {
+                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value()));");
+                }
+            }
+            stmt_dispatcher.writeln("}");
+            if (flags.mode == GenerateMode::CodeGenerator) {
+                stmt_dispatcher.writeln("return w.out();");
+            }
+            else {
+                stmt_dispatcher.writeln("return {};");  // Placeholder for non-codegen mode
+            }
+        }
+        stmt_dispatcher.writeln("}");
         w.write_unformatted(stmt_dispatcher.out());
     };
 

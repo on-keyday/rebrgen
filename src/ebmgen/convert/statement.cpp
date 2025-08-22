@@ -57,6 +57,7 @@ namespace ebmgen {
         std::optional<ebm::ExpressionRef> cond_v;
         if (node->init) {
             auto make_init_visited = [&](ebm::StatementRef ident_def) {
+                const auto _scope = ctx.state().set_current_generate_type(GenerateType::Normal);
                 ctx.state().add_visited_node(node->init, ident_def);
             };
             if (auto bop = ast::as<ast::Binary>(node->init);

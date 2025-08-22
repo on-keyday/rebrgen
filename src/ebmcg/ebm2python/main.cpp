@@ -1862,6 +1862,24 @@ namespace ebm2python {
         }
         #endif
     }
+    // short-hand visitor for StatementRef
+    template<typename Visitor>
+    expected<std::string> visit_Statement(Visitor&& visitor,const ebm::StatementRef& ref) {
+        MAYBE(elem, visitor.module_.get_statement(ref));
+        return visit_Statement(visitor,elem);
+    }
+    template<typename Visitor>
+    expected<std::string> visit_Block(Visitor&& visitor,const ebm::Block& in) {
+        futils::code::CodeWriter<std::string> w;
+        for(auto& elem:in.container) {
+            auto result = visit_Statement(visitor,elem);
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            w.write_unformatted(std::move(result.value()));
+        }
+        return w.out();
+    }
     template<typename Visitor>
     expected<std::string> visit_Expression(Visitor&& visitor,const ebm::Expression& in);
     template<typename Visitor>
@@ -3232,6 +3250,24 @@ namespace ebm2python {
         }
         #endif
     }
+    // short-hand visitor for ExpressionRef
+    template<typename Visitor>
+    expected<std::string> visit_Expression(Visitor&& visitor,const ebm::ExpressionRef& ref) {
+        MAYBE(elem, visitor.module_.get_expression(ref));
+        return visit_Expression(visitor,elem);
+    }
+    template<typename Visitor>
+    expected<std::string> visit_Expressions(Visitor&& visitor,const ebm::Expressions& in) {
+        futils::code::CodeWriter<std::string> w;
+        for(auto& elem:in.container) {
+            auto result = visit_Expression(visitor,elem);
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            w.write_unformatted(std::move(result.value()));
+        }
+        return w.out();
+    }
     template<typename Visitor>
     expected<std::string> visit_Type(Visitor&& visitor,const ebm::Type& in);
     template<typename Visitor>
@@ -4410,6 +4446,24 @@ namespace ebm2python {
             return unexpect_error("Unknown Type kind: {}", to_string(in.body.kind));
         }
         #endif
+    }
+    // short-hand visitor for TypeRef
+    template<typename Visitor>
+    expected<std::string> visit_Type(Visitor&& visitor,const ebm::TypeRef& ref) {
+        MAYBE(elem, visitor.module_.get_type(ref));
+        return visit_Type(visitor,elem);
+    }
+    template<typename Visitor>
+    expected<std::string> visit_Types(Visitor&& visitor,const ebm::Types& in) {
+        futils::code::CodeWriter<std::string> w;
+        for(auto& elem:in.container) {
+            auto result = visit_Type(visitor,elem);
+            if (!result) {
+                return unexpect_error(std::move(result.error()));
+            }
+            w.write_unformatted(std::move(result.value()));
+        }
+        return w.out();
     }
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";

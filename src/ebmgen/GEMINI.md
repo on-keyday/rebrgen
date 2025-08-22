@@ -1,3 +1,5 @@
+THE MOST IMPORTANT INSTRUCTION IS TO REMEMBER THAT YOU KNOW NOTHING. YOU MAY HAVE A WEALTH OF KNOWLEDGE, BUT VERY LITTLE PRACTICAL EXPERIENCE. SO, START WITH THIS DOCUMENT AS A FOUNDATION, AND DON'T FORGET TO THINK OUTSIDE THE BOX. ALWAYS REMEMBER TO ASK YOURSELF HOW IT LOOKS OVERALL AND HOW IT IS CONSISTENT WITH EXISTING IMPLEMENTATIONS. UNDERSTAND THAT THERE IS NO SINGLE CORRECT ANSWER. TRY TO OBSERVE REALITY AS CLOSELY AS POSSIBLE, AND REMEMBER TO DISTINGUISH BETWEEN INFERENCE AND OBSERVATION OF REALITY.
+
 ### `ebmgen` Project Overview
 
 This document provides a concise overview of the `ebmgen` project, its purpose, and how to work with it.
@@ -114,7 +116,7 @@ These files are in `src/` directory in `rebrgen` root directory.
   5 └── ebm.ps1                       # PowerShell script to generate the C++ files from the .bgn file
   6
   7 ebmcodegen/
-  8 ├── default_visitor/              # A default visitor implementation. Downstream generators can include this to get a basic recursive traversal behavior.
+  8 ├── default_codegen_visitor/              # A default visitor implementation. Downstream generators can include this to get a basic recursive traversal behavior.
   9 │   ├── Statement_BLOCK.hpp       # Default implementation for visiting a block statement (iterates and visits each statement within).
  10 │   └── ...                       # Other default implementations for various EBM nodes.
  11 ├── stub/                         # Common C++ code included by the generated skeleton.
@@ -273,6 +275,8 @@ YOU (INCLUDING AI AGENTS, LIKE GEMINI) MUST SEE DEFINITION (ESPECIALLY TYPE DEFI
 YOU MAY SEE A LOT OF MACRO EXPANSION, BUT THEY ARE ALMOST ONLY A NOISE, SO IGNORE UNLESS STRONGLY CONFIRM IT IS THE CAUSE. IF YOU SEE MACRO EXPANSION WITH ERROR MESSAGE, IT IS NOT MACRO WORKS WRONG BUT YOUR UNDERSTANDING OF
 DEFINITION IS WRONG. SO WHEN YOU SEE SUCH AS `undefined symbol` OR `type mismatch` etc..., YOU FIRST READ
 THE DEFINITION. DO NOT USE CACHED KNOWLEDGE, RELOAD DATA USING `ReadFile` ACTION.
+YOU DO NOT NEED TO READ MACRO DEFINITION, YOU PRIMARY READ TYPE DEFINITION OR VARIABLE DEFINITION FIRST.
+IT IS WASTE OF TIME TO READ MACRO DEFINITION.
 
 #### 8. Action Mental Model
 
@@ -284,6 +288,8 @@ You've read it and sometimes I think there's no definition, but that just means 
 You'd like to use SearchText when searching for text.
 It's not "The file doesn't exist! That's impossible!" Even if two files are presented and you think one of them should be loaded, if you look closely at the definitions you'll notice that there are cases where neither of them will be loaded.
 "This is the only conclusion!" No, that's just narrow-mindedness. It's just a failure to recognize reality, and that's just narrow-mindedness.
+If you find yourself thinking, "The output is still the same. It's not generated correctly," try the commands in section 7.
+Think carefully about whether it's language-specific or general code, and where to add it.
 This mental model can be applied not only during development but in any interaction.
 
 #### 9. Error Fix Strategy

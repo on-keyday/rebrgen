@@ -493,14 +493,13 @@ namespace ebm {
         UNION_DECL = 21,
         UNION_MEMBER_DECL = 22,
         PROGRAM_DECL = 23,
-        BIT_FIELD_DECL = 24,
-        PROPERTY_DECL = 25,
-        METADATA = 26,
-        IMPORT_MODULE = 27,
-        EXPRESSION = 28,
-        PHI_NODE = 29,
-        ERROR_REPORT = 30,
-        LOWERED_STATEMENTS = 31,
+        PROPERTY_DECL = 24,
+        METADATA = 25,
+        IMPORT_MODULE = 26,
+        EXPRESSION = 27,
+        PHI_NODE = 28,
+        ERROR_REPORT = 29,
+        LOWERED_STATEMENTS = 30,
     };
     constexpr const char* to_string(StatementOp e) {
         switch(e) {
@@ -528,7 +527,6 @@ namespace ebm {
             case StatementOp::UNION_DECL: return "UNION_DECL";
             case StatementOp::UNION_MEMBER_DECL: return "UNION_MEMBER_DECL";
             case StatementOp::PROGRAM_DECL: return "PROGRAM_DECL";
-            case StatementOp::BIT_FIELD_DECL: return "BIT_FIELD_DECL";
             case StatementOp::PROPERTY_DECL: return "PROPERTY_DECL";
             case StatementOp::METADATA: return "METADATA";
             case StatementOp::IMPORT_MODULE: return "IMPORT_MODULE";
@@ -615,9 +613,6 @@ namespace ebm {
         }
         if (str == "PROGRAM_DECL") {
             return StatementOp::PROGRAM_DECL;
-        }
-        if (str == "BIT_FIELD_DECL") {
-            return StatementOp::BIT_FIELD_DECL;
         }
         if (str == "PROPERTY_DECL") {
             return StatementOp::PROPERTY_DECL;
@@ -1069,7 +1064,6 @@ namespace ebm {
     struct StructDecl;
     struct UnionDecl;
     struct UnionMemberDecl;
-    struct BitFieldDecl;
     struct PropertyDecl;
     struct ErrorReport;
     struct StatementBody;
@@ -2525,40 +2519,6 @@ namespace ebm {
             v(v, "parent_union",visitor_tag<decltype(std::declval<UnionMemberDecl>().parent_union)>{});
         }
     };
-    struct EBM_API BitFieldDecl{
-        IdentifierRef name;
-        StatementRef parent_format;
-        Varint bit_size;
-        PackedOpType packed_op_type{};
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        constexpr static const char* visitor_name = "BitFieldDecl";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "name",(*this).name);
-            v(v, "parent_format",(*this).parent_format);
-            v(v, "bit_size",(*this).bit_size);
-            v(v, "packed_op_type",(*this).packed_op_type);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "name",(*this).name);
-            v(v, "parent_format",(*this).parent_format);
-            v(v, "bit_size",(*this).bit_size);
-            v(v, "packed_op_type",(*this).packed_op_type);
-        }
-        template<typename T>
-        struct visitor_tag {
-            using type = T;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<BitFieldDecl>().name)>{});
-            v(v, "parent_format",visitor_tag<decltype(std::declval<BitFieldDecl>().parent_format)>{});
-            v(v, "bit_size",visitor_tag<decltype(std::declval<BitFieldDecl>().bit_size)>{});
-            v(v, "packed_op_type",visitor_tag<decltype(std::declval<BitFieldDecl>().packed_op_type)>{});
-        }
-    };
     struct EBM_API PropertyDecl{
         IdentifierRef name;
         StatementRef parent_format;
@@ -2698,33 +2658,30 @@ namespace ebm {
             Block block;
         };
         struct EBM_API union_struct_73{
-            BitFieldDecl bit_field_decl;
-        };
-        struct EBM_API union_struct_74{
             PropertyDecl property_decl;
         };
-        struct EBM_API union_struct_75{
+        struct EBM_API union_struct_74{
             Metadata metadata;
         };
-        struct EBM_API union_struct_76{
+        struct EBM_API union_struct_75{
             IdentifierRef module_name;
             IdentifierRef alias;
         };
-        struct EBM_API union_struct_77{
+        struct EBM_API union_struct_76{
             ExpressionRef target_var;
             Varint params_len;
             std::vector<PhiParam> params;
         };
-        struct EBM_API union_struct_78{
+        struct EBM_API union_struct_77{
             ErrorReport error_report;
         };
-        struct EBM_API union_struct_79{
+        struct EBM_API union_struct_78{
             ExpressionRef expression;
         };
-        struct EBM_API union_struct_80{
+        struct EBM_API union_struct_79{
             LoweredStatements lowered_statements;
         };
-        std::variant<std::monostate, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80> union_variant_48;
+        std::variant<std::monostate, union_struct_49, union_struct_50, union_struct_51, union_struct_52, union_struct_53, union_struct_54, union_struct_55, union_struct_56, union_struct_57, union_struct_58, union_struct_59, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79> union_variant_48;
         const IdentifierRef* alias() const;
         IdentifierRef* alias();
         bool alias(IdentifierRef&& v);
@@ -2733,10 +2690,6 @@ namespace ebm {
         AssertDesc* assert_desc();
         bool assert_desc(AssertDesc&& v);
         bool assert_desc(const AssertDesc& v);
-        const BitFieldDecl* bit_field_decl() const;
-        BitFieldDecl* bit_field_decl();
-        bool bit_field_decl(BitFieldDecl&& v);
-        bool bit_field_decl(const BitFieldDecl& v);
         const Block* block() const;
         Block* block();
         bool block(Block&& v);
@@ -2870,7 +2823,6 @@ namespace ebm {
             v(v, "kind",(*this).kind);
             v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
-            v(v, "bit_field_decl",(*this).bit_field_decl());
             v(v, "block",(*this).block());
             v(v, "break_",(*this).break_());
             v(v, "continue_",(*this).continue_());
@@ -2908,7 +2860,6 @@ namespace ebm {
             v(v, "kind",(*this).kind);
             v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
-            v(v, "bit_field_decl",(*this).bit_field_decl());
             v(v, "block",(*this).block());
             v(v, "break_",(*this).break_());
             v(v, "continue_",(*this).continue_());
@@ -2950,7 +2901,6 @@ namespace ebm {
             v(v, "kind",visitor_tag<decltype(std::declval<StatementBody>().kind)>{});
             v(v, "alias",visitor_tag<decltype(std::declval<StatementBody>().alias())>{});
             v(v, "assert_desc",visitor_tag<decltype(std::declval<StatementBody>().assert_desc())>{});
-            v(v, "bit_field_decl",visitor_tag<decltype(std::declval<StatementBody>().bit_field_decl())>{});
             v(v, "block",visitor_tag<decltype(std::declval<StatementBody>().block())>{});
             v(v, "break_",visitor_tag<decltype(std::declval<StatementBody>().break_())>{});
             v(v, "continue_",visitor_tag<decltype(std::declval<StatementBody>().continue_())>{});
@@ -3038,6 +2988,9 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
+        struct EBM_API union_struct_82{
+            std::uint8_t size = 0;
+        };
         struct EBM_API union_struct_83{
             std::uint8_t size = 0;
         };
@@ -3045,48 +2998,45 @@ namespace ebm {
             std::uint8_t size = 0;
         };
         struct EBM_API union_struct_85{
-            std::uint8_t size = 0;
         };
         struct EBM_API union_struct_86{
-        };
-        struct EBM_API union_struct_87{
             TypeRef element_type;
             Varint length;
         };
-        struct EBM_API union_struct_88{
+        struct EBM_API union_struct_87{
             TypeRef element_type;
+        };
+        struct EBM_API union_struct_88{
+            StatementRef id;
         };
         struct EBM_API union_struct_89{
             StatementRef id;
         };
         struct EBM_API union_struct_90{
             StatementRef id;
-        };
-        struct EBM_API union_struct_91{
-            StatementRef id;
             TypeRef base_type;
         };
-        struct EBM_API union_struct_92{
+        struct EBM_API union_struct_91{
             TypeRef common_type;
             Types members;
         };
-        struct EBM_API union_struct_93{
+        struct EBM_API union_struct_92{
             TypeRef property_type;
         };
-        struct EBM_API union_struct_94{
+        struct EBM_API union_struct_93{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_95{
+        struct EBM_API union_struct_94{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_96{
+        struct EBM_API union_struct_95{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_97{
+        struct EBM_API union_struct_96{
             TypeRef return_type;
             Types params;
         };
-        std::variant<std::monostate, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97> union_variant_82;
+        std::variant<std::monostate, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96> union_variant_81;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);

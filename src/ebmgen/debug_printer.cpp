@@ -41,6 +41,10 @@ namespace ebmgen {
         const auto* type = module_.get_type(ref);
         if (type) {
             os_ << to_string(type->body.kind);
+            if (auto id = type->body.id()) {
+                os_ << " ";
+                print_resolved_reference(*id);
+            }
         }
         else {
             os_ << "(unknown type)";
@@ -51,6 +55,11 @@ namespace ebmgen {
         const auto* stmt = module_.get_statement(ref);
         if (stmt) {
             os_ << to_string(stmt->body.kind);
+            auto ident = module_.get_identifier(stmt->id);
+            if (ident) {
+                os_ << " name:";
+                os_ << ident->body.data;
+            }
         }
         else {
             os_ << "(unknown statement)";
@@ -61,6 +70,10 @@ namespace ebmgen {
         const auto* expr = module_.get_expression(ref);
         if (expr) {
             os_ << to_string(expr->body.kind);
+            if (auto id = expr->body.id()) {
+                os_ << " ";
+                print_resolved_reference(*id);
+            }
         }
         else {
             os_ << "(unknown expression)";
@@ -102,7 +115,7 @@ namespace ebmgen {
     template <typename T>
     void DebugPrinter::print_value(const T& value) const {
         if constexpr (std::is_enum_v<T>) {
-            os_ << ebm::to_string(value) << "\n";
+            os_ << ebm::visit_enum(value) << " " << ebm::to_string(value) << "\n";
         }
         else if constexpr (std::is_same_v<T, bool>) {
             os_ << (value ? "true" : "false") << "\n";

@@ -334,7 +334,7 @@ namespace ebmgen {
 
         // after this call, getter functions will returns nullptr
         // before reuse it, you should call clear()
-        expected<void> finalize(ebm::ExtendedBinaryModule& mod);
+        expected<void> finalize(ebm::ExtendedBinaryModule& mod, std::vector<std::string>&& file_names);
 
         template <AnyRef T>
         expected<void> add_debug_loc(brgen::lexer::Loc loc, T ref) {

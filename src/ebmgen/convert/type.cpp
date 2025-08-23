@@ -197,6 +197,8 @@ namespace ebmgen {
         }
 
         EBMA_ADD_TYPE(ref, std::move(body));
+
+        ctx.repository().add_debug_loc(type->loc, ref);
         return ref;  // Return the type reference
     }
 

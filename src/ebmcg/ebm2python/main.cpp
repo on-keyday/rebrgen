@@ -1342,60 +1342,6 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    concept has_visitor_Statement_BIT_FIELD_DECL = requires(Visitor v) {
-         { v.visit_Statement_BIT_FIELD_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().bit_field_decl()) } -> std::convertible_to<expected<std::string>>;
-    };
-    template<typename Visitor>
-    concept has_visitor_Statement_BIT_FIELD_DECL_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().bit_field_decl()) } -> std::convertible_to<expected<std::string>>;
-    };
-    template<typename Visitor>
-    expected<std::string> dispatch_Statement_BIT_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in) {
-        #if __has_include("visitor/Statement_pre_validate.hpp")
-        #include "visitor/Statement_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp")
-        #include "visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_pre_validate.hpp"
-        #endif
-        auto& kind = in.body.kind;
-        if (!in.body.bit_field_decl()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::bit_field_decl");
-        }
-        auto& bit_field_decl = *in.body.bit_field_decl();
-        #if __has_include("visitor/Statement_pre_visit.hpp")
-        #include "visitor/Statement_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp")
-        #include "visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_pre_visit.hpp"
-        #endif
-        expected<std::string> result;
-        if constexpr (has_visitor_Statement_BIT_FIELD_DECL<Visitor>) {
-            result = visitor.visit_Statement_BIT_FIELD_DECL(in.id,kind,bit_field_decl);
-        }
-        else if constexpr (has_visitor_Statement_BIT_FIELD_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,bit_field_decl);
-        }
-        #if __has_include("visitor/Statement_post_visit.hpp")
-        #include "visitor/Statement_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BIT_FIELD_DECL_post_visit.hpp")
-        #include "visitor/Statement_BIT_FIELD_DECL_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_post_visit.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL_post_visit.hpp"
-        #endif
-        return result;
-    }
-    template<typename Visitor>
     concept has_visitor_Statement_PROPERTY_DECL = requires(Visitor v) {
          { v.visit_Statement_PROPERTY_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().property_decl()) } -> std::convertible_to<expected<std::string>>;
     };
@@ -1841,8 +1787,6 @@ namespace ebm2python {
             return dispatch_Statement_UNION_MEMBER_DECL(visitor,in);
         case ebm::StatementOp::PROGRAM_DECL:
             return dispatch_Statement_PROGRAM_DECL(visitor,in);
-        case ebm::StatementOp::BIT_FIELD_DECL:
-            return dispatch_Statement_BIT_FIELD_DECL(visitor,in);
         case ebm::StatementOp::PROPERTY_DECL:
             return dispatch_Statement_PROPERTY_DECL(visitor,in);
         case ebm::StatementOp::METADATA:
@@ -4676,14 +4620,6 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<std::string> visit_Statement_BIT_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::BitFieldDecl& bit_field_decl) {
-            #if __has_include("visitor/Statement_BIT_FIELD_DECL.hpp")
-            #include "visitor/Statement_BIT_FIELD_DECL.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Statement_BIT_FIELD_DECL.hpp"
-            #endif
-            return {};
-        }
         expected<std::string> visit_Statement_PROPERTY_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::PropertyDecl& property_decl) {
             #if __has_include("visitor/Statement_PROPERTY_DECL.hpp")
             #include "visitor/Statement_PROPERTY_DECL.hpp"
@@ -5117,7 +5053,6 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_UNION_DECL<Visitor>, "Visitor does not implement visit_Statement_UNION_DECL");
     static_assert(has_visitor_Statement_UNION_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_UNION_MEMBER_DECL");
     static_assert(has_visitor_Statement_PROGRAM_DECL<Visitor>, "Visitor does not implement visit_Statement_PROGRAM_DECL");
-    static_assert(has_visitor_Statement_BIT_FIELD_DECL<Visitor>, "Visitor does not implement visit_Statement_BIT_FIELD_DECL");
     static_assert(has_visitor_Statement_PROPERTY_DECL<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_DECL");
     static_assert(has_visitor_Statement_METADATA<Visitor>, "Visitor does not implement visit_Statement_METADATA");
     static_assert(has_visitor_Statement_IMPORT_MODULE<Visitor>, "Visitor does not implement visit_Statement_IMPORT_MODULE");

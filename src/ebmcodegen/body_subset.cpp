@@ -11,7 +11,6 @@ namespace ebmcodegen {
             body.kind = ebm::StatementOp(i);
             body.alias({});
             body.assert_desc({});
-            body.bit_field_decl({});
             body.block({});
             body.break_({});
             body.continue_({});

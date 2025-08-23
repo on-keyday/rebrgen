@@ -37,7 +37,7 @@ namespace ebmgen {
         return true;
     }
 
-    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm) {
+    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm, std::vector<std::string>&& file_names) {
         MAYBE(max_id, ident_source.current_id());
         ebm.max_id = ebm::AnyRef{.id = max_id};
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
@@ -67,6 +67,17 @@ namespace ebmgen {
             if (alias.hint == ebm::AliasHint::ALIAS) {
                 return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", alias.from.id.value(), alias.to.id.value());
             }
+        }
+
+        MAYBE(files_len, varint(file_names.size()));
+        ebm.debug_info.len_files = files_len;
+        ebm.debug_info.files.reserve(file_names.size());
+        for (auto& f : file_names) {
+            MAYBE(name_len, varint(f.size()));
+            ebm.debug_info.files.push_back(ebm::String{
+                .length = name_len,
+                .data = std::move(f),
+            });
         }
 
         MAYBE(loc_len, varint(debug_locs.size()));

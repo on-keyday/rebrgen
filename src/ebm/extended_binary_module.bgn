@@ -259,11 +259,6 @@ enum PackedOpType:
     FIXED = 0 # Fixed size bit field
     VARIABLE = 1 # Variable size bit field
 
-format BitFieldDecl:
-    name :IdentifierRef # Bit field name
-    parent_format :StatementRef # Reference to parent format (e.g., struct, union)
-    bit_size :Varint # Total bit size of the bit field
-    packed_op_type :PackedOpType # 0: fixed, 1: variable
 
 format PropertyDecl:
     name :IdentifierRef # Property name
@@ -345,7 +340,6 @@ enum StatementOp:
     UNION_DECL
     UNION_MEMBER_DECL
     PROGRAM_DECL
-    BIT_FIELD_DECL
     PROPERTY_DECL
     METADATA
     IMPORT_MODULE
@@ -460,8 +454,6 @@ format StatementBody:
             union_member_decl :UnionMemberDecl
         StatementOp.PROGRAM_DECL:
             block :Block
-        StatementOp.BIT_FIELD_DECL:
-            bit_field_decl :BitFieldDecl
         StatementOp.PROPERTY_DECL:
             property_decl :PropertyDecl
         StatementOp.METADATA:

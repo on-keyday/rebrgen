@@ -3,7 +3,7 @@ import sys
 import os
 
 if len(sys.argv) < 2:
-    print("Usage: python update_ebm.py <lang_name>")
+    print("Usage: python script/ebmcodegen.py <lang_name>")
     sys.exit(1)
 lang_name = sys.argv[1]
 
@@ -42,7 +42,11 @@ if content.find(f"add_subdirectory(ebm2{lang_name})") != -1:
     )
 else:
     with open(PARENT_CMAKE_PATH, "w") as f:
-        f.write(content + f"\nadd_subdirectory(ebm2{lang_name})\n")
+        new_content = content + f"\nadd_subdirectory(ebm2{lang_name})\n"
+        new_content = "\n".join(
+            [x.strip() for x in new_content.splitlines() if x.strip() != ""]
+        )
+        f.write(new_content)
     print(f"Added subdirectory ebm2{lang_name} to {PARENT_CMAKE_PATH}")
 
 print("Code generation completed successfully.")

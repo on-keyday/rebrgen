@@ -235,6 +235,7 @@ namespace ebmgen {
         }
 
         EBMA_ADD_STATEMENT(ref, new_id, std::move(body));
+        ctx.repository().add_debug_loc(node->loc, new_id);
         return ref;
     }
 

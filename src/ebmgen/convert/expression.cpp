@@ -82,10 +82,13 @@ namespace ebmgen {
         }
     }
 
-    expected<ebm::UnaryOp> convert_unary_op(ast::UnaryOp op) {
+    expected<ebm::UnaryOp> convert_unary_op(ast::UnaryOp op, const std::shared_ptr<ast::Type>& type) {
         switch (op) {
             case ast::UnaryOp::not_:
-                return ebm::UnaryOp::logical_not;
+                if (ast::as<ast::BoolType>(type)) {
+                    return ebm::UnaryOp::logical_not;
+                }
+                return ebm::UnaryOp::bit_not;
             case ast::UnaryOp::minus_sign:
                 return ebm::UnaryOp::minus_sign;
             default:
@@ -174,6 +177,7 @@ namespace ebmgen {
         }
 
         EBMA_ADD_EXPR(ref, std::move(body));
+        ctx.repository().add_debug_loc(node->loc, ref);
         return ref;
     }
 
@@ -276,7 +280,7 @@ namespace ebmgen {
         body.kind = ebm::ExpressionOp::UNARY_OP;
         EBMA_CONVERT_EXPRESSION(operand_ref, node->expr);
         body.operand(operand_ref);
-        MAYBE(uop, convert_unary_op(node->op));
+        MAYBE(uop, convert_unary_op(node->op, node->expr_type));
         body.uop(uop);
         return {};
     }

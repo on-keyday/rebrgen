@@ -7,6 +7,6 @@
 namespace ebmgen {
     // Function to convert brgen AST to ExtendedBinaryModule
     // This will be the main entry point for the conversion logic
-    Error convert_ast_to_ebm(std::shared_ptr<brgen::ast::Node>& ast_root, ebm::ExtendedBinaryModule& ebm);
+    Error convert_ast_to_ebm(std::shared_ptr<brgen::ast::Node>& ast_root, std::vector<std::string>&& files, ebm::ExtendedBinaryModule& ebm);
 
 }  // namespace ebmgen

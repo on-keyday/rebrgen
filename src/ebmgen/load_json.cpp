@@ -55,7 +55,7 @@ namespace ebmgen {
         }
     };
 
-    expected<std::shared_ptr<brgen::ast::Node>> load_json(std::string_view input, std::function<void(const char*)> timer_cb) {
+    expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json(std::string_view input, std::function<void(const char*)> timer_cb) {
         futils::file::View view;
         if (auto res = view.open(input); !res) {
             return unexpect_error(Error(res.error()));
@@ -90,6 +90,6 @@ namespace ebmgen {
             return unexpect_error("cannot decode json file");
         }
         if (timer_cb) timer_cb("json file decode");
-        return *res;
+        return std::pair{*res, file.files};
     }
 }  // namespace ebmgen

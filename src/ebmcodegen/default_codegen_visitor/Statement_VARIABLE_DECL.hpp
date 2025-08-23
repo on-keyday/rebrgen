@@ -7,8 +7,7 @@ MAYBE(type_str_val, visit_Type(*this, var_decl.var_type));
 w.write(name);
 
 if (var_decl.initial_value.id.value() != 0) {
-    MAYBE(initial_value_expr, this->module_.get_expression(var_decl.initial_value));
-    MAYBE(initial_value_str, visit_Expression(*this, initial_value_expr));
+    MAYBE(initial_value_str, visit_Expression(*this, var_decl.initial_value));
     w.write(" = ", initial_value_str);
 }
 

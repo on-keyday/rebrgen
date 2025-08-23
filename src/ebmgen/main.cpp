@@ -32,7 +32,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 1;
     }
     ebm::ExtendedBinaryModule ebm;
-    auto err = ebmgen::convert_ast_to_ebm(*ast, ebm);
+    auto err = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm);
     if (err) {
         cerr << "Convert Error: " << err.error<std::string>() << '\n';
         return 1;

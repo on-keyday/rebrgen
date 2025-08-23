@@ -104,7 +104,7 @@ jobs:
             ./built
             ./utils
           # ./emsdk
-          key: native-${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('build.sh') }}
+          key: native-${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('script/build.py') }}
       - name: Pull Utils
         if: ${{ steps.cache_native.outputs.cache-hit }}
         run: |

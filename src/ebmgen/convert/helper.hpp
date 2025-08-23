@@ -324,20 +324,20 @@ namespace ebmgen {
 #define EBM_CONTINUE(ref_name, loop_id) \
     EBM_AST_STATEMENT(ref_name, make_continue, loop_id)
 
-    ebm::IOData make_io_data(ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
+    ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);
 
-#define COMMON_BUFFER_SETUP(IO_MACRO, io_ref)                              \
-    EBMU_U8_N_ARRAY(u8_n_array, n);                                        \
-    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                            \
-    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);        \
-    EBMU_UINT_TYPE(value_type, n * 8);                                     \
-    EBMU_INT_LITERAL(zero, 0);                                             \
-    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));         \
-    IO_MACRO(io_ref, (make_io_data(buffer, u8_n_array, endian, io_size))); \
+#define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref)                              \
+    EBMU_U8_N_ARRAY(u8_n_array, n);                                                 \
+    EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                     \
+    EBM_DEFINE_ANONYMOUS_VARIABLE(buffer, u8_n_array, new_obj_ref);                 \
+    EBMU_UINT_TYPE(value_type, n * 8);                                              \
+    EBMU_INT_LITERAL(zero, 0);                                                      \
+    MAYBE(io_size, make_fixed_size(n, ebm::SizeUnit::BYTE_FIXED));                  \
+    IO_MACRO(io_stmt, (make_io_data(io_ref, buffer, u8_n_array, endian, io_size))); \
     EBMU_U8(u8_t);
 
 }  // namespace ebmgen

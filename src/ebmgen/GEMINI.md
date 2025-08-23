@@ -256,6 +256,7 @@ In conclusion, the debate revealed that the MAYBE macro, far from being a simple
 #### 7. Development Process
 
 Here is a priority of what to do. This does NOT means you need to follow the order except 1. must be run finally.
+It doesn't mean acting in order, but rather the priority of actions.
 You can choose appropriate action in the context.
 After you modified some code, please run these before you do next edit and confirm your modification does not break baseline.
 

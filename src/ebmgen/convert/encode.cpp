@@ -26,7 +26,7 @@ namespace ebmgen {
         io_desc.attribute = attr;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(*ity->bit_size / 8, attr, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, *ity->bit_size / 8, attr, base_ref, io_desc.data_type));
             append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
@@ -37,7 +37,7 @@ namespace ebmgen {
         io_desc.attribute = attr;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(*fty->bit_size / 8, attr, base_ref, io_desc.data_type));
+            MAYBE(multi_byte_int, encode_multi_byte_int_with_fixed_array(io_desc.io_ref, *fty->bit_size / 8, attr, base_ref, io_desc.data_type));
             append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
         }
         return {};
@@ -220,7 +220,7 @@ namespace ebmgen {
 
         MAYBE(io_size, make_fixed_size(candidate.size(), ebm::SizeUnit::BYTE_FIXED));
         io_desc.size = io_size;
-        EBM_WRITE_DATA(write_ref, make_io_data(buffer, u8_n_array, io_desc.attribute, io_size));
+        EBM_WRITE_DATA(write_ref, make_io_data(io_desc.io_ref, buffer, u8_n_array, io_desc.attribute, io_size));
 
         ebm::Block block;
         append(block, buffer_def);
@@ -246,6 +246,7 @@ namespace ebmgen {
         EBMA_CONVERT_STATEMENT(ok, base);
         MAYBE(encdec, ctx.state().get_format_encode_decode(base));
         MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+
         EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
         call_desc.callee = enc_access;
         append(call_desc.arguments, cur_encdec.encoder_input);
@@ -272,8 +273,10 @@ namespace ebmgen {
         if (auto ity = ast::as<ast::IdentType>(typ)) {
             return encode_field_type(ity->base.lock(), base_ref, field);
         }
+        MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+
         EBMA_CONVERT_TYPE(typ_ref, typ, field);
-        ebm::IOData io_desc = make_io_data(base_ref, typ_ref, ebm::IOAttribute{}, ebm::Size{});
+        ebm::IOData io_desc = make_io_data(cur_encdec.encoder_input_def, base_ref, typ_ref, ebm::IOAttribute{}, ebm::Size{});
         ebm::LoweredStatements lowered_stmts;  // omit if empty
 
         if (auto ity = ast::as<ast::IntType>(typ)) {
@@ -305,8 +308,8 @@ namespace ebmgen {
         return make_write_data(std::move(io_desc));
     }
 
-    expected<ebm::StatementRef> EncoderConverter::encode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
-        COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref);
+    expected<ebm::StatementRef> EncoderConverter::encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from) {
+        COMMON_BUFFER_SETUP(EBM_WRITE_DATA, write_ref, io_ref);
         EBM_CAST(casted, value_type, cast_from, from);  // if value_type == cast_from, then this is a no-op
 
         if (n == 1) {  // special case for 1 byte

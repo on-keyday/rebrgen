@@ -1,5 +1,5 @@
 
-const auto& type = in;  // Dereference to get the actual type object
+const auto& type = in;
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {
     return visit_Type(visitor, type_ref);

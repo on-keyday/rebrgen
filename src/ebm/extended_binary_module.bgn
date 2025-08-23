@@ -398,6 +398,7 @@ format Size:
         SizeUnit.ELEMENT_DYNAMIC => ref :ExpressionRef # Reference to dynamic size expression
 
 format IOData:
+    io_ref :StatementRef
     target :ExpressionRef # Variable to store read/write data
     data_type :TypeRef # Type of the data to read/write
     attribute :IOAttribute # Endianness for write

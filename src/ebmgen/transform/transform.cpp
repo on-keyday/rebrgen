@@ -108,7 +108,7 @@ namespace ebmgen {
                     }
                     futils::wrap::cout_wrap()
                         << "Total size: " << total_size.size()->value() << " " << to_string(total_size.unit) << "\n";
-                    auto io_data = make_io_data({}, data_typ, {}, total_size);
+                    auto io_data = make_io_data(std::get<2>(g[0])->io_ref, {}, data_typ, {}, total_size);
                     io_data.attribute.vectorized(true);
                     ebm::Block original_io;
                     for (auto& ref : g) {

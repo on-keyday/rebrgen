@@ -13228,6 +13228,9 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> IOData::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).io_ref.encode(w)) {
+            return err;
+        }
         if (auto err = (*this).target.encode(w)) {
             return err;
         }
@@ -13246,6 +13249,9 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> IOData::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).io_ref.decode(r)) {
+            return err;
+        }
         if (auto err = (*this).target.decode(r)) {
             return err;
         }

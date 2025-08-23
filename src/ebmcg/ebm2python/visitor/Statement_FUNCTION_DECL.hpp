@@ -13,7 +13,7 @@ if (func_decl.params.container.empty() == false) {
         MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
         if (param_stmt.body.kind == ebm::StatementOp::VARIABLE_DECL) {
             auto& var_decl = *param_stmt.body.var_decl();
-            auto param_name = this->module_.get_identifier_or(var_decl.name, ebm::AnyRef{param_stmt.id.id}, "param");
+            auto param_name = this->module_.get_identifier_or(param_stmt_ref, "param");
             MAYBE(param_type_str, visit_Type(*this, var_decl.var_type));  // Correctly extract the string value
             if (!params_str.empty()) {
                 params_str += ", ";

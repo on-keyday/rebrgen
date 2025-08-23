@@ -173,9 +173,11 @@ namespace ebmgen {
         ebm::ExpressionRef encode;
         ebm::TypeRef encode_type;
         ebm::ExpressionRef encoder_input;
+        ebm::StatementRef encoder_input_def;
         ebm::ExpressionRef decode;
         ebm::TypeRef decode_type;
         ebm::ExpressionRef decoder_input;
+        ebm::StatementRef decoder_input_def;
     };
 
     struct StatementConverter;
@@ -262,16 +264,20 @@ namespace ebmgen {
                                       ebm::ExpressionRef encode,
                                       ebm::TypeRef encode_type,
                                       ebm::ExpressionRef encoder_input,
+                                      ebm::StatementRef encoder_input_def,
                                       ebm::ExpressionRef decode,
                                       ebm::TypeRef decode_type,
-                                      ebm::ExpressionRef decoder_input) {
+                                      ebm::ExpressionRef decoder_input,
+                                      ebm::StatementRef decoder_input_def) {
             format_encode_decode[node] = FormatEncodeDecode{
                 .encode = encode,
                 .encode_type = encode_type,
                 .encoder_input = encoder_input,
+                .encoder_input_def = encoder_input_def,
                 .decode = decode,
                 .decode_type = decode_type,
                 .decoder_input = decoder_input,
+                .decoder_input_def = decoder_input_def,
             };
         }
 
@@ -540,7 +546,7 @@ namespace ebmgen {
 
         // internally, this method casts base_ref to unsigned n int type if necessary
         // so no need to cast it before calling this method
-        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
+        expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
     };
 
     struct DecoderConverter {
@@ -554,7 +560,7 @@ namespace ebmgen {
         expected<void> decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
         expected<void> decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
         expected<void> decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
+        expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
     };
 
     struct TypeConverter {

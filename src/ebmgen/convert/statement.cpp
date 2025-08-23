@@ -411,7 +411,7 @@ namespace ebmgen {
 
         EBM_DEFINE_ANONYMOUS_VARIABLE(writer, encoder_input, {});
         EBM_DEFINE_ANONYMOUS_VARIABLE(reader, decoder_input, {});
-        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, decode, dec_type, reader);
+        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, writer_def, decode, dec_type, reader, reader_def);
         const auto _node = ctx.state().set_current_node(node);
         auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, ebm::StatementRef coder_input, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);

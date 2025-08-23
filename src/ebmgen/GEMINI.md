@@ -23,27 +23,45 @@ Here is workflow overview
 [] - program
 
 .bgn file -input->[src2json(brgen repository)]-output-> brgen AST(json) -input-> [ebmgen] -output-> EBM -input-> [code generator] -output-> each language code -integrated with -> [user program]
-                                                                                                                      ↑
-                                                                                                                      |generate C++ code
-                                                                                                                [ebmcodegen] + customized code
+                   if .bgn file is extended_binary_module.bgn|input                  ↑                              ↑
+                                                             ↓                       |integrated with ebmgen        |generate C++ code + customized code
+                                                     [json2cpp2(brgen repository)]->.hpp/.cpp -integrated with->[ebmcodegen]
 ```
 
 ```mermaid
-flowchart LR
+graph TD
+    subgraph メインワークフロー
+        direction LR
+        A["*.bgn file"] --> B["src2json (brgen repository)"]
+        B -- "generates" --> C["brgen AST (json)"]
+    end
 
+    subgraph IR生成
+        direction LR
+        C --> D{"is *.bgn file extended_binary_module.bgn?"}
+        D -- anyway --> E["ebmgen"]
+        E -- "generates" --> F["EBM"]
+    end
 
-    bgn[".bgn file"]
-    src2json["src2json<br/>(brgen repository)"]
-    ast["brgen AST<br/>(json)"]
-    ebmgen["ebmgen"]
-    ebm["EBM"]
-    codegen["code generator"]
-    lang["each language code"]
-    user["user program"]
-    ebmcodegen["ebmcodegen<br/>+ customized code"]
+    subgraph コード生成
+        direction LR
+        F --> G["code generator"]
+        G -- "generates" --> H["each language code"]
+        H -- "integrated with" --> I["user program"]
+    end
 
-    bgn -->|input| src2json -->|output| ast -->|input| ebmgen -->|output| ebm -->|input| codegen -->|output| lang -->|integrated with| user
-    ebmcodegen -.->|generate C++ code| codegen
+    subgraph ジェネレーター自己生成
+        direction LR
+        D -- "Yes" --> J["json2cpp2 (brgen repository)"]
+        J --> K["extended_binary_module.hpp/extended_binary_module.cpp"]
+        K -- "integrated with" --> L["ebmcodegen"]
+        L -- "generates" --> M["C++ source code"]
+        N["language specific code"] -- "integrated with (via #include)" --> M
+    end
+
+    %% ワークフローの接続
+    M -- "build" --> G
+    K -- "integrated with" --> E
 ```
 
 #### 2. The EBM: A Superior Intermediate Representation

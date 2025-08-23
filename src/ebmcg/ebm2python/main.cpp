@@ -12,11 +12,19 @@
 #endif
 
 struct Flags : ebmcodegen::Flags {
-#if __has_include("visitor/Flags.hpp")
-#include "visitor/Flags.hpp"
-#elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
-#include "ebmcodegen/default_codegen_visitor/Flags.hpp"
-#endif
+    #if __has_include("visitor/Flags_struct.hpp")
+    #include "visitor/Flags_struct.hpp"
+    #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct.hpp")
+    #include "ebmcodegen/default_codegen_visitor/Flags_struct.hpp"
+    #endif
+    void bind(futils::cmdline::option::Context& ctx) {
+        ebmcodegen::Flags::bind(ctx); // bind basis
+        #if __has_include("visitor/Flags_bind.hpp")
+        #include "visitor/Flags_bind.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind.hpp")
+        #include "ebmcodegen/default_codegen_visitor/Flags_bind.hpp"
+        #endif
+    }
 };
 struct Output : ebmcodegen::Output {
 #if __has_include("visitor/Output.hpp")

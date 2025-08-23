@@ -9,6 +9,8 @@
 #include <file/file_view.h>
 #include <file/file_stream.h>
 #include <json/stringer.h>
+#include <set>
+#include "cmdline/option/parsers.h"
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <tool/common/em_main.h>
@@ -20,22 +22,49 @@ namespace ebmcodegen {
         std::string_view input;
         std::string_view output;
         bool dump_code = false;
+        bool show_flags = false;
         // std::vector<std::string_view> args;
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
 
         std::string_view dump_test_file;
 
+        std::set<std::string_view> web_filtered;
+
         void bind(futils::cmdline::option::Context& ctx) {
             bind_help(ctx);
-            ctx.VarString<true>(&input, "i,input", "input EBM file", "FILE", futils::cmdline::option::CustomFlag::required);
-            ctx.VarString<true>(&output, "o,output", "output source code file (currently not working and always output to stdout)", "FILE");
+            ctx.VarString<true>(&input, "input,i", "input EBM file", "FILE");
+            ctx.VarString<true>(&output, "output,o", "output source code file (currently not working and always output to stdout)", "FILE");
+            ctx.VarBool(&show_flags, "show-flags", "show all flags (for debug and code generation)");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
             ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
+            web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info"};
         }
     };
     namespace internal {
         int load_file(auto& flags, auto& output, futils::cmdline::option::Context& ctx, auto&& then) {
+            if (flags.show_flags) {
+                futils::json::Stringer<> str;
+                str.set_indent("  ");
+                auto fields = str.array();
+                for (auto& opt : ctx.options()) {
+                    fields([&](auto& s) {
+                        auto obj = s.object();
+                        obj("name", opt->mainname);
+                        obj("help", opt->help);
+                        obj("argdesc", opt->argdesc);
+                        obj("type", opt->type);
+                        obj("web_filtered", flags.web_filtered.contains(opt->mainname));
+                    });
+                }
+                fields.close();
+                futils::wrap::cout_wrap() << str.out() << '\n';
+                return 0;
+            }
+            if (flags.input.empty()) {
+                futils::wrap::cerr_wrap() << flags.program_name << ": " << "no input file\n";
+                return 1;
+            }
             ebm::ExtendedBinaryModule ebm;
             auto& cout = futils::wrap::cout_wrap();
             auto& cerr = futils::wrap::cerr_wrap();

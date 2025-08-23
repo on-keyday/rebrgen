@@ -97,7 +97,7 @@ if BUILD_MODE == "native":
         stderr=sys.stderr,
     )
     subprocess.run(
-        ["cmake", "--build", f"./built/{BUILD_MODE}/{BUILD_TYPE}", "--", "-j", "1"],
+        ["cmake", "--build", f"./built/{BUILD_MODE}/{BUILD_TYPE}"],
         check=True,
         stdout=sys.stdout,
         stderr=sys.stderr,

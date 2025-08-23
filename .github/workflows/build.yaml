@@ -110,7 +110,7 @@ jobs:
         run: |
           cd utils
           git pull
-          rm -rf ./built
+          # rm -rf ./built
           . build shared Release futils
           cd ..
       - name: Clone Utils
@@ -118,14 +118,14 @@ jobs:
         run: |
           git clone https://github.com/on-keyday/utils.git
           cd utils
-          rm -rf ./built
+          # rm -rf ./built
           . build shared Release futils
           cd ..
       - name: Install libc++-dev and libc++abi-dev
         run: sudo apt-get install libc++-dev libc++abi-dev -y
       - name: Build
         run: |
-          rm -rf ./built
+          # rm -rf ./built
           chmod +x script/build.sh
           ls -laR .
           FUTILS_DIR=$(pwd)/utils ./script/build.sh native Release

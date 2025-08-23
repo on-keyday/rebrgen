@@ -74,12 +74,9 @@ jobs:
           cd utils
           . build shared Release futils
           cd ..
-          BUILD_MODE=native FUTILS_DIR=$(pwd)/utils cmake -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_C_COMPILER=clang -G Ninja -DCMAKE_INSTALL_PREFIX=. -D CMAKE_BUILD_TYPE=Debug -S . -B ./built/native/Debug
-          cmake --build ./built/native/Debug --target gen_template
-          cmake --install ./built/native/Debug --component gen_template
-          ldd ./tool/gen_template
-          ldd ./tool/libfutils.so
+          ./script/build.sh native Debug 
           python script/generate_web_glue.py
+          python script/ebmwebgen.py
       - name: Upload Artifact
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:

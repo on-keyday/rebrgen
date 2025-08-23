@@ -274,6 +274,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         insert_include(w, "Flags", "_", "struct");
         w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
         auto nested_scope = w.indent_scope();
+        w.writeln("lang_name = \"", flags.lang, "\";");
+        w.writeln("lsp_name = lang_name;");
+        w.writeln("webworker_name = lang_name;");
         w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
         insert_include(w, "Flags", "_", "bind");
         nested_scope.execute();

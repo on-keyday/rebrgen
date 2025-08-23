@@ -26,6 +26,9 @@ namespace ebmcodegen {
         // std::vector<std::string_view> args;
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
+        const char* lang_name = "";
+        const char* lsp_name = "";
+        const char* webworker_name = "";
 
         std::string_view dump_test_file;
 
@@ -46,18 +49,24 @@ namespace ebmcodegen {
             if (flags.show_flags) {
                 futils::json::Stringer<> str;
                 str.set_indent("  ");
-                auto fields = str.array();
-                for (auto& opt : ctx.options()) {
-                    fields([&](auto& s) {
-                        auto obj = s.object();
-                        obj("name", opt->mainname);
-                        obj("help", opt->help);
-                        obj("argdesc", opt->argdesc);
-                        obj("type", opt->type);
-                        obj("web_filtered", flags.web_filtered.contains(opt->mainname));
-                    });
-                }
-                fields.close();
+                auto root_obj = str.object();
+                root_obj("lang_name", flags.lang_name);
+                root_obj("lsp_name", flags.lsp_name);
+                root_obj("webworker_name", flags.webworker_name);
+                root_obj("flags", [&](auto& s) {
+                    auto fields = s.array();
+                    for (auto& opt : ctx.options()) {
+                        fields([&](auto& s) {
+                            auto obj = s.object();
+                            obj("name", opt->mainname);
+                            obj("help", opt->help);
+                            obj("argdesc", opt->argdesc);
+                            obj("type", opt->type);
+                            obj("web_filtered", flags.web_filtered.contains(opt->mainname));
+                        });
+                    }
+                });
+                root_obj.close();
                 futils::wrap::cout_wrap() << str.out() << '\n';
                 return 0;
             }

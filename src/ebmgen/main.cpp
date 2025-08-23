@@ -1,6 +1,7 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
+#include "fnet/util/base64.h"
 #include "load_json.hpp"
 #include "convert.hpp"
 #include "debug_printer.hpp"   // Include the new header
@@ -13,12 +14,16 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
+    bool base64 = false;
+    bool verbose = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");  // Bind new flag
+        ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
+        ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
     }
 };
 
@@ -26,6 +31,7 @@ auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
+    ebmgen::verbose_error = flags.verbose;
     auto ast = ebmgen::load_json(flags.input, nullptr);
     if (!ast) {
         cerr << ast.error().error<std::string>() << '\n';
@@ -53,23 +59,61 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         debug_ofs.close();
     }
 
-    // Serialize and write to output file
-    futils::file::FileError fserr;
-    auto file = futils::file::File::create(flags.output);
-    if (!file) {
-        cerr << "Failed to open output file: " << flags.output << ": " << file.error().error<std::string>() << '\n';
-        return 1;
-    }
-    futils::file::FileStream<std::string> fs{*file};
-    futils::binary::writer writer{fs.get_write_handler(), &fs};
-    err = ebm.encode(writer);
-    if (err) {
-        cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
-        return 1;
-    }
+    auto write_ebm = [&](futils::binary::writer& w) {
+        if (flags.base64) {
+            std::string buffer;
+            futils::binary::writer temp_w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+            err = ebm.encode(temp_w);
+            if (err) {
+                cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
+                return 1;
+            }
+            std::string output;
+            if (!futils::base64::encode(buffer, output)) {
+                cerr << "Failed to encode EBM to base64: MAYBE BUG\n";
+                return 1;
+            }
+            if (!w.write(output)) {
+                cerr << "Failed to write base64 output\n";
+                return 1;
+            }
+        }
+        else {
+            err = ebm.encode(w);
+            if (err) {
+                cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
+                return 1;
+            }
+        }
+        return 0;
+    };
 
-    cout << "ebmgen finished successfully!\n"
-         << "Output written to: " << flags.output << '\n';
+    if (flags.output.empty()) {
+        futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
+        futils::binary::writer writer{fs.get_write_handler(), &fs};
+        if (write_ebm(writer)) {
+            return 1;
+        }
+    }
+    else {
+        // Serialize and write to output file
+        auto file = futils::file::File::create(flags.output);
+        if (!file) {
+            cerr << "Failed to open output file: " << flags.output << ": " << file.error().error<std::string>() << '\n';
+            return 1;
+        }
+
+        futils::file::FileStream<std::string> fs{*file};
+        futils::binary::writer writer{fs.get_write_handler(), &fs};
+        if (write_ebm(writer)) {
+            return 1;
+        }
+
+        if (flags.verbose) {
+            cerr << "ebmgen finished successfully!\n"
+                 << "Output written to: " << flags.output << '\n';
+        }
+    }
     return 0;
 }
 

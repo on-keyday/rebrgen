@@ -5,12 +5,19 @@
 #include <type_traits>
 #include "../common.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/common.hpp"
 #include "ebmgen/convert/helper.hpp"
 #include "ebmgen/converter.hpp"
 #include "wrap/cout.h"
 #include <set>
 
 namespace ebmgen {
+    auto print_if_verbose(auto&&... args) {
+        if (verbose_error) {
+            (futils::wrap::cerr_wrap() << ... << args);
+        }
+    }
+
     expected<void> vectorized_io(TransformContext& tctx, bool write) {
         // Implementation of the grouping I/O transformation
         auto& all_statements = tctx.statement_repository().get_all();
@@ -55,14 +62,14 @@ namespace ebmgen {
                 ios.push_back(std::move(io));
             }
             if (ios.size()) {
-                futils::wrap::cout_wrap() << "Read I/O groups: " << ios.size() << "\n";
+                print_if_verbose("Read I/O groups:", ios.size(), "\n");
                 for (auto& g : ios) {
-                    futils::wrap::cout_wrap() << "Group size: " << g.size() << "\n";
+                    print_if_verbose("  Group size: ", g.size(), "\n");
                     std::optional<std::uint64_t> all_in_byte = 0;
                     std::uint64_t all_in_bits = 0;
                     for (auto& ref : g) {
-                        futils::wrap::cout_wrap() << "  - Statement ID: " << std::get<1>(ref).id.value() << "\n";
-                        futils::wrap::cout_wrap() << "    - Size: " << std::get<2>(ref)->size.size()->value() << " " << to_string(std::get<2>(ref)->size.unit) << "\n";
+                        print_if_verbose("    - Statement ID: ", std::get<1>(ref).id.value(), "\n");
+                        print_if_verbose("    - Size: ", std::get<2>(ref)->size.size()->value(), " ", to_string(std::get<2>(ref)->size.unit), "\n");
                         if (all_in_byte) {
                             if (std::get<2>(ref)->size.unit == ebm::SizeUnit::BYTE_FIXED) {
                                 all_in_byte = all_in_byte.value() + std::get<2>(ref)->size.size()->value();
@@ -106,8 +113,7 @@ namespace ebmgen {
                             data_typ = typ;
                         }
                     }
-                    futils::wrap::cout_wrap()
-                        << "Total size: " << total_size.size()->value() << " " << to_string(total_size.unit) << "\n";
+                    print_if_verbose("Total size: ", total_size.size()->value(), " ", to_string(total_size.unit), "\n");
                     auto io_data = make_io_data(std::get<2>(g[0])->io_ref, {}, data_typ, {}, total_size);
                     io_data.attribute.vectorized(true);
                     ebm::Block original_io;
@@ -135,7 +141,7 @@ namespace ebmgen {
             std::vector<std::pair<std::pair<size_t, size_t>, ebm::StatementRef>> new_statements;
             for (auto& [group_range, updater] : updates) {
                 MAYBE(new_stmt, updater());
-                futils::wrap::cout_wrap() << "Adding vectorized I/O statement: " << new_stmt.id.value() << "\n";
+                print_if_verbose("Adding vectorized I/O statement for block ", block_id, ": ", new_stmt.id.value(), "\n");
                 new_statements.emplace_back(group_range, std::move(new_stmt));
             }
             ebm::Block updated_block;
@@ -208,7 +214,7 @@ namespace ebmgen {
             map_to(ctx.expression_repository().get_all());
             for (auto& alias : ctx.alias_vector()) {
                 if (used_refs.find(alias.from.id.value()) == used_refs.end()) {
-                    futils::wrap::cout_wrap() << "Removing unused alias: " << alias.from.id.value() << "\n";
+                    print_if_verbose("Removing unused alias: ", alias.from.id.value(), "\n");
                     continue;  // Skip unused aliases
                 }
                 switch (alias.hint) {
@@ -243,7 +249,7 @@ namespace ebmgen {
             auto remove = [&](auto&& rem) {
                 std::erase_if(rem, [&](const auto& item) {
                     if (should_remove.find(item.id.id.value()) != should_remove.end()) {
-                        futils::wrap::cout_wrap() << "Removing unused item: " << item.id.id.value() << "\n";
+                        print_if_verbose("Removing unused item: ", item.id.id.value(), "\n");
                         return true;
                     }
                     return false;

@@ -4,3 +4,4 @@ save/
 node_modules/
 *.vsix
 *.ast.json
+.venv

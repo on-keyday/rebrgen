@@ -18,6 +18,9 @@ struct Flags : ebmcodegen::Flags {
     #include "ebmcodegen/default_codegen_visitor/Flags_struct.hpp"
     #endif
     void bind(futils::cmdline::option::Context& ctx) {
+        lang_name = "python";
+        lsp_name = lang_name;
+        webworker_name = lang_name;
         ebmcodegen::Flags::bind(ctx); // bind basis
         #if __has_include("visitor/Flags_bind.hpp")
         #include "visitor/Flags_bind.hpp"

@@ -146,4 +146,5 @@ COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.dll" "${CMAKE_S
 endif()
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)
+install(FILES "${CMAKE_BINARY_DIR}/tool/ebmgen.wasm" DESTINATION tool)
 endif()

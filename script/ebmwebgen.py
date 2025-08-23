@@ -212,7 +212,7 @@ def generate_web_glue_files(tools :list[dict],output_dir):
     for tool in tools:
         web_glue = web_glue_names(tool)
         WORKER_GLUE = worker_glue_code(web_glue).encode()
-        with open(f"{output_dir}/{web_glue['worker_name']}_worker.js", "wb") as f:
+        with open(f"{output_dir}/{web_glue['wasm_glue_name']}_worker.js", "wb") as f:
             f.write(WORKER_GLUE)
         #print(WORKER_GLUE)
         UI_GLUE += ui_glue_code(web_glue, tool).encode()

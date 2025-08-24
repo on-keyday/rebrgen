@@ -13,7 +13,7 @@ This is aimed at improving flexibility and inter-language compatibility
 2. run `python script/ebmcodegen.py <lang name>`
 3. run `python script/build.py` again
 4. write `<any>.bgn` file (see https://github.com/on-keyday/brgen) and run the `src2json -i <any>.bgn > <saved>.json`
-   - you can use generating `.json` file at [WebPlayground](https://on-keyday.github.com/brgen?mode=json%20ast)
+   - you can use generating `.json` file at [WebPlayground](https://on-keyday.github.io/brgen#mode=json+ast)
 5. run `./tool/ebmgen -i <saved>.json -o <output>.ebm [-d <debug_output.txt>]`
 6. run `./tool/ebm2<lang name> -i <output>.ebm` then you can see the generated code
 7. to edit `ebm2<lang name>` code, write template code in `src/ebmcg/ebm2<lang name>/visitor`

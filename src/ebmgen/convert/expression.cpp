@@ -408,7 +408,7 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {
-        return unexpect_error("not implemented yet: {}", node_type_to_string(node->node_type));
+        return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }
 
 }  // namespace ebmgen

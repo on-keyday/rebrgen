@@ -1,0 +1,74 @@
+
+MAYBE(condition, visit_Expression(*this, if_statement.condition));
+MAYBE(then_block, visit_Statement(*this, if_statement.then_block));
+CodeWriter w;
+if (use_brace_for_condition) {
+    w.writeln("if (", tidy_condition_brace(std::move(condition)), ") ", begin_block);
+}
+else {
+    w.writeln("if ", tidy_condition_brace(std::move(condition)), " ", begin_block);
+}
+auto then_scope = w.indent_scope();
+if (then_block.empty()) {
+    if (empty_block_marker.size()) {
+        w.writeln(empty_block_marker);
+    }
+}
+else {
+    w.write_unformatted(std::move(then_block));
+}
+then_scope.execute();
+w.write(end_block);
+auto els_block = if_statement.else_block;
+auto if_word = use_elif ? "elif" : "if";
+while (els_block.id.value() != 0) {
+    if (!use_elif) {
+        w.write(" else ");
+    }
+    auto kind = module_.get_statement_op(els_block);
+    if (kind == ebm::StatementOp::IF_STATEMENT) {
+        MAYBE(next_if_stmt, module_.get_statement(els_block));
+        MAYBE(next_if, next_if_stmt.body.if_statement());
+        MAYBE(condition, visit_Expression(*this, next_if.condition));
+        MAYBE(then_block, visit_Statement(*this, next_if.then_block));
+        if (use_brace_for_condition) {
+            w.writeln(if_word, " (", tidy_condition_brace(std::move(condition)), ") ", begin_block);
+        }
+        else {
+            w.writeln(if_word, " ", tidy_condition_brace(std::move(condition)), " ", begin_block);
+        }
+        auto then_scope = w.indent_scope();
+        if (then_block.empty()) {
+            if (empty_block_marker.size()) {
+                w.writeln(empty_block_marker);
+            }
+        }
+        else {
+            w.write_unformatted(std::move(then_block));
+        }
+        then_scope.execute();
+        w.write(end_block);
+        els_block = next_if.else_block;
+    }
+    else {
+        if (use_elif) {
+            w.write("else");
+        }
+        MAYBE(else_block, visit_Statement(*this, els_block));
+        w.writeln(begin_block);
+        auto else_scope = w.indent_scope();
+        if (else_block.empty()) {
+            if (empty_block_marker.size()) {
+                w.writeln(empty_block_marker);
+            }
+        }
+        else {
+            w.write_unformatted(std::move(else_block));
+        }
+        else_scope.execute();
+        w.write(end_block);
+        els_block = {};
+    }
+}
+w.writeln();
+return w.out();

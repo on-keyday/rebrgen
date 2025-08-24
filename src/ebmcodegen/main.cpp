@@ -26,6 +26,7 @@ enum class GenerateMode {
     CMake,
     CodeGenerator,
     Interpreter,
+    HookList,
 };
 
 struct Flags : futils::cmdline::templ::HelpOption {
@@ -39,12 +40,13 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&lang, "l,lang", "language for output", "LANG");
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
-        ctx.VarMap(&mode, "mode", "generate mode", "{subset,codegen,interpret}",
+        ctx.VarMap(&mode, "mode", "generate mode", "{subset,codegen,interpret,hooklist}",
                    std::map<std::string, GenerateMode>{
                        {"subset", GenerateMode::BodySubset},
                        {"cmake", GenerateMode::CMake},
                        {"codegen", GenerateMode::CodeGenerator},
                        {"interpret", GenerateMode::Interpreter},
+                       {"hooklist", GenerateMode::HookList},
                    });
     }
 };
@@ -226,6 +228,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");
+    w.writeln("#include<ebmcodegen/stub/util.hpp>");
     w.writeln("#include <ebmgen/common.hpp>");
     w.writeln("#include <ebmgen/convert/helper.hpp>");
     w.writeln("#include <ebmgen/mapping.hpp>");
@@ -247,12 +250,35 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m) : module_(m) {}");
     }
 
+    std::vector<std::string> hooks;
+
     auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
         auto concated = futils::strutil::concat<std::string>(std::forward<decltype(path)>(path)...);
+        hooks.push_back(concated);
+        auto before = concated + "_before";
+        hooks.push_back(before);
+        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, before, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dir, before, ".hpp", "\"");
+        w.writeln("#endif");
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
         w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
+        auto pre_default = concated + "_pre_default";
+        auto post_default = concated + "_post_default";
+        hooks.push_back(pre_default);
+        hooks.push_back(post_default);
+        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, pre_default, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dir, pre_default, ".hpp", "\"");
+        w.writeln("#endif");
         w.writeln("#include \"", flags.default_visitor_impl_dir, concated, ".hpp", "\"");
+        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, post_default, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dir, post_default, ".hpp", "\"");
+        w.writeln("#endif");
+        auto after = concated + "_after";
+        hooks.push_back(after);
+        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, after, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dir, after, ".hpp", "\"");
+        w.writeln("#endif");
     };
 
     auto insert_include = [&](auto& w, auto&&... path) {
@@ -293,6 +319,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("namespace ", ns_name, " {");
     auto ns_scope = w.indent_scope();
     w.writeln("using namespace ebmgen;");
+    w.writeln("using namespace ebmcodegen::util;");
 
     std::string result_type = "expected<void>";
 
@@ -538,6 +565,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("return 0;");
     main_scope.execute();
     w.writeln("}");
+
+    if (flags.mode == GenerateMode::HookList) {
+        for (auto& hook : hooks) {
+            cout << hook << "\n";
+        }
+        return 0;
+    }
+
     cout << w.out();
     return 0;
 }

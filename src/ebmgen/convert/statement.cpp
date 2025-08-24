@@ -294,17 +294,49 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementOp::MATCH_STATEMENT;
-        ebm::MatchStatement ebm_match_stmt;
-
-        EBMA_CONVERT_EXPRESSION(target_ref, node->cond->expr);
-        ebm_match_stmt.target = target_ref;
-        ebm_match_stmt.is_exhaustive(node->struct_union_type->exhaustive);
+        ebm::MatchStatement match_stmt;
+        if (node->cond) {
+            EBMA_CONVERT_EXPRESSION(target_ref, node->cond->expr);
+            match_stmt.target = target_ref;
+        }
+        match_stmt.is_exhaustive(node->struct_union_type->exhaustive);
 
         for (auto& branch : node->branch) {
             EBMA_CONVERT_STATEMENT(branch_ref, branch);
-            append(ebm_match_stmt.branches, branch_ref);
+            append(match_stmt.branches, branch_ref);
         }
-        body.match_statement(std::move(ebm_match_stmt));
+
+        std::vector<std::pair<ebm::StatementRef, ebm::IfStatement>> lowered_if;
+
+        for (auto& b : match_stmt.branches.container) {
+            auto if_cond = ctx.repository().get_statement(b)->body.match_branch();
+            ebm::IfStatement tmp_if;
+            tmp_if.then_block = if_cond->body;
+            if (match_stmt.target.id.value() == 0) {
+                tmp_if.condition = if_cond->condition;
+            }
+            else {
+                EBMU_BOOL_TYPE(bool_type);
+                EBM_BINARY_OP(equality, ebm::BinaryOp::equal, bool_type, match_stmt.target, if_cond->condition);
+                tmp_if.condition = equality;
+            }
+            MAYBE(if_id, ctx.repository().new_statement_id());
+            if (lowered_if.size()) {
+                lowered_if.back().second.else_block = if_id;
+            }
+            lowered_if.push_back({if_id, std::move(tmp_if)});
+        }
+        for (auto& [if_id, if_stmt] : lowered_if) {
+            if (match_stmt.lowered_if_statement.id.value() == 0) {
+                match_stmt.lowered_if_statement = if_id;
+            }
+            ebm::StatementBody if_body;
+            if_body.kind = ebm::StatementOp::IF_STATEMENT;
+            if_body.if_statement(std::move(if_stmt));
+            EBMA_ADD_STATEMENT(new_stmt_id, if_id, std::move(if_body));
+        }
+
+        body.match_statement(std::move(match_stmt));
         return {};
     }
 

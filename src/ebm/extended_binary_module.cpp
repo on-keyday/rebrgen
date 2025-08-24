@@ -12739,60 +12739,6 @@ namespace ebm {
         }
         return ::futils::error::Error<>();
     }
-    ::futils::error::Error<> Block::encode(::futils::binary::writer& w) const {
-        if (auto err = (*this).len.encode(w)) {
-            return err;
-        }
-        auto tmp_136_ = (*this).len.value();
-        if (tmp_136_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: Block::container: dynamic length is not compatible with its length; tmp_136_!=(*this).container.size()",::futils::error::Category::lib);
-        }
-        for (auto& tmp_137_ : (*this).container) {
-            if (auto err = tmp_137_.encode(w)) {
-                return err;
-            }
-        }
-        return ::futils::error::Error<>();
-    }
-    ::futils::error::Error<> Block::decode(::futils::binary::reader& r) {
-        if (auto err = (*this).len.decode(r)) {
-            return err;
-        }
-        auto tmp_138_ = (*this).len.value();
-        (*this).container.clear();
-        for (size_t  tmp_140_= 0; tmp_140_<tmp_138_; ++tmp_140_ ) {
-            StatementRef tmp_139_;
-            if (auto err = tmp_139_.decode(r)) {
-                return err;
-            }
-            (*this).container.push_back(std::move(tmp_139_));
-        }
-        return ::futils::error::Error<>();
-    }
-    ::futils::error::Error<> MatchStatement::encode(::futils::binary::writer& w) const {
-        if (auto err = (*this).target.encode(w)) {
-            return err;
-        }
-        if (!::futils::binary::write_num(w,flags_42_.as_value() ,true)) {
-            return ::futils::error::Error<>("encode: MatchStatement::reserved: write bit field failed",::futils::error::Category::lib);
-        }
-        if (auto err = (*this).branches.encode(w)) {
-            return err;
-        }
-        return ::futils::error::Error<>();
-    }
-    ::futils::error::Error<> MatchStatement::decode(::futils::binary::reader& r) {
-        if (auto err = (*this).target.decode(r)) {
-            return err;
-        }
-        if (!::futils::binary::read_num(r,flags_42_.as_value() ,true)) {
-            return ::futils::error::Error<>("decode: MatchStatement::reserved: read bit field failed",::futils::error::Category::lib);
-        }
-        if (auto err = (*this).branches.decode(r)) {
-            return err;
-        }
-        return ::futils::error::Error<>();
-    }
     ::futils::error::Error<> Metadata::encode(::futils::binary::writer& w) const {
         if (auto err = (*this).name.encode(w)) {
             return err;
@@ -12815,12 +12761,12 @@ namespace ebm {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_141_ = (*this).len.value();
-        if (tmp_141_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: LoweredStatements::container: dynamic length is not compatible with its length; tmp_141_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_136_ = (*this).len.value();
+        if (tmp_136_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: LoweredStatements::container: dynamic length is not compatible with its length; tmp_136_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_142_ : (*this).container) {
-            if (auto err = tmp_142_.encode(w)) {
+        for (auto& tmp_137_ : (*this).container) {
+            if (auto err = tmp_137_.encode(w)) {
                 return err;
             }
         }
@@ -12830,14 +12776,14 @@ namespace ebm {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
-        auto tmp_143_ = (*this).len.value();
+        auto tmp_138_ = (*this).len.value();
         (*this).container.clear();
-        for (size_t  tmp_145_= 0; tmp_145_<tmp_143_; ++tmp_145_ ) {
-            LoweredStatement tmp_144_;
-            if (auto err = tmp_144_.decode(r)) {
+        for (size_t  tmp_140_= 0; tmp_140_<tmp_138_; ++tmp_140_ ) {
+            LoweredStatement tmp_139_;
+            if (auto err = tmp_139_.decode(r)) {
                 return err;
             }
-            (*this).container.push_back(std::move(tmp_144_));
+            (*this).container.push_back(std::move(tmp_139_));
         }
         return ::futils::error::Error<>();
     }
@@ -12845,12 +12791,12 @@ namespace ebm {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_146_ = (*this).len.value();
-        if (tmp_146_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: LoweredExpressions::container: dynamic length is not compatible with its length; tmp_146_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_141_ = (*this).len.value();
+        if (tmp_141_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: LoweredExpressions::container: dynamic length is not compatible with its length; tmp_141_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_147_ : (*this).container) {
-            if (auto err = tmp_147_.encode(w)) {
+        for (auto& tmp_142_ : (*this).container) {
+            if (auto err = tmp_142_.encode(w)) {
                 return err;
             }
         }
@@ -12860,10 +12806,40 @@ namespace ebm {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
+        auto tmp_143_ = (*this).len.value();
+        (*this).container.clear();
+        for (size_t  tmp_145_= 0; tmp_145_<tmp_143_; ++tmp_145_ ) {
+            LoweredExpression tmp_144_;
+            if (auto err = tmp_144_.decode(r)) {
+                return err;
+            }
+            (*this).container.push_back(std::move(tmp_144_));
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> Block::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).len.encode(w)) {
+            return err;
+        }
+        auto tmp_146_ = (*this).len.value();
+        if (tmp_146_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: Block::container: dynamic length is not compatible with its length; tmp_146_!=(*this).container.size()",::futils::error::Category::lib);
+        }
+        for (auto& tmp_147_ : (*this).container) {
+            if (auto err = tmp_147_.encode(w)) {
+                return err;
+            }
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> Block::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).len.decode(r)) {
+            return err;
+        }
         auto tmp_148_ = (*this).len.value();
         (*this).container.clear();
         for (size_t  tmp_150_= 0; tmp_150_<tmp_148_; ++tmp_150_ ) {
-            LoweredExpression tmp_149_;
+            StatementRef tmp_149_;
             if (auto err = tmp_149_.decode(r)) {
                 return err;
             }
@@ -12927,6 +12903,36 @@ namespace ebm {
             return err;
         }
         if (auto err = (*this).lowered_stmt.decode(r)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> MatchStatement::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).target.encode(w)) {
+            return err;
+        }
+        if (!::futils::binary::write_num(w,flags_42_.as_value() ,true)) {
+            return ::futils::error::Error<>("encode: MatchStatement::reserved: write bit field failed",::futils::error::Category::lib);
+        }
+        if (auto err = (*this).branches.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).lowered_if_statement.encode(w)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> MatchStatement::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).target.decode(r)) {
+            return err;
+        }
+        if (!::futils::binary::read_num(r,flags_42_.as_value() ,true)) {
+            return ::futils::error::Error<>("decode: MatchStatement::reserved: read bit field failed",::futils::error::Category::lib);
+        }
+        if (auto err = (*this).branches.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).lowered_if_statement.decode(r)) {
             return err;
         }
         return ::futils::error::Error<>();

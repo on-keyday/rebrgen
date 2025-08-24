@@ -70,6 +70,7 @@ format String:
 
 # References to various tables in the EBM
 # reference 0 means "null" or "not set"
+# the term "optional" in this document means "this reference maybe 0"
 
 format IdentifierRef:
     id :Varint # Reference to an entry in the identifiers table
@@ -233,6 +234,7 @@ format MatchStatement:
     is_exhaustive :u1 # 0: non-exhaustive, 1: exhaustive
     reserved :u7 # Reserved for future use
     branches :Block # List of match branches
+    lowered_if_statement :StatementRef # Lowered representation converted to if-else style
 
 format FieldDecl:
     name :IdentifierRef # Field name

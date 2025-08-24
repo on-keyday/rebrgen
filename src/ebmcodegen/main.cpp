@@ -228,7 +228,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");
-    w.writeln("#include<ebmcodegen/stub/util.hpp>");
+    w.writeln("#include <ebmcodegen/stub/util.hpp>");
     w.writeln("#include <ebmgen/common.hpp>");
     w.writeln("#include <ebmgen/convert/helper.hpp>");
     w.writeln("#include <ebmgen/mapping.hpp>");

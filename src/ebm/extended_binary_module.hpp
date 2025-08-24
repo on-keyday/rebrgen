@@ -1048,13 +1048,13 @@ namespace ebm {
     struct Expression;
     struct LoopStatement;
     struct IfStatement;
-    struct Block;
-    struct MatchStatement;
     struct Metadata;
     struct LoweredStatements;
     struct LoweredExpressions;
+    struct Block;
     struct AssertDesc;
     struct IOData;
+    struct MatchStatement;
     struct MatchBranch;
     struct FunctionDecl;
     struct VariableDecl;
@@ -1994,67 +1994,6 @@ namespace ebm {
             v(v, "else_block",visitor_tag<decltype(std::declval<IfStatement>().else_block)>{});
         }
     };
-    struct EBM_API Block{
-        Varint len;
-        std::vector<StatementRef> container;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        constexpr static const char* visitor_name = "Block";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "len",(*this).len);
-            v(v, "container",(*this).container);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "len",(*this).len);
-            v(v, "container",(*this).container);
-        }
-        template<typename T>
-        struct visitor_tag {
-            using type = T;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<Block>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<Block>().container)>{});
-        }
-    };
-    struct EBM_API MatchStatement{
-        ExpressionRef target;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_42_;
-        bits_flag_alias_method(flags_42_,0,is_exhaustive);
-        bits_flag_alias_method(flags_42_,1,reserved);
-        Block branches;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        constexpr static const char* visitor_name = "MatchStatement";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "target",(*this).target);
-            v(v, "is_exhaustive",(*this).is_exhaustive());
-            v(v, "reserved",(*this).reserved());
-            v(v, "branches",(*this).branches);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "target",(*this).target);
-            v(v, "is_exhaustive",(*this).is_exhaustive());
-            v(v, "reserved",(*this).reserved());
-            v(v, "branches",(*this).branches);
-        }
-        template<typename T>
-        struct visitor_tag {
-            using type = T;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "target",visitor_tag<decltype(std::declval<MatchStatement>().target)>{});
-            v(v, "is_exhaustive",visitor_tag<decltype(std::declval<MatchStatement>().is_exhaustive())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<MatchStatement>().reserved())>{});
-            v(v, "branches",visitor_tag<decltype(std::declval<MatchStatement>().branches)>{});
-        }
-    };
     struct EBM_API Metadata{
         IdentifierRef name;
         Expressions values;
@@ -2133,6 +2072,32 @@ namespace ebm {
             v(v, "container",visitor_tag<decltype(std::declval<LoweredExpressions>().container)>{});
         }
     };
+    struct EBM_API Block{
+        Varint len;
+        std::vector<StatementRef> container;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "Block";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "len",(*this).len);
+            v(v, "container",(*this).container);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "len",visitor_tag<decltype(std::declval<Block>().len)>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Block>().container)>{});
+        }
+    };
     struct EBM_API AssertDesc{
         ExpressionRef condition;
         StatementRef lowered_statement;
@@ -2199,6 +2164,45 @@ namespace ebm {
             v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute)>{});
             v(v, "size",visitor_tag<decltype(std::declval<IOData>().size)>{});
             v(v, "lowered_stmt",visitor_tag<decltype(std::declval<IOData>().lowered_stmt)>{});
+        }
+    };
+    struct EBM_API MatchStatement{
+        ExpressionRef target;
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_42_;
+        bits_flag_alias_method(flags_42_,0,is_exhaustive);
+        bits_flag_alias_method(flags_42_,1,reserved);
+        Block branches;
+        StatementRef lowered_if_statement;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "MatchStatement";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "target",(*this).target);
+            v(v, "is_exhaustive",(*this).is_exhaustive());
+            v(v, "reserved",(*this).reserved());
+            v(v, "branches",(*this).branches);
+            v(v, "lowered_if_statement",(*this).lowered_if_statement);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "target",(*this).target);
+            v(v, "is_exhaustive",(*this).is_exhaustive());
+            v(v, "reserved",(*this).reserved());
+            v(v, "branches",(*this).branches);
+            v(v, "lowered_if_statement",(*this).lowered_if_statement);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "target",visitor_tag<decltype(std::declval<MatchStatement>().target)>{});
+            v(v, "is_exhaustive",visitor_tag<decltype(std::declval<MatchStatement>().is_exhaustive())>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<MatchStatement>().reserved())>{});
+            v(v, "branches",visitor_tag<decltype(std::declval<MatchStatement>().branches)>{});
+            v(v, "lowered_if_statement",visitor_tag<decltype(std::declval<MatchStatement>().lowered_if_statement)>{});
         }
     };
     struct EBM_API MatchBranch{

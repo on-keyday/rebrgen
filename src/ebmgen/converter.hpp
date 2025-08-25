@@ -526,6 +526,10 @@ namespace ebmgen {
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Range>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Paren>& node, ebm::ExpressionBody& body);
+
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Match>& node, ebm::ExpressionBody& body);
+
         // Fallback for unhandled types
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body);
     };

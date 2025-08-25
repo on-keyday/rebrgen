@@ -407,6 +407,25 @@ namespace ebmgen {
         return result;
     }
 
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
+        EBMA_CONVERT_STATEMENT(conditional_stmt_ref, node);
+        body.conditional_stmt(conditional_stmt_ref);
+
+        EBM_DEFINE_ANONYMOUS_VARIABLE(var, body.type, {});
+        body.target_stmt(var_def);
+        return {};
+    }
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Match>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
+        EBMA_CONVERT_STATEMENT(conditional_stmt_ref, node);
+        body.conditional_stmt(conditional_stmt_ref);
+
+        EBM_DEFINE_ANONYMOUS_VARIABLE(var, body.type, {});
+        body.target_stmt(var_def);
+        return {};
+    }
+
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {
         return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }

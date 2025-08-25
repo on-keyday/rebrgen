@@ -125,6 +125,34 @@ std::map<std::string_view, Struct> make_struct_map() {
                 dispatch,
             });
         }
+        else if constexpr (std::is_same_v<T, std::int32_t>) {
+            structs.back().fields.push_back({
+                name,
+                "std::int32_t",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, std::int8_t>) {
+            structs.back().fields.push_back({
+                name,
+                "std::int8_t",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, float>) {
+            structs.back().fields.push_back({
+                name,
+                "float",
+                dispatch,
+            });
+        }
+        else if constexpr (std::is_same_v<T, double>) {
+            structs.back().fields.push_back({
+                name,
+                "double",
+                dispatch,
+            });
+        }
         else if constexpr (std::is_same_v<T, bool>) {
             structs.back().fields.push_back({
                 name,

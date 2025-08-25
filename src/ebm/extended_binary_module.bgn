@@ -95,6 +95,7 @@ enum ExpressionOp:
     LITERAL_BOOL 
     LITERAL_STRING 
     LITERAL_TYPE 
+    LITERAL_CHAR
     IDENTIFIER 
     BINARY_OP 
     UNARY_OP 
@@ -113,6 +114,7 @@ enum ExpressionOp:
     MAX_VALUE # Get the maximum value of a type (e.g., u8, u16, u32, u64)
     READ_DATA # this is for input.get(u8)
     WRITE_DATA # this is for output.put(x)
+    CONDITIONAL_STATEMENT # if or match that is used as expression
 
 
 format Expression:
@@ -138,6 +140,8 @@ format ExpressionBody:
             string_value :StringRef # Reference to string in string table
         ExpressionOp.LITERAL_TYPE:
             type_ref :TypeRef
+        ExpressionOp.LITERAL_CHAR:
+            char_value :Varint # Unicode code point
         ExpressionOp.IDENTIFIER:
             id :StatementRef # reference to definition of the identifier 
         ExpressionOp.BINARY_OP:
@@ -185,6 +189,9 @@ format ExpressionBody:
         ExpressionOp.WRITE_DATA:
             target_expr :ExpressionRef # Expression to write data from
             io_statement :StatementRef # Reference to the IOData statement for writing data
+        ExpressionOp.CONDITIONAL_STATEMENT:
+            target_stmt :StatementRef # Reference to the variable result is held into
+            conditional_stmt :StatementRef # Reference to the if or match statement used as expression
 
 enum LoopType:
     :u8

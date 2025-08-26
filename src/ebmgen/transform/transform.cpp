@@ -125,8 +125,14 @@ namespace ebmgen {
                         auto& ctx = tctx.context();
                         EBM_BLOCK(original_, std::move(original_io));
                         io_data.lowered_stmt = original_;
-                        EBM_READ_DATA(vectorized_read, std::move(io_data));
-                        return vectorized_read;
+                        if (write) {
+                            EBM_WRITE_DATA(vectorized_write, std::move(io_data));
+                            return vectorized_write;
+                        }
+                        else {
+                            EBM_READ_DATA(vectorized_read, std::move(io_data));
+                            return vectorized_read;
+                        }
                     });
                 }
             }

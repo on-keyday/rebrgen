@@ -8,6 +8,8 @@
 #include "ebm/extended_binary_module.hpp"
 #include "helper/template_instance.h"
 #include "common.hpp"
+#include "number/to_string.h"
+#include "unicode/utf/utf8.h"
 
 namespace ebmgen {
 
@@ -60,6 +62,10 @@ namespace ebmgen {
                 os_ << " name:";
                 os_ << ident->body.data;
             }
+            if (auto expr = stmt->body.expression()) {
+                os_ << " ";
+                print_resolved_reference(*expr);
+            }
         }
         else {
             os_ << "(unknown statement)";
@@ -73,6 +79,21 @@ namespace ebmgen {
             if (auto id = expr->body.id()) {
                 os_ << " ";
                 print_resolved_reference(*id);
+            }
+            else if (auto lit = expr->body.string_value()) {
+                os_ << " ";
+                print_resolved_reference(*lit);
+            }
+            else if (auto lit = expr->body.int64_value()) {
+                os_ << " value:" << *lit;
+            }
+            else if (auto lit = expr->body.int_value()) {
+                os_ << " value:" << lit->value();
+            }
+            else if (auto lit = expr->body.char_value()) {
+                std::string v;
+                futils::unicode::utf8::from_utf32(lit->value(), v, true);
+                os_ << " " << v << "(code: U+" << futils::number::to_string<std::string>(lit->value(), 16, futils::number::ToStrFlag::upper) << ")";
             }
         }
         else {

@@ -426,6 +426,13 @@ namespace ebmgen {
         return {};
     }
 
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::CharLiteral>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionOp::LITERAL_CHAR;
+        MAYBE(value, varint(static_cast<std::uint32_t>(node->code)));
+        body.char_value(value);
+        return {};
+    }
+
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {
         return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }

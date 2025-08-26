@@ -609,7 +609,7 @@ format AnyRef:
 
 format Loc:
     ident :AnyRef # Reference to an identifier, type, or expression
-    file_id :Varint # files index + 1
+    file_id :Varint # files index + 1 (0 means not related to any file)
     line :Varint # line number
     column :Varint # column number
     start :Varint # start index of source code

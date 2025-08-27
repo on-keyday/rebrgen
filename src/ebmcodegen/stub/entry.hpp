@@ -30,6 +30,8 @@ namespace ebmcodegen {
         const char* lsp_name = "";
         const char* webworker_name = "";
 
+        bool debug_unimplemented = false;
+
         std::string_view dump_test_file;
 
         std::set<std::string_view> web_filtered;
@@ -41,6 +43,7 @@ namespace ebmcodegen {
             ctx.VarBool(&show_flags, "show-flags", "show all flags (for debug and code generation)");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
             ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
+            ctx.VarBool(&debug_unimplemented, "debug-unimplemented", "debug unimplemented node (for debug)");
             web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info"};
         }
     };

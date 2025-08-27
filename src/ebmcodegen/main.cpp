@@ -260,6 +260,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("#include <ebmgen/common.hpp>");
     w.writeln("#include <ebmgen/convert/helper.hpp>");
     w.writeln("#include <ebmgen/mapping.hpp>");
+    w.writeln("#include <code/code_writer.h>");
+
     auto ns_name = std::format("ebm2{}", flags.lang);
 
     CodeWriter visitor_stub;
@@ -268,14 +270,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     auto visitor_scope = visitor_stub.indent_scope();
     visitor_stub.writeln("static constexpr const char* program_name = \"", ns_name, "\";");
     visitor_stub.writeln("ebmgen::MappingTable module_;");
+    visitor_stub.writeln("Flags& flags;");
     if (flags.mode == GenerateMode::CodeGenerator) {
-        w.writeln("#include <code/code_writer.h>");
         visitor_stub.writeln("futils::code::CodeWriter<futils::binary::writer&> root;");
-        visitor_stub.writeln("using CodeWriter = futils::code::CodeWriter<std::string>;");
-        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w) : module_(m), root{w} {}");
+        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}");
     }
     else {
-        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m) : module_(m) {}");
+        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,Flags& f) : module_(m), flags{f} {}");
     }
 
     std::vector<std::string> hooks;
@@ -348,6 +349,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     auto ns_scope = w.indent_scope();
     w.writeln("using namespace ebmgen;");
     w.writeln("using namespace ebmcodegen::util;");
+    w.writeln("using CodeWriter = futils::code::CodeWriter<std::string>;");
 
     std::string result_type = "expected<void>";
 
@@ -500,7 +502,17 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 visitor_stub.writeln(") {");
                 auto stub_include = visitor_stub.indent_scope();
-                insert_include(visitor_stub, kind, "_", to_string(T(i)));
+                insert_include_without_endif(visitor_stub, kind, "_", to_string(T(i)));
+                visitor_stub.writeln("#else");
+                visitor_stub.writeln("if (flags.debug_unimplemented) {");
+                {
+                    auto scope = visitor_stub.indent_scope();
+                    if (flags.mode == GenerateMode::CodeGenerator) {
+                        visitor_stub.writeln("return \"{{Unimplemented ", kind, "_", to_string(T(i)), "}}\";");
+                    }
+                }
+                visitor_stub.writeln("}");
+                visitor_stub.writeln("#endif");
                 visitor_stub.writeln("return {};");
                 stub_include.execute();
                 visitor_stub.writeln("}");
@@ -576,10 +588,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("DEFINE_ENTRY(Flags,Output) {");
     auto main_scope = w.indent_scope();
     if (flags.mode == GenerateMode::CodeGenerator) {
-        w.writeln(ns_name, "::Visitor visitor{ebm,w};");
+        w.writeln(ns_name, "::Visitor visitor{ebm,w,flags};");
     }
     else {
-        w.writeln(ns_name, "::Visitor visitor{ebm};");
+        w.writeln(ns_name, "::Visitor visitor{ebm,flags};");
     }
     insert_include(w, "pre_entry");
     w.writeln("auto result = visitor.entry();");

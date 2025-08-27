@@ -351,11 +351,20 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("using namespace ebmcodegen::util;");
     w.writeln("using CodeWriter = futils::code::CodeWriter<std::string>;");
 
-    std::string result_type = "expected<void>";
-
+    w.writeln();
+    w.writeln("struct Result {");
+    auto result_scope = w.indent_scope();
     if (flags.mode == GenerateMode::CodeGenerator) {
-        result_type = "expected<std::string>";
+        w.writeln("std::string value;");
+        w.writeln("Result(std::string v) : value(std::move(v)) {}");
+        w.writeln("Result(const char* v) : value(v) {}");
+        w.writeln("Result() = default;");
     }
+    insert_include(w, "Result");
+    result_scope.execute();
+    w.writeln("};");
+
+    std::string result_type = "expected<Result>";
 
     auto dispatcher = [&](auto t, std::string_view kind, auto subset) {
         using T = std::decay_t<decltype(t)>;
@@ -558,7 +567,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
                 stmt_dispatcher.writeln("}");
                 if (flags.mode == GenerateMode::CodeGenerator) {
-                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value()));");
+                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value().value));");
                 }
             }
             stmt_dispatcher.writeln("}");

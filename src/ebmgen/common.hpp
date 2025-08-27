@@ -139,4 +139,11 @@ namespace ebmgen {
             visitor(visitor, name, elem);                                                                \
         }                                                                                                \
     }
+
+#define VISITOR_RECURSE_CONTAINER(visitor, name, value) \
+    if constexpr (is_container<decltype(val)>) {        \
+        for (auto& elem : value.container) {            \
+            visitor(visitor, name, elem);               \
+        }                                               \
+    }
 }  // namespace ebmgen

@@ -197,19 +197,15 @@ namespace ebmgen {
             used_refs.clear();
             auto map_to = [&](const auto& vec) {
                 for (const auto& item : vec) {
-                    item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
+                    item.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                         if constexpr (AnyRef<decltype(val)>) {
                             if (val.id.value() != 0) {
                                 used_refs[val.id.value()].push_back(ebm::AnyRef{item.id.id});
                             }
                         }
-                        else if constexpr (is_container<decltype(val)>) {
-                            for (size_t i = 0; i < val.container.size(); ++i) {
-                                visitor(visitor, name, val.container[i], i);
-                            }
-                        }
                         else
-                            VISITOR_RECURSE(visitor, name, val)
+                            VISITOR_RECURSE_CONTAINER(visitor, name, val)
+                        else VISITOR_RECURSE(visitor, name, val)
                     });
                 }
             };
@@ -334,9 +330,84 @@ namespace ebmgen {
         return {};
     }
 
+    bool is_flatten_target(ebm::ExpressionOp op) {
+        switch (op) {
+            case ebm::ExpressionOp::CONDITIONAL_STATEMENT:
+            case ebm::ExpressionOp::READ_DATA:
+            case ebm::ExpressionOp::WRITE_DATA:
+            case ebm::ExpressionOp::GET_STREAM_OFFSET:
+            case ebm::ExpressionOp::CAN_READ_STREAM:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    expected<void> flatten_io_expression(TransformContext& ctx) {
+        auto& statements = ctx.statement_repository().get_all();
+        std::set<std::uint64_t> toplevel_expressions;
+        for (auto& stmt : statements) {
+            stmt.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
+                if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::ExpressionRef>) {
+                    if (val.id.value() != 0) {
+                        toplevel_expressions.insert(val.id.value());
+                    }
+                }
+                else
+                    VISITOR_RECURSE_CONTAINER(visitor, name, val)
+                else VISITOR_RECURSE(visitor, name, val)
+            });
+        }
+        print_if_verbose("Found ", toplevel_expressions.size(), " top-level expressions while expressions are ", ctx.expression_repository().get_all().size(), "\n");
+        for (auto& expr : toplevel_expressions) {
+            auto ref = ctx.expression_repository().get(ebm::ExpressionRef{expr});
+            if (!ref) {
+                return unexpect_error("Failed to get expression {}", expr);
+            }
+            expected<void> result;
+            std::vector<ebm::ExpressionRef> flatten_targets;
+            if (is_flatten_target(ref->body.kind)) {
+                flatten_targets.push_back(ebm::ExpressionRef{expr});
+            }
+            else {
+                ref->body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
+                    if (!result) {
+                        return;
+                    }
+                    if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::ExpressionRef>) {
+                        if (val.id.value() != 0) {
+                            auto inner = ctx.expression_repository().get(val);
+                            if (!inner) {
+                                result = unexpect_error("Failed to get inner expression {} while flattening expression {}", val.id.value(), expr);
+                                return;
+                            }
+                            if (is_flatten_target(inner->body.kind)) {
+                                flatten_targets.push_back(val);
+                                return;
+                            }
+                            visitor(visitor, name, inner->body);
+                        }
+                    }
+                    else
+                        VISITOR_RECURSE_CONTAINER(visitor, name, val)
+                    else VISITOR_RECURSE(visitor, name, val)
+                });
+            }
+            if (!result) {
+                return result;
+            }
+            if (flatten_targets.empty()) {
+                continue;
+            }
+            print_if_verbose("Flatten target exists for ", flatten_targets.size(), " expressions while flattening expression ", expr, "(", to_string(ref->body.kind), ")\n");
+        }
+        return {};
+    }
+
     expected<void> transform(TransformContext& ctx) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
+        MAYBE_VOID(flatten_io_expression, flatten_io_expression(ctx));
         MAYBE_VOID(remove_unused, remove_unused(ctx));
         return {};
     }

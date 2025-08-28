@@ -1,6 +1,7 @@
 /*license*/
 #include "transform.hpp"
 #include <algorithm>
+#include <execution>
 #include <functional>
 #include <type_traits>
 #include "../common.hpp"
@@ -10,6 +11,7 @@
 #include "ebmgen/converter.hpp"
 #include "wrap/cout.h"
 #include <set>
+#include <testutil/timer.h>
 
 namespace ebmgen {
     auto print_if_verbose(auto&&... args) {
@@ -291,6 +293,7 @@ namespace ebmgen {
         MAYBE(entry_id, ctx.new_id());
         old_to_new[1] = entry_id;
         auto remap = [&](auto& vec) {
+            futils::test::Timer t;
             for (auto& item : vec) {
                 if (auto it = old_to_new.find(item.id.id.value()); it != old_to_new.end()) {
                     item.id.id = it->second.id;
@@ -313,6 +316,7 @@ namespace ebmgen {
                         VISITOR_RECURSE(visitor, name, val)
                 });
             }
+            print_if_verbose("Remap ", vec.size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         };
         remap(ctx.statement_repository().get_all());
         remap(ctx.identifier_repository().get_all());
@@ -341,6 +345,108 @@ namespace ebmgen {
             default:
                 return false;
         }
+    }
+
+    expected<ebm::ExpressionRef> flatten_expression(TransformContext& tctx, ebm::Block& block, ebm::ExpressionRef expr_ref) {
+        auto& ctx = tctx.context();
+        auto expr = ctx.repository().get_expression(expr_ref);
+        auto expr_type = expr->body.type;
+        switch (expr->body.kind) {
+            case ebm::ExpressionOp::LITERAL_INT:
+            case ebm::ExpressionOp::LITERAL_INT64:
+            case ebm::ExpressionOp::LITERAL_CHAR:
+            case ebm::ExpressionOp::LITERAL_STRING:
+            case ebm::ExpressionOp::LITERAL_BOOL:
+            case ebm::ExpressionOp::LITERAL_TYPE:
+            case ebm::ExpressionOp::IDENTIFIER:
+            case ebm::ExpressionOp::MAX_VALUE:
+            case ebm::ExpressionOp::DEFAULT_VALUE:
+                return expr->id;
+            case ebm::ExpressionOp::BINARY_OP: {
+                auto left = *expr->body.left();
+                auto right = *expr->body.right();
+                auto bop = *expr->body.bop();
+                // short circuit
+                if (bop == ebm::BinaryOp::logical_and || bop == ebm::BinaryOp::logical_or) {
+                    EBMU_BOOL_TYPE(typ);
+                    EBM_DEFAULT_VALUE(initial_ref, typ);
+                    MAYBE(left, flatten_expression(tctx, block, left));
+                    EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ, left);
+                    append(block, result_def);
+                    ebm::Block then_block;
+                    MAYBE(right, flatten_expression(tctx, then_block, right));
+                    EBM_ASSIGNMENT(assign, result, right);
+                    ebm::StatementRef then_ref;
+                    if (then_block.container.size()) {
+                        append(then_block, assign);
+                        EBM_BLOCK(then_, std::move(then_block));
+                        then_ref = then_;
+                    }
+                    else {
+                        then_ref = assign;
+                    }
+                    EBM_BINARY_OP(cond, bop == ebm::BinaryOp::logical_and ? ebm::BinaryOp::not_equal : ebm::BinaryOp::equal, typ, result, initial_ref);
+                    EBM_IF_STATEMENT(if_stmt, cond, then_ref, {});
+                    append(block, if_stmt);
+                    return result;
+                }
+                MAYBE(left_p, flatten_expression(tctx, block, left));
+                MAYBE(right_p, flatten_expression(tctx, block, right));
+                EBM_BINARY_OP(bop_ref, bop, expr_type, left_p, right_p);
+                return bop_ref;
+            }
+            case ebm::ExpressionOp::UNARY_OP: {
+                auto inner = *expr->body.operand();
+                auto uop = *expr->body.uop();
+                MAYBE(inner_p, flatten_expression(tctx, block, inner));
+                EBM_UNARY_OP(uop_ref, uop, expr_type, inner_p);
+                return uop_ref;
+            }
+            case ebm::ExpressionOp::ARRAY_SIZE: {
+                auto array = *expr->body.array_expr();
+                MAYBE(array_p, flatten_expression(tctx, block, array));
+                EBM_ARRAY_SIZE(size_ref, array_p);
+                return size_ref;
+            }
+            case ebm::ExpressionOp::CALL: {
+                auto call_desc = *expr->body.call_desc();  // copy to avoid re-fetching
+                MAYBE(callee_p, flatten_expression(tctx, block, call_desc.callee));
+                ebm::Expressions args;
+                for (auto& arg : call_desc.arguments.container) {
+                    MAYBE(arg_p, flatten_expression(tctx, block, arg));
+                    append(args, arg_p);
+                }
+                call_desc.callee = callee_p;
+                call_desc.arguments = std::move(args);
+                EBM_CALL(call_ref, expr_type, std::move(call_desc));
+                return call_ref;
+            }
+            case ebm::ExpressionOp::INDEX_ACCESS: {
+                auto index = *expr->body.index();
+                auto base = *expr->body.base();
+                MAYBE(base_p, flatten_expression(tctx, block, base));
+                MAYBE(index_p, flatten_expression(tctx, block, index));
+                EBM_INDEX(index_ref, expr_type, base_p, index_p);
+                return index_ref;
+            }
+            case ebm::ExpressionOp::MEMBER_ACCESS: {
+                auto base = *expr->body.base();
+                auto member = *expr->body.member();
+                MAYBE(base_p, flatten_expression(tctx, block, base));
+                EBM_MEMBER_ACCESS(member_ref, expr_type, base_p, member);
+                return member_ref;
+            }
+            case ebm::ExpressionOp::WRITE_DATA: {
+                auto target_expr = *expr->body.target_expr();
+                auto io_ = *expr->body.io_statement();
+                MAYBE(target_p, flatten_expression(tctx, block, target_expr));
+                auto stmt = ctx.repository().get_statement(io_);
+                auto io_data = *stmt->body.write_data();
+                append(block, io_);
+                return io_;
+            }
+        }
+        return unexpect_error("Unsupported flatten expression kind: {}", to_string(expr->body.kind));
     }
 
     expected<void> flatten_io_expression(TransformContext& ctx) {

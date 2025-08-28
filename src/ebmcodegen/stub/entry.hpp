@@ -101,6 +101,16 @@ namespace ebmcodegen {
                 cerr << flags.program_name << ": " << err.error<std::string>() << '\n';
                 return 1;
             }
+            if (!r.empty()) {
+                if (flags.dump_code) {
+                    std::stringstream ss;
+                    ebmgen::DebugPrinter printer(ebm, ss);
+                    printer.print_module();
+                    cout << ss.str();
+                }
+                cerr << flags.program_name << ": " << "unexpected remaining data for input\n";
+                return 1;
+            }
             futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
             futils::binary::writer w{fs.get_direct_write_handler(), &fs};
             int ret = then(w, ebm, output);

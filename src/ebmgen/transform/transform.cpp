@@ -361,6 +361,8 @@ namespace ebmgen {
             case ebm::ExpressionOp::IDENTIFIER:
             case ebm::ExpressionOp::MAX_VALUE:
             case ebm::ExpressionOp::DEFAULT_VALUE:
+            case ebm::ExpressionOp::IS_LITTLE_ENDIAN:
+            case ebm::ExpressionOp::IS_ERROR:
                 return expr->id;
             case ebm::ExpressionOp::BINARY_OP: {
                 auto left = *expr->body.left();
@@ -440,10 +442,45 @@ namespace ebmgen {
                 auto target_expr = *expr->body.target_expr();
                 auto io_ = *expr->body.io_statement();
                 MAYBE(target_p, flatten_expression(tctx, block, target_expr));
-                auto stmt = ctx.repository().get_statement(io_);
-                auto io_data = *stmt->body.write_data();
                 append(block, io_);
-                return io_;
+                return expr_ref;  // this is void, so should not be affected
+            }
+            case ebm::ExpressionOp::READ_DATA: {
+                auto target_stmt = *expr->body.target_stmt();
+                auto io_ = *expr->body.io_statement();
+                append(block, target_stmt);
+                append(block, io_);
+                EBM_IDENTIFIER(id, target_stmt, expr_type);
+                return id;
+            }
+            case ebm::ExpressionOp::RANGE: {
+                MAYBE(start, flatten_expression(tctx, block, *expr->body.start()));
+                MAYBE(end, flatten_expression(tctx, block, *expr->body.end()));
+                EBM_RANGE(range_ref, expr_type, start, end);
+                return range_ref;
+            }
+            case ebm::ExpressionOp::TYPE_CAST: {
+                auto from_type = *expr->body.from_type();
+                auto inner = *expr->body.source_expr();
+                auto cast_kind = *expr->body.cast_kind();
+                MAYBE(inner_p, flatten_expression(tctx, block, inner));
+                EBM_CAST(cast_ref, expr_type, from_type, inner_p);
+                return cast_ref;
+            }
+            case ebm::ExpressionOp::GET_REMAINING_BYTES:
+            case ebm::ExpressionOp::GET_STREAM_OFFSET:
+            case ebm::ExpressionOp::CAN_READ_STREAM: {
+                EBM_DEFINE_VARIABLE(transparent_ref, {}, expr_type, expr_ref, false, true);
+                append(block, transparent_ref_def);
+                return transparent_ref;
+            }
+            case ebm::ExpressionOp::CONDITIONAL_STATEMENT: {
+                auto target_stmt = *expr->body.target_stmt();
+                auto conditional_stmt = *expr->body.conditional_stmt();
+                append(block, target_stmt);
+                append(block, conditional_stmt);
+                EBM_IDENTIFIER(id, target_stmt, expr_type);
+                return id;
             }
         }
         return unexpect_error("Unsupported flatten expression kind: {}", to_string(expr->body.kind));
@@ -472,6 +509,7 @@ namespace ebmgen {
             }
             expected<void> result;
             std::vector<ebm::ExpressionRef> flatten_targets;
+            /*
             if (is_flatten_target(ref->body.kind)) {
                 flatten_targets.push_back(ebm::ExpressionRef{expr});
             }
@@ -499,6 +537,7 @@ namespace ebmgen {
                     else VISITOR_RECURSE(visitor, name, val)
                 });
             }
+            */
             if (!result) {
                 return result;
             }

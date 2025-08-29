@@ -113,14 +113,8 @@ namespace ebmgen {
         EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
     }
 
-#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref)                                 \
-    ebm::ExpressionRef ref_name;                                                                  \
-    ebm::StatementRef ref_name##_def;                                                             \
-    {                                                                                             \
-        EBMA_ADD_STATEMENT(new_var_ref_, make_variable_decl({}, typ, initial_ref, false, false)); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                         \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                          \
-    }
+#define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref) \
+    EBM_DEFINE_VARIABLE(ref_name, {}, typ, initial_ref, false, false)
 
     ebm::ExpressionBody make_cast(ebm::TypeRef to_typ, ebm::TypeRef from_typ, ebm::ExpressionRef expr, ebm::CastType cast_kind);
 
@@ -323,6 +317,11 @@ namespace ebmgen {
     EBM_AST_STATEMENT(ref_name, make_break, loop_id)
 #define EBM_CONTINUE(ref_name, loop_id) \
     EBM_AST_STATEMENT(ref_name, make_continue, loop_id)
+
+    ebm::ExpressionBody make_range(ebm::TypeRef type, ebm::ExpressionRef start, ebm::ExpressionRef end);
+
+#define EBM_RANGE(ref_name, type, start, end) \
+    EBM_AST_EXPRESSION(ref_name, make_range, type, start, end)
 
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 

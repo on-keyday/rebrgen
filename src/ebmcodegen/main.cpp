@@ -13,13 +13,7 @@
 #include <ebmgen/mapping.hpp>
 #include <string>
 #include <string_view>
-#include <set>
-
-namespace ebmcodegen {
-    std::map<ebm::StatementOp, std::set<std::string_view>> body_subset_StatementBody();
-    std::map<ebm::TypeKind, std::set<std::string_view>> body_subset_TypeBody();
-    std::map<ebm::ExpressionOp, std::set<std::string_view>> body_subset_ExpressionBody();
-}  // namespace ebmcodegen
+#include "stub/structs.hpp"
 
 enum class GenerateMode {
     BodySubset,
@@ -53,129 +47,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
 
 auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
-enum TypeAttribute {
-    NONE = 0,
-    ARRAY = 0x1,
-    PTR = 0x2,
-    REF = 0x4,
-};
-struct StructField {
-    std::string_view name;
-    std::string_view type;
-    TypeAttribute attr = NONE;
-};
-
-struct Struct {
-    std::string_view name;
-    std::vector<StructField> fields;
-};
-
-std::map<std::string_view, Struct> make_struct_map() {
-    std::vector<Struct> structs;
-    structs.push_back({
-        ebm::ExtendedBinaryModule::visitor_name,
-    });
-    std::map<std::string_view, Struct> struct_map;
-
-    ebm::ExtendedBinaryModule::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
-        using T = typename decltype(tag)::type;
-        if constexpr (ebmgen::has_visit<T, decltype(visitor)>) {
-            structs.back().fields.push_back({
-                name,
-                T::visitor_name,
-                dispatch,
-            });
-            if constexpr (!ebmgen::AnyRef<T>) {
-                structs.push_back({
-                    T::visitor_name,
-                });
-                T::visit_static(visitor);
-                auto s = std::move(structs.back());
-                structs.pop_back();
-                struct_map[s.name] = std::move(s);
-            }
-        }
-        else if constexpr (futils::helper::is_template_instance_of<T, std::vector>) {
-            using P = typename futils::helper::template_instance_of_t<T, std::vector>::template param_at<0>;
-            visitor(visitor, name, ebm::ExtendedBinaryModule::visitor_tag<P>{}, TypeAttribute(dispatch | TypeAttribute::ARRAY));
-        }
-        else if constexpr (std::is_pointer_v<T>) {
-            using P = std::remove_pointer_t<T>;
-            visitor(visitor, name, ebm::ExtendedBinaryModule::visitor_tag<P>{}, TypeAttribute(dispatch | TypeAttribute::PTR));
-        }
-        else if constexpr (std::is_enum_v<T>) {
-            constexpr const char* enum_name = visit_enum(T{});
-            structs.back().fields.push_back({
-                name,
-                enum_name,
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, std::uint64_t>) {
-            structs.back().fields.push_back({
-                name,
-                "std::uint64_t",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, std::uint8_t>) {
-            structs.back().fields.push_back({
-                name,
-                "std::uint8_t",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, std::int32_t>) {
-            structs.back().fields.push_back({
-                name,
-                "std::int32_t",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, std::int8_t>) {
-            structs.back().fields.push_back({
-                name,
-                "std::int8_t",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, float>) {
-            structs.back().fields.push_back({
-                name,
-                "float",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, double>) {
-            structs.back().fields.push_back({
-                name,
-                "double",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, bool>) {
-            structs.back().fields.push_back({
-                name,
-                "bool",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, std::string>) {
-            structs.back().fields.push_back({
-                name,
-                "std::string",
-                dispatch,
-            });
-        }
-        else if constexpr (std::is_same_v<T, const char(&)[5]>) {  // skip
-        }
-        else {
-            static_assert(std::is_same_v<T, void>, "Unsupported type");
-        }
-    });
-    struct_map["ExtendedBinaryModule"] = std::move(structs[0]);
-    return struct_map;
-}
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     using CodeWriter = futils::code::CodeWriter<std::string>;
@@ -203,7 +74,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("/*license*/");
     w.writeln("// Code generated by ebmcodegen at https://github.com/on-keyday/rebrgen");
 
-    auto struct_map = make_struct_map();
+    auto struct_map = ebmcodegen::make_struct_map();
     if (flags.mode == GenerateMode::BodySubset) {
         w.writeln("#include <ebm/extended_binary_module.hpp>");
         w.writeln("#include <set>");
@@ -211,7 +82,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("namespace ebmcodegen {");
         {
             auto scope = w.indent_scope();
-            auto do_visit_body = [&](auto t, Struct& s) {
+            auto do_visit_body = [&](auto t, ebmcodegen::Struct& s) {
                 using T = std::decay_t<decltype(t)>;
                 auto map_type = std::format("std::map<ebm::{},std::set<std::string_view>>", visit_enum(t));
                 w.writeln(map_type, " body_subset_", s.name, "() {");
@@ -222,7 +93,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 w.writeln("ebm::", s.name, " body;");
                 w.writeln("body.kind = ebm::", visit_enum(t), "(i);");
                 for (auto& f : s.fields) {
-                    if (f.attr & TypeAttribute::PTR) {
+                    if (f.attr & ebmcodegen::TypeAttribute::PTR) {
                         w.writeln("body.", f.name, "({});");
                     }
                 }
@@ -393,7 +264,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     if (!subset[T(i)].contains(field.name)) {
                         continue;
                     }
-                    if (field.attr & TypeAttribute::PTR) {
+                    if (field.attr & ebmcodegen::TypeAttribute::PTR) {
                         w.write(",*std::declval<const ebm::", body_name, "&>().", field.name, "()");
                     }
                     else {
@@ -449,7 +320,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     if (!subset[T(i)].contains(field.name)) {
                         continue;
                     }
-                    if (field.attr & TypeAttribute::PTR) {
+                    if (field.attr & ebmcodegen::TypeAttribute::PTR) {
                         w.writeln("if (!in.body.", field.name, "()) {");
                         w.indent_writeln("return unexpect_error(\"Unexpected null pointer for ", body_name, "::", field.name, "\");");
                         w.writeln("}");
@@ -504,7 +375,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     else {
                         typ = std::format("ebm::{}", field.type);
                     }
-                    if (field.attr & TypeAttribute::ARRAY) {
+                    if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
                         typ = std::format("std::vector<{}>", typ);
                     }
                     visitor_stub.write(",const ", typ, "& ", field.name);

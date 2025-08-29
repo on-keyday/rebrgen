@@ -290,4 +290,13 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_range(ebm::TypeRef type, ebm::ExpressionRef start, ebm::ExpressionRef end) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionOp::RANGE;
+        body.type = type;
+        body.start(start);
+        body.end(end);
+        return body;
+    }
+
 }  // namespace ebmgen

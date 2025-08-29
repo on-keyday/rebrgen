@@ -5,5 +5,5 @@
 
 namespace ebmgen {
 
-    expected<void> transform(TransformContext& ctx);
+    expected<void> transform(TransformContext& ctx, bool debug);
 }  // namespace ebmgen

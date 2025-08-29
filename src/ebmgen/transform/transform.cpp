@@ -192,6 +192,11 @@ namespace ebmgen {
         return {};
     }
 
+    template <class B>
+    concept has_body_kind = requires(B b) {
+        { b.body.kind };
+    };
+
     expected<void> remove_unused(TransformContext& ctx) {
         MAYBE(max_id, ctx.max_id());
         std::map<size_t, std::vector<ebm::AnyRef>> used_refs;
@@ -253,7 +258,11 @@ namespace ebmgen {
             auto remove = [&](auto&& rem) {
                 std::erase_if(rem, [&](const auto& item) {
                     if (should_remove.find(item.id.id.value()) != should_remove.end()) {
-                        print_if_verbose("Removing unused item: ", item.id.id.value(), "\n");
+                        print_if_verbose("Removing unused item: ", item.id.id.value());
+                        if constexpr (has_body_kind<decltype(item)>) {
+                            print_if_verbose("(", to_string(item.body.kind), ")");
+                        }
+                        print_if_verbose("\n");
                         return true;
                     }
                     return false;
@@ -270,6 +279,7 @@ namespace ebmgen {
             });
             return used_refs.size();
         };
+        futils::test::Timer t;
         MAYBE(first_size, trial());
         MAYBE(second_size, trial());
         while (first_size != second_size) {
@@ -277,6 +287,7 @@ namespace ebmgen {
             MAYBE(third_size, trial());
             second_size = third_size;
         }
+        print_if_verbose("Removed unused items in ", t.next_step<std::chrono::microseconds>(), "\n");
         std::vector<std::tuple<ebm::AnyRef, size_t>> most_used;
         for (const auto& [id, refs] : used_refs) {
             most_used.emplace_back(ebm::AnyRef{id}, refs.size());
@@ -293,7 +304,7 @@ namespace ebmgen {
         MAYBE(entry_id, ctx.new_id());
         old_to_new[1] = entry_id;
         auto remap = [&](auto& vec) {
-            futils::test::Timer t;
+            t.reset();
             for (auto& item : vec) {
                 if (auto it = old_to_new.find(item.id.id.value()); it != old_to_new.end()) {
                     item.id.id = it->second.id;
@@ -503,57 +514,29 @@ namespace ebmgen {
         }
         print_if_verbose("Found ", toplevel_expressions.size(), " top-level expressions while expressions are ", ctx.expression_repository().get_all().size(), "\n");
         for (auto& expr : toplevel_expressions) {
-            auto ref = ctx.expression_repository().get(ebm::ExpressionRef{expr});
-            if (!ref) {
-                return unexpect_error("Failed to get expression {}", expr);
+            ebm::Block flattened;
+            MAYBE(new_ref, flatten_expression(ctx, flattened, ebm::ExpressionRef{expr}));
+            if (flattened.container.size()) {
+                auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
+                auto mapped_ptr = ctx.expression_repository().get(new_ref);
+                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into ", flattened.container.size(), " statements and mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
             }
-            expected<void> result;
-            std::vector<ebm::ExpressionRef> flatten_targets;
-            /*
-            if (is_flatten_target(ref->body.kind)) {
-                flatten_targets.push_back(ebm::ExpressionRef{expr});
+            else if (expr != new_ref.id.value()) {
+                auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
+                auto mapped_ptr = ctx.expression_repository().get(new_ref);
+                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into no statements but mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
             }
-            else {
-                ref->body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
-                    if (!result) {
-                        return;
-                    }
-                    if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::ExpressionRef>) {
-                        if (val.id.value() != 0) {
-                            auto inner = ctx.expression_repository().get(val);
-                            if (!inner) {
-                                result = unexpect_error("Failed to get inner expression {} while flattening expression {}", val.id.value(), expr);
-                                return;
-                            }
-                            if (is_flatten_target(inner->body.kind)) {
-                                flatten_targets.push_back(val);
-                                return;
-                            }
-                            visitor(visitor, name, inner->body);
-                        }
-                    }
-                    else
-                        VISITOR_RECURSE_CONTAINER(visitor, name, val)
-                    else VISITOR_RECURSE(visitor, name, val)
-                });
-            }
-            */
-            if (!result) {
-                return result;
-            }
-            if (flatten_targets.empty()) {
-                continue;
-            }
-            print_if_verbose("Flatten target exists for ", flatten_targets.size(), " expressions while flattening expression ", expr, "(", to_string(ref->body.kind), ")\n");
         }
         return {};
     }
 
-    expected<void> transform(TransformContext& ctx) {
+    expected<void> transform(TransformContext& ctx, bool debug) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
         MAYBE_VOID(flatten_io_expression, flatten_io_expression(ctx));
-        MAYBE_VOID(remove_unused, remove_unused(ctx));
+        if (!debug) {
+            MAYBE_VOID(remove_unused, remove_unused(ctx));
+        }
         return {};
     }
 }  // namespace ebmgen

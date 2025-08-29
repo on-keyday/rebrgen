@@ -160,6 +160,13 @@ namespace ebmgen {
             }
         }
 
+        void recalculate_cache() {
+            cache.clear();
+            for (const auto& instance : instances) {
+                cache[serialize(instance.body).value()] = instance.id;
+            }
+        }
+
        private:
         std::unordered_map<std::string, ID> cache;
         std::unordered_map<uint64_t, size_t> id_index_map;

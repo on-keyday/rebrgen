@@ -87,19 +87,7 @@ namespace ebmgen {
                     if (!val) {
                         return unexpect_error("Failed to parse IntLiteralType value");
                     }
-                    // Determine bit size based on the value
-                    if (*val <= 0xFF) {  // 8-bit
-                        body.size(8);
-                    }
-                    else if (*val <= 0xFFFF) {  // 16-bit
-                        body.size(16);
-                    }
-                    else if (*val <= 0xFFFFFFFF) {  // 32-bit
-                        body.size(32);
-                    }
-                    else {  // 64-bit
-                        body.size(64);
-                    }
+                    body.size(*val == 0 ? 1 : futils::binary::log2i(*val));  // +1 to include the sign bit
                 }
                 else {
                     return unexpect_error("IntLiteralType has no base literal");

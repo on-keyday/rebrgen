@@ -16,6 +16,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view debug_output;  // New flag for debug output
     bool base64 = false;
     bool verbose = false;
+    bool debug = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -24,6 +25,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");  // Bind new flag
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
         ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
+        ctx.VarBool(&debug, "g,debug", "enable debug transformations (do not remove unused items)");
     }
 };
 
@@ -38,7 +40,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 1;
     }
     ebm::ExtendedBinaryModule ebm;
-    auto err = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm);
+    auto err = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
     if (err) {
         cerr << "Convert Error: " << err.error<std::string>() << '\n';
         return 1;

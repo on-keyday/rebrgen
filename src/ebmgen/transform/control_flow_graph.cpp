@@ -3,6 +3,7 @@
 #include <memory>
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/converter.hpp"
+#include <optional>
 #include <set>
 
 namespace ebmgen {
@@ -18,18 +19,20 @@ namespace ebmgen {
         auto& ctx = tctx.tctx.context();
         MAYBE(stmt, ctx.repository().get_statement(ref));
         root->statement_op = stmt.body.kind;
+        bool brk = false;
         if (auto block = stmt.body.block()) {
             auto join = std::make_shared<CFG>();
             for (auto& ref : block->container) {
                 MAYBE(child, analyze_ref(tctx, ref));
                 link(current, child.start);
-                if (child.end) {
+                if (!child.brk) {
                     link(child.end, join);
                     current = std::move(join);
                     join = std::make_shared<CFG>();
                     continue;
                 }
-                current = nullptr;
+                current = child.end;
+                brk = true;
                 break;
             }
         }
@@ -38,13 +41,13 @@ namespace ebmgen {
             then_block.start->condition = if_stmt->condition;
             auto join = std::make_shared<CFG>();
             link(current, then_block.start);
-            if (then_block.end) {
+            if (!then_block.brk) {
                 link(then_block.end, join);
             }
             if (if_stmt->else_block.id.value()) {
                 MAYBE(else_block, analyze_ref(tctx, if_stmt->else_block));
                 link(current, else_block.start);
-                if (else_block.end) {
+                if (!else_block.brk) {
                     link(else_block.end, join);
                 }
             }
@@ -62,7 +65,7 @@ namespace ebmgen {
             if (loop_->loop_type != ebm::LoopType::INFINITE) {
                 link(current, join);
             }
-            if (body.end) {
+            if (!body.brk) {
                 link(body.end, current);
             }
             current = std::move(join);
@@ -75,7 +78,7 @@ namespace ebmgen {
                 MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
                 branch.start->condition = branch_ptr.condition;
                 link(current, branch.start);
-                if (branch.end) {
+                if (!branch.brk) {
                     link(branch.end, join);
                 }
             }
@@ -87,41 +90,29 @@ namespace ebmgen {
                 return unexpect_error("Continue outside of loop");
             }
             link(current, tctx.loop_stack.back().start);
-            current = nullptr;
+            brk = true;
         }
-        else if (auto brk = stmt.body.break_()) {
+        else if (auto brk_ = stmt.body.break_()) {
             if (tctx.loop_stack.size() == 0) {
                 return unexpect_error("Break outside of loop");
             }
             link(current, tctx.loop_stack.back().end);
-            current = nullptr;
+            brk = true;
         }
-        return CFGTuple{root, current};
+        else if (stmt.body.kind == ebm::StatementOp::RETURN ||
+                 stmt.body.kind == ebm::StatementOp::ERROR_RETURN ||
+                 stmt.body.kind == ebm::StatementOp::ERROR_REPORT) {
+            link(current, tctx.end_of_function);
+            brk = true;
+        }
+        return CFGTuple{root, current, brk};
     }
 
-    std::shared_ptr<CFG> optimize_simple_node(std::shared_ptr<CFG>& cfg, std::set<std::shared_ptr<CFG>>& visited) {
+    std::shared_ptr<CFG> optimize_cfg_node(std::shared_ptr<CFG>& cfg, std::set<std::shared_ptr<CFG>>& visited) {
         if (visited.find(cfg) != visited.end()) {
             return cfg;
         }
-        if (cfg->prev.size() == 1 && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
-            auto rem = cfg;
-            auto prev = cfg->prev[0].lock();
-            for (auto& next : prev->next) {
-                if (next == rem) {
-                    next = rem->next[0];
-                }
-            }
-            auto next = rem->next[0];
-            for (auto& prev : next->prev) {
-                if (auto p = prev.lock()) {
-                    if (p == rem) {
-                        prev = rem->prev[0];
-                    }
-                }
-            }
-            return optimize_simple_node(rem->next[0], visited);
-        }
-        else if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
+        if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
             auto rem = cfg;
             for (auto& prev : cfg->prev) {
                 if (auto p = prev.lock()) {
@@ -133,11 +124,11 @@ namespace ebmgen {
                 }
             }
             rem->next[0]->prev.insert(rem->next[0]->prev.end(), rem->prev.begin(), rem->prev.end());
-            return optimize_simple_node(rem->next[0], visited);
+            return optimize_cfg_node(rem->next[0], visited);
         }
         visited.insert(cfg);
         for (auto& n : cfg->next) {
-            n = optimize_simple_node(n, visited);
+            n = optimize_cfg_node(n, visited);
         }
         return cfg;
     }
@@ -149,9 +140,12 @@ namespace ebmgen {
             if (!fn) {
                 continue;
             }
+            tctx.end_of_function = std::make_shared<CFG>();
             MAYBE(cfg, analyze_ref(tctx, fn->body));
+            cfg.end->next.push_back(tctx.end_of_function);
+            tctx.end_of_function->prev.push_back(cfg.end);
             std::set<std::shared_ptr<CFG>> visited;
-            cfg.start = optimize_simple_node(cfg.start, visited);
+            cfg.start = optimize_cfg_node(cfg.start, visited);
             cfg_list.list.emplace_back(stmt.id, std::move(cfg));
         }
         return cfg_list;
@@ -162,12 +156,15 @@ namespace ebmgen {
         std::uint64_t id = 0;
         std::map<std::shared_ptr<CFG>, std::uint64_t> node_id;
         std::map<std::uint64_t, std::shared_ptr<CFG>> fn_to_cfg;
-        std::function<void(std::shared_ptr<CFG>&)> write_node = [&](std::shared_ptr<CFG>& cfg) {
+        auto write_node = [&](auto&& write, std::optional<std::string> name, std::shared_ptr<CFG>& cfg) -> void {
             if (node_id.find(cfg) != node_id.end()) {
                 return;
             }
             node_id[cfg] = id++;
             w.write(std::format("  {} [label=\"", node_id[cfg]));
+            if (name) {
+                w.write(std::format("fn {}\\n", name.value()));
+            }
             auto origin = ctx.statement_repository().get(cfg->original_node);
             if (cfg->next.size() == 0) {
                 w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", cfg->original_node.id.value()));
@@ -177,7 +174,7 @@ namespace ebmgen {
             }
             w.write("\"];\n");
             for (auto& n : cfg->next) {
-                write_node(n);
+                write(write, std::nullopt, n);
                 if (n->condition) {
                     auto cond_expr = ctx.expression_repository().get(*n->condition);
                     w.write(std::format("  {} -> {} [label=\"{}:{}\"];\n", node_id[cfg], node_id[n], cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
@@ -187,7 +184,17 @@ namespace ebmgen {
             }
         };
         for (auto& cfg : m.list) {
-            write_node(cfg.second.start);
+            auto fn = ctx.statement_repository().get(cfg.first);
+            std::optional<std::string> name;
+            if (fn) {
+                if (auto fn_decl = fn->body.func_decl()) {
+                    auto ident = ctx.identifier_repository().get(fn_decl->name);
+                    if (ident) {
+                        name = ident->body.data;
+                    }
+                }
+            }
+            write_node(write_node, name, cfg.second.start);
         }
         w.write("}\n");
     }

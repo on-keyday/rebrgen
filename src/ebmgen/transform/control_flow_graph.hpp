@@ -21,6 +21,7 @@ namespace ebmgen {
     struct CFGTuple {
         std::shared_ptr<CFG> start;
         std::shared_ptr<CFG> end;
+        bool brk = false;  // break the flow
     };
 
     struct CFGList {
@@ -30,6 +31,7 @@ namespace ebmgen {
     struct CFGContext {
         TransformContext& tctx;
         std::vector<CFGTuple> loop_stack;
+        std::shared_ptr<CFG> end_of_function;
     };
 
     expected<CFGList> analyze_control_flow_graph(CFGContext& ctx);

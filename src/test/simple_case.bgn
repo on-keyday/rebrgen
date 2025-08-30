@@ -364,14 +364,14 @@ fn fizzbuzz():
     for i in 1..=100:
         if i % 3 == 0 && i % 5 == 0:
             fizzbuzz := "FizzBuzz\n"
+            continue
         elif i % 3 == 0:
             fizzbuzz := "Fizz\n"
+            continue
         elif i % 5 == 0:
             fizzbuzz := "Buzz\n"
-        else:
-            fizzbuzz := i
+            continue
+        fizzbuzz := i
         if i == 34:
             break
-        if i == 50:
-            continue
     e := "fin"

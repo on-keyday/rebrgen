@@ -204,9 +204,12 @@ namespace ebmgen {
         std::unordered_map<VisitedKey, ebm::StatementRef> visited_nodes;
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
         ebm::Block* current_block = nullptr;
+        ebm::StatementRef current_loop_id;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
-            return;
+            if (!verbose_error) {
+                return;
+            }
             auto member = ast::as<ast::Member>(node);
             const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
             futils::wrap::cout_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
@@ -234,6 +237,21 @@ namespace ebmgen {
             current_generate_type = type;
             return futils::helper::defer([this, old]() {
                 current_generate_type = old;
+            });
+        }
+
+        expected<ebm::StatementRef> get_current_loop_id() const {
+            if (current_loop_id.id.value() == 0) {
+                return unexpect_error("No current loop");
+            }
+            return current_loop_id;
+        }
+
+        [[nodiscard]] auto set_current_loop_id(ebm::StatementRef id) {
+            auto old = current_loop_id;
+            current_loop_id = id;
+            return futils::helper::defer([this, old]() {
+                current_loop_id = old;
             });
         }
 

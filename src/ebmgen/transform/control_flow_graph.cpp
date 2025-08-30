@@ -1,0 +1,172 @@
+/*license*/
+#include "control_flow_graph.hpp"
+#include <memory>
+#include "ebm/extended_binary_module.hpp"
+#include "ebmgen/converter.hpp"
+#include <set>
+
+namespace ebmgen {
+
+    expected<CFGTuple> analyze_ref(CFGContext& tctx, ebm::StatementRef ref) {
+        auto root = std::make_shared<CFG>();
+        root->original_node = ref;
+        auto current = root;
+        auto link = [](auto& from, auto& to) {
+            from->next.push_back(to);
+            to->prev.push_back(from);
+        };
+        auto& ctx = tctx.tctx.context();
+        MAYBE(stmt, ctx.repository().get_statement(ref));
+        root->statement_op = stmt.body.kind;
+        if (auto block = stmt.body.block()) {
+            auto join = std::make_shared<CFG>();
+            for (auto& ref : block->container) {
+                MAYBE(child, analyze_ref(tctx, ref));
+                link(current, child.start);
+                if (child.end) {
+                    link(child.end, join);
+                    current = std::move(join);
+                    join = std::make_shared<CFG>();
+                    continue;
+                }
+                current = nullptr;
+                break;
+            }
+        }
+        else if (auto if_stmt = stmt.body.if_statement()) {
+            MAYBE(then_block, analyze_ref(tctx, if_stmt->then_block));
+            auto join = std::make_shared<CFG>();
+            link(current, then_block.start);
+            if (then_block.end) {
+                link(then_block.end, join);
+            }
+            if (if_stmt->else_block.id.value()) {
+                MAYBE(else_block, analyze_ref(tctx, if_stmt->else_block));
+                link(current, else_block.start);
+                if (else_block.end) {
+                    link(else_block.end, join);
+                }
+            }
+            else {
+                link(current, join);
+            }
+            current = std::move(join);
+        }
+        else if (auto loop_ = stmt.body.loop()) {
+            auto join = std::make_shared<CFG>();
+            tctx.loop_stack.push_back(CFGTuple{current, join});
+            MAYBE(body, analyze_ref(tctx, loop_->body));
+            tctx.loop_stack.pop_back();
+            link(current, body.start);
+            link(current, join);
+            if (body.end) {
+                link(body.end, current);
+            }
+            current = std::move(join);
+        }
+        else if (auto match_ = stmt.body.match_statement()) {
+            auto join = std::make_shared<CFG>();
+            for (auto& b : match_->branches.container) {
+                MAYBE(branch_stmt, ctx.repository().get_statement(b));
+                MAYBE(branch_ptr, branch_stmt.body.match_branch());
+                MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
+                link(current, branch.start);
+                if (branch.end) {
+                    link(branch.end, join);
+                }
+            }
+            link(current, join);
+            current = std::move(join);
+        }
+        else if (auto cont = stmt.body.continue_()) {
+            if (tctx.loop_stack.size() == 0) {
+                return unexpect_error("Continue outside of loop");
+            }
+            link(current, tctx.loop_stack.back().start);
+            current = nullptr;
+        }
+        else if (auto brk = stmt.body.break_()) {
+            if (tctx.loop_stack.size() == 0) {
+                return unexpect_error("Break outside of loop");
+            }
+            link(current, tctx.loop_stack.back().end);
+            current = nullptr;
+        }
+        return CFGTuple{root, current};
+    }
+
+    std::shared_ptr<CFG> optimize_simple_node(std::shared_ptr<CFG>& cfg, std::set<std::shared_ptr<CFG>>& visited) {
+        if (visited.find(cfg) != visited.end()) {
+            return cfg;
+        }
+        if (cfg->prev.size() == 1 && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
+            auto rem = cfg;
+            auto prev = cfg->prev[0].lock();
+            for (auto& next : prev->next) {
+                if (next == rem) {
+                    next = rem->next[0];
+                }
+            }
+            auto next = rem->next[0];
+            for (auto& prev : next->prev) {
+                if (auto p = prev.lock()) {
+                    if (p == rem) {
+                        prev = rem->prev[0];
+                    }
+                }
+            }
+            return optimize_simple_node(rem->next[0], visited);
+        }
+        visited.insert(cfg);
+        for (auto& n : cfg->next) {
+            n = optimize_simple_node(n, visited);
+        }
+        return cfg;
+    }
+
+    expected<CFGList> analyze_control_flow_graph(CFGContext& tctx) {
+        CFGList cfg_list;
+        for (auto& stmt : tctx.tctx.statement_repository().get_all()) {
+            auto fn = stmt.body.func_decl();
+            if (!fn) {
+                continue;
+            }
+            MAYBE(cfg, analyze_ref(tctx, fn->body));
+            std::set<std::shared_ptr<CFG>> visited;
+            cfg.start = optimize_simple_node(cfg.start, visited);
+            cfg_list.list.emplace_back(stmt.id, std::move(cfg));
+        }
+        return cfg_list;
+    }
+
+    void write_cfg(futils::binary::writer& w, CFGList& m, TransformContext& ctx) {
+        w.write("digraph G {\n");
+        std::uint64_t id = 0;
+        std::map<std::shared_ptr<CFG>, std::uint64_t> node_id;
+        std::map<std::uint64_t, std::shared_ptr<CFG>> fn_to_cfg;
+        std::function<void(std::shared_ptr<CFG>&)> write_node = [&](std::shared_ptr<CFG>& cfg) {
+            if (node_id.find(cfg) != node_id.end()) {
+                return;
+            }
+            node_id[cfg] = id++;
+            w.write(std::format("  {} [label=\"", node_id[cfg]));
+            auto origin = ctx.statement_repository().get(cfg->original_node);
+            if (cfg->next.size() == 0) {
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", origin ? origin->id.id.value() : 0));
+            }
+            else {
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", origin ? origin->id.id.value() : 0));
+            }
+            w.write("\"];\n");
+            for (auto& n : cfg->next) {
+                write_node(n);
+                w.write(std::format("  {} -> {};\n", node_id[cfg], node_id[n]));
+            }
+        };
+        for (auto& cfg : m.list) {
+            write_node(cfg.second.start);
+        }
+        w.write("}\n");
+    }
+
+}  // namespace ebmgen

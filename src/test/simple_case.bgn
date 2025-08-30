@@ -358,3 +358,20 @@ enum EAPAuthType:
 format EAPPacketBodyData:
     eap_type :EAPAuthType
     type_specific_data :[..]u8 
+
+
+fn fizzbuzz():
+    for i in 1..=100:
+        if i % 3 == 0 && i % 5 == 0:
+            fizzbuzz := "FizzBuzz\n"
+        elif i % 3 == 0:
+            fizzbuzz := "Fizz\n"
+        elif i % 5 == 0:
+            fizzbuzz := "Buzz\n"
+        else:
+            fizzbuzz := i
+        if i == 34:
+            break
+        if i == 50:
+            continue
+    e := "fin"

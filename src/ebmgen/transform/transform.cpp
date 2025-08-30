@@ -1,10 +1,11 @@
 /*license*/
 #include "transform.hpp"
 #include <algorithm>
-#include <execution>
 #include <functional>
 #include <type_traits>
 #include "../common.hpp"
+#include "binary/writer.h"
+#include "control_flow_graph.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
 #include "ebmgen/convert/helper.hpp"
@@ -64,7 +65,7 @@ namespace ebmgen {
                 ios.push_back(std::move(io));
             }
             if (ios.size()) {
-                print_if_verbose("Read I/O groups:", ios.size(), "\n");
+                print_if_verbose(write ? "Write" : "Read", " I/O groups:", ios.size(), "\n");
                 for (auto& g : ios) {
                     print_if_verbose("  Group size: ", g.size(), "\n");
                     std::optional<std::uint64_t> all_in_byte = 0;
@@ -328,12 +329,18 @@ namespace ebmgen {
                 });
             }
             print_if_verbose("Remap ", vec.size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
+            t.reset();
+            std::sort(vec.begin(), vec.end(), [](const auto& a, const auto& b) {
+                return a.id.id.value() < b.id.id.value();
+            });
+            print_if_verbose("Sort ", vec.size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         };
         remap(ctx.statement_repository().get_all());
         remap(ctx.identifier_repository().get_all());
         remap(ctx.type_repository().get_all());
         remap(ctx.string_repository().get_all());
         remap(ctx.expression_repository().get_all());
+        t.reset();
         for (auto& alias : ctx.alias_vector()) {
             if (auto it = old_to_new.find(alias.from.id.value()); it != old_to_new.end()) {
                 alias.from.id = it->second.id;
@@ -342,6 +349,12 @@ namespace ebmgen {
                 alias.to.id = it->second.id;
             }
         }
+        print_if_verbose("Remap ", ctx.alias_vector().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
+        t.reset();
+        std::sort(ctx.alias_vector().begin(), ctx.alias_vector().end(), [](const auto& a, const auto& b) {
+            return a.from.id.value() < b.from.id.value();
+        });
+        print_if_verbose("Sort ", ctx.alias_vector().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         return {};
     }
 
@@ -356,6 +369,16 @@ namespace ebmgen {
             default:
                 return false;
         }
+    }
+
+    expected<ebm::ExpressionRef> transparent_identifier(TransformContext& tctx, ebm::Block& block, ebm::ExpressionRef expr_ref) {
+        // return expr_ref;
+        auto& ctx = tctx.context();
+        auto expr = ctx.repository().get_expression(expr_ref);
+        auto expr_type = expr->body.type;
+        EBM_DEFINE_VARIABLE(transparent_ref, {}, expr_type, expr_ref, false, true);
+        append(block, transparent_ref_def);
+        return transparent_ref;
     }
 
     expected<ebm::ExpressionRef> flatten_expression(TransformContext& tctx, ebm::Block& block, ebm::ExpressionRef expr_ref) {
@@ -374,7 +397,12 @@ namespace ebmgen {
             case ebm::ExpressionOp::DEFAULT_VALUE:
             case ebm::ExpressionOp::IS_LITTLE_ENDIAN:
             case ebm::ExpressionOp::IS_ERROR:
-                return expr->id;
+            case ebm::ExpressionOp::GET_REMAINING_BYTES:
+            case ebm::ExpressionOp::GET_STREAM_OFFSET:
+            case ebm::ExpressionOp::CAN_READ_STREAM: {
+                // return transparent_identifier(tctx, block, expr_ref);
+                return expr_ref;
+            }
             case ebm::ExpressionOp::BINARY_OP: {
                 auto left = *expr->body.left();
                 auto right = *expr->body.right();
@@ -406,20 +434,20 @@ namespace ebmgen {
                 MAYBE(left_p, flatten_expression(tctx, block, left));
                 MAYBE(right_p, flatten_expression(tctx, block, right));
                 EBM_BINARY_OP(bop_ref, bop, expr_type, left_p, right_p);
-                return bop_ref;
+                return transparent_identifier(tctx, block, bop_ref);
             }
             case ebm::ExpressionOp::UNARY_OP: {
                 auto inner = *expr->body.operand();
                 auto uop = *expr->body.uop();
                 MAYBE(inner_p, flatten_expression(tctx, block, inner));
                 EBM_UNARY_OP(uop_ref, uop, expr_type, inner_p);
-                return uop_ref;
+                return transparent_identifier(tctx, block, uop_ref);
             }
             case ebm::ExpressionOp::ARRAY_SIZE: {
                 auto array = *expr->body.array_expr();
                 MAYBE(array_p, flatten_expression(tctx, block, array));
                 EBM_ARRAY_SIZE(size_ref, array_p);
-                return size_ref;
+                return transparent_identifier(tctx, block, size_ref);
             }
             case ebm::ExpressionOp::CALL: {
                 auto call_desc = *expr->body.call_desc();  // copy to avoid re-fetching
@@ -432,7 +460,7 @@ namespace ebmgen {
                 call_desc.callee = callee_p;
                 call_desc.arguments = std::move(args);
                 EBM_CALL(call_ref, expr_type, std::move(call_desc));
-                return call_ref;
+                return transparent_identifier(tctx, block, call_ref);
             }
             case ebm::ExpressionOp::INDEX_ACCESS: {
                 auto index = *expr->body.index();
@@ -440,21 +468,21 @@ namespace ebmgen {
                 MAYBE(base_p, flatten_expression(tctx, block, base));
                 MAYBE(index_p, flatten_expression(tctx, block, index));
                 EBM_INDEX(index_ref, expr_type, base_p, index_p);
-                return index_ref;
+                return transparent_identifier(tctx, block, index_ref);
             }
             case ebm::ExpressionOp::MEMBER_ACCESS: {
                 auto base = *expr->body.base();
                 auto member = *expr->body.member();
                 MAYBE(base_p, flatten_expression(tctx, block, base));
                 EBM_MEMBER_ACCESS(member_ref, expr_type, base_p, member);
-                return member_ref;
+                return transparent_identifier(tctx, block, member_ref);
             }
             case ebm::ExpressionOp::WRITE_DATA: {
                 auto target_expr = *expr->body.target_expr();
                 auto io_ = *expr->body.io_statement();
                 MAYBE(target_p, flatten_expression(tctx, block, target_expr));
                 append(block, io_);
-                return expr_ref;  // this is void, so should not be affected
+                return expr_ref;
             }
             case ebm::ExpressionOp::READ_DATA: {
                 auto target_stmt = *expr->body.target_stmt();
@@ -465,10 +493,18 @@ namespace ebmgen {
                 return id;
             }
             case ebm::ExpressionOp::RANGE: {
-                MAYBE(start, flatten_expression(tctx, block, *expr->body.start()));
-                MAYBE(end, flatten_expression(tctx, block, *expr->body.end()));
-                EBM_RANGE(range_ref, expr_type, start, end);
-                return range_ref;
+                auto start_ref = *expr->body.start();
+                auto end_ref = *expr->body.end();
+                if (start_ref.id.value()) {
+                    MAYBE(start, flatten_expression(tctx, block, start_ref));
+                    start_ref = start;
+                }
+                if (end_ref.id.value()) {
+                    MAYBE(end, flatten_expression(tctx, block, end_ref));
+                    end_ref = end;
+                }
+                EBM_RANGE(range_ref, expr_type, start_ref, end_ref);
+                return transparent_identifier(tctx, block, range_ref);
             }
             case ebm::ExpressionOp::TYPE_CAST: {
                 auto from_type = *expr->body.from_type();
@@ -476,14 +512,7 @@ namespace ebmgen {
                 auto cast_kind = *expr->body.cast_kind();
                 MAYBE(inner_p, flatten_expression(tctx, block, inner));
                 EBM_CAST(cast_ref, expr_type, from_type, inner_p);
-                return cast_ref;
-            }
-            case ebm::ExpressionOp::GET_REMAINING_BYTES:
-            case ebm::ExpressionOp::GET_STREAM_OFFSET:
-            case ebm::ExpressionOp::CAN_READ_STREAM: {
-                EBM_DEFINE_VARIABLE(transparent_ref, {}, expr_type, expr_ref, false, true);
-                append(block, transparent_ref_def);
-                return transparent_ref;
+                return transparent_identifier(tctx, block, cast_ref);
             }
             case ebm::ExpressionOp::CONDITIONAL_STATEMENT: {
                 auto target_stmt = *expr->body.target_stmt();
@@ -513,6 +542,7 @@ namespace ebmgen {
             });
         }
         print_if_verbose("Found ", toplevel_expressions.size(), " top-level expressions while expressions are ", ctx.expression_repository().get_all().size(), "\n");
+        std::vector<std::pair<ebm::Block, ebm::ExpressionRef>> flattened_expressions;
         for (auto& expr : toplevel_expressions) {
             ebm::Block flattened;
             MAYBE(new_ref, flatten_expression(ctx, flattened, ebm::ExpressionRef{expr}));
@@ -520,6 +550,11 @@ namespace ebmgen {
                 auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
                 auto mapped_ptr = ctx.expression_repository().get(new_ref);
                 print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into ", flattened.container.size(), " statements and mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
+                for (auto& flt : flattened.container) {
+                    auto stmt_ptr = ctx.statement_repository().get(flt);
+                    print_if_verbose("  - Statement ID: ", flt.id.value(), "(", stmt_ptr ? to_string(stmt_ptr->body.kind) : "<unknown>", ")\n");
+                }
+                flattened_expressions.emplace_back(std::move(flattened), new_ref);
             }
             else if (expr != new_ref.id.value()) {
                 auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
@@ -527,12 +562,22 @@ namespace ebmgen {
                 print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into no statements but mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
             }
         }
+        print_if_verbose("Total flattened expressions: ", flattened_expressions.size(), "\n");
         return {};
     }
 
     expected<void> transform(TransformContext& ctx, bool debug) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
+        ctx.statement_repository().recalculate_cache();
+        CFGContext cfg_ctx{ctx};
+        MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
+        if (verbose_error) {
+            std::string buffer;
+            futils::binary::writer w(futils::binary::resizable_buffer_writer<std::string>(), &buffer);
+            write_cfg(w, cfg, ctx);
+            print_if_verbose("Control Flow Graph:\n", buffer, "\n");
+        }
         MAYBE_VOID(flatten_io_expression, flatten_io_expression(ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused(ctx));

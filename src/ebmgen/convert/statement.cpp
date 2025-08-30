@@ -80,6 +80,7 @@ namespace ebmgen {
                     EBM_COUNTER_LOOP_END(lowered_loop, i, target, inner_block_ref);
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = lowered_loop;
+                    result_loop_stmt.body = inner_block_ref;
                 }
                 else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
                     auto l = range->range.lock();
@@ -134,6 +135,7 @@ namespace ebmgen {
                     EBM_BLOCK(block_ref, std::move(outer_block));
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = block_ref;
+                    result_loop_stmt.body = body;
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
                     EBM_ARRAY_SIZE(array_size, target);
@@ -146,6 +148,7 @@ namespace ebmgen {
                     EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, inner_block_ref);
                     result_loop_stmt.item_var(element_def);
                     result_loop_stmt.lowered_statement = loop_stmt;
+                    result_loop_stmt.body = inner_block_ref;
                 }
                 else if (auto lit = ast::as<ast::StrLiteral>(bop->right)) {
                     // note: representation of string is encoded as base64 in bop->right->binary_value because
@@ -170,6 +173,7 @@ namespace ebmgen {
                     EBM_BLOCK(block_ref, std::move(block));
                     result_loop_stmt.item_var(element_def);
                     result_loop_stmt.lowered_statement = block_ref;
+                    result_loop_stmt.body = inner_block_ref;
                 }
                 else {
                     return unexpect_error("Invalid loop init type : {}", node_type_to_string(bop->right->expr_type->node_type));
@@ -259,12 +263,14 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Break>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::BREAK;
+        MAYBE(loop_id, ctx.state().get_current_loop_id());
+        body = make_break(loop_id);
         return {};
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Continue>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::CONTINUE;
+        MAYBE(loop_id, ctx.state().get_current_loop_id());
+        body = make_continue(loop_id);
         return {};
     }
 
@@ -287,7 +293,8 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Loop>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        MAYBE(loop_body, convert_loop_body(ast::cast_to<ast::Loop>(node)));
+        auto loop_ = ctx.state().set_current_loop_id(id);
+        MAYBE(loop_body, convert_loop_body(node));
         body = std::move(loop_body);
         return {};
     }

@@ -127,7 +127,8 @@
         "-o",
         "${workspaceRoot}/save/out.ebm",
         "-d",
-        "${workspaceRoot}/save/debug_output.txt"
+        "${workspaceRoot}/save/debug_output.txt",
+        "-v"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

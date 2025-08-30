@@ -12,6 +12,7 @@ namespace ebmgen {
     // prev: list of previous CFG
     struct CFG {
         ebm::StatementRef original_node;
+        std::optional<ebm::ExpressionRef> condition;
         std::optional<ebm::StatementOp> statement_op;  // for debug
         std::vector<std::shared_ptr<CFG>> next;
         std::vector<std::weak_ptr<CFG>> prev;

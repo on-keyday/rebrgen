@@ -35,6 +35,7 @@ namespace ebmgen {
         }
         else if (auto if_stmt = stmt.body.if_statement()) {
             MAYBE(then_block, analyze_ref(tctx, if_stmt->then_block));
+            then_block.start->condition = if_stmt->condition;
             auto join = std::make_shared<CFG>();
             link(current, then_block.start);
             if (then_block.end) {
@@ -58,7 +59,9 @@ namespace ebmgen {
             MAYBE(body, analyze_ref(tctx, loop_->body));
             tctx.loop_stack.pop_back();
             link(current, body.start);
-            link(current, join);
+            if (loop_->loop_type != ebm::LoopType::INFINITE) {
+                link(current, join);
+            }
             if (body.end) {
                 link(body.end, current);
             }
@@ -70,6 +73,7 @@ namespace ebmgen {
                 MAYBE(branch_stmt, ctx.repository().get_statement(b));
                 MAYBE(branch_ptr, branch_stmt.body.match_branch());
                 MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
+                branch.start->condition = branch_ptr.condition;
                 link(current, branch.start);
                 if (branch.end) {
                     link(branch.end, join);
@@ -117,6 +121,20 @@ namespace ebmgen {
             }
             return optimize_simple_node(rem->next[0], visited);
         }
+        else if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
+            auto rem = cfg;
+            for (auto& prev : cfg->prev) {
+                if (auto p = prev.lock()) {
+                    for (auto& n : p->next) {
+                        if (n == cfg) {
+                            n = rem->next[0];
+                        }
+                    }
+                }
+            }
+            rem->next[0]->prev.insert(rem->next[0]->prev.end(), rem->prev.begin(), rem->prev.end());
+            return optimize_simple_node(rem->next[0], visited);
+        }
         visited.insert(cfg);
         for (auto& n : cfg->next) {
             n = optimize_simple_node(n, visited);
@@ -152,14 +170,19 @@ namespace ebmgen {
             w.write(std::format("  {} [label=\"", node_id[cfg]));
             auto origin = ctx.statement_repository().get(cfg->original_node);
             if (cfg->next.size() == 0) {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", origin ? origin->id.id.value() : 0));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", cfg->original_node.id.value()));
             }
             else {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", origin ? origin->id.id.value() : 0));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
             }
             w.write("\"];\n");
             for (auto& n : cfg->next) {
                 write_node(n);
+                if (n->condition) {
+                    auto cond_expr = ctx.expression_repository().get(*n->condition);
+                    w.write(std::format("  {} -> {} [label=\"{}:{}\"];\n", node_id[cfg], node_id[n], cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
+                    continue;
+                }
                 w.write(std::format("  {} -> {};\n", node_id[cfg], node_id[n]));
             }
         };

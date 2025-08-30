@@ -19,6 +19,7 @@ namespace ebmgen {
         auto& ctx = tctx.tctx.context();
         MAYBE(stmt, ctx.repository().get_statement(ref));
         root->statement_op = stmt.body.kind;
+        tctx.cfg_map[ref.id.value()] = root;
         bool brk = false;
         if (auto block = stmt.body.block()) {
             auto join = std::make_shared<CFG>();

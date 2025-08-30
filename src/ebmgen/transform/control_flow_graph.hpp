@@ -7,7 +7,7 @@
 
 namespace ebmgen {
     // Control Flow Graph
-    // basic_block: list of Module.code index
+    // original_node: reference to original statement
     // next: list of next CFG
     // prev: list of previous CFG
     struct CFG {
@@ -32,6 +32,7 @@ namespace ebmgen {
         TransformContext& tctx;
         std::vector<CFGTuple> loop_stack;
         std::shared_ptr<CFG> end_of_function;
+        std::map<std::uint64_t, std::shared_ptr<CFG>> cfg_map;
     };
 
     expected<CFGList> analyze_control_flow_graph(CFGContext& ctx);

@@ -526,8 +526,12 @@ namespace ebmgen {
         return unexpect_error("Unsupported flatten expression kind: {}", to_string(expr->body.kind));
     }
 
-    expected<void> flatten_io_expression(TransformContext& ctx) {
-        auto& statements = ctx.statement_repository().get_all();
+    expected<void> flatten_io_expression(CFGContext& ctx) {
+        for (auto& cfg : ctx.cfg_map) {
+            MAYBE(stmt, ctx.tctx.statement_repository().get(ebm::StatementRef{cfg.first}));
+        }
+        /*
+        auto& statements = ctx.tctx.statement_repository().get_all();
         std::set<std::uint64_t> toplevel_expressions;
         for (auto& stmt : statements) {
             stmt.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
@@ -563,6 +567,7 @@ namespace ebmgen {
             }
         }
         print_if_verbose("Total flattened expressions: ", flattened_expressions.size(), "\n");
+        */
         return {};
     }
 
@@ -578,7 +583,7 @@ namespace ebmgen {
             write_cfg(w, cfg, ctx);
             print_if_verbose("Control Flow Graph:\n", buffer, "\n");
         }
-        MAYBE_VOID(flatten_io_expression, flatten_io_expression(ctx));
+        MAYBE_VOID(flatten_io_expression, flatten_io_expression(cfg_ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused(ctx));
         }

@@ -5,6 +5,7 @@
 #include "ebmgen/converter.hpp"
 #include <optional>
 #include <set>
+#include <unordered_map>
 
 namespace ebmgen {
 
@@ -113,9 +114,21 @@ namespace ebmgen {
         if (visited.find(cfg) != visited.end()) {
             return cfg;
         }
+        std::sort(cfg->next.begin(), cfg->next.end(), [](const auto& a, const auto& b) {
+            return a < b;
+        });
+        auto result1 = std::unique(cfg->next.begin(), cfg->next.end());
+        cfg->next.erase(result1, cfg->next.end());
+        std::sort(cfg->prev.begin(), cfg->prev.end(), [](const auto& a, const auto& b) {
+            return a.lock() < b.lock();
+        });
+        auto result2 = std::unique(cfg->prev.begin(), cfg->prev.end(), [](const auto& a, const auto& b) {
+            return a.lock() == b.lock();
+        });
+        cfg->prev.erase(result2, cfg->prev.end());
         if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
             auto rem = cfg;
-            for (auto& prev : cfg->prev) {
+            for (auto& prev : rem->prev) {
                 if (auto p = prev.lock()) {
                     for (auto& n : p->next) {
                         if (n == cfg) {
@@ -124,6 +137,9 @@ namespace ebmgen {
                     }
                 }
             }
+            std::erase_if(rem->next[0]->prev, [&](auto& a) {
+                return a.lock() == rem;
+            });
             rem->next[0]->prev.insert(rem->next[0]->prev.end(), rem->prev.begin(), rem->prev.end());
             return optimize_cfg_node(rem->next[0], visited);
         }
@@ -132,6 +148,94 @@ namespace ebmgen {
             n = optimize_cfg_node(n, visited);
         }
         return cfg;
+    }
+
+    expected<DominatorTree> analyze_dominators(CFGTuple& root, std::set<std::shared_ptr<CFG>>& all_node) {
+        DominatorTree dom_tree;
+        dom_tree.root = root.start;
+        std::map<std::shared_ptr<CFG>, std::set<std::shared_ptr<CFG>>> doms;
+        for (auto& n : all_node) {
+            if (n == root.start) {
+                doms[n].insert(n);
+            }
+            else {
+                doms[n] = all_node;
+            }
+        }
+        bool changed = true;
+        while (changed) {
+            changed = false;
+            // 開始ノード以外の全てのノードnについてループ
+            for (auto& n : all_node) {
+                if (n == root.start) continue;
+
+                // ===== nの支配集合を再計算 =====
+
+                // 1. nの先行ノード(prev)全ての支配集合の共通部分(intersection)を求める
+                std::optional<std::set<std::shared_ptr<CFG>>> intersection;
+
+                for (auto& weak_pred : n->prev) {
+                    if (auto pred = weak_pred.lock()) {  // weak_ptrからshared_ptrを取得
+                        if (!intersection.has_value()) {
+                            // 最初の先行ノード
+                            intersection = doms.at(pred);
+                        }
+                        else {
+                            // 2つ目以降は、現在の共通集合と積集合を取る
+                            // (C++では std::set_intersection などを利用)
+                            std::set<std::shared_ptr<CFG>> temp_result;
+                            std::set_intersection(
+                                intersection->begin(), intersection->end(),
+                                doms.at(pred).begin(), doms.at(pred).end(),
+                                std::inserter(temp_result, temp_result.begin()));
+                            intersection = std::move(temp_result);
+                        }
+                    }
+                }
+
+                // 2. 求めた共通部分に、ノードn自身を加える
+                std::set<std::shared_ptr<CFG>> new_doms_for_n;
+                if (intersection.has_value()) {
+                    new_doms_for_n = *intersection;
+                }
+                new_doms_for_n.insert(n);
+
+                // 3. もし支配集合が変化していたら、更新してフラグを立てる
+                if (new_doms_for_n != doms.at(n)) {
+                    doms[n] = new_doms_for_n;
+                    changed = true;
+                }
+            }
+        }
+
+        // 全てのノードnについてループ
+        for (const auto& n : all_node) {
+            if (n == root.start) continue;
+
+            // nの支配ノードからn自身を除いた集合Sを用意
+            const auto& n_doms = doms.at(n);
+
+            std::shared_ptr<CFG> best_candidate = nullptr;
+            size_t max_size = 0;
+
+            // 集合Sの中で、|doms(d)|が最大になるdを探す
+            for (const auto& d : n_doms) {
+                if (d == n) continue;  // n自身は除外
+
+                const size_t candidate_size = doms.at(d).size();
+                if (candidate_size > max_size) {
+                    max_size = candidate_size;
+                    best_candidate = d;
+                }
+            }
+
+            if (best_candidate) {
+                dom_tree.parent[n] = best_candidate;
+            }
+        }
+
+        // Compute dominator tree
+        return dom_tree;
     }
 
     expected<CFGList> analyze_control_flow_graph(CFGContext& tctx) {
@@ -147,7 +251,12 @@ namespace ebmgen {
             tctx.end_of_function->prev.push_back(cfg.end);
             std::set<std::shared_ptr<CFG>> visited;
             cfg.start = optimize_cfg_node(cfg.start, visited);
-            cfg_list.list.emplace_back(stmt.id, std::move(cfg));
+            MAYBE(dom_tree, analyze_dominators(cfg, visited));
+            cfg_list.list.emplace_back(stmt.id,
+                                       CFGResult{
+                                           .cfg = std::move(cfg),
+                                           .dom_tree = std::move(dom_tree),
+                                       });
         }
         return cfg_list;
     }
@@ -156,8 +265,8 @@ namespace ebmgen {
         w.write("digraph G {\n");
         std::uint64_t id = 0;
         std::map<std::shared_ptr<CFG>, std::uint64_t> node_id;
-        std::map<std::uint64_t, std::shared_ptr<CFG>> fn_to_cfg;
-        auto write_node = [&](auto&& write, std::optional<std::string> name, std::shared_ptr<CFG>& cfg) -> void {
+        std::set<std::pair<std::shared_ptr<CFG>, std::shared_ptr<CFG>>> dominate_edges;
+        auto write_node = [&](auto&& write, DominatorTree& dom_tree, std::optional<std::string> name, std::shared_ptr<CFG>& cfg) -> void {
             if (node_id.find(cfg) != node_id.end()) {
                 return;
             }
@@ -175,13 +284,20 @@ namespace ebmgen {
             }
             w.write("\"];\n");
             for (auto& n : cfg->next) {
-                write(write, std::nullopt, n);
+                write(write, dom_tree, std::nullopt, n);
+                w.write(std::format("  {} -> {}", node_id[cfg], node_id[n]));
                 if (n->condition) {
                     auto cond_expr = ctx.expression_repository().get(*n->condition);
-                    w.write(std::format("  {} -> {} [label=\"{}:{}\"];\n", node_id[cfg], node_id[n], cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
+                    w.write(std::format("[label=\"{}:{}\"]", node_id[cfg], node_id[n], cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
+                }
+                w.write(";\n");
+                auto parent = dom_tree.parent[n];
+                auto dom_id = node_id[parent];
+                if (dominate_edges.contains({parent, n})) {
                     continue;
                 }
-                w.write(std::format("  {} -> {};\n", node_id[cfg], node_id[n]));
+                dominate_edges.insert({parent, n});
+                w.write(std::format("  {} -> {} [style=dotted,label=\"dominates\"];\n", dom_id, node_id[n]));
             }
         };
         for (auto& cfg : m.list) {
@@ -195,7 +311,7 @@ namespace ebmgen {
                     }
                 }
             }
-            write_node(write_node, name, cfg.second.start);
+            write_node(write_node, cfg.second.dom_tree, name, cfg.second.cfg.start);
         }
         w.write("}\n");
     }

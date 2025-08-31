@@ -24,8 +24,18 @@ namespace ebmgen {
         bool brk = false;  // break the flow
     };
 
+    struct DominatorTree {
+        std::shared_ptr<CFG> root;
+        std::unordered_map<std::shared_ptr<CFG>, std::shared_ptr<CFG>> parent;
+    };
+
+    struct CFGResult {
+        CFGTuple cfg;
+        DominatorTree dom_tree;
+    };
+
     struct CFGList {
-        std::vector<std::pair<ebm::StatementRef, CFGTuple>> list;
+        std::vector<std::pair<ebm::StatementRef, CFGResult>> list;
     };
 
     struct CFGContext {

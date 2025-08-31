@@ -288,7 +288,7 @@ namespace ebmgen {
                 w.write(std::format("  {} -> {}", node_id[cfg], node_id[n]));
                 if (n->condition) {
                     auto cond_expr = ctx.expression_repository().get(*n->condition);
-                    w.write(std::format("[label=\"{}:{}\"]", node_id[cfg], node_id[n], cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
+                    w.write(std::format("[label=\"{}:{}\"]", cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
                 }
                 w.write(";\n");
                 auto parent = dom_tree.parent[n];

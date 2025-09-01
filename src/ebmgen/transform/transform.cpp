@@ -198,7 +198,7 @@ namespace ebmgen {
         { b.body.kind };
     };
 
-    expected<void> remove_unused(TransformContext& ctx) {
+    expected<void> remove_unused_object(TransformContext& ctx) {
         MAYBE(max_id, ctx.max_id());
         std::map<size_t, std::vector<ebm::AnyRef>> used_refs;
         auto trial = [&] -> expected<size_t> {
@@ -529,6 +529,25 @@ namespace ebmgen {
     expected<void> flatten_io_expression(CFGContext& ctx) {
         for (auto& cfg : ctx.cfg_map) {
             MAYBE(stmt, ctx.tctx.statement_repository().get(ebm::StatementRef{cfg.first}));
+            auto& cfg_node = cfg.second;
+            switch (stmt.body.kind) {
+                default:
+                    continue;
+                case ebm::StatementOp::IF_STATEMENT: {
+                    auto& if_stmt = *stmt.body.if_statement();
+                    ebm::Block cond_block;
+                    MAYBE(expr_ref, flatten_expression(ctx.tctx, cond_block, if_stmt.condition));
+                    break;
+                }
+                case ebm::StatementOp::LOOP_STATEMENT: {
+                    auto& loop_stmt = *stmt.body.loop();
+                    if (auto cond = loop_stmt.condition()) {
+                        ebm::Block body_block;
+                        MAYBE(expr_ref, flatten_expression(ctx.tctx, body_block, *cond));
+                    }
+                    break;
+                }
+            }
         }
         /*
         auto& statements = ctx.tctx.statement_repository().get_all();
@@ -585,7 +604,7 @@ namespace ebmgen {
         }
         MAYBE_VOID(flatten_io_expression, flatten_io_expression(cfg_ctx));
         if (!debug) {
-            MAYBE_VOID(remove_unused, remove_unused(ctx));
+            MAYBE_VOID(remove_unused, remove_unused_object(ctx));
         }
         return {};
     }

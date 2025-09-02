@@ -121,7 +121,7 @@ namespace ebmgen {
     ebm::LoweredStatement make_lowered_statement(ebm::LoweringType lowering_type, ebm::StatementRef body) {
         ebm::LoweredStatement lowered;
         lowered.lowering_type = lowering_type;
-        lowered.block = body;
+        lowered.statement = body;
         return lowered;
     }
 
@@ -163,7 +163,7 @@ namespace ebmgen {
         ebm::AssertDesc assert_desc;
         ASSERT_ID(condition);
         assert_desc.condition = make_condition(condition);
-        assert_desc.lowered_statement = lowered_statement;
+        assert_desc.lowered_statement = ebm::LoweredStatementRef{lowered_statement};
         body.assert_desc(std::move(assert_desc));
         return body;
     }
@@ -211,7 +211,7 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionOp::MAX_VALUE;
         body.type = type;
-        body.lowered_expr(lowered_expr);
+        body.lowered_expr(ebm::LoweredExpressionRef{lowered_expr});
         return body;
     }
 
@@ -229,7 +229,7 @@ namespace ebmgen {
             .data_type = data_type,
             .attribute = attr,
             .size = size,
-            .lowered_stmt = ebm::StatementRef{},
+            .lowered_stmt = ebm::LoweredStatementRef{},
         };
     }
 

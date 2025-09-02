@@ -1045,6 +1045,8 @@ namespace ebm {
     struct TypeRef;
     struct ExpressionRef;
     struct StringRef;
+    struct LoweredStatementRef;
+    struct LoweredExpressionRef;
     struct LoweredStatement;
     struct LoweredExpression;
     struct LoopFlowControl;
@@ -1295,9 +1297,53 @@ namespace ebm {
             v(v, "id",visitor_tag<decltype(std::declval<StringRef>().id)>{});
         }
     };
+    struct EBM_API LoweredStatementRef{
+        StatementRef id;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LoweredStatementRef";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<LoweredStatementRef>().id)>{});
+        }
+    };
+    struct EBM_API LoweredExpressionRef{
+        ExpressionRef id;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "LoweredExpressionRef";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "id",(*this).id);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "id",(*this).id);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "id",visitor_tag<decltype(std::declval<LoweredExpressionRef>().id)>{});
+        }
+    };
     struct EBM_API LoweredStatement{
         LoweringType lowering_type{};
-        StatementRef block;
+        StatementRef statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
@@ -1305,12 +1351,12 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
             v(v, "lowering_type",(*this).lowering_type);
-            v(v, "block",(*this).block);
+            v(v, "statement",(*this).statement);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "lowering_type",(*this).lowering_type);
-            v(v, "block",(*this).block);
+            v(v, "statement",(*this).statement);
         }
         template<typename T>
         struct visitor_tag {
@@ -1319,7 +1365,7 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredStatement>().lowering_type)>{});
-            v(v, "block",visitor_tag<decltype(std::declval<LoweredStatement>().block)>{});
+            v(v, "statement",visitor_tag<decltype(std::declval<LoweredStatement>().statement)>{});
         }
     };
     struct EBM_API LoweredExpression{
@@ -1608,7 +1654,7 @@ namespace ebm {
             ExpressionRef target_expr;
         };
         struct EBM_API union_struct_34{
-            ExpressionRef lowered_expr;
+            LoweredExpressionRef lowered_expr;
         };
         struct EBM_API union_struct_35{
             StatementRef target_stmt;
@@ -1691,10 +1737,10 @@ namespace ebm {
         ExpressionRef* left();
         bool left(ExpressionRef&& v);
         bool left(const ExpressionRef& v);
-        const ExpressionRef* lowered_expr() const;
-        ExpressionRef* lowered_expr();
-        bool lowered_expr(ExpressionRef&& v);
-        bool lowered_expr(const ExpressionRef& v);
+        const LoweredExpressionRef* lowered_expr() const;
+        LoweredExpressionRef* lowered_expr();
+        bool lowered_expr(LoweredExpressionRef&& v);
+        bool lowered_expr(const LoweredExpressionRef& v);
         const ExpressionRef* member() const;
         ExpressionRef* member();
         bool member(ExpressionRef&& v);
@@ -2051,7 +2097,7 @@ namespace ebm {
     };
     struct EBM_API AssertDesc{
         Condition condition;
-        StatementRef lowered_statement;
+        LoweredStatementRef lowered_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "AssertDesc";
@@ -2081,7 +2127,7 @@ namespace ebm {
         TypeRef data_type;
         IOAttribute attribute;
         Size size;
-        StatementRef lowered_stmt;
+        LoweredStatementRef lowered_stmt;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "IOData";
@@ -2155,7 +2201,7 @@ namespace ebm {
         bool item_var(StatementRef&& v);
         bool item_var(const StatementRef& v);
         StatementRef body;
-        StatementRef lowered_statement;
+        LoweredStatementRef lowered_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
@@ -2204,7 +2250,7 @@ namespace ebm {
         bits_flag_alias_method(flags_44_,0,is_exhaustive);
         bits_flag_alias_method(flags_44_,1,reserved);
         Block branches;
-        StatementRef lowered_if_statement;
+        LoweredStatementRef lowered_if_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "MatchStatement";

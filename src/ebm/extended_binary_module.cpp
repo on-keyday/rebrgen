@@ -2311,7 +2311,7 @@ namespace ebm {
         }
         return false;
     }
-    const ExpressionRef* ExpressionBody::lowered_expr() const {
+    const LoweredExpressionRef* ExpressionBody::lowered_expr() const {
         if (ExpressionOp::LITERAL_INT==(*this).kind) {
         return nullptr;
         }
@@ -2380,10 +2380,10 @@ namespace ebm {
         }
         return nullptr;
     }
-    ExpressionRef* ExpressionBody::lowered_expr() {
-        return const_cast<ExpressionRef*>(std::as_const(*this).lowered_expr());
+    LoweredExpressionRef* ExpressionBody::lowered_expr() {
+        return const_cast<LoweredExpressionRef*>(std::as_const(*this).lowered_expr());
     }
-    bool ExpressionBody::lowered_expr(const ExpressionRef& v) {
+    bool ExpressionBody::lowered_expr(const LoweredExpressionRef& v) {
         if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
@@ -2453,7 +2453,7 @@ namespace ebm {
         }
         return false;
     }
-    bool ExpressionBody::lowered_expr(ExpressionRef&& v) {
+    bool ExpressionBody::lowered_expr(LoweredExpressionRef&& v) {
         if (ExpressionOp::LITERAL_INT==(*this).kind) {
             return false;
         }
@@ -12403,12 +12403,36 @@ namespace ebm {
         }
         return ::futils::error::Error<>();
     }
+    ::futils::error::Error<> LoweredStatementRef::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).id.encode(w)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> LoweredStatementRef::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).id.decode(r)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> LoweredExpressionRef::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).id.encode(w)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> LoweredExpressionRef::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).id.decode(r)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
     ::futils::error::Error<> LoweredStatement::encode(::futils::binary::writer& w) const {
         auto tmp_107_ = static_cast<std::uint8_t>((*this).lowering_type);
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_107_) ,true)) {
             return ::futils::error::Error<>("encode: LoweredStatement::lowering_type: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        if (auto err = (*this).block.encode(w)) {
+        if (auto err = (*this).statement.encode(w)) {
             return err;
         }
         return ::futils::error::Error<>();
@@ -12419,7 +12443,7 @@ namespace ebm {
             return ::futils::error::Error<>("decode: LoweredStatement::lowering_type: read int failed",::futils::error::Category::lib);
         }
         (*this).lowering_type = static_cast<LoweringType>(tmp_108_);
-        if (auto err = (*this).block.decode(r)) {
+        if (auto err = (*this).statement.decode(r)) {
             return err;
         }
         return ::futils::error::Error<>();

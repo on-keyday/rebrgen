@@ -55,7 +55,7 @@ namespace ebmgen {
                 io_desc.size = io_data->size;
                 ebm::LoweredStatement lowered;
                 lowered.lowering_type = ebm::LoweringType::NAIVE;
-                lowered.block = encode_stmt;
+                lowered.statement = encode_stmt;
                 append(lowered_stmts, std::move(lowered));
             }
             else {
@@ -303,7 +303,7 @@ namespace ebmgen {
         assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
         if (lowered_stmts.container.size()) {
             EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
-            io_desc.lowered_stmt = lowered_stmt;
+            io_desc.lowered_stmt = ebm::LoweredStatementRef{lowered_stmt};
         }
         return make_write_data(std::move(io_desc));
     }

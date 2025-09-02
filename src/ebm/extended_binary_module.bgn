@@ -88,6 +88,12 @@ format StringRef:
 format StatementRef:
     id :Varint # Reference to an entry in the statement table
 
+format LoweredStatementRef:
+    id :StatementRef
+
+format LoweredExpressionRef:
+    id :ExpressionRef
+
 enum ExpressionOp:
     :u8
     LITERAL_INT 
@@ -182,7 +188,7 @@ format ExpressionBody:
         ExpressionOp.IS_ERROR:
             target_expr :ExpressionRef # Expression to check for error (ENCODER_RETURN or DECODER_RETURN type)
         ExpressionOp.MAX_VALUE:
-            lowered_expr :ExpressionRef # Optional lowered expression for the maximum value
+            lowered_expr :LoweredExpressionRef # Optional lowered expression for the maximum value
         ExpressionOp.READ_DATA:
             target_stmt :StatementRef # reference to variable to read data into
             io_statement :StatementRef # Reference to the IOData statement for reading data
@@ -213,7 +219,7 @@ format LoopStatement:
             condition :Condition # Loop condition (e.g., i < n)
             increment :StatementRef # Increment statement (e.g., i++)
     body :StatementRef # Body of the loop
-    lowered_statement :StatementRef # Optional lowered statement for the loop (e.g., for C-like loops)
+    lowered_statement :LoweredStatementRef # Optional lowered statement for the loop (e.g., for C-like loops)
 
 format IfStatement:
     condition :Condition # Condition for the if statement
@@ -241,7 +247,7 @@ format MatchStatement:
     is_exhaustive :u1 # 0: non-exhaustive, 1: exhaustive
     reserved :u7 # Reserved for future use
     branches :Block # List of match branches
-    lowered_if_statement :StatementRef # Lowered representation converted to if-else style
+    lowered_if_statement :LoweredStatementRef # Lowered representation converted to if-else style
 
 format FieldDecl:
     name :IdentifierRef # Field name
@@ -308,7 +314,7 @@ enum LoweringType:
 
 format LoweredStatement:
     lowering_type :LoweringType # Type of lowering
-    block :StatementRef # Lowering block
+    statement :StatementRef # Lowered statement
 
 format LoweredStatements:
     len :Varint # Number of lowered statements
@@ -316,7 +322,7 @@ format LoweredStatements:
 
 format LoweredExpression:
     lowering_type :LoweringType # Type of lowered statements
-    expression :ExpressionRef  # 
+    expression :ExpressionRef  #  Lowered expression
 
 format LoweredExpressions:
     len :Varint # Number of lowered expressions
@@ -370,7 +376,7 @@ format ErrorReport:
 
 format AssertDesc:
     condition :Condition # Condition to assert
-    lowered_statement :StatementRef # Optional lowered statement for the assertion (by if statement and error report)
+    lowered_statement :LoweredStatementRef # Optional lowered statement for the assertion (by if statement and error report)
 
 enum StreamType:
     :u8
@@ -406,7 +412,7 @@ format IOData:
     data_type :TypeRef # Type of the data to read/write
     attribute :IOAttribute # Endianness for write
     size :Size # Size information for read/write
-    lowered_stmt :StatementRef # Optional lowered statements for read/write operations
+    lowered_stmt :LoweredStatementRef # Optional lowered statements for read/write operations
 
 format Condition:
     flattened_statement :StatementRef

@@ -127,7 +127,7 @@ namespace ebmgen {
                     update[i].emplace_back(group_range, [=, &tctx, original_io = std::move(original_io), io_data = std::move(io_data)]() mutable -> expected<ebm::StatementRef> {
                         auto& ctx = tctx.context();
                         EBM_BLOCK(original_, std::move(original_io));
-                        io_data.lowered_stmt = original_;
+                        io_data.lowered_stmt = ebm::LoweredStatementRef{original_};
                         if (write) {
                             EBM_WRITE_DATA(vectorized_write, std::move(io_data));
                             return vectorized_write;
@@ -527,28 +527,29 @@ namespace ebmgen {
     }
 
     expected<void> flatten_io_expression(CFGContext& ctx) {
-        for (auto& cfg : ctx.cfg_map) {
-            MAYBE(stmt, ctx.tctx.statement_repository().get(ebm::StatementRef{cfg.first}));
-            auto& cfg_node = cfg.second;
-            switch (stmt.body.kind) {
-                default:
-                    continue;
-                case ebm::StatementOp::IF_STATEMENT: {
-                    auto& if_stmt = *stmt.body.if_statement();
-                    ebm::Block cond_block;
-                    MAYBE(expr_ref, flatten_expression(ctx.tctx, cond_block, if_stmt.condition.cond));
-                    break;
+        size_t count = 0;
+        size_t cfg_count = 0;
+        for (auto& stmt : ctx.tctx.statement_repository().get_all()) {
+            std::optional<ebm::Condition*> cond_ref;
+            stmt.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
+                if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::Condition>) {
+                    cond_ref = &val;
                 }
-                case ebm::StatementOp::LOOP_STATEMENT: {
-                    auto& loop_stmt = *stmt.body.loop();
-                    if (auto cond = loop_stmt.condition()) {
-                        ebm::Block body_block;
-                        MAYBE(expr_ref, flatten_expression(ctx.tctx, body_block, cond->cond));
-                    }
-                    break;
-                }
+                else
+                    VISITOR_RECURSE_CONTAINER(visitor, name, val)
+                else VISITOR_RECURSE(visitor, name, val)
+            });
+            if (!cond_ref) {
+                continue;
+            }
+            count++;
+            auto found_cfg = ctx.cfg_map.find(stmt.id.id.value());
+            if (found_cfg != ctx.cfg_map.end()) {
+                cfg_count++;
             }
         }
+        print_if_verbose("Found ", count, " conditional statements\n");
+        print_if_verbose("Found ", cfg_count, " conditional statements in CFG\n");
         /*
         auto& statements = ctx.tctx.statement_repository().get_all();
         std::set<std::uint64_t> toplevel_expressions;

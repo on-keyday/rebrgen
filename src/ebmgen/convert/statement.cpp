@@ -79,7 +79,7 @@ namespace ebmgen {
                     EBMU_BOOL_TYPE(bool_type);
                     EBM_COUNTER_LOOP_END(lowered_loop, i, target, inner_block_ref);
                     result_loop_stmt.item_var(identifier_def);
-                    result_loop_stmt.lowered_statement = lowered_loop;
+                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{lowered_loop};
                     result_loop_stmt.body = inner_block_ref;
                 }
                 else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
@@ -134,7 +134,7 @@ namespace ebmgen {
 
                     EBM_BLOCK(block_ref, std::move(outer_block));
                     result_loop_stmt.item_var(identifier_def);
-                    result_loop_stmt.lowered_statement = block_ref;
+                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{block_ref};
                     result_loop_stmt.body = body;
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
@@ -147,7 +147,7 @@ namespace ebmgen {
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
                     EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, inner_block_ref);
                     result_loop_stmt.item_var(element_def);
-                    result_loop_stmt.lowered_statement = loop_stmt;
+                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{loop_stmt};
                     result_loop_stmt.body = inner_block_ref;
                 }
                 else if (auto lit = ast::as<ast::StrLiteral>(bop->right)) {
@@ -172,7 +172,7 @@ namespace ebmgen {
                     append(block, loop_stmt);
                     EBM_BLOCK(block_ref, std::move(block));
                     result_loop_stmt.item_var(element_def);
-                    result_loop_stmt.lowered_statement = block_ref;
+                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{block_ref};
                     result_loop_stmt.body = inner_block_ref;
                 }
                 else {
@@ -334,8 +334,8 @@ namespace ebmgen {
             lowered_if.push_back({if_id, std::move(tmp_if)});
         }
         for (auto& [if_id, if_stmt] : lowered_if) {
-            if (match_stmt.lowered_if_statement.id.value() == 0) {
-                match_stmt.lowered_if_statement = if_id;
+            if (match_stmt.lowered_if_statement.id.id.value() == 0) {
+                match_stmt.lowered_if_statement = ebm::LoweredStatementRef{if_id};
             }
             ebm::StatementBody if_body;
             if_body.kind = ebm::StatementOp::IF_STATEMENT;

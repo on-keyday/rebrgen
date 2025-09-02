@@ -104,7 +104,7 @@ namespace ebmgen {
         body_.kind = ebm::StatementOp::LOOP_STATEMENT;
         ebm::LoopStatement loop_stmt;
         loop_stmt.loop_type = ebm::LoopType::WHILE;
-        loop_stmt.condition(condition);
+        loop_stmt.condition(make_condition(condition));
         loop_stmt.body = body;
         body_.loop(std::move(loop_stmt));
         return body_;
@@ -143,7 +143,7 @@ namespace ebmgen {
         ebm::IfStatement if_stmt;
         ASSERT_ID(condition);
         ASSERT_ID(then_block);
-        if_stmt.condition = condition;
+        if_stmt.condition = make_condition(condition);
         if_stmt.then_block = then_block;
         if_stmt.else_block = else_block;
         body.if_statement(std::move(if_stmt));
@@ -162,7 +162,7 @@ namespace ebmgen {
         body.kind = ebm::StatementOp::ASSERT;
         ebm::AssertDesc assert_desc;
         ASSERT_ID(condition);
-        assert_desc.condition = condition;
+        assert_desc.condition = make_condition(condition);
         assert_desc.lowered_statement = lowered_statement;
         body.assert_desc(std::move(assert_desc));
         return body;
@@ -297,6 +297,12 @@ namespace ebmgen {
         body.start(start);
         body.end(end);
         return body;
+    }
+
+    ebm::Condition make_condition(ebm::ExpressionRef cond) {
+        ebm::Condition condition;
+        condition.cond = cond;
+        return condition;
     }
 
 }  // namespace ebmgen

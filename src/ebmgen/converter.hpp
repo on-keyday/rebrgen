@@ -205,6 +205,7 @@ namespace ebmgen {
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
         ebm::Block* current_block = nullptr;
         ebm::StatementRef current_loop_id;
+        ebm::StatementRef current_yield_statement;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
             if (!verbose_error) {
@@ -252,6 +253,21 @@ namespace ebmgen {
             current_loop_id = id;
             return futils::helper::defer([this, old]() {
                 current_loop_id = old;
+            });
+        }
+
+        expected<ebm::StatementRef> get_current_yield_statement() const {
+            if (current_yield_statement.id.value() == 0) {
+                return unexpect_error("No current yield statement");
+            }
+            return current_yield_statement;
+        }
+
+        [[nodiscard]] auto set_current_yield_statement(ebm::StatementRef id) {
+            auto old = current_yield_statement;
+            current_yield_statement = id;
+            return futils::helper::defer([this, old]() {
+                current_yield_statement = old;
             });
         }
 

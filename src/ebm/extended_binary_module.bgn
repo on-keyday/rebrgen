@@ -204,19 +204,19 @@ format LoopStatement:
     loop_type :LoopType # 0: infinite, 1: while, 2: for-each
     match loop_type:
         LoopType.INFINITE => .. # Infinite loop
-        LoopType.WHILE => condition :ExpressionRef # While loop condition
+        LoopType.WHILE => condition :Condition # While loop condition
         LoopType.FOR_EACH:
            item_var :StatementRef
            collection :ExpressionRef # For-each loop (e.g., for item in collection)
         LoopType.FOR:
             init :StatementRef # Initialization statement (e.g., int i = 0)
-            condition :ExpressionRef # Loop condition (e.g., i < n)
+            condition :Condition # Loop condition (e.g., i < n)
             increment :StatementRef # Increment statement (e.g., i++)
     body :StatementRef # Body of the loop
     lowered_statement :StatementRef # Optional lowered statement for the loop (e.g., for C-like loops)
 
 format IfStatement:
-    condition :ExpressionRef # Condition for the if statement
+    condition :Condition # Condition for the if statement
     then_block :StatementRef # Block to execute if condition is true
     else_block :StatementRef
 
@@ -369,7 +369,7 @@ format ErrorReport:
     arguments : Expressions # Optional arguments for the error message
 
 format AssertDesc:
-    condition :ExpressionRef # Condition to assert
+    condition :Condition # Condition to assert
     lowered_statement :StatementRef # Optional lowered statement for the assertion (by if statement and error report)
 
 enum StreamType:
@@ -407,6 +407,10 @@ format IOData:
     attribute :IOAttribute # Endianness for write
     size :Size # Size information for read/write
     lowered_stmt :StatementRef # Optional lowered statements for read/write operations
+
+format Condition:
+    flattened_statement :StatementRef
+    cond :ExpressionRef
 
 format StatementBody:
     kind :StatementOp
@@ -490,11 +494,11 @@ format Block:
     container :[len.value]StatementRef
 
 format MatchBranch:
-    condition :ExpressionRef # Case condition (e.g., literal, range, default)
+    condition :Condition # Case condition (e.g., literal, range, default)
     body :StatementRef # Body of the branch
 
 format PhiParam:
-    condition :ExpressionRef # Condition for this path (optional)
+    condition :Condition # Condition for this path (optional)
     value :ExpressionRef # Value from this path
 
 enum CastType:

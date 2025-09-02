@@ -536,14 +536,14 @@ namespace ebmgen {
                 case ebm::StatementOp::IF_STATEMENT: {
                     auto& if_stmt = *stmt.body.if_statement();
                     ebm::Block cond_block;
-                    MAYBE(expr_ref, flatten_expression(ctx.tctx, cond_block, if_stmt.condition));
+                    MAYBE(expr_ref, flatten_expression(ctx.tctx, cond_block, if_stmt.condition.cond));
                     break;
                 }
                 case ebm::StatementOp::LOOP_STATEMENT: {
                     auto& loop_stmt = *stmt.body.loop();
                     if (auto cond = loop_stmt.condition()) {
                         ebm::Block body_block;
-                        MAYBE(expr_ref, flatten_expression(ctx.tctx, body_block, *cond));
+                        MAYBE(expr_ref, flatten_expression(ctx.tctx, body_block, cond->cond));
                     }
                     break;
                 }

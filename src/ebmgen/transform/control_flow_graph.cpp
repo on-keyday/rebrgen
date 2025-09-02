@@ -40,7 +40,7 @@ namespace ebmgen {
         }
         else if (auto if_stmt = stmt.body.if_statement()) {
             MAYBE(then_block, analyze_ref(tctx, if_stmt->then_block));
-            then_block.start->condition = if_stmt->condition;
+            then_block.start->condition = if_stmt->condition.cond;
             auto join = std::make_shared<CFG>();
             link(current, then_block.start);
             if (!then_block.brk) {
@@ -78,7 +78,7 @@ namespace ebmgen {
                 MAYBE(branch_stmt, ctx.repository().get_statement(b));
                 MAYBE(branch_ptr, branch_stmt.body.match_branch());
                 MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
-                branch.start->condition = branch_ptr.condition;
+                branch.start->condition = branch_ptr.condition.cond;
                 link(current, branch.start);
                 if (!branch.brk) {
                     link(branch.end, join);

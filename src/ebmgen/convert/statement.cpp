@@ -199,7 +199,7 @@ namespace ebmgen {
                 result_loop_stmt.init(*init_v);
             }
             if (cond_v) {
-                result_loop_stmt.condition(*cond_v);
+                result_loop_stmt.condition(make_condition(*cond_v));
             }
             if (step_v) {
                 result_loop_stmt.increment(*step_v);
@@ -207,7 +207,7 @@ namespace ebmgen {
         }
         else if (cond_v) {
             result_loop_stmt.loop_type = ebm::LoopType::WHILE;  // While loop
-            result_loop_stmt.condition(*cond_v);
+            result_loop_stmt.condition(make_condition(*cond_v));
         }
         else {
             result_loop_stmt.loop_type = ebm::LoopType::INFINITE;  // Infinite loop
@@ -324,8 +324,8 @@ namespace ebmgen {
             }
             else {
                 EBMU_BOOL_TYPE(bool_type);
-                EBM_BINARY_OP(equality, ebm::BinaryOp::equal, bool_type, match_stmt.target, if_cond->condition);
-                tmp_if.condition = equality;
+                EBM_BINARY_OP(equality, ebm::BinaryOp::equal, bool_type, match_stmt.target, if_cond->condition.cond);
+                tmp_if.condition = make_condition(equality);
             }
             MAYBE(if_id, ctx.repository().new_statement_id());
             if (lowered_if.size()) {
@@ -363,7 +363,7 @@ namespace ebmgen {
         body.kind = ebm::StatementOp::MATCH_BRANCH;
         ebm::MatchBranch ebm_branch;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
-        ebm_branch.condition = cond_ref;
+        ebm_branch.condition = make_condition(cond_ref);
 
         ebm::StatementRef branch_body_block;
         if (node->then) {
@@ -674,9 +674,14 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::EXPRESSION;
+        MAYBE(yield_stmt, ctx.state().get_current_yield_statement());
+        MAYBE(stmt, ctx.repository().get_statement(yield_stmt));
+        MAYBE(var_decl, stmt.body.var_decl());
+        body.kind = ebm::StatementOp::ASSIGNMENT;
+        EBM_IDENTIFIER(temp_var, yield_stmt, var_decl.var_type);
+        body.target(temp_var);
         EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
-        body.expression(expr_ref);
+        body.value(expr_ref);
         return {};
     }
 

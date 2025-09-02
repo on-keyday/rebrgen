@@ -329,6 +329,8 @@ namespace ebmgen {
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);
 
+    ebm::Condition make_condition(ebm::ExpressionRef cond);
+
 #define COMMON_BUFFER_SETUP(IO_MACRO, io_stmt, io_ref)                              \
     EBMU_U8_N_ARRAY(u8_n_array, n);                                                 \
     EBM_DEFAULT_VALUE(new_obj_ref, u8_n_array);                                     \

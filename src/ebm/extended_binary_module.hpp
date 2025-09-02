@@ -1048,7 +1048,6 @@ namespace ebm {
     struct LoweredStatement;
     struct LoweredExpression;
     struct LoopFlowControl;
-    struct PhiParam;
     struct AnyRef;
     struct RefAlias;
     struct Expressions;
@@ -1056,7 +1055,7 @@ namespace ebm {
     struct Size;
     struct ExpressionBody;
     struct Expression;
-    struct LoopStatement;
+    struct Condition;
     struct IfStatement;
     struct Metadata;
     struct LoweredStatements;
@@ -1064,6 +1063,7 @@ namespace ebm {
     struct Block;
     struct AssertDesc;
     struct IOData;
+    struct LoopStatement;
     struct MatchStatement;
     struct MatchBranch;
     struct FunctionDecl;
@@ -1075,6 +1075,7 @@ namespace ebm {
     struct UnionDecl;
     struct UnionMemberDecl;
     struct PropertyDecl;
+    struct PhiParam;
     struct ErrorReport;
     struct StatementBody;
     struct Statement;
@@ -1368,32 +1369,6 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "related_statement",visitor_tag<decltype(std::declval<LoopFlowControl>().related_statement)>{});
-        }
-    };
-    struct EBM_API PhiParam{
-        ExpressionRef condition;
-        ExpressionRef value;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        constexpr static const char* visitor_name = "PhiParam";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "condition",(*this).condition);
-            v(v, "value",(*this).value);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "condition",(*this).condition);
-            v(v, "value",(*this).value);
-        }
-        template<typename T>
-        struct visitor_tag {
-            using type = T;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<PhiParam>().condition)>{});
-            v(v, "value",visitor_tag<decltype(std::declval<PhiParam>().value)>{});
         }
     };
     struct EBM_API AnyRef{
@@ -1914,70 +1889,21 @@ namespace ebm {
             v(v, "body",visitor_tag<decltype(std::declval<Expression>().body)>{});
         }
     };
-    struct EBM_API LoopStatement{
-        LoopType loop_type{};
-        struct EBM_API union_struct_40{
-        };
-        struct EBM_API union_struct_41{
-            ExpressionRef condition;
-        };
-        struct EBM_API union_struct_42{
-            StatementRef item_var;
-            ExpressionRef collection;
-        };
-        struct EBM_API union_struct_43{
-            StatementRef init;
-            ExpressionRef condition;
-            StatementRef increment;
-        };
-        std::variant<std::monostate, union_struct_40, union_struct_41, union_struct_42, union_struct_43> union_variant_39;
-        const ExpressionRef* collection() const;
-        ExpressionRef* collection();
-        bool collection(ExpressionRef&& v);
-        bool collection(const ExpressionRef& v);
-        const ExpressionRef* condition() const;
-        ExpressionRef* condition();
-        bool condition(ExpressionRef&& v);
-        bool condition(const ExpressionRef& v);
-        const StatementRef* increment() const;
-        StatementRef* increment();
-        bool increment(StatementRef&& v);
-        bool increment(const StatementRef& v);
-        const StatementRef* init() const;
-        StatementRef* init();
-        bool init(StatementRef&& v);
-        bool init(const StatementRef& v);
-        const StatementRef* item_var() const;
-        StatementRef* item_var();
-        bool item_var(StatementRef&& v);
-        bool item_var(const StatementRef& v);
-        StatementRef body;
-        StatementRef lowered_statement;
+    struct EBM_API Condition{
+        StatementRef flattened_statement;
+        ExpressionRef cond;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-        constexpr static const char* visitor_name = "LoopStatement";
+        constexpr static const char* visitor_name = "Condition";
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
-            v(v, "loop_type",(*this).loop_type);
-            v(v, "collection",(*this).collection());
-            v(v, "condition",(*this).condition());
-            v(v, "increment",(*this).increment());
-            v(v, "init",(*this).init());
-            v(v, "item_var",(*this).item_var());
-            v(v, "body",(*this).body);
-            v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "flattened_statement",(*this).flattened_statement);
+            v(v, "cond",(*this).cond);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
-            v(v, "loop_type",(*this).loop_type);
-            v(v, "collection",(*this).collection());
-            v(v, "condition",(*this).condition());
-            v(v, "increment",(*this).increment());
-            v(v, "init",(*this).init());
-            v(v, "item_var",(*this).item_var());
-            v(v, "body",(*this).body);
-            v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "flattened_statement",(*this).flattened_statement);
+            v(v, "cond",(*this).cond);
         }
         template<typename T>
         struct visitor_tag {
@@ -1985,18 +1911,12 @@ namespace ebm {
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "loop_type",visitor_tag<decltype(std::declval<LoopStatement>().loop_type)>{});
-            v(v, "collection",visitor_tag<decltype(std::declval<LoopStatement>().collection())>{});
-            v(v, "condition",visitor_tag<decltype(std::declval<LoopStatement>().condition())>{});
-            v(v, "increment",visitor_tag<decltype(std::declval<LoopStatement>().increment())>{});
-            v(v, "init",visitor_tag<decltype(std::declval<LoopStatement>().init())>{});
-            v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var())>{});
-            v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body)>{});
-            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement)>{});
+            v(v, "flattened_statement",visitor_tag<decltype(std::declval<Condition>().flattened_statement)>{});
+            v(v, "cond",visitor_tag<decltype(std::declval<Condition>().cond)>{});
         }
     };
     struct EBM_API IfStatement{
-        ExpressionRef condition;
+        Condition condition;
         StatementRef then_block;
         StatementRef else_block;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
@@ -2130,7 +2050,7 @@ namespace ebm {
         }
     };
     struct EBM_API AssertDesc{
-        ExpressionRef condition;
+        Condition condition;
         StatementRef lowered_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
@@ -2197,6 +2117,87 @@ namespace ebm {
             v(v, "lowered_stmt",visitor_tag<decltype(std::declval<IOData>().lowered_stmt)>{});
         }
     };
+    struct EBM_API LoopStatement{
+        LoopType loop_type{};
+        struct EBM_API union_struct_40{
+        };
+        struct EBM_API union_struct_41{
+            Condition condition;
+        };
+        struct EBM_API union_struct_42{
+            StatementRef item_var;
+            ExpressionRef collection;
+        };
+        struct EBM_API union_struct_43{
+            StatementRef init;
+            Condition condition;
+            StatementRef increment;
+        };
+        std::variant<std::monostate, union_struct_40, union_struct_41, union_struct_42, union_struct_43> union_variant_39;
+        const ExpressionRef* collection() const;
+        ExpressionRef* collection();
+        bool collection(ExpressionRef&& v);
+        bool collection(const ExpressionRef& v);
+        const Condition* condition() const;
+        Condition* condition();
+        bool condition(Condition&& v);
+        bool condition(const Condition& v);
+        const StatementRef* increment() const;
+        StatementRef* increment();
+        bool increment(StatementRef&& v);
+        bool increment(const StatementRef& v);
+        const StatementRef* init() const;
+        StatementRef* init();
+        bool init(StatementRef&& v);
+        bool init(const StatementRef& v);
+        const StatementRef* item_var() const;
+        StatementRef* item_var();
+        bool item_var(StatementRef&& v);
+        bool item_var(const StatementRef& v);
+        StatementRef body;
+        StatementRef lowered_statement;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "LoopStatement";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "loop_type",(*this).loop_type);
+            v(v, "collection",(*this).collection());
+            v(v, "condition",(*this).condition());
+            v(v, "increment",(*this).increment());
+            v(v, "init",(*this).init());
+            v(v, "item_var",(*this).item_var());
+            v(v, "body",(*this).body);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "loop_type",(*this).loop_type);
+            v(v, "collection",(*this).collection());
+            v(v, "condition",(*this).condition());
+            v(v, "increment",(*this).increment());
+            v(v, "init",(*this).init());
+            v(v, "item_var",(*this).item_var());
+            v(v, "body",(*this).body);
+            v(v, "lowered_statement",(*this).lowered_statement);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "loop_type",visitor_tag<decltype(std::declval<LoopStatement>().loop_type)>{});
+            v(v, "collection",visitor_tag<decltype(std::declval<LoopStatement>().collection())>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<LoopStatement>().condition())>{});
+            v(v, "increment",visitor_tag<decltype(std::declval<LoopStatement>().increment())>{});
+            v(v, "init",visitor_tag<decltype(std::declval<LoopStatement>().init())>{});
+            v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var())>{});
+            v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body)>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement)>{});
+        }
+    };
     struct EBM_API MatchStatement{
         ExpressionRef target;
         ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_44_;
@@ -2237,7 +2238,7 @@ namespace ebm {
         }
     };
     struct EBM_API MatchBranch{
-        ExpressionRef condition;
+        Condition condition;
         StatementRef body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
@@ -2586,6 +2587,32 @@ namespace ebm {
             v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format)>{});
             v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type)>{});
             v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode)>{});
+        }
+    };
+    struct EBM_API PhiParam{
+        Condition condition;
+        ExpressionRef value;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "PhiParam";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "condition",(*this).condition);
+            v(v, "value",(*this).value);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "condition",(*this).condition);
+            v(v, "value",(*this).value);
+        }
+        template<typename T>
+        struct visitor_tag {
+            using type = T;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "condition",visitor_tag<decltype(std::declval<PhiParam>().condition)>{});
+            v(v, "value",visitor_tag<decltype(std::declval<PhiParam>().value)>{});
         }
     };
     struct EBM_API ErrorReport{

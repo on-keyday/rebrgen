@@ -677,7 +677,7 @@ namespace ebmgen {
         MAYBE(yield_stmt, ctx.state().get_current_yield_statement());
         MAYBE(stmt, ctx.repository().get_statement(yield_stmt));
         MAYBE(var_decl, stmt.body.var_decl());
-        body.kind = ebm::StatementOp::ASSIGNMENT;
+        body.kind = ebm::StatementOp::YIELD;
         EBM_IDENTIFIER(temp_var, yield_stmt, var_decl.var_type);
         body.target(temp_var);
         EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);

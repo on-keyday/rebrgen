@@ -4,6 +4,7 @@ config.cpp.namespace = "ebm"
 config.cpp.bytes_type = "std::string"
 config.cpp.sys_include = "string"
 
+# TODO: use protobuf style varint instead of QUIC-style for more compact encoding
 format Varint:
     prefix :u2
     match prefix:
@@ -134,6 +135,7 @@ format CallDesc:
 format ExpressionBody:
     type :TypeRef # Type of the expression
     kind :ExpressionOp
+    lowered_statement :LoweredStatementRef # Optional lowered statement for complex expressions
     match kind:
         ExpressionOp.LITERAL_INT:
             int_value :Varint
@@ -187,8 +189,6 @@ format ExpressionBody:
             array_expr :ExpressionRef # Reference to the array or vector expression
         ExpressionOp.IS_ERROR:
             target_expr :ExpressionRef # Expression to check for error (ENCODER_RETURN or DECODER_RETURN type)
-        ExpressionOp.MAX_VALUE:
-            lowered_expr :LoweredExpressionRef # Optional lowered expression for the maximum value
         ExpressionOp.READ_DATA:
             target_stmt :StatementRef # reference to variable to read data into
             io_statement :StatementRef # Reference to the IOData statement for reading data
@@ -333,6 +333,7 @@ enum StatementOp:
     :u8
     BLOCK # Block of statements
     ASSIGNMENT
+    YIELD
     APPEND # append to vector
     RETURN
     ERROR_RETURN # for encoder/decoder return value
@@ -424,6 +425,10 @@ format StatementBody:
         StatementOp.BLOCK:
             block :Block # List of statements
         StatementOp.ASSIGNMENT:
+            target :ExpressionRef # Left-hand side (e.g., variable, member, index)
+            value :ExpressionRef # Right-hand side
+            previous_assignment :StatementRef # Previous assignment or phi node (optional)
+        StatementOp.YIELD: # for match/if expression
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
             previous_assignment :StatementRef # Previous assignment or phi node (optional)

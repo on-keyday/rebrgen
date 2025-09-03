@@ -144,6 +144,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     visitor_stub.writeln("Flags& flags;");
     if (flags.mode == GenerateMode::CodeGenerator) {
         visitor_stub.writeln("futils::code::CodeWriter<futils::binary::writer&> root;");
+        visitor_stub.writeln("std::vector<CodeWriter> tmp_writers;");
         visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}");
     }
     else {

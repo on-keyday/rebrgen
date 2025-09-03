@@ -376,6 +376,140 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_YIELD = requires(Visitor v) {
+         { v.visit_Statement_YIELD(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().previous_assignment(),*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_YIELD_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().previous_assignment(),*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_YIELD(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_validate_before.hpp")
+        #include "visitor/Statement_YIELD_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_validate.hpp")
+        #include "visitor/Statement_YIELD_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_validate.hpp")
+        #if __has_include("visitor/Statement_YIELD_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_YIELD_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_validate.hpp"
+        #if __has_include("visitor/Statement_YIELD_pre_validate_post_default.hpp")
+        #include "visitor/Statement_YIELD_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_validate_after.hpp")
+        #include "visitor/Statement_YIELD_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        if (!in.body.previous_assignment()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::previous_assignment");
+        }
+        auto& previous_assignment = *in.body.previous_assignment();
+        if (!in.body.target()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::target");
+        }
+        auto& target = *in.body.target();
+        if (!in.body.value()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::value");
+        }
+        auto& value = *in.body.value();
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_visit_before.hpp")
+        #include "visitor/Statement_YIELD_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_visit.hpp")
+        #include "visitor/Statement_YIELD_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_visit.hpp")
+        #if __has_include("visitor/Statement_YIELD_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_YIELD_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_visit.hpp"
+        #if __has_include("visitor/Statement_YIELD_pre_visit_post_default.hpp")
+        #include "visitor/Statement_YIELD_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_pre_visit_after.hpp")
+        #include "visitor/Statement_YIELD_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_YIELD<Visitor>) {
+            result = visitor.visit_Statement_YIELD(in.id,kind,previous_assignment,target,value);
+        }
+        else if constexpr (has_visitor_Statement_YIELD_call<Visitor>) {
+            result = visitor(in.id,kind,previous_assignment,target,value);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_YIELD_post_visit_before.hpp")
+        #include "visitor/Statement_YIELD_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_post_visit.hpp")
+        #include "visitor/Statement_YIELD_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_post_visit.hpp")
+        #if __has_include("visitor/Statement_YIELD_post_visit_pre_default.hpp")
+        #include "visitor/Statement_YIELD_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_post_visit.hpp"
+        #if __has_include("visitor/Statement_YIELD_post_visit_post_default.hpp")
+        #include "visitor/Statement_YIELD_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_YIELD_post_visit_after.hpp")
+        #include "visitor/Statement_YIELD_post_visit_after.hpp"
+        #endif
+        #endif
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Statement_APPEND = requires(Visitor v) {
          { v.visit_Statement_APPEND(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
@@ -4073,6 +4207,8 @@ namespace ebm2python {
             return dispatch_Statement_BLOCK(visitor,in);
         case ebm::StatementOp::ASSIGNMENT:
             return dispatch_Statement_ASSIGNMENT(visitor,in);
+        case ebm::StatementOp::YIELD:
+            return dispatch_Statement_YIELD(visitor,in);
         case ebm::StatementOp::APPEND:
             return dispatch_Statement_APPEND(visitor,in);
         case ebm::StatementOp::RETURN:
@@ -10198,6 +10334,7 @@ namespace ebm2python {
         ebmgen::MappingTable module_;
         Flags& flags;
         futils::code::CodeWriter<futils::binary::writer&> root;
+        std::vector<CodeWriter> tmp_writers;
         Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}
         #if __has_include("visitor/Visitor_before.hpp")
         #include "visitor/Visitor_before.hpp"
@@ -10280,6 +10417,30 @@ namespace ebm2python {
             #else
             if (flags.debug_unimplemented) {
                 return "{{Unimplemented Statement_ASSIGNMENT}}";
+            }
+            #endif
+            return {};
+        }
+        expected<Result> visit_Statement_YIELD(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::StatementRef& previous_assignment,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
+            #if __has_include("visitor/Statement_YIELD_before.hpp")
+            #include "visitor/Statement_YIELD_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_YIELD.hpp")
+            #include "visitor/Statement_YIELD.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp")
+            #if __has_include("visitor/Statement_YIELD_pre_default.hpp")
+            #include "visitor/Statement_YIELD_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp"
+            #if __has_include("visitor/Statement_YIELD_post_default.hpp")
+            #include "visitor/Statement_YIELD_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_YIELD_after.hpp")
+            #include "visitor/Statement_YIELD_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return "{{Unimplemented Statement_YIELD}}";
             }
             #endif
             return {};
@@ -11484,7 +11645,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Expression_MAX_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::ExpressionRef& lowered_expr) {
+        expected<Result> visit_Expression_MAX_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::LoweredExpressionRef& lowered_expr) {
             #if __has_include("visitor/Expression_MAX_VALUE_before.hpp")
             #include "visitor/Expression_MAX_VALUE_before.hpp"
             #endif
@@ -12087,6 +12248,7 @@ namespace ebm2python {
     };
     static_assert(has_visitor_Statement_BLOCK<Visitor>, "Visitor does not implement visit_Statement_BLOCK");
     static_assert(has_visitor_Statement_ASSIGNMENT<Visitor>, "Visitor does not implement visit_Statement_ASSIGNMENT");
+    static_assert(has_visitor_Statement_YIELD<Visitor>, "Visitor does not implement visit_Statement_YIELD");
     static_assert(has_visitor_Statement_APPEND<Visitor>, "Visitor does not implement visit_Statement_APPEND");
     static_assert(has_visitor_Statement_RETURN<Visitor>, "Visitor does not implement visit_Statement_RETURN");
     static_assert(has_visitor_Statement_ERROR_RETURN<Visitor>, "Visitor does not implement visit_Statement_ERROR_RETURN");

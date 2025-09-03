@@ -4,6 +4,6 @@ CodeWriter w;
 auto name = module_.get_identifier_or(field_decl.name, item_id, "field");
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value
 
-w.writeln(name, ": ", type_str_val, " = None");  // Use the extracted string value
+w.writeln(name, ": ", type_str_val.value, " = None");  // Use the extracted string value
 
 return w.out();

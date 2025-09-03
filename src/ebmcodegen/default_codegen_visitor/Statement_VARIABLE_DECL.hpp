@@ -8,7 +8,7 @@ w.write(name);
 
 if (var_decl.initial_value.id.value() != 0) {
     MAYBE(initial_value_str, visit_Expression(*this, var_decl.initial_value));
-    w.write(" = ", initial_value_str);
+    w.write(" = ", initial_value_str.value);
 }
 
 w.writeln();

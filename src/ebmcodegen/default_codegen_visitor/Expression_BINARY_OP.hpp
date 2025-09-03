@@ -5,6 +5,6 @@ CodeWriter w;
 MAYBE(left_str, visit_Expression(*this, left));
 MAYBE(right_str, visit_Expression(*this, right));
 
-w.write("(", left_str, " ", to_string(bop), " ", right_str, ")");
+w.write("(", left_str.value, " ", to_string(bop), " ", right_str.value, ")");
 
 return w.out();

@@ -2,7 +2,8 @@
 const auto& type = in;
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {
-    return visit_Type(visitor, type_ref);
+    MAYBE(res, visit_Type(visitor, type_ref));
+    return res.value;
 };
 
 auto& module_ = visitor.module_;

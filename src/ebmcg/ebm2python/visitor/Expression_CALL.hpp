@@ -15,7 +15,8 @@ if (callee_id_stmt.body.kind != ebm::StatementOp::VARIABLE_DECL && callee_id_stm
 ebm::IdentifierRef callee_identifier_ref;
 if (callee_id_stmt.body.kind == ebm::StatementOp::VARIABLE_DECL) {
     callee_identifier_ref = callee_id_stmt.body.var_decl()->name;
-} else { // FIELD_DECL
+}
+else {  // FIELD_DECL
     callee_identifier_ref = callee_id_stmt.body.field_decl()->name;
 }
 
@@ -27,19 +28,22 @@ if (callee_name == "output.put") {
     }
     MAYBE(arg_expr, this->module_.get_expression(call_desc.arguments.container[0]));
     MAYBE(arg_str, visit_Expression(*this, arg_expr));
-        w.write("stream.read(1)");;
-} else if (callee_name == "input.get") {
+    w.write("stream.read(1)");
+    ;
+}
+else if (callee_name == "input.get") {
     // input.get(u8) should be translated to stream.read(1)
     w.write("stream.read(1)");
-} else {
+}
+else {
     // Generic call handling
     MAYBE(callee_expr_obj_for_visit, this->module_.get_expression(call_desc.callee));
     MAYBE(callee_str, visit_Expression(*this, callee_expr_obj_for_visit));
-    w.write(callee_str, "(");
+    w.write(callee_str.value, "(");
     for (size_t i = 0; i < call_desc.arguments.container.size(); ++i) {
         MAYBE(arg_expr, this->module_.get_expression(call_desc.arguments.container[i]));
         MAYBE(arg_str, visit_Expression(*this, arg_expr));
-        w.write(arg_str);
+        w.write(arg_str.value);
         if (i < call_desc.arguments.container.size() - 1) {
             w.write(", ");
         }
@@ -48,4 +52,3 @@ if (callee_name == "output.put") {
 }
 
 return w.out();
-

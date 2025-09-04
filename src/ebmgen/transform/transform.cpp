@@ -127,7 +127,7 @@ namespace ebmgen {
                     update[i].emplace_back(group_range, [=, &tctx, original_io = std::move(original_io), io_data = std::move(io_data)]() mutable -> expected<ebm::StatementRef> {
                         auto& ctx = tctx.context();
                         EBM_BLOCK(original_, std::move(original_io));
-                        io_data.lowered_stmt = ebm::LoweredStatementRef{original_};
+                        io_data.lowered_statement = ebm::LoweredStatementRef{original_};
                         if (write) {
                             EBM_WRITE_DATA(vectorized_write, std::move(io_data));
                             return vectorized_write;

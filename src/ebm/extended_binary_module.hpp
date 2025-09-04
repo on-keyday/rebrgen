@@ -2132,7 +2132,7 @@ namespace ebm {
         TypeRef data_type;
         IOAttribute attribute;
         Size size;
-        LoweredStatementRef lowered_stmt;
+        LoweredStatementRef lowered_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "IOData";
@@ -2143,7 +2143,7 @@ namespace ebm {
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
             v(v, "size",(*this).size);
-            v(v, "lowered_stmt",(*this).lowered_stmt);
+            v(v, "lowered_statement",(*this).lowered_statement);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
@@ -2152,7 +2152,7 @@ namespace ebm {
             v(v, "data_type",(*this).data_type);
             v(v, "attribute",(*this).attribute);
             v(v, "size",(*this).size);
-            v(v, "lowered_stmt",(*this).lowered_stmt);
+            v(v, "lowered_statement",(*this).lowered_statement);
         }
         template<typename T>
         struct visitor_tag {
@@ -2165,7 +2165,7 @@ namespace ebm {
             v(v, "data_type",visitor_tag<decltype(std::declval<IOData>().data_type)>{});
             v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute)>{});
             v(v, "size",visitor_tag<decltype(std::declval<IOData>().size)>{});
-            v(v, "lowered_stmt",visitor_tag<decltype(std::declval<IOData>().lowered_stmt)>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<IOData>().lowered_statement)>{});
         }
     };
     struct EBM_API LoopStatement{

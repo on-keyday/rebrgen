@@ -229,7 +229,7 @@ namespace ebmgen {
             .data_type = data_type,
             .attribute = attr,
             .size = size,
-            .lowered_stmt = ebm::LoweredStatementRef{},
+            .lowered_statement = ebm::LoweredStatementRef{},
         };
     }
 

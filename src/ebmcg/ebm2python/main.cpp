@@ -10335,6 +10335,20 @@ namespace ebm2python {
         Flags& flags;
         futils::code::CodeWriter<futils::binary::writer&> root;
         std::vector<CodeWriter> tmp_writers;
+        [[nodiscard]] auto add_writer(CodeWriter** writer) {
+            tmp_writers.emplace_back();
+            *writer = &tmp_writers.back();
+            return futils::helper::defer([&,writer]() {
+                tmp_writers.pop_back();
+                *writer = nullptr;
+            });
+        }
+        CodeWriter* get_writer() {
+            if (tmp_writers.empty()) {
+                return nullptr;
+            }
+            return &tmp_writers.back();
+        }
         Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}
         #if __has_include("visitor/Visitor_before.hpp")
         #include "visitor/Visitor_before.hpp"

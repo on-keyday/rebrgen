@@ -13734,7 +13734,7 @@ namespace ebm {
         if (auto err = (*this).size.encode(w)) {
             return err;
         }
-        if (auto err = (*this).lowered_stmt.encode(w)) {
+        if (auto err = (*this).lowered_statement.encode(w)) {
             return err;
         }
         return ::futils::error::Error<>();
@@ -13755,7 +13755,7 @@ namespace ebm {
         if (auto err = (*this).size.decode(r)) {
             return err;
         }
-        if (auto err = (*this).lowered_stmt.decode(r)) {
+        if (auto err = (*this).lowered_statement.decode(r)) {
             return err;
         }
         return ::futils::error::Error<>();

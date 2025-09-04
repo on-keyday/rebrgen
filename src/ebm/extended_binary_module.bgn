@@ -414,7 +414,7 @@ format IOData:
     data_type :TypeRef # Type of the data to read/write
     attribute :IOAttribute # Endianness for write
     size :Size # Size information for read/write
-    lowered_stmt :LoweredStatementRef # Optional lowered statements for read/write operations
+    lowered_statement :LoweredStatementRef # Optional lowered statements for read/write operations
 
 format Condition:
     flattened_statement :StatementRef

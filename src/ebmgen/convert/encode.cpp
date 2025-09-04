@@ -303,7 +303,7 @@ namespace ebmgen {
         assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
         if (lowered_stmts.container.size()) {
             EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
-            io_desc.lowered_stmt = ebm::LoweredStatementRef{lowered_stmt};
+            io_desc.lowered_statement = ebm::LoweredStatementRef{lowered_stmt};
         }
         return make_write_data(std::move(io_desc));
     }

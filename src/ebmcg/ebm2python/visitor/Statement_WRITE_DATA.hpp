@@ -4,19 +4,20 @@ if (write_data.attribute.vectorized()) {
     return visit_Statement(*this, write_data.lowered_statement.id);
 }
 
+if (write_data.lowered_statement.id.id.value() != 0) {
+    return visit_Statement(*this, write_data.lowered_statement.id);
+}
+
 CodeWriter w;
 
 // Get the IOData statement object from the io_statement parameter
 auto& io_data = write_data;
 
 // Get data type string
-MAYBE(data_type, this->module_.get_type(io_data.data_type));
-MAYBE(data_type_str, visit_Type(*this, data_type));
+MAYBE(data_type_str, visit_Type(*this, io_data.data_type));
 
-// Get target expression object from the target_expr parameter
-MAYBE(target_expr_obj, this->module_.get_expression(io_data.target));
 // Visit target_expr_obj to get its Python representation
-MAYBE(target_expr_str, visit_Expression(*this, target_expr_obj));
+MAYBE(target_expr_str, visit_Expression(*this, io_data.target));
 
 // Generate Python code for writing
 MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attribute, io_data.size));

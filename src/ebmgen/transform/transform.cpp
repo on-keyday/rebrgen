@@ -21,23 +21,24 @@ namespace ebmgen {
         }
     }
 
+    auto get_block(ebm::StatementBody& body) {
+        ebm::Block* block = nullptr;
+        body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+            if constexpr (std::is_same_v<std::decay_t<decltype(value)>, ebm::Block*>) {
+                block = value;
+            }
+            else
+                VISITOR_RECURSE(visitor, name, value)
+        });
+        return block;
+    }
+
     expected<void> vectorized_io(TransformContext& tctx, bool write) {
         // Implementation of the grouping I/O transformation
         auto& all_statements = tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
         auto current_alias = tctx.alias_vector().size();
         std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
-        auto get_block = [&](ebm::StatementBody& body) {
-            ebm::Block* block = nullptr;
-            body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
-                if constexpr (std::is_same_v<std::decay_t<decltype(value)>, ebm::Block*>) {
-                    block = value;
-                }
-                else
-                    VISITOR_RECURSE(visitor, name, value)
-            });
-            return block;
-        };
         for (size_t i = 0; i < current_added; ++i) {
             auto block = get_block(all_statements[i].body);
             if (!block) {
@@ -358,6 +359,27 @@ namespace ebmgen {
         return {};
     }
 
+    expected<void> lowered_dynamic_bit_io(CFGContext& tctx) {
+        auto& all_statements = tctx.tctx.statement_repository().get_all();
+        auto current_added = all_statements.size();
+        auto current_alias = tctx.tctx.alias_vector().size();
+        std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
+        for (size_t i = 0; i < current_added; ++i) {
+            auto block = get_block(all_statements[i].body);
+            if (!block) {
+                continue;
+            }
+            auto found = tctx.cfg_map.find(all_statements[i].id.id.value());
+            if (found == tctx.cfg_map.end()) {
+                continue;
+            }
+            if (found->second->prev.size() != 0) {
+                continue;
+            }
+        }
+        return {};
+    }
+
     bool is_flatten_target(ebm::ExpressionOp op) {
         switch (op) {
             case ebm::ExpressionOp::CONDITIONAL_STATEMENT:
@@ -603,7 +625,7 @@ namespace ebmgen {
             write_cfg(w, cfg, ctx);
             print_if_verbose("Control Flow Graph:\n", buffer, "\n");
         }
-        MAYBE_VOID(flatten_io_expression, flatten_io_expression(cfg_ctx));
+        // MAYBE_VOID(flatten_io_expression, flatten_io_expression(cfg_ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
         }

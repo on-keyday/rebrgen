@@ -84,7 +84,9 @@ namespace ebmgen {
                     link(branch.end, join);
                 }
             }
-            link(current, join);
+            if (!match_->is_exhaustive()) {
+                link(current, join);
+            }
             current = std::move(join);
         }
         else if (auto cont = stmt.body.continue_()) {
@@ -281,6 +283,28 @@ namespace ebmgen {
             }
             else {
                 w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
+            }
+            if (origin) {
+                auto add_io = [&](ebm::IOData* io) {
+                    auto typ = ctx.type_repository().get(io->data_type);
+                    w.write(std::format("  Type: {}\\n", typ ? to_string(typ->body.kind) : "<unknown type>"));
+                    if (auto size = io->size.size()) {
+                        w.write(std::format("  Size: {} {}\\n", size->value(), to_string(io->size.unit)));
+                    }
+                    else if (auto ref = io->size.ref()) {
+                        auto expr = ctx.expression_repository().get(*ref);
+                        w.write(std::format("  Size: {}:{} {}\\n", expr ? to_string(expr->body.kind) : "<unknown expr>", ref->id.value(), to_string(io->size.unit)));
+                    }
+                    else {
+                        w.write(std::format("  Size: {}\\n", to_string(io->size.unit)));
+                    }
+                };
+                if (auto f = origin->body.read_data()) {
+                    add_io(f);
+                }
+                if (auto f = origin->body.write_data()) {
+                    add_io(f);
+                }
             }
             w.write("\"];\n");
             for (auto& n : cfg->next) {

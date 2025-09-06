@@ -112,6 +112,7 @@ namespace ebmgen {
                 if (!else_block.brk) {
                     link(else_block.end, join);
                 }
+                brk = then_block.brk && else_block.brk;
             }
             else {
                 link(current, join);
@@ -134,6 +135,7 @@ namespace ebmgen {
         }
         else if (auto match_ = stmt.body.match_statement()) {
             auto join = std::make_shared<CFG>();
+            bool all_break = true;
             for (auto& b : match_->branches.container) {
                 MAYBE(branch_stmt, ctx.repository().get_statement(b));
                 MAYBE(branch_ptr, branch_stmt.body.match_branch());
@@ -144,10 +146,12 @@ namespace ebmgen {
                 if (!branch.brk) {
                     link(branch.end, join);
                 }
+                all_break = all_break && branch.brk;
             }
             if (!match_->is_exhaustive()) {
                 link(current, join);
             }
+            brk = all_break;
             current = std::move(join);
         }
         else if (auto cont = stmt.body.continue_()) {

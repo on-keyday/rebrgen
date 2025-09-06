@@ -6,6 +6,7 @@ def split_dot_file_by_subgraph(dot_file_path: str, output_prefix: str):
     """
     指定されたDOTファイルをサブグラフごとに分割し、個別のDOTファイルとSVGファイルを出力する。
     """
+    print(f"{dot_file_path}を読込中...")
     try:
         graphs = pydot.graph_from_dot_file(dot_file_path)
         if not graphs:
@@ -62,5 +63,6 @@ if __name__ == "__main__":
         output_dir = sys.argv[2]
     except Exception as e:
         print("Usage: python split_dot.py [dot_file] [output_dir]")
+        exit(1)
     os.makedirs(output_dir, exist_ok=True)
     split_dot_file_by_subgraph(dot_file, output_dir)

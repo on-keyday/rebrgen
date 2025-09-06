@@ -418,6 +418,9 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Format>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        if (ctx.state().get_current_generate_type() != GenerateType::Normal) {
+            return unexpect_error("unexpected node type: {}", to_string(ctx.state().get_current_generate_type()));
+        }
         body.kind = ebm::StatementOp::STRUCT_DECL;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         MAYBE(encoder_input, get_coder_input(ctx, true));
@@ -522,6 +525,7 @@ namespace ebmgen {
     expected<ebm::FunctionDecl> StatementConverter::convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref) {
         ebm::FunctionDecl func_decl;
         if (auto parent = node->belong.lock()) {
+            auto n = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(parent_ref, parent);
             func_decl.parent_format = parent_ref;
         }

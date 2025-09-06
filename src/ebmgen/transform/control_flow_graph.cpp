@@ -121,6 +121,10 @@ namespace ebmgen {
             current = std::move(join);
         }
         else if (auto loop_ = stmt.body.loop()) {
+            if (auto cond = loop_->condition()) {
+                MAYBE(cond_node, analyze_expression(tctx, cond->cond));
+                current->condition = std::move(cond_node);
+            }
             auto join = std::make_shared<CFG>();
             tctx.loop_stack.push_back(CFGTuple{current, join});
             MAYBE(body, analyze_ref(tctx, loop_->body));

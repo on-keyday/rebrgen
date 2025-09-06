@@ -613,22 +613,15 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> transform(TransformContext& ctx, bool debug) {
+    expected<CFGList> transform(TransformContext& ctx, bool debug) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
         ctx.statement_repository().recalculate_cache();
-        CFGContext cfg_ctx{ctx};
-        MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
-        if (verbose_error) {
-            std::string buffer;
-            futils::binary::writer w(futils::binary::resizable_buffer_writer<std::string>(), &buffer);
-            write_cfg(w, cfg, ctx);
-            print_if_verbose("Control Flow Graph:\n", buffer, "\n");
-        }
-        // MAYBE_VOID(flatten_io_expression, flatten_io_expression(cfg_ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
         }
-        return {};
+        CFGContext cfg_ctx{ctx};
+        MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
+        return cfg;
     }
 }  // namespace ebmgen

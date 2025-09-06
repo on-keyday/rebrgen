@@ -1,10 +1,13 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
+#include "core/byte.h"
+#include <wrap/iostream.h>
 #include "fnet/util/base64.h"
 #include "load_json.hpp"
 #include "convert.hpp"
-#include "debug_printer.hpp"   // Include the new header
+#include "debug_printer.hpp"  // Include the new header
+#include "transform/control_flow_graph.hpp"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <fstream>             // Required for std::ofstream
@@ -14,6 +17,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
+    std::string_view cfg_output;
     bool base64 = false;
     bool verbose = false;
     bool debug = false;
@@ -22,7 +26,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
-        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");  // Bind new flag
+        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");
+        ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
         ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
         ctx.VarBool(&debug, "g,debug", "enable debug transformations (do not remove unused items)");
@@ -42,7 +47,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     ebm::ExtendedBinaryModule ebm;
     auto err = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
     if (err) {
-        cerr << "Convert Error: " << err.error<std::string>() << '\n';
+        cerr << "Convert Error: " << err.error().error<std::string>() << '\n';
         return 1;
     }
 
@@ -61,11 +66,21 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         debug_ofs.close();
     }
 
+    if (!flags.cfg_output.empty()) {
+        std::ofstream debug_ofs(std::string(flags.cfg_output));
+        if (!debug_ofs.is_open()) {
+            cerr << "Failed to open control flow graph file: " << flags.cfg_output << '\n';
+            return 1;
+        }
+        futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
+        ebmgen::write_cfg(w, CFGList & m, TransformContext & ctx);
+    }
+
     auto write_ebm = [&](futils::binary::writer& w) {
         if (flags.base64) {
             std::string buffer;
             futils::binary::writer temp_w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
-            err = ebm.encode(temp_w);
+            auto err = ebm.encode(temp_w);
             if (err) {
                 cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
                 return 1;
@@ -81,7 +96,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
         }
         else {
-            err = ebm.encode(w);
+            auto err = ebm.encode(w);
             if (err) {
                 cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
                 return 1;

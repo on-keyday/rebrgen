@@ -4,6 +4,7 @@
 #include <memory>
 #include <ebm/extended_binary_module.hpp>
 #include "ebmgen/converter.hpp"
+#include "ebmgen/mapping.hpp"
 
 namespace ebmgen {
 
@@ -16,6 +17,7 @@ namespace ebmgen {
 
     struct CFGExpression {
         std::weak_ptr<CFGExpression> parent;
+        std::string_view relation_name;
         ebm::ExpressionRef original_node;
         std::vector<std::shared_ptr<CFGExpression>> children;
         std::optional<CFGTuple> related_cfg;
@@ -36,7 +38,7 @@ namespace ebmgen {
     };
 
     struct DominatorTree {
-        std::shared_ptr<CFG> root;
+        std::vector<std::shared_ptr<CFG>> roots;
         std::unordered_map<std::shared_ptr<CFG>, std::shared_ptr<CFG>> parent;
     };
 
@@ -57,5 +59,5 @@ namespace ebmgen {
     };
 
     expected<CFGList> analyze_control_flow_graph(CFGContext& ctx);
-    void write_cfg(futils::binary::writer& w, CFGList& m, TransformContext& ctx);
+    void write_cfg(futils::binary::writer& w, const CFGList& m, const MappingTable& ctx);
 }  // namespace ebmgen

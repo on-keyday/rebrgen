@@ -663,6 +663,10 @@ namespace ebmgen {
             return ctx.repository().aliases;
         }
 
+        auto& debug_locations() {
+            return ctx.repository().debug_locs;
+        }
+
         auto max_id() const {
             return ctx.repository().ident_source.current_id();
         }

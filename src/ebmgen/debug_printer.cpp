@@ -3,9 +3,11 @@
 #include <cstdint>
 #include <iostream>
 #include <optional>
+#include <ostream>
 #include <string>
 #include <type_traits>
 #include "ebm/extended_binary_module.hpp"
+#include "escape/escape.h"
 #include "helper/template_instance.h"
 #include "common.hpp"
 #include "number/to_string.h"
@@ -28,11 +30,15 @@ namespace ebmgen {
             os_ << "(unknown identifier)";
         }
     }
+    void print_escaped_string(std::ostream& os_, std::string_view str) {
+        os_ << "\"" << futils::escape::escape_str<std::string>(str, futils::escape::EscapeFlag::all) << "\"";
+    }
+
     void DebugPrinter::print_resolved_reference(const ebm::StringRef& ref) const {
         os_ << ebm::StringLiteral::visitor_name << " ";
         const auto* str_lit = module_.get_string_literal(ref);
         if (str_lit) {
-            os_ << str_lit->body.data;
+            print_escaped_string(os_, str_lit->body.data);
         }
         else {
             os_ << "(unknown string literal)";
@@ -174,6 +180,10 @@ namespace ebmgen {
         }
         else if constexpr (std::is_same_v<T, std::uint8_t>) {
             os_ << static_cast<uint32_t>(value) << "\n";
+        }
+        else if constexpr (std::is_same_v<T, std::string>) {
+            print_escaped_string(os_, value);
+            os_ << "\n";
         }
         else {
             os_ << value << "\n";

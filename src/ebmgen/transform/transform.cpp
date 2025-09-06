@@ -4,7 +4,6 @@
 #include <functional>
 #include <type_traits>
 #include "../common.hpp"
-#include "binary/writer.h"
 #include "control_flow_graph.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
@@ -356,6 +355,17 @@ namespace ebmgen {
             return a.from.id.value() < b.from.id.value();
         });
         print_if_verbose("Sort ", ctx.alias_vector().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
+        t.reset();
+        std::erase_if(ctx.debug_locations(), [&](auto& d) {
+            return !old_to_new.contains(d.ident.id.value());
+        });
+        print_if_verbose("Removed unreferenced debug information in ", t.delta<std::chrono::microseconds>(), "\n");
+        for (auto& loc : ctx.debug_locations()) {
+            if (auto it = old_to_new.find(loc.ident.id.value()); it != old_to_new.end()) {
+                loc.ident.id = it->second.id;
+            }
+        }
+        print_if_verbose("Remap ", ctx.debug_locations().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         return {};
     }
 

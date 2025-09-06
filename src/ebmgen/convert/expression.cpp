@@ -335,26 +335,11 @@ namespace ebmgen {
             case ast::IOMethod::input_get:
             case ast::IOMethod::input_peek: {
                 body.kind = ebm::ExpressionOp::READ_DATA;
-                ebm::TypeRef type_ref;
-                std::shared_ptr<ast::Type> typ_lit;
-                if (node->arguments.size() != 0) {
-                    auto typ = ast::as<ast::TypeLiteral>(node->arguments[0]);
-                    if (!typ) {
-                        return unexpect_error("Expected TypeLiteral for input_get, got {}", node_type_to_string(node->arguments[0]->node_type));
-                    }
-                    EBMA_CONVERT_TYPE(type_ref_, typ->type_literal);
-                    type_ref = type_ref_;
-                    typ_lit = typ->type_literal;
-                }
-                else {
-                    EBMU_U8(u8_t);
-                    type_ref = u8_t;
-                    typ_lit = std::make_shared<ast::IntType>(node->loc, 8, ast::Endian::unspec, false);
-                }
+                EBMA_CONVERT_TYPE(type_ref, node->expr_type);
                 EBM_DEFAULT_VALUE(default_, type_ref);
                 EBM_DEFINE_ANONYMOUS_VARIABLE(var, type_ref, default_);
                 body.target_stmt(var_def);
-                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(typ_lit, var, nullptr));
+                MAYBE(decode_info, ctx.get_decoder_converter().decode_field_type(node->expr_type, var, nullptr));
                 if (node->method == ast::IOMethod::input_peek) {
                     decode_info.read_data()->attribute.is_peek(true);
                 }

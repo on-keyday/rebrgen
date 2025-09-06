@@ -477,7 +477,7 @@ namespace ebmgen {
                 w.writeln(";");
                 if (n->condition) {
                     write_expr(write, write_expr, n->condition, dom_tree);
-                    w.writeln(std::format("{} -> {} [style=dotted,label=\"expression\"];", node_id[cfg], expr_id[n->condition]));
+                    w.writeln(std::format("{} -> {} [style=dotted,label=\"expression\"];", node_id[n], expr_id[n->condition]));
                 }
 
                 auto it = dom_tree.parent.find(n);

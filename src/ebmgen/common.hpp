@@ -141,7 +141,7 @@ namespace ebmgen {
     }
 
 #define VISITOR_RECURSE_CONTAINER(visitor, name, value) \
-    if constexpr (is_container<decltype(val)>) {        \
+    if constexpr (is_container<decltype(value)>) {      \
         for (auto& elem : value.container) {            \
             visitor(visitor, name, elem);               \
         }                                               \

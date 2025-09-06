@@ -1,13 +1,64 @@
 /*license*/
 #include "control_flow_graph.hpp"
 #include <memory>
+#include "code/code_writer.h"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/common.hpp"
 #include "ebmgen/converter.hpp"
 #include <optional>
 #include <set>
 #include <unordered_map>
+#include <vector>
 
 namespace ebmgen {
+
+    expected<CFGTuple> analyze_ref(CFGContext& tctx, ebm::StatementRef ref);
+
+    expected<std::shared_ptr<CFGExpression>> analyze_expression(CFGContext& tctx, ebm::ExpressionRef ref) {
+        auto expr = std::make_shared<CFGExpression>();
+        expr->original_node = ref;
+        MAYBE(expr_v, tctx.tctx.expression_repository().get(ref));
+        std::vector<ebm::ExpressionRef> children;
+        expr_v.body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<T, ebm::ExpressionRef>) {
+                children.push_back(value);
+            }
+            else if constexpr (std::is_same_v<T, ebm::LoweredExpressionRef> || std::is_same_v<T, ebm::LoweredStatementRef>) {
+                // ignore
+            }
+            else
+                VISITOR_RECURSE_CONTAINER(visitor, name, value)
+            else VISITOR_RECURSE(visitor, name, value)
+        });
+        for (auto& child : children) {
+            MAYBE(child_expr, analyze_expression(tctx, child));
+            child_expr->parent = expr;
+            expr->children.push_back(std::move(child_expr));
+        }
+        if (auto w = expr_v.body.io_statement()) {
+            MAYBE(related_cfg, analyze_ref(tctx, *w));
+            expr->related_cfg = std::move(related_cfg);
+        }
+        return expr;
+    }
+
+    expected<std::vector<CFGTuple>> analyze_lowered(CFGContext& tctx, ebm::StatementRef ref) {
+        auto& ctx = tctx.tctx.context();
+        MAYBE(stmt, ctx.repository().get_statement(ref));
+        std::vector<CFGTuple> lowered;
+        if (auto lw = stmt.body.lowered_statements()) {
+            for (auto& r : lw->container) {
+                MAYBE(result, analyze_ref(tctx, r.statement));
+                lowered.push_back(std::move(result));
+            }
+        }
+        else {
+            MAYBE(result, analyze_ref(tctx, ref));
+            lowered.push_back(std::move(result));
+        }
+        return lowered;
+    }
 
     expected<CFGTuple> analyze_ref(CFGContext& tctx, ebm::StatementRef ref) {
         auto root = std::make_shared<CFG>();
@@ -40,7 +91,8 @@ namespace ebmgen {
         }
         else if (auto if_stmt = stmt.body.if_statement()) {
             MAYBE(then_block, analyze_ref(tctx, if_stmt->then_block));
-            then_block.start->condition = if_stmt->condition.cond;
+            MAYBE(cond, analyze_expression(tctx, if_stmt->condition.cond));
+            then_block.start->condition = std::move(cond);
             auto join = std::make_shared<CFG>();
             link(current, then_block.start);
             if (!then_block.brk) {
@@ -78,7 +130,8 @@ namespace ebmgen {
                 MAYBE(branch_stmt, ctx.repository().get_statement(b));
                 MAYBE(branch_ptr, branch_stmt.body.match_branch());
                 MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
-                branch.start->condition = branch_ptr.condition.cond;
+                MAYBE(cond, analyze_expression(tctx, if_stmt->condition.cond));
+                branch.start->condition = std::move(cond);
                 link(current, branch.start);
                 if (!branch.brk) {
                     link(branch.end, join);
@@ -109,7 +162,31 @@ namespace ebmgen {
             link(current, tctx.end_of_function);
             brk = true;
         }
+        else if (stmt.body.kind == ebm::StatementOp::READ_DATA ||
+                 stmt.body.kind == ebm::StatementOp::WRITE_DATA) {
+            auto io_ = stmt.body.read_data() ? stmt.body.read_data() : stmt.body.write_data();
+            if (io_->lowered_statement.id.id.value() != 0) {
+                MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
+                current->lowered = std::move(r);
+            }
+        }
+        else if (auto expr = stmt.body.expression()) {
+            MAYBE(expr_node, analyze_expression(tctx, *expr));
+            current->condition = std::move(expr_node);
+        }
         return CFGTuple{root, current, brk};
+    }
+
+    std::shared_ptr<CFG> optimize_cfg_node(std::shared_ptr<CFG>& cfg, std::set<std::shared_ptr<CFG>>& visited);
+
+    std::shared_ptr<CFGExpression> optimize_cfg_expression(std::shared_ptr<CFGExpression>& cfg, std::set<std::shared_ptr<CFG>>& visited) {
+        for (auto& child : cfg->children) {
+            child = optimize_cfg_expression(cfg, visited);
+        }
+        if (cfg->related_cfg) {
+            cfg->related_cfg->start = optimize_cfg_node(cfg->related_cfg->start, visited);
+        }
+        return cfg;
     }
 
     std::shared_ptr<CFG> optimize_cfg_node(std::shared_ptr<CFG>& cfg, std::set<std::shared_ptr<CFG>>& visited) {
@@ -148,6 +225,12 @@ namespace ebmgen {
         visited.insert(cfg);
         for (auto& n : cfg->next) {
             n = optimize_cfg_node(n, visited);
+        }
+        for (auto& v : cfg->lowered) {
+            v.start = optimize_cfg_node(v.start, visited);
+        }
+        if (cfg->condition) {
+            cfg->condition = optimize_cfg_expression(cfg->condition, visited);
         }
         return cfg;
     }
@@ -263,17 +346,54 @@ namespace ebmgen {
         return cfg_list;
     }
 
-    void write_cfg(futils::binary::writer& w, CFGList& m, TransformContext& ctx) {
-        w.write("digraph G {\n");
+    void write_cfg(futils::binary::writer& result, CFGList& m, TransformContext& ctx) {
+        futils::code::CodeWriter<std::string> w;
         std::uint64_t id = 0;
         std::map<std::shared_ptr<CFG>, std::uint64_t> node_id;
         std::set<std::pair<std::shared_ptr<CFG>, std::shared_ptr<CFG>>> dominate_edges;
-        auto write_node = [&](auto&& write, DominatorTree& dom_tree, std::optional<std::string> name, std::shared_ptr<CFG>& cfg) -> void {
+        std::map<std::shared_ptr<CFGExpression>, std::uint64_t> expr_id;
+        auto write_expr = [&](auto&& write, auto&& write_expr, std::shared_ptr<CFGExpression>& cfg, DominatorTree& dom_tree) -> void {
+            if (expr_id.find(cfg) != expr_id.end()) {
+                return;
+            }
+            expr_id[cfg] = id++;
+            w.write(std::format("{} [label=\"", expr_id[cfg]));
+            auto origin = ctx.expression_repository().get(cfg->original_node);
+            if (cfg->children.size()) {
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", cfg->original_node.id.value()));
+            }
+            else {
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
+            }
+            if (origin) {
+                origin->body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+                    using T = std::decay_t<decltype(value)>;
+                    if constexpr (std::is_integral_v<T>) {
+                        w.write(std::format("{}:{}\\n", name, value));
+                    }
+                    else if constexpr (std::is_enum_v<T>) {
+                        w.write(std::format("{}:{}\\n", name, to_string(value)));
+                    }
+                    else if constexpr (AnyRef<T>) {
+                        // ignore
+                    }
+                    else
+                        VISITOR_RECURSE_CONTAINER(visitor, name, value)
+                    else VISITOR_RECURSE(visitor, name, value)
+                });
+            }
+            w.writeln("\"];");
+            for (auto& child : cfg->children) {
+                write_expr(write, write_expr, cfg, dom_tree);
+                w.write(std::format("{} -> {}", expr_id[cfg], expr_id[child]));
+            }
+        };
+        auto write_node = [&](auto&& write, auto&& write_expr, DominatorTree& dom_tree, std::optional<std::string> name, std::shared_ptr<CFG>& cfg) -> void {
             if (node_id.find(cfg) != node_id.end()) {
                 return;
             }
             node_id[cfg] = id++;
-            w.write(std::format("  {} [label=\"", node_id[cfg]));
+            w.write(std::format("{} [label=\"", node_id[cfg]));
             if (name) {
                 w.write(std::format("fn {}\\n", name.value()));
             }
@@ -306,24 +426,33 @@ namespace ebmgen {
                     add_io(f);
                 }
             }
-            w.write("\"];\n");
+
+            w.writeln("\"];");
             for (auto& n : cfg->next) {
-                write(write, dom_tree, std::nullopt, n);
-                w.write(std::format("  {} -> {}", node_id[cfg], node_id[n]));
+                write(write, write_expr, dom_tree, std::nullopt, n);
+                w.write(std::format("{} -> {}", node_id[cfg], node_id[n]));
                 if (n->condition) {
-                    auto cond_expr = ctx.expression_repository().get(*n->condition);
-                    w.write(std::format("[label=\"{}:{}\"]", cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->id.value()));
+                    auto cond_expr = ctx.expression_repository().get(n->condition->original_node);
+                    w.write(std::format("[label=\"{}:{}\"]", cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->original_node.id.value()));
+                    write_expr(write, write_expr, n->condition, dom_tree);
+                    w.writeln(std::format("{} -> {} [style=dotted,label=\"expression\"];", node_id[cfg], expr_id[n->condition]));
                 }
-                w.write(";\n");
+                w.writeln(";");
                 auto parent = dom_tree.parent[n];
                 auto dom_id = node_id[parent];
                 if (dominate_edges.contains({parent, n})) {
                     continue;
                 }
                 dominate_edges.insert({parent, n});
-                w.write(std::format("  {} -> {} [style=dotted,label=\"dominates\"];\n", dom_id, node_id[n]));
+                w.writeln(std::format("{} -> {} [style=dotted,label=\"dominates\"];", dom_id, node_id[n]));
+            }
+            for (auto& n : cfg->lowered) {
+                write(write, write_expr, dom_tree, std::nullopt, n.start);
+                w.writeln(std::format("{} -> {} [style=dotted,label=\"lowered\"];", node_id[cfg], node_id[n.start]));
             }
         };
+        w.writeln("digraph ControlFlowGraph {");
+        auto indent = w.indent_scope();
         for (auto& cfg : m.list) {
             auto fn = ctx.statement_repository().get(cfg.first);
             std::optional<std::string> name;
@@ -333,11 +462,39 @@ namespace ebmgen {
                     if (ident) {
                         name = ident->body.data;
                     }
+                    auto stmt = ctx.statement_repository().get(fn_decl->parent_format);
+                    if (stmt) {
+                        ebm::IdentifierRef ident;
+                        stmt->body.visit([&](auto&& visitor, std::string_view name, auto&& value) {
+                            using T = std::decay_t<decltype(value)>;
+                            if constexpr (std::is_same_v<T, ebm::IdentifierRef>) {
+                                // if (name == "name") {
+                                ident = value;
+                                //}
+                            }
+                            else
+                                VISITOR_RECURSE(visitor, name, value)
+                        });
+                        auto parent_ident = ctx.identifier_repository().get(ident);
+                        if (parent_ident) {
+                            name = std::format("{}.{}", parent_ident->body.data, *name);
+                        }
+                    }
                 }
             }
-            write_node(write_node, cfg.second.dom_tree, name, cfg.second.cfg.start);
+            w.write("subgraph \"");
+            if (name) {
+                w.write(*name);
+            }
+            w.writeln("\" {");
+            auto indent = w.indent_scope();
+            write_node(write_node, write_expr, cfg.second.dom_tree, name, cfg.second.cfg.start);
+            indent.execute();
+            w.writeln("}");
         }
+        indent.execute();
         w.write("}\n");
+        result.write(w.out());
     }
 
 }  // namespace ebmgen

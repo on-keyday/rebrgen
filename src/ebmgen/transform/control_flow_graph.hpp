@@ -6,22 +6,33 @@
 #include "ebmgen/converter.hpp"
 
 namespace ebmgen {
+
+    struct CFG;
+    struct CFGTuple {
+        std::shared_ptr<CFG> start;
+        std::shared_ptr<CFG> end;
+        bool brk = false;  // break the flow
+    };
+
+    struct CFGExpression {
+        std::weak_ptr<CFGExpression> parent;
+        ebm::ExpressionRef original_node;
+        std::vector<std::shared_ptr<CFGExpression>> children;
+        std::optional<CFGTuple> related_cfg;
+    };
+
     // Control Flow Graph
     // original_node: reference to original statement
     // next: list of next CFG
     // prev: list of previous CFG
     struct CFG {
         ebm::StatementRef original_node;
-        std::optional<ebm::ExpressionRef> condition;
+        std::shared_ptr<CFGExpression> condition;
         std::optional<ebm::StatementOp> statement_op;  // for debug
         std::vector<std::shared_ptr<CFG>> next;
         std::vector<std::weak_ptr<CFG>> prev;
-    };
-
-    struct CFGTuple {
-        std::shared_ptr<CFG> start;
-        std::shared_ptr<CFG> end;
-        bool brk = false;  // break the flow
+        // for lowered statement representation
+        std::vector<CFGTuple> lowered;
     };
 
     struct DominatorTree {

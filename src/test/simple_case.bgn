@@ -384,3 +384,7 @@ format DNSLabel:
             len :u6
             label :[len]u8
         .. => error("unexpected label")
+
+fn break_test():
+    for:
+        return

@@ -8,6 +8,7 @@
 #include "ebmgen/mapping.hpp"
 #include <optional>
 #include <set>
+#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -172,8 +173,10 @@ namespace ebmgen {
                  stmt.body.kind == ebm::StatementOp::ERROR_RETURN ||
                  stmt.body.kind == ebm::StatementOp::ERROR_REPORT) {
             if (stmt.body.kind != ebm::StatementOp::ERROR_REPORT) {
-                MAYBE(expr_node, analyze_expression(tctx, *stmt.body.value()));
-                current->condition = std::move(expr_node);
+                if (stmt.body.value()->id.value() != 0) {
+                    MAYBE(expr_node, analyze_expression(tctx, *stmt.body.value()));
+                    current->condition = std::move(expr_node);
+                }
             }
             link(current, tctx.end_of_function);
             brk = true;
@@ -185,6 +188,10 @@ namespace ebmgen {
                 MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
                 current->lowered = std::move(r);
             }
+            if (io_->target.id.value() != 0) {
+                MAYBE(expr_node, analyze_expression(tctx, io_->target));
+                current->condition = expr_node;
+            }
         }
         else if (auto var_decl = stmt.body.var_decl()) {
             MAYBE(expr_node, analyze_expression(tctx, var_decl->initial_value));
@@ -192,6 +199,10 @@ namespace ebmgen {
         }
         else if (auto expr = stmt.body.expression()) {
             MAYBE(expr_node, analyze_expression(tctx, *expr));
+            current->condition = std::move(expr_node);
+        }
+        else if (auto assert_ = stmt.body.assert_desc()) {
+            MAYBE(expr_node, analyze_expression(tctx, assert_->condition.cond));
             current->condition = std::move(expr_node);
         }
         return CFGTuple{root, current, brk};
@@ -413,13 +424,21 @@ namespace ebmgen {
                 w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
             }
             if (origin) {
-                origin->body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+                origin->body.visit([&](auto&& visitor, std::string_view name, auto&& value) -> void {
                     using T = std::decay_t<decltype(value)>;
                     if constexpr (std::is_integral_v<T>) {
                         w.write(std::format("{}:{}\\n", name, value));
                     }
                     else if constexpr (std::is_enum_v<T>) {
                         w.write(std::format("{}:{}\\n", name, to_string(value)));
+                    }
+                    else if constexpr (std::is_same_v<T, ebm::StatementRef>) {
+                        if (name == "id") {
+                            auto ident = ctx.get_identifier(value);
+                            if (ident) {
+                                w.write(std::format("{}:{}\\n", name, ident->body.data));
+                            }
+                        }
                     }
                     else if constexpr (AnyRef<T>) {
                         // ignore

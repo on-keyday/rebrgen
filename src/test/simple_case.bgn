@@ -388,3 +388,15 @@ format DNSLabel:
 fn break_test():
     for:
         return
+
+format TriCondInExpression:
+
+    fn encode():
+        val := 5
+        for (val != 0 ? 0 : 1) != 1:
+            output.put(u8(1))
+            val -= 1
+            
+
+    fn decode():
+        input.get(<[5]u8>)

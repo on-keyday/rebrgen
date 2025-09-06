@@ -122,6 +122,7 @@ enum ExpressionOp:
     READ_DATA # this is for input.get(u8)
     WRITE_DATA # this is for output.put(x)
     CONDITIONAL_STATEMENT # if or match that is used as expression
+    CONDITIONAL # x ? y : z
 
 
 format Expression:
@@ -199,6 +200,11 @@ format ExpressionBody:
         ExpressionOp.CONDITIONAL_STATEMENT:
             target_stmt :StatementRef # Reference to the variable result is held into
             conditional_stmt :StatementRef # Reference to the if or match statement used as expression
+        ExpressionOp.CONDITIONAL:
+            condition :ExpressionRef
+            then :ExpressionRef
+            else_ :ExpressionRef
+            lowered_expr :LoweredExpressionRef
 
 enum LoopType:
     :u8

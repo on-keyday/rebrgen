@@ -441,6 +441,38 @@ namespace ebmgen {
         return {};
     }
 
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cond>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionOp::CONDITIONAL;
+        EBMA_CONVERT_EXPRESSION(cond, node->cond);
+        EBMA_CONVERT_EXPRESSION(then, node->then);
+        EBMA_CONVERT_EXPRESSION(els, node->els);
+        body.condition(cond);
+        body.then(then);
+        body.else_(els);
+
+        // lowered
+        EBM_DEFAULT_VALUE(default_, body.type);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(yielded_value, body.type, default_);
+        EBM_IDENTIFIER(temp_var, yielded_value_def, body.type);
+        ebm::StatementBody lowered_body;
+        lowered_body.kind = ebm::StatementOp::YIELD;
+        lowered_body.target(temp_var);
+        lowered_body.value(then);
+        EBMA_ADD_STATEMENT(yield_then, std::move(lowered_body));
+        lowered_body.kind = ebm::StatementOp::YIELD;
+        lowered_body.target(temp_var);
+        lowered_body.value(els);
+        EBMA_ADD_STATEMENT(yield_els, std::move(lowered_body));
+        EBM_IF_STATEMENT(cond_stmt, cond, yield_then, yield_els);
+        ebm::ExpressionBody lowered_expr;
+        lowered_expr.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
+        lowered_expr.target_stmt(yielded_value_def);
+        lowered_expr.conditional_stmt(cond_stmt);
+        EBMA_ADD_EXPR(low_expr, std::move(lowered_expr));
+        body.lowered_expr(ebm::LoweredExpressionRef{low_expr});
+        return {};
+    }
+
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {
         return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }

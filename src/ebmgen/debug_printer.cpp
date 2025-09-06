@@ -14,7 +14,7 @@
 namespace ebmgen {
 
     // Constructor: Initializes maps for quick lookups
-    DebugPrinter::DebugPrinter(const ebm::ExtendedBinaryModule& module, std::ostream& os)
+    DebugPrinter::DebugPrinter(const MappingTable& module, std::ostream& os)
         : module_(module), os_(os) {
     }
 

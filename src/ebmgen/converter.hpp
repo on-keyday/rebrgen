@@ -158,6 +158,12 @@ namespace ebmgen {
             for (size_t i = 0; i < instances.size(); ++i) {
                 id_index_map[instances[i].id.id.value()] = i;
             }
+            alias_id_map.clear();
+            for (auto& alias : aliases) {
+                if (alias.hint == hint) {
+                    alias_id_map[alias.from.id.value()] = alias.to.id.value();
+                }
+            }
         }
 
         void recalculate_cache() {
@@ -213,11 +219,11 @@ namespace ebmgen {
             }
             auto member = ast::as<ast::Member>(node);
             const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
-            futils::wrap::cout_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
+            futils::wrap::cerr_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
             if (ref.id.value() != 0) {
-                futils::wrap::cout_wrap() << " -> " << ref.id.value();
+                futils::wrap::cerr_wrap() << " -> " << ref.id.value();
             }
-            futils::wrap::cout_wrap() << '\n';
+            futils::wrap::cerr_wrap() << '\n';
         }
 
        public:
@@ -673,6 +679,14 @@ namespace ebmgen {
 
         auto& context() {
             return ctx;
+        }
+
+        void recalculate_id_index_map() {
+            type_repository().recalculate_id_index_map();
+            identifier_repository().recalculate_id_index_map();
+            expression_repository().recalculate_id_index_map();
+            statement_repository().recalculate_id_index_map();
+            string_repository().recalculate_id_index_map();
         }
     };
 }  // namespace ebmgen

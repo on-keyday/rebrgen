@@ -10,13 +10,13 @@ namespace ebmgen {
 
     class DebugPrinter {
        public:
-        DebugPrinter(const ebm::ExtendedBinaryModule& module, std::ostream& os);
+        DebugPrinter(const MappingTable& module, std::ostream& os);
 
         void print_module() const;
 
        private:
         std::ostream& os_;  // Reference to the output stream
-        MappingTable module_;
+        const MappingTable& module_;
 
         void print_resolved_reference(const ebm::IdentifierRef& ref) const;
         void print_resolved_reference(const ebm::StringRef& ref) const;

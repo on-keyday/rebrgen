@@ -4,17 +4,18 @@
 #include "ebm/extended_binary_module.hpp"
 #include "../common.hpp"
 namespace ebmgen {
-#define MAYBE_VOID(out, expr)                                                                                  \
-    auto out##____ = expr;                                                                                     \
-    if (!out##____) {                                                                                          \
-        return [](auto&& o) {                                                                                  \
-            if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {                                      \
-                return unexpect_error(Error("Unexpected nullptr", futils::error::Category::app), #out, #expr); \
-            }                                                                                                  \
-            else {                                                                                             \
-                return unexpect_error(std::move(o.error()), #out, #expr);                                      \
-            }                                                                                                  \
-        }(out##____);                                                                                          \
+
+#define MAYBE_VOID(out, expr)                                             \
+    auto out##____ = expr;                                                \
+    if (!out##____) {                                                     \
+        return [](auto&& o) {                                             \
+            if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) { \
+                return unexpect_error(unexpected_nullptr(), #out, #expr); \
+            }                                                             \
+            else {                                                        \
+                return unexpect_error(std::move(o.error()), #out, #expr); \
+            }                                                             \
+        }(out##____);                                                     \
     }
 
 #define MAYBE(out, expr)  \

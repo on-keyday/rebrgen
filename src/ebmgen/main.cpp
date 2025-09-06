@@ -3,6 +3,7 @@
 #include <wrap/cout.h>
 #include "core/byte.h"
 #include <wrap/iostream.h>
+#include "ebmgen/mapping.hpp"
 #include "fnet/util/base64.h"
 #include "load_json.hpp"
 #include "convert.hpp"
@@ -45,16 +46,22 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 1;
     }
     ebm::ExtendedBinaryModule ebm;
-    auto err = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
-    if (err) {
-        cerr << "Convert Error: " << err.error().error<std::string>() << '\n';
+    auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
+    if (!output) {
+        cerr << "Convert Error: " << output.error().error<std::string>() << '\n';
         return 1;
+    }
+
+    std::optional<ebmgen::MappingTable> table;
+    if (!flags.debug_output.empty() || !flags.debug_output.empty()) {
+        table.emplace(ebm);
     }
 
     // Debug print if requested
     if (!flags.debug_output.empty()) {
         std::stringstream debug_ss;
-        ebmgen::DebugPrinter printer(ebm, debug_ss);
+        ebmgen::DebugPrinter printer(*table, debug_ss);
+
         printer.print_module();
 
         std::ofstream debug_ofs(std::string(flags.debug_output));
@@ -66,6 +73,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         debug_ofs.close();
     }
 
+    // also generates control flow graph
     if (!flags.cfg_output.empty()) {
         std::ofstream debug_ofs(std::string(flags.cfg_output));
         if (!debug_ofs.is_open()) {
@@ -73,7 +81,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             return 1;
         }
         futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
-        ebmgen::write_cfg(w, CFGList & m, TransformContext & ctx);
+        ebmgen::write_cfg(w, output->control_flow_graph, *table);
     }
 
     auto write_ebm = [&](futils::binary::writer& w) {

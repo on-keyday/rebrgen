@@ -146,4 +146,8 @@ namespace ebmgen {
             visitor(visitor, name, elem);               \
         }                                               \
     }
+
+    inline Error unexpected_nullptr() {
+        return futils::error::StrError<const char*>{"Unexpected nullptr"};
+    }
 }  // namespace ebmgen

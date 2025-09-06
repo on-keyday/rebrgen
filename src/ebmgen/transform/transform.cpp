@@ -616,9 +616,9 @@ namespace ebmgen {
     expected<CFGList> transform(TransformContext& ctx, bool debug) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
-        ctx.statement_repository().recalculate_cache();
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
+            ctx.recalculate_id_index_map();
         }
         CFGContext cfg_ctx{ctx};
         MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));

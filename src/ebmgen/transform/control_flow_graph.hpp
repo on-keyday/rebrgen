@@ -48,7 +48,7 @@ namespace ebmgen {
     };
 
     struct CFGList {
-        std::vector<std::pair<ebm::StatementRef, CFGResult>> list;
+        std::map<std::uint64_t, CFGResult> list;
     };
 
     struct CFGContext {

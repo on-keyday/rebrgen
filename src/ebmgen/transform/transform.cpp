@@ -558,7 +558,7 @@ namespace ebmgen {
         return unexpect_error("Unsupported flatten expression kind: {}", to_string(expr->body.kind));
     }
 
-    expected<void> flatten_io_expression(CFGContext& ctx) {
+    expected<void> detect_insertion_point(CFGContext& ctx) {
         size_t count = 0;
         size_t cfg_count = 0;
         for (auto& stmt : ctx.tctx.statement_repository().get_all()) {
@@ -578,6 +578,7 @@ namespace ebmgen {
             auto found_cfg = ctx.cfg_map.find(stmt.id.id.value());
             if (found_cfg != ctx.cfg_map.end()) {
                 cfg_count++;
+                print_if_verbose("Found ", found_cfg->second->prev.size(), " previous node for ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ")\n");
             }
         }
         print_if_verbose("Found ", count, " conditional statements\n");
@@ -626,10 +627,18 @@ namespace ebmgen {
     expected<CFGList> transform(TransformContext& ctx, bool debug) {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
+        ctx.statement_repository().recalculate_cache();
+        // internal CFG used optimization
+        {
+            CFGContext cfg_ctx{ctx};
+            MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
+            MAYBE_VOID(insertion_point, detect_insertion_point(cfg_ctx));
+        }
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
             ctx.recalculate_id_index_map();
         }
+        // final cfg view
         CFGContext cfg_ctx{ctx};
         MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
         return cfg;

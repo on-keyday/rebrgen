@@ -213,18 +213,7 @@ namespace ebmgen {
         ebm::StatementRef current_loop_id;
         ebm::StatementRef current_yield_statement;
 
-        void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
-            if (!verbose_error) {
-                return;
-            }
-            auto member = ast::as<ast::Member>(node);
-            const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
-            futils::wrap::cerr_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
-            if (ref.id.value() != 0) {
-                futils::wrap::cerr_wrap() << " -> " << ref.id.value();
-            }
-            futils::wrap::cerr_wrap() << '\n';
-        }
+        void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const;
 
        public:
         [[nodiscard]] auto set_current_block(ebm::Block* block) {

@@ -128,7 +128,9 @@
         "${workspaceRoot}/save/out.ebm",
         "-d",
         "${workspaceRoot}/save/debug_output.txt",
-        "-v"
+        "-v",
+        "-c",
+        "${workspaceRoot}/save/diagram.dot"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

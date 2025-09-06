@@ -44,6 +44,10 @@ namespace ebmgen {
             MAYBE(related_cfg, analyze_ref(tctx, *w));
             expr->related_cfg = std::move(related_cfg);
         }
+        else if (auto v = expr_v.body.conditional_stmt()) {
+            MAYBE(related_cfg, analyze_ref(tctx, *v));
+            expr->related_cfg = std::move(related_cfg);
+        }
         return expr;
     }
 
@@ -163,6 +167,10 @@ namespace ebmgen {
         else if (stmt.body.kind == ebm::StatementOp::RETURN ||
                  stmt.body.kind == ebm::StatementOp::ERROR_RETURN ||
                  stmt.body.kind == ebm::StatementOp::ERROR_REPORT) {
+            if (stmt.body.kind != ebm::StatementOp::ERROR_REPORT) {
+                MAYBE(expr_node, analyze_expression(tctx, *stmt.body.value()));
+                current->condition = std::move(expr_node);
+            }
             link(current, tctx.end_of_function);
             brk = true;
         }
@@ -173,6 +181,10 @@ namespace ebmgen {
                 MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
                 current->lowered = std::move(r);
             }
+        }
+        else if (auto var_decl = stmt.body.var_decl()) {
+            MAYBE(expr_node, analyze_expression(tctx, var_decl->initial_value));
+            current->condition = expr_node;
         }
         else if (auto expr = stmt.body.expression()) {
             MAYBE(expr_node, analyze_expression(tctx, *expr));
@@ -368,11 +380,10 @@ namespace ebmgen {
             for (auto& p : ctx.per_roots) {
                 MAYBE_VOID(dom_tree, analyze_dominators(dom_tree, p.first, p.second));
             }
-            cfg_list.list.emplace_back(stmt.id,
-                                       CFGResult{
-                                           .cfg = std::move(cfg),
-                                           .dom_tree = std::move(dom_tree),
-                                       });
+            cfg_list.list[stmt.id.id.value()] = CFGResult{
+                .cfg = std::move(cfg),
+                .dom_tree = std::move(dom_tree),
+            };
         }
         return cfg_list;
     }
@@ -383,6 +394,7 @@ namespace ebmgen {
         std::map<std::shared_ptr<CFG>, std::uint64_t> node_id;
         std::set<std::pair<std::shared_ptr<CFG>, std::shared_ptr<CFG>>> dominate_edges;
         std::map<std::shared_ptr<CFGExpression>, std::uint64_t> expr_id;
+        std::vector<std::function<void()>> inter_subgraph_vector;
         auto write_expr = [&](auto&& write, auto&& write_expr, const std::shared_ptr<CFGExpression>& cfg, const DominatorTree& dom_tree) -> void {
             if (expr_id.find(cfg) != expr_id.end()) {
                 return;
@@ -425,6 +437,26 @@ namespace ebmgen {
             if (cfg->related_cfg) {
                 write(write, write_expr, dom_tree, std::nullopt, cfg->related_cfg->start);
                 w.writeln(std::format("{} -> {} [style=dotted,label=\"related\"];", expr_id[cfg], node_id[cfg->related_cfg->start]));
+            }
+            if (auto call_ = origin ? origin->body.call_desc() : nullptr) {
+                auto expr = ctx.get_expression(call_->callee);
+                while (expr && expr->body.kind != ebm::ExpressionOp::IDENTIFIER) {
+                    if (auto member = expr->body.member()) {
+                        expr = ctx.get_expression(*member);
+                        continue;
+                    }
+                    break;
+                }
+                if (expr) {
+                    if (auto id = expr->body.id()) {
+                        auto found = m.list.find(id->id.value());
+                        if (found != m.list.end()) {
+                            inter_subgraph_vector.push_back([&, found, cfg] {
+                                w.writeln(std::format("{} -> {} [style=dotted,label=\"call\"];", expr_id[cfg], node_id[found->second.cfg.start]));
+                            });
+                        }
+                    }
+                }
             }
         };
         auto write_node = [&](auto&& write, auto&& write_expr, const DominatorTree& dom_tree, std::optional<std::string> name, const std::shared_ptr<CFG>& cfg) -> void {
@@ -500,7 +532,7 @@ namespace ebmgen {
         w.writeln("digraph ControlFlowGraph {");
         auto indent = w.indent_scope();
         for (auto& cfg : m.list) {
-            auto fn = ctx.get_statement(cfg.first);
+            auto fn = ctx.get_statement(ebm::StatementRef{cfg.first});
             std::optional<std::string> name;
             if (fn) {
                 if (auto fn_decl = fn->body.func_decl()) {
@@ -523,6 +555,9 @@ namespace ebmgen {
             write_node(write_node, write_expr, cfg.second.dom_tree, name, cfg.second.cfg.start);
             indent.execute();
             w.writeln("}");
+        }
+        for (auto& f : inter_subgraph_vector) {
+            f();
         }
         indent.execute();
         w.write("}\n");

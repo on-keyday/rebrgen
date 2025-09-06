@@ -358,7 +358,10 @@ namespace ebmgen {
         }
         ebm::CallDesc call_desc;
         // force convert encode and decode functions
-        EBMA_CONVERT_STATEMENT(ok, base);
+        {
+            auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
+            EBMA_CONVERT_STATEMENT(ok, base);
+        }
         MAYBE(encdec, ctx.state().get_format_encode_decode(base));
         MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
 

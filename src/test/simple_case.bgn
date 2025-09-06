@@ -375,3 +375,12 @@ fn fizzbuzz():
         if i == 34:
             break
     e := "fin"
+
+format DNSLabel:
+    prefix :u2
+    match prefix:
+        0b11 => pointer :u14
+        0b00:
+            len :u6
+            label :[len]u8
+        .. => error("unexpected label")

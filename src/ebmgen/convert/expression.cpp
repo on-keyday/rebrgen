@@ -465,6 +465,7 @@ namespace ebmgen {
         EBMA_ADD_STATEMENT(yield_els, std::move(lowered_body));
         EBM_IF_STATEMENT(cond_stmt, cond, yield_then, yield_els);
         ebm::ExpressionBody lowered_expr;
+        lowered_expr.type = body.type;
         lowered_expr.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
         lowered_expr.target_stmt(yielded_value_def);
         lowered_expr.conditional_stmt(cond_stmt);

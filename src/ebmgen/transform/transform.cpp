@@ -2,6 +2,7 @@
 #include "transform.hpp"
 #include <algorithm>
 #include <functional>
+#include <memory>
 #include <type_traits>
 #include "../common.hpp"
 #include "control_flow_graph.hpp"
@@ -369,27 +370,58 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> lowered_dynamic_bit_io(CFGContext& tctx) {
+    struct Route {
+        std::vector<std::shared_ptr<CFG>> route;
+        size_t bit_size = 0;
+    };
+
+    expected<void> lowered_dynamic_bit_io(CFGContext& tctx, bool write) {
         auto& all_statements = tctx.tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
         auto current_alias = tctx.tctx.alias_vector().size();
         std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
+        auto get_io = [&](ebm::Statement& stmt) {
+            return write ? stmt.body.write_data() : stmt.body.read_data();
+        };
         for (size_t i = 0; i < current_added; ++i) {
             auto block = get_block(all_statements[i].body);
             if (!block) {
                 continue;
             }
-            auto found = tctx.cfg_map.find(all_statements[i].id.id.value());
-            if (found == tctx.cfg_map.end()) {
-                continue;
-            }
-            if (found->second->prev.size() != 0) {
-                continue;
+            std::vector<ebm::IOData*> s;
+            for (auto& ref : block->container) {
+                MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
+                if (auto r = get_io(stmt); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
+                    // start point
+                    print_if_verbose("Found start point ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ") ", r->size.size()->value(), "\n");
+                    auto found = tctx.cfg_map.find(stmt.id.id.value());
+                    if (found == tctx.cfg_map.end()) {
+                        return unexpect_error("no cfg found for {}:{}", stmt.id.id.value(), to_string(stmt.body.kind));
+                    }
+                    std::vector<Route> finalized_routes;
+                    std::vector<Route> routes;
+                    routes.push_back({
+                        .route = {found->second},
+                        .bit_size = r->size.size()->value(),
+                    });  // first route
+                    while (true) {
+                        std::vector<Route> new_routes;
+                        for (auto& r : routes) {
+                            for (auto& n : r.route.back()->next) {
+                                auto copy = r;
+                                copy.route.push_back(n);
+                                MAYBE(stmt, tctx.tctx.statement_repository().get(n->original_node));
+                                new_routes.push_back(std::move(copy));
+                            }
+                        }
+                    }
+                }
             }
         }
         return {};
     }
 
+    /**
     bool is_flatten_target(ebm::ExpressionOp op) {
         switch (op) {
             case ebm::ExpressionOp::CONDITIONAL_STATEMENT:
@@ -557,6 +589,7 @@ namespace ebmgen {
         }
         return unexpect_error("Unsupported flatten expression kind: {}", to_string(expr->body.kind));
     }
+    */
 
     expected<void> detect_insertion_point(CFGContext& ctx) {
         size_t count = 0;
@@ -632,6 +665,7 @@ namespace ebmgen {
         {
             CFGContext cfg_ctx{ctx};
             MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
+            MAYBE_VOID(bit_io, lowered_dynamic_bit_io(cfg_ctx));
             MAYBE_VOID(insertion_point, detect_insertion_point(cfg_ctx));
         }
         if (!debug) {

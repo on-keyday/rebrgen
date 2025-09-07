@@ -376,22 +376,24 @@ namespace ebmgen {
     };
 
     expected<void> lowered_dynamic_bit_io(CFGContext& tctx, bool write) {
+        auto& ctx = tctx.tctx.context();
         auto& all_statements = tctx.tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
         auto get_io = [&](ebm::Statement& stmt) {
             return write ? stmt.body.write_data() : stmt.body.read_data();
         };
+        auto assign_to_target = [&](ebm::ExpressionRef ref, ebm::ExpressionRef mask, ebm::ExpressionRef shift_index) {
+
+        };
+
         for (size_t i = 0; i < current_added; ++i) {
             auto block = get_block(all_statements[i].body);
             if (!block) {
                 continue;
             }
-            std::vector<ebm::IOData*> s;
             for (auto& ref : block->container) {
                 MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
                 if (auto r = get_io(stmt); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
-                    // start point
-                    // print_if_verbose("Found start point ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ") ", r->size.size()->value(), "\n");
                     auto found = tctx.cfg_map.find(stmt.id.id.value());
                     if (found == tctx.cfg_map.end()) {
                         return unexpect_error("no cfg found for {}:{}", stmt.id.id.value(), to_string(stmt.body.kind));
@@ -435,8 +437,66 @@ namespace ebmgen {
                     }
                     if (finalized_routes.size() > 1) {
                         print_if_verbose("Found ", finalized_routes.size(), " routes\n");
+                        size_t max_bit_size = 0;
                         for (auto& r : finalized_routes) {
                             print_if_verbose("  - ", r.route.size(), " node with ", r.bit_size, " bit\n");
+                            max_bit_size = (std::max)(max_bit_size, r.bit_size);
+                        }
+                        ebm::Block block;
+                        EBMU_U8_N_ARRAY(max_buffer_t, max_bit_size / 8);
+                        EBMU_COUNTER_TYPE(count_t);
+                        EBM_DEFAULT_VALUE(default_v, max_buffer_t);
+                        EBMU_INT_LITERAL(zero, 0);
+                        EBMU_INT_LITERAL(eight, 8);
+                        EBMU_BOOL_TYPE(bool_t);
+                        EBMU_U8(u8_t);
+                        EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_buffer, max_buffer_t, default_v);
+                        EBM_DEFINE_ANONYMOUS_VARIABLE(buf_offset, count_t, zero);
+                        EBM_DEFINE_ANONYMOUS_VARIABLE(bit_offset, count_t, zero);
+                        // (bit_offset + add_bit + 7) / 8
+                        auto new_size = [&](size_t add) -> expected<ebm::ExpressionRef> {
+                            EBMU_INT_LITERAL(add_bit, add + 7);
+                            EBM_BINARY_OP(added, ebm::BinaryOp::add, count_t, bit_offset, add_bit);
+                            EBM_BINARY_OP(new_size, ebm::BinaryOp::div, count_t, added, eight);
+                            return new_size;
+                        };
+
+                        // for read_offset < new_size:
+                        //    tmp_buffer[read_offset] = read u8
+                        //    read_offset++
+                        auto read_incremental = [&](ebm::StatementRef io_ref, size_t add_bit) -> expected<ebm::StatementRef> {
+                            MAYBE(new_size, new_size(add_bit));
+                            EBM_BINARY_OP(read_cond, ebm::BinaryOp::greater_or_eq, bool_t, new_size, buf_offset);
+                            EBM_INDEX(indexed, u8_t, tmp_buffer, buf_offset);
+                            auto data = make_io_data(io_ref, indexed, u8_t, {}, get_size(8));
+                            MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, 1, {}, indexed, u8_t));
+                            ebm::LoweredStatements lows;
+                            append(lows, make_lowered_statement(ebm::LoweringType::NAIVE, lowered));
+                            EBM_LOWERED_STATEMENTS(l, std::move(lows));
+                            data.lowered_statement = ebm::LoweredStatementRef{l};
+                            EBM_READ_DATA(read_to_temporary, std::move(data));
+                            EBM_INCREMENT(inc, buf_offset, count_t);
+                            ebm::Block block;
+                            append(block, read_to_temporary);
+                            append(block, inc);
+                            EBM_BLOCK(body, std::move(block));
+                            EBM_WHILE_LOOP(loop, read_cond, body);
+                        };
+                        //
+                        for (auto& r : finalized_routes) {
+                            for (auto& c : r.route) {
+                                MAYBE(stmt, tctx.tctx.statement_repository().get(c->original_node));
+                                auto io_ = get_io(stmt);
+                                if (io_) {
+                                    auto add_bit = io_->size.size()->value();
+                                    if (io_->size.unit == ebm::SizeUnit::BYTE_FIXED) {
+                                        add_bit *= 8;
+                                    }
+                                    if (!write) {
+                                        MAYBE(io_cond, read_incremental(io_->io_ref, add_bit));
+                                    }
+                                }
+                            }
                         }
                     }
                 }

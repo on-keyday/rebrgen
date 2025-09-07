@@ -469,6 +469,9 @@ namespace ebmgen {
                                 append(block, read_to_temporary);
                                 read_offset++;
                             }
+                            if (!block.container.size()) {
+                                return ebm::StatementRef{};  // no statement
+                            }
                             EBM_BLOCK(read, std::move(block));
                             return read;
                         };
@@ -488,6 +491,11 @@ namespace ebmgen {
                                         EBM_DEFAULT_VALUE(zero, io_->data_type);
                                         EBMU_UINT_TYPE(unsigned_t, add_bit);
                                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
+                                        auto get_indexed = [&](size_t offset) -> expected<ebm::ExpressionRef> {
+                                            EBMU_INT_LITERAL(offset_, offset);
+                                            EBM_INDEX(idx, u8_t, tmp_buffer, offset_);
+                                            return idx;
+                                        };
                                         auto res = add_endian_specific(
                                             ctx, io_->attribute,
                                             [&] -> expected<ebm::StatementRef> {
@@ -503,9 +511,8 @@ namespace ebmgen {
                                                     auto last_zero_bit = first_remaining - add_remain;
                                                     std::uint8_t mask = std::uint8_t(0xff) >> bit_offset;
                                                     mask &= std::uint8_t(0xff) << last_zero_bit;
-                                                    EBMU_INT_LITERAL(offset, offset);
+                                                    MAYBE(idx, get_indexed(offset));
                                                     EBMU_INT_LITERAL(masked, mask);
-                                                    EBM_INDEX(idx, u8_t, tmp_buffer, offset);
                                                     EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
                                                     if (last_zero_bit != 0) {
                                                         EBMU_INT_LITERAL(shift, last_zero_bit);
@@ -517,11 +524,10 @@ namespace ebmgen {
                                                     return assign;
                                                 }
                                                 std::optional<ebm::ExpressionRef> expr;
-                                                if (bit_offset) {  // process remaining bits
+                                                if (bit_offset) {  // process first remaining bits (lsb)
                                                     std::uint8_t mask = std::uint8_t(0xff) >> bit_offset;
-                                                    EBMU_INT_LITERAL(offset_, offset);
                                                     EBMU_INT_LITERAL(masked, mask);
-                                                    EBM_INDEX(idx, u8_t, tmp_buffer, offset_);
+                                                    MAYBE(idx, get_indexed(offset));
                                                     EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
                                                     EBMU_INT_LITERAL(shift, add_bit - first_remaining);
                                                     EBM_CAST(casted, unsigned_t, u8_t, bits_);
@@ -531,7 +537,45 @@ namespace ebmgen {
                                                     offset++;
                                                     add_remain -= first_remaining;
                                                 }
+                                                first_remaining %= 8;  // wrap around
                                                 auto remain_buffer = add_remain / 8;
+                                                for (size_t i = 0; i < remain_buffer; i++) {
+                                                    MAYBE(idx, get_indexed(offset));
+                                                    auto shift_value = add_bit - first_remaining - (i + 1) * 8;
+                                                    EBMU_INT_LITERAL(shift, shift_value);
+                                                    EBM_CAST(casted, unsigned_t, u8_t, idx);
+                                                    EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, unsigned_t, casted, shift);
+                                                    if (expr) {
+                                                        EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, unsigned_t, *expr, shifted);
+                                                        expr = or_;
+                                                    }
+                                                    else {
+                                                        expr = shifted;
+                                                    }
+                                                    offset++;
+                                                }
+                                                auto remain_bits = add_remain % 8;
+                                                if (remain_bits) {
+                                                    std::uint8_t mask = std::uint8_t(0xff) << (8 - remain_bits);
+                                                    MAYBE(idx, get_indexed(offset));
+                                                    EBMU_INT_LITERAL(masked, mask);
+                                                    EBMU_INT_LITERAL(shift, remain_bits);
+                                                    EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
+                                                    EBM_BINARY_OP(shift_, ebm::BinaryOp::right_shift, u8_t, bits_, shift);
+                                                    EBM_CAST(casted, unsigned_t, u8_t, shift_);
+                                                    if (expr) {
+                                                        EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, unsigned_t, *expr, casted);
+                                                        expr = or_;
+                                                    }
+                                                    else {
+                                                        expr = casted;
+                                                    }
+                                                }
+                                                if (!expr) {
+                                                    return unexpect_error("no expr");
+                                                }
+                                                EBM_ASSIGNMENT(assign, tmp_holder, *expr);
+                                                return assign;
                                             });
                                         if (!res) {
                                             return unexpect_error(std::move(res.error()));

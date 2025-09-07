@@ -375,15 +375,112 @@ namespace ebmgen {
         size_t bit_size = 0;
     };
 
+    struct BitExtractor {
+       public:
+        BitExtractor(CFGContext& ctx, ebm::ExpressionRef buffer, ebm::ExpressionRef holder, ebm::TypeRef u8_type)
+            : ctx(ctx.tctx.context()), tmp_buffer_(buffer), tmp_holder_(holder), u8_type(u8_type) {}
+
+        // explain with example
+        // offset = 0
+        // bit_offset = 4
+        // unsigned_t = uint2
+        // add_bit = 2
+        // first_remaining = 8 - 4 = 4
+        // 2 <= 4
+        expected<ebm::StatementRef> read_bits(
+            size_t current_bit_offset, size_t bit_size, ebm::Endian endian, ebm::TypeRef target_type) {
+            std::optional<ebm::ExpressionRef> combined_expr;
+            size_t bits_processed = 0;
+            size_t offset = current_bit_offset / 8;
+            size_t bit_offset = current_bit_offset % 8;
+
+            while (bits_processed < bit_size) {
+                const size_t bits_to_read = std::min((size_t)8 - bit_offset, bit_size - bits_processed);
+
+                MAYBE(extracted_part, extractBitsFromByte(offset, bit_offset, bits_to_read, endian));
+                MAYBE(new_expr, appendToExpression(combined_expr, extracted_part, bits_processed, bit_size, bits_to_read, endian, target_type));
+                combined_expr = new_expr;
+
+                bits_processed += bits_to_read;
+                offset++;
+                bit_offset = 0;
+            }
+
+            if (!combined_expr) {
+                return unexpect_error("Failed to generate bit extraction expression");
+            }
+
+            EBM_ASSIGNMENT(assign, tmp_holder_, *combined_expr);
+            return assign;
+        }
+
+       private:
+        // 1バイトから特定のビット範囲を抽出し、LSBにアラインされた値にするコードを生成
+        expected<ebm::ExpressionRef> extractBitsFromByte(size_t byte_offset, size_t bit_offset, size_t n_bits, ebm::Endian endian) {
+            EBMU_INT_LITERAL(offset, byte_offset);
+            EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);
+
+            // マスクを作成: (1 << num_bits) - 1 で num_bits 個の1を作り、正しい位置へシフト
+            const auto shift = endian == ebm::Endian::big ? (8 - n_bits - bit_offset) : bit_offset;
+
+            // n_bits <= 8
+            const std::uint8_t mask = ((1U << n_bits) - 1) << shift;
+            EBMU_INT_LITERAL(mask_val, mask);
+            EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, u8_type, byte_val, mask_val);
+
+            // LSBにアラインするために右シフト
+            if (shift > 0) {
+                EBMU_INT_LITERAL(shift_val, shift);
+                EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, u8_type, masked, shift_val);
+                return shifted;
+            }
+            return masked;
+        }
+
+        // 抽出したビット列を、エンディアンを考慮して最終的な値に結合するコードを生成
+        expected<ebm::ExpressionRef> appendToExpression(
+            std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef new_bits,
+            size_t bits_processed, size_t bit_size, size_t n_bits,
+            ebm::Endian endian, ebm::TypeRef target_type) {
+            EBM_CAST(casted_new_bits, target_type, u8_type, new_bits);
+
+            // ★エンディアンによる違いをこのシフト量計算で吸収する
+            size_t shift_amount = 0;
+            if (endian == ebm::Endian::big) {
+                // Big Endian: MSB側から詰める。後から来るビットほど下位になる。
+                shift_amount = bit_size - bits_processed - n_bits;
+            }
+            else {  // Little Endian
+                // Little Endian: LSB側から詰める。後から来るビットほど上位になる。
+                shift_amount = bits_processed;
+            }
+
+            auto result = casted_new_bits;
+
+            if (shift_amount != 0) {
+                EBMU_INT_LITERAL(shift_val, shift_amount);
+                EBM_BINARY_OP(shifted_bits, ebm::BinaryOp::left_shift, target_type, casted_new_bits, shift_val);
+                result = shifted_bits;
+            }
+
+            if (current_expr) {
+                EBM_BINARY_OP(combined, ebm::BinaryOp::bit_or, target_type, *current_expr, result);
+                return combined;
+            }
+            return result;
+        }
+        ebm::TypeRef u8_type;
+        ConverterContext& ctx;
+        ebm::ExpressionRef tmp_buffer_;
+        ebm::ExpressionRef tmp_holder_;
+    };
+
     expected<void> lowered_dynamic_bit_io(CFGContext& tctx, bool write) {
         auto& ctx = tctx.tctx.context();
         auto& all_statements = tctx.tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
         auto get_io = [&](ebm::Statement& stmt) {
             return write ? stmt.body.write_data() : stmt.body.read_data();
-        };
-        auto assign_to_target = [&](ebm::ExpressionRef ref, ebm::ExpressionRef mask, ebm::ExpressionRef shift_index) {
-
         };
 
         for (size_t i = 0; i < current_added; ++i) {
@@ -488,8 +585,8 @@ namespace ebmgen {
                                     }
                                     if (!write) {
                                         MAYBE(io_cond, read_incremental(io_->io_ref, read_offset, current_offset, add_bit));
-                                        EBM_DEFAULT_VALUE(zero, io_->data_type);
                                         EBMU_UINT_TYPE(unsigned_t, add_bit);
+                                        EBM_DEFAULT_VALUE(zero, unsigned_t);
                                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                                         auto get_indexed = [&](size_t offset) -> expected<ebm::ExpressionRef> {
                                             EBMU_INT_LITERAL(offset_, offset);
@@ -713,13 +810,22 @@ namespace ebmgen {
                                             EBM_ASSIGNMENT(assign, tmp_holder, *expr);
                                             return assign;
                                         };
-                                        auto res = add_endian_specific(
+                                        auto assign = add_endian_specific(
                                             ctx, io_->attribute,
                                             on_little_endian,
                                             on_big_endian);
-                                        if (!res) {
-                                            return unexpect_error(std::move(res.error()));
+                                        if (!assign) {
+                                            return unexpect_error(std::move(assign.error()));
                                         }
+                                        EBM_CAST(casted, io_->data_type, unsigned_t, tmp_holder);
+                                        EBM_ASSIGNMENT(fin, io_->target, tmp_holder);
+                                        ebm::Block block;
+                                        if (io_cond.id.value() != 0) {
+                                            append(block, io_cond);
+                                        }
+                                        append(block, *assign);
+                                        append(block, fin);
+                                        EBM_BLOCK(lowered, std::move(block));
                                     }
                                     current_offset += add_bit;
                                 }

@@ -68,7 +68,9 @@ namespace ebmcodegen {
             body.call_desc({});
             body.cast_kind({});
             body.char_value({});
+            body.condition({});
             body.conditional_stmt({});
+            body.else_({});
             body.end({});
             body.endian_expr({});
             body.from_type({});
@@ -89,6 +91,7 @@ namespace ebmcodegen {
             body.string_value({});
             body.target_expr({});
             body.target_stmt({});
+            body.then({});
             body.type_ref({});
             body.unit({});
             body.uop({});

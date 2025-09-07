@@ -488,15 +488,19 @@ namespace ebmgen {
                                         EBM_DEFAULT_VALUE(zero, io_->data_type);
                                         EBMU_UINT_TYPE(unsigned_t, add_bit);
                                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
-                                        auto offset = current_offset / 8;
-                                        auto bit_offset = current_offset % 8;
                                         auto res = add_endian_specific(
                                             ctx, io_->attribute,
                                             [&] -> expected<ebm::StatementRef> {
+
+                                            },
+                                            [&] -> expected<ebm::StatementRef> {
+                                                auto offset = current_offset / 8;
+                                                auto bit_offset = current_offset % 8;
+                                                size_t add_remain = add_bit;
                                                 auto first_remaining = 8 - bit_offset;
-                                                if (add_bit <= first_remaining) {
-                                                    // lsb of tmp_buffer[read_offset]
-                                                    auto last_zero_bit = first_remaining - add_bit;
+                                                if (add_remain <= first_remaining) {
+                                                    // in tmp_buffer[read_offset]
+                                                    auto last_zero_bit = first_remaining - add_remain;
                                                     std::uint8_t mask = std::uint8_t(0xff) >> bit_offset;
                                                     mask &= std::uint8_t(0xff) << last_zero_bit;
                                                     EBMU_INT_LITERAL(offset, offset);
@@ -512,10 +516,22 @@ namespace ebmgen {
                                                     EBM_ASSIGNMENT(assign, tmp_holder, casted);
                                                     return assign;
                                                 }
-                                                add_bit - first_remaining;
-                                            },
-                                            [&] -> expected<ebm::StatementRef> {
-
+                                                std::optional<ebm::ExpressionRef> expr;
+                                                if (bit_offset) {  // process remaining bits
+                                                    std::uint8_t mask = std::uint8_t(0xff) >> bit_offset;
+                                                    EBMU_INT_LITERAL(offset_, offset);
+                                                    EBMU_INT_LITERAL(masked, mask);
+                                                    EBM_INDEX(idx, u8_t, tmp_buffer, offset_);
+                                                    EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
+                                                    EBMU_INT_LITERAL(shift, add_bit - first_remaining);
+                                                    EBM_CAST(casted, unsigned_t, u8_t, bits_);
+                                                    EBM_BINARY_OP(msb, ebm::BinaryOp::left_shift, unsigned_t, casted, shift);
+                                                    expr = msb;
+                                                    bit_offset = 0;
+                                                    offset++;
+                                                    add_remain -= first_remaining;
+                                                }
+                                                auto remain_buffer = add_remain / 8;
                                             });
                                         if (!res) {
                                             return unexpect_error(std::move(res.error()));

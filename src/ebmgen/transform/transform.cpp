@@ -378,8 +378,6 @@ namespace ebmgen {
     expected<void> lowered_dynamic_bit_io(CFGContext& tctx, bool write) {
         auto& all_statements = tctx.tctx.statement_repository().get_all();
         auto current_added = all_statements.size();
-        auto current_alias = tctx.tctx.alias_vector().size();
-        std::map<size_t, std::vector<std::pair<std::pair<size_t, size_t>, std::function<expected<ebm::StatementRef>()>>>> update;
         auto get_io = [&](ebm::Statement& stmt) {
             return write ? stmt.body.write_data() : stmt.body.read_data();
         };
@@ -393,7 +391,7 @@ namespace ebmgen {
                 MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
                 if (auto r = get_io(stmt); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
                     // start point
-                    print_if_verbose("Found start point ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ") ", r->size.size()->value(), "\n");
+                    // print_if_verbose("Found start point ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ") ", r->size.size()->value(), "\n");
                     auto found = tctx.cfg_map.find(stmt.id.id.value());
                     if (found == tctx.cfg_map.end()) {
                         return unexpect_error("no cfg found for {}:{}", stmt.id.id.value(), to_string(stmt.body.kind));
@@ -404,15 +402,41 @@ namespace ebmgen {
                         .route = {found->second},
                         .bit_size = r->size.size()->value(),
                     });  // first route
-                    while (true) {
+                    while (routes.size()) {
                         std::vector<Route> new_routes;
                         for (auto& r : routes) {
                             for (auto& n : r.route.back()->next) {
                                 auto copy = r;
                                 copy.route.push_back(n);
-                                MAYBE(stmt, tctx.tctx.statement_repository().get(n->original_node));
+                                auto stmt = tctx.tctx.statement_repository().get(n->original_node);
+                                if (!stmt) {
+                                    continue;  // drop route
+                                }
+                                if (auto io_ = get_io(*stmt)) {
+                                    if (io_->size.unit == ebm::SizeUnit::BIT_FIXED || io_->size.unit == ebm::SizeUnit::BYTE_FIXED) {
+                                        auto add_bit = io_->size.size()->value();
+                                        if (io_->size.unit == ebm::SizeUnit::BYTE_FIXED) {
+                                            add_bit *= 8;
+                                        }
+                                        copy.bit_size += add_bit;
+                                        if (copy.bit_size % 8 == 0) {
+                                            finalized_routes.push_back(std::move(copy));
+                                            continue;
+                                        }
+                                    }
+                                    else {
+                                        continue;  // drop route
+                                    }
+                                }
                                 new_routes.push_back(std::move(copy));
                             }
+                        }
+                        routes = std::move(new_routes);
+                    }
+                    if (finalized_routes.size() > 1) {
+                        print_if_verbose("Found ", finalized_routes.size(), " routes\n");
+                        for (auto& r : finalized_routes) {
+                            print_if_verbose("  - ", r.route.size(), " node with ", r.bit_size, " bit\n");
                         }
                     }
                 }
@@ -665,7 +689,8 @@ namespace ebmgen {
         {
             CFGContext cfg_ctx{ctx};
             MAYBE(cfg, analyze_control_flow_graph(cfg_ctx));
-            MAYBE_VOID(bit_io, lowered_dynamic_bit_io(cfg_ctx));
+            MAYBE_VOID(bit_io_read, lowered_dynamic_bit_io(cfg_ctx, false));
+            MAYBE_VOID(bit_io_write, lowered_dynamic_bit_io(cfg_ctx, true));
             MAYBE_VOID(insertion_point, detect_insertion_point(cfg_ctx));
         }
         if (!debug) {

@@ -505,29 +505,29 @@ namespace ebmgen {
 
                                             // explain with example
                                             // offset = 0
-                                            // bit_offset = 3
+                                            // bit_offset = 4
                                             // unsigned_t = uint2
                                             // add_bit = 2
-                                            // first_remaining = 8 - 3 = 5
-                                            // 2 <= 5
+                                            // first_remaining = 8 - 4 = 4
+                                            // 2 <= 4
                                             if (add_remain <= first_remaining) {  // in tmp_buffer[read_offset]
-                                                // last_zero_bit = 5 - 2 = 3
-                                                // mask = 0xff >> 3 = 0x1f
-                                                // mask = 0x1f & (0xff << 3) = 0x1f & 0xf8 = 0x18
+                                                // last_zero_bit = 4 - 2 = 2
+                                                // mask = 0xff >> 4 = 0x0f
+                                                // mask = 0x0f & (0xff << 2) = 0x0f & 0xfC = 0x0C
                                                 auto last_zero_bit = first_remaining - add_remain;
                                                 std::uint8_t mask = std::uint8_t(0xff) >> bit_offset;
                                                 mask &= std::uint8_t(0xff) << last_zero_bit;
                                                 MAYBE(idx, get_indexed(offset));
                                                 EBMU_INT_LITERAL(masked, mask);
-                                                // bits_ = tmp_buffer[0] & 0x18
+                                                // bits_ = tmp_buffer[0] & 0x0C
                                                 EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
                                                 if (last_zero_bit != 0) {
                                                     EBMU_INT_LITERAL(shift, last_zero_bit);
                                                     EBM_BINARY_OP(shift_, ebm::BinaryOp::right_shift, u8_t, bits_, shift);
-                                                    // bits_ = ((tmp_buffer[0] & 0x18) >> 3)
+                                                    // bits_ = ((tmp_buffer[0] & 0x0C) >> 2)
                                                     bits_ = shift_;
                                                 }
-                                                // casted = uint2((tmp_buffer[0] & 0x18) >> 3)
+                                                // casted = uint2((tmp_buffer[0] & 0x0C) >> 2)
                                                 EBM_CAST(casted, unsigned_t, u8_t, bits_);
                                                 EBM_ASSIGNMENT(assign, tmp_holder, casted);
                                                 return assign;

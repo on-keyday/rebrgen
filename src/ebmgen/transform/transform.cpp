@@ -625,29 +625,34 @@ namespace ebmgen {
                                             std::optional<ebm::ExpressionRef> expr;
                                             if (bit_offset) {  // process first remaining bits (msb)
                                                 // mask = 0xff << 7 = 0x80
+                                                // shift = 7
                                                 std::uint8_t mask = std::uint8_t(0xff) << bit_offset;
                                                 EBMU_INT_LITERAL(masked, mask);
                                                 MAYBE(idx, get_indexed(offset));
                                                 EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
-                                                EBMU_INT_LITERAL(shift, add_bit - first_remaining);
+                                                EBMU_INT_LITERAL(shift, bit_offset);
                                                 EBM_BINARY_OP(shifted, ebm::BinaryOp::right_shift, unsigned_t, bits_, shift);
-                                                // this value must be lsb value, so no need to shift
                                                 EBM_CAST(lsb, unsigned_t, u8_t, shifted);
+                                                // expr = uint10((tmp_buffer[0] & 0x80) >> 7)
                                                 expr = lsb;
                                                 bit_offset = 0;
                                                 offset++;
                                                 add_remain -= first_remaining;
                                             }
                                             first_remaining %= 8;  // wrap around
+                                            // remain_buffer = 1
                                             auto remain_buffer = add_remain / 8;
                                             for (size_t i = 0; i < remain_buffer; i++) {  // process bytes
                                                 MAYBE(idx, get_indexed(offset));
+                                                // shift_value = 1 + 0 * 8 = 1
                                                 auto shift_value = first_remaining + i * 8;
                                                 EBMU_INT_LITERAL(shift, shift_value);
                                                 EBM_CAST(casted, unsigned_t, u8_t, idx);
+                                                // shifted = uint10(tmp_buffer[1]) << 1
                                                 EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, unsigned_t, casted, shift);
                                                 if (expr) {
                                                     EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, unsigned_t, *expr, shifted);
+                                                    // expr = uint10((tmp_buffer[0] & 0x80) >> 7) | (uint10(tmp_buffer[1]) << 1)
                                                     expr = or_;
                                                 }
                                                 else {
@@ -655,17 +660,22 @@ namespace ebmgen {
                                                 }
                                                 offset++;
                                             }
+                                            // remain_bits = 9 % 8 = 1
                                             auto remain_bits = add_remain % 8;
                                             if (remain_bits) {  // process last remaining bits (lsb)
+                                                // mask = 0xff >> (8 - 1) = 0xff >> 7 = 0x01
+                                                // shift = 1 + 1 * 8 = 9
                                                 std::uint8_t mask = std::uint8_t(0xff) >> (8 - remain_bits);
                                                 MAYBE(idx, get_indexed(offset));
                                                 EBMU_INT_LITERAL(masked, mask);
-                                                EBMU_INT_LITERAL(shift, first_remaining + i * remain_buffer);
+                                                EBMU_INT_LITERAL(shift, first_remaining + remain_buffer * 8);
                                                 EBM_BINARY_OP(bits_, ebm::BinaryOp::bit_and, u8_t, idx, masked);
                                                 EBM_CAST(casted, unsigned_t, u8_t, bits_);
+                                                // shift_ = uint10(tmp_buffer[2] & 0x01) << 9
                                                 EBM_BINARY_OP(shift_, ebm::BinaryOp::left_shift, unsigned_t, casted, shift);
                                                 if (expr) {
                                                     EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, unsigned_t, *expr, shift_);
+                                                    // expr = uint10((tmp_buffer[0] & 0x80) >> 7) | (uint10(tmp_buffer[1]) << 1) | (uint10(tmp_buffer[2] & 0x01) << 9)
                                                     expr = or_;
                                                 }
                                                 else {

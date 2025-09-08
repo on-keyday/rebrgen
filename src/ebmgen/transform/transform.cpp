@@ -503,7 +503,152 @@ namespace ebmgen {
             return assign;
         }
 
+        expected<ebm::StatementRef> process_bits_dynamic(
+            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, auto&& process) {
+            EBMU_COUNTER_TYPE(counter_t);
+            EBMU_INT_LITERAL(eight, 8);
+            EBM_BINARY_OP(offset_start, ebm::BinaryOp::div, counter_t, current_bit_offset, eight);
+            EBM_BINARY_OP(bit_offset_start, ebm::BinaryOp::mod, counter_t, current_bit_offset, eight);
+            EBM_DEFINE_ANONYMOUS_VARIABLE(offset, counter_t, offset_start);
+            EBM_DEFINE_ANONYMOUS_VARIABLE(bit_offset, counter_t, bit_offset_start);
+            EBMU_INT_LITERAL(zero, 0);
+            EBM_DEFINE_ANONYMOUS_VARIABLE(bit_processed, counter_t, zero);
+            EBMU_BOOL_TYPE(bool_t);
+            EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, bit_processed, bit_size);
+            MAYBE(bit_to_read, get_bit_to_read(bit_offset, bit_size, bit_processed));
+            process(offset, bit_offset, bit_to_read, bit_processed);
+        }
+
        private:
+        // 1バイトから特定のビット範囲を抽出し、LSBにアラインされた値にするコードを生成
+        // shift = big ? (8 - bit_to_read - bit_offset) : bit_offset;
+        // mask = ((1 << bit_to_read) - 1) << shift
+        // (tmp_buffer[offset] & mask) >> shift
+        expected<ebm::ExpressionRef> extractBitsFromByteDynamic(ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::Endian endian) {
+            EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);
+
+            // マスクを作成: (1 << bit_to_read) - 1 で bit_to_read 個の1を作り、正しい位置へシフト
+            MAYBE(shift, get_byte_shift_expr(endian, bit_offset, bit_to_read));
+
+            MAYBE(mask, mask_value_expr(bit_to_read));
+            EBM_BINARY_OP(shifted_mask, ebm::BinaryOp::left_shift, u8_type, mask, shift);
+            EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, u8_type, byte_val, shifted_mask);
+
+            // LSBにアラインするために右シフト
+            EBM_BINARY_OP(extracted, ebm::BinaryOp::right_shift, u8_type, masked, shift);
+            return extracted;
+        }
+
+        // 抽出したビット列を、エンディアンを考慮して最終的な値に結合するコードを生成
+        // shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
+        // (target_type(extracted) << shift)
+        expected<ebm::ExpressionRef> appendToExpressionDynamic(
+            std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef extracted,
+            ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_to_read,
+            ebm::Endian endian, ebm::TypeRef target_type) {
+            EBM_CAST(casted_new_bits, target_type, u8_type, extracted);
+
+            MAYBE(final_shift, get_expr_shift_expr(endian, bit_size, bits_processed, bit_to_read));
+
+            auto result = casted_new_bits;
+            EBM_BINARY_OP(shifted_bits, ebm::BinaryOp::left_shift, target_type, casted_new_bits, final_shift);
+
+            return shifted_bits;
+        }
+
+        // 値から、エンディアンを考慮して8ビットに収まる範囲を取り出す
+        // expr_shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
+        // lsb_mask = (1 << bit_to_read) - 1
+        // shift =  expr_shift
+        // mask = lsb_mask
+        // uint8((source_expr >> shift) & mask)
+        expected<ebm::ExpressionRef> extractBitsFromExpressionDynamic(
+            ebm::ExpressionRef source_expr,
+            ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read,
+            ebm::Endian endian, ebm::TypeRef target_type) {
+            MAYBE(shift, get_expr_shift_expr(endian, bit_size, bits_processed, bit_to_read));
+            MAYBE(mask, mask_value_expr(bit_to_read));
+
+            EBM_BINARY_OP(shifted_bits, ebm::BinaryOp::right_shift, target_type, source_expr, shift);
+
+            EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, target_type, shifted_bits, mask);
+            EBM_CAST(casted, u8_type, target_type, masked);
+
+            return casted;
+        }
+        // 1バイトに抽出されたビットを正しい位置に追加する
+        // byte_shift = big ? (8 - bit_to_read - bit_offset) : bit_offset
+        // shift = byte_shift
+        // tmp_buffer[offset] = tmp_buffer[offset] | (extracted << shift)
+        expected<ebm::ExpressionRef> appendBitsToByteDynamic(ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::Endian endian,
+                                                             ebm::ExpressionRef extracted) {
+            EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);
+
+            MAYBE(shift, get_byte_shift_expr(endian, bit_offset, bit_to_read));
+            // 元の位置におくために左シフト
+            EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, u8_type, extracted, shift);
+            return shifted;
+        }
+
+        expected<ebm::ExpressionRef> get_bit_to_read(ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_size, ebm::ExpressionRef bits_processed) {
+            EBMU_INT_LITERAL(eight, 8);
+            EBMU_BOOL_TYPE(bool_t);
+            EBMU_COUNTER_TYPE(counter_t);
+            // 8 - bit_offset
+            EBM_BINARY_OP(eight_bit_offset, ebm::BinaryOp::sub, counter_t, eight, bit_offset);
+            // bit_size - bit_processed
+            EBM_BINARY_OP(size_processed, ebm::BinaryOp::sub, counter_t, bit_size, bits_processed);
+            EBM_BINARY_OP(compare, ebm::BinaryOp::less, bool_t, eight_bit_offset, size_processed);
+
+            // min(8 - bit_offset,bit_size - bit_processed)
+            MAYBE(body, make_conditional(ctx, counter_t, compare, eight_bit_offset, size_processed));
+            EBMA_ADD_EXPR(bit_to_read, std::move(body));
+            return bit_to_read;
+        }
+
+        expected<ebm::ExpressionRef> get_expr_shift_expr(ebm::Endian endian, ebm::ExpressionRef bit_size, ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_to_read) const {
+            if (endian == ebm::Endian::big) {
+                EBMU_COUNTER_TYPE(counter_t);
+                // bit_size - bits_processed
+                EBM_BINARY_OP(size_processed, ebm::BinaryOp::sub, counter_t, bit_size, bits_processed);
+                // bit_size - bits_processed - bit_to_read
+                EBM_BINARY_OP(shift, ebm::BinaryOp::sub, counter_t, size_processed, bit_to_read);
+                // Big Endian: MSB側から詰める。後から来るビットほど下位になる。
+                return shift;
+            }
+            else {  // Little Endian
+                // Little Endian: LSB側から詰める。後から来るビットほど上位になる。
+                return bits_processed;
+            }
+        }
+
+        expected<ebm::ExpressionRef> get_byte_shift_expr(ebm::Endian endian, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read) const {
+            if (endian == ebm::Endian::big) {
+                EBMU_COUNTER_TYPE(counter_t);
+                EBMU_INT_LITERAL(eight, 8);
+                // 8 - bit_offset
+                EBM_BINARY_OP(eight_bit_offset, ebm::BinaryOp::sub, counter_t, eight, bit_offset);
+                // 8 - bit_offset - bit_to_read
+                EBM_BINARY_OP(shift, ebm::BinaryOp::sub, counter_t, eight_bit_offset, bit_to_read);
+                // Big Endian: MSB側から詰める。後から来るビットほど下位になる。
+                return shift;
+            }
+            else {  // Little Endian
+                // Little Endian: LSB側から詰める。後から来るビットほど上位になる。
+                return bit_offset;
+            }
+        }
+
+        expected<ebm::ExpressionRef> mask_value_expr(ebm::ExpressionRef n_bit) {
+            EBMU_INT_LITERAL(one, 1);
+            auto src_ty = ctx.repository().get_expression(one)->body.type;
+            EBMU_U8(u8_t);
+            EBM_CAST(casted, u8_t, src_ty, one);
+            EBM_BINARY_OP(shift, ebm::BinaryOp::left_shift, u8_t, one, n_bit);
+            EBM_BINARY_OP(mask, ebm::BinaryOp::sub, u8_t, shift, one);
+            return mask;
+        }
+
         size_t get_expr_shift(ebm::Endian endian, size_t bit_size, size_t bits_processed, size_t bit_to_read) const {
             if (endian == ebm::Endian::big) {
                 // Big Endian: MSB側から詰める。後から来るビットほど下位になる。
@@ -516,7 +661,12 @@ namespace ebmgen {
         }
 
         size_t get_byte_shift(ebm::Endian endian, size_t bit_offset, size_t bit_to_read) const {
-            return endian == ebm::Endian::big ? (8 - bit_to_read - bit_offset) : bit_offset;
+            if (endian == ebm::Endian::big) {
+                return (8 - bit_to_read - bit_offset);
+            }
+            else {
+                return bit_offset;
+            }
         }
 
         size_t mask_value(size_t n_bit) const {
@@ -734,6 +884,7 @@ namespace ebmgen {
             EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
             return flush_buffer;
         };
+        std::set<std::shared_ptr<CFG>> reached_route;
         for (auto& r : finalized_routes) {
             size_t current_offset = 0;
             size_t read_offset = 0;

@@ -619,7 +619,7 @@ namespace ebmgen {
 
     expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op);
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
-
+    expected<ebm::ExpressionBody> make_conditional(ConverterContext& ctx, ebm::TypeRef type, ebm::ExpressionRef cond, ebm::ExpressionRef then, ebm::ExpressionRef els);
     struct TransformContext {
        private:
         ConverterContext& ctx;

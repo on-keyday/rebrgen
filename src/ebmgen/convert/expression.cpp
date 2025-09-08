@@ -426,11 +426,10 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cond>& node, ebm::ExpressionBody& body) {
+    expected<ebm::ExpressionBody> make_conditional(ConverterContext& ctx, ebm::TypeRef type, ebm::ExpressionRef cond, ebm::ExpressionRef then, ebm::ExpressionRef els) {
+        ebm::ExpressionBody body;
+        body.type = type;
         body.kind = ebm::ExpressionOp::CONDITIONAL;
-        EBMA_CONVERT_EXPRESSION(cond, node->cond);
-        EBMA_CONVERT_EXPRESSION(then, node->then);
-        EBMA_CONVERT_EXPRESSION(els, node->els);
         body.condition(cond);
         body.then(then);
         body.else_(els);
@@ -456,6 +455,16 @@ namespace ebmgen {
         lowered_expr.conditional_stmt(cond_stmt);
         EBMA_ADD_EXPR(low_expr, std::move(lowered_expr));
         body.lowered_expr(ebm::LoweredExpressionRef{low_expr});
+        return body;
+    }
+
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cond>& node, ebm::ExpressionBody& body) {
+        EBMA_CONVERT_EXPRESSION(cond, node->cond);
+        EBMA_CONVERT_EXPRESSION(then, node->then);
+        EBMA_CONVERT_EXPRESSION(els, node->els);
+        MAYBE(body_, make_conditional(ctx, body.type, cond, then, els));
+        body = std::move(body_);
+
         return {};
     }
 

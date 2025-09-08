@@ -385,6 +385,20 @@ format DNSLabel:
             label :[len]u8
         .. => error("unexpected label")
 
+format HighEdge:
+    prefix :u1
+    if prefix == 1:
+        has_data :u1
+        ok :u1
+    else:
+        container :u1
+        has_data :u1
+        ok :u1
+        reserved :u7
+    end :u5
+    
+
+
 fn break_test():
     for:
         return

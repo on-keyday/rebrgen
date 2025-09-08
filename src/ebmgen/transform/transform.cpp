@@ -6,6 +6,7 @@
 #include <queue>
 #include <type_traits>
 #include "../common.hpp"
+#include "bit_manipulator.hpp"
 #include "control_flow_graph.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
@@ -435,16 +436,24 @@ namespace ebmgen {
         EBMU_BOOL_TYPE(bool_t);
         EBMU_U8(u8_t);
         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_buffer, max_buffer_t, default_buf_v);
+        EBMU_INT_LITERAL(zero, 0);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(current_bit_offset, count_t, zero);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(read_offset, count_t, zero);
 
+        // added_bit = current_bit_offset + add_bit
+        // new_size = (added_bit + 7) / 8
         // for read_offset < new_size:
         //    tmp_buffer[read_offset] = read u8
         //    read_offset++
-        auto read_incremental = [&](ebm::StatementRef io_ref, size_t& read_offset, size_t current_offset, size_t add_bit) -> expected<ebm::StatementRef> {
-            auto new_size = (current_offset + add_bit + 7) / 8;
+        auto read_incremental = [&](ebm::ExpressionRef added_bit) -> expected<ebm::StatementRef> {
+            EBMU_INT_LITERAL(seven, 7);
+            EBMU_INT_LITERAL(eight, 8);
+            EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, added_bit, seven);
+            EBM_BINARY_OP(new_size, ebm::BinaryOp::div, count_t, new_size_bit, eight);
+            EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, read_offset, new_size);
             ebm::Block block;
-            while (read_offset < new_size) {
-                EBMU_INT_LITERAL(i, read_offset);
-                EBM_INDEX(indexed, u8_t, tmp_buffer, i);
+            {
+                EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset);
                 auto data = make_io_data(io_ref, indexed, u8_t, {}, get_size(8));
                 MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, 1, {}, indexed, u8_t));
                 ebm::LoweredStatements lows;
@@ -453,23 +462,21 @@ namespace ebmgen {
                 data.lowered_statement = ebm::LoweredStatementRef{l};
                 EBM_READ_DATA(read_to_temporary, std::move(data));
                 append(block, read_to_temporary);
-                read_offset++;
-            }
-            if (!block.container.size()) {
-                return ebm::StatementRef{};  // no statement
+                EBM_INCREMENT(inc, read_offset, count_t);
+                append(block, inc);
             }
             EBM_BLOCK(read, std::move(block));
-            return read;
+            EBM_WHILE_LOOP(loop, condition, read);
+            return loop;
         };
-        auto flush_buffer = [&](size_t current_offset) -> expected<ebm::StatementRef> {
-            auto write_buffer = make_io_data(io_ref, tmp_buffer, max_buffer_t, {}, get_size(current_offset));
+        auto flush_buffer = [&](ebm::ExpressionRef add_bit) -> expected<ebm::StatementRef> {
+            MAYBE(cur_offset, make_dynamic_size(current_bit_offset, ebm::SizeUnit::BIT_DYNAMIC));
+            auto write_buffer = make_io_data(io_ref, tmp_buffer, max_buffer_t, {}, cur_offset);
             EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
             return flush_buffer;
         };
         std::set<std::shared_ptr<CFG>> reached_route;
         for (auto& r : finalized_routes) {
-            size_t current_offset = 0;
-            size_t read_offset = 0;
             BitManipulator extractor(ctx, tmp_buffer, u8_t);
             for (size_t i = 0; i < r.route.size(); i++) {
                 auto& c = r.route[i];
@@ -480,59 +487,58 @@ namespace ebmgen {
                     if (io_->size.unit == ebm::SizeUnit::BYTE_FIXED) {
                         add_bit *= 8;
                     }
+                    EBMU_INT_LITERAL(bit_size, add_bit);
+                    EBM_BINARY_OP(new_size_bit, ebm::BinaryOp::add, count_t, current_bit_offset, bit_size);
+                    EBM_ASSIGNMENT(update_current_bit_offset, current_bit_offset, new_size_bit);
+
                     EBMU_UINT_TYPE(unsigned_t, add_bit);
-                    ebm::StatementRef lowered_bit_operation;
+                    ebm::Block block;
+                    if (i == 0) {
+                        append(block, tmp_buffer_def);
+                        append(block, current_bit_offset_def);
+                    }
                     if (!write) {
-                        MAYBE(io_cond, read_incremental(io_->io_ref, read_offset, current_offset, add_bit));
+                        MAYBE(io_cond, read_incremental(new_size_bit));
                         EBM_DEFAULT_VALUE(zero, unsigned_t);
                         EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_holder, unsigned_t, zero);
                         auto assign = add_endian_specific(
                             ctx, io_->attribute,
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.read_bits(current_offset, add_bit, ebm::Endian::big, unsigned_t, tmp_holder);
+                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, tmp_holder);
                             },
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.read_bits(current_offset, add_bit, ebm::Endian::little, unsigned_t, tmp_holder);
+                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, tmp_holder);
                             });
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));
                         }
                         EBM_CAST(casted, io_->data_type, unsigned_t, tmp_holder);
                         EBM_ASSIGNMENT(fin, io_->target, tmp_holder);
-                        ebm::Block block;
-                        if (io_cond.id.value() != 0) {
-                            append(block, io_cond);
-                        }
+                        append(block, io_cond);
                         append(block, *assign);
                         append(block, fin);
-                        EBM_BLOCK(lowered, std::move(block));
-                        lowered_bit_operation = lowered;
                     }
                     else {
                         EBM_CAST(casted, unsigned_t, io_->data_type, io_->target);
                         auto assign = add_endian_specific(
                             ctx, io_->attribute,
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.write_bits(current_offset, add_bit, ebm::Endian::big, unsigned_t, casted);
+                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, casted);
                             },
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.write_bits(current_offset, add_bit, ebm::Endian::little, unsigned_t, casted);
+                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, casted);
                             });
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));
                         }
+                        append(block, *assign);
                         if (i == r.route.size() - 1) {
-                            MAYBE(flush, flush_buffer(current_offset + add_bit));
-                            ebm::Block block;
-                            append(block, *assign);
+                            MAYBE(flush, flush_buffer(new_size_bit));
                             append(block, flush);
-                            EBM_BLOCK(write, std::move(block));
-                            lowered_bit_operation = write;
-                        }
-                        else {
-                            lowered_bit_operation = *assign;
                         }
                     }
+                    append(block, update_current_bit_offset);
+                    EBM_BLOCK(lowered_bit_operation, std::move(block));
                     if (io_->lowered_statement.id.id.value() != 0) {
                         MAYBE(lowered_stmts, tctx.tctx.statement_repository().get(io_->lowered_statement.id));
                         MAYBE(stmts, lowered_stmts.body.lowered_statements());
@@ -544,7 +550,6 @@ namespace ebmgen {
                         EBM_LOWERED_STATEMENTS(low, std::move(block))
                         io_->lowered_statement = ebm::LoweredStatementRef{low};
                     }
-                    current_offset += add_bit;
                 }
             }
         }

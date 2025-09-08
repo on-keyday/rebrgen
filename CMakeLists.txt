@@ -86,6 +86,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert/decode.cpp"
     "src/ebmgen/transform/transform.cpp"
     "src/ebmgen/transform/control_flow_graph.cpp"
+    "src/ebmgen/transform/bit_manipulator.cpp"
 )
 
 target_link_libraries(ebm_mapping ebm futils)

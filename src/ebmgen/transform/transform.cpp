@@ -480,6 +480,10 @@ namespace ebmgen {
             BitManipulator extractor(ctx, tmp_buffer, u8_t);
             for (size_t i = 0; i < r.route.size(); i++) {
                 auto& c = r.route[i];
+                if (reached_route.contains(c)) {
+                    continue;
+                }
+                reached_route.insert(c);
                 MAYBE(stmt, tctx.tctx.statement_repository().get(c->original_node));
                 auto io_ = get_io(stmt, write);
                 if (io_) {

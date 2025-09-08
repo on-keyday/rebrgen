@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "bit_manipulator.hpp"
 
 namespace ebmgen {

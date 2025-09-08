@@ -16,9 +16,6 @@ namespace ebmgen {
         futils::wrap::cerr_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
         if (ref.id.value() != 0) {
             futils::wrap::cerr_wrap() << " -> " << ref.id.value();
-            if (ref.id.value() == 1105) {
-                ;
-            }
         }
         futils::wrap::cerr_wrap() << '\n';
     }

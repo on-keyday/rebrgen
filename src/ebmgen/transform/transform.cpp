@@ -504,7 +504,7 @@ namespace ebmgen {
         }
 
         expected<ebm::StatementRef> process_bits_dynamic(
-            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, auto&& process) {
+            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::TypeRef target_type, auto&& process) {
             EBMU_COUNTER_TYPE(counter_t);
             EBMU_INT_LITERAL(eight, 8);
             EBM_BINARY_OP(offset_start, ebm::BinaryOp::div, counter_t, current_bit_offset, eight);
@@ -515,8 +515,57 @@ namespace ebmgen {
             EBM_DEFINE_ANONYMOUS_VARIABLE(bit_processed, counter_t, zero);
             EBMU_BOOL_TYPE(bool_t);
             EBM_BINARY_OP(condition, ebm::BinaryOp::less, bool_t, bit_processed, bit_size);
-            MAYBE(bit_to_read, get_bit_to_read(bit_offset, bit_size, bit_processed));
-            process(offset, bit_offset, bit_to_read, bit_processed);
+            MAYBE(bit_to_read_v, get_bit_to_read(bit_offset, bit_size, bit_processed));
+            ebm::Block inner;
+            {
+                EBM_BINARY_OP(is_zero, ebm::BinaryOp::equal, bool_t, bit_processed, zero);
+                EBM_DEFINE_ANONYMOUS_VARIABLE(bit_to_read, counter_t, bit_to_read_v);
+                MAYBE(body, process(offset, bit_offset, bit_to_read, bit_processed, is_zero));
+                EBM_INCREMENT(offset_inc, offset, counter_t);
+                EBM_ASSIGNMENT(bit_offset_zero, bit_offset, zero);
+                EBM_BINARY_OP(new_bit_processed, ebm::BinaryOp::add, counter_t, bit_processed, bit_to_read);
+                EBM_ASSIGNMENT(update_bit_processed, bit_processed, new_bit_processed);
+                append(inner, bit_to_read_def);
+                append(inner, body);
+                append(inner, offset_inc);
+                append(inner, bit_offset_zero);
+                append(inner, update_bit_processed);
+            }
+            EBM_BLOCK(body, std::move(inner));
+            EBM_WHILE_LOOP(loop_, condition, body);
+            ebm::Block outer;
+            append(outer, offset_def);
+            append(outer, bit_offset_def);
+            append(outer, loop_);
+            EBM_BLOCK(operation, std::move(outer));
+            return operation;
+        }
+
+        expected<ebm::StatementRef> read_bits_dynamic(
+            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef dst_expr) {
+            return process_bits_dynamic(current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
+                MAYBE(extracted, extractBitsFromByteDynamic(offset, bit_offset, bit_to_read, endian));
+                MAYBE(to_append, appendToExpressionDynamic(extracted, bit_processed, bit_size, bit_to_read, endian, target_type));
+                EBM_ASSIGNMENT(if_zero, dst_expr, to_append);
+                EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, target_type, dst_expr, to_append);
+                EBM_ASSIGNMENT(if_non_zero, dst_expr, or_);
+                EBM_IF_STATEMENT(append, is_zero, if_zero, if_non_zero);
+                return append;
+            });
+        }
+
+        expected<ebm::StatementRef> write_bits_dynamic(
+            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef source_expr) {
+            return process_bits_dynamic(current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
+                MAYBE(extracted, extractBitsFromExpressionDynamic(source_expr, bit_processed, bit_size, bit_to_read, endian, target_type));
+                MAYBE(to_append, appendBitsToByteDynamic(offset, bit_offset, bit_to_read, endian, extracted));
+                EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);
+                EBM_ASSIGNMENT(if_zero, byte_val, to_append);
+                EBM_BINARY_OP(or_, ebm::BinaryOp::bit_or, u8_type, byte_val, to_append);
+                EBM_ASSIGNMENT(if_non_zero, byte_val, or_);
+                EBM_IF_STATEMENT(append, is_zero, if_zero, if_non_zero);
+                return append;
+            });
         }
 
        private:
@@ -542,10 +591,9 @@ namespace ebmgen {
         // 抽出したビット列を、エンディアンを考慮して最終的な値に結合するコードを生成
         // shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
         // (target_type(extracted) << shift)
-        expected<ebm::ExpressionRef> appendToExpressionDynamic(
-            std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef extracted,
-            ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_to_read,
-            ebm::Endian endian, ebm::TypeRef target_type) {
+        expected<ebm::ExpressionRef> appendToExpressionDynamic(ebm::ExpressionRef extracted,
+                                                               ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_to_read,
+                                                               ebm::Endian endian, ebm::TypeRef target_type) {
             EBM_CAST(casted_new_bits, target_type, u8_type, extracted);
 
             MAYBE(final_shift, get_expr_shift_expr(endian, bit_size, bits_processed, bit_to_read));
@@ -564,7 +612,7 @@ namespace ebmgen {
         // uint8((source_expr >> shift) & mask)
         expected<ebm::ExpressionRef> extractBitsFromExpressionDynamic(
             ebm::ExpressionRef source_expr,
-            ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read,
+            ebm::ExpressionRef bits_processed, ebm::ExpressionRef bit_size, ebm::ExpressionRef bit_to_read,
             ebm::Endian endian, ebm::TypeRef target_type) {
             MAYBE(shift, get_expr_shift_expr(endian, bit_size, bits_processed, bit_to_read));
             MAYBE(mask, mask_value_expr(bit_to_read));
@@ -582,8 +630,6 @@ namespace ebmgen {
         // tmp_buffer[offset] = tmp_buffer[offset] | (extracted << shift)
         expected<ebm::ExpressionRef> appendBitsToByteDynamic(ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::Endian endian,
                                                              ebm::ExpressionRef extracted) {
-            EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);
-
             MAYBE(shift, get_byte_shift_expr(endian, bit_offset, bit_to_read));
             // 元の位置におくために左シフト
             EBM_BINARY_OP(shifted, ebm::BinaryOp::left_shift, u8_type, extracted, shift);

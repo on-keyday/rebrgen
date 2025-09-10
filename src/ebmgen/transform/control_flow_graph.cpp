@@ -10,6 +10,7 @@
 #include <set>
 #include <type_traits>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace ebmgen {
@@ -240,22 +241,22 @@ namespace ebmgen {
         return cfg;
     }
 
+    void unique(std::shared_ptr<CFG>& cfg) {
+        std::unordered_set<std::shared_ptr<CFG>> uniq;
+        std::erase_if(cfg->next, [&](auto& q) {
+            return !uniq.insert(q).second;
+        });
+        uniq.clear();
+        std::erase_if(cfg->prev, [&](auto& q) {
+            return !uniq.insert(q.lock()).second;
+        });
+    }
+
     std::shared_ptr<CFG> optimize_cfg_node(std::shared_ptr<CFG>& cfg, OptimizeContext& ctx) {
         if (ctx.all_cfg.find(cfg) != ctx.all_cfg.end()) {
             return cfg;
         }
-        std::sort(cfg->next.begin(), cfg->next.end(), [](const auto& a, const auto& b) {
-            return a < b;
-        });
-        auto result1 = std::unique(cfg->next.begin(), cfg->next.end());
-        cfg->next.erase(result1, cfg->next.end());
-        std::sort(cfg->prev.begin(), cfg->prev.end(), [](const auto& a, const auto& b) {
-            return a.lock() < b.lock();
-        });
-        auto result2 = std::unique(cfg->prev.begin(), cfg->prev.end(), [](const auto& a, const auto& b) {
-            return a.lock() == b.lock();
-        });
-        cfg->prev.erase(result2, cfg->prev.end());
+        unique(cfg);
         if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
             auto rem = cfg;
             for (auto& prev : rem->prev) {

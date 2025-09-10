@@ -379,6 +379,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 w.writeln("}");
                 insert_include(w, kind, "_", "post_visit");
                 insert_include(w, kind, "_", to_string(T(i)), "_", "post_visit");
+                w.writeln("if(!result) {");
+                w.indent_writeln("return unexpect_error(std::move(result.error())); // for trace");
+                w.writeln("}");
                 w.writeln("return result;");
             }
             w.writeln("}");

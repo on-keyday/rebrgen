@@ -239,6 +239,9 @@ namespace ebm2python {
         #include "visitor/Statement_BLOCK_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -373,6 +376,9 @@ namespace ebm2python {
         #include "visitor/Statement_ASSIGNMENT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -507,6 +513,9 @@ namespace ebm2python {
         #include "visitor/Statement_YIELD_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -637,6 +646,9 @@ namespace ebm2python {
         #include "visitor/Statement_APPEND_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -763,6 +775,9 @@ namespace ebm2python {
         #include "visitor/Statement_RETURN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -889,6 +904,9 @@ namespace ebm2python {
         #include "visitor/Statement_ERROR_RETURN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1015,6 +1033,9 @@ namespace ebm2python {
         #include "visitor/Statement_ASSERT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1141,6 +1162,9 @@ namespace ebm2python {
         #include "visitor/Statement_READ_DATA_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1267,6 +1291,9 @@ namespace ebm2python {
         #include "visitor/Statement_WRITE_DATA_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1397,6 +1424,9 @@ namespace ebm2python {
         #include "visitor/Statement_SEEK_STREAM_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1523,6 +1553,9 @@ namespace ebm2python {
         #include "visitor/Statement_IF_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1649,6 +1682,9 @@ namespace ebm2python {
         #include "visitor/Statement_LOOP_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1775,6 +1811,9 @@ namespace ebm2python {
         #include "visitor/Statement_MATCH_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -1901,6 +1940,9 @@ namespace ebm2python {
         #include "visitor/Statement_MATCH_BRANCH_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2027,6 +2069,9 @@ namespace ebm2python {
         #include "visitor/Statement_BREAK_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2153,6 +2198,9 @@ namespace ebm2python {
         #include "visitor/Statement_CONTINUE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2279,6 +2327,9 @@ namespace ebm2python {
         #include "visitor/Statement_FUNCTION_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2405,6 +2456,9 @@ namespace ebm2python {
         #include "visitor/Statement_VARIABLE_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2531,6 +2585,9 @@ namespace ebm2python {
         #include "visitor/Statement_FIELD_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2657,6 +2714,9 @@ namespace ebm2python {
         #include "visitor/Statement_ENUM_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2783,6 +2843,9 @@ namespace ebm2python {
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -2909,6 +2972,9 @@ namespace ebm2python {
         #include "visitor/Statement_STRUCT_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3035,6 +3101,9 @@ namespace ebm2python {
         #include "visitor/Statement_UNION_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3161,6 +3230,9 @@ namespace ebm2python {
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3287,6 +3359,9 @@ namespace ebm2python {
         #include "visitor/Statement_PROGRAM_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3413,6 +3488,9 @@ namespace ebm2python {
         #include "visitor/Statement_PROPERTY_DECL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3539,6 +3617,9 @@ namespace ebm2python {
         #include "visitor/Statement_METADATA_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3669,6 +3750,9 @@ namespace ebm2python {
         #include "visitor/Statement_IMPORT_MODULE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3795,6 +3879,9 @@ namespace ebm2python {
         #include "visitor/Statement_EXPRESSION_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -3929,6 +4016,9 @@ namespace ebm2python {
         #include "visitor/Statement_PHI_NODE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4055,6 +4145,9 @@ namespace ebm2python {
         #include "visitor/Statement_ERROR_REPORT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4181,6 +4274,9 @@ namespace ebm2python {
         #include "visitor/Statement_LOWERED_STATEMENTS_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4417,6 +4513,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_INT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4544,6 +4643,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_INT64_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4671,6 +4773,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_BOOL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4798,6 +4903,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_STRING_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -4925,6 +5033,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_TYPE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5052,6 +5163,9 @@ namespace ebm2python {
         #include "visitor/Expression_LITERAL_CHAR_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5179,6 +5293,9 @@ namespace ebm2python {
         #include "visitor/Expression_IDENTIFIER_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5314,6 +5431,9 @@ namespace ebm2python {
         #include "visitor/Expression_BINARY_OP_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5445,6 +5565,9 @@ namespace ebm2python {
         #include "visitor/Expression_UNARY_OP_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5572,6 +5695,9 @@ namespace ebm2python {
         #include "visitor/Expression_CALL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5703,6 +5829,9 @@ namespace ebm2python {
         #include "visitor/Expression_INDEX_ACCESS_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5834,6 +5963,9 @@ namespace ebm2python {
         #include "visitor/Expression_MEMBER_ACCESS_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -5969,6 +6101,9 @@ namespace ebm2python {
         #include "visitor/Expression_TYPE_CAST_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6100,6 +6235,9 @@ namespace ebm2python {
         #include "visitor/Expression_RANGE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6223,6 +6361,9 @@ namespace ebm2python {
         #include "visitor/Expression_DEFAULT_VALUE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6350,6 +6491,9 @@ namespace ebm2python {
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6481,6 +6625,9 @@ namespace ebm2python {
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6608,6 +6755,9 @@ namespace ebm2python {
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6739,6 +6889,9 @@ namespace ebm2python {
         #include "visitor/Expression_CAN_READ_STREAM_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6866,6 +7019,9 @@ namespace ebm2python {
         #include "visitor/Expression_ARRAY_SIZE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -6993,6 +7149,9 @@ namespace ebm2python {
         #include "visitor/Expression_IS_ERROR_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7120,6 +7279,9 @@ namespace ebm2python {
         #include "visitor/Expression_MAX_VALUE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7251,6 +7413,9 @@ namespace ebm2python {
         #include "visitor/Expression_READ_DATA_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7382,6 +7547,9 @@ namespace ebm2python {
         #include "visitor/Expression_WRITE_DATA_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7513,6 +7681,151 @@ namespace ebm2python {
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
+    concept has_visitor_Expression_CONDITIONAL = requires(Visitor v) {
+         { v.visit_Expression_CONDITIONAL(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().condition(),*std::declval<const ebm::ExpressionBody&>().else_(),*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().then()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_CONDITIONAL_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().condition(),*std::declval<const ebm::ExpressionBody&>().else_(),*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().then()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_CONDITIONAL(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_before.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_validate.hpp")
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_validate.hpp"
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_post_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_after.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        if (!in.body.condition()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::condition");
+        }
+        auto& condition = *in.body.condition();
+        if (!in.body.else_()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::else_");
+        }
+        auto& else_ = *in.body.else_();
+        if (!in.body.lowered_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::lowered_expr");
+        }
+        auto& lowered_expr = *in.body.lowered_expr();
+        if (!in.body.then()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::then");
+        }
+        auto& then = *in.body.then();
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_before.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_visit.hpp")
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_visit.hpp"
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_post_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_after.hpp")
+        #include "visitor/Expression_CONDITIONAL_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_CONDITIONAL<Visitor>) {
+            result = visitor.visit_Expression_CONDITIONAL(in.id,type,kind,condition,else_,lowered_expr,then);
+        }
+        else if constexpr (has_visitor_Expression_CONDITIONAL_call<Visitor>) {
+            result = visitor(in.id,type,kind,condition,else_,lowered_expr,then);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_post_visit_before.hpp")
+        #include "visitor/Expression_CONDITIONAL_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_post_visit.hpp")
+        #include "visitor/Expression_CONDITIONAL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_post_visit.hpp")
+        #if __has_include("visitor/Expression_CONDITIONAL_post_visit_pre_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_post_visit.hpp"
+        #if __has_include("visitor/Expression_CONDITIONAL_post_visit_post_default.hpp")
+        #include "visitor/Expression_CONDITIONAL_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_CONDITIONAL_post_visit_after.hpp")
+        #include "visitor/Expression_CONDITIONAL_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7585,6 +7898,8 @@ namespace ebm2python {
             return dispatch_Expression_WRITE_DATA(visitor,in);
         case ebm::ExpressionOp::CONDITIONAL_STATEMENT:
             return dispatch_Expression_CONDITIONAL_STATEMENT(visitor,in);
+        case ebm::ExpressionOp::CONDITIONAL:
+            return dispatch_Expression_CONDITIONAL(visitor,in);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -7734,6 +8049,9 @@ namespace ebm2python {
         #include "visitor/Type_INT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7860,6 +8178,9 @@ namespace ebm2python {
         #include "visitor/Type_UINT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -7986,6 +8307,9 @@ namespace ebm2python {
         #include "visitor/Type_FLOAT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8112,6 +8436,9 @@ namespace ebm2python {
         #include "visitor/Type_STRUCT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8238,6 +8565,9 @@ namespace ebm2python {
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8360,6 +8690,9 @@ namespace ebm2python {
         #include "visitor/Type_BOOL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8482,6 +8815,9 @@ namespace ebm2python {
         #include "visitor/Type_VOID_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8604,6 +8940,9 @@ namespace ebm2python {
         #include "visitor/Type_META_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8734,6 +9073,9 @@ namespace ebm2python {
         #include "visitor/Type_ENUM_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8864,6 +9206,9 @@ namespace ebm2python {
         #include "visitor/Type_ARRAY_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -8990,6 +9335,9 @@ namespace ebm2python {
         #include "visitor/Type_VECTOR_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9120,6 +9468,9 @@ namespace ebm2python {
         #include "visitor/Type_VARIANT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9246,6 +9597,9 @@ namespace ebm2python {
         #include "visitor/Type_RANGE_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9368,6 +9722,9 @@ namespace ebm2python {
         #include "visitor/Type_ENCODER_RETURN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9490,6 +9847,9 @@ namespace ebm2python {
         #include "visitor/Type_DECODER_RETURN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9612,6 +9972,9 @@ namespace ebm2python {
         #include "visitor/Type_ENCODER_INPUT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9734,6 +10097,9 @@ namespace ebm2python {
         #include "visitor/Type_DECODER_INPUT_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9860,6 +10226,9 @@ namespace ebm2python {
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -9986,6 +10355,9 @@ namespace ebm2python {
         #include "visitor/Type_OPTIONAL_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -10112,6 +10484,9 @@ namespace ebm2python {
         #include "visitor/Type_PTR_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -10242,6 +10617,9 @@ namespace ebm2python {
         #include "visitor/Type_FUNCTION_post_visit_after.hpp"
         #endif
         #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
         return result;
     }
     template<typename Visitor>
@@ -11755,6 +12133,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_CONDITIONAL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::ExpressionRef& condition,const ebm::ExpressionRef& else_,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& then) {
+            #if __has_include("visitor/Expression_CONDITIONAL_before.hpp")
+            #include "visitor/Expression_CONDITIONAL_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_CONDITIONAL.hpp")
+            #include "visitor/Expression_CONDITIONAL.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp")
+            #if __has_include("visitor/Expression_CONDITIONAL_pre_default.hpp")
+            #include "visitor/Expression_CONDITIONAL_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp"
+            #if __has_include("visitor/Expression_CONDITIONAL_post_default.hpp")
+            #include "visitor/Expression_CONDITIONAL_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_CONDITIONAL_after.hpp")
+            #include "visitor/Expression_CONDITIONAL_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return "{{Unimplemented Expression_CONDITIONAL}}";
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const std::uint8_t& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
@@ -12317,6 +12719,7 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_READ_DATA<Visitor>, "Visitor does not implement visit_Expression_READ_DATA");
     static_assert(has_visitor_Expression_WRITE_DATA<Visitor>, "Visitor does not implement visit_Expression_WRITE_DATA");
     static_assert(has_visitor_Expression_CONDITIONAL_STATEMENT<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL_STATEMENT");
+    static_assert(has_visitor_Expression_CONDITIONAL<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");

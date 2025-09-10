@@ -43,15 +43,13 @@ else if (io_data.size.unit == ebm::SizeUnit::DYNAMIC ||
     if (!io_data.size.ref()) {
         return unexpect_error("Dynamic size expression reference is missing for WRITE_DATA operation.");
     }
-    ebm::ExpressionRef expr_ref = *io_data.size.ref();
-    MAYBE(expr_obj, this->module_.get_expression(expr_ref));
-    MAYBE(dynamic_size_expr_str, visit_Expression(*this, expr_obj));
+    MAYBE(dynamic_size_expr_str, visit_Expression(*this, *io_data.size.ref()));
     write_size_str = dynamic_size_expr_str.value;
 }
 else {
     return unexpect_error("Unsupported size unit for WRITE_DATA operation: {}", to_string(io_data.size.unit));
 }
 
-w.writeln("stream.write(struct.pack(\"" + struct_format + ", ", target_expr_str.value, "))");
+w.writeln("stream.write(struct.pack(" + struct_format + ", ", target_expr_str.value, "))");
 
 return w.out();

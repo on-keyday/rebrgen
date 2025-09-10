@@ -469,8 +469,10 @@ namespace ebmgen {
             EBM_WHILE_LOOP(loop, condition, read);
             return loop;
         };
-        auto flush_buffer = [&](ebm::ExpressionRef add_bit) -> expected<ebm::StatementRef> {
-            MAYBE(cur_offset, make_dynamic_size(current_bit_offset, ebm::SizeUnit::BIT_DYNAMIC));
+        auto flush_buffer = [&](ebm::ExpressionRef new_size_bit) -> expected<ebm::StatementRef> {
+            EBMU_INT_LITERAL(eight, 8);
+            EBM_BINARY_OP(div, ebm::BinaryOp::div, count_t, new_size_bit, eight);
+            MAYBE(cur_offset, make_dynamic_size(div, ebm::SizeUnit::BYTE_DYNAMIC));
             auto write_buffer = make_io_data(io_ref, tmp_buffer, max_buffer_t, {}, cur_offset);
             EBM_WRITE_DATA(flush_buffer, std::move(write_buffer));
             return flush_buffer;
@@ -580,7 +582,7 @@ namespace ebmgen {
                         return unexpect_error("no cfg found for {}:{}", stmt.id.id.value(), to_string(stmt.body.kind));
                     }
                     auto finalized_routes = search_byte_aligned_route(tctx, found->second, r->size.size()->value(), write);
-                    if (finalized_routes.size() > 1) {
+                    if (finalized_routes.size()) {
                         MAYBE_VOID(added, add_lowered_bit_io(tctx, r->io_ref, finalized_routes, write));
                     }
                 }

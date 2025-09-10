@@ -81,9 +81,6 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
             }
             break;
         }
-        case ebm::TypeKind::BOOL:
-            format_char = "?";  // Boolean type
-            break;
         case ebm::TypeKind::ARRAY:
         case ebm::TypeKind::VECTOR: {
             // For arrays/vectors of bytes, use 's' format.
@@ -91,15 +88,18 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
             // This will require custom loop-based reading in Python.
             MAYBE(element_type_obj, module_.get_type(*type.body.element_type()));
             if ((element_type_obj.body.kind == ebm::TypeKind::UINT || element_type_obj.body.kind == ebm::TypeKind::INT) &&
-                element_type_obj.body.size() && *element_type_obj.body.size() == 8 && size.unit == ebm::SizeUnit::BYTE_FIXED) {
+                element_type_obj.body.size() && *element_type_obj.body.size() == 8) {
                 // This is a byte array, use 's' format with the total size
-                if (!size.size()) {
-                    return unexpect_error("Byte array type requires a fixed size for struct format.");
+                if (auto s = size.size()) {
+                    format_char = std::to_string(size.size()->value()) + "s";
                 }
-                format_char = std::to_string(size.size()->value()) + "s";
+                else if (auto r = size.ref()) {
+                    MAYBE(dyn_size, visit_Expression(*this, *r));
+                    format_char = std::format("\" + f\"{{({})}}s", dyn_size.value);
+                }
             }
             else {
-                return unexpect_error("Unsupported array/vector type for struct format string generation.");
+                return unexpect_error("Unsupported array/vector type for struct format string generation: {} {}", to_string(element_type_obj.body.kind), to_string(size.unit));
             }
             break;
         }
@@ -107,5 +107,5 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
             return unexpect_error("Unhandled TypeKind for struct format: {}", to_string(type.body.kind));
     }
 
-    return endian_prefix + format_char;
+    return std::format("\"{}{}\"", endian_prefix, format_char);
 }

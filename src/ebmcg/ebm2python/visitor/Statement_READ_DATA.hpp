@@ -2,11 +2,7 @@
 // We can use variables like `this` (for Visitor) and function parameters directly.
 
 // Get the IOData statement object from the io_statement parameter
-MAYBE(io_data_stmt_obj, this->module_.get_statement(io_statement));
-if (io_data_stmt_obj.body.kind != ebm::StatementOp::READ_DATA) {  // Should be READ_DATA
-    return unexpect_error("Expected READ_DATA statement for Expression_READ_DATA");
-}
-auto& io_data = *io_data_stmt_obj.body.read_data();
+auto& io_data = read_data;
 
 // Get data type string
 MAYBE(data_type, this->module_.get_type(io_data.data_type));
@@ -15,32 +11,6 @@ MAYBE(data_type_str, visit_Type(*this, data_type));
 // Get target statement object from the target_stmt parameter
 MAYBE(target_stmt_obj, this->module_.get_statement(target_stmt));
 ebm::IdentifierRef target_identifier_ref;
-
-if (target_stmt_obj.body.kind == ebm::StatementOp::ASSIGNMENT) {
-    // Resolve the target of the assignment to get the identifier name
-    MAYBE(target_expr_obj, this->module_.get_expression(*target_stmt_obj.body.target()));
-    if (target_expr_obj.body.kind != ebm::ExpressionOp::IDENTIFIER) {
-        return unexpect_error("Expected IDENTIFIER expression for assignment target");
-    }
-    MAYBE(var_decl_stmt_obj, this->module_.get_statement(*target_expr_obj.body.id()));
-    if (var_decl_stmt_obj.body.kind != ebm::StatementOp::VARIABLE_DECL && var_decl_stmt_obj.body.kind != ebm::StatementOp::FIELD_DECL) {
-        return unexpect_error("Expected VARIABLE_DECL or FIELD_DECL for identifier statement");
-    }
-
-    if (var_decl_stmt_obj.body.kind == ebm::StatementOp::VARIABLE_DECL) {
-        target_identifier_ref = var_decl_stmt_obj.body.var_decl()->name;
-    }
-    else {  // FIELD_DECL
-        target_identifier_ref = var_decl_stmt_obj.body.field_decl()->name;
-    }
-}
-else if (target_stmt_obj.body.kind == ebm::StatementOp::VARIABLE_DECL) {
-    // If the target is a VARIABLE_DECL, use its name directly
-    target_identifier_ref = target_stmt_obj.body.var_decl()->name;
-}
-else {
-    return unexpect_error("Expected ASSIGNMENT or VARIABLE_DECL statement for target_stmt in Expression_READ_DATA");
-}
 
 std::string target_var_name = this->module_.get_identifier_or(target_identifier_ref, ebm::AnyRef{target_identifier_ref.id}, "target_var");
 
@@ -69,4 +39,4 @@ else {
     return unexpect_error("Unsupported size unit for READ_DATA operation: {}", to_string(io_data.size.unit));
 }
 
-return "struct.unpack(\"" + struct_format + ", stream.read(" + read_size_str + "))[0]";
+return "struct.unpack(" + struct_format + ", stream.read(" + read_size_str + "))[0]";

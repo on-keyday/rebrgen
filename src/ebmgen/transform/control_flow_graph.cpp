@@ -252,6 +252,7 @@ namespace ebmgen {
         });
     }
 
+    // remove <phi> node (not related to original node)
     std::shared_ptr<CFG> optimize_cfg_node(std::shared_ptr<CFG>& cfg, OptimizeContext& ctx) {
         if (ctx.all_cfg.find(cfg) != ctx.all_cfg.end()) {
             return cfg;

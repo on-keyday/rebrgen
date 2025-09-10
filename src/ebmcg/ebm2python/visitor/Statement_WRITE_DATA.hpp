@@ -1,9 +1,5 @@
 // This code is included within the visit_Statement_WRITE_DATA function.
 // We can use variables like `this` (for Visitor) and function parameters directly.
-if (write_data.attribute.vectorized()) {
-    return visit_Statement(*this, write_data.lowered_statement.id);
-}
-
 if (write_data.lowered_statement.id.id.value() != 0) {
     return visit_Statement(*this, write_data.lowered_statement.id);
 }
@@ -13,42 +9,11 @@ CodeWriter w;
 // Get the IOData statement object from the io_statement parameter
 auto& io_data = write_data;
 
-// Get data type string
-MAYBE(data_type_str, visit_Type(*this, io_data.data_type));
-
 // Visit target_expr_obj to get its Python representation
 MAYBE(target_expr_str, visit_Expression(*this, io_data.target));
 
 // Generate Python code for writing
 MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attribute, io_data.size));
-
-std::string write_size_str;
-if (io_data.size.unit == ebm::SizeUnit::BYTE_FIXED) {
-    if (!io_data.size.size()) {
-        return unexpect_error("Fixed byte size is missing for WRITE_DATA operation.");
-    }
-    write_size_str = std::to_string(io_data.size.size()->value());
-}
-else if (io_data.size.unit == ebm::SizeUnit::BIT_FIXED) {
-    if (!io_data.size.size()) {
-        return unexpect_error("Fixed bit size is missing for WRITE_DATA operation.");
-    }
-    // Convert bits to bytes, rounding up
-    write_size_str = std::to_string((io_data.size.size()->value() + 7) / 8);
-}
-else if (io_data.size.unit == ebm::SizeUnit::DYNAMIC ||
-         io_data.size.unit == ebm::SizeUnit::BIT_DYNAMIC ||
-         io_data.size.unit == ebm::SizeUnit::BYTE_DYNAMIC ||
-         io_data.size.unit == ebm::SizeUnit::ELEMENT_DYNAMIC) {
-    if (!io_data.size.ref()) {
-        return unexpect_error("Dynamic size expression reference is missing for WRITE_DATA operation.");
-    }
-    MAYBE(dynamic_size_expr_str, visit_Expression(*this, *io_data.size.ref()));
-    write_size_str = dynamic_size_expr_str.value;
-}
-else {
-    return unexpect_error("Unsupported size unit for WRITE_DATA operation: {}", to_string(io_data.size.unit));
-}
 
 w.writeln("stream.write(struct.pack(" + struct_format + ", ", target_expr_str.value, "))");
 

@@ -10713,12 +10713,10 @@ namespace ebm2python {
         Flags& flags;
         futils::code::CodeWriter<futils::binary::writer&> root;
         std::vector<CodeWriter> tmp_writers;
-        [[nodiscard]] auto add_writer(CodeWriter** writer) {
+        [[nodiscard]] auto add_writer() {
             tmp_writers.emplace_back();
-            *writer = &tmp_writers.back();
-            return futils::helper::defer([&,writer]() {
+            return futils::helper::defer([&]() {
                 tmp_writers.pop_back();
-                *writer = nullptr;
             });
         }
         CodeWriter* get_writer() {

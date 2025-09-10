@@ -150,4 +150,21 @@ namespace ebmgen {
     inline Error unexpected_nullptr() {
         return futils::error::StrError<const char*>{"Unexpected nullptr"};
     }
+
+#define MAYBE_VOID(out, expr)                                                                 \
+    auto out##____ = expr;                                                                    \
+    if (!out##____) {                                                                         \
+        return [](auto&& o) {                                                                 \
+            if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {                     \
+                return ::ebmgen::unexpect_error(::ebmgen::unexpected_nullptr(), #out, #expr); \
+            }                                                                                 \
+            else {                                                                            \
+                return ::ebmgen::unexpect_error(std::move(o.error()), #out, #expr);           \
+            }                                                                                 \
+        }(out##____);                                                                         \
+    }
+
+#define MAYBE(out, expr)  \
+    MAYBE_VOID(out, expr) \
+    decltype(auto) out = *out##____
 }  // namespace ebmgen

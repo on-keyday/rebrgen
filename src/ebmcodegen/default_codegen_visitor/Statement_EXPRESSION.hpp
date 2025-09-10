@@ -1,6 +1,6 @@
-CodeWriter* w;
-auto writer_added = add_writer(&w);
+auto writer_added = add_writer();
 MAYBE(r, visit_Expression(*this, expression));
-w->write_unformatted(r.value);
-auto result = std::move(w->out());
+MAYBE(got, get_writer());
+got.write_unformatted(r.value);
+auto result = std::move(got.out());
 return result;

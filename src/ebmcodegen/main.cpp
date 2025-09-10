@@ -145,16 +145,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.mode == GenerateMode::CodeGenerator) {
         visitor_stub.writeln("futils::code::CodeWriter<futils::binary::writer&> root;");
         visitor_stub.writeln("std::vector<CodeWriter> tmp_writers;");
-        visitor_stub.writeln("[[nodiscard]] auto add_writer(CodeWriter** writer) {");
+        visitor_stub.writeln("[[nodiscard]] auto add_writer() {");
         {
             auto scope = visitor_stub.indent_scope();
             visitor_stub.writeln("tmp_writers.emplace_back();");
-            visitor_stub.writeln("*writer = &tmp_writers.back();");
-            visitor_stub.writeln("return futils::helper::defer([&,writer]() {");
+            visitor_stub.writeln("return futils::helper::defer([&]() {");
             {
                 auto scope = visitor_stub.indent_scope();
                 visitor_stub.writeln("tmp_writers.pop_back();");
-                visitor_stub.writeln("*writer = nullptr;");
             }
             visitor_stub.writeln("});");
         }

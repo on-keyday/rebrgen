@@ -1,6 +1,8 @@
 /*license*/
 #pragma once
 #include <string>
+#include <ebm/extended_binary_module.hpp>
+#include <ebmgen/common.hpp>
 
 namespace ebmcodegen::util {
     // remove top level brace
@@ -28,5 +30,16 @@ namespace ebmcodegen::util {
             }
         }
         return std::move(brace);
+    }
+
+    ebmgen::expected<std::string> get_size_str(auto&& visitor, const ebm::Size& s) {
+        if (auto size = s.size()) {
+            return std::format("{}", size->value());
+        }
+        else if (auto ref = s.ref()) {
+            MAYBE(expr, visit_Expression(visitor, *ref));
+            return expr.value;
+        }
+        return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
     }
 }  // namespace ebmcodegen::util

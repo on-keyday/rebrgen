@@ -57,6 +57,8 @@ namespace ebmgen {
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
         std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "tmp") const;
 
+        const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
+
         // same as get_statement(ebm::StatementRef{module().max_id.id})
         const ebm::Statement* get_entry_point() const;
 

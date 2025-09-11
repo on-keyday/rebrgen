@@ -1,0 +1,1 @@
+return visit_Statement(*this, match_statement.lowered_if_statement.id);

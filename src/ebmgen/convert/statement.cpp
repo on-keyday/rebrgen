@@ -317,6 +317,21 @@ namespace ebmgen {
 
         for (auto& b : match_stmt.branches.container) {
             auto if_cond = ctx.repository().get_statement(b)->body.match_branch();
+            auto cond_expr = ctx.repository().get_expression(if_cond->condition.cond);
+            // any range -> else block or
+            if (cond_expr->body.kind == ebm::ExpressionOp::RANGE &&
+                cond_expr->body.start()->id.value() == 0 &&
+                cond_expr->body.end()->id.value() == 0) {
+                if (lowered_if.size()) {
+                    lowered_if.back().second.else_block = if_cond->body;
+                    break;
+                }
+                if (node->trial_match) {
+                    return unexpect_error("Trial match is not supported yet");
+                }
+                match_stmt.lowered_if_statement = ebm::LoweredStatementRef{if_cond->body};
+                break;
+            }
             ebm::IfStatement tmp_if;
             tmp_if.then_block = if_cond->body;
             if (match_stmt.target.id.value() == 0) {

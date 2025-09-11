@@ -417,7 +417,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 {
                     auto scope = visitor_stub.indent_scope();
                     if (flags.mode == GenerateMode::CodeGenerator) {
-                        visitor_stub.writeln("return \"{{Unimplemented ", kind, "_", to_string(T(i)), "}}\";");
+                        visitor_stub.writeln("return std::format(\"{{{{Unimplemented ", kind, "_", to_string(T(i)), " {}}}}}\",item_id.id.value());");
                     }
                 }
                 visitor_stub.writeln("}");

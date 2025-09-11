@@ -1,5 +1,6 @@
 /*license*/
 #pragma once
+#include <functional>
 #include <string>
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
@@ -44,22 +45,27 @@ namespace ebmcodegen::util {
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
     }
 
-    ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref) {
+    struct DefaultValueOption {
+        std::string_view object_init = "{}";
+        std::string_view vector_init = "[]";
+    };
+
+    ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
         const ebmgen::MappingTable& module_ = visitor.module_;
         MAYBE(type, module_.get_type(ref));
         switch (type.body.kind) {
             case ebm::TypeKind::INT:
             case ebm::TypeKind::UINT: {
-                ebm::ExpressionBody int_literal;
-                int_literal.kind = ebm::ExpressionOp::LITERAL_INT;
-                int_literal.int_value(*varint(0));
+                ebm::Expression int_literal;
+                int_literal.body.kind = ebm::ExpressionOp::LITERAL_INT;
+                int_literal.body.int_value(*ebmgen::varint(0));
                 MAYBE(val, visit_Expression(visitor, int_literal));
                 return val.value;
             }
             case ebm::TypeKind::BOOL: {
-                ebm::ExpressionBody bool_literal;
-                bool_literal.kind = ebm::ExpressionOp::LITERAL_BOOL;
-                bool_literal.bool_value(0);
+                ebm::Expression bool_literal;
+                bool_literal.body.kind = ebm::ExpressionOp::LITERAL_BOOL;
+                bool_literal.body.bool_value(0);
                 MAYBE(val, visit_Expression(visitor, bool_literal));
                 return val.value;
             }
@@ -67,13 +73,16 @@ namespace ebmcodegen::util {
             case ebm::TypeKind::STRUCT:
             case ebm::TypeKind::RECURSIVE_STRUCT: {
                 MAYBE(id, type.body.id());
-                return module_.get_identifier_or(id);
+                return std::format("{}{}", module_.get_identifier_or(id), option.object_init);
             }
             case ebm::TypeKind::ARRAY: {
-                MAYBE(size, type.body.length());
+                return std::format("{}", option.vector_init);
+            }
+            case ebm::TypeKind::VECTOR: {
+                return std::format("{}", option.vector_init);
             }
             default: {
-                return unexpect_error("unsupported default: {}", to_string(type.body.kind));
+                return ebmgen::unexpect_error("unsupported default: {}", to_string(type.body.kind));
             }
         }
     }

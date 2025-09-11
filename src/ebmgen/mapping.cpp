@@ -140,4 +140,12 @@ namespace ebmgen {
         }
         return std::format("{}{}", prefix, ref.id.value());
     }
+
+    const ebm::Identifier* MappingTable::get_identifier(const ebm::ExpressionRef& ref) const {
+        if (auto expr = get_expression(ref); expr && expr->body.id()) {
+            return get_identifier(*expr->body.id());
+        }
+        return nullptr;
+    }
+
 }  // namespace ebmgen

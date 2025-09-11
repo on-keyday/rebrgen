@@ -140,7 +140,7 @@ namespace ebmgen {
     expected<void> DecoderConverter::decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
         EBMA_CONVERT_TYPE(element_type, aty->element_type);
         const auto elem_body = ctx.repository().get_type(element_type);
-        const auto is_byte = elem_body->body.kind == ebm::TypeKind::UINT && *elem_body->body.size() == 8;
+        const auto is_byte = elem_body->body.kind == ebm::TypeKind::UINT && elem_body->body.size()->value() == 8;
         auto fixed_unit = [is_byte]() -> ebm::SizeUnit {
             return is_byte ? ebm::SizeUnit::BYTE_FIXED : ebm::SizeUnit::ELEMENT_FIXED;
         };

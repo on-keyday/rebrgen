@@ -31,7 +31,7 @@ switch (type.body.kind) {
     case ebm::TypeKind::VECTOR: {  // Handle both ARRAY and VECTOR here
         MAYBE(element_type_obj, module_.get_type(*type.body.element_type()));
         if ((element_type_obj.body.kind == ebm::TypeKind::UINT || element_type_obj.body.kind == ebm::TypeKind::INT) &&
-            element_type_obj.body.size() && *element_type_obj.body.size() == 8) {
+            element_type_obj.body.size() && element_type_obj.body.size()->value() == 8) {
             return "bytes";
         }
         else {

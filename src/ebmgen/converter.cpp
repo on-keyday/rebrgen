@@ -173,7 +173,8 @@ namespace ebmgen {
     expected<ebm::TypeRef> get_unsigned_n_int(ConverterContext& ctx, size_t n) {
         ebm::TypeBody typ;
         typ.kind = ebm::TypeKind::UINT;
-        typ.size(n);
+        MAYBE(bit_size, varint(n));
+        typ.size(bit_size);
         EBMA_ADD_TYPE(type_ref, std::move(typ));
         return type_ref;
     }

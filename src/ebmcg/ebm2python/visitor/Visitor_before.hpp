@@ -88,7 +88,7 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
             // This will require custom loop-based reading in Python.
             MAYBE(element_type_obj, module_.get_type(*type.body.element_type()));
             if ((element_type_obj.body.kind == ebm::TypeKind::UINT || element_type_obj.body.kind == ebm::TypeKind::INT) &&
-                element_type_obj.body.size() && *element_type_obj.body.size() == 8) {
+                element_type_obj.body.size() && element_type_obj.body.size()->value() == 8) {
                 // This is a byte array, use 's' format with the total size
                 if (auto s = size.size()) {
                     format_char = std::to_string(size.size()->value()) + "s";

@@ -116,8 +116,8 @@ namespace ebmgen {
             }
             // Handle int/uint size and signedness conversions
             if ((src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) && dest->body.size() && src->body.size()) {
-                auto dest_size = *dest->body.size();
-                auto src_size = *src->body.size();
+                auto dest_size = dest->body.size()->value();
+                auto src_size = src->body.size()->value();
                 if (dest_size < src_size) {
                     return ebm::CastType::LARGE_INT_TO_SMALL_INT;
                 }

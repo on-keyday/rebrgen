@@ -3,6 +3,7 @@
 #include <string>
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
+#include "ebmgen/mapping.hpp"
 
 namespace ebmcodegen::util {
     // remove top level brace
@@ -41,5 +42,39 @@ namespace ebmcodegen::util {
             return expr.value;
         }
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
+    }
+
+    ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref) {
+        const ebmgen::MappingTable& module_ = visitor.module_;
+        MAYBE(type, module_.get_type(ref));
+        switch (type.body.kind) {
+            case ebm::TypeKind::INT:
+            case ebm::TypeKind::UINT: {
+                ebm::ExpressionBody int_literal;
+                int_literal.kind = ebm::ExpressionOp::LITERAL_INT;
+                int_literal.int_value(*varint(0));
+                MAYBE(val, visit_Expression(visitor, int_literal));
+                return val.value;
+            }
+            case ebm::TypeKind::BOOL: {
+                ebm::ExpressionBody bool_literal;
+                bool_literal.kind = ebm::ExpressionOp::LITERAL_BOOL;
+                bool_literal.bool_value(0);
+                MAYBE(val, visit_Expression(visitor, bool_literal));
+                return val.value;
+            }
+            case ebm::TypeKind::ENUM:
+            case ebm::TypeKind::STRUCT:
+            case ebm::TypeKind::RECURSIVE_STRUCT: {
+                MAYBE(id, type.body.id());
+                return module_.get_identifier_or(id);
+            }
+            case ebm::TypeKind::ARRAY: {
+                MAYBE(size, type.body.length());
+            }
+            default: {
+                return unexpect_error("unsupported default: {}", to_string(type.body.kind));
+            }
+        }
     }
 }  // namespace ebmcodegen::util

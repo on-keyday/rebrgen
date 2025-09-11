@@ -3139,13 +3139,13 @@ namespace ebm {
     struct EBM_API TypeBody{
         TypeKind kind{};
         struct EBM_API union_struct_86{
-            std::uint8_t size = 0;
+            Varint size;
         };
         struct EBM_API union_struct_87{
-            std::uint8_t size = 0;
+            Varint size;
         };
         struct EBM_API union_struct_88{
-            std::uint8_t size = 0;
+            Varint size;
         };
         struct EBM_API union_struct_89{
         };
@@ -3231,10 +3231,10 @@ namespace ebm {
         TypeRef* return_type();
         bool return_type(TypeRef&& v);
         bool return_type(const TypeRef& v);
-        const std::uint8_t* size() const;
-        std::uint8_t* size();
-        bool size(std::uint8_t&& v);
-        bool size(const std::uint8_t& v);
+        const Varint* size() const;
+        Varint* size();
+        bool size(Varint&& v);
+        bool size(const Varint& v);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;

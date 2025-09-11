@@ -18,7 +18,7 @@ namespace ebmgen {
                 return unexpect_error("Invalid type reference for max value");
             }
             if (type_ref->body.kind == ebm::TypeKind::INT || type_ref->body.kind == ebm::TypeKind::UINT) {
-                return std::make_pair(*type_ref->body.size(), type_ref->body.kind == ebm::TypeKind::INT);
+                return std::make_pair(type_ref->body.size()->value(), type_ref->body.kind == ebm::TypeKind::INT);
             }
             else if (type_ref->body.kind == ebm::TypeKind::ENUM) {
                 auto base_type = type_ref->body.base_type();

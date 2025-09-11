@@ -595,9 +595,9 @@ format Types:
 format TypeBody:
     kind :TypeKind
     match kind:
-        TypeKind.INT => size :u8 # Size in bits (e.g., 8, 16, 32, 64)
-        TypeKind.UINT => size :u8 # Size in bits (e.g., 8, 16, 32, 64)
-        TypeKind.FLOAT => size :u8 # Size in bits (e.g., 32, 64)
+        TypeKind.INT => size :Varint # Size in bits (e.g., 8, 16, 32, 64)
+        TypeKind.UINT => size :Varint # Size in bits (e.g., 8, 16, 32, 64)
+        TypeKind.FLOAT => size :Varint # Size in bits (e.g., 32, 64)
         TypeKind.BOOL => .. # Boolean type
         TypeKind.ARRAY:
             element_type :TypeRef

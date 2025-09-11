@@ -12155,7 +12155,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const std::uint8_t& size) {
+        expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
             #endif
@@ -12179,7 +12179,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Type_UINT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const std::uint8_t& size) {
+        expected<Result> visit_Type_UINT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_UINT_before.hpp")
             #include "visitor/Type_UINT_before.hpp"
             #endif
@@ -12203,7 +12203,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Type_FLOAT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const std::uint8_t& size) {
+        expected<Result> visit_Type_FLOAT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_FLOAT_before.hpp")
             #include "visitor/Type_FLOAT_before.hpp"
             #endif

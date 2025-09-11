@@ -13270,7 +13270,7 @@ namespace ebm {
         }
         return false;
     }
-    const std::uint8_t* TypeBody::size() const {
+    const Varint* TypeBody::size() const {
         if (TypeKind::INT==(*this).kind) {
         if(!std::holds_alternative<union_struct_86>(union_variant_85)) {
             return nullptr;
@@ -13291,10 +13291,10 @@ namespace ebm {
         }
         return nullptr;
     }
-    std::uint8_t* TypeBody::size() {
-        return const_cast<std::uint8_t*>(std::as_const(*this).size());
+    Varint* TypeBody::size() {
+        return const_cast<Varint*>(std::as_const(*this).size());
     }
-    bool TypeBody::size(const std::uint8_t& v) {
+    bool TypeBody::size(const Varint& v) {
         if (TypeKind::INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_86>(union_variant_85)) {
                 union_variant_85 = union_struct_86();
@@ -13318,7 +13318,7 @@ namespace ebm {
         }
         return false;
     }
-    bool TypeBody::size(std::uint8_t&& v) {
+    bool TypeBody::size(Varint&& v) {
         if (TypeKind::INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_86>(union_variant_85)) {
                 union_variant_85 = union_struct_86();
@@ -15689,24 +15689,24 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_86>(union_variant_85)) {
                 return ::futils::error::Error<>("encode: TypeBody: union_variant_85 variant alternative union_struct_86 is not set",::futils::error::Category::lib);
             }
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(std::get<1>((*this).union_variant_85).size) ,true)) {
-                return ::futils::error::Error<>("encode: TypeBody::size: write std::uint8_t failed",::futils::error::Category::lib);
+            if (auto err = std::get<1>((*this).union_variant_85).size.encode(w)) {
+                return err;
             }
         }
         else if (TypeKind::UINT==(*this).kind) {
             if(!std::holds_alternative<union_struct_87>(union_variant_85)) {
                 return ::futils::error::Error<>("encode: TypeBody: union_variant_85 variant alternative union_struct_87 is not set",::futils::error::Category::lib);
             }
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(std::get<2>((*this).union_variant_85).size) ,true)) {
-                return ::futils::error::Error<>("encode: TypeBody::size: write std::uint8_t failed",::futils::error::Category::lib);
+            if (auto err = std::get<2>((*this).union_variant_85).size.encode(w)) {
+                return err;
             }
         }
         else if (TypeKind::FLOAT==(*this).kind) {
             if(!std::holds_alternative<union_struct_88>(union_variant_85)) {
                 return ::futils::error::Error<>("encode: TypeBody: union_variant_85 variant alternative union_struct_88 is not set",::futils::error::Category::lib);
             }
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(std::get<3>((*this).union_variant_85).size) ,true)) {
-                return ::futils::error::Error<>("encode: TypeBody::size: write std::uint8_t failed",::futils::error::Category::lib);
+            if (auto err = std::get<3>((*this).union_variant_85).size.encode(w)) {
+                return err;
             }
         }
         else if (TypeKind::BOOL==(*this).kind) {
@@ -15823,24 +15823,24 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_86>(union_variant_85)) {
                 union_variant_85 = union_struct_86();
             }
-            if (!::futils::binary::read_num(r,std::get<1>((*this).union_variant_85).size ,true)) {
-                return ::futils::error::Error<>("decode: TypeBody::size: read int failed",::futils::error::Category::lib);
+            if (auto err = std::get<1>((*this).union_variant_85).size.decode(r)) {
+                return err;
             }
         }
         else if (TypeKind::UINT==(*this).kind) {
             if(!std::holds_alternative<union_struct_87>(union_variant_85)) {
                 union_variant_85 = union_struct_87();
             }
-            if (!::futils::binary::read_num(r,std::get<2>((*this).union_variant_85).size ,true)) {
-                return ::futils::error::Error<>("decode: TypeBody::size: read int failed",::futils::error::Category::lib);
+            if (auto err = std::get<2>((*this).union_variant_85).size.decode(r)) {
+                return err;
             }
         }
         else if (TypeKind::FLOAT==(*this).kind) {
             if(!std::holds_alternative<union_struct_88>(union_variant_85)) {
                 union_variant_85 = union_struct_88();
             }
-            if (!::futils::binary::read_num(r,std::get<3>((*this).union_variant_85).size ,true)) {
-                return ::futils::error::Error<>("decode: TypeBody::size: read int failed",::futils::error::Category::lib);
+            if (auto err = std::get<3>((*this).union_variant_85).size.decode(r)) {
+                return err;
             }
         }
         else if (TypeKind::BOOL==(*this).kind) {

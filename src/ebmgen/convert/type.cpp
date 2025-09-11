@@ -43,7 +43,8 @@ namespace ebmgen {
                 if (!n->bit_size) {
                     return unexpect_error("IntType must have a bit_size");
                 }
-                body.size(*n->bit_size);
+                MAYBE(bit_size, varint(*n->bit_size));
+                body.size(bit_size);
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::BoolType>>) {
                 body.kind = ebm::TypeKind::BOOL;
@@ -53,7 +54,8 @@ namespace ebmgen {
                 if (!n->bit_size) {
                     return unexpect_error("FloatType must have a bit_size");
                 }
-                body.size(*n->bit_size);
+                MAYBE(bit_size, varint(*n->bit_size));
+                body.size(bit_size);
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::IdentType>>) {
                 if (auto locked = n->base.lock()) {
@@ -87,7 +89,8 @@ namespace ebmgen {
                     if (!val) {
                         return unexpect_error("Failed to parse IntLiteralType value");
                     }
-                    body.size(*val == 0 ? 1 : futils::binary::log2i(*val));  // +1 to include the sign bit
+                    MAYBE(bit_size, varint(*val == 0 ? 1 : futils::binary::log2i(*val)));
+                    body.size(bit_size);  // +1 to include the sign bit
                 }
                 else {
                     return unexpect_error("IntLiteralType has no base literal");

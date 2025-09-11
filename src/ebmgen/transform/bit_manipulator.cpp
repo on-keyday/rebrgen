@@ -4,7 +4,7 @@
 namespace ebmgen {
     expected<ebm::StatementRef> xassign(ConverterContext& ctx, ebm::BinaryOp op, ebm::TypeRef type, ebm::ExpressionRef target, ebm::ExpressionRef value) {
         EBM_BINARY_OP(operated, op, type, target, value);
-        EBM_ASSIGNMENT(assign, target, value);
+        EBM_ASSIGNMENT(assign, target, operated);
         return assign;
     }
 

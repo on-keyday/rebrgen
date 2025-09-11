@@ -414,3 +414,4 @@ format TriCondInExpression:
 
     fn decode():
         input.get(<[5]u8>)
+

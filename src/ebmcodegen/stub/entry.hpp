@@ -10,7 +10,6 @@
 #include <file/file_stream.h>
 #include <json/stringer.h>
 #include <set>
-#include "cmdline/option/parsers.h"
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <tool/common/em_main.h>

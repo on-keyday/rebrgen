@@ -4280,6 +4280,131 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_SUB_BYTE_RANGE = requires(Visitor v) {
+         { v.visit_Statement_SUB_BYTE_RANGE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_SUB_BYTE_RANGE_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp")
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp"
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_post_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_after.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp")
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp"
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_post_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_after.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_SUB_BYTE_RANGE<Visitor>) {
+            result = visitor.visit_Statement_SUB_BYTE_RANGE(in.id,kind);
+        }
+        else if constexpr (has_visitor_Statement_SUB_BYTE_RANGE_call<Visitor>) {
+            result = visitor(in.id,kind);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp")
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_pre_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp"
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_post_default.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_after.hpp")
+        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in) {
         #if __has_include("visitor/Statement_dispatch_before.hpp")
         #include "visitor/Statement_dispatch_before.hpp"
@@ -4363,6 +4488,8 @@ namespace ebm2python {
             return dispatch_Statement_ERROR_REPORT(visitor,in);
         case ebm::StatementOp::LOWERED_STATEMENTS:
             return dispatch_Statement_LOWERED_STATEMENTS(visitor,in);
+        case ebm::StatementOp::SUB_BYTE_RANGE:
+            return dispatch_Statement_SUB_BYTE_RANGE(visitor,in);
         default:
             return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
         }
@@ -7829,6 +7956,274 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Expression_AVAILABLE = requires(Visitor v) {
+         { v.visit_Expression_AVAILABLE(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_AVAILABLE_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_AVAILABLE(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_validate_before.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_validate.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_validate.hpp")
+        #if __has_include("visitor/Expression_AVAILABLE_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_validate.hpp"
+        #if __has_include("visitor/Expression_AVAILABLE_pre_validate_post_default.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_validate_after.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        if (!in.body.lowered_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::lowered_expr");
+        }
+        auto& lowered_expr = *in.body.lowered_expr();
+        if (!in.body.target_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::target_expr");
+        }
+        auto& target_expr = *in.body.target_expr();
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_visit_before.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_visit.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_visit.hpp")
+        #if __has_include("visitor/Expression_AVAILABLE_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_visit.hpp"
+        #if __has_include("visitor/Expression_AVAILABLE_pre_visit_post_default.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_pre_visit_after.hpp")
+        #include "visitor/Expression_AVAILABLE_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_AVAILABLE<Visitor>) {
+            result = visitor.visit_Expression_AVAILABLE(in.id,type,kind,lowered_expr,target_expr);
+        }
+        else if constexpr (has_visitor_Expression_AVAILABLE_call<Visitor>) {
+            result = visitor(in.id,type,kind,lowered_expr,target_expr);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_post_visit_before.hpp")
+        #include "visitor/Expression_AVAILABLE_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_post_visit.hpp")
+        #include "visitor/Expression_AVAILABLE_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_post_visit.hpp")
+        #if __has_include("visitor/Expression_AVAILABLE_post_visit_pre_default.hpp")
+        #include "visitor/Expression_AVAILABLE_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_post_visit.hpp"
+        #if __has_include("visitor/Expression_AVAILABLE_post_visit_post_default.hpp")
+        #include "visitor/Expression_AVAILABLE_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_AVAILABLE_post_visit_after.hpp")
+        #include "visitor/Expression_AVAILABLE_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
+    concept has_visitor_Expression_SIZEOF = requires(Visitor v) {
+         { v.visit_Expression_SIZEOF(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_SIZEOF_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_SIZEOF(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_validate_before.hpp")
+        #include "visitor/Expression_SIZEOF_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_validate.hpp")
+        #include "visitor/Expression_SIZEOF_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_validate.hpp")
+        #if __has_include("visitor/Expression_SIZEOF_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_SIZEOF_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_validate.hpp"
+        #if __has_include("visitor/Expression_SIZEOF_pre_validate_post_default.hpp")
+        #include "visitor/Expression_SIZEOF_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_validate_after.hpp")
+        #include "visitor/Expression_SIZEOF_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        if (!in.body.lowered_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::lowered_expr");
+        }
+        auto& lowered_expr = *in.body.lowered_expr();
+        if (!in.body.target_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::target_expr");
+        }
+        auto& target_expr = *in.body.target_expr();
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_visit_before.hpp")
+        #include "visitor/Expression_SIZEOF_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_visit.hpp")
+        #include "visitor/Expression_SIZEOF_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_visit.hpp")
+        #if __has_include("visitor/Expression_SIZEOF_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_SIZEOF_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_visit.hpp"
+        #if __has_include("visitor/Expression_SIZEOF_pre_visit_post_default.hpp")
+        #include "visitor/Expression_SIZEOF_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_pre_visit_after.hpp")
+        #include "visitor/Expression_SIZEOF_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_SIZEOF<Visitor>) {
+            result = visitor.visit_Expression_SIZEOF(in.id,type,kind,lowered_expr,target_expr);
+        }
+        else if constexpr (has_visitor_Expression_SIZEOF_call<Visitor>) {
+            result = visitor(in.id,type,kind,lowered_expr,target_expr);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_post_visit_before.hpp")
+        #include "visitor/Expression_SIZEOF_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_post_visit.hpp")
+        #include "visitor/Expression_SIZEOF_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_post_visit.hpp")
+        #if __has_include("visitor/Expression_SIZEOF_post_visit_pre_default.hpp")
+        #include "visitor/Expression_SIZEOF_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_post_visit.hpp"
+        #if __has_include("visitor/Expression_SIZEOF_post_visit_post_default.hpp")
+        #include "visitor/Expression_SIZEOF_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SIZEOF_post_visit_after.hpp")
+        #include "visitor/Expression_SIZEOF_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
@@ -7900,6 +8295,10 @@ namespace ebm2python {
             return dispatch_Expression_CONDITIONAL_STATEMENT(visitor,in);
         case ebm::ExpressionOp::CONDITIONAL:
             return dispatch_Expression_CONDITIONAL(visitor,in);
+        case ebm::ExpressionOp::AVAILABLE:
+            return dispatch_Expression_AVAILABLE(visitor,in);
+        case ebm::ExpressionOp::SIZEOF:
+            return dispatch_Expression_SIZEOF(visitor,in);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -11531,6 +11930,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Statement_SUB_BYTE_RANGE(const ebm::StatementRef& item_id,const ebm::StatementOp& kind) {
+            #if __has_include("visitor/Statement_SUB_BYTE_RANGE_before.hpp")
+            #include "visitor/Statement_SUB_BYTE_RANGE_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_SUB_BYTE_RANGE.hpp")
+            #include "visitor/Statement_SUB_BYTE_RANGE.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp")
+            #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_default.hpp")
+            #include "visitor/Statement_SUB_BYTE_RANGE_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp"
+            #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_default.hpp")
+            #include "visitor/Statement_SUB_BYTE_RANGE_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_SUB_BYTE_RANGE_after.hpp")
+            #include "visitor/Statement_SUB_BYTE_RANGE_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Statement_SUB_BYTE_RANGE {}}}}}",item_id.id.value());
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Expression_LITERAL_INT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::Varint& int_value) {
             #if __has_include("visitor/Expression_LITERAL_INT_before.hpp")
             #include "visitor/Expression_LITERAL_INT_before.hpp"
@@ -12155,6 +12578,54 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_AVAILABLE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            #if __has_include("visitor/Expression_AVAILABLE_before.hpp")
+            #include "visitor/Expression_AVAILABLE_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_AVAILABLE.hpp")
+            #include "visitor/Expression_AVAILABLE.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE.hpp")
+            #if __has_include("visitor/Expression_AVAILABLE_pre_default.hpp")
+            #include "visitor/Expression_AVAILABLE_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE.hpp"
+            #if __has_include("visitor/Expression_AVAILABLE_post_default.hpp")
+            #include "visitor/Expression_AVAILABLE_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_AVAILABLE_after.hpp")
+            #include "visitor/Expression_AVAILABLE_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_AVAILABLE {}}}}}",item_id.id.value());
+            }
+            #endif
+            return {};
+        }
+        expected<Result> visit_Expression_SIZEOF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            #if __has_include("visitor/Expression_SIZEOF_before.hpp")
+            #include "visitor/Expression_SIZEOF_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SIZEOF.hpp")
+            #include "visitor/Expression_SIZEOF.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp")
+            #if __has_include("visitor/Expression_SIZEOF_pre_default.hpp")
+            #include "visitor/Expression_SIZEOF_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp"
+            #if __has_include("visitor/Expression_SIZEOF_post_default.hpp")
+            #include "visitor/Expression_SIZEOF_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SIZEOF_after.hpp")
+            #include "visitor/Expression_SIZEOF_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_SIZEOF {}}}}}",item_id.id.value());
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
@@ -12692,6 +13163,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_PHI_NODE<Visitor>, "Visitor does not implement visit_Statement_PHI_NODE");
     static_assert(has_visitor_Statement_ERROR_REPORT<Visitor>, "Visitor does not implement visit_Statement_ERROR_REPORT");
     static_assert(has_visitor_Statement_LOWERED_STATEMENTS<Visitor>, "Visitor does not implement visit_Statement_LOWERED_STATEMENTS");
+    static_assert(has_visitor_Statement_SUB_BYTE_RANGE<Visitor>, "Visitor does not implement visit_Statement_SUB_BYTE_RANGE");
     static_assert(has_visitor_Expression_LITERAL_INT<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT");
     static_assert(has_visitor_Expression_LITERAL_INT64<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT64");
     static_assert(has_visitor_Expression_LITERAL_BOOL<Visitor>, "Visitor does not implement visit_Expression_LITERAL_BOOL");
@@ -12718,6 +13190,8 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_WRITE_DATA<Visitor>, "Visitor does not implement visit_Expression_WRITE_DATA");
     static_assert(has_visitor_Expression_CONDITIONAL_STATEMENT<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL_STATEMENT");
     static_assert(has_visitor_Expression_CONDITIONAL<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL");
+    static_assert(has_visitor_Expression_AVAILABLE<Visitor>, "Visitor does not implement visit_Expression_AVAILABLE");
+    static_assert(has_visitor_Expression_SIZEOF<Visitor>, "Visitor does not implement visit_Expression_SIZEOF");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");

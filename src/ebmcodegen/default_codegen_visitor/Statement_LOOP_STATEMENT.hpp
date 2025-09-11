@@ -1,5 +1,5 @@
 /*license*/
-if (loop.lowered_statement.id.id.value() != 0) {
+if (!is_nil(loop.lowered_statement.id)) {
     return visit_Statement(*this, loop.lowered_statement.id);
 }
 CodeWriter w;

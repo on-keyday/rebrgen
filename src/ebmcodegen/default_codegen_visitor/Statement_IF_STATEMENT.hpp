@@ -21,7 +21,7 @@ then_scope.execute();
 w.write(end_block);
 auto els_block = if_statement.else_block;
 auto if_word = use_elif ? "elif" : "if";
-while (els_block.id.value() != 0) {
+while (!is_nil(els_block)) {
     if (!use_elif) {
         w.write(" else ");
     }

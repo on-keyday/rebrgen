@@ -334,7 +334,7 @@ namespace ebmgen {
             }
             ebm::IfStatement tmp_if;
             tmp_if.then_block = if_cond->body;
-            if (match_stmt.target.id.value() == 0) {
+            if (is_nil(match_stmt.target)) {
                 tmp_if.condition = if_cond->condition;
             }
             else {
@@ -349,7 +349,7 @@ namespace ebmgen {
             lowered_if.push_back({if_id, std::move(tmp_if)});
         }
         for (auto& [if_id, if_stmt] : lowered_if) {
-            if (match_stmt.lowered_if_statement.id.id.value() == 0) {
+            if (is_nil(match_stmt.lowered_if_statement.id)) {
                 match_stmt.lowered_if_statement = ebm::LoweredStatementRef{if_id};
             }
             ebm::StatementBody if_body;

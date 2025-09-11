@@ -237,7 +237,7 @@ namespace ebmgen {
         }
 
         expected<ebm::StatementRef> get_current_loop_id() const {
-            if (current_loop_id.id.value() == 0) {
+            if (is_nil(current_loop_id)) {
                 return unexpect_error("No current loop");
             }
             return current_loop_id;
@@ -252,7 +252,7 @@ namespace ebmgen {
         }
 
         expected<ebm::StatementRef> get_current_yield_statement() const {
-            if (current_yield_statement.id.value() == 0) {
+            if (is_nil(current_yield_statement)) {
                 return unexpect_error("No current yield statement");
             }
             return current_yield_statement;
@@ -437,7 +437,7 @@ namespace ebmgen {
         }
 
         expected<ebm::ExpressionRef> add_expr(ebm::ExpressionBody&& body) {
-            if (body.type.id.value() == 0) {
+            if (is_nil(body.type)) {
                 return unexpect_error("Expression type is not set: {}", to_string(body.kind));
             }
             return expression_repo.add(ident_source, std::move(body));

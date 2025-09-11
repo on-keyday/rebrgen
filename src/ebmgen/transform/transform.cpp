@@ -211,7 +211,7 @@ namespace ebmgen {
                 for (const auto& item : vec) {
                     item.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                         if constexpr (AnyRef<decltype(val)>) {
-                            if (val.id.value() != 0) {
+                            if (!is_nil(val)) {
                                 used_refs[val.id.value()].push_back(ebm::AnyRef{item.id.id});
                             }
                         }
@@ -316,7 +316,7 @@ namespace ebmgen {
                 }
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
                     if constexpr (AnyRef<decltype(val)>) {
-                        if (val.id.value() != 0) {
+                        if (!is_nil(val)) {
                             auto it = old_to_new.find(val.id.value());
                             if (it != old_to_new.end()) {
                                 val.id = it->second.id;
@@ -546,7 +546,7 @@ namespace ebmgen {
                     }
                     append(block, update_current_bit_offset);
                     EBM_BLOCK(lowered_bit_operation, std::move(block));
-                    if (io_copy.lowered_statement.id.id.value() != 0) {
+                    if (!is_nil(io_copy.lowered_statement.id)) {
                         MAYBE(lowered_stmts, tctx.tctx.statement_repository().get(io_copy.lowered_statement.id));
                         MAYBE(stmts, lowered_stmts.body.lowered_statements());
                         append(stmts, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_bit_operation));
@@ -792,7 +792,7 @@ namespace ebmgen {
         for (auto& stmt : statements) {
             stmt.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                 if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::ExpressionRef>) {
-                    if (val.id.value() != 0) {
+                    if (!is_nil(val)) {
                         toplevel_expressions.insert(val.id.value());
                     }
                 }

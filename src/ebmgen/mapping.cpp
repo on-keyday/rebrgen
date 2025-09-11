@@ -12,7 +12,7 @@ namespace ebmgen {
                 map[item.id.id.value()] = &item;
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
                     if constexpr (AnyRef<decltype(val)>) {
-                        if (val.id.value() != 0) {
+                        if (!is_nil(val)) {
                             inverse_refs_[val.id.value()].push_back(InverseRef{
                                 .name = name,
                                 .index = index,

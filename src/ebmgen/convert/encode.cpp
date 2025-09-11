@@ -177,9 +177,9 @@ namespace ebmgen {
         EBM_COUNTER_LOOP_END(loop_stmt, counter, length, encode_stmt);
 
         ebm::Block block;
-        block.container.reserve(2 + (assert_.id.value() != 0));
+        block.container.reserve(2 + (!is_nil(assert_)));
         append(block, counter_def);
-        if (assert_.id.value() != 0) {
+        if (!is_nil(assert_)) {
             append(block, assert_);
         }
         append(block, loop_stmt);

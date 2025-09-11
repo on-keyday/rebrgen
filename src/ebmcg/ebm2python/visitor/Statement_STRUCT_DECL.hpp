@@ -13,14 +13,14 @@ for (auto& field_ref : struct_decl.fields.container) {
 }
 
 // Visit encode_fn if it exists
-if (struct_decl.encode_fn.id.value() != 0) {  // Corrected: Check value() of Varint id
+if (!is_nil(struct_decl.encode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(encode_fn_stmt, this->module_.get_statement(struct_decl.encode_fn));
     MAYBE(res, visit_Statement(*this, encode_fn_stmt));
     w.write_unformatted(res.value);
 }
 
 // Visit decode_fn if it exists
-if (struct_decl.decode_fn.id.value() != 0) {  // Corrected: Check value() of Varint id
+if (!is_nil(struct_decl.decode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(decode_fn_stmt, this->module_.get_statement(struct_decl.decode_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
     w.write_unformatted(res.value);

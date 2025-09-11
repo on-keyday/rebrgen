@@ -2,7 +2,7 @@
 // We can use variables like `this` (for Visitor) and function parameters directly.
 
 // Get the IOData statement object from the io_statement parameter
-if (read_data.lowered_statement.id.id.value() != 0) {
+if (!is_nil(read_data.lowered_statement.id)) {
     return visit_Statement(*this, read_data.lowered_statement.id);
 }
 auto& io_data = read_data;

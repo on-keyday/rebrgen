@@ -167,4 +167,9 @@ namespace ebmgen {
 #define MAYBE(out, expr)  \
     MAYBE_VOID(out, expr) \
     decltype(auto) out = *out##____
+
+    template <AnyRef T>
+    constexpr bool is_nil(T t) {
+        return t.id.value() == 0;
+    }
 }  // namespace ebmgen

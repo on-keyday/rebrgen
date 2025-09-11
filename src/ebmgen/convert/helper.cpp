@@ -135,7 +135,7 @@ namespace ebmgen {
         return body;
     }
 
-#define ASSERT_ID(id_) assert(id_.id.value() != 0 && "Invalid ID for expression or statement")
+#define ASSERT_ID(id_) assert(!is_nil(id_) && "Invalid ID for expression or statement")
 
     ebm::StatementBody make_if_statement(ebm::ExpressionRef condition, ebm::StatementRef then_block, ebm::StatementRef else_block) {
         ebm::StatementBody body;

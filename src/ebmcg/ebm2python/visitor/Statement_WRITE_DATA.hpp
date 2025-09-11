@@ -1,6 +1,6 @@
 // This code is included within the visit_Statement_WRITE_DATA function.
 // We can use variables like `this` (for Visitor) and function parameters directly.
-if (write_data.lowered_statement.id.id.value() != 0) {
+if (!is_nil(write_data.lowered_statement.id)) {
     return visit_Statement(*this, write_data.lowered_statement.id);
 }
 

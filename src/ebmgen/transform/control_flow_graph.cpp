@@ -25,7 +25,7 @@ namespace ebmgen {
         expr_v.body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
             using T = std::decay_t<decltype(value)>;
             if constexpr (std::is_same_v<T, ebm::ExpressionRef>) {
-                if (value.id.value() != 0) {
+                if (!is_nil(value)) {
                     children.push_back({name, value});
                 }
             }
@@ -189,11 +189,11 @@ namespace ebmgen {
         else if (stmt.body.kind == ebm::StatementOp::READ_DATA ||
                  stmt.body.kind == ebm::StatementOp::WRITE_DATA) {
             auto io_ = stmt.body.read_data() ? stmt.body.read_data() : stmt.body.write_data();
-            if (io_->lowered_statement.id.id.value() != 0) {
+            if (!is_nil(io_->lowered_statement.id)) {
                 MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
                 current->lowered = std::move(r);
             }
-            if (io_->target.id.value() != 0) {
+            if (!is_nil(io_->target)) {
                 MAYBE(expr_node, analyze_expression(tctx, io_->target));
                 current->condition = expr_node;
             }
@@ -258,7 +258,7 @@ namespace ebmgen {
             return cfg;
         }
         unique(cfg);
-        if (cfg->prev.size() && cfg->next.size() == 1 && cfg->original_node.id.value() == 0) {
+        if (cfg->prev.size() && cfg->next.size() == 1 && is_nil(cfg->original_node)) {
             auto rem = cfg;
             for (auto& prev : rem->prev) {
                 if (auto p = prev.lock()) {

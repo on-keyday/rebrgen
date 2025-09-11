@@ -129,7 +129,7 @@ namespace ebmgen {
 
     void DebugPrinter::print_any_ref(auto value) const {
         os_ << " (ID: " << value.id.value() << " ";
-        if (value.id.value() == 0) {
+        if (is_nil(value)) {
             os_ << "(null)";
         }
         else {

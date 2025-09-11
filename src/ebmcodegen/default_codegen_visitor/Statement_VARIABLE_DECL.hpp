@@ -5,7 +5,7 @@ auto name = this->module_.get_identifier_or(item_id);
 MAYBE(type_str_val, visit_Type(*this, var_decl.var_type));
 std::optional<Result> initial_value;
 
-if (var_decl.initial_value.id.value() != 0) {
+if (!is_nil(var_decl.initial_value)) {
     auto add = add_writer();
     MAYBE(initial_value_, visit_Expression(*this, var_decl.initial_value));
     MAYBE(got, get_writer());

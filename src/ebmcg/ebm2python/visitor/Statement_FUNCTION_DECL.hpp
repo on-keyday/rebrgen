@@ -5,7 +5,7 @@ auto func_name = this->module_.get_identifier_or(func_decl.name, ebm::AnyRef{ite
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 std::string params_str = "";
-if (func_decl.parent_format.id.value() != 0) {
+if (!is_nil(func_decl.parent_format)) {
     params_str += "self";
 }
 if (func_decl.params.container.empty() == false) {

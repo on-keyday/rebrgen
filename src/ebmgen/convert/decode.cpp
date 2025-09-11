@@ -242,7 +242,7 @@ namespace ebmgen {
                             cond = new_cond;
                         }
                     }
-                    if (cond.id.value() == 0) {
+                    if (is_nil(cond)) {
                         return unexpect_error("Condition expression is empty");
                     }
                     MAYBE(loop_id, ctx.repository().new_statement_id());

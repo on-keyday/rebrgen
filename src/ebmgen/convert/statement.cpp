@@ -641,6 +641,19 @@ namespace ebmgen {
                 MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
                 auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
                 EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+                std::optional<ebm::StatementRef> assert_stmt;
+                if (node->arguments && node->arguments->arguments.size()) {
+                    if (node->arguments->arguments.size() != 1) {
+                        return unexpect_error("Currently field argument must be 1");
+                    }
+                    EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
+                    EBMU_BOOL_TYPE(bool_type);
+                    EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
+                    MAYBE(assert_, assert_statement(ctx, eq));
+                    assert_stmt = assert_;
+                }
+                if (node->arguments && node->arguments->sub_byte_length) {
+                }
                 MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
                 body = std::move(body_);
             }

@@ -123,7 +123,8 @@ enum ExpressionOp:
     WRITE_DATA # this is for output.put(x)
     CONDITIONAL_STATEMENT # if or match that is used as expression
     CONDITIONAL # x ? y : z
-
+    AVAILABLE  # field availability check (for union)
+    SIZEOF # TODO(on-keyday): add sizeof to ast first
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -204,6 +205,12 @@ format ExpressionBody:
             condition :ExpressionRef
             then :ExpressionRef
             else_ :ExpressionRef
+            lowered_expr :LoweredExpressionRef
+        ExpressionOp.AVAILABLE:
+            target_expr :ExpressionRef
+            lowered_expr :LoweredExpressionRef
+        ExpressionOp.SIZEOF:
+            target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
 
 enum LoopType:
@@ -308,6 +315,25 @@ format EnumMemberDecl:
     string_repr :StringRef # Optional string representation (e.g., "MemberName")
 
 
+enum SubByteRangeType:
+    :u8
+    bytes
+    seek_bytes
+    expression
+
+format SubByteRange:  
+    range_type :SubByteRangeType
+    match range_type:
+        SubByteRangeType.bytes:
+            length :ExpressionRef
+        SubByteRangeType.seek_bytes:
+            offset :ExpressionRef
+            length :ExpressionRef
+        SubByteRangeType.expression:
+            expression :ExpressionRef
+    io_statement :StatementRef
+    
+
 format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
     values :Expressions
@@ -370,6 +396,9 @@ enum StatementOp:
     PHI_NODE # For SSA form or assignment tracking
     ERROR_REPORT # Explicit error reporting; initial raise of an error
     LOWERED_STATEMENTS # lowered statements
+    SUB_BYTE_RANGE
+
+
 
 format Statement:
     id :StatementRef

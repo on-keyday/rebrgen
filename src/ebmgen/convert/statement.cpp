@@ -657,9 +657,9 @@ namespace ebmgen {
             futils::helper::DynDefer io_changed;
             ebm::StatementRef sub_range_id = id;
             if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
-                if (assert_stmt) {  // outer statement exists, so use original instead
-                    MAYBE(original, ctx.repository().new_statement_id());
-                    sub_range_id = original;
+                if (assert_stmt) {  // outer statement exists, so use its own id instead
+                    MAYBE(own_id, ctx.repository().new_statement_id());
+                    sub_range_id = own_id;
                 }
                 auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
                 if (node->arguments->sub_byte_length) {

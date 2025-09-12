@@ -6,7 +6,6 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
 #include "helper.hpp"
-#include "helper/defer_ex.h"
 #include <core/ast/traverse.h>
 #include <memory>
 
@@ -640,6 +639,20 @@ namespace ebmgen {
         return body;
     }
 
+    expected<ebm::StatementBody> with_io_changed(ConverterContext& ctx, ebm::ExpressionRef sub_byte_io, ebm::StatementRef sub_byte_io_def, bool is_enc, auto&& do_io) {
+        // this changed io_.[encoder|decoder]_input[def] are used in [encode|decode]_field_type
+        MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+        auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
+        auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);
+        auto io_changed = futils::helper::defer([&, original, original_def] {
+            (is_enc ? io_.encoder_input : io_.decoder_input) = original;
+            (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
+        });
+        original = sub_byte_io;
+        original_def = sub_byte_io_def;
+        return do_io();
+    }
+
     expected<ebm::StatementBody> convert_field_serialize(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node, ebm::StatementRef id) {
         ebm::StatementBody body;
         const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
@@ -648,69 +661,61 @@ namespace ebmgen {
         EBM_IDENTIFIER(def_id, def_ref, def->field_type);
         std::optional<ebm::StatementRef> assert_stmt;
         std::optional<ebm::SubByteRange> sub_range;
-        futils::helper::DynDefer io_changed;
         ebm::StatementRef sub_range_id = id;
-        if (node->arguments) {
-            if (node->arguments->arguments.size()) {
-                if (node->arguments->arguments.size() != 1) {
-                    return unexpect_error("Currently field argument must be 1");
-                }
-                EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
-                EBMU_BOOL_TYPE(bool_type);
-                EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
-                MAYBE(assert_, assert_statement(ctx, eq));
-                assert_stmt = assert_;
+        auto do_io = [&] -> expected<ebm::StatementBody> {
+            if (is_enc) {
+                MAYBE(body, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+                return body;
             }
-            if (node->arguments->sub_byte_length || node->arguments->sub_byte_expr) {
-                if (assert_stmt) {  // outer statement exists, so use its own id instead
-                    MAYBE(own_id, ctx.repository().new_statement_id());
-                    sub_range_id = own_id;
-                }
-                auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
-                if (node->arguments->sub_byte_length) {
-                    EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
-                    if (node->arguments->sub_byte_begin) {
-                        sr.range_type = ebm::SubByteRangeType::seek_bytes;
-                        EBMA_CONVERT_EXPRESSION(offset, node->arguments->sub_byte_begin);
-                        sr.offset(offset);
-                    }
-                    sr.length(len);
-                }
-                else {
-                    sr.range_type = ebm::SubByteRangeType::expression;
-                    EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
-                    sr.expression(data);
-                }
-                MAYBE(input_typ, get_coder_input(ctx, is_enc));
-                EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
-                EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
-                // this changed io_.[encoder|decoder]_input[def] are used in [encode|decode]_field_type
-                MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
-                auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
-                auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);
-                io_changed = futils::helper::defer_ex([&, original, original_def] {
-                    (is_enc ? io_.encoder_input : io_.decoder_input) = original;
-                    (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
-                });
-                original = sub_byte_io;
-                original_def = sub_byte_io_def;
-                sub_range = std::move(sr);
+            else {
+                MAYBE(body, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+                return body;
             }
+        };
+        if (node->arguments && node->arguments->arguments.size()) {
+            if (node->arguments->arguments.size() != 1) {
+                return unexpect_error("Currently field argument must be 1");
+            }
+            EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
+            EBMU_BOOL_TYPE(bool_type);
+            EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
+            MAYBE(assert_, assert_statement(ctx, eq));
+            assert_stmt = assert_;
         }
-        if (is_enc) {
-            MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
-            body = std::move(body_);
-        }
-        else {
-            MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
-            body = std::move(body_);
-        }
-        io_changed.execute();  // reset sub byte io
-        if (sub_range) {
-            EBMA_ADD_STATEMENT(io_stmt, std::move(body));
+        if (node->arguments->sub_byte_length || node->arguments->sub_byte_expr) {
+            if (assert_stmt) {  // outer statement exists, so use its own id instead
+                MAYBE(own_id, ctx.repository().new_statement_id());
+                sub_range_id = own_id;
+            }
+            auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
+            if (node->arguments->sub_byte_length) {
+                EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
+                if (node->arguments->sub_byte_begin) {
+                    sr.range_type = ebm::SubByteRangeType::seek_bytes;
+                    EBMA_CONVERT_EXPRESSION(offset, node->arguments->sub_byte_begin);
+                    sr.offset(offset);
+                }
+                sr.length(len);
+            }
+            else {
+                sr.range_type = ebm::SubByteRangeType::expression;
+                EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
+                sr.expression(data);
+            }
+            MAYBE(input_typ, get_coder_input(ctx, is_enc));
+            EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
+            EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
+            sub_range->io_ref = sub_byte_io_def;
+            sub_range = std::move(sr);
+            MAYBE(subrange_body, with_io_changed(ctx, sub_byte_io, sub_byte_io_def, is_enc, do_io));
+            EBMA_ADD_STATEMENT(io_stmt, std::move(subrange_body));
             sub_range->io_statement = io_stmt;
             body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
             body.sub_byte_range(std::move(*sub_range));
+        }
+        else {
+            MAYBE(body_, do_io());
+            body = std::move(body_);
         }
         if (assert_stmt) {
             ebm::StatementRef inner;

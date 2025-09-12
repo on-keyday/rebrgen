@@ -308,6 +308,7 @@ namespace ebmgen {
     ebm::ExpressionBody make_sub_range_init(ebm::TypeRef type, ebm::StatementRef init) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionOp::SUB_RANGE_INIT;
+        body.type = type;
         body.sub_range(init);
         return body;
     }

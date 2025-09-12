@@ -682,7 +682,7 @@ namespace ebmgen {
             MAYBE(assert_, assert_statement(ctx, eq));
             assert_stmt = assert_;
         }
-        if (node->arguments->sub_byte_length || node->arguments->sub_byte_expr) {
+        if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
             if (assert_stmt) {  // outer statement exists, so use its own id instead
                 MAYBE(own_id, ctx.repository().new_statement_id());
                 sub_range_id = own_id;
@@ -705,7 +705,7 @@ namespace ebmgen {
             MAYBE(input_typ, get_coder_input(ctx, is_enc));
             EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
             EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
-            sub_range->io_ref = sub_byte_io_def;
+            sr.io_ref = sub_byte_io_def;
             sub_range = std::move(sr);
             MAYBE(subrange_body, with_io_changed(ctx, sub_byte_io, sub_byte_io_def, is_enc, do_io));
             EBMA_ADD_STATEMENT(io_stmt, std::move(subrange_body));

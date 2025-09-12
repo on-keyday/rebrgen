@@ -679,6 +679,7 @@ namespace ebmgen {
                 MAYBE(input_typ, get_coder_input(ctx, is_enc));
                 EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
                 EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
+                // this changed io_.[encoder|decoder]_input[def] are used in [encode|decode]_field_type
                 MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
                 auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
                 auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);

@@ -654,10 +654,14 @@ namespace ebmgen {
                     MAYBE(assert_, assert_statement(ctx, eq));
                     assert_stmt = assert_;
                 }
-                std::optional<std::pair<ebm::StatementRef, ebm::SubByteRange>> sub_range;
+                std::optional<ebm::SubByteRange> sub_range;
                 futils::helper::DynDefer io_changed;
+                ebm::StatementRef sub_range_id = id;
                 if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
-                    MAYBE(sub_range_id, ctx.repository().new_statement_id());
+                    if (assert_stmt) {  // outer statement exists, so use original instead
+                        MAYBE(original, ctx.repository().new_statement_id());
+                        sub_range_id = original;
+                    }
                     auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
                     if (node->arguments->sub_byte_length) {
                         EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
@@ -669,6 +673,7 @@ namespace ebmgen {
                         sr.length(len);
                     }
                     else {
+                        sr.range_type = ebm::SubByteRangeType::expression;
                         EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
                         sr.expression(data);
                     }
@@ -684,7 +689,7 @@ namespace ebmgen {
                     });
                     original = sub_byte_io;
                     original_def = sub_byte_io_def;
-                    sub_range = {sub_range_id, sr};
+                    sub_range = std::move(sr);
                 }
                 if (is_enc) {
                     MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
@@ -693,6 +698,35 @@ namespace ebmgen {
                 else {
                     MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
                     body = std::move(body_);
+                }
+                io_changed.execute();  // maybe reset io state
+                if (sub_range) {
+                    EBMA_ADD_STATEMENT(io_stmt, std::move(body));
+                    sub_range->io_statement = io_stmt;
+                    body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
+                    body.sub_byte_range(std::move(*sub_range));
+                }
+                if (assert_stmt) {
+                    ebm::StatementRef inner;
+                    if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
+                        EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
+                        inner = inner_;
+                    }
+                    else {
+                        EBMA_ADD_STATEMENT(inner_, std::move(body));
+                        inner = inner_;
+                    }
+                    ebm::Block with_assert;
+                    if (is_enc) {
+                        append(with_assert, *assert_stmt);
+                        append(with_assert, inner);
+                    }
+                    else {
+                        append(with_assert, inner);
+                        append(with_assert, *assert_stmt);
+                    }
+                    body.kind = ebm::StatementOp::BLOCK;
+                    body.block(std::move(with_assert));
                 }
             }
             else {

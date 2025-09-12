@@ -2928,7 +2928,10 @@ namespace ebm {
         struct EBM_API union_struct_90{
             LoweredStatements lowered_statements;
         };
-        std::variant<std::monostate, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90> union_variant_59;
+        struct EBM_API union_struct_91{
+            SubByteRange sub_byte_range;
+        };
+        std::variant<std::monostate, union_struct_60, union_struct_61, union_struct_62, union_struct_63, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91> union_variant_59;
         const IdentifierRef* alias() const;
         IdentifierRef* alias();
         bool alias(IdentifierRef&& v);
@@ -3025,6 +3028,10 @@ namespace ebm {
         StructDecl* struct_decl();
         bool struct_decl(StructDecl&& v);
         bool struct_decl(const StructDecl& v);
+        const SubByteRange* sub_byte_range() const;
+        SubByteRange* sub_byte_range();
+        bool sub_byte_range(SubByteRange&& v);
+        bool sub_byte_range(const SubByteRange& v);
         const ExpressionRef* target() const;
         ExpressionRef* target();
         bool target(ExpressionRef&& v);
@@ -3080,6 +3087,7 @@ namespace ebm {
             v(v, "read_data",(*this).read_data());
             v(v, "stream_type",(*this).stream_type());
             v(v, "struct_decl",(*this).struct_decl());
+            v(v, "sub_byte_range",(*this).sub_byte_range());
             v(v, "target",(*this).target());
             v(v, "union_decl",(*this).union_decl());
             v(v, "union_member_decl",(*this).union_member_decl());
@@ -3114,6 +3122,7 @@ namespace ebm {
             v(v, "read_data",(*this).read_data());
             v(v, "stream_type",(*this).stream_type());
             v(v, "struct_decl",(*this).struct_decl());
+            v(v, "sub_byte_range",(*this).sub_byte_range());
             v(v, "target",(*this).target());
             v(v, "union_decl",(*this).union_decl());
             v(v, "union_member_decl",(*this).union_member_decl());
@@ -3152,6 +3161,7 @@ namespace ebm {
             v(v, "read_data",visitor_tag<decltype(std::declval<StatementBody>().read_data())>{});
             v(v, "stream_type",visitor_tag<decltype(std::declval<StatementBody>().stream_type())>{});
             v(v, "struct_decl",visitor_tag<decltype(std::declval<StatementBody>().struct_decl())>{});
+            v(v, "sub_byte_range",visitor_tag<decltype(std::declval<StatementBody>().sub_byte_range())>{});
             v(v, "target",visitor_tag<decltype(std::declval<StatementBody>().target())>{});
             v(v, "union_decl",visitor_tag<decltype(std::declval<StatementBody>().union_decl())>{});
             v(v, "union_member_decl",visitor_tag<decltype(std::declval<StatementBody>().union_member_decl())>{});
@@ -3214,9 +3224,6 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_93{
-            Varint size;
-        };
         struct EBM_API union_struct_94{
             Varint size;
         };
@@ -3224,45 +3231,48 @@ namespace ebm {
             Varint size;
         };
         struct EBM_API union_struct_96{
+            Varint size;
         };
         struct EBM_API union_struct_97{
-            TypeRef element_type;
-            Varint length;
         };
         struct EBM_API union_struct_98{
             TypeRef element_type;
+            Varint length;
         };
         struct EBM_API union_struct_99{
-            StatementRef id;
+            TypeRef element_type;
         };
         struct EBM_API union_struct_100{
             StatementRef id;
         };
         struct EBM_API union_struct_101{
             StatementRef id;
-            TypeRef base_type;
         };
         struct EBM_API union_struct_102{
+            StatementRef id;
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_103{
             TypeRef common_type;
             Types members;
         };
-        struct EBM_API union_struct_103{
+        struct EBM_API union_struct_104{
             TypeRef property_type;
         };
-        struct EBM_API union_struct_104{
+        struct EBM_API union_struct_105{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_105{
+        struct EBM_API union_struct_106{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_106{
+        struct EBM_API union_struct_107{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_107{
+        struct EBM_API union_struct_108{
             TypeRef return_type;
             Types params;
         };
-        std::variant<std::monostate, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97, union_struct_98, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107> union_variant_92;
+        std::variant<std::monostate, union_struct_94, union_struct_95, union_struct_96, union_struct_97, union_struct_98, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108> union_variant_93;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);

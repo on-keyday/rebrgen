@@ -530,6 +530,8 @@ format StatementBody:
             expression :ExpressionRef # Expression statement
         StatementOp.LOWERED_STATEMENTS:
             lowered_statements :LoweredStatements # Lowered expressions
+        StatementOp.SUB_BYTE_RANGE:
+            sub_byte_range :SubByteRange
 
 format Expressions:
     len :Varint

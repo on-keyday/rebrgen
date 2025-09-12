@@ -53,7 +53,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     std::optional<ebmgen::MappingTable> table;
-    if (!flags.debug_output.empty() || !flags.debug_output.empty()) {
+    if (!flags.debug_output.empty() || !flags.cfg_output.empty()) {
         table.emplace(ebm);
     }
 

@@ -618,32 +618,40 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        if (auto union_type = ast::as<ast::UnionType>(node->field_type)) {
-            body.kind = ebm::StatementOp::PROPERTY_DECL;
-            ebm::PropertyDecl prop_decl;
-            EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
-            prop_decl.name = field_name_ref;
+    expected<ebm::StatementBody> convert_property_decl(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node) {
+        ebm::StatementBody body;
+        MAYBE(union_type, ast::as<ast::UnionType>(node->field_type));
+        body.kind = ebm::StatementOp::PROPERTY_DECL;
+        ebm::PropertyDecl prop_decl;
+        EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
+        prop_decl.name = field_name_ref;
 
-            EBMA_CONVERT_TYPE(property_type_ref, union_type->common_type);
-            prop_decl.property_type = property_type_ref;
+        EBMA_CONVERT_TYPE(property_type_ref, union_type.common_type);
+        prop_decl.property_type = property_type_ref;
 
-            if (auto parent_member = node->belong.lock()) {
-                EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
-                prop_decl.parent_format = statement_ref;
-            }
-
-            prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
-
-            body.property_decl(std::move(prop_decl));
+        if (auto parent_member = node->belong.lock()) {
+            EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
+            prop_decl.parent_format = statement_ref;
         }
-        else if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
-            const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
-            MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
-            auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
-            EBM_IDENTIFIER(def_id, def_ref, def->field_type);
-            std::optional<ebm::StatementRef> assert_stmt;
-            if (node->arguments && node->arguments->arguments.size()) {
+
+        prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
+
+        body.property_decl(std::move(prop_decl));
+        return body;
+    }
+
+    expected<ebm::StatementBody> convert_field_serialize(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node, ebm::StatementRef id) {
+        ebm::StatementBody body;
+        const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
+        MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
+        auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
+        EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+        std::optional<ebm::StatementRef> assert_stmt;
+        std::optional<ebm::SubByteRange> sub_range;
+        futils::helper::DynDefer io_changed;
+        ebm::StatementRef sub_range_id = id;
+        if (node->arguments) {
+            if (node->arguments->arguments.size()) {
                 if (node->arguments->arguments.size() != 1) {
                     return unexpect_error("Currently field argument must be 1");
                 }
@@ -653,10 +661,7 @@ namespace ebmgen {
                 MAYBE(assert_, assert_statement(ctx, eq));
                 assert_stmt = assert_;
             }
-            std::optional<ebm::SubByteRange> sub_range;
-            futils::helper::DynDefer io_changed;
-            ebm::StatementRef sub_range_id = id;
-            if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
+            if (node->arguments->sub_byte_length || node->arguments->sub_byte_expr) {
                 if (assert_stmt) {  // outer statement exists, so use its own id instead
                     MAYBE(own_id, ctx.repository().new_statement_id());
                     sub_range_id = own_id;
@@ -691,43 +696,55 @@ namespace ebmgen {
                 original_def = sub_byte_io_def;
                 sub_range = std::move(sr);
             }
-            if (is_enc) {
-                MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
-                body = std::move(body_);
+        }
+        if (is_enc) {
+            MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+            body = std::move(body_);
+        }
+        else {
+            MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+            body = std::move(body_);
+        }
+        io_changed.execute();  // reset sub byte io
+        if (sub_range) {
+            EBMA_ADD_STATEMENT(io_stmt, std::move(body));
+            sub_range->io_statement = io_stmt;
+            body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
+            body.sub_byte_range(std::move(*sub_range));
+        }
+        if (assert_stmt) {
+            ebm::StatementRef inner;
+            if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
+                EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
+                inner = inner_;
             }
             else {
-                MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
-                body = std::move(body_);
+                EBMA_ADD_STATEMENT(inner_, std::move(body));
+                inner = inner_;
             }
-            io_changed.execute();  // reset sub byte io
-            if (sub_range) {
-                EBMA_ADD_STATEMENT(io_stmt, std::move(body));
-                sub_range->io_statement = io_stmt;
-                body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
-                body.sub_byte_range(std::move(*sub_range));
+            ebm::Block with_assert;
+            if (is_enc) {
+                append(with_assert, *assert_stmt);
+                append(with_assert, inner);
             }
-            if (assert_stmt) {
-                ebm::StatementRef inner;
-                if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
-                    EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
-                    inner = inner_;
-                }
-                else {
-                    EBMA_ADD_STATEMENT(inner_, std::move(body));
-                    inner = inner_;
-                }
-                ebm::Block with_assert;
-                if (is_enc) {
-                    append(with_assert, *assert_stmt);
-                    append(with_assert, inner);
-                }
-                else {
-                    append(with_assert, inner);
-                    append(with_assert, *assert_stmt);
-                }
-                body.kind = ebm::StatementOp::BLOCK;
-                body.block(std::move(with_assert));
+            else {
+                append(with_assert, inner);
+                append(with_assert, *assert_stmt);
             }
+            body.kind = ebm::StatementOp::BLOCK;
+            body.block(std::move(with_assert));
+        }
+        return body;
+    }
+
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        if (auto union_type = ast::as<ast::UnionType>(node->field_type)) {
+            MAYBE(body_, convert_property_decl(ctx, node));
+            body = std::move(body_);
+        }
+        else if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
+            MAYBE(body_, convert_field_serialize(ctx, node, id));
+            body = std::move(body_);
         }
         else {
             body.kind = ebm::StatementOp::FIELD_DECL;

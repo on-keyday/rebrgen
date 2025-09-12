@@ -237,6 +237,7 @@ format LoopStatement:
             increment :StatementRef # Increment statement (e.g., i++)
     body :StatementRef # Body of the loop
     lowered_statement :LoweredStatementRef # Optional lowered statement for the loop (e.g., for C-like loops)
+    next_lowered_loop :LoweredStatementRef
 
 format IfStatement:
     condition :Condition # Condition for the if statement

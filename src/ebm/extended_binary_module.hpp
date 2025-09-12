@@ -2367,6 +2367,7 @@ namespace ebm {
         bool item_var(const StatementRef& v);
         StatementRef body;
         LoweredStatementRef lowered_statement;
+        LoweredStatementRef next_lowered_loop;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         static constexpr size_t fixed_header_size = 1;
@@ -2381,6 +2382,7 @@ namespace ebm {
             v(v, "item_var",(*this).item_var());
             v(v, "body",(*this).body);
             v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "next_lowered_loop",(*this).next_lowered_loop);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
@@ -2392,6 +2394,7 @@ namespace ebm {
             v(v, "item_var",(*this).item_var());
             v(v, "body",(*this).body);
             v(v, "lowered_statement",(*this).lowered_statement);
+            v(v, "next_lowered_loop",(*this).next_lowered_loop);
         }
         template<typename T>
         struct visitor_tag {
@@ -2407,6 +2410,7 @@ namespace ebm {
             v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var())>{});
             v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body)>{});
             v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement)>{});
+            v(v, "next_lowered_loop",visitor_tag<decltype(std::declval<LoopStatement>().next_lowered_loop)>{});
         }
     };
     struct EBM_API MatchStatement{

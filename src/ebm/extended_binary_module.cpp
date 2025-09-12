@@ -14720,6 +14720,9 @@ namespace ebm {
         if (auto err = (*this).lowered_statement.encode(w)) {
             return err;
         }
+        if (auto err = (*this).next_lowered_loop.encode(w)) {
+            return err;
+        }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> LoopStatement::decode(::futils::binary::reader& r) {
@@ -14770,6 +14773,9 @@ namespace ebm {
             return err;
         }
         if (auto err = (*this).lowered_statement.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).next_lowered_loop.decode(r)) {
             return err;
         }
         return ::futils::error::Error<>();

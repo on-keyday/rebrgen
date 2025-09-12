@@ -136,6 +136,7 @@ namespace ebmgen {
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{block_ref};
                     result_loop_stmt.body = body;
+                    result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{loop_stmt};
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
                     EBM_ARRAY_SIZE(array_size, target);

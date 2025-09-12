@@ -637,114 +637,112 @@ namespace ebmgen {
 
             body.property_decl(std::move(prop_decl));
         }
-        else {
-            if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
-                const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
-                MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
-                auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
-                EBM_IDENTIFIER(def_id, def_ref, def->field_type);
-                std::optional<ebm::StatementRef> assert_stmt;
-                if (node->arguments && node->arguments->arguments.size()) {
-                    if (node->arguments->arguments.size() != 1) {
-                        return unexpect_error("Currently field argument must be 1");
-                    }
-                    EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
-                    EBMU_BOOL_TYPE(bool_type);
-                    EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
-                    MAYBE(assert_, assert_statement(ctx, eq));
-                    assert_stmt = assert_;
+        else if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
+            const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
+            MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
+            auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
+            EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+            std::optional<ebm::StatementRef> assert_stmt;
+            if (node->arguments && node->arguments->arguments.size()) {
+                if (node->arguments->arguments.size() != 1) {
+                    return unexpect_error("Currently field argument must be 1");
                 }
-                std::optional<ebm::SubByteRange> sub_range;
-                futils::helper::DynDefer io_changed;
-                ebm::StatementRef sub_range_id = id;
-                if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
-                    if (assert_stmt) {  // outer statement exists, so use original instead
-                        MAYBE(original, ctx.repository().new_statement_id());
-                        sub_range_id = original;
-                    }
-                    auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
-                    if (node->arguments->sub_byte_length) {
-                        EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
-                        if (node->arguments->sub_byte_begin) {
-                            sr.range_type = ebm::SubByteRangeType::seek_bytes;
-                            EBMA_CONVERT_EXPRESSION(offset, node->arguments->sub_byte_begin);
-                            sr.offset(offset);
-                        }
-                        sr.length(len);
-                    }
-                    else {
-                        sr.range_type = ebm::SubByteRangeType::expression;
-                        EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
-                        sr.expression(data);
-                    }
-                    MAYBE(input_typ, get_coder_input(ctx, is_enc));
-                    EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
-                    EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
-                    MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
-                    auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
-                    auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);
-                    io_changed = futils::helper::defer_ex([&, original, original_def] {
-                        (is_enc ? io_.encoder_input : io_.decoder_input) = original;
-                        (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
-                    });
-                    original = sub_byte_io;
-                    original_def = sub_byte_io_def;
-                    sub_range = std::move(sr);
+                EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
+                EBMU_BOOL_TYPE(bool_type);
+                EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
+                MAYBE(assert_, assert_statement(ctx, eq));
+                assert_stmt = assert_;
+            }
+            std::optional<ebm::SubByteRange> sub_range;
+            futils::helper::DynDefer io_changed;
+            ebm::StatementRef sub_range_id = id;
+            if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
+                if (assert_stmt) {  // outer statement exists, so use original instead
+                    MAYBE(original, ctx.repository().new_statement_id());
+                    sub_range_id = original;
                 }
-                if (is_enc) {
-                    MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
-                    body = std::move(body_);
+                auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
+                if (node->arguments->sub_byte_length) {
+                    EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
+                    if (node->arguments->sub_byte_begin) {
+                        sr.range_type = ebm::SubByteRangeType::seek_bytes;
+                        EBMA_CONVERT_EXPRESSION(offset, node->arguments->sub_byte_begin);
+                        sr.offset(offset);
+                    }
+                    sr.length(len);
                 }
                 else {
-                    MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
-                    body = std::move(body_);
+                    sr.range_type = ebm::SubByteRangeType::expression;
+                    EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
+                    sr.expression(data);
                 }
-                io_changed.execute();  // maybe reset io state
-                if (sub_range) {
-                    EBMA_ADD_STATEMENT(io_stmt, std::move(body));
-                    sub_range->io_statement = io_stmt;
-                    body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
-                    body.sub_byte_range(std::move(*sub_range));
-                }
-                if (assert_stmt) {
-                    ebm::StatementRef inner;
-                    if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
-                        EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
-                        inner = inner_;
-                    }
-                    else {
-                        EBMA_ADD_STATEMENT(inner_, std::move(body));
-                        inner = inner_;
-                    }
-                    ebm::Block with_assert;
-                    if (is_enc) {
-                        append(with_assert, *assert_stmt);
-                        append(with_assert, inner);
-                    }
-                    else {
-                        append(with_assert, inner);
-                        append(with_assert, *assert_stmt);
-                    }
-                    body.kind = ebm::StatementOp::BLOCK;
-                    body.block(std::move(with_assert));
-                }
+                MAYBE(input_typ, get_coder_input(ctx, is_enc));
+                EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
+                EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
+                MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+                auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
+                auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);
+                io_changed = futils::helper::defer_ex([&, original, original_def] {
+                    (is_enc ? io_.encoder_input : io_.decoder_input) = original;
+                    (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
+                });
+                original = sub_byte_io;
+                original_def = sub_byte_io_def;
+                sub_range = std::move(sr);
+            }
+            if (is_enc) {
+                MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+                body = std::move(body_);
             }
             else {
-                body.kind = ebm::StatementOp::FIELD_DECL;
-                ebm::FieldDecl field_decl;
-                if (node->ident) {
-                    EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
-                    field_decl.name = field_name_ref;
-                }
-                EBMA_CONVERT_TYPE(type_ref, node->field_type);
-                field_decl.field_type = type_ref;
-                field_decl.is_state_variable(node->is_state_variable);
-                if (auto locked = node->belong.lock()) {
-                    MAYBE(parent_member_ref, ctx.state().is_visited(locked, GenerateType::Normal));
-                    field_decl.parent_struct = parent_member_ref;
-                }
-                body.field_decl(std::move(field_decl));
+                MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+                body = std::move(body_);
             }
+            io_changed.execute();  // reset sub byte io
+            if (sub_range) {
+                EBMA_ADD_STATEMENT(io_stmt, std::move(body));
+                sub_range->io_statement = io_stmt;
+                body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
+                body.sub_byte_range(std::move(*sub_range));
+            }
+            if (assert_stmt) {
+                ebm::StatementRef inner;
+                if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
+                    EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
+                    inner = inner_;
+                }
+                else {
+                    EBMA_ADD_STATEMENT(inner_, std::move(body));
+                    inner = inner_;
+                }
+                ebm::Block with_assert;
+                if (is_enc) {
+                    append(with_assert, *assert_stmt);
+                    append(with_assert, inner);
+                }
+                else {
+                    append(with_assert, inner);
+                    append(with_assert, *assert_stmt);
+                }
+                body.kind = ebm::StatementOp::BLOCK;
+                body.block(std::move(with_assert));
+            }
+        }
+        else {
+            body.kind = ebm::StatementOp::FIELD_DECL;
+            ebm::FieldDecl field_decl;
+            if (node->ident) {
+                EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
+                field_decl.name = field_name_ref;
+            }
+            EBMA_CONVERT_TYPE(type_ref, node->field_type);
+            field_decl.field_type = type_ref;
+            field_decl.is_state_variable(node->is_state_variable);
+            if (auto locked = node->belong.lock()) {
+                MAYBE(parent_member_ref, ctx.state().is_visited(locked, GenerateType::Normal));
+                field_decl.parent_struct = parent_member_ref;
+            }
+            body.field_decl(std::move(field_decl));
         }
         return {};
     }

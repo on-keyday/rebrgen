@@ -1,0 +1,1 @@
+return visit_Statement(*this, assert_desc.lowered_statement.id);

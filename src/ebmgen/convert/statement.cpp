@@ -6,6 +6,7 @@
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
 #include "helper.hpp"
+#include "helper/defer_ex.h"
 #include <core/ast/traverse.h>
 #include <memory>
 
@@ -637,7 +638,8 @@ namespace ebmgen {
             body.property_decl(std::move(prop_decl));
         }
         else {
-            if (!node->is_state_variable && ctx.state().get_current_generate_type() == GenerateType::Encode) {
+            if (!node->is_state_variable && ctx.state().get_current_generate_type() != GenerateType::Normal) {
+                const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
                 MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
                 auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
                 EBM_IDENTIFIER(def_id, def_ref, def->field_type);
@@ -652,17 +654,46 @@ namespace ebmgen {
                     MAYBE(assert_, assert_statement(ctx, eq));
                     assert_stmt = assert_;
                 }
-                if (node->arguments && node->arguments->sub_byte_length) {
+                std::optional<std::pair<ebm::StatementRef, ebm::SubByteRange>> sub_range;
+                futils::helper::DynDefer io_changed;
+                if (node->arguments && (node->arguments->sub_byte_length || node->arguments->sub_byte_expr)) {
+                    MAYBE(sub_range_id, ctx.repository().new_statement_id());
+                    auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
+                    if (node->arguments->sub_byte_length) {
+                        EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
+                        if (node->arguments->sub_byte_begin) {
+                            sr.range_type = ebm::SubByteRangeType::seek_bytes;
+                            EBMA_CONVERT_EXPRESSION(offset, node->arguments->sub_byte_begin);
+                            sr.offset(offset);
+                        }
+                        sr.length(len);
+                    }
+                    else {
+                        EBMA_CONVERT_EXPRESSION(data, node->arguments->sub_byte_expr);
+                        sr.expression(data);
+                    }
+                    MAYBE(input_typ, get_coder_input(ctx, is_enc));
+                    EBM_SUB_RANGE_INIT(init, input_typ, sub_range_id);
+                    EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
+                    MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
+                    auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
+                    auto& original_def = (is_enc ? io_.encoder_input_def : io_.decoder_input_def);
+                    io_changed = futils::helper::defer_ex([&, original, original_def] {
+                        (is_enc ? io_.encoder_input : io_.decoder_input) = original;
+                        (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
+                    });
+                    original = sub_byte_io;
+                    original_def = sub_byte_io_def;
+                    sub_range = {sub_range_id, sr};
                 }
-                MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
-                body = std::move(body_);
-            }
-            else if (!node->is_state_variable && ctx.state().get_current_generate_type() == GenerateType::Decode) {
-                MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
-                auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
-                EBM_IDENTIFIER(def_id, def_ref, def->field_type);
-                MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
-                body = std::move(body_);
+                if (is_enc) {
+                    MAYBE(body_, ctx.get_encoder_converter().encode_field_type(node->field_type, def_id, node));
+                    body = std::move(body_);
+                }
+                else {
+                    MAYBE(body_, ctx.get_decoder_converter().decode_field_type(node->field_type, def_id, node));
+                    body = std::move(body_);
+                }
             }
             else {
                 body.kind = ebm::StatementOp::FIELD_DECL;

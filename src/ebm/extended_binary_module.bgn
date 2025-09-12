@@ -119,12 +119,13 @@ enum ExpressionOp:
     ARRAY_SIZE # Get the size of an array or vector
     IS_ERROR # check if encoder/decoder value is error
     MAX_VALUE # Get the maximum value of a type (e.g., u8, u16, u32, u64)
-    READ_DATA # this is for input.get(u8)
-    WRITE_DATA # this is for output.put(x)
+    READ_DATA # this is for expression like `input.get(u8)`
+    WRITE_DATA # this is for expression like `output.put(x)`
     CONDITIONAL_STATEMENT # if or match that is used as expression
     CONDITIONAL # x ? y : z
     AVAILABLE  # field availability check (for union)
     SIZEOF # TODO(on-keyday): add sizeof to ast first
+    SUB_RANGE_INIT
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -212,6 +213,8 @@ format ExpressionBody:
         ExpressionOp.SIZEOF:
             target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
+        ExpressionOp.SUB_RANGE_INIT:
+            sub_range :StatementRef
 
 enum LoopType:
     :u8
@@ -331,8 +334,9 @@ format SubByteRange:
             length :ExpressionRef
         SubByteRangeType.expression:
             expression :ExpressionRef
+    io_ref :StatementRef
     io_statement :StatementRef
-    
+
 
 format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
@@ -393,7 +397,6 @@ enum StatementOp:
     METADATA
     IMPORT_MODULE
     EXPRESSION # expression statement
-    PHI_NODE # For SSA form or assignment tracking
     ERROR_REPORT # Explicit error reporting; initial raise of an error
     LOWERED_STATEMENTS # lowered statements
     SUB_BYTE_RANGE
@@ -521,10 +524,6 @@ format StatementBody:
         StatementOp.IMPORT_MODULE:
             module_name :IdentifierRef
             alias :IdentifierRef # Optional alias
-        StatementOp.PHI_NODE:
-            target_var :ExpressionRef # Variable to assign phi node to
-            params_len :Varint
-            params :[params_len.value]PhiParam
         StatementOp.ERROR_REPORT:
             error_report :ErrorReport
         StatementOp.EXPRESSION:
@@ -543,10 +542,6 @@ format Block:
 format MatchBranch:
     condition :Condition # Case condition (e.g., literal, range, default)
     body :StatementRef # Body of the branch
-
-format PhiParam:
-    condition :Condition # Condition for this path (optional)
-    value :ExpressionRef # Value from this path
 
 enum CastType:
     :u8

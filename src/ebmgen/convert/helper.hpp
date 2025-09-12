@@ -307,6 +307,11 @@ namespace ebmgen {
 #define EBM_RANGE(ref_name, type, start, end) \
     EBM_AST_EXPRESSION(ref_name, make_range, type, start, end)
 
+    ebm::ExpressionBody make_sub_range_init(ebm::TypeRef type, ebm::StatementRef init);
+
+#define EBM_SUB_RANGE_INIT(ref_name, type, init) \
+    EBM_AST_EXPRESSION(ref_name, make_sub_range_init, type, init)
+
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);

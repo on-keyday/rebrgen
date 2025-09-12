@@ -329,12 +329,12 @@ namespace ebmgen {
             return current_node;
         }
 
-        expected<FormatEncodeDecode> get_format_encode_decode(const std::shared_ptr<ast::Node>& node) {
+        FormatEncodeDecode* get_format_encode_decode(const std::shared_ptr<ast::Node>& node) {
             auto it = format_encode_decode.find(node);
             if (it != format_encode_decode.end()) {
-                return it->second;
+                return &it->second;
             }
-            return unexpect_error("Format encode/decode not found for node");
+            return nullptr;
         }
     };
 

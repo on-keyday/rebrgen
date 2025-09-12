@@ -28,15 +28,13 @@ namespace ebmcodegen {
             body.metadata({});
             body.module_name({});
             body.offset({});
-            body.params({});
-            body.params_len({});
             body.previous_assignment({});
             body.property_decl({});
             body.read_data({});
             body.stream_type({});
             body.struct_decl({});
+            body.sub_byte_range({});
             body.target({});
-            body.target_var({});
             body.union_decl({});
             body.union_member_decl({});
             body.value({});
@@ -89,6 +87,7 @@ namespace ebmcodegen {
             body.start({});
             body.stream_type({});
             body.string_value({});
+            body.sub_range({});
             body.target_expr({});
             body.target_stmt({});
             body.then({});

@@ -3885,143 +3885,6 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    concept has_visitor_Statement_PHI_NODE = requires(Visitor v) {
-         { v.visit_Statement_PHI_NODE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().params(),*std::declval<const ebm::StatementBody&>().params_len(),*std::declval<const ebm::StatementBody&>().target_var()) } -> std::convertible_to<expected<Result>>;
-    };
-    template<typename Visitor>
-    concept has_visitor_Statement_PHI_NODE_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().params(),*std::declval<const ebm::StatementBody&>().params_len(),*std::declval<const ebm::StatementBody&>().target_var()) } -> std::convertible_to<expected<Result>>;
-    };
-    template<typename Visitor>
-    expected<Result> dispatch_Statement_PHI_NODE(Visitor&& visitor,const ebm::Statement& in) {
-        #if __has_include("visitor/Statement_pre_validate_before.hpp")
-        #include "visitor/Statement_pre_validate_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_validate.hpp")
-        #include "visitor/Statement_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
-        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
-        #include "visitor/Statement_pre_validate_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
-        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
-        #include "visitor/Statement_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_validate_before.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_validate_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_validate.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_pre_validate.hpp")
-        #if __has_include("visitor/Statement_PHI_NODE_pre_validate_pre_default.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_validate_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_pre_validate.hpp"
-        #if __has_include("visitor/Statement_PHI_NODE_pre_validate_post_default.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_validate_after.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_validate_after.hpp"
-        #endif
-        #endif
-        auto& kind = in.body.kind;
-        if (!in.body.params()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::params");
-        }
-        auto& params = *in.body.params();
-        if (!in.body.params_len()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::params_len");
-        }
-        auto& params_len = *in.body.params_len();
-        if (!in.body.target_var()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::target_var");
-        }
-        auto& target_var = *in.body.target_var();
-        #if __has_include("visitor/Statement_pre_visit_before.hpp")
-        #include "visitor/Statement_pre_visit_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_visit.hpp")
-        #include "visitor/Statement_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
-        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
-        #include "visitor/Statement_pre_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
-        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
-        #include "visitor/Statement_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_visit_before.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_visit_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_visit.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_pre_visit.hpp")
-        #if __has_include("visitor/Statement_PHI_NODE_pre_visit_pre_default.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_pre_visit.hpp"
-        #if __has_include("visitor/Statement_PHI_NODE_pre_visit_post_default.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_pre_visit_after.hpp")
-        #include "visitor/Statement_PHI_NODE_pre_visit_after.hpp"
-        #endif
-        #endif
-        expected<Result> result;
-        if constexpr (has_visitor_Statement_PHI_NODE<Visitor>) {
-            result = visitor.visit_Statement_PHI_NODE(in.id,kind,params,params_len,target_var);
-        }
-        else if constexpr (has_visitor_Statement_PHI_NODE_call<Visitor>) {
-            result = visitor(in.id,kind,params,params_len,target_var);
-        }
-        #if __has_include("visitor/Statement_post_visit_before.hpp")
-        #include "visitor/Statement_post_visit_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_post_visit.hpp")
-        #include "visitor/Statement_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
-        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
-        #include "visitor/Statement_post_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
-        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
-        #include "visitor/Statement_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_post_visit_before.hpp")
-        #include "visitor/Statement_PHI_NODE_post_visit_before.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_post_visit.hpp")
-        #include "visitor/Statement_PHI_NODE_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_post_visit.hpp")
-        #if __has_include("visitor/Statement_PHI_NODE_post_visit_pre_default.hpp")
-        #include "visitor/Statement_PHI_NODE_post_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_PHI_NODE_post_visit.hpp"
-        #if __has_include("visitor/Statement_PHI_NODE_post_visit_post_default.hpp")
-        #include "visitor/Statement_PHI_NODE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PHI_NODE_post_visit_after.hpp")
-        #include "visitor/Statement_PHI_NODE_post_visit_after.hpp"
-        #endif
-        #endif
-        if(!result) {
-            return unexpect_error(std::move(result.error())); // for trace
-        }
-        return result;
-    }
-    template<typename Visitor>
     concept has_visitor_Statement_ERROR_REPORT = requires(Visitor v) {
          { v.visit_Statement_ERROR_REPORT(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().error_report()) } -> std::convertible_to<expected<Result>>;
     };
@@ -4281,11 +4144,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Statement_SUB_BYTE_RANGE = requires(Visitor v) {
-         { v.visit_Statement_SUB_BYTE_RANGE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Statement_SUB_BYTE_RANGE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().sub_byte_range()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Statement_SUB_BYTE_RANGE_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().sub_byte_range()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Visitor&& visitor,const ebm::Statement& in) {
@@ -4324,6 +4187,10 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
+        if (!in.body.sub_byte_range()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::sub_byte_range");
+        }
+        auto& sub_byte_range = *in.body.sub_byte_range();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -4360,10 +4227,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_SUB_BYTE_RANGE<Visitor>) {
-            result = visitor.visit_Statement_SUB_BYTE_RANGE(in.id,kind);
+            result = visitor.visit_Statement_SUB_BYTE_RANGE(in.id,kind,sub_byte_range);
         }
         else if constexpr (has_visitor_Statement_SUB_BYTE_RANGE_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(in.id,kind,sub_byte_range);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4482,8 +4349,6 @@ namespace ebm2python {
             return dispatch_Statement_IMPORT_MODULE(visitor,in);
         case ebm::StatementOp::EXPRESSION:
             return dispatch_Statement_EXPRESSION(visitor,in);
-        case ebm::StatementOp::PHI_NODE:
-            return dispatch_Statement_PHI_NODE(visitor,in);
         case ebm::StatementOp::ERROR_REPORT:
             return dispatch_Statement_ERROR_REPORT(visitor,in);
         case ebm::StatementOp::LOWERED_STATEMENTS:
@@ -8224,6 +8089,136 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Expression_SUB_RANGE_INIT = requires(Visitor v) {
+         { v.visit_Expression_SUB_RANGE_INIT(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().sub_range()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_SUB_RANGE_INIT_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().sub_range()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_SUB_RANGE_INIT(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp")
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp"
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_post_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_after.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        if (!in.body.sub_range()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::sub_range");
+        }
+        auto& sub_range = *in.body.sub_range();
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp")
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp"
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_post_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_after.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_SUB_RANGE_INIT<Visitor>) {
+            result = visitor.visit_Expression_SUB_RANGE_INIT(in.id,type,kind,sub_range);
+        }
+        else if constexpr (has_visitor_Expression_SUB_RANGE_INIT_call<Visitor>) {
+            result = visitor(in.id,type,kind,sub_range);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_post_visit.hpp")
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_pre_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_post_visit.hpp"
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_post_default.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_after.hpp")
+        #include "visitor/Expression_SUB_RANGE_INIT_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
@@ -8299,6 +8294,8 @@ namespace ebm2python {
             return dispatch_Expression_AVAILABLE(visitor,in);
         case ebm::ExpressionOp::SIZEOF:
             return dispatch_Expression_SIZEOF(visitor,in);
+        case ebm::ExpressionOp::SUB_RANGE_INIT:
+            return dispatch_Expression_SUB_RANGE_INIT(visitor,in);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -11858,30 +11855,6 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_PHI_NODE(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const std::vector<ebm::PhiParam>& params,const ebm::Varint& params_len,const ebm::ExpressionRef& target_var) {
-            #if __has_include("visitor/Statement_PHI_NODE_before.hpp")
-            #include "visitor/Statement_PHI_NODE_before.hpp"
-            #endif
-            #if __has_include("visitor/Statement_PHI_NODE.hpp")
-            #include "visitor/Statement_PHI_NODE.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PHI_NODE.hpp")
-            #if __has_include("visitor/Statement_PHI_NODE_pre_default.hpp")
-            #include "visitor/Statement_PHI_NODE_pre_default.hpp"
-            #endif
-            #include "ebmcodegen/default_codegen_visitor/Statement_PHI_NODE.hpp"
-            #if __has_include("visitor/Statement_PHI_NODE_post_default.hpp")
-            #include "visitor/Statement_PHI_NODE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_PHI_NODE_after.hpp")
-            #include "visitor/Statement_PHI_NODE_after.hpp"
-            #endif
-            #else
-            if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_PHI_NODE {}}}}}",item_id.id.value());
-            }
-            #endif
-            return {};
-        }
         expected<Result> visit_Statement_ERROR_REPORT(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::ErrorReport& error_report) {
             #if __has_include("visitor/Statement_ERROR_REPORT_before.hpp")
             #include "visitor/Statement_ERROR_REPORT_before.hpp"
@@ -11930,7 +11903,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_SUB_BYTE_RANGE(const ebm::StatementRef& item_id,const ebm::StatementOp& kind) {
+        expected<Result> visit_Statement_SUB_BYTE_RANGE(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::SubByteRange& sub_byte_range) {
             #if __has_include("visitor/Statement_SUB_BYTE_RANGE_before.hpp")
             #include "visitor/Statement_SUB_BYTE_RANGE_before.hpp"
             #endif
@@ -12626,6 +12599,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_SUB_RANGE_INIT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::StatementRef& sub_range) {
+            #if __has_include("visitor/Expression_SUB_RANGE_INIT_before.hpp")
+            #include "visitor/Expression_SUB_RANGE_INIT_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SUB_RANGE_INIT.hpp")
+            #include "visitor/Expression_SUB_RANGE_INIT.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT.hpp")
+            #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_default.hpp")
+            #include "visitor/Expression_SUB_RANGE_INIT_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT.hpp"
+            #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_default.hpp")
+            #include "visitor/Expression_SUB_RANGE_INIT_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SUB_RANGE_INIT_after.hpp")
+            #include "visitor/Expression_SUB_RANGE_INIT_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_SUB_RANGE_INIT {}}}}}",item_id.id.value());
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
@@ -13160,7 +13157,6 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_METADATA<Visitor>, "Visitor does not implement visit_Statement_METADATA");
     static_assert(has_visitor_Statement_IMPORT_MODULE<Visitor>, "Visitor does not implement visit_Statement_IMPORT_MODULE");
     static_assert(has_visitor_Statement_EXPRESSION<Visitor>, "Visitor does not implement visit_Statement_EXPRESSION");
-    static_assert(has_visitor_Statement_PHI_NODE<Visitor>, "Visitor does not implement visit_Statement_PHI_NODE");
     static_assert(has_visitor_Statement_ERROR_REPORT<Visitor>, "Visitor does not implement visit_Statement_ERROR_REPORT");
     static_assert(has_visitor_Statement_LOWERED_STATEMENTS<Visitor>, "Visitor does not implement visit_Statement_LOWERED_STATEMENTS");
     static_assert(has_visitor_Statement_SUB_BYTE_RANGE<Visitor>, "Visitor does not implement visit_Statement_SUB_BYTE_RANGE");
@@ -13192,6 +13188,7 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_CONDITIONAL<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL");
     static_assert(has_visitor_Expression_AVAILABLE<Visitor>, "Visitor does not implement visit_Expression_AVAILABLE");
     static_assert(has_visitor_Expression_SIZEOF<Visitor>, "Visitor does not implement visit_Expression_SIZEOF");
+    static_assert(has_visitor_Expression_SUB_RANGE_INIT<Visitor>, "Visitor does not implement visit_Expression_SUB_RANGE_INIT");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");

@@ -9,12 +9,14 @@
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <file/file_view.h>
 #include <code/code_writer.h>
-#include <ebmgen/common.hpp>
 #include <ebmgen/mapping.hpp>
+#include <format>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include "error/error.h"
+#include "helper/expected.h"
 #include "stub/structs.hpp"
 
 enum class GenerateMode {
@@ -134,31 +136,38 @@ struct ParsedHookName {
     std::set<std::string_view> body_subset;
 };
 
+namespace ebmgen {
+    bool verbose_error = false;
+}
+
+auto error(auto& fmt, auto&&... arg) {
+    return futils::helper::either::unexpected{futils::error::StrError<std::string>(std::vformat(fmt, std::make_format_args(std::forward<decltype(arg)>(arg)...)))};
+}
+
 ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const std::map<std::string_view, ebmcodegen::Struct>& structs) {
     ParsedHookName result;
     for (auto& suffix : suffixes) {
         if (parsed.ends_with(suffix)) {
-            parsed = parsed.substr(parsed.size() - suffix.size(), suffix.size());
+            parsed = parsed.substr(0, parsed.size() - suffix.size());
             if (is_include_location(suffix)) {
                 if (result.include_location.size()) {
-                    return ebmgen::unexpect_error("Duplicate include location suffix: {} vs {}", result.include_location, suffix);
                 }
                 result.include_location = suffix;
             }
             else if (is_visitor_location(suffix)) {
                 if (result.visitor_location.size()) {
-                    return ebmgen::unexpect_error("Duplicate visitor location suffix: {} vs {}", result.visitor_location, suffix);
+                    return error("Duplicate visitor location suffix: {} vs {}", result.visitor_location, suffix);
                 }
                 result.visitor_location = suffix;
             }
             else if (is_flag_location(suffix)) {
                 if (result.flags_suffix.size()) {
-                    return ebmgen::unexpect_error("Duplicate flags suffix: {} vs {}", result.flags_suffix, suffix);
+                    return error("Duplicate flags suffix: {} vs {}", result.flags_suffix, suffix);
                 }
                 result.flags_suffix = suffix;
             }
             else {
-                return ebmgen::unexpect_error("Unknown suffix: {}", suffix);
+                return error("Unknown suffix: {}", suffix);
             }
         }
     }
@@ -170,38 +179,44 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
         }
     }
     if (result.target.empty()) {
-        return ebmgen::unexpect_error("Empty target prefix");
+        return error("Empty target prefix; got parsed: {} {} {} {}", parsed, result.include_location, result.visitor_location, result.flags_suffix);
     }
     std::set<std::string_view> sub_existence;
-    if (result.target == "Expression") {
-        auto expr = ebm::ExpressionOp_from_string(parsed);
-        if (!expr) {
-            return ebmgen::unexpect_error("Invalid expression: {}", parsed);
+    if (parsed.starts_with("_")) {
+        parsed = parsed.substr(1);
+        if (result.target == "Expression") {
+            auto expr = ebm::ExpressionOp_from_string(parsed);
+            if (!expr) {
+                return error("Invalid expression: {}", parsed);
+            }
+            result.kind = parsed;
+            sub_existence = ebmcodegen::body_subset_ExpressionBody()[*expr];
+            result.struct_info = structs.find("ExpressionBody")->second;
         }
-        result.kind = parsed;
-        sub_existence = ebmcodegen::body_subset_ExpressionBody()[*expr];
-        result.struct_info = structs.find("ExpressionBody")->second;
-    }
-    else if (result.target == "Type") {
-        auto type = ebm::TypeKind_from_string(parsed);
-        if (!type) {
-            return ebmgen::unexpect_error("Invalid type: {}", parsed);
+        else if (result.target == "Type") {
+            auto type = ebm::TypeKind_from_string(parsed);
+            if (!type) {
+                return error("Invalid type: {}", parsed);
+            }
+            result.kind = parsed;
+            sub_existence = ebmcodegen::body_subset_TypeBody()[*type];
+            result.struct_info = structs.find("TypeBody")->second;
         }
-        result.kind = parsed;
-        sub_existence = ebmcodegen::body_subset_TypeBody()[*type];
-        result.struct_info = structs.find("TypeBody")->second;
-    }
-    else if (result.target == "Statement") {
-        auto stmt = ebm::StatementOp_from_string(parsed);
-        if (!stmt) {
-            return ebmgen::unexpect_error("Invalid statement: {}", parsed);
+        else if (result.target == "Statement") {
+            auto stmt = ebm::StatementOp_from_string(parsed);
+            if (!stmt) {
+                return error("Invalid statement: {}", parsed);
+            }
+            result.kind = parsed;
+            sub_existence = ebmcodegen::body_subset_StatementBody()[*stmt];
+            result.struct_info = structs.find("StatementBody")->second;
         }
-        result.kind = parsed;
-        sub_existence = ebmcodegen::body_subset_StatementBody()[*stmt];
-        result.struct_info = structs.find("StatementBody")->second;
+        else {
+            return error("Unknown target: {}", result.target);
+        }
     }
     else if (parsed.size()) {
-        return ebmgen::unexpect_error("unexpected remaining element: {}", parsed);
+        return error("unexpected remaining element: {}", parsed);
     }
     result.body_subset = std::move(sub_existence);
     return result;
@@ -702,32 +717,42 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Failed to parse template: " << flags.template_target << ": " << result.error().error() << "; THIS IS BUG\n";
             return 1;
         }
-        w.out().clear();
-        w.set_line_count();
-        w.should_write_indent(false);
+        w = CodeWriter{"  "};
         w.writeln("/*license*/");
         w.writeln("// Template generated by ebmcodegen at ", repo_url);
         w.writeln("/*");
         {
             auto indent = w.indent_scope();
             w.writeln(flags.template_target);
+            w.writeln("Available fields:");
+            auto indent2 = w.indent_scope();
+            if (result->visitor_location == suffixes[suffix_pre_validate] ||
+                result->visitor_location == suffixes[suffix_pre_visit] ||
+                result->visitor_location == suffixes[suffix_post_visit] ||
+                result->visitor_location == suffixes[suffix_dispatch]) {
+                w.writeln("in: ", result->target);
+            }
             if (result->struct_info) {
-                auto indent = w.indent_scope();
-                for (auto& field : result->struct_info->fields) {
-                    if (!result->body_subset.contains(field.name)) {
-                        continue;
+                if (result->visitor_location != suffixes[suffix_pre_validate]) {
+                    if (result->visitor_location.empty()) {
+                        w.writeln("item_id: ", result->target, "Ref");
                     }
-                    w.write(field.name, ": ");
-                    if (field.attr & ebmcodegen::TypeAttribute::PTR) {
-                        w.write("*");
+                    if (result->visitor_location == suffixes[suffix_post_visit]) {
+                        w.writeln("result: expected<Result>");
                     }
-                    if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
-                        w.write("std::vector<", field.type, ">");
+                    for (auto& field : result->struct_info->fields) {
+                        if (!result->body_subset.contains(field.name)) {
+                            continue;
+                        }
+                        w.write(field.name, ": ");
+                        if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
+                            w.write("std::vector<", field.type, ">");
+                        }
+                        else {
+                            w.write(field.type);
+                        }
+                        w.writeln();
                     }
-                    else {
-                        w.write(field.type);
-                    }
-                    w.writeln();
                 }
             }
         }

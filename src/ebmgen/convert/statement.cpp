@@ -81,6 +81,7 @@ namespace ebmgen {
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{lowered_loop};
                     result_loop_stmt.body = inner_block_ref;
+                    result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{lowered_loop};
                 }
                 else if (auto range = ast::as<ast::RangeType>(bop->right->expr_type)) {
                     auto l = range->range.lock();
@@ -118,23 +119,10 @@ namespace ebmgen {
 
                     EBM_INCREMENT(inc, iter, counter_type);
 
-                    ebm::Block inner_block;
-                    inner_block.container.reserve(2);
-                    append(inner_block, body);
-                    append(inner_block, inc);
+                    EBM_FOR_LOOP(loop_stmt, iter_def, cond, inc, body);
 
-                    EBM_BLOCK(inner_block_ref, std::move(inner_block));
-
-                    EBM_WHILE_LOOP(loop_stmt, cond, inner_block_ref);
-
-                    ebm::Block outer_block;
-                    outer_block.container.reserve(2);
-                    append(outer_block, iter_def);
-                    append(outer_block, loop_stmt);
-
-                    EBM_BLOCK(block_ref, std::move(outer_block));
                     result_loop_stmt.item_var(identifier_def);
-                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{block_ref};
+                    result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{loop_stmt};
                     result_loop_stmt.body = body;
                     result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{loop_stmt};
                 }
@@ -150,6 +138,7 @@ namespace ebmgen {
                     result_loop_stmt.item_var(element_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{loop_stmt};
                     result_loop_stmt.body = inner_block_ref;
+                    result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{loop_stmt};
                 }
                 else if (auto lit = ast::as<ast::StrLiteral>(bop->right)) {
                     // note: representation of string is encoded as base64 in bop->right->binary_value because
@@ -175,6 +164,7 @@ namespace ebmgen {
                     result_loop_stmt.item_var(element_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{block_ref};
                     result_loop_stmt.body = inner_block_ref;
+                    result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{loop_stmt};
                 }
                 else {
                     return unexpect_error("Invalid loop init type : {}", node_type_to_string(bop->right->expr_type->node_type));

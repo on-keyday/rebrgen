@@ -11,11 +11,14 @@
 #include <code/code_writer.h>
 #include <ebmgen/common.hpp>
 #include <ebmgen/mapping.hpp>
+#include <span>
 #include <string>
 #include <string_view>
+#include "strutil/splits.h"
 #include "stub/structs.hpp"
 
 enum class GenerateMode {
+    Template,
     BodySubset,
     CMake,
     CodeGenerator,
@@ -28,14 +31,17 @@ struct Flags : futils::cmdline::templ::HelpOption {
     GenerateMode mode = GenerateMode::CodeGenerator;
     std::string_view visitor_impl_dir = "visitor/";
     std::string_view default_visitor_impl_dir = "ebmcodegen/default_codegen_visitor/";
+    std::string_view template_target;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&lang, "l,lang", "language for output", "LANG");
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
-        ctx.VarMap(&mode, "mode", "generate mode", "{subset,codegen,interpret,hooklist}",
+        ctx.VarString<true>(&template_target, "template-target", "template target name. see --mode hooklist", "target_name");
+        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,template}",
                    std::map<std::string, GenerateMode>{
+                       {"template", GenerateMode::Template},
                        {"subset", GenerateMode::BodySubset},
                        {"cmake", GenerateMode::CMake},
                        {"codegen", GenerateMode::CodeGenerator},
@@ -47,6 +53,37 @@ struct Flags : futils::cmdline::templ::HelpOption {
 
 auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
+
+constexpr size_t indexof(auto& s, std::string_view text) {
+    size_t i = 0;
+    for (auto& t : s) {
+        if (t == text) {
+            return i;
+        }
+        i++;
+    }
+    throw "invalid index";
+}
+
+constexpr std::string_view common_suffix[] = {
+    // common
+    "_before",
+    "_pre_default",
+    "_post_default",
+    "_after",
+
+    "_pre_validate",
+    "_pre_visit",
+    "_post_visit",
+};
+
+constexpr auto suffix_before = indexof(common_suffix, "_before");
+constexpr auto suffix_pre_default = indexof(common_suffix, "_pre_default");
+constexpr auto suffix_post_default = indexof(common_suffix, "_post_default");
+constexpr auto suffix_after = indexof(common_suffix, "_after");
+constexpr auto suffix_pre_validate = indexof(common_suffix, "_pre_validate");
+constexpr auto suffix_pre_visit = indexof(common_suffix, "_pre_visit");
+constexpr auto suffix_post_visit = indexof(common_suffix, "_post_visit");
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     using CodeWriter = futils::code::CodeWriter<std::string>;
@@ -126,6 +163,26 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 0;
     }
 
+    if (flags.mode == GenerateMode::Template) {
+        if (flags.template_target.empty()) {
+            cerr << "Requires template --template-target option: use --mode hooklist to see what kind exists.\n";
+            return 1;
+        }
+        auto target = futils::strutil::split<std::string_view>(flags.template_target, "_", 1);
+        if (target.size() != 2) {
+            cerr << "unexpected target name: " << flags.template_target;
+            return 1;
+        }
+        if (target[0] == "Type") {
+        }
+        if (target[0] == "Expression") {
+        }
+        if (target[0] == "Statement") {
+        }
+        cout << w.out();
+        return 0;
+    }
+
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");
     w.writeln("#include <ebmcodegen/stub/util.hpp>");
     w.writeln("#include <ebmgen/common.hpp>");
@@ -177,11 +234,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     std::vector<std::string> hooks;
+    auto concat = [](auto&&... args) {
+        return futils::strutil::concat<std::string>(std::forward<decltype(args)>(args)...);
+    };
 
     auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
-        auto concated = futils::strutil::concat<std::string>(std::forward<decltype(path)>(path)...);
+        auto concated = concat(std::forward<decltype(path)>(path)...);
         hooks.push_back(concated);
-        auto before = concated + "_before";
+        auto before = concat(concated, common_suffix[suffix_before]);
         hooks.push_back(before);
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, before, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, before, ".hpp", "\"");
@@ -189,8 +249,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
         w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
-        auto pre_default = concated + "_pre_default";
-        auto post_default = concated + "_post_default";
+        auto pre_default = concat(concated, common_suffix[suffix_pre_default]);
+        auto post_default = concat(concated, common_suffix[suffix_post_default]);
         hooks.push_back(pre_default);
         hooks.push_back(post_default);
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, pre_default, ".hpp", "\")");
@@ -200,7 +260,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, post_default, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, post_default, ".hpp", "\"");
         w.writeln("#endif");
-        auto after = concated + "_after";
+        auto after = concat(concated, common_suffix[suffix_after]);
         hooks.push_back(after);
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, after, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, after, ".hpp", "\"");
@@ -340,8 +400,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.writeln(" {");
             {
                 auto scope = w.indent_scope();
-                insert_include(w, kind, "_", "pre_validate");
-                insert_include(w, kind, "_", to_string(T(i)), "_", "pre_validate");
+                insert_include(w, kind, common_suffix[suffix_pre_validate]);
+                insert_include(w, kind, "_", to_string(T(i)), common_suffix[suffix_pre_validate]);
                 for (auto& field : body.fields) {
                     if (!subset[T(i)].contains(field.name)) {
                         continue;
@@ -356,8 +416,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                         w.writeln("auto& ", field.name, " = in.body.", field.name, ";");
                     }
                 }
-                insert_include(w, kind, "_", "pre_visit");
-                insert_include(w, kind, "_", to_string(T(i)), "_", "pre_visit");
+                insert_include(w, kind, common_suffix[suffix_pre_visit]);
+                insert_include(w, kind, "_", to_string(T(i)), common_suffix[suffix_pre_visit]);
                 w.writeln(result_type, " result;");
                 w.writeln("if constexpr (", concept_name, "<Visitor>) {");
                 {
@@ -375,8 +435,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     w.writeln(");");
                 }
                 w.writeln("}");
-                insert_include(w, kind, "_", "post_visit");
-                insert_include(w, kind, "_", to_string(T(i)), "_", "post_visit");
+                insert_include(w, kind, common_suffix[suffix_post_visit]);
+                insert_include(w, kind, "_", to_string(T(i)), common_suffix[suffix_post_visit]);
                 w.writeln("if(!result) {");
                 w.indent_writeln("return unexpect_error(std::move(result.error())); // for trace");
                 w.writeln("}");

@@ -100,14 +100,21 @@ namespace ebmgen {
     }
 
     ebm::StatementBody make_while_loop(ebm::ExpressionRef condition, ebm::StatementRef body) {
-        ebm::StatementBody body_;
-        body_.kind = ebm::StatementOp::LOOP_STATEMENT;
         ebm::LoopStatement loop_stmt;
         loop_stmt.loop_type = ebm::LoopType::WHILE;
         loop_stmt.condition(make_condition(condition));
         loop_stmt.body = body;
-        body_.loop(std::move(loop_stmt));
-        return body_;
+        return make_loop(std::move(loop_stmt));
+    }
+
+    ebm::StatementBody make_for_loop(ebm::StatementRef init, ebm::ExpressionRef condition, ebm::StatementRef step, ebm::StatementRef body) {
+        ebm::LoopStatement loop_stmt;
+        loop_stmt.loop_type = ebm::LoopType::FOR;
+        loop_stmt.init(init);
+        loop_stmt.condition(make_condition(condition));
+        loop_stmt.increment(step);
+        loop_stmt.body = body;
+        return make_loop(std::move(loop_stmt));
     }
 
     ebm::ExpressionBody make_array_size(ebm::TypeRef type, ebm::ExpressionRef array_expr) {

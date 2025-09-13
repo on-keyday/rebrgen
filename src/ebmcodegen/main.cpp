@@ -769,6 +769,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 w.writeln("in: ", result->target);
                 print_struct(print_struct, result->target);
             }
+            if (result->target == prefixes[prefix_entry]) {
+                w.writeln("*this: Visitor");
+                w.writeln("module_: MappingTable");
+            }
             if (result->struct_info) {
                 if (result->visitor_location != suffixes[suffix_pre_validate]) {
                     if (result->visitor_location.empty()) {

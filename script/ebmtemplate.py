@@ -39,12 +39,14 @@ def run_single_template(tool_path, template_target):
 
 def run_save_template(tool_path, template_target, lang):
     """Generate a template and save it to the specified language's visitor directory."""
-    lang_dir = f"src/ebmcg/ebm2{lang}"
-    if not os.path.isdir(lang_dir):
-        print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
-        sys.exit(1)
-
-    visitor_dir = os.path.join(lang_dir, "visitor")
+    if lang == "default_codegen":
+        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+    else:
+        lang_dir = f"src/ebmcg/ebm2{lang}"
+        if not os.path.isdir(lang_dir):
+            print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
+            sys.exit(1)
+        visitor_dir = os.path.join(lang_dir, "visitor")
     os.makedirs(visitor_dir, exist_ok=True)  # Ensure visitor directory exists
 
     output_path = os.path.join(visitor_dir, f"{template_target}.hpp")
@@ -77,7 +79,10 @@ def run_save_template(tool_path, template_target, lang):
 
 def run_update_hooks(tool_path, lang):
     """Update all existing hook files in a language directory."""
-    visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
+    if lang == "default_codegen":
+        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+    else:
+        visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
     if not os.path.isdir(visitor_dir):
         print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
         sys.exit(1)

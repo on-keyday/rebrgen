@@ -16,6 +16,7 @@ namespace ebmcodegen {
         std::string_view name;
         std::string_view type;
         TypeAttribute attr = NONE;
+        std::string_view description;  // optional
     };
 
     struct Struct {

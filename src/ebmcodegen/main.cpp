@@ -11,9 +11,11 @@
 #include <code/code_writer.h>
 #include <ebmgen/common.hpp>
 #include <ebmgen/mapping.hpp>
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include "strutil/splits.h"
 #include "stub/structs.hpp"
 
@@ -62,19 +64,27 @@ constexpr size_t indexof(auto& s, std::string_view text) {
         }
         i++;
     }
-    throw "invalid index";
+    if (std::is_constant_evaluated()) {
+        throw "invalid index";
+    }
+    return -1;
 }
 
 constexpr std::string_view common_suffix[] = {
-    // common
+    // common include location
     "_before",
     "_pre_default",
     "_post_default",
     "_after",
-
+    // visitor location
     "_pre_validate",
     "_pre_visit",
     "_post_visit",
+    "_dispatch",
+
+    // Flags location
+    "_struct",
+    "_bind",
 };
 
 constexpr auto suffix_before = indexof(common_suffix, "_before");
@@ -84,6 +94,65 @@ constexpr auto suffix_after = indexof(common_suffix, "_after");
 constexpr auto suffix_pre_validate = indexof(common_suffix, "_pre_validate");
 constexpr auto suffix_pre_visit = indexof(common_suffix, "_pre_visit");
 constexpr auto suffix_post_visit = indexof(common_suffix, "_post_visit");
+constexpr auto suffix_dispatch = indexof(common_suffix, "_dispatch");
+constexpr auto suffix_struct = indexof(common_suffix, "_struct");
+constexpr auto suffix_bind = indexof(common_suffix, "_bind");
+
+constexpr std::string_view prefixes[] = {"entry", "includes", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
+
+constexpr auto prefix_entry = indexof(prefixes, "entry");
+constexpr auto prefix_includes = indexof(prefixes, "includes");
+constexpr auto prefix_pre_entry = indexof(prefixes, "pre_entry");
+constexpr auto prefix_post_entry = indexof(prefixes, "post_entry");
+constexpr auto prefix_visitor = indexof(prefixes, "Visitor");
+constexpr auto prefix_flags = indexof(prefixes, "Flags");
+constexpr auto prefix_output = indexof(prefixes, "Output");
+constexpr auto prefix_result = indexof(prefixes, "Result");
+constexpr auto prefix_expression = indexof(prefixes, "Expression");
+constexpr auto prefix_type = indexof(prefixes, "Type");
+constexpr auto prefix_statement = indexof(prefixes, "Statement");
+
+constexpr bool is_include_location(std::string_view suffix) {
+    return indexof(common_suffix, suffix) <= suffix_after;
+}
+
+constexpr bool is_visitor_location(std::string_view suffix) {
+    auto loc = indexof(common_suffix, suffix);
+    return suffix_pre_validate <= loc && loc <= suffix_post_visit;
+}
+struct ParsedHookName {
+    std::string_view target;
+    std::string_view include_location;
+    std::string_view visitor_location;
+};
+std::optional<ParsedHookName> parse_hook_name(std::string_view parsed) {
+    ParsedHookName result;
+    for (auto& suffix : common_suffix) {
+        if (parsed.ends_with(suffix)) {
+            parsed = parsed.substr(parsed.size() - suffix.size(), suffix.size());
+            if (is_include_location(suffix)) {
+                if (result.include_location.size()) {
+                    return std::nullopt;
+                }
+                result.include_location = suffix;
+            }
+            else if (is_visitor_location(suffix)) {
+                if (result.visitor_location.size()) {
+                    return std::nullopt;
+                }
+                result.visitor_location = suffix;
+            }
+        }
+    }
+    for (auto& prefix : prefixes) {
+        if (parsed.starts_with(prefix)) {
+            parsed = parsed.substr(prefix.size());
+            result.target = prefix;
+            break;
+        }
+    }
+    return result;
+}
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     using CodeWriter = futils::code::CodeWriter<std::string>;
@@ -168,17 +237,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Requires template --template-target option: use --mode hooklist to see what kind exists.\n";
             return 1;
         }
-        auto target = futils::strutil::split<std::string_view>(flags.template_target, "_", 1);
-        if (target.size() != 2) {
-            cerr << "unexpected target name: " << flags.template_target;
-            return 1;
-        }
-        if (target[0] == "Type") {
-        }
-        if (target[0] == "Expression") {
-        }
-        if (target[0] == "Statement") {
-        }
+
         cout << w.out();
         return 0;
     }
@@ -271,35 +330,35 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         insert_include_without_endif(w, std::forward<decltype(path)>(path)...);
         w.writeln("#endif");
     };
-    insert_include(visitor_stub, "Visitor");
+    insert_include(visitor_stub, prefixes[prefix_visitor]);
 
     visitor_stub.writeln("expected<void> entry() {");
     auto entry_scope = visitor_stub.indent_scope();
-    insert_include(visitor_stub, "entry");
+    insert_include(visitor_stub, prefixes[prefix_entry]);
     visitor_stub.writeln("return {};");  // Placeholder for entry function
     entry_scope.execute();
     visitor_stub.writeln("}");
 
-    insert_include(w, "includes");
+    insert_include(w, prefixes[prefix_includes]);
     w.writeln();  // line for end of #include
 
     w.writeln("struct Flags : ebmcodegen::Flags {");
     {
         auto flag_scope = w.indent_scope();
-        insert_include(w, "Flags", "_", "struct");
+        insert_include(w, prefixes[prefix_flags], common_suffix[suffix_struct]);
         w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
         auto nested_scope = w.indent_scope();
         w.writeln("lang_name = \"", flags.lang, "\";");
         w.writeln("lsp_name = lang_name;");
         w.writeln("webworker_name = lang_name;");
         w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
-        insert_include(w, "Flags", "_", "bind");
+        insert_include(w, prefixes[prefix_flags], common_suffix[suffix_bind]);
         nested_scope.execute();
         w.writeln("}");
     }
     w.writeln("};");
     w.writeln("struct Output : ebmcodegen::Output {");
-    insert_include(w, "Output");
+    insert_include(w, prefixes[prefix_output]);
     w.writeln("};");
 
     w.writeln("namespace ", ns_name, " {");
@@ -317,7 +376,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("Result(const char* v) : value(v) {}");
         w.writeln("Result() = default;");
     }
-    insert_include(w, "Result");
+    insert_include(w, prefixes[prefix_result]);
     result_scope.execute();
     w.writeln("};");
 
@@ -336,7 +395,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         write_visit_entry(stmt_dispatcher, "visit_", kind);
         stmt_dispatcher.writeln(" {");
         auto scope_ = stmt_dispatcher.indent_scope();
-        insert_include_without_endif(stmt_dispatcher, kind, "_", "dispatch");
+        insert_include_without_endif(stmt_dispatcher, kind, common_suffix[suffix_dispatch]);
         stmt_dispatcher.writeln("#else");
         stmt_dispatcher.writeln("switch (in.body.kind) {");
         auto body_name = std::string(kind) + "Body";
@@ -542,9 +601,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.write_unformatted(stmt_dispatcher.out());
     };
 
-    dispatcher(ebm::StatementOp{}, "Statement", ebmcodegen::body_subset_StatementBody());
-    dispatcher(ebm::ExpressionOp{}, "Expression", ebmcodegen::body_subset_ExpressionBody());
-    dispatcher(ebm::TypeKind{}, "Type", ebmcodegen::body_subset_TypeBody());
+    dispatcher(ebm::StatementOp{}, prefixes[prefix_statement], ebmcodegen::body_subset_StatementBody());
+    dispatcher(ebm::ExpressionOp{}, prefixes[prefix_expression], ebmcodegen::body_subset_ExpressionBody());
+    dispatcher(ebm::TypeKind{}, prefixes[prefix_type], ebmcodegen::body_subset_TypeBody());
 
     visitor_scope.execute();
     visitor_stub.writeln("};");
@@ -562,7 +621,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     else {
         w.writeln(ns_name, "::Visitor visitor{ebm,flags};");
     }
-    insert_include(w, "pre_entry");
+    insert_include(w, prefixes[prefix_pre_entry]);
     w.writeln("auto result = visitor.entry();");
     w.writeln("if (!result) {");
     auto err_scope = w.indent_scope();
@@ -570,7 +629,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("return 1;");
     err_scope.execute();
     w.writeln("}");
-    insert_include(w, "post_entry");
+    insert_include(w, prefixes[prefix_post_entry]);
     w.writeln("return 0;");
     main_scope.execute();
     w.writeln("}");

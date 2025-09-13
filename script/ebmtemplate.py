@@ -1,9 +1,14 @@
 import subprocess
 import sys
 import os
+import re
 
 # This script simplifies calling the ebmcodegen tool to generate templates.
-# It can generate a single template or test generation for all available templates.
+# It can generate a single template, test generation for all available templates,
+# or update existing hook files with the latest templates.
+
+START_MARKER = "/*DO NOT EDIT BELOW SECTION MANUALLY*/\n"
+END_MARKER = "/*DO NOT EDIT ABOVE SECTION MANUALLY*/\n"
 
 
 def get_tool_path():
@@ -30,6 +35,117 @@ def run_single_template(tool_path, template_target):
             file=sys.stderr,
         )
         sys.exit(1)
+
+
+def run_save_template(tool_path, template_target, lang):
+    """Generate a template and save it to the specified language's visitor directory."""
+    lang_dir = f"src/ebmcg/ebm2{lang}"
+    if not os.path.isdir(lang_dir):
+        print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
+        sys.exit(1)
+
+    visitor_dir = os.path.join(lang_dir, "visitor")
+    os.makedirs(visitor_dir, exist_ok=True)  # Ensure visitor directory exists
+
+    output_path = os.path.join(visitor_dir, f"{template_target}.hpp")
+    if os.path.exists(output_path):
+        print(f"Error: File '{output_path}' already exists.", file=sys.stderr)
+        sys.exit(1)
+
+    command = [tool_path, "--mode", "template", "--template-target", template_target]
+    print(f"Running command: {' '.join(command)}", file=sys.stderr)
+    try:
+        result = subprocess.run(
+            command, check=True, capture_output=True, text=True, encoding="utf-8"
+        )
+        # Add markers to the template content
+        template_content = f"{START_MARKER}\n{result.stdout.strip()}\n{END_MARKER}"
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(template_content)
+        print(f"Success! Template '{template_target}' saved to '{output_path}'")
+
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error: ebmcodegen failed for target '{template_target}' with exit code {e.returncode}",
+            file=sys.stderr,
+        )
+        print(f"Stderr: {e.stderr}", file=sys.stderr)
+        sys.exit(1)
+
+
+def run_update_hooks(tool_path, lang):
+    """Update all existing hook files in a language directory."""
+    visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
+    if not os.path.isdir(visitor_dir):
+        print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Checking for updates in '{visitor_dir}'...")
+    hpp_files = [f for f in os.listdir(visitor_dir) if f.endswith(".hpp")]
+
+    if not hpp_files:
+        print("No .hpp files found to update.", file=sys.stderr)
+        return
+
+    for filename in hpp_files:
+        template_target = os.path.splitext(filename)[0]
+        file_path = os.path.join(visitor_dir, filename)
+        print(f"-- Processing '{file_path}'...", file=sys.stderr)
+
+        try:
+            # Get the canonical template content
+            command = [
+                tool_path,
+                "--mode",
+                "template",
+                "--template-target",
+                template_target,
+            ]
+            result = subprocess.run(
+                command, check=True, capture_output=True, text=True, encoding="utf-8"
+            )
+            new_body = result.stdout.strip()
+            new_block = "\n".join(new_body.splitlines()[:-1])  # exclude last line
+
+            with open(file_path, "r+", encoding="utf-8") as f:
+                existing_content = f.read()
+                # Use regex to find the existing block
+                pattern = re.compile(
+                    f"^{re.escape(START_MARKER)}(.*?)^{re.escape(END_MARKER)}",
+                    re.DOTALL | re.MULTILINE,
+                )
+                match = pattern.search(existing_content)
+
+                if not match:
+                    # Case 1: Marker not found, add to the top
+                    print(
+                        "   -> No template block found. Prepending...", file=sys.stderr
+                    )
+                    new_content = f"{new_block}\n\n{existing_content}"
+                    f.seek(0)
+                    f.write(new_content)
+                    f.truncate()
+                else:
+                    # Case 2: Marker found, check for differences
+                    existing_body = match.group(1).strip()
+                    if existing_body != new_body:
+                        print("   -> Template differs. Updating...", file=sys.stderr)
+                        new_content = pattern.sub(new_block, existing_content)
+                        f.seek(0)
+                        f.write(new_content)
+                        f.truncate()
+                    else:
+                        print("   -> Already up-to-date.", file=sys.stderr)
+
+        except subprocess.CalledProcessError as e:
+            print(
+                f"   -> Error processing target '{template_target}': {e.stderr}",
+                file=sys.stderr,
+            )
+        except Exception as e:
+            print(f"   -> An unexpected error occurred: {e}", file=sys.stderr)
+
+    print("\nUpdate check complete.")
 
 
 def run_test_mode(tool_path):
@@ -96,13 +212,24 @@ def main():
 
     # Check for the required argument
     if len(sys.argv) < 2:
-        print(f"Usage: python {sys.argv[0]} <template_target | test>", file=sys.stderr)
         print(
-            "  <template_target>: The name of the template to generate (e.g., 'Statement_BLOCK').",
+            f"Usage: python {sys.argv[0]} <template_target | test | update> [lang]",
+            file=sys.stderr,
+        )
+        print(
+            "  <template_target>: Generate a template to stdout (e.g., 'Statement_BLOCK').",
             file=sys.stderr,
         )
         print(
             "  test             : Test generation for all available templates.",
+            file=sys.stderr,
+        )
+        print(
+            "  update           : Update all hook files in the specified [lang] directory.",
+            file=sys.stderr,
+        )
+        print(
+            "  [lang]           : Optional/Required. For new templates, saves to 'src/ebmcg/ebm2<lang>/visitor/'. Required for 'update'.",
             file=sys.stderr,
         )
         print(
@@ -119,6 +246,17 @@ def main():
 
     if target_arg == "test":
         run_test_mode(tool_path)
+    elif target_arg == "update":
+        if len(sys.argv) < 3:
+            print(
+                "Error: 'update' command requires a [lang] argument.", file=sys.stderr
+            )
+            sys.exit(1)
+        lang_arg = sys.argv[2]
+        run_update_hooks(tool_path, lang_arg)
+    elif len(sys.argv) == 3:
+        lang_arg = sys.argv[2]
+        run_save_template(tool_path, target_arg, lang_arg)
     else:
         run_single_template(tool_path, target_arg)
 

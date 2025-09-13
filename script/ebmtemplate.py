@@ -59,7 +59,7 @@ def run_save_template(tool_path, template_target, lang):
             command, check=True, capture_output=True, text=True, encoding="utf-8"
         )
         # Add markers to the template content
-        template_content = f"{START_MARKER}\n{result.stdout.strip()}\n{END_MARKER}"
+        template_content = f"{START_MARKER}{result.stdout}{END_MARKER}"
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")

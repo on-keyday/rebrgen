@@ -799,7 +799,6 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
         }
         w.writeln("*/");
-        w.writeln("/*here to write the hook*/");
         cout << w.out();
         return 0;
     }

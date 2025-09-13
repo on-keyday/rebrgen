@@ -59,7 +59,9 @@ def run_save_template(tool_path, template_target, lang):
             command, check=True, capture_output=True, text=True, encoding="utf-8"
         )
         # Add markers to the template content
-        template_content = f"{START_MARKER}{result.stdout}{END_MARKER}"
+        template_content = (
+            f"{START_MARKER}{result.stdout}{END_MARKER}\n/*here to write the hook*/\n"
+        )
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")
@@ -104,8 +106,8 @@ def run_update_hooks(tool_path, lang):
             result = subprocess.run(
                 command, check=True, capture_output=True, text=True, encoding="utf-8"
             )
-            new_body = result.stdout.strip()
-            new_block = "\n".join(new_body.splitlines()[:-1])  # exclude last line
+            new_body = result.stdout
+            new_block = f"{START_MARKER}{new_body}{END_MARKER}"
 
             with open(file_path, "r+", encoding="utf-8") as f:
                 existing_content = f.read()
@@ -121,13 +123,13 @@ def run_update_hooks(tool_path, lang):
                     print(
                         "   -> No template block found. Prepending...", file=sys.stderr
                     )
-                    new_content = f"{new_block}\n\n{existing_content}"
+                    new_content = f"{new_block}{existing_content}"
                     f.seek(0)
                     f.write(new_content)
                     f.truncate()
                 else:
                     # Case 2: Marker found, check for differences
-                    existing_body = match.group(1).strip()
+                    existing_body = match.group(1)
                     if existing_body != new_body:
                         print("   -> Template differs. Updating...", file=sys.stderr)
                         new_content = pattern.sub(new_block, existing_content)

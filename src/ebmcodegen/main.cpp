@@ -15,6 +15,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <unordered_set>
 #include "error/error.h"
 #include "helper/expected.h"
 #include "stub/structs.hpp"
@@ -697,8 +698,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     main_scope.execute();
     w.writeln("}");
 
+    std::unordered_set<std::string> uniq;
+
     if (flags.mode == GenerateMode::HookList) {
         for (auto& hook : hooks) {
+            if (!uniq.insert(hook).second) {
+                continue;
+            }
             cout << hook << "\n";
         }
         return 0;
@@ -724,22 +730,52 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         {
             auto indent = w.indent_scope();
             w.writeln(flags.template_target);
-            w.writeln("Available fields:");
+            w.writeln("Available variables:");
             auto indent2 = w.indent_scope();
+            if (result->target == prefixes[prefix_flags] && result->flags_suffix == suffixes[suffix_bind]) {
+                w.writeln("ctx: futils::cmdline::option::Context&");
+                w.writeln("lang_name: const char*");
+                w.writeln("lsp_name: const char*");
+                w.writeln("worker_name: const char*");
+                w.writeln("web_filtered: std::set<std::string>");
+            }
             if (result->visitor_location == suffixes[suffix_pre_validate] ||
                 result->visitor_location == suffixes[suffix_pre_visit] ||
                 result->visitor_location == suffixes[suffix_post_visit] ||
                 result->visitor_location == suffixes[suffix_dispatch]) {
+                w.writeln("visitor: Visitor");
                 w.writeln("in: ", result->target);
             }
             if (result->struct_info) {
                 if (result->visitor_location != suffixes[suffix_pre_validate]) {
                     if (result->visitor_location.empty()) {
+                        w.writeln("module_: MappingTable");
                         w.writeln("item_id: ", result->target, "Ref");
                     }
                     if (result->visitor_location == suffixes[suffix_post_visit]) {
                         w.writeln("result: expected<Result>");
                     }
+                    auto print_struct = [&](auto&& print_struct, std::string_view type) -> void {
+                        if (auto found = struct_map.find(type); found != struct_map.end()) {
+                            auto nest = w.indent_scope();
+                            for (auto& field : found->second.fields) {
+                                w.write(field.name, ": ");
+                                if (field.attr & ebmcodegen::TypeAttribute::PTR) {
+                                    w.write("*");
+                                }
+                                if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
+                                    w.write("std::vector<", field.type, ">");
+                                }
+                                else {
+                                    w.write(field.type);
+                                }
+                                w.writeln();
+                                if (field.type != "Varint" && !field.type.ends_with("Ref")) {
+                                    print_struct(print_struct, field.type);
+                                }
+                            }
+                        }
+                    };
                     for (auto& field : result->struct_info->fields) {
                         if (!result->body_subset.contains(field.name)) {
                             continue;
@@ -752,6 +788,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                             w.write(field.type);
                         }
                         w.writeln();
+                        if (field.type != "Varint" && !field.type.ends_with("Ref")) {
+                            print_struct(print_struct, field.type);
+                        }
                     }
                 }
             }

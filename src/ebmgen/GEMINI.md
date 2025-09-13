@@ -389,7 +389,7 @@ The `script/ebmtemplate.py` script is a wrapper around `ebmcodegen` that simplif
 python script/build.py native Debug
 ```
 
-Note: At first creation of hook file, also update `src/ebmcg/ebm2<lang>/main.cpp` modification time before build.
+Note: At creation of hook file, please update `src/ebmcg/ebm2<lang>/main.cpp`'s Last updated time before build to make build system recognize new file.
 
 #### 10. Error Fix Strategy
 

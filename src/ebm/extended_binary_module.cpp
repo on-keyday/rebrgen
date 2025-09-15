@@ -15076,6 +15076,15 @@ namespace ebm {
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_165_) ,true)) {
             return ::futils::error::Error<>("encode: PropertyDecl::merge_mode: write std::uint8_t failed",::futils::error::Category::lib);
         }
+        if (auto err = (*this).merged.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).setter_function.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).getter_function.encode(w)) {
+            return err;
+        }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> PropertyDecl::decode(::futils::binary::reader& r) {
@@ -15093,6 +15102,15 @@ namespace ebm {
             return ::futils::error::Error<>("decode: PropertyDecl::merge_mode: read int failed",::futils::error::Category::lib);
         }
         (*this).merge_mode = static_cast<MergeMode>(tmp_166_);
+        if (auto err = (*this).merged.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).setter_function.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).getter_function.decode(r)) {
+            return err;
+        }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> ErrorReport::encode(::futils::binary::writer& w) const {

@@ -20,4 +20,3 @@ MAYBE(cond_taken, module_.get_expression(if_statement.condition.cond));
 if (cond_taken.body.kind == ebm::ExpressionOp::IS_ERROR) {  // this is error handling, but using exception so we do not need this
     return {};
 }
-/*here to write the hook*/

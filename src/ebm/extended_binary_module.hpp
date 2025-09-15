@@ -434,33 +434,6 @@ namespace ebm {
     constexpr const char* visit_enum(LoopType) {
         return "LoopType";
     }
-    enum class PackedOpType : std::uint8_t {
-        FIXED = 0,
-        VARIABLE = 1,
-    };
-    constexpr const char* to_string(PackedOpType e) {
-        switch(e) {
-            case PackedOpType::FIXED: return "FIXED";
-            case PackedOpType::VARIABLE: return "VARIABLE";
-        }
-        return "";
-    }
-    
-    constexpr std::optional<PackedOpType> PackedOpType_from_string(std::string_view str) {
-        if (str.empty()) {
-            return std::nullopt;
-        }
-        if (str == "FIXED") {
-            return PackedOpType::FIXED;
-        }
-        if (str == "VARIABLE") {
-            return PackedOpType::VARIABLE;
-        }
-        return std::nullopt;
-    }
-    constexpr const char* visit_enum(PackedOpType) {
-        return "PackedOpType";
-    }
     enum class SubByteRangeType : std::uint8_t {
         bytes = 0,
         seek_bytes = 1,
@@ -894,15 +867,15 @@ namespace ebm {
         return "CastType";
     }
     enum class MergeMode : std::uint8_t {
-        COMMON_TYPE = 0,
-        STRICT_TYPE = 1,
-        STRICT_COMMON_TYPE = 2,
+        UNCOMMON_TYPE = 0,
+        COMMON_TYPE = 1,
+        STRICT_TYPE = 2,
     };
     constexpr const char* to_string(MergeMode e) {
         switch(e) {
+            case MergeMode::UNCOMMON_TYPE: return "UNCOMMON_TYPE";
             case MergeMode::COMMON_TYPE: return "COMMON_TYPE";
             case MergeMode::STRICT_TYPE: return "STRICT_TYPE";
-            case MergeMode::STRICT_COMMON_TYPE: return "STRICT_COMMON_TYPE";
         }
         return "";
     }
@@ -911,14 +884,14 @@ namespace ebm {
         if (str.empty()) {
             return std::nullopt;
         }
+        if (str == "UNCOMMON_TYPE") {
+            return MergeMode::UNCOMMON_TYPE;
+        }
         if (str == "COMMON_TYPE") {
             return MergeMode::COMMON_TYPE;
         }
         if (str == "STRICT_TYPE") {
             return MergeMode::STRICT_TYPE;
-        }
-        if (str == "STRICT_COMMON_TYPE") {
-            return MergeMode::STRICT_COMMON_TYPE;
         }
         return std::nullopt;
     }
@@ -2775,6 +2748,9 @@ namespace ebm {
         StatementRef parent_format;
         TypeRef property_type;
         MergeMode merge_mode{};
+        Block merged;
+        LoweredStatementRef setter_function;
+        LoweredStatementRef getter_function;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "PropertyDecl";
@@ -2784,6 +2760,9 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
+            v(v, "merged",(*this).merged);
+            v(v, "setter_function",(*this).setter_function);
+            v(v, "getter_function",(*this).getter_function);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
@@ -2791,6 +2770,9 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
+            v(v, "merged",(*this).merged);
+            v(v, "setter_function",(*this).setter_function);
+            v(v, "getter_function",(*this).getter_function);
         }
         template<typename T>
         struct visitor_tag {
@@ -2802,6 +2784,9 @@ namespace ebm {
             v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format)>{});
             v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type)>{});
             v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode)>{});
+            v(v, "merged",visitor_tag<decltype(std::declval<PropertyDecl>().merged)>{});
+            v(v, "setter_function",visitor_tag<decltype(std::declval<PropertyDecl>().setter_function)>{});
+            v(v, "getter_function",visitor_tag<decltype(std::declval<PropertyDecl>().getter_function)>{});
         }
     };
     struct EBM_API ErrorReport{

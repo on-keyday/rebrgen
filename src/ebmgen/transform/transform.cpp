@@ -75,7 +75,7 @@ namespace ebmgen {
                     std::optional<std::uint64_t> all_in_byte = 0;
                     std::uint64_t all_in_bits = 0;
                     for (auto& ref : g) {
-                        print_if_verbose("    - Statement ID: ", std::get<1>(ref).id.value(), "\n");
+                        print_if_verbose("    - Statement ID: ", get_id(std::get<1>(ref)), "\n");
                         print_if_verbose("    - Size: ", std::get<2>(ref)->size.size()->value(), " ", to_string(std::get<2>(ref)->size.unit), "\n");
                         if (all_in_byte) {
                             if (std::get<2>(ref)->size.unit == ebm::SizeUnit::BYTE_FIXED) {
@@ -154,7 +154,7 @@ namespace ebmgen {
             std::vector<std::pair<std::pair<size_t, size_t>, ebm::StatementRef>> new_statements;
             for (auto& [group_range, updater] : updates) {
                 MAYBE(new_stmt, updater());
-                print_if_verbose("Adding vectorized I/O statement for block ", block_id, ": ", new_stmt.id.value(), "\n");
+                print_if_verbose("Adding vectorized I/O statement for block ", block_id, ": ", get_id(new_stmt), "\n");
                 new_statements.emplace_back(group_range, std::move(new_stmt));
             }
             ebm::Block updated_block;
@@ -170,13 +170,13 @@ namespace ebmgen {
             }
             auto& ctx = tctx.context();
             EBM_BLOCK(new_block, std::move(updated_block));
-            map_statements.emplace(stmt.id.id.value(), new_block);
+            map_statements.emplace(get_id(stmt.id), new_block);
         }
         for (size_t i = 0; i < current_added; i++) {
             auto& stmt = tctx.statement_repository().get_all()[i];
             stmt.body.visit([&](auto&& visitor, const char* name, auto&& value) {
                 if constexpr (std::is_same_v<ebm::StatementRef&, decltype(value)>) {
-                    auto found = map_statements.find(value.id.value());
+                    auto found = map_statements.find(get_id(value));
                     if (found != map_statements.end()) {
                         value = found->second;
                     }
@@ -188,7 +188,7 @@ namespace ebmgen {
         for (size_t i = 0; i < current_alias; i++) {
             auto& alias = tctx.alias_vector()[i];
             if (alias.hint == ebm::AliasHint::STATEMENT) {
-                auto found = map_statements.find(alias.to.id.value());
+                auto found = map_statements.find(get_id(alias.to));
                 if (found != map_statements.end()) {
                     alias.to.id = found->second.id;
                 }
@@ -212,7 +212,7 @@ namespace ebmgen {
                     item.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                         if constexpr (AnyRef<decltype(val)>) {
                             if (!is_nil(val)) {
-                                used_refs[val.id.value()].push_back(ebm::AnyRef{item.id.id});
+                                used_refs[get_id(val)].push_back(ebm::AnyRef{item.id.id});
                             }
                         }
                         else
@@ -227,28 +227,28 @@ namespace ebmgen {
             map_to(ctx.string_repository().get_all());
             map_to(ctx.expression_repository().get_all());
             for (auto& alias : ctx.alias_vector()) {
-                if (used_refs.find(alias.from.id.value()) == used_refs.end()) {
-                    print_if_verbose("Removing unused alias: ", alias.from.id.value(), "\n");
+                if (used_refs.find(get_id(alias.from)) == used_refs.end()) {
+                    print_if_verbose("Removing unused alias: ", get_id(alias.from), "\n");
                     continue;  // Skip unused aliases
                 }
                 switch (alias.hint) {
                     case ebm::AliasHint::IDENTIFIER:
-                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::STATEMENT:
-                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::STRING:
-                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::EXPRESSION:
-                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::TYPE:
-                        used_refs[alias.to.id.value()].push_back(ebm::AnyRef{alias.from.id});
+                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::ALIAS:
-                        return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", alias.from.id.value(), alias.to.id.value());
+                        return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", get_id(alias.from), get_id(alias.to));
                 }
             }
             std::set<std::uint64_t> should_remove;
@@ -262,8 +262,8 @@ namespace ebmgen {
             // simply remove
             auto remove = [&](auto&& rem) {
                 std::erase_if(rem, [&](const auto& item) {
-                    if (should_remove.find(item.id.id.value()) != should_remove.end()) {
-                        print_if_verbose("Removing unused item: ", item.id.id.value());
+                    if (should_remove.find(get_id(item.id)) != should_remove.end()) {
+                        print_if_verbose("Removing unused item: ", get_id(item.id));
                         if constexpr (has_body_kind<decltype(item)>) {
                             print_if_verbose("(", to_string(item.body.kind), ")");
                         }
@@ -279,8 +279,8 @@ namespace ebmgen {
             remove(ctx.string_repository().get_all());
             remove(ctx.expression_repository().get_all());
             std::erase_if(ctx.alias_vector(), [&](const auto& alias) {
-                return should_remove.find(alias.from.id.value()) != should_remove.end() ||
-                       should_remove.find(alias.to.id.value()) != should_remove.end();
+                return should_remove.find(get_id(alias.from)) != should_remove.end() ||
+                       should_remove.find(get_id(alias.to)) != should_remove.end();
             });
             return used_refs.size();
         };
@@ -304,20 +304,20 @@ namespace ebmgen {
         ctx.set_max_id(0);  // reset
         for (auto& mapping : most_used) {
             MAYBE(new_id, ctx.new_id());
-            old_to_new[std::get<0>(mapping).id.value()] = new_id;
+            old_to_new[get_id(std::get<0>(mapping))] = new_id;
         }
         MAYBE(entry_id, ctx.new_id());
         old_to_new[1] = entry_id;
         auto remap = [&](auto& vec) {
             t.reset();
             for (auto& item : vec) {
-                if (auto it = old_to_new.find(item.id.id.value()); it != old_to_new.end()) {
+                if (auto it = old_to_new.find(get_id(item.id)); it != old_to_new.end()) {
                     item.id.id = it->second.id;
                 }
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
                     if constexpr (AnyRef<decltype(val)>) {
                         if (!is_nil(val)) {
-                            auto it = old_to_new.find(val.id.value());
+                            auto it = old_to_new.find(get_id(val));
                             if (it != old_to_new.end()) {
                                 val.id = it->second.id;
                             }
@@ -335,7 +335,7 @@ namespace ebmgen {
             print_if_verbose("Remap ", vec.size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
             t.reset();
             std::sort(vec.begin(), vec.end(), [](const auto& a, const auto& b) {
-                return a.id.id.value() < b.id.id.value();
+                return get_id(a.id) < get_id(b.id);
             });
             print_if_verbose("Sort ", vec.size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         };
@@ -346,26 +346,26 @@ namespace ebmgen {
         remap(ctx.expression_repository().get_all());
         t.reset();
         for (auto& alias : ctx.alias_vector()) {
-            if (auto it = old_to_new.find(alias.from.id.value()); it != old_to_new.end()) {
+            if (auto it = old_to_new.find(get_id(alias.from)); it != old_to_new.end()) {
                 alias.from.id = it->second.id;
             }
-            if (auto it = old_to_new.find(alias.to.id.value()); it != old_to_new.end()) {
+            if (auto it = old_to_new.find(get_id(alias.to)); it != old_to_new.end()) {
                 alias.to.id = it->second.id;
             }
         }
         print_if_verbose("Remap ", ctx.alias_vector().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         t.reset();
         std::sort(ctx.alias_vector().begin(), ctx.alias_vector().end(), [](const auto& a, const auto& b) {
-            return a.from.id.value() < b.from.id.value();
+            return get_id(a.from) < get_id(b.from);
         });
         print_if_verbose("Sort ", ctx.alias_vector().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
         t.reset();
         std::erase_if(ctx.debug_locations(), [&](auto& d) {
-            return !old_to_new.contains(d.ident.id.value());
+            return !old_to_new.contains(get_id(d.ident));
         });
         print_if_verbose("Removed unreferenced debug information in ", t.delta<std::chrono::microseconds>(), "\n");
         for (auto& loc : ctx.debug_locations()) {
-            if (auto it = old_to_new.find(loc.ident.id.value()); it != old_to_new.end()) {
+            if (auto it = old_to_new.find(get_id(loc.ident)); it != old_to_new.end()) {
                 loc.ident.id = it->second.id;
             }
         }
@@ -577,9 +577,9 @@ namespace ebmgen {
             for (auto& ref : block->container) {
                 MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
                 if (auto r = get_io(stmt, write); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
-                    auto found = tctx.cfg_map.find(stmt.id.id.value());
+                    auto found = tctx.cfg_map.find(get_id(stmt.id));
                     if (found == tctx.cfg_map.end()) {
-                        return unexpect_error("no cfg found for {}:{}", stmt.id.id.value(), to_string(stmt.body.kind));
+                        return unexpect_error("no cfg found for {}:{}", get_id(stmt.id), to_string(stmt.body.kind));
                     }
                     auto finalized_routes = search_byte_aligned_route(tctx, found->second, r->size.size()->value(), write);
                     if (finalized_routes.size()) {
@@ -729,11 +729,11 @@ namespace ebmgen {
             case ebm::ExpressionOp::RANGE: {
                 auto start_ref = *expr->body.start();
                 auto end_ref = *expr->body.end();
-                if (start_ref.id.value()) {
+                if (get_id(start_ref)) {
                     MAYBE(start, flatten_expression(tctx, block, start_ref));
                     start_ref = start;
                 }
-                if (end_ref.id.value()) {
+                if (get_id(end_ref)) {
                     MAYBE(end, flatten_expression(tctx, block, end_ref));
                     end_ref = end;
                 }
@@ -778,10 +778,10 @@ namespace ebmgen {
                 continue;
             }
             count++;
-            auto found_cfg = ctx.cfg_map.find(stmt.id.id.value());
+            auto found_cfg = ctx.cfg_map.find(get_id(stmt.id));
             if (found_cfg != ctx.cfg_map.end()) {
                 cfg_count++;
-                print_if_verbose("Found ", found_cfg->second->prev.size(), " previous node for ", stmt.id.id.value(), "(", to_string(stmt.body.kind), ")\n");
+                print_if_verbose("Found ", found_cfg->second->prev.size(), " previous node for ", get_id(stmt.id), "(", to_string(stmt.body.kind), ")\n");
             }
         }
         print_if_verbose("Found ", count, " conditional statements\n");
@@ -793,7 +793,7 @@ namespace ebmgen {
             stmt.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                 if constexpr (std::is_same_v<std::decay_t<decltype(val)>, ebm::ExpressionRef>) {
                     if (!is_nil(val)) {
-                        toplevel_expressions.insert(val.id.value());
+                        toplevel_expressions.insert(get_id(val));
                     }
                 }
                 else
@@ -809,17 +809,17 @@ namespace ebmgen {
             if (flattened.container.size()) {
                 auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
                 auto mapped_ptr = ctx.expression_repository().get(new_ref);
-                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into ", flattened.container.size(), " statements and mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
+                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into ", flattened.container.size(), " statements and mapped to ", get_id(new_ref), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
                 for (auto& flt : flattened.container) {
                     auto stmt_ptr = ctx.statement_repository().get(flt);
-                    print_if_verbose("  - Statement ID: ", flt.id.value(), "(", stmt_ptr ? to_string(stmt_ptr->body.kind) : "<unknown>", ")\n");
+                    print_if_verbose("  - Statement ID: ", get_id(flt), "(", stmt_ptr ? to_string(stmt_ptr->body.kind) : "<unknown>", ")\n");
                 }
                 flattened_expressions.emplace_back(std::move(flattened), new_ref);
             }
-            else if (expr != new_ref.id.value()) {
+            else if (expr != get_id(new_ref)) {
                 auto expr_ptr = ctx.expression_repository().get(ebm::ExpressionRef{expr});
                 auto mapped_ptr = ctx.expression_repository().get(new_ref);
-                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into no statements but mapped to ", new_ref.id.value(), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
+                print_if_verbose("Flatten expression ", expr, "(", expr_ptr ? to_string(expr_ptr->body.kind) : "<unknown>", ")", " into no statements but mapped to ", get_id(new_ref), "(", mapped_ptr ? to_string(mapped_ptr->body.kind) : "<unknown>", ")\n");
             }
         }
         print_if_verbose("Total flattened expressions: ", flattened_expressions.size(), "\n");

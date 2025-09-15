@@ -3,11 +3,14 @@
 #include "core/ast/ast.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
+#include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
 #include "helper.hpp"
 #include <core/ast/traverse.h>
 #include <memory>
+#include <unordered_map>
+#include <vector>
 
 namespace ebmgen {
 
@@ -608,6 +611,45 @@ namespace ebmgen {
         return {};
     }
 
+    struct DerivedTypeInfo {
+        std::optional<ebm::ExpressionRef> cond;
+        std::optional<ebm::StatementRef> field;  // field or property
+    };
+
+    expected<void> derive_common_type(ConverterContext& ctx, ebm::PropertyDecl& derive, ast::UnionType& union_type) {
+        std::vector<DerivedTypeInfo> cases;
+        for (auto& cand : union_type.candidates) {
+            DerivedTypeInfo c;
+            auto cond_locked = cand->cond.lock();
+            if (cond_locked) {
+                if (auto i = ast::as<ast::Identity>(cond_locked)) {
+                    EBMA_CONVERT_EXPRESSION(expr, i->expr);
+                    c.cond = expr;
+                }
+                else {
+                    EBMA_CONVERT_EXPRESSION(expr, cond_locked);
+                    c.cond = expr;
+                }
+            }
+            auto field = cand->field.lock();
+            if (field) {
+                EBMA_CONVERT_STATEMENT(stmt, field);
+                c.field = stmt;
+            }
+            cases.push_back(c);
+        }
+        std::unordered_map<std::uint64_t, std::vector<ebm::StatementRef>> merged;
+        for (auto& c : cases) {
+            if (c.field) {
+                MAYBE(field, ctx.repository().get_statement(*c.field));
+                if (auto decl = field.body.field_decl()) {
+                    append(derive.merged, *c.field);
+                }
+            }
+        }
+        return {};
+    }
+
     expected<ebm::StatementBody> convert_property_decl(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node) {
         ebm::StatementBody body;
         MAYBE(union_type, ast::as<ast::UnionType>(node->field_type));
@@ -616,15 +658,12 @@ namespace ebmgen {
         EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
         prop_decl.name = field_name_ref;
 
-        EBMA_CONVERT_TYPE(property_type_ref, union_type.common_type);
-        prop_decl.property_type = property_type_ref;
-
         if (auto parent_member = node->belong.lock()) {
             EBMA_CONVERT_STATEMENT(statement_ref, parent_member);
             prop_decl.parent_format = statement_ref;
         }
 
-        prop_decl.merge_mode = ebm::MergeMode::COMMON_TYPE;
+        MAYBE_VOID(derived, derive_common_type(ctx, prop_decl, union_type));
 
         body.property_decl(std::move(prop_decl));
         return body;
@@ -735,6 +774,9 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Field>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         if (auto union_type = ast::as<ast::UnionType>(node->field_type)) {
+            if (ctx.state().get_current_generate_type() != GenerateType::Normal) {
+                return unexpect_error("Property declaration is only allowed in normal generate type");
+            }
             MAYBE(body_, convert_property_decl(ctx, node));
             body = std::move(body_);
         }

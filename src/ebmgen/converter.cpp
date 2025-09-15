@@ -15,7 +15,7 @@ namespace ebmgen {
         const char* ident = member && member->ident ? member->ident->ident.c_str() : "(no ident)";
         futils::wrap::cerr_wrap() << action << ": (" << (node ? node_type_to_string(node->node_type) : "(null)") << " " << ident << "(" << node.get() << "), " << to_string(typ) << ")";
         if (!is_nil(ref)) {
-            futils::wrap::cerr_wrap() << " -> " << ref.id.value();
+            futils::wrap::cerr_wrap() << " -> " << get_id(ref);
         }
         futils::wrap::cerr_wrap() << '\n';
     }
@@ -78,7 +78,7 @@ namespace ebmgen {
         ebm.aliases = std::move(aliases);
         for (auto& alias : ebm.aliases) {
             if (alias.hint == ebm::AliasHint::ALIAS) {
-                return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", alias.from.id.value(), alias.to.id.value());
+                return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", get_id(alias.from), get_id(alias.to));
             }
         }
 

@@ -30,12 +30,12 @@ TEST(IntegrationTest, SimpleIf) {
     ASSERT_EQ(if_stmt->body.kind, ebm::StatementOp::IF_STATEMENT);
     auto if_body = if_stmt->body.if_statement();
     ASSERT_TRUE(if_body) << "IF statement body is empty";
-    ASSERT_NE(if_body->condition.id.value(), 0) << "Condition expression ID is invalid";
+    ASSERT_NE(if_body->get_id(condition), 0) << "Condition expression ID is invalid";
     auto cond = ctx.repository().get_expression(if_body->condition);
     ASSERT_TRUE(cond) << "Failed to retrieve the condition expression";
     ASSERT_EQ(cond->body.kind, ebm::ExpressionOp::LITERAL_BOOL) << "Condition expression is not a boolean literal";
     ASSERT_TRUE(cond->body.bool_value()) << "Condition expression is not true";
-    ASSERT_NE(if_body->then_block.id.value(), 0) << "Then block ID is invalid";
+    ASSERT_NE(if_body->get_id(then_block), 0) << "Then block ID is invalid";
     auto then_block = ctx.repository().get_statement(if_body->then_block);
     ASSERT_TRUE(then_block) << "Failed to retrieve the THEN block";
     ASSERT_EQ(then_block->body.kind, ebm::StatementOp::BLOCK) << "Then block is not a BLOCK statement";
@@ -47,8 +47,8 @@ TEST(IntegrationTest, SimpleIf) {
     ASSERT_EQ(field_stmt->body.kind, ebm::StatementOp::FIELD_DECL) << "Field statement is not a FIELD_DECL";
     auto field_body = field_stmt->body.field_decl();
     ASSERT_TRUE(field_body) << "Field declaration body is empty";
-    ASSERT_NE(field_body->name.id.value(), 0) << "Field name ID is invalid";
-    ASSERT_NE(field_body->field_type.id.value(), 0) << "Field type ID is invalid";
+    ASSERT_NE(field_body->get_id(name), 0) << "Field name ID is invalid";
+    ASSERT_NE(field_body->get_id(field_type), 0) << "Field type ID is invalid";
     auto field_type = ctx.repository().get_type(field_body->field_type);
     ASSERT_TRUE(field_type) << "Failed to retrieve the field type";
     ASSERT_EQ(field_type->body.kind, ebm::TypeKind::UINT) << "Field type is not UINT";

@@ -128,7 +128,7 @@ namespace ebmgen {
     }
 
     void DebugPrinter::print_any_ref(auto value) const {
-        os_ << " (ID: " << value.id.value() << " ";
+        os_ << " (ID: " << get_id(value) << " ";
         if (is_nil(value)) {
             os_ << "(null)";
         }
@@ -214,7 +214,7 @@ namespace ebmgen {
         print_value(module_.module());
         os_ << "Inverse references:\n";
         indent_level_++;
-        for (std::uint64_t i = 1; i <= module_.module().max_id.id.value(); ++i) {
+        for (std::uint64_t i = 1; i <= get_id(module_.module().max_id); ++i) {
             print_any_ref(ebm::AnyRef{i});
             auto found = module_.get_inverse_ref(ebm::AnyRef{i});
             if (!found) {

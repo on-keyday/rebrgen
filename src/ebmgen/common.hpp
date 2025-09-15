@@ -172,4 +172,9 @@ namespace ebmgen {
     constexpr bool is_nil(T t) {
         return t.id.value() == 0;
     }
+
+    template <AnyRef T>
+    constexpr std::uint64_t get_id(T t) {
+        return t.id.value();
+    }
 }  // namespace ebmgen

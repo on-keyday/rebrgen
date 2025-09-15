@@ -105,7 +105,7 @@ namespace ebmgen {
 #define EBM_CAST(ref_name, to_typ, from_typ, expr)                                                 \
     ebm::ExpressionRef ref_name;                                                                   \
     {                                                                                              \
-        if (from_typ.id.value() != to_typ.id.value()) {                                            \
+        if (get_id(from_typ) != get_id(to_typ)) {                                                  \
             MAYBE(cast_kind________, ctx.get_type_converter().get_cast_type(to_typ, from_typ));    \
             EBMA_ADD_EXPR(cast_ref________, make_cast(to_typ, from_typ, expr, cast_kind________)); \
             ref_name = cast_ref________;                                                           \

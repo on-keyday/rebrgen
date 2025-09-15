@@ -81,7 +81,7 @@ namespace ebmgen {
         auto& ctx = tctx.tctx.context();
         MAYBE(stmt, ctx.repository().get_statement(ref));
         root->statement_op = stmt.body.kind;
-        tctx.cfg_map[ref.id.value()] = root;
+        tctx.cfg_map[get_id(ref)] = root;
         bool brk = false;
         if (auto block = stmt.body.block()) {
             auto join = std::make_shared<CFG>();
@@ -108,7 +108,7 @@ namespace ebmgen {
             if (!then_block.brk) {
                 link(then_block.end, join);
             }
-            if (if_stmt->else_block.id.value()) {
+            if (get_id(if_stmt->else_block)) {
                 MAYBE(else_block, analyze_ref(tctx, if_stmt->else_block));
                 link(current, else_block.start);
                 if (!else_block.brk) {
@@ -209,6 +209,12 @@ namespace ebmgen {
         else if (auto assert_ = stmt.body.assert_desc()) {
             MAYBE(expr_node, analyze_expression(tctx, assert_->condition.cond));
             current->condition = std::move(expr_node);
+        }
+        else if (auto desc = stmt.body.sub_byte_range()) {
+            MAYBE(range, analyze_ref(tctx, desc->io_statement));
+            link(current, range.start);
+            current = range.end;
+            brk = range.brk;
         }
         return CFGTuple{root, current, brk};
     }
@@ -401,7 +407,7 @@ namespace ebmgen {
             for (auto& p : ctx.per_roots) {
                 MAYBE_VOID(dom_tree, analyze_dominators(dom_tree, p.first, p.second));
             }
-            cfg_list.list[stmt.id.id.value()] = CFGResult{
+            cfg_list.list[get_id(stmt.id)] = CFGResult{
                 .cfg = std::move(cfg),
                 .dom_tree = std::move(dom_tree),
             };
@@ -424,10 +430,10 @@ namespace ebmgen {
             w.write(std::format("{} [label=\"", expr_id[cfg]));
             auto origin = ctx.get_expression(cfg->original_node);
             if (cfg->children.size()) {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", cfg->original_node.id.value()));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", get_id(cfg->original_node)));
             }
             else {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", get_id(cfg->original_node)));
             }
             if (origin) {
                 origin->body.visit([&](auto&& visitor, std::string_view name, auto&& value) -> void {
@@ -499,10 +505,10 @@ namespace ebmgen {
             }
             auto origin = ctx.get_statement(cfg->original_node);
             if (cfg->next.size() == 0) {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", cfg->original_node.id.value()));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<end>", get_id(cfg->original_node)));
             }
             else {
-                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", cfg->original_node.id.value()));
+                w.write(std::format("{}:{}\\n", origin ? to_string(origin->body.kind) : "<phi>", get_id(cfg->original_node)));
             }
             if (origin) {
                 auto add_io = [&](const ebm::IOData* io) {
@@ -533,7 +539,7 @@ namespace ebmgen {
                 w.write(std::format("{} -> {}", node_id[cfg], node_id[n]));
                 if (n->condition) {
                     auto cond_expr = ctx.get_expression(n->condition->original_node);
-                    w.write(std::format("[label=\"{}:{}\"]", cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", n->condition->original_node.id.value()));
+                    w.write(std::format("[label=\"{}:{}\"]", cond_expr ? to_string(cond_expr->body.kind) : "<unknown expr>", get_id(n->condition->original_node)));
                 }
                 w.writeln(";");
                 if (n->condition) {

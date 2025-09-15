@@ -9,11 +9,11 @@ namespace ebmgen {
     void MappingTable::build_maps() {
         auto map_to = [&](auto& map, const auto& vec, ebm::AliasHint hint) {
             for (const auto& item : vec) {
-                map[item.id.id.value()] = &item;
+                map[get_id(item.id)] = &item;
                 item.body.visit([&](auto&& visitor, const char* name, auto&& val, std::optional<size_t> index = std::nullopt) -> void {
                     if constexpr (AnyRef<decltype(val)>) {
                         if (!is_nil(val)) {
-                            inverse_refs_[val.id.value()].push_back(InverseRef{
+                            inverse_refs_[get_id(val)].push_back(InverseRef{
                                 .name = name,
                                 .index = index,
                                 .ref = ebm::AnyRef{item.id.id},
@@ -38,8 +38,8 @@ namespace ebmgen {
         map_to(expression_map_, module_.expressions, ebm::AliasHint::EXPRESSION);
 
         auto map_alias = [&](auto& map, const auto& alias) {
-            map[alias.from.id.value()] = map[alias.to.id.value()];
-            inverse_refs_[alias.to.id.value()].push_back(InverseRef{
+            map[get_id(alias.from)] = map[get_id(alias.to)];
+            inverse_refs_[get_id(alias.to)].push_back(InverseRef{
                 .name = to_string(alias.hint),
                 .ref = ebm::AnyRef{alias.from.id},
                 .hint = ebm::AliasHint::ALIAS,
@@ -72,32 +72,32 @@ namespace ebmgen {
 
     // --- Helper functions to get objects from references ---
     const ebm::Identifier* MappingTable::get_identifier(const ebm::IdentifierRef& ref) const {
-        auto it = identifier_map_.find(ref.id.value());
+        auto it = identifier_map_.find(get_id(ref));
         return (it != identifier_map_.end()) ? it->second : nullptr;
     }
 
     const ebm::StringLiteral* MappingTable::get_string_literal(const ebm::StringRef& ref) const {
-        auto it = string_literal_map_.find(ref.id.value());
+        auto it = string_literal_map_.find(get_id(ref));
         return (it != string_literal_map_.end()) ? it->second : nullptr;
     }
 
     const ebm::Type* MappingTable::get_type(const ebm::TypeRef& ref) const {
-        auto it = type_map_.find(ref.id.value());
+        auto it = type_map_.find(get_id(ref));
         return (it != type_map_.end()) ? it->second : nullptr;
     }
 
     const ebm::Statement* MappingTable::get_statement(const ebm::StatementRef& ref) const {
-        auto it = statement_map_.find(ref.id.value());
+        auto it = statement_map_.find(get_id(ref));
         return (it != statement_map_.end()) ? it->second : nullptr;
     }
 
     const ebm::Expression* MappingTable::get_expression(const ebm::ExpressionRef& ref) const {
-        auto it = expression_map_.find(ref.id.value());
+        auto it = expression_map_.find(get_id(ref));
         return (it != expression_map_.end()) ? it->second : nullptr;
     }
 
     const std::vector<InverseRef>* MappingTable::get_inverse_ref(const ebm::AnyRef& ref) const {
-        auto it = inverse_refs_.find(ref.id.value());
+        auto it = inverse_refs_.find(get_id(ref));
         if (it != inverse_refs_.end()) {
             return &it->second;
         }
@@ -112,7 +112,7 @@ namespace ebmgen {
         if (const ebm::Identifier* id = get_identifier(ref)) {
             return id->body.data;
         }
-        return std::format("{}{}", prefix, default_ref.id.value());
+        return std::format("{}{}", prefix, get_id(default_ref));
     }
 
     const ebm::Identifier* MappingTable::get_identifier(const ebm::StatementRef& ref) const {
@@ -138,7 +138,7 @@ namespace ebmgen {
         if (const ebm::Identifier* id = get_identifier(ref)) {
             return id->body.data;
         }
-        return std::format("{}{}", prefix, ref.id.value());
+        return std::format("{}{}", prefix, get_id(ref));
     }
 
     const ebm::Identifier* MappingTable::get_identifier(const ebm::ExpressionRef& ref) const {

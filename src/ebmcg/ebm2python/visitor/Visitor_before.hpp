@@ -7,7 +7,6 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-
 // Helper function to convert EBM type and attributes to Python struct format string
 expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const ebm::IOAttribute& attribute, const ebm::Size& size) const {
     // Handle endianness prefix
@@ -34,7 +33,7 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
 
     const auto* type_ptr = module_.get_type(type_ref);
     if (type_ptr == nullptr) {
-        return unexpect_error("Failed to get type for TypeRef ID: {}", type_ref.id.value());
+        return unexpect_error("Failed to get type for TypeRef ID: {}", get_id(type_ref));
     }
     const auto& type = *type_ptr;
 

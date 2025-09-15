@@ -11178,7 +11178,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_BLOCK {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_BLOCK {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11202,7 +11202,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ASSIGNMENT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ASSIGNMENT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11226,7 +11226,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_YIELD {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_YIELD {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11250,7 +11250,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_APPEND {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_APPEND {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11274,7 +11274,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_RETURN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_RETURN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11298,7 +11298,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ERROR_RETURN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ERROR_RETURN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11322,7 +11322,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ASSERT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ASSERT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11346,7 +11346,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_READ_DATA {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_READ_DATA {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11370,7 +11370,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_WRITE_DATA {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_WRITE_DATA {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11394,7 +11394,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_SEEK_STREAM {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_SEEK_STREAM {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11418,7 +11418,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_IF_STATEMENT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_IF_STATEMENT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11442,7 +11442,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_LOOP_STATEMENT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_LOOP_STATEMENT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11466,7 +11466,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_MATCH_STATEMENT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_MATCH_STATEMENT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11490,7 +11490,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_MATCH_BRANCH {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_MATCH_BRANCH {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11514,7 +11514,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_BREAK {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_BREAK {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11538,7 +11538,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_CONTINUE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_CONTINUE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11562,7 +11562,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_FUNCTION_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_FUNCTION_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11586,7 +11586,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_VARIABLE_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_VARIABLE_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11610,7 +11610,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_FIELD_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_FIELD_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11634,7 +11634,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ENUM_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ENUM_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11658,7 +11658,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ENUM_MEMBER_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ENUM_MEMBER_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11682,7 +11682,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_STRUCT_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_STRUCT_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11706,7 +11706,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_UNION_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_UNION_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11730,7 +11730,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_UNION_MEMBER_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_UNION_MEMBER_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11754,7 +11754,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_PROGRAM_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_PROGRAM_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11778,7 +11778,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_PROPERTY_DECL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_PROPERTY_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11802,7 +11802,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_METADATA {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_METADATA {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11826,7 +11826,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_IMPORT_MODULE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_IMPORT_MODULE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11850,7 +11850,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_EXPRESSION {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_EXPRESSION {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11874,7 +11874,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_ERROR_REPORT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_ERROR_REPORT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11898,7 +11898,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_LOWERED_STATEMENTS {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_LOWERED_STATEMENTS {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11922,7 +11922,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_SUB_BYTE_RANGE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Statement_SUB_BYTE_RANGE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11946,7 +11946,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_INT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_INT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11970,7 +11970,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_INT64 {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_INT64 {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -11994,7 +11994,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_BOOL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_BOOL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12018,7 +12018,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_STRING {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_STRING {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12042,7 +12042,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_TYPE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_TYPE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12066,7 +12066,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_LITERAL_CHAR {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_LITERAL_CHAR {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12090,7 +12090,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_IDENTIFIER {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_IDENTIFIER {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12114,7 +12114,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_BINARY_OP {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_BINARY_OP {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12138,7 +12138,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_UNARY_OP {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_UNARY_OP {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12162,7 +12162,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_CALL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_CALL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12186,7 +12186,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_INDEX_ACCESS {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_INDEX_ACCESS {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12210,7 +12210,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_MEMBER_ACCESS {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_MEMBER_ACCESS {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12234,7 +12234,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_TYPE_CAST {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_TYPE_CAST {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12258,7 +12258,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_RANGE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_RANGE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12282,7 +12282,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_DEFAULT_VALUE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_DEFAULT_VALUE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12306,7 +12306,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_IS_LITTLE_ENDIAN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_IS_LITTLE_ENDIAN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12330,7 +12330,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_GET_STREAM_OFFSET {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_GET_STREAM_OFFSET {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12354,7 +12354,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_GET_REMAINING_BYTES {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_GET_REMAINING_BYTES {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12378,7 +12378,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_CAN_READ_STREAM {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_CAN_READ_STREAM {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12402,7 +12402,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_ARRAY_SIZE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_ARRAY_SIZE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12426,7 +12426,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_IS_ERROR {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_IS_ERROR {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12450,7 +12450,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_MAX_VALUE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_MAX_VALUE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12474,7 +12474,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_READ_DATA {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_READ_DATA {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12498,7 +12498,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_WRITE_DATA {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_WRITE_DATA {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12522,7 +12522,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_CONDITIONAL_STATEMENT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_CONDITIONAL_STATEMENT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12546,7 +12546,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_CONDITIONAL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_CONDITIONAL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12570,7 +12570,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_AVAILABLE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_AVAILABLE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12594,7 +12594,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_SIZEOF {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_SIZEOF {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12618,7 +12618,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Expression_SUB_RANGE_INIT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Expression_SUB_RANGE_INIT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12642,7 +12642,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_INT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_INT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12666,7 +12666,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_UINT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_UINT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12690,7 +12690,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_FLOAT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_FLOAT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12714,7 +12714,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_STRUCT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_STRUCT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12738,7 +12738,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_RECURSIVE_STRUCT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_RECURSIVE_STRUCT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12762,7 +12762,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_BOOL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_BOOL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12786,7 +12786,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_VOID {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_VOID {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12810,7 +12810,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_META {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_META {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12834,7 +12834,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_ENUM {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_ENUM {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12858,7 +12858,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_ARRAY {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_ARRAY {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12882,7 +12882,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_VECTOR {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_VECTOR {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12906,7 +12906,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_VARIANT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_VARIANT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12930,7 +12930,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_RANGE {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_RANGE {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12954,7 +12954,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_ENCODER_RETURN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_ENCODER_RETURN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -12978,7 +12978,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_DECODER_RETURN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_DECODER_RETURN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13002,7 +13002,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_ENCODER_INPUT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_ENCODER_INPUT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13026,7 +13026,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_DECODER_INPUT {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_DECODER_INPUT {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13050,7 +13050,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_PROPERTY_SETTER_RETURN {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_PROPERTY_SETTER_RETURN {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13074,7 +13074,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_OPTIONAL {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_OPTIONAL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13098,7 +13098,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_PTR {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_PTR {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13122,7 +13122,7 @@ namespace ebm2python {
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Type_FUNCTION {}}}}}",item_id.id.value());
+                return std::format("{{{{Unimplemented Type_FUNCTION {}}}}}",get_id(item_id));
             }
             #endif
             return {};

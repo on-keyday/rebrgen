@@ -83,7 +83,7 @@ namespace ebmgen {
 
        private:
         expected<ID> add_internal(ID id, Body&& body) {
-            id_index_map[id.id.value()] = instances.size();
+            id_index_map[get_id(id)] = instances.size();
             Instance instance;
             instance.id = id;
             instance.body = std::move(body);
@@ -104,7 +104,7 @@ namespace ebmgen {
                     .from = ebm::AnyRef{id.id},
                     .to = ebm::AnyRef{it->second.id},
                 });
-                alias_id_map[id.id.value()] = it->second.id.value();
+                alias_id_map[get_id(id)] = get_id(it->second);
                 return id;
             }
             cache[*serialized] = id;
@@ -128,7 +128,7 @@ namespace ebmgen {
         }
 
         Instance* get(const ID& id) {
-            auto ref = id.id.value();
+            auto ref = get_id(id);
             if (auto found = alias_id_map.find(ref); found != alias_id_map.end()) {
                 ref = found->second;
             }
@@ -156,12 +156,12 @@ namespace ebmgen {
         void recalculate_id_index_map() {
             id_index_map.clear();
             for (size_t i = 0; i < instances.size(); ++i) {
-                id_index_map[instances[i].id.id.value()] = i;
+                id_index_map[get_id(instances[i].id)] = i;
             }
             alias_id_map.clear();
             for (auto& alias : aliases) {
                 if (alias.hint == hint) {
-                    alias_id_map[alias.from.id.value()] = alias.to.id.value();
+                    alias_id_map[get_id(alias.from)] = get_id(alias.to);
                 }
             }
         }

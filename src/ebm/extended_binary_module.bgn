@@ -287,17 +287,15 @@ format UnionDecl:
     parent_field :StatementRef # Reference to the field that holds this union
     members :Block # List of union members
 
-enum PackedOpType:
-    :u8
-    FIXED = 0 # Fixed size bit field
-    VARIABLE = 1 # Variable size bit field
-
 
 format PropertyDecl:
     name :IdentifierRef # Property name
     parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
+    merged :Block # merged block contains (other property decl or field decl)
+    setter_function :LoweredStatementRef
+    getter_function :LoweredStatementRef
 
 
 
@@ -568,9 +566,9 @@ enum CastType:
 
 enum MergeMode:
     :u8
-    COMMON_TYPE
-    STRICT_TYPE
-    STRICT_COMMON_TYPE
+    UNCOMMON_TYPE # all members are treated as distinct types
+    COMMON_TYPE # all members are converted to common type
+    STRICT_TYPE # all members must be same type
 
 enum TypeKind:
     :u8

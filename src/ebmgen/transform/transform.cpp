@@ -18,11 +18,6 @@
 #include <testutil/timer.h>
 
 namespace ebmgen {
-    auto print_if_verbose(auto&&... args) {
-        if (verbose_error) {
-            (futils::wrap::cerr_wrap() << ... << args);
-        }
-    }
 
     auto get_block(ebm::StatementBody& body) {
         ebm::Block* block = nullptr;

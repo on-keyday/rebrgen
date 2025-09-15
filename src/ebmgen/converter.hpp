@@ -5,7 +5,6 @@
 #include <ebm/extended_binary_module.hpp>
 #include <memory>
 #include <unordered_map>
-#include "convert/helper.hpp"
 #include "core/ast/node/ast_enum.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
@@ -682,4 +681,10 @@ namespace ebmgen {
             string_repository().recalculate_id_index_map();
         }
     };
+
+    auto print_if_verbose(auto&&... args) {
+        if (verbose_error) {
+            (futils::wrap::cerr_wrap() << ... << args);
+        }
+    }
 }  // namespace ebmgen

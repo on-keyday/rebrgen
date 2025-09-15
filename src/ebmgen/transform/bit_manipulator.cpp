@@ -1,5 +1,6 @@
 /*license*/
 #include "bit_manipulator.hpp"
+#include "../convert/helper.hpp"
 
 namespace ebmgen {
     expected<ebm::StatementRef> xassign(ConverterContext& ctx, ebm::BinaryOp op, ebm::TypeRef type, ebm::ExpressionRef target, ebm::ExpressionRef value) {

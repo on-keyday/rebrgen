@@ -320,4 +320,11 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_property_member_decl(ebm::PropertyMemberDecl&& prop_member) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementOp::PROPERTY_MEMBER_DECL;
+        body.property_member_decl(std::move(prop_member));
+        return body;
+    }
+
 }  // namespace ebmgen

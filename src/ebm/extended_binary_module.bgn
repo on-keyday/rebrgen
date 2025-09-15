@@ -288,12 +288,17 @@ format UnionDecl:
     members :Block # List of union members
 
 
+format PropertyMemberDecl:
+    condition :ExpressionRef
+    field :StatementRef # FieldDecl or null
+
+
 format PropertyDecl:
     name :IdentifierRef # Property name
     parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
-    merged :Block # merged block contains (other property decl or field decl)
+    members :Block # merged block contains (property member decl)
     setter_function :LoweredStatementRef
     getter_function :LoweredStatementRef
 
@@ -393,6 +398,7 @@ enum StatementOp:
     UNION_MEMBER_DECL
     PROGRAM_DECL
     PROPERTY_DECL
+    PROPERTY_MEMBER_DECL
     METADATA
     IMPORT_MODULE
     EXPRESSION # expression statement
@@ -518,6 +524,8 @@ format StatementBody:
             block :Block
         StatementOp.PROPERTY_DECL:
             property_decl :PropertyDecl
+        StatementOp.PROPERTY_MEMBER_DECL:
+            property_member_decl :PropertyMemberDecl
         StatementOp.METADATA:
             metadata :Metadata
         StatementOp.IMPORT_MODULE:

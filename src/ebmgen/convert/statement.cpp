@@ -748,6 +748,12 @@ namespace ebmgen {
         print_if_verbose("Merged ", merged.size(), " types for property\n");
         if (merged.size() == 1) {  // single strict type
             derive.merge_mode = ebm::MergeMode::STRICT_TYPE;
+            derive.property_type = ebm::TypeRef{merged.begin()->first};
+            for (auto& member : merged.begin()->second) {
+                EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(member));
+                append(derive.members, member_ref);
+            }
+            return {};
         }
         return {};
     }

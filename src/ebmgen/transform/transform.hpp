@@ -10,4 +10,5 @@ namespace ebmgen {
 
     ebm::Block* get_block(ebm::StatementBody& body);
     expected<void> vectorized_io(TransformContext& tctx, bool write);
+    expected<void> remove_unused_object(TransformContext& ctx);
 }  // namespace ebmgen

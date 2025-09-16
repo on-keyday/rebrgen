@@ -7,4 +7,7 @@
 namespace ebmgen {
 
     expected<CFGList> transform(TransformContext& ctx, bool debug);
+
+    ebm::Block* get_block(ebm::StatementBody& body);
+    expected<void> vectorized_io(TransformContext& tctx, bool write);
 }  // namespace ebmgen

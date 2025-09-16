@@ -10,6 +10,7 @@
 #include <core/ast/traverse.h>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace ebmgen {
@@ -642,7 +643,7 @@ namespace ebmgen {
         }
     }
 
-    expected<void> derive_common_type(ConverterContext& ctx, ebm::PropertyDecl& derive, ast::UnionType& union_type) {
+    expected<void> derive_property_type(ConverterContext& ctx, ebm::PropertyDecl& derive, ast::UnionType& union_type) {
         std::vector<DerivedTypeInfo> cases;
         for (auto& cand : union_type.candidates) {
             DerivedTypeInfo c;
@@ -708,7 +709,7 @@ namespace ebmgen {
                     for (auto& m : decl.members.container) {
                         MAYBE(child, ctx.repository().get_statement(m));
                         MAYBE(property, child.body.property_decl());
-                        self(self, child.id, property);
+                        MAYBE_VOID(ok, self(self, child.id, property));
                     }
                 }
                 return {};
@@ -795,10 +796,11 @@ namespace ebmgen {
             properties.push_back(std::move(prop));
         }
         std::map<std::uint64_t, std::vector<size_t>> edge;
-        std::vector<std::vector<size_t>> cluster;
+        // insertion order is important, so use both vector and set
+        std::vector<std::pair<std::vector<size_t>, std::unordered_set<size_t>>> cluster;
         for (size_t i = 0; i < properties.size(); i++) {
             edge[i].emplace_back();
-            for (size_t j = i + 1; i < properties.size(); j++) {
+            for (size_t j = i + 1; j < properties.size(); j++) {
                 MAYBE(common, get_common_type(ctx, properties[i].property_type, properties[j].property_type));
                 if (common) {
                     edge[i].push_back(j);
@@ -812,13 +814,13 @@ namespace ebmgen {
             }
             bool has_cluster = false;
             for (auto& c : cluster) {
-                if (std::find(c.begin(), c.end(), i) == c.end()) {
+                if (!c.second.contains(i)) {
                     continue;
                 }
                 has_cluster = true;
                 for (auto& e : found->second) {
-                    if (std::find(c.begin(), c.end(), e) == c.end()) {
-                        c.push_back(e);
+                    if (c.second.insert(e).second) {
+                        c.first.push_back(e);
                     }
                 }
                 break;
@@ -826,9 +828,11 @@ namespace ebmgen {
             if (has_cluster) {
                 continue;
             }
-            cluster.push_back({i});
+            cluster.push_back({{i}, {i}});
             for (auto& e : found->second) {
-                cluster.back().push_back(e);
+                if (cluster.back().second.insert(e).second) {
+                    cluster.back().first.push_back(e);
+                }
             }
         }
         std::vector<ebm::PropertyDecl> final_props;
@@ -845,19 +849,23 @@ namespace ebmgen {
             return c_type;
         };
         for (auto& c : cluster) {
-            if (c.size() == 1) {
-                final_props.push_back(std::move(properties[c[0]]));
+            if (c.first.size() == 1) {
+                final_props.push_back(std::move(properties[c.first[0]]));
                 continue;
             }
             ebm::TypeRef common_type;
-            for (auto& index : c) {
+            for (auto& index : c.first) {
+                if (is_nil(common_type)) {
+                    common_type = properties[index].property_type;
+                    continue;
+                }
                 MAYBE(detect, get_common_type(ctx, common_type, properties[index].property_type));
                 if (!detect) {
                     return unexpect_error("no common type found for clustered types; THIS IS BUG!");
                 }
                 common_type = *detect;
             }
-            auto c_type = derive_variant(c, common_type, [&](size_t index) {
+            auto c_type = derive_variant(c.first, common_type, [&](size_t index) {
                 return properties[index].property_type;
             });
             if (!c_type) {
@@ -868,7 +876,7 @@ namespace ebmgen {
             prop.property_type = *c_type;
             prop.parent_format = derive.parent_format;
             prop.merge_mode = ebm::MergeMode::COMMON_TYPE;
-            for (auto& index : c) {
+            for (auto& index : c.first) {
                 EBM_PROPERTY_DECL(p, std::move(properties[index]));
                 append(prop.members, p);
             }
@@ -911,7 +919,7 @@ namespace ebmgen {
             prop_decl.parent_format = statement_ref;
         }
 
-        MAYBE_VOID(derived, derive_common_type(ctx, prop_decl, union_type));
+        MAYBE_VOID(derived, derive_property_type(ctx, prop_decl, union_type));
 
         body.property_decl(std::move(prop_decl));
         return body;

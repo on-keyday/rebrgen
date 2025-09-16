@@ -142,7 +142,7 @@ namespace ebmgen {
     template <typename T>
     void DebugPrinter::print_value(const T& value) const {
         if constexpr (std::is_enum_v<T>) {
-            os_ << ebm::visit_enum(value) << " " << ebm::to_string(value) << "\n";
+            os_ << ebm::visit_enum(value) << " " << ebm::to_string(value) << "(" << std::uint64_t(value) << ")" << "\n";
         }
         else if constexpr (std::is_same_v<T, bool>) {
             os_ << (value ? "true" : "false") << "\n";

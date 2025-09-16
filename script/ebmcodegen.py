@@ -1,11 +1,20 @@
 import subprocess as sp
 import sys
 import os
+import argparse
 
-if len(sys.argv) < 2:
-    print("Usage: python script/ebmcodegen.py <lang_name>")
-    sys.exit(1)
-lang_name = sys.argv[1]
+parser = argparse.ArgumentParser(description="Generate code generator or interpreter.")
+parser.add_argument("lang_name", help="Language name")
+parser.add_argument(
+    "--mode",
+    choices=["codegen", "interpret"],
+    default="codegen",
+    help="Mode of operation",
+)
+args = parser.parse_args()
+
+lang_name = args.lang_name
+mode = args.mode
 
 
 def execute(command, env, capture=True) -> bytes:
@@ -19,10 +28,16 @@ def execute(command, env, capture=True) -> bytes:
 
 
 TOOL_PATH = "tool/ebmcodegen"
-PARENT_CMAKE_PATH = "src/ebmcg/CMakeLists.txt"
-OUTPUT_DIR = "src/ebmcg/ebm2" + lang_name
+if mode == "interpret":
+    PARENT_DIR_NAME = "ebmip"
+else:
+    PARENT_DIR_NAME = "ebmcg"
+
+PARENT_CMAKE_PATH = f"src/{PARENT_DIR_NAME}/CMakeLists.txt"
+OUTPUT_DIR = f"src/{PARENT_DIR_NAME}/ebm2{lang_name}"
+
 CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
-CODE_GENERATOR = execute([TOOL_PATH, "--mode", "codegen", "--lang", lang_name], None)
+CODE_GENERATOR = execute([TOOL_PATH, "--mode", mode, "--lang", lang_name], None)
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 VISITOR_DIR = os.path.join(OUTPUT_DIR, "visitor")
@@ -32,6 +47,11 @@ with open(os.path.join(OUTPUT_DIR, "CMakeLists.txt"), "wb") as f:
     f.write(CMAKE)
 with open(os.path.join(OUTPUT_DIR, "main.cpp"), "wb") as f:
     f.write(CODE_GENERATOR)
+
+if not os.path.exists(PARENT_CMAKE_PATH):
+    os.makedirs(os.path.dirname(PARENT_CMAKE_PATH), exist_ok=True)
+    with open(PARENT_CMAKE_PATH, "w") as f:
+        f.write("")
 
 with open(PARENT_CMAKE_PATH, "r") as f:
     content = f.read()

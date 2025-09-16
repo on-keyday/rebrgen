@@ -3494,6 +3494,131 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_PROPERTY_MEMBER_DECL = requires(Visitor v) {
+         { v.visit_Statement_PROPERTY_MEMBER_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_PROPERTY_MEMBER_DECL_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp")
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp"
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_post_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_after.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp")
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp"
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_post_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_after.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_PROPERTY_MEMBER_DECL<Visitor>) {
+            result = visitor.visit_Statement_PROPERTY_MEMBER_DECL(in.id,kind);
+        }
+        else if constexpr (has_visitor_Statement_PROPERTY_MEMBER_DECL_call<Visitor>) {
+            result = visitor(in.id,kind);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp")
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_pre_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp"
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_post_default.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_after.hpp")
+        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Statement_METADATA = requires(Visitor v) {
          { v.visit_Statement_METADATA(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().metadata()) } -> std::convertible_to<expected<Result>>;
     };
@@ -4343,6 +4468,8 @@ namespace ebm2python {
             return dispatch_Statement_PROGRAM_DECL(visitor,in);
         case ebm::StatementOp::PROPERTY_DECL:
             return dispatch_Statement_PROPERTY_DECL(visitor,in);
+        case ebm::StatementOp::PROPERTY_MEMBER_DECL:
+            return dispatch_Statement_PROPERTY_MEMBER_DECL(visitor,in);
         case ebm::StatementOp::METADATA:
             return dispatch_Statement_METADATA(visitor,in);
         case ebm::StatementOp::IMPORT_MODULE:
@@ -11783,6 +11910,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Statement_PROPERTY_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind) {
+            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp")
+            #include "visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
+            #include "visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
+            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_default.hpp")
+            #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
+            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_default.hpp")
+            #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp")
+            #include "visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Statement_PROPERTY_MEMBER_DECL {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Statement_METADATA(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::Metadata& metadata) {
             #if __has_include("visitor/Statement_METADATA_before.hpp")
             #include "visitor/Statement_METADATA_before.hpp"
@@ -13154,6 +13305,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_UNION_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_UNION_MEMBER_DECL");
     static_assert(has_visitor_Statement_PROGRAM_DECL<Visitor>, "Visitor does not implement visit_Statement_PROGRAM_DECL");
     static_assert(has_visitor_Statement_PROPERTY_DECL<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_DECL");
+    static_assert(has_visitor_Statement_PROPERTY_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_MEMBER_DECL");
     static_assert(has_visitor_Statement_METADATA<Visitor>, "Visitor does not implement visit_Statement_METADATA");
     static_assert(has_visitor_Statement_IMPORT_MODULE<Visitor>, "Visitor does not implement visit_Statement_IMPORT_MODULE");
     static_assert(has_visitor_Statement_EXPRESSION<Visitor>, "Visitor does not implement visit_Statement_EXPRESSION");

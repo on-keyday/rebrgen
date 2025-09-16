@@ -327,4 +327,11 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_property_decl(ebm::PropertyDecl&& prop_decl) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementOp::PROPERTY_DECL;
+        body.property_decl(std::move(prop_decl));
+        return body;
+    }
+
 }  // namespace ebmgen

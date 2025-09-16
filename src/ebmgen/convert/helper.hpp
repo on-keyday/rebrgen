@@ -309,6 +309,11 @@ namespace ebmgen {
 #define EBM_PROPERTY_MEMBER_DECL(ref_name, prop_member__) \
     EBM_AST_STATEMENT(ref_name, make_property_member_decl, std::move(prop_member__))
 
+    ebm::StatementBody make_property_decl(ebm::PropertyDecl&& prop_decl);
+
+#define EBM_PROPERTY_DECL(ref_name, prop_) \
+    EBM_AST_STATEMENT(ref_name, make_property_decl, std::move(prop_))
+
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);

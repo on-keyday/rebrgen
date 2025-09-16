@@ -616,6 +616,32 @@ namespace ebmgen {
         std::optional<ebm::StatementRef> field;  // field or property
     };
 
+    expected<std::optional<ebm::TypeRef>> get_common_type(ConverterContext& ctx, ebm::TypeRef a, ebm::TypeRef b) {
+        if (get_id(a) == get_id(b)) {
+            return a;
+        }
+        MAYBE(type_A, ctx.repository().get_type(a));
+        MAYBE(type_B, ctx.repository().get_type(b));
+        if (type_A.body.kind != type_B.body.kind) {
+            return std::nullopt;
+        }
+        switch (type_A.body.kind) {
+            case ebm::TypeKind::INT:
+            case ebm::TypeKind::UINT:
+            case ebm::TypeKind::FLOAT: {
+                auto sizeA = type_A.body.size();
+                auto sizeB = type_B.body.size();
+                if (sizeA->value() > sizeB->value()) {
+                    return a;
+                }
+                return b;
+            }
+            default: {
+                return std::nullopt;
+            }
+        }
+    }
+
     expected<void> derive_common_type(ConverterContext& ctx, ebm::PropertyDecl& derive, ast::UnionType& union_type) {
         std::vector<DerivedTypeInfo> cases;
         for (auto& cand : union_type.candidates) {
@@ -768,8 +794,109 @@ namespace ebmgen {
             }
             properties.push_back(std::move(prop));
         }
+        std::map<std::uint64_t, std::vector<size_t>> edge;
+        std::vector<std::vector<size_t>> cluster;
+        for (size_t i = 0; i < properties.size(); i++) {
+            edge[i].emplace_back();
+            for (size_t j = i + 1; i < properties.size(); j++) {
+                MAYBE(common, get_common_type(ctx, properties[i].property_type, properties[j].property_type));
+                if (common) {
+                    edge[i].push_back(j);
+                }
+            }
+        }
+        for (size_t i = 0; i < properties.size(); i++) {
+            auto found = edge.find(i);
+            if (found == edge.end()) {
+                continue;
+            }
+            bool has_cluster = false;
+            for (auto& c : cluster) {
+                if (std::find(c.begin(), c.end(), i) == c.end()) {
+                    continue;
+                }
+                has_cluster = true;
+                for (auto& e : found->second) {
+                    if (std::find(c.begin(), c.end(), e) == c.end()) {
+                        c.push_back(e);
+                    }
+                }
+                break;
+            }
+            if (has_cluster) {
+                continue;
+            }
+            cluster.push_back({i});
+            for (auto& e : found->second) {
+                cluster.back().push_back(e);
+            }
+        }
+        std::vector<ebm::PropertyDecl> final_props;
+        auto derive_variant = [&](auto&& arr, ebm::TypeRef common_type, auto&& get_type) -> expected<ebm::TypeRef> {
+            ebm::Types types;
+            for (auto& t : arr) {
+                append(types, get_type(t));
+            }
+            ebm::TypeBody body;
+            body.kind = ebm::TypeKind::VARIANT;
+            body.members(std::move(types));
+            body.common_type(common_type);
+            EBMA_ADD_TYPE(c_type, std::move(body));
+            return c_type;
+        };
+        for (auto& c : cluster) {
+            if (c.size() == 1) {
+                final_props.push_back(std::move(properties[c[0]]));
+                continue;
+            }
+            ebm::TypeRef common_type;
+            for (auto& index : c) {
+                MAYBE(detect, get_common_type(ctx, common_type, properties[index].property_type));
+                if (!detect) {
+                    return unexpect_error("no common type found for clustered types; THIS IS BUG!");
+                }
+                common_type = *detect;
+            }
+            auto c_type = derive_variant(c, common_type, [&](size_t index) {
+                return properties[index].property_type;
+            });
+            if (!c_type) {
+                return unexpect_error(std::move(c_type.error()));
+            }
+            ebm::PropertyDecl prop;
+            prop.name = derive.name;
+            prop.property_type = *c_type;
+            prop.parent_format = derive.parent_format;
+            prop.merge_mode = ebm::MergeMode::COMMON_TYPE;
+            for (auto& index : c) {
+                EBM_PROPERTY_DECL(p, std::move(properties[index]));
+                append(prop.members, p);
+            }
+            final_props.push_back(std::move(prop));
+        }
+        if (final_props.size() == 1) {
+            derive = std::move(final_props[0]);
+        }
+        else {
+            auto c_type = derive_variant(final_props, {}, [&](auto& prop) {
+                return prop.property_type;
+            });
+            if (!c_type) {
+                return unexpect_error(std::move(c_type.error()));
+            }
+            ebm::PropertyDecl prop;
+            prop.name = derive.name;
+            prop.property_type = *c_type;
+            prop.parent_format = derive.parent_format;
+            prop.merge_mode = ebm::MergeMode::UNCOMMON_TYPE;
+            for (auto& f : final_props) {
+                EBM_PROPERTY_DECL(pd, std::move(f));
+                append(prop.members, pd);
+            }
+            derive = std::move(prop);
+        }
         return {};
-    }  // namespace ebmgen
+    }
 
     expected<ebm::StatementBody> convert_property_decl(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node) {
         ebm::StatementBody body;

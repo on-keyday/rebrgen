@@ -673,27 +673,38 @@ namespace ebmgen {
             }
             return result;
         };
-        for (auto& c : cases) {  // detect all types
+        auto map_field = [&](ebm::StatementRef field, ebm::PropertyDecl& decl, auto&& action) {
+            auto recurse = [&](auto&& self, ebm::StatementRef field, ebm::PropertyDecl& decl) -> expected<void> {
+                if (decl.merge_mode == ebm::MergeMode::STRICT_TYPE) {
+                    action(field, decl);
+                }
+                else {
+                    for (auto& m : decl.members.container) {
+                        MAYBE(child, ctx.repository().get_statement(m));
+                        MAYBE(property, child.body.property_decl());
+                        self(self, child.id, property);
+                    }
+                }
+                return {};
+            };
+            return recurse(recurse, field, decl);
+        };
+        std::vector<ebm::TypeRef> detected_types;
+        // detect all types before merge
+        for (auto& c : cases) {
             if (c.field) {
                 MAYBE(field, ctx.repository().get_statement(*c.field));
                 if (auto decl = field.body.field_decl()) {
-                    merged.emplace(get_id(decl->field_type), std::vector<ebm::PropertyMemberDecl>{});
+                    if (merged.emplace(get_id(decl->field_type), std::vector<ebm::PropertyMemberDecl>{}).second) {
+                        detected_types.push_back(decl->field_type);
+                    }
                 }
                 else if (auto decl = field.body.property_decl()) {
-                    auto map_field = [&](auto&& self, ebm::StatementRef field, ebm::PropertyDecl& decl) -> expected<void> {
-                        if (decl.merge_mode == ebm::MergeMode::STRICT_TYPE) {
-                            merged.emplace(get_id(decl.property_type), std::vector<ebm::PropertyMemberDecl>{});
-                        }
-                        else {
-                            for (auto& m : decl.members.container) {
-                                MAYBE(child, ctx.repository().get_statement(m));
-                                MAYBE(property, child.body.property_decl());
-                                self(self, child.id, property);
-                            }
-                        }
-                        return {};
-                    };
-                    MAYBE_VOID(ok, map_field(map_field, field.id, *decl));
+                    MAYBE_VOID(ok, map_field(field.id, *decl, [&](ebm::StatementRef, ebm::PropertyDecl& decl) {
+                                   if (merged.emplace(get_id(decl.property_type), std::vector<ebm::PropertyMemberDecl>{}).second) {
+                                       detected_types.push_back(decl.property_type);
+                                   }
+                               }));
                 }
                 else {
                     return unexpect_error("Only field or property can be used in union type");
@@ -719,23 +730,12 @@ namespace ebmgen {
                     });
                 }
                 else if (auto decl = field.body.property_decl()) {
-                    auto map_field = [&](auto&& self, ebm::StatementRef field, ebm::PropertyDecl& decl) -> expected<void> {
-                        if (decl.merge_mode == ebm::MergeMode::STRICT_TYPE) {
-                            merged[get_id(decl.property_type)].push_back(ebm::PropertyMemberDecl{
-                                .condition = c.cond ? *c.cond : ebm::ExpressionRef{},
-                                .field = field,
-                            });
-                        }
-                        else {
-                            for (auto& m : decl.members.container) {
-                                MAYBE(child, ctx.repository().get_statement(m));
-                                MAYBE(property, child.body.property_decl());
-                                self(self, child.id, property);
-                            }
-                        }
-                        return {};
-                    };
-                    MAYBE_VOID(ok, map_field(map_field, field.id, *decl));
+                    MAYBE_VOID(ok, map_field(field.id, *decl, [&](ebm::StatementRef field, ebm::PropertyDecl& decl) {
+                                   merged[get_id(decl.property_type)].push_back(ebm::PropertyMemberDecl{
+                                       .condition = c.cond ? *c.cond : ebm::ExpressionRef{},
+                                       .field = field,
+                                   });
+                               }));
                 }
                 else {
                     return unexpect_error("Only field or property can be used in union type");
@@ -755,8 +755,21 @@ namespace ebmgen {
             }
             return {};
         }
+        std::vector<ebm::PropertyDecl> properties;
+        for (auto& ty : detected_types) {
+            ebm::PropertyDecl prop;
+            prop.name = derive.name;
+            prop.parent_format = derive.parent_format;
+            prop.property_type = ty;
+            prop.merge_mode = ebm::MergeMode::STRICT_TYPE;
+            for (auto& m : merged[get_id(ty)]) {
+                EBM_PROPERTY_MEMBER_DECL(member, std::move(m));
+                append(prop.members, member);
+            }
+            properties.push_back(std::move(prop));
+        }
         return {};
-    }
+    }  // namespace ebmgen
 
     expected<ebm::StatementBody> convert_property_decl(ConverterContext& ctx, const std::shared_ptr<ast::Field>& node) {
         ebm::StatementBody body;

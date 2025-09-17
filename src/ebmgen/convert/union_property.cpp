@@ -348,7 +348,7 @@ namespace ebmgen {
         }
         MAYBE(cluster, clustering_properties(ctx, properties));
         MAYBE(final_props, common_merge(ctx, derive, cluster, properties));
-        if (final_props.size() == 1) {
+        if (final_props.size() == 1) {  // all types are merged into single common type
             derive = std::move(final_props[0]);
         }
         else {

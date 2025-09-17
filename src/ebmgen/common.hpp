@@ -2,6 +2,7 @@
 #pragma once
 #include <error/error.h>
 #include <helper/expected.h>
+#include <concepts>
 #include <format>
 #include <ebm/extended_binary_module.hpp>
 #include <source_location>
@@ -151,17 +152,27 @@ namespace ebmgen {
         return futils::error::StrError<const char*>{"Unexpected nullptr"};
     }
 
-#define MAYBE_VOID(out, expr)                                                                 \
-    auto out##____ = expr;                                                                    \
-    if (!out##____) {                                                                         \
-        return [](auto&& o) {                                                                 \
-            if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {                     \
-                return ::ebmgen::unexpect_error(::ebmgen::unexpected_nullptr(), #out, #expr); \
-            }                                                                                 \
-            else {                                                                            \
-                return ::ebmgen::unexpect_error(std::move(o.error()), #out, #expr);           \
-            }                                                                                 \
-        }(out##____);                                                                         \
+    template <class E>
+    concept error_convertible = requires(E e) {
+        { e.error() } -> std::convertible_to<Error>;
+    };
+
+    auto handle_error(auto&& o, const char* out, const char* expr, std::source_location loc = std::source_location::current()) {
+        if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {
+            return unexpect_error_with_loc(loc, unexpected_nullptr(), out, expr);
+        }
+        else if (error_convertible<decltype(o)>) {
+            return unexpect_error_with_loc(loc, std::move(o.error()), out, expr);
+        }
+        else{
+            return unexpect_error_with_loc(loc, unexpected_nullptr(), out, expr);
+        }
+    }
+
+#define MAYBE_VOID(out, expr)                                  \
+    auto out##____ = expr;                                     \
+    if (!out##____) {                                          \
+        return ::ebmgen::handle_error(out##____, #out, #expr); \
     }
 
 #define MAYBE(out, expr)  \

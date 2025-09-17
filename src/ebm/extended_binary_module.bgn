@@ -126,6 +126,7 @@ enum ExpressionOp:
     AVAILABLE  # field availability check (for union)
     SIZEOF # TODO(on-keyday): add sizeof to ast first
     SUB_RANGE_INIT
+    OR_COND # for match branch like `x,y => z`
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -215,6 +216,8 @@ format ExpressionBody:
             lowered_expr :LoweredExpressionRef
         ExpressionOp.SUB_RANGE_INIT:
             sub_range :StatementRef
+        ExpressionOp.OR_COND:
+            or_cond :Expressions
 
 enum LoopType:
     :u8
@@ -460,7 +463,6 @@ format IOData:
     lowered_statement :LoweredStatementRef # Optional lowered statements for read/write operations
 
 format Condition:
-    flattened_statement :StatementRef
     cond :ExpressionRef
 
 format StatementBody:
@@ -547,6 +549,7 @@ format Expressions:
 format Block:
     len :Varint
     container :[len.value]StatementRef
+
 
 format MatchBranch:
     condition :Condition # Case condition (e.g., literal, range, default)

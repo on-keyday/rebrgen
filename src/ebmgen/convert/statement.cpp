@@ -698,6 +698,7 @@ namespace ebmgen {
                     result = current;
                 }
             }
+            on_non_cond.clear();
             return result;
         };
         auto map_field = [&](ebm::StatementRef field, ebm::PropertyDecl& decl, auto&& action) {
@@ -750,7 +751,9 @@ namespace ebmgen {
                     }
                 }
                 MAYBE(field, ctx.repository().get_statement(*c.field));
+                std::unordered_set<std::uint64_t> added;
                 if (auto decl = field.body.field_decl()) {
+                    added.insert(get_id(decl->field_type));
                     merged[get_id(decl->field_type)].push_back(ebm::PropertyMemberDecl{
                         .condition = c.cond ? *c.cond : ebm::ExpressionRef{},
                         .field = *c.field,
@@ -758,6 +761,7 @@ namespace ebmgen {
                 }
                 else if (auto decl = field.body.property_decl()) {
                     MAYBE_VOID(ok, map_field(field.id, *decl, [&](ebm::StatementRef field, ebm::PropertyDecl& decl) {
+                                   added.insert(get_id(decl.property_type));
                                    merged[get_id(decl.property_type)].push_back(ebm::PropertyMemberDecl{
                                        .condition = c.cond ? *c.cond : ebm::ExpressionRef{},
                                        .field = field,
@@ -767,10 +771,37 @@ namespace ebmgen {
                 else {
                     return unexpect_error("Only field or property can be used in union type");
                 }
+                for (auto& not_added : merged) {
+                    if (added.contains(not_added.first)) {
+                        continue;
+                    }
+                    not_added.second.push_back(ebm::PropertyMemberDecl{
+                        .condition = c.cond ? *c.cond : ebm::ExpressionRef{},
+                        .field = *c.field,
+                    });
+                }
             }
             else {
                 on_non_cond.push_back(c.cond ? *c.cond : ebm::ExpressionRef{});
             }
+        }
+        for (auto& each : detected_types) {
+            auto& current = merged[get_id(each)];
+            std::vector<ebm::PropertyMemberDecl> members;
+            for (auto& v : current) {
+                if (members.size() == 0) {
+                    members.push_back(std::move(v));
+                }
+                else if (is_nil(v.field) && is_nil(members.back().field)) {
+                    EBMU_BOOL_TYPE(bool_type);
+                    EBM_BINARY_OP(or_, ebm::BinaryOp::logical_or, bool_type, members.back().condition, v.condition);
+                    members.back().condition = or_;
+                }
+                else {
+                    members.push_back(std::move(v));
+                }
+            }
+            current = std::move(members);
         }
         print_if_verbose("Merged ", merged.size(), " types for property\n");
         if (merged.size() == 1) {  // single strict type

@@ -468,8 +468,21 @@ namespace ebmgen {
         return {};
     }
 
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::OrCond>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionOp::OR_COND;
+        ebm::Expressions conds;
+        for (auto& cond : node->conds) {
+            EBMA_CONVERT_EXPRESSION(c, cond);
+            append(conds, c);
+        }
+        body.or_cond(std::move(conds));
+        return {};
+    }
+
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body) {
         return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }
+
+    expected<ebm::ExpressionRef> ExpressionConverter::convert_equal(ebm::ExpressionRef a, ebm::ExpressionRef b) {}
 
 }  // namespace ebmgen

@@ -334,4 +334,11 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_or_cond(ebm::TypeRef type, ebm::Expressions&& conds) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionOp::OR_COND;
+        body.or_cond(std::move(conds));
+        return body;
+    }
+
 }  // namespace ebmgen

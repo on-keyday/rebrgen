@@ -541,11 +541,16 @@ namespace ebmgen {
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body);
 
         expected<ebm::StatementBody> convert_loop_body(const std::shared_ptr<ast::Loop>& node);
+
+        expected<ebm::StatementBody> convert_property_decl(const std::shared_ptr<ast::Field>& node);
     };
 
     struct ExpressionConverter {
         ConverterContext& ctx;
         expected<ebm::ExpressionRef> convert_expr(const std::shared_ptr<ast::Expr>& node);
+
+        // for match statement lowering
+        expected<ebm::ExpressionRef> convert_equal(ebm::ExpressionRef a, ebm::ExpressionRef b);
 
        private:
         expected<void> convert_expr_impl(const std::shared_ptr<ast::IntLiteral>& node, ebm::ExpressionBody& body);
@@ -566,6 +571,8 @@ namespace ebmgen {
         expected<void> convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Match>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::CharLiteral>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::OrCond>& node, ebm::ExpressionBody& body);
+
         // Fallback for unhandled types
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Expr>& node, ebm::ExpressionBody& body);
     };

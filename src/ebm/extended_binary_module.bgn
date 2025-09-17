@@ -301,6 +301,8 @@ format PropertyDecl:
     parent_format :StatementRef # Reference to parent format (e.g., struct, union)
     property_type :TypeRef # Type of the property
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
+    if merge_mode == MergeMode.STRICT_TYPE:
+        cond :ExpressionRef # maybe null
     members :Block # merged block contains (property member decl)
     setter_function :LoweredStatementRef
     getter_function :LoweredStatementRef

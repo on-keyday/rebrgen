@@ -84,6 +84,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert/helper.cpp"
     "src/ebmgen/convert/encode.cpp"
     "src/ebmgen/convert/decode.cpp"
+    "src/ebmgen/convert/union_property.cpp"
     "src/ebmgen/transform/transform.cpp"
     "src/ebmgen/transform/control_flow_graph.cpp"
     "src/ebmgen/transform/bit_manipulator.cpp"

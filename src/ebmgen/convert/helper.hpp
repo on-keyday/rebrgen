@@ -307,12 +307,17 @@ namespace ebmgen {
     ebm::StatementBody make_property_member_decl(ebm::PropertyMemberDecl&& prop_member);
 
 #define EBM_PROPERTY_MEMBER_DECL(ref_name, prop_member__) \
-    EBM_AST_STATEMENT(ref_name, make_property_member_decl, std::move(prop_member__))
+    EBM_AST_STATEMENT(ref_name, make_property_member_decl, prop_member__)
 
     ebm::StatementBody make_property_decl(ebm::PropertyDecl&& prop_decl);
 
 #define EBM_PROPERTY_DECL(ref_name, prop_) \
-    EBM_AST_STATEMENT(ref_name, make_property_decl, std::move(prop_))
+    EBM_AST_STATEMENT(ref_name, make_property_decl, prop_)
+
+    ebm::ExpressionBody make_or_cond(ebm::TypeRef type, ebm::Expressions&& conds);
+
+#define EBM_OR_COND(ref_name, type, conds) \
+    EBM_AST_EXPRESSION(ref_name, make_or_cond, type, conds)
 
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 

@@ -16,12 +16,32 @@ namespace ebmgen {
         for (auto& s : all_stmts) {
             if (auto prop = s.body.property_decl()) {
                 if (prop->merge_mode == ebm::MergeMode::STRICT_TYPE) {
-                    ebm::FunctionDecl func;
-                    func.name = prop->name;
-                    ebm::TypeBody ptr_type;
-                    ptr_type.pointee_type(prop->property_type);
-                    EBMA_ADD_TYPE(ret_type, std::move(ptr_type));
-                    func.return_type = ret_type;
+                    ebm::FunctionDecl getter, setter;
+                    getter.name = prop->name;
+                    setter.name = prop->name;
+                    getter.parent_format = prop->parent_format;
+                    setter.parent_format = prop->parent_format;
+                    {
+                        ebm::TypeBody ptr_type;
+                        ptr_type.kind = ebm::TypeKind::PTR;
+                        ptr_type.pointee_type(prop->property_type);
+                        EBMA_ADD_TYPE(ret_type, std::move(ptr_type));
+                        getter.return_type = ret_type;
+                    }
+                    EBM_DEFINE_ANONYMOUS_VARIABLE(arg, prop->property_type, {});
+                    {
+                        ebm::TypeBody set_return;
+                        set_return.kind = ebm::TypeKind::PROPERTY_SETTER_RETURN;
+                        EBMA_ADD_TYPE(ret_type, std::move(set_return));
+                        setter.return_type = ret_type;
+                        append(setter.params, arg_def);
+                    }
+                    ebm::Block getter_block;
+                    for (auto& m : prop->members.container) {
+                        MAYBE(stmt, ctx.repository().get_statement(m));
+                        MAYBE(member, stmt.body.property_member_decl());
+                        ebm::IfStatement if_stmt;
+                    }
                 }
             }
         }

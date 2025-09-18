@@ -30,6 +30,7 @@ namespace ebmcodegen {
             body.offset({});
             body.previous_assignment({});
             body.property_decl({});
+            body.property_member_decl({});
             body.read_data({});
             body.stream_type({});
             body.struct_decl({});
@@ -82,6 +83,7 @@ namespace ebmcodegen {
             body.member({});
             body.num_bytes({});
             body.operand({});
+            body.or_cond({});
             body.right({});
             body.source_expr({});
             body.start({});
@@ -122,7 +124,6 @@ namespace ebmcodegen {
             body.members({});
             body.params({});
             body.pointee_type({});
-            body.property_type({});
             body.return_type({});
             body.size({});
             std::set<std::string_view> subset;

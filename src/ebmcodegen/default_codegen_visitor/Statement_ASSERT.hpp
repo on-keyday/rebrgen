@@ -10,7 +10,6 @@
     kind: StatementOp
     assert_desc: AssertDesc
       condition: Condition
-        flattened_statement: StatementRef
         cond: ExpressionRef
       lowered_statement: LoweredStatementRef
 */

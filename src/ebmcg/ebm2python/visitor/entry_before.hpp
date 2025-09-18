@@ -4,6 +4,8 @@
 /*
   Name: entry_before
   Available variables:
+    *this: Visitor
+    module_: MappingTable
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 begin_block = ":";

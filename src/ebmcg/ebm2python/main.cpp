@@ -8346,6 +8346,132 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Expression_OR_COND = requires(Visitor v) {
+         { v.visit_Expression_OR_COND(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_OR_COND_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_OR_COND(Visitor&& visitor,const ebm::Expression& in) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_validate_before.hpp")
+        #include "visitor/Expression_OR_COND_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_validate.hpp")
+        #include "visitor/Expression_OR_COND_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_validate.hpp")
+        #if __has_include("visitor/Expression_OR_COND_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_OR_COND_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_validate.hpp"
+        #if __has_include("visitor/Expression_OR_COND_pre_validate_post_default.hpp")
+        #include "visitor/Expression_OR_COND_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_validate_after.hpp")
+        #include "visitor/Expression_OR_COND_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_visit_before.hpp")
+        #include "visitor/Expression_OR_COND_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_visit.hpp")
+        #include "visitor/Expression_OR_COND_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_visit.hpp")
+        #if __has_include("visitor/Expression_OR_COND_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_OR_COND_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_visit.hpp"
+        #if __has_include("visitor/Expression_OR_COND_pre_visit_post_default.hpp")
+        #include "visitor/Expression_OR_COND_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_pre_visit_after.hpp")
+        #include "visitor/Expression_OR_COND_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_OR_COND<Visitor>) {
+            result = visitor.visit_Expression_OR_COND(in.id,type,kind);
+        }
+        else if constexpr (has_visitor_Expression_OR_COND_call<Visitor>) {
+            result = visitor(in.id,type,kind);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_post_visit_before.hpp")
+        #include "visitor/Expression_OR_COND_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_post_visit.hpp")
+        #include "visitor/Expression_OR_COND_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_post_visit.hpp")
+        #if __has_include("visitor/Expression_OR_COND_post_visit_pre_default.hpp")
+        #include "visitor/Expression_OR_COND_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_post_visit.hpp"
+        #if __has_include("visitor/Expression_OR_COND_post_visit_post_default.hpp")
+        #include "visitor/Expression_OR_COND_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_OR_COND_post_visit_after.hpp")
+        #include "visitor/Expression_OR_COND_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
@@ -8423,6 +8549,8 @@ namespace ebm2python {
             return dispatch_Expression_SIZEOF(visitor,in);
         case ebm::ExpressionOp::SUB_RANGE_INIT:
             return dispatch_Expression_SUB_RANGE_INIT(visitor,in);
+        case ebm::ExpressionOp::OR_COND:
+            return dispatch_Expression_OR_COND(visitor,in);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -10627,11 +10755,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Type_PROPERTY_SETTER_RETURN = requires(Visitor v) {
-         { v.visit_Type_PROPERTY_SETTER_RETURN(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().property_type()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Type_PROPERTY_SETTER_RETURN(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Type_PROPERTY_SETTER_RETURN_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().property_type()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor,const ebm::Type& in) {
@@ -10670,10 +10798,6 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.property_type()) {
-            return unexpect_error("Unexpected null pointer for TypeBody::property_type");
-        }
-        auto& property_type = *in.body.property_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
         #endif
@@ -10710,10 +10834,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN<Visitor>) {
-            result = visitor.visit_Type_PROPERTY_SETTER_RETURN(in.id,kind,property_type);
+            result = visitor.visit_Type_PROPERTY_SETTER_RETURN(in.id,kind);
         }
         else if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind,property_type);
+            result = visitor(in.id,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -12774,6 +12898,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_OR_COND(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind) {
+            #if __has_include("visitor/Expression_OR_COND_before.hpp")
+            #include "visitor/Expression_OR_COND_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_OR_COND.hpp")
+            #include "visitor/Expression_OR_COND.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp")
+            #if __has_include("visitor/Expression_OR_COND_pre_default.hpp")
+            #include "visitor/Expression_OR_COND_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp"
+            #if __has_include("visitor/Expression_OR_COND_post_default.hpp")
+            #include "visitor/Expression_OR_COND_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_OR_COND_after.hpp")
+            #include "visitor/Expression_OR_COND_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_OR_COND {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
@@ -13182,7 +13330,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Type_PROPERTY_SETTER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& property_type) {
+        expected<Result> visit_Type_PROPERTY_SETTER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_before.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN_before.hpp"
             #endif
@@ -13341,6 +13489,7 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_AVAILABLE<Visitor>, "Visitor does not implement visit_Expression_AVAILABLE");
     static_assert(has_visitor_Expression_SIZEOF<Visitor>, "Visitor does not implement visit_Expression_SIZEOF");
     static_assert(has_visitor_Expression_SUB_RANGE_INIT<Visitor>, "Visitor does not implement visit_Expression_SUB_RANGE_INIT");
+    static_assert(has_visitor_Expression_OR_COND<Visitor>, "Visitor does not implement visit_Expression_OR_COND");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");

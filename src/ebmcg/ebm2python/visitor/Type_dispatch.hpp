@@ -23,7 +23,6 @@
           len: Varint
           container: std::vector<TypeRef>
         pointee_type: *TypeRef
-        property_type: *TypeRef
         return_type: *TypeRef
         size: *Varint
 */

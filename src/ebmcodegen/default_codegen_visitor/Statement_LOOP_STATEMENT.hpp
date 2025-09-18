@@ -12,7 +12,6 @@
       loop_type: LoopType
       collection: *ExpressionRef
       condition: *Condition
-        flattened_statement: StatementRef
         cond: ExpressionRef
       increment: *StatementRef
       init: *StatementRef

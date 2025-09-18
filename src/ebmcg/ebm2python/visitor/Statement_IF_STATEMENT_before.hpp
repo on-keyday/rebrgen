@@ -10,7 +10,6 @@
     kind: StatementOp
     if_statement: IfStatement
       condition: Condition
-        flattened_statement: StatementRef
         cond: ExpressionRef
       then_block: StatementRef
       else_block: StatementRef

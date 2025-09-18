@@ -3310,22 +3310,19 @@ namespace ebm {
             Types members;
         };
         struct EBM_API union_struct_109{
-            TypeRef property_type;
-        };
-        struct EBM_API union_struct_110{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_111{
+        struct EBM_API union_struct_110{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_112{
+        struct EBM_API union_struct_111{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_113{
+        struct EBM_API union_struct_112{
             TypeRef return_type;
             Types params;
         };
-        std::variant<std::monostate, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112, union_struct_113> union_variant_98;
+        std::variant<std::monostate, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112> union_variant_98;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);
@@ -3362,10 +3359,6 @@ namespace ebm {
         TypeRef* pointee_type();
         bool pointee_type(TypeRef&& v);
         bool pointee_type(const TypeRef& v);
-        const TypeRef* property_type() const;
-        TypeRef* property_type();
-        bool property_type(TypeRef&& v);
-        bool property_type(const TypeRef& v);
         const TypeRef* return_type() const;
         TypeRef* return_type();
         bool return_type(TypeRef&& v);
@@ -3390,7 +3383,6 @@ namespace ebm {
             v(v, "members",(*this).members());
             v(v, "params",(*this).params());
             v(v, "pointee_type",(*this).pointee_type());
-            v(v, "property_type",(*this).property_type());
             v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
         }
@@ -3406,7 +3398,6 @@ namespace ebm {
             v(v, "members",(*this).members());
             v(v, "params",(*this).params());
             v(v, "pointee_type",(*this).pointee_type());
-            v(v, "property_type",(*this).property_type());
             v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
         }
@@ -3426,7 +3417,6 @@ namespace ebm {
             v(v, "members",visitor_tag<decltype(std::declval<TypeBody>().members())>{});
             v(v, "params",visitor_tag<decltype(std::declval<TypeBody>().params())>{});
             v(v, "pointee_type",visitor_tag<decltype(std::declval<TypeBody>().pointee_type())>{});
-            v(v, "property_type",visitor_tag<decltype(std::declval<TypeBody>().property_type())>{});
             v(v, "return_type",visitor_tag<decltype(std::declval<TypeBody>().return_type())>{});
             v(v, "size",visitor_tag<decltype(std::declval<TypeBody>().size())>{});
         }

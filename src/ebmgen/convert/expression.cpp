@@ -483,6 +483,64 @@ namespace ebmgen {
         return unexpect_error("expr not implemented yet: {}", node_type_to_string(node->node_type));
     }
 
-    expected<ebm::ExpressionRef> ExpressionConverter::convert_equal(ebm::ExpressionRef a, ebm::ExpressionRef b) {}
+    expected<ebm::ExpressionRef> convert_equal_impl(ConverterContext& ctx, ebm::ExpressionRef a, ebm::ExpressionRef b, ebm::Expression& A, ebm::Expression& B) {
+        EBMU_BOOL_TYPE(bool_type);
+        if (A.body.kind != B.body.kind) {  // to prevent expression like 0..1 == 1..0
+            if (auto start = A.body.start()) {
+                auto end = A.body.end();
+                if (is_nil(*start) && is_nil(*end)) {
+                    ebm::ExpressionBody body;
+                    body.kind = ebm::ExpressionOp::LITERAL_BOOL;
+                    body.bool_value(1);
+                    EBMA_ADD_EXPR(true_, std::move(body));
+                    return true_;
+                }
+                ebm::ExpressionRef ref;
+                if (!is_nil(*start)) {
+                    EBM_BINARY_OP(greater, ebm::BinaryOp::less_or_eq, bool_type, *start, b);
+                    ref = greater;
+                }
+                if (!is_nil(*end)) {
+                    EBM_BINARY_OP(greater, ebm::BinaryOp::less_or_eq, bool_type, b, *end);
+                    if (!is_nil(ref)) {
+                        EBM_BINARY_OP(and_, ebm::BinaryOp::logical_and, bool_type, ref, greater);
+                        ref = and_;
+                    }
+                    else {
+                        ref = greater;
+                    }
+                }
+                return ref;
+            }
+            else if (auto start = B.body.start()) {
+                return convert_equal_impl(ctx, b, a, B, A);
+            }
+            else if (auto or_cond = A.body.or_cond()) {
+                ebm::ExpressionRef cond;
+                for (auto& or_ : or_cond->container) {
+                    MAYBE(eq, ctx.get_expression_converter().convert_equal(or_, b));
+                    if (is_nil(cond)) {
+                        cond = eq;
+                    }
+                    else {
+                        EBM_BINARY_OP(ored, ebm::BinaryOp::logical_or, bool_type, cond, eq);
+                        cond = ored;
+                    }
+                }
+                return cond;
+            }
+            else if (auto end = B.body.or_cond()) {
+                return convert_equal_impl(ctx, b, a, B, A);
+            }
+        }
+        EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, a, b);
+        return eq;
+    }
+
+    expected<ebm::ExpressionRef> ExpressionConverter::convert_equal(ebm::ExpressionRef a, ebm::ExpressionRef b) {
+        MAYBE(A, ctx.repository().get_expression(a));
+        MAYBE(B, ctx.repository().get_expression(b));
+        return convert_equal_impl(ctx, a, b, A, B);
+    }
 
 }  // namespace ebmgen

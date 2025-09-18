@@ -303,7 +303,7 @@ format PropertyDecl:
     merge_mode :MergeMode # How union members are merged (e.g., common type, strict type)
     if merge_mode == MergeMode.STRICT_TYPE:
         cond :ExpressionRef # maybe null
-    members :Block # merged block contains (property member decl)
+    members :Block # merged block contains (contains PropertyDecl or PropertyMemberDecl)
     setter_function :LoweredStatementRef
     getter_function :LoweredStatementRef
 
@@ -652,8 +652,6 @@ format TypeBody:
         TypeKind.VARIANT:
             common_type :TypeRef # Optional Common type for all union members
             members :Types # List of variant members (types)
-        TypeKind.PROPERTY_SETTER_RETURN:
-            property_type :TypeRef # Type returned by property setter
         TypeKind.OPTIONAL:
             inner_type :TypeRef # Optional inner type
         TypeKind.PTR:

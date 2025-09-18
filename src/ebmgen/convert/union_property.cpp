@@ -105,13 +105,13 @@ namespace ebmgen {
             if (c.field) {
                 MAYBE(field, ctx.repository().get_statement(*c.field));
                 if (auto decl = field.body.field_decl()) {
-                    if (result.merged.emplace(get_id(decl->field_type), std::vector<ebm::PropertyMemberDecl>{}).second) {
+                    if (result.merged.emplace(get_id(decl->field_type), PropExprVec{}).second) {
                         result.detected_types.push_back(decl->field_type);
                     }
                 }
                 else if (auto decl = field.body.property_decl()) {
                     MAYBE_VOID(ok, map_field(ctx, field.id, *decl, [&](ebm::StatementRef, ebm::PropertyDecl& decl) {
-                                   if (result.merged.emplace(get_id(decl.property_type), std::vector<ebm::PropertyMemberDecl>{}).second) {
+                                   if (result.merged.emplace(get_id(decl.property_type), PropExprVec{}).second) {
                                        result.detected_types.push_back(decl.property_type);
                                    }
                                }));
@@ -331,11 +331,11 @@ namespace ebmgen {
         MAYBE(union_data, convert_union_type_to_ebm(ctx, union_type));
         auto [base_cond, cases] = std::move(union_data);
         MAYBE(all_type, detect_all_types(ctx, cases));
-        auto [detected_types, merged] = std::move(all_type);
-        MAYBE_VOID(merge_field, merge_fields(ctx, cases, merged));
-        print_if_verbose("Merged ", merged.size(), " types for property\n");
-        if (merged.size() == 1) {  // single strict type
-            MAYBE_VOID(s, strict_merge(ctx, derive, base_cond, ebm::TypeRef{merged.begin()->first}, merged.begin()->second));
+        auto [detected_types, merged_fields] = std::move(all_type);
+        MAYBE_VOID(merge_field, merge_fields(ctx, cases, merged_fields));
+        print_if_verbose("Merged ", merged_fields.size(), " types for property\n");
+        if (merged_fields.size() == 1) {  // single strict type
+            MAYBE_VOID(s, strict_merge(ctx, derive, base_cond, ebm::TypeRef{merged_fields.begin()->first}, merged_fields.begin()->second));
             return {};
         }
         std::vector<ebm::PropertyDecl> properties;
@@ -343,7 +343,7 @@ namespace ebmgen {
             ebm::PropertyDecl prop;
             prop.name = derive.name;
             prop.parent_format = derive.parent_format;
-            MAYBE_VOID(s, strict_merge(ctx, prop, base_cond, ty, merged[get_id(ty)]));
+            MAYBE_VOID(s, strict_merge(ctx, prop, base_cond, ty, merged_fields[get_id(ty)]));
             properties.push_back(std::move(prop));
         }
         MAYBE(cluster, clustering_properties(ctx, properties));

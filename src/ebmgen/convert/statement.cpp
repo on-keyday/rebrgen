@@ -9,8 +9,6 @@
 #include "helper.hpp"
 #include <core/ast/traverse.h>
 #include <memory>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace ebmgen {
@@ -651,7 +649,7 @@ namespace ebmgen {
             }
             EBMA_CONVERT_EXPRESSION(cond, node->arguments->arguments[0]);
             EBMU_BOOL_TYPE(bool_type);
-            EBM_BINARY_OP(eq, ebm::BinaryOp::equal, bool_type, def_id, cond);
+            MAYBE(eq, ctx.get_expression_converter().convert_equal(def_id, cond));
             MAYBE(assert_, assert_statement(ctx, eq));
             assert_stmt = assert_;
         }

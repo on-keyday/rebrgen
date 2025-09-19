@@ -2,9 +2,13 @@
 import json
 import argparse
 import sys
+import traceback
 from typing import Any, Dict, List
+import os
+import subprocess as sp
 
 
+# --- 既存のクラス (変更なし) ---
 class ValidationError(Exception):
     """カスタムの検証エラー例外"""
 
@@ -12,6 +16,7 @@ class ValidationError(Exception):
 
 
 class SchemaValidator:
+    # (このクラスの実装は前回のものから変更ありません)
     """
     JSONオブジェクトが指定されたスキーマに準拠しているかを検証するクラス
     """
@@ -40,13 +45,6 @@ class SchemaValidator:
     def validate(self, data: Dict[str, Any], root_struct_name: str):
         """
         検証プロセスのエントリーポイント
-
-        Args:
-            data: 検証対象のJSONデータ
-            root_struct_name: スキーマ内のルートとなる構造体名
-
-        Raises:
-            ValidationError: 検証に失敗した場合
         """
         if root_struct_name not in self.structs:
             raise ValidationError(
@@ -58,19 +56,22 @@ class SchemaValidator:
         """
         オブジェクト（辞書）を再帰的に検証します。
         """
-        if not isinstance(data, dict):
-            raise ValidationError(
-                f"パス '{path}' はオブジェクトであるべきですが、型が異なります。{type(data)}"
-            )
-
         struct_def = self.structs[struct_name]
         field_map = {f["name"]: f for f in struct_def["fields"]}
+        if not isinstance(data, dict):
+            # もし配列ならばlenとcontainerに読み替える
+            if isinstance(data, list) and not (
+                set(field_map.keys()) - set({"len", "container"})
+            ):
+                data = {"len": len(data), "container": data}
+            else:
+                raise ValidationError(
+                    f"パス '{path}' はオブジェクトであるべきですが、型が異なります。{type(data)}"
+                )
 
-        # このオブジェクトで許可されるフィールドのセットを決定する
         active_field_names: set[str]
         subset_used = False
         if struct_name in self.subsets:
-            # subset_info に基づいて動的にフィールドを決定
             kind_value = data.get("kind")
             if kind_value is None:
                 raise ValidationError(
@@ -84,23 +85,19 @@ class SchemaValidator:
             subset_used = True
             path = f"{path}({kind_value})"
         else:
-            # 通常の構造体
             active_field_names = set(field_map.keys())
 
-        # スキーマで許可されていない余分なフィールドがないかチェック
         extra_fields = set(data.keys()) - active_field_names
         if extra_fields:
             raise ValidationError(
                 f"パス '{path}' に不正なフィールドがあります: {', '.join(extra_fields)}"
             )
 
-        # 許可された各フィールドについて、必須項目の存在チェックと型の検証を行う
-        for field_name in active_field_names:
+        for field_name in sorted(list(active_field_names)):
             field_def = field_map[field_name]
             is_present = field_name in data
             is_pointer = not subset_used and field_def.get("is_pointer", False)
 
-            # is_pointer: false のフィールドは必須
             if not is_pointer and not is_present:
                 raise ValidationError(
                     f"パス '{path}' に必須フィールド '{field_name}' がありません。"
@@ -135,10 +132,15 @@ class SchemaValidator:
                     f"パス '{path}' の値 '{value}' は Enum '{type_name}' のメンバーではありません。"
                     f" (有効な値: {', '.join(sorted(list(valid_members)))})"
                 )
-        elif type_name.endswith("Ref"):
+        elif type_name.endswith("Ref") or type_name == "AnyRef":
             if isinstance(value, dict):
                 body_name = type_name.removesuffix("Ref") + "Body"
-                self._validate_object(value, body_name, f"{path}->{body_name}")
+                if body_name in self.structs:
+                    self._validate_object(value, body_name, f"{path}->{body_name}")
+                else:
+                    raise ValidationError(
+                        f"パス '{path}' の型 '{type_name}' はオブジェクトを持つことができません。"
+                    )
             elif not isinstance(value, int):
                 raise ValidationError(
                     f"パス '{path}' はオブジェクトまたは整数であるべきですが、型が異なります。{type(value)}"
@@ -164,8 +166,150 @@ class SchemaValidator:
             )
 
 
-import os
-import subprocess as sp
+# --- ここから新規追加 ---
+class EqualityError(Exception):
+    """カスタムの等価性比較エラー例外"""
+
+    pass
+
+
+class EqualityTester:
+    """
+    テスト対象(T1)とテストケース(T2)のJSONオブジェクトの等価性を検証するクラス。
+    T1のRef型はebm_mapを用いて解決する。
+    """
+
+    def __init__(
+        self,
+        validator: SchemaValidator,
+        ebm_map: Dict[int, Any] = None,
+        rough_mode: bool = False,
+    ):
+        self.validator = validator
+        self.ebm_map = ebm_map if ebm_map is not None else {}
+        self.rough_mode = rough_mode
+
+    def compare(self, target_obj: Any, case_obj: Any, struct_name: str):
+        """比較プロセスのエントリーポイント"""
+        self._compare_value(target_obj, case_obj, struct_name, path=struct_name)
+
+    def _compare_value(self, t1_val: Any, t2_val: Any, type_name: str, path: str):
+        """型に基づいて値を再帰的に比較する"""
+        # 型が構造体の場合
+        if type_name in self.validator.structs:
+            self._compare_object(t1_val, t2_val, type_name, path)
+            return
+
+        # 型がRef系の場合 (特別ルール)
+        if type_name.endswith("Ref") or type_name == "AnyRef":
+            self._compare_ref(t1_val, t2_val, type_name, path)
+            return
+
+        # その他のプリミティブ型やEnumの場合
+        if t1_val != t2_val:
+            raise EqualityError(
+                f"パス '{path}' の値が異なります: T1=`{t1_val}`, T2=`{t2_val}`"
+            )
+
+    def _compare_ref(self, t1_ref: Any, t2_ref: Any, type_name: str, path: str):
+        """Ref型を特別に比較する"""
+        # T1のRefを解決する
+        resolved_t1 = t1_ref
+        if isinstance(t1_ref, int) and t1_ref in self.ebm_map:
+            resolved_t1 = self.ebm_map[t1_ref]
+
+        # T1(解決後)がオブジェクトの場合
+        if isinstance(resolved_t1, dict):
+            body_name = type_name.removesuffix("Ref") + "Body"
+            if isinstance(t2_ref, dict):  # T2もオブジェクトなら再帰比較
+                self._compare_object(
+                    resolved_t1, t2_ref, body_name, f"{path}->{body_name}"
+                )
+            elif isinstance(t2_ref, int):  # T2が数値ならT1のIDと比較
+                if resolved_t1.get("id") != t2_ref:
+                    raise EqualityError(
+                        f"パス '{path}' のIDが異なります: T1 ID=`{resolved_t1.get('id')}`, T2 ID=`{t2_ref}`"
+                    )
+            else:
+                raise EqualityError(
+                    f"パス '{path}' で型の不整合: T1はオブジェクトですが、T2は不正な型です。"
+                )
+        # T1(解決後)が数値の場合
+        elif isinstance(resolved_t1, int):
+            if not isinstance(t2_ref, int):
+                raise EqualityError(
+                    f"パス '{path}' で型の不整合: T1は数値ですが、T2はオブジェクトです。{resolved_t1} vs {t2_ref}"
+                )
+            if resolved_t1 != t2_ref:
+                raise EqualityError(
+                    f"パス '{path}' のRef値が異なります: T1=`{resolved_t1}`, T2=`{t2_ref}`"
+                )
+        else:
+            raise EqualityError(f"パス '{path}' のT1の値の型が不正です。")
+
+    def _compare_object(self, t1_obj: Any, t2_obj: Any, struct_name: str, path: str):
+        """オブジェクト（辞書）を再帰的に比較する"""
+        if not isinstance(t1_obj, dict) or not isinstance(t2_obj, dict):
+            raise EqualityError(
+                f"パス '{path}' のどちらかまたは両方がオブジェクトではありません。{type(t1_obj)} vs {type(t2_obj)}"
+            )
+
+        struct_def = self.validator.structs[struct_name]
+        field_map = {f["name"]: f for f in struct_def["fields"]}
+
+        active_field_names: set[str]
+        # subset_infoのハンドリング
+        if struct_name in self.validator.subsets:
+            t1_kind = t1_obj.get("kind")
+            t2_kind = t2_obj.get("kind")
+            if t1_kind != t2_kind:
+                raise EqualityError(
+                    f"パス '{path}' の 'kind' が異なります: T1=`{t1_kind}`, T2=`{t2_kind}`"
+                )
+            if t1_kind not in self.validator.subsets[struct_name]:
+                raise EqualityError(
+                    f"パス '{path}' の 'kind' '{t1_kind}' はスキーマに存在しません。"
+                )
+            active_field_names = set(self.validator.subsets[struct_name][t1_kind])
+            path = f"{path}({t1_kind})"
+        else:
+            active_field_names = set(field_map.keys())
+
+        # フィールドの比較
+        for field_name in sorted(list(active_field_names)):
+            field_def = field_map[field_name]
+            t1_val = t1_obj.get(field_name)
+            t2_val = t2_obj.get(field_name)
+
+            new_path = f"{path}.{field_name}"
+            field_type = field_def["type"]
+
+            if field_def.get("is_array", False):
+                if not isinstance(t1_val, list) or not isinstance(t2_val, list):
+                    raise EqualityError(
+                        f"パス '{new_path}' のどちらかが配列ではありません。"
+                    )
+                if len(t1_val) != len(t2_val):
+                    raise EqualityError(
+                        f"パス '{new_path}' の配列の長さが異なります: T1は{len(t1_val)}個, T2は{len(t2_val)}個"
+                    )
+                for i, (t1_item, t2_item) in enumerate(zip(t1_val, t2_val)):
+                    self._compare_value(
+                        t1_item, t2_item, field_type, f"{new_path}[{i}]"
+                    )
+            else:
+                self._compare_value(t1_val, t2_val, field_type, new_path)
+
+
+# --- 既存の関数 (変更なし) ---
+def make_EBM_map(data: dict):
+    map_target = ["identifiers", "strings", "types", "expressions", "statements"]
+    result = {}
+    for target in map_target:
+        for element in data[target]:
+            # RefのIDは数値なので、キーも数値に変換
+            result[int(element["id"])] = element["body"]
+    return result
 
 
 def execute(command, env, capture=True, input=None) -> bytes:
@@ -180,28 +324,21 @@ def execute(command, env, capture=True, input=None) -> bytes:
         )
 
 
+# --- main関数を修正 ---
 def main():
-    """
-    CLIのエントリーポイント
-    """
+    """CLIのエントリーポイント"""
     parser = argparse.ArgumentParser(
         description="JSONデータが指定されたスキーマに準拠しているかを検証します。"
     )
-    parser.add_argument("json_data", help="検証対象のJSONファイル (B)")
+    parser.add_argument("json_data", help="検証対象のJSONファイル (T1の元データ)")
     parser.add_argument("struct_name", help="検証の起点となるルート構造体名")
     parser.add_argument(
-        "--test-case",
-        default=None,
-        help="テストケース(struct_nameがExtendedBinaryModuleのとき)",
+        "--test-case", default=None, help="テストケースJSONファイル(T2)"
     )
     args = parser.parse_args()
 
     schema_json = json.loads(
-        execute(
-            ["./tool/ebmcodegen", "--mode", "spec-json"],
-            None,
-            True,
-        )
+        execute(["./tool/ebmcodegen", "--mode", "spec-json"], None, True)
     )
 
     try:
@@ -218,37 +355,62 @@ def main():
     try:
         validator = SchemaValidator(schema_json)
         print(
-            f"✅ ファイル{args.json_data}が{args.struct_name}スキーマに準拠しているか検証しています"
+            f"🔬 ファイル '{args.json_data}' が '{args.struct_name}' スキーマに準拠しているか検証中..."
         )
         validator.validate(data_json, args.struct_name)
-        print("✅ 検証に成功しました。JSONデータはスキーマに準拠しています。")
+        print("✅ 検証成功: スキーマに準拠しています。")
+
         if args.test_case:
+            # --- テストケース実行ロジック ---
+            print("-" * 20)
             with open(args.test_case, "r", encoding="utf-8") as f:
                 test_case_json = json.load(f)
-            target = json.loads(
+
+            # 1. T1 (テスト対象) をjqで抽出
+            target_t1 = json.loads(
                 execute(["jq", test_case_json["condition"]], None, True, data.encode())
             )
+
+            # 2. T2 (テストケース) を取得
+            case_t2 = test_case_json["case"]
+            struct_to_compare = test_case_json["struct"]
+
+            # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
             print(
-                f"✅ テストケース{args.test_case}が{test_case_json["struct"]}スキーマに準拠しているか検証しています"
+                f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
             )
-            validator.validate(test_case_json["case"], test_case_json["struct"])
+            validator.validate(case_t2, struct_to_compare)
+            print("✅ 検証成功: テストケースはスキーマに準拠しています。")
+
+            # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
             print(
-                "✅ 検証に成功しました。テストケースJSONデータはスキーマに準拠しています。"
+                f"🔬 テスト対象(T1)が '{struct_to_compare}' スキーマに準拠しているか検証中..."
             )
+            validator.validate(target_t1, struct_to_compare)
+            print("✅ 検証成功: テスト対象はスキーマに準拠しています。")
+
+            # 3. ebm_mapを作成 (必要な場合)
+            ebm_map = None
+            if args.struct_name == "ExtendedBinaryModule":
+                ebm_map = make_EBM_map(data_json)
+
+            print(f"🔬 テストケース '{args.test_case}' を用いて等価性を検証中...")
             print(
-                f"✅ テスト対象'{args.json_data}/{test_case_json["condition"]}'が{test_case_json["struct"]}スキーマに準拠しているか検証しています"
+                f"    - T1: '{args.json_data}' の '{test_case_json['condition']}' の結果"
             )
-            validator.validate(target, test_case_json["struct"])
-            print(
-                "✅ 検証に成功しました。テスト対象JSONデータはスキーマに準拠しています。"
-            )
-    except ValidationError as e:
+            print(f"    - T2: '{args.test_case}' の 'case' フィールド")
+
+            # 4. EqualityTesterで比較
+            tester = EqualityTester(validator, ebm_map, test_case_json["rough"])
+            tester.compare(target_t1, case_t2, struct_to_compare)
+
+            print("✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。")
+
+    except (ValidationError, EqualityError) as e:
         print(f"❌ 検証に失敗しました:\n{e}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         print(f"予期せぬエラーが発生しました: {e}", file=sys.stderr)
-        import traceback
-
         print(traceback.format_exc(), file=sys.stderr)
         sys.exit(1)
 

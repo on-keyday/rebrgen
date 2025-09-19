@@ -394,56 +394,66 @@ def main():
 
         if args.test_case:
             # --- テストケース実行ロジック ---
-            print("-" * 20)
-            with open(args.test_case, "r", encoding="utf-8") as f:
-                test_case_json = json.load(f)
+            test_cases: list[str] = [args.test_case]
+            if os.path.isdir(args.test_case):
+                test_cases = os.listdir(args.test_case)
+            for case in test_cases:
+                print("-" * 20)
+                with open(case, "r", encoding="utf-8") as f:
+                    test_case_json = json.load(f)
 
-            # 1. T1 (テスト対象) をjqで抽出
-            target_t1 = json.loads(
-                execute(["jq", test_case_json["condition"]], None, True, data.encode())
-            )
+                # 1. T1 (テスト対象) をjqで抽出
+                target_t1 = json.loads(
+                    execute(
+                        ["jq", test_case_json["condition"]], None, True, data.encode()
+                    )
+                )
 
-            # 2. T2 (テストケース) を取得
-            case_t2 = test_case_json["case"]
-            struct_to_compare = test_case_json["struct"]
-            rough_field = set[str](test_case_json["rough"])
+                # 2. T2 (テストケース) を取得
+                case_t2 = test_case_json["case"]
+                struct_to_compare = test_case_json["struct"]
+                rough_field = set[str](test_case_json["rough"])
 
-            # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
-            print(
-                f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
-            )
-            validator.validate(case_t2, struct_to_compare, rough_field)
-            print(
-                f"✅ 検証成功: テストケースはスキーマに準拠しています。{"(rough)" if test_case_json["rough"]else ""}"
-            )
+                # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
+                print(
+                    f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
+                )
+                validator.validate(case_t2, struct_to_compare, rough_field)
+                print(
+                    f"✅ 検証成功: テストケースはスキーマに準拠しています。{"(rough)" if test_case_json["rough"]else ""}"
+                )
 
-            # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
-            print(
-                f"🔬 テスト対象(T1)が '{struct_to_compare}' スキーマに準拠しているか検証中..."
-            )
-            validator.validate(target_t1, struct_to_compare)
-            print("✅ 検証成功: テスト対象はスキーマに準拠しています。")
+                # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
+                print(
+                    f"🔬 テスト対象(T1)が '{struct_to_compare}' スキーマに準拠しているか検証中..."
+                )
+                validator.validate(target_t1, struct_to_compare)
+                print("✅ 検証成功: テスト対象はスキーマに準拠しています。")
 
-            # 3. ebm_mapを作成 (必要な場合)
-            ebm_map = None
-            if args.struct_name == "ExtendedBinaryModule":
-                ebm_map = make_EBM_map(data_json)
+                # 3. ebm_mapを作成 (必要な場合)
+                ebm_map = None
+                if args.struct_name == "ExtendedBinaryModule":
+                    ebm_map = make_EBM_map(data_json)
 
-            print(f"🔬 テストケース '{args.test_case}' を用いて等価性を検証中...")
-            print(
-                f"    - T1: '{args.json_data}' の '{test_case_json['condition']}' の結果"
-            )
-            print(f"    - T2: '{args.test_case}' の 'case' フィールド")
-            print(f"    - テスト除外フィールド: {",".join(rough_field)}")
+                print(f"🔬 テストケース '{args.test_case}' を用いて等価性を検証中...")
+                print(
+                    f"    - T1: '{args.json_data}' の '{test_case_json['condition']}' の結果"
+                )
+                print(f"    - T2: '{args.test_case}' の 'case' フィールド")
+                print(f"    - テスト除外フィールド: {",".join(rough_field)}")
 
-            # 4. EqualityTesterで比較
-            tester = EqualityTester(validator, ebm_map, rough_field)
-            tester.compare(target_t1, case_t2, struct_to_compare)
+                # 4. EqualityTesterで比較
+                tester = EqualityTester(validator, ebm_map, rough_field)
+                tester.compare(target_t1, case_t2, struct_to_compare)
 
-            print(
-                "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。"
-                + (f"({",".join(rough_field)}を除く)" if len(rough_field) != 0 else "")
-            )
+                print(
+                    "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。"
+                    + (
+                        f"({",".join(rough_field)}を除く)"
+                        if len(rough_field) != 0
+                        else ""
+                    )
+                )
 
     except (ValidationError, EqualityError) as e:
         print(f"❌ 検証に失敗しました:\n{e}", file=sys.stderr)

@@ -5,6 +5,7 @@
 #include <wrap/iostream.h>
 #include "ebmgen/json_printer.hpp"
 #include "ebmgen/mapping.hpp"
+#include "file/file_view.h"
 #include "fnet/util/base64.h"
 #include "json/stringer.h"
 #include "load_json.hpp"
@@ -14,18 +15,25 @@
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <fstream>             // Required for std::ofstream
-#include <sstream>             // Required for std::stringstream
+#include <optional>
+#include <sstream>  // Required for std::stringstream
 
 enum class DebugOutputFormat {
     Text,
     JSON,
 };
 
+enum class InputFormat {
+    JSON_AST,
+    EBM,
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
-    DebugOutputFormat format = DebugOutputFormat::Text;
+    InputFormat input_format = InputFormat::JSON_AST;
+    DebugOutputFormat debug_format = DebugOutputFormat::Text;
     std::string_view cfg_output;
     bool base64 = false;
     bool verbose = false;
@@ -34,9 +42,18 @@ struct Flags : futils::cmdline::templ::HelpOption {
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
+        ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm}",
+                   std::map<std::string, InputFormat>{
+                       {"ebm", InputFormat::EBM},
+                       {"json-ast", InputFormat::JSON_AST},
+                   });
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file (if -, write to stdout)", "FILE");
-        ctx.VarMap(&format, "debug-format", "debug output format (default: text)", "{text,json}", std::map<std::string, DebugOutputFormat>{{"text", DebugOutputFormat::Text}, {"json", DebugOutputFormat::JSON}});
+        ctx.VarMap(&debug_format, "debug-format", "debug output format (default: text)", "{text,json}",
+                   std::map<std::string, DebugOutputFormat>{
+                       {"text", DebugOutputFormat::Text},
+                       {"json", DebugOutputFormat::JSON},
+                   });
         ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file (if -, write to stdout)", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
         ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
@@ -49,16 +66,38 @@ auto& cerr = futils::wrap::cerr_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     ebmgen::verbose_error = flags.verbose;
-    auto ast = ebmgen::load_json(flags.input, nullptr);
-    if (!ast) {
-        cerr << ast.error().error<std::string>() << '\n';
-        return 1;
-    }
     ebm::ExtendedBinaryModule ebm;
-    auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
-    if (!output) {
-        cerr << "Convert Error: " << output.error().error<std::string>() << '\n';
-        return 1;
+    std::optional<ebmgen::Output> out;
+    if (flags.input_format == InputFormat::EBM) {
+        futils::file::View view;
+        if (auto res = view.open(flags.input); !res) {
+            cerr << "error: failed to open " << flags.input << ": " << res.error().template error<std::string>() << '\n';
+            return 1;
+        }
+        if (!view.data()) {
+            cerr << "error: " << "Empty file\n";
+            return 1;
+        }
+        futils::binary::reader r{view};
+        auto err = ebm.decode(r);
+        if (err) {
+            cerr << "error: failed to load ebm" << err.template error<std::string>() << '\n';
+            return 1;
+        }
+    }
+    else {
+        auto ast = ebmgen::load_json(flags.input, nullptr);
+        if (!ast) {
+            cerr << ast.error().error<std::string>() << '\n';
+            return 1;
+        }
+
+        auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
+        if (!output) {
+            cerr << "Convert Error: " << output.error().error<std::string>() << '\n';
+            return 1;
+        }
+        out = std::move(*output);
     }
 
     std::optional<ebmgen::MappingTable> table;
@@ -83,7 +122,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
             return 0;
         };
-        if (flags.format == DebugOutputFormat::Text) {
+        if (flags.debug_format == DebugOutputFormat::Text) {
             std::stringstream debug_ss;
             ebmgen::DebugPrinter printer(*table, debug_ss);
 
@@ -93,7 +132,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 return ret;
             }
         }
-        else if (flags.format == DebugOutputFormat::JSON) {
+        else if (flags.debug_format == DebugOutputFormat::JSON) {
             ebmgen::JSONPrinter p(*table);
             futils::json::Stringer<> s;
             p.print_module(s);
@@ -110,10 +149,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     // also generates control flow graph
     if (!flags.cfg_output.empty()) {
+        if (!out) {
+            cerr << "Currently, generate cfg from ebm is not supported\n";
+            return 1;
+        }
         if (flags.cfg_output == "-") {
             std::string buffer;
             futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
-            ebmgen::write_cfg(w, output->control_flow_graph, *table);
+            ebmgen::write_cfg(w, out->control_flow_graph, *table);
             cout << buffer;
         }
         else {
@@ -123,7 +166,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 return 1;
             }
             futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
-            ebmgen::write_cfg(w, output->control_flow_graph, *table);
+            ebmgen::write_cfg(w, out->control_flow_graph, *table);
         }
     }
 

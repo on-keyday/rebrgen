@@ -35,9 +35,9 @@ struct Flags : futils::cmdline::templ::HelpOption {
         bind_help(ctx);
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
-        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");
+        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file (if -, write to stdout)", "FILE");
         ctx.VarMap(&format, "debug-format", "debug output format (default: text)", "{text,json}", std::map<std::string, DebugOutputFormat>{{"text", DebugOutputFormat::Text}, {"json", DebugOutputFormat::JSON}});
-        ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
+        ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file (if -, write to stdout)", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
         ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
         ctx.VarBool(&debug, "g,debug", "enable debug transformations (do not remove unused items)");
@@ -69,13 +69,18 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     // Debug print if requested
     if (!flags.debug_output.empty()) {
         auto save_to_file = [&](auto&& out) {
-            std::ofstream debug_ofs(std::string(flags.debug_output));
-            if (!debug_ofs.is_open()) {
-                cerr << "Failed to open debug output file: " << flags.debug_output << '\n';
-                return 1;
+            if (flags.debug_output == "-") {
+                cout << out;
             }
-            debug_ofs << out;
-            debug_ofs.close();
+            else {
+                std::ofstream debug_ofs(std::string(flags.debug_output));
+                if (!debug_ofs.is_open()) {
+                    cerr << "Failed to open debug output file: " << flags.debug_output << '\n';
+                    return 1;
+                }
+                debug_ofs << out;
+                debug_ofs.close();
+            }
             return 0;
         };
         if (flags.format == DebugOutputFormat::Text) {
@@ -105,13 +110,21 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     // also generates control flow graph
     if (!flags.cfg_output.empty()) {
-        std::ofstream debug_ofs(std::string(flags.cfg_output));
-        if (!debug_ofs.is_open()) {
-            cerr << "Failed to open control flow graph file: " << flags.cfg_output << '\n';
-            return 1;
+        if (flags.cfg_output == "-") {
+            std::string buffer;
+            futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+            ebmgen::write_cfg(w, output->control_flow_graph, *table);
+            cout << buffer;
         }
-        futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
-        ebmgen::write_cfg(w, output->control_flow_graph, *table);
+        else {
+            std::ofstream debug_ofs(std::string(flags.cfg_output));
+            if (!debug_ofs.is_open()) {
+                cerr << "Failed to open control flow graph file: " << flags.cfg_output << '\n';
+                return 1;
+            }
+            futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
+            ebmgen::write_cfg(w, output->control_flow_graph, *table);
+        }
     }
 
     auto write_ebm = [&](futils::binary::writer& w) {

@@ -60,7 +60,7 @@ class SchemaValidator:
         """
         if not isinstance(data, dict):
             raise ValidationError(
-                f"パス '{path}' はオブジェクトであるべきですが、型が異なります。"
+                f"パス '{path}' はオブジェクトであるべきですが、型が異なります。{type(data)}"
             )
 
         struct_def = self.structs[struct_name]
@@ -115,7 +115,7 @@ class SchemaValidator:
                 if is_array:
                     if not isinstance(value, list):
                         raise ValidationError(
-                            f"パス '{new_path}' は配列であるべきですが、型が異なります。"
+                            f"パス '{new_path}' は配列であるべきですが、型が異なります。{type(value)}"
                         )
                     for i, item in enumerate(value):
                         self._validate_value(item, field_type, f"{new_path}[{i}]")
@@ -141,22 +141,22 @@ class SchemaValidator:
                 self._validate_object(value, body_name, f"{path}->{body_name}")
             elif not isinstance(value, int):
                 raise ValidationError(
-                    f"パス '{path}' はオブジェクトまたは整数であるべきですが、型が異なります。"
+                    f"パス '{path}' はオブジェクトまたは整数であるべきですが、型が異なります。{type(value)}"
                 )
         elif type_name in ("std::uint8_t", "std::uint64_t", "Varint"):
             if not isinstance(value, int):
                 raise ValidationError(
-                    f"パス '{path}' は整数であるべきですが、型が異なります。"
+                    f"パス '{path}' は整数であるべきですが、型が異なります。{type(value)}"
                 )
         elif type_name == "bool":
             if not isinstance(value, bool):
                 raise ValidationError(
-                    f"パス '{path}' はブール値であるべきですが、型が異なります。"
+                    f"パス '{path}' はブール値であるべきですが、型が異なります。{type(value)}"
                 )
         elif type_name == "std::string":
             if not isinstance(value, str):
                 raise ValidationError(
-                    f"パス '{path}' は文字列であるべきですが、型が異なります。"
+                    f"パス '{path}' は文字列であるべきですが、型が異なります。{type(value)}"
                 )
         else:
             raise ValidationError(
@@ -168,14 +168,16 @@ import os
 import subprocess as sp
 
 
-def execute(command, env, capture=True) -> bytes:
+def execute(command, env, capture=True, input=None) -> bytes:
     passEnv = os.environ.copy()
     if env is not None:
         passEnv.update(env)
     if capture:
-        return sp.check_output(command, env=passEnv, stderr=sys.stderr)
+        return sp.check_output(command, env=passEnv, stderr=sys.stderr, input=input)
     else:
-        return sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
+        return sp.check_call(
+            command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr, input=input
+        )
 
 
 def main():
@@ -187,6 +189,11 @@ def main():
     )
     parser.add_argument("json_data", help="検証対象のJSONファイル (B)")
     parser.add_argument("struct_name", help="検証の起点となるルート構造体名")
+    parser.add_argument(
+        "--test-case",
+        default=None,
+        help="テストケース(struct_nameがExtendedBinaryModuleのとき)",
+    )
     args = parser.parse_args()
 
     schema_json = json.loads(
@@ -199,7 +206,8 @@ def main():
 
     try:
         with open(args.json_data, "r", encoding="utf-8") as f:
-            data_json = json.load(f)
+            data = f.read()
+            data_json = json.loads(data)
     except FileNotFoundError as e:
         print(f"エラー: ファイルが見つかりません: {e.filename}", file=sys.stderr)
         sys.exit(1)
@@ -209,8 +217,31 @@ def main():
 
     try:
         validator = SchemaValidator(schema_json)
+        print(
+            f"✅ ファイル{args.json_data}が{args.struct_name}スキーマに準拠しているか検証しています"
+        )
         validator.validate(data_json, args.struct_name)
         print("✅ 検証に成功しました。JSONデータはスキーマに準拠しています。")
+        if args.test_case:
+            with open(args.test_case, "r", encoding="utf-8") as f:
+                test_case_json = json.load(f)
+            target = json.loads(
+                execute(["jq", test_case_json["condition"]], None, True, data.encode())
+            )
+            print(
+                f"✅ テストケース{args.test_case}が{test_case_json["struct"]}スキーマに準拠しているか検証しています"
+            )
+            validator.validate(test_case_json["case"], test_case_json["struct"])
+            print(
+                "✅ 検証に成功しました。テストケースJSONデータはスキーマに準拠しています。"
+            )
+            print(
+                f"✅ テスト対象'{args.json_data}/{test_case_json["condition"]}'が{test_case_json["struct"]}スキーマに準拠しているか検証しています"
+            )
+            validator.validate(target, test_case_json["struct"])
+            print(
+                "✅ 検証に成功しました。テスト対象JSONデータはスキーマに準拠しています。"
+            )
     except ValidationError as e:
         print(f"❌ 検証に失敗しました:\n{e}", file=sys.stderr)
         sys.exit(1)

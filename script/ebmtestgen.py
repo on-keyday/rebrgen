@@ -15,6 +15,21 @@ class ValidationError(Exception):
     pass
 
 
+def ref_to_body(type_name: str):
+    no_ref = type_name.removesuffix("Ref")
+    if no_ref == "Identifier" or no_ref == "String":
+        body_name = "String"
+    else:
+        body_name = no_ref + "Body"
+    return body_name
+
+
+def isArrayLikeObject(data: Any, field_map: dict):
+    return isinstance(data, list) and not (
+        set(field_map.keys()) - set({"len", "container"})
+    )
+
+
 class SchemaValidator:
     # (このクラスの実装は前回のものから変更ありません)
     """
@@ -42,7 +57,9 @@ class SchemaValidator:
             for s in schema.get("subset_info", [])
         }
 
-    def validate(self, data: Dict[str, Any], root_struct_name: str):
+    def validate(
+        self, data: Dict[str, Any], root_struct_name: str, rough: set[str] = set()
+    ):
         """
         検証プロセスのエントリーポイント
         """
@@ -50,9 +67,11 @@ class SchemaValidator:
             raise ValidationError(
                 f"ルート構造体 '{root_struct_name}' がスキーマに見つかりません。"
             )
-        self._validate_object(data, root_struct_name, path=root_struct_name)
+        self._validate_object(
+            data, root_struct_name, path=root_struct_name, rough=rough
+        )
 
-    def _validate_object(self, data: Any, struct_name: str, path: str):
+    def _validate_object(self, data: Any, struct_name: str, path: str, rough: set[str]):
         """
         オブジェクト（辞書）を再帰的に検証します。
         """
@@ -60,9 +79,7 @@ class SchemaValidator:
         field_map = {f["name"]: f for f in struct_def["fields"]}
         if not isinstance(data, dict):
             # もし配列ならばlenとcontainerに読み替える
-            if isinstance(data, list) and not (
-                set(field_map.keys()) - set({"len", "container"})
-            ):
+            if isArrayLikeObject(data, field_map):
                 data = {"len": len(data), "container": data}
             else:
                 raise ValidationError(
@@ -75,11 +92,11 @@ class SchemaValidator:
             kind_value = data.get("kind")
             if kind_value is None:
                 raise ValidationError(
-                    f"パス '{path}' は 'kind' フィールドを持つべきですが、見つかりません。"
+                    f"パス '{path}' は 'kind' フィールドを持つべきですが、見つかりません。 (有効な値: {",".join(self.subsets[struct_name].keys())})"
                 )
             if kind_value not in self.subsets[struct_name]:
                 raise ValidationError(
-                    f"パス '{path}' の 'kind' の値 '{kind_value}' は不正です。"
+                    f"パス '{path}' の 'kind' の値 '{kind_value}' は不正です。(有効な値: {",".join(self.subsets[struct_name].keys())})"
                 )
             active_field_names = set(self.subsets[struct_name][kind_value])
             subset_used = True
@@ -96,7 +113,9 @@ class SchemaValidator:
         for field_name in sorted(list(active_field_names)):
             field_def = field_map[field_name]
             is_present = field_name in data
-            is_pointer = not subset_used and field_def.get("is_pointer", False)
+            is_pointer = (field_name in rough) or (
+                not subset_used and field_def.get("is_pointer", False)
+            )
 
             if not is_pointer and not is_present:
                 raise ValidationError(
@@ -115,16 +134,18 @@ class SchemaValidator:
                             f"パス '{new_path}' は配列であるべきですが、型が異なります。{type(value)}"
                         )
                     for i, item in enumerate(value):
-                        self._validate_value(item, field_type, f"{new_path}[{i}]")
+                        self._validate_value(
+                            item, field_type, f"{new_path}[{i}]", rough
+                        )
                 else:
-                    self._validate_value(value, field_type, new_path)
+                    self._validate_value(value, field_type, new_path, rough)
 
-    def _validate_value(self, value: Any, type_name: str, path: str):
+    def _validate_value(self, value: Any, type_name: str, path: str, rough: set[str]):
         """
         与えられた型に基づいて個々の値を検証します。
         """
         if type_name in self.structs:
-            self._validate_object(value, type_name, path)
+            self._validate_object(value, type_name, path, rough)
         elif type_name in self.enums:
             valid_members = self.enums[type_name]["members_set"]
             if not isinstance(value, str) or value not in valid_members:
@@ -134,9 +155,11 @@ class SchemaValidator:
                 )
         elif type_name.endswith("Ref") or type_name == "AnyRef":
             if isinstance(value, dict):
-                body_name = type_name.removesuffix("Ref") + "Body"
+                body_name = ref_to_body(type_name)
                 if body_name in self.structs:
-                    self._validate_object(value, body_name, f"{path}->{body_name}")
+                    self._validate_object(
+                        value, body_name, f"{path}->{body_name}", rough
+                    )
                 else:
                     raise ValidationError(
                         f"パス '{path}' の型 '{type_name}' はオブジェクトを持つことができません。"
@@ -183,11 +206,11 @@ class EqualityTester:
         self,
         validator: SchemaValidator,
         ebm_map: Dict[int, Any] = None,
-        rough_mode: bool = False,
+        rough: set[str] = False,
     ):
         self.validator = validator
         self.ebm_map = ebm_map if ebm_map is not None else {}
-        self.rough_mode = rough_mode
+        self.rough_fields = rough
 
     def compare(self, target_obj: Any, case_obj: Any, struct_name: str):
         """比較プロセスのエントリーポイント"""
@@ -201,7 +224,7 @@ class EqualityTester:
             return
 
         # 型がRef系の場合 (特別ルール)
-        if type_name.endswith("Ref") or type_name == "AnyRef":
+        if type_name.endswith("Ref"):
             self._compare_ref(t1_val, t2_val, type_name, path)
             return
 
@@ -220,19 +243,19 @@ class EqualityTester:
 
         # T1(解決後)がオブジェクトの場合
         if isinstance(resolved_t1, dict):
-            body_name = type_name.removesuffix("Ref") + "Body"
+            body_name = ref_to_body(type_name)
             if isinstance(t2_ref, dict):  # T2もオブジェクトなら再帰比較
                 self._compare_object(
                     resolved_t1, t2_ref, body_name, f"{path}->{body_name}"
                 )
             elif isinstance(t2_ref, int):  # T2が数値ならT1のIDと比較
-                if resolved_t1.get("id") != t2_ref:
+                if t1_ref != t2_ref:
                     raise EqualityError(
-                        f"パス '{path}' のIDが異なります: T1 ID=`{resolved_t1.get('id')}`, T2 ID=`{t2_ref}`"
+                        f"パス '{path}' のIDが異なります: T1 ID=`{t1_ref}`, T2 ID=`{t2_ref}`"
                     )
             else:
                 raise EqualityError(
-                    f"パス '{path}' で型の不整合: T1はオブジェクトですが、T2は不正な型です。"
+                    f"パス '{path}' で型の不整合: T1はオブジェクトですが、T2は不正な型です。{type(resolved_t1)} vs {type(t2_ref)}"
                 )
         # T1(解決後)が数値の場合
         elif isinstance(resolved_t1, int):
@@ -249,13 +272,15 @@ class EqualityTester:
 
     def _compare_object(self, t1_obj: Any, t2_obj: Any, struct_name: str, path: str):
         """オブジェクト（辞書）を再帰的に比較する"""
+        # もし配列ならばlenとcontainerに読み替える
+        struct_def = self.validator.structs[struct_name]
+        field_map = {f["name"]: f for f in struct_def["fields"]}
+        if isArrayLikeObject(t2_obj, field_map):
+            t2_obj = {"len": len(t2_obj), "container": t2_obj}
         if not isinstance(t1_obj, dict) or not isinstance(t2_obj, dict):
             raise EqualityError(
                 f"パス '{path}' のどちらかまたは両方がオブジェクトではありません。{type(t1_obj)} vs {type(t2_obj)}"
             )
-
-        struct_def = self.validator.structs[struct_name]
-        field_map = {f["name"]: f for f in struct_def["fields"]}
 
         active_field_names: set[str]
         # subset_infoのハンドリング
@@ -283,6 +308,13 @@ class EqualityTester:
 
             new_path = f"{path}.{field_name}"
             field_type = field_def["type"]
+
+            if (
+                t1_val is not None
+                and t2_val is None
+                and (field_name in self.rough_fields)
+            ):
+                continue
 
             if field_def.get("is_array", False):
                 if not isinstance(t1_val, list) or not isinstance(t2_val, list):
@@ -374,13 +406,16 @@ def main():
             # 2. T2 (テストケース) を取得
             case_t2 = test_case_json["case"]
             struct_to_compare = test_case_json["struct"]
+            rough_field = set[str](test_case_json["rough"])
 
             # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
             print(
                 f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
             )
-            validator.validate(case_t2, struct_to_compare)
-            print("✅ 検証成功: テストケースはスキーマに準拠しています。")
+            validator.validate(case_t2, struct_to_compare, rough_field)
+            print(
+                f"✅ 検証成功: テストケースはスキーマに準拠しています。{"(rough)" if test_case_json["rough"]else ""}"
+            )
 
             # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
             print(
@@ -399,12 +434,16 @@ def main():
                 f"    - T1: '{args.json_data}' の '{test_case_json['condition']}' の結果"
             )
             print(f"    - T2: '{args.test_case}' の 'case' フィールド")
+            print(f"    - テスト除外フィールド: {",".join(rough_field)}")
 
             # 4. EqualityTesterで比較
-            tester = EqualityTester(validator, ebm_map, test_case_json["rough"])
+            tester = EqualityTester(validator, ebm_map, rough_field)
             tester.compare(target_t1, case_t2, struct_to_compare)
 
-            print("✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。")
+            print(
+                "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。"
+                + (f"({",".join(rough_field)}を除く)" if len(rough_field) != 0 else "")
+            )
 
     except (ValidationError, EqualityError) as e:
         print(f"❌ 検証に失敗しました:\n{e}", file=sys.stderr)

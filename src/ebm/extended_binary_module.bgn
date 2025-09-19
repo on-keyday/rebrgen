@@ -127,6 +127,15 @@ enum ExpressionOp:
     SIZEOF # TODO(on-keyday): add sizeof to ast first
     SUB_RANGE_INIT
     OR_COND # for match branch like `x,y => z`
+    ADDRESS_OF # for strict property getter
+    OPTIONAL_OF # for common/uncommon property getter
+    SETTER_STATUS # for property setter
+
+enum SetterStatus:
+    :u8
+    SUCCESS
+    FAILED
+
 
 format Expression:
     id :ExpressionRef # Reference to this expression in the expression table
@@ -218,6 +227,12 @@ format ExpressionBody:
             sub_range :StatementRef
         ExpressionOp.OR_COND:
             or_cond :Expressions
+        ExpressionOp.ADDRESS_OF:
+            target_expr :ExpressionRef
+        ExpressionOp.OPTIONAL_OF:
+            target_expr :ExpressionRef
+        ExpressionOp.SETTER_STATUS:
+            setter_status :SetterStatus
 
 enum LoopType:
     :u8

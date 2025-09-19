@@ -27,11 +27,11 @@ namespace ebm {
         Encode = 1,
         Decode = 2,
     };
-    constexpr const char* to_string(GenerateType e) {
+    constexpr const char* to_string(GenerateType e, bool origin_form = false) {
         switch(e) {
-            case GenerateType::Normal: return "Normal";
-            case GenerateType::Encode: return "Encode";
-            case GenerateType::Decode: return "Decode";
+            case GenerateType::Normal: return origin_form ? "Normal":"Normal" ;
+            case GenerateType::Encode: return origin_form ? "Encode":"Encode" ;
+            case GenerateType::Decode: return origin_form ? "Decode":"Decode" ;
         }
         return "";
     }
@@ -74,26 +74,26 @@ namespace ebm {
         logical_and = 16,
         logical_or = 17,
     };
-    constexpr const char* to_string(BinaryOp e) {
+    constexpr const char* to_string(BinaryOp e, bool origin_form = false) {
         switch(e) {
-            case BinaryOp::mul: return "*";
-            case BinaryOp::div: return "/";
-            case BinaryOp::mod: return "%";
-            case BinaryOp::left_shift: return "<<";
-            case BinaryOp::right_shift: return ">>";
-            case BinaryOp::bit_and: return "&";
-            case BinaryOp::add: return "+";
-            case BinaryOp::sub: return "-";
-            case BinaryOp::bit_or: return "|";
-            case BinaryOp::bit_xor: return "^";
-            case BinaryOp::equal: return "==";
-            case BinaryOp::not_equal: return "!=";
-            case BinaryOp::less: return "<";
-            case BinaryOp::less_or_eq: return "<=";
-            case BinaryOp::greater: return ">";
-            case BinaryOp::greater_or_eq: return ">=";
-            case BinaryOp::logical_and: return "&&";
-            case BinaryOp::logical_or: return "||";
+            case BinaryOp::mul: return origin_form ? "mul":"*" ;
+            case BinaryOp::div: return origin_form ? "div":"/" ;
+            case BinaryOp::mod: return origin_form ? "mod":"%" ;
+            case BinaryOp::left_shift: return origin_form ? "left_shift":"<<" ;
+            case BinaryOp::right_shift: return origin_form ? "right_shift":">>" ;
+            case BinaryOp::bit_and: return origin_form ? "bit_and":"&" ;
+            case BinaryOp::add: return origin_form ? "add":"+" ;
+            case BinaryOp::sub: return origin_form ? "sub":"-" ;
+            case BinaryOp::bit_or: return origin_form ? "bit_or":"|" ;
+            case BinaryOp::bit_xor: return origin_form ? "bit_xor":"^" ;
+            case BinaryOp::equal: return origin_form ? "equal":"==" ;
+            case BinaryOp::not_equal: return origin_form ? "not_equal":"!=" ;
+            case BinaryOp::less: return origin_form ? "less":"<" ;
+            case BinaryOp::less_or_eq: return origin_form ? "less_or_eq":"<=" ;
+            case BinaryOp::greater: return origin_form ? "greater":">" ;
+            case BinaryOp::greater_or_eq: return origin_form ? "greater_or_eq":">=" ;
+            case BinaryOp::logical_and: return origin_form ? "logical_and":"&&" ;
+            case BinaryOp::logical_or: return origin_form ? "logical_or":"||" ;
         }
         return "";
     }
@@ -166,11 +166,11 @@ namespace ebm {
         minus_sign = 1,
         bit_not = 2,
     };
-    constexpr const char* to_string(UnaryOp e) {
+    constexpr const char* to_string(UnaryOp e, bool origin_form = false) {
         switch(e) {
-            case UnaryOp::logical_not: return "!";
-            case UnaryOp::minus_sign: return "-";
-            case UnaryOp::bit_not: return "~";
+            case UnaryOp::logical_not: return origin_form ? "logical_not":"!" ;
+            case UnaryOp::minus_sign: return origin_form ? "minus_sign":"-" ;
+            case UnaryOp::bit_not: return origin_form ? "bit_not":"~" ;
         }
         return "";
     }
@@ -200,13 +200,13 @@ namespace ebm {
         dynamic = 3,
         native = 4,
     };
-    constexpr const char* to_string(Endian e) {
+    constexpr const char* to_string(Endian e, bool origin_form = false) {
         switch(e) {
-            case Endian::unspec: return "unspec";
-            case Endian::big: return "big";
-            case Endian::little: return "little";
-            case Endian::dynamic: return "dynamic";
-            case Endian::native: return "native";
+            case Endian::unspec: return origin_form ? "unspec":"unspec" ;
+            case Endian::big: return origin_form ? "big":"big" ;
+            case Endian::little: return origin_form ? "little":"little" ;
+            case Endian::dynamic: return origin_form ? "dynamic":"dynamic" ;
+            case Endian::native: return origin_form ? "native":"native" ;
         }
         return "";
     }
@@ -266,39 +266,45 @@ namespace ebm {
         SIZEOF = 27,
         SUB_RANGE_INIT = 28,
         OR_COND = 29,
+        ADDRESS_OF = 30,
+        OPTIONAL_OF = 31,
+        SETTER_STATUS = 32,
     };
-    constexpr const char* to_string(ExpressionOp e) {
+    constexpr const char* to_string(ExpressionOp e, bool origin_form = false) {
         switch(e) {
-            case ExpressionOp::LITERAL_INT: return "LITERAL_INT";
-            case ExpressionOp::LITERAL_INT64: return "LITERAL_INT64";
-            case ExpressionOp::LITERAL_BOOL: return "LITERAL_BOOL";
-            case ExpressionOp::LITERAL_STRING: return "LITERAL_STRING";
-            case ExpressionOp::LITERAL_TYPE: return "LITERAL_TYPE";
-            case ExpressionOp::LITERAL_CHAR: return "LITERAL_CHAR";
-            case ExpressionOp::IDENTIFIER: return "IDENTIFIER";
-            case ExpressionOp::BINARY_OP: return "BINARY_OP";
-            case ExpressionOp::UNARY_OP: return "UNARY_OP";
-            case ExpressionOp::CALL: return "CALL";
-            case ExpressionOp::INDEX_ACCESS: return "INDEX_ACCESS";
-            case ExpressionOp::MEMBER_ACCESS: return "MEMBER_ACCESS";
-            case ExpressionOp::TYPE_CAST: return "TYPE_CAST";
-            case ExpressionOp::RANGE: return "RANGE";
-            case ExpressionOp::DEFAULT_VALUE: return "DEFAULT_VALUE";
-            case ExpressionOp::IS_LITTLE_ENDIAN: return "IS_LITTLE_ENDIAN";
-            case ExpressionOp::GET_STREAM_OFFSET: return "GET_STREAM_OFFSET";
-            case ExpressionOp::GET_REMAINING_BYTES: return "GET_REMAINING_BYTES";
-            case ExpressionOp::CAN_READ_STREAM: return "CAN_READ_STREAM";
-            case ExpressionOp::ARRAY_SIZE: return "ARRAY_SIZE";
-            case ExpressionOp::IS_ERROR: return "IS_ERROR";
-            case ExpressionOp::MAX_VALUE: return "MAX_VALUE";
-            case ExpressionOp::READ_DATA: return "READ_DATA";
-            case ExpressionOp::WRITE_DATA: return "WRITE_DATA";
-            case ExpressionOp::CONDITIONAL_STATEMENT: return "CONDITIONAL_STATEMENT";
-            case ExpressionOp::CONDITIONAL: return "CONDITIONAL";
-            case ExpressionOp::AVAILABLE: return "AVAILABLE";
-            case ExpressionOp::SIZEOF: return "SIZEOF";
-            case ExpressionOp::SUB_RANGE_INIT: return "SUB_RANGE_INIT";
-            case ExpressionOp::OR_COND: return "OR_COND";
+            case ExpressionOp::LITERAL_INT: return origin_form ? "LITERAL_INT":"LITERAL_INT" ;
+            case ExpressionOp::LITERAL_INT64: return origin_form ? "LITERAL_INT64":"LITERAL_INT64" ;
+            case ExpressionOp::LITERAL_BOOL: return origin_form ? "LITERAL_BOOL":"LITERAL_BOOL" ;
+            case ExpressionOp::LITERAL_STRING: return origin_form ? "LITERAL_STRING":"LITERAL_STRING" ;
+            case ExpressionOp::LITERAL_TYPE: return origin_form ? "LITERAL_TYPE":"LITERAL_TYPE" ;
+            case ExpressionOp::LITERAL_CHAR: return origin_form ? "LITERAL_CHAR":"LITERAL_CHAR" ;
+            case ExpressionOp::IDENTIFIER: return origin_form ? "IDENTIFIER":"IDENTIFIER" ;
+            case ExpressionOp::BINARY_OP: return origin_form ? "BINARY_OP":"BINARY_OP" ;
+            case ExpressionOp::UNARY_OP: return origin_form ? "UNARY_OP":"UNARY_OP" ;
+            case ExpressionOp::CALL: return origin_form ? "CALL":"CALL" ;
+            case ExpressionOp::INDEX_ACCESS: return origin_form ? "INDEX_ACCESS":"INDEX_ACCESS" ;
+            case ExpressionOp::MEMBER_ACCESS: return origin_form ? "MEMBER_ACCESS":"MEMBER_ACCESS" ;
+            case ExpressionOp::TYPE_CAST: return origin_form ? "TYPE_CAST":"TYPE_CAST" ;
+            case ExpressionOp::RANGE: return origin_form ? "RANGE":"RANGE" ;
+            case ExpressionOp::DEFAULT_VALUE: return origin_form ? "DEFAULT_VALUE":"DEFAULT_VALUE" ;
+            case ExpressionOp::IS_LITTLE_ENDIAN: return origin_form ? "IS_LITTLE_ENDIAN":"IS_LITTLE_ENDIAN" ;
+            case ExpressionOp::GET_STREAM_OFFSET: return origin_form ? "GET_STREAM_OFFSET":"GET_STREAM_OFFSET" ;
+            case ExpressionOp::GET_REMAINING_BYTES: return origin_form ? "GET_REMAINING_BYTES":"GET_REMAINING_BYTES" ;
+            case ExpressionOp::CAN_READ_STREAM: return origin_form ? "CAN_READ_STREAM":"CAN_READ_STREAM" ;
+            case ExpressionOp::ARRAY_SIZE: return origin_form ? "ARRAY_SIZE":"ARRAY_SIZE" ;
+            case ExpressionOp::IS_ERROR: return origin_form ? "IS_ERROR":"IS_ERROR" ;
+            case ExpressionOp::MAX_VALUE: return origin_form ? "MAX_VALUE":"MAX_VALUE" ;
+            case ExpressionOp::READ_DATA: return origin_form ? "READ_DATA":"READ_DATA" ;
+            case ExpressionOp::WRITE_DATA: return origin_form ? "WRITE_DATA":"WRITE_DATA" ;
+            case ExpressionOp::CONDITIONAL_STATEMENT: return origin_form ? "CONDITIONAL_STATEMENT":"CONDITIONAL_STATEMENT" ;
+            case ExpressionOp::CONDITIONAL: return origin_form ? "CONDITIONAL":"CONDITIONAL" ;
+            case ExpressionOp::AVAILABLE: return origin_form ? "AVAILABLE":"AVAILABLE" ;
+            case ExpressionOp::SIZEOF: return origin_form ? "SIZEOF":"SIZEOF" ;
+            case ExpressionOp::SUB_RANGE_INIT: return origin_form ? "SUB_RANGE_INIT":"SUB_RANGE_INIT" ;
+            case ExpressionOp::OR_COND: return origin_form ? "OR_COND":"OR_COND" ;
+            case ExpressionOp::ADDRESS_OF: return origin_form ? "ADDRESS_OF":"ADDRESS_OF" ;
+            case ExpressionOp::OPTIONAL_OF: return origin_form ? "OPTIONAL_OF":"OPTIONAL_OF" ;
+            case ExpressionOp::SETTER_STATUS: return origin_form ? "SETTER_STATUS":"SETTER_STATUS" ;
         }
         return "";
     }
@@ -397,10 +403,46 @@ namespace ebm {
         if (str == "OR_COND") {
             return ExpressionOp::OR_COND;
         }
+        if (str == "ADDRESS_OF") {
+            return ExpressionOp::ADDRESS_OF;
+        }
+        if (str == "OPTIONAL_OF") {
+            return ExpressionOp::OPTIONAL_OF;
+        }
+        if (str == "SETTER_STATUS") {
+            return ExpressionOp::SETTER_STATUS;
+        }
         return std::nullopt;
     }
     constexpr const char* visit_enum(ExpressionOp) {
         return "ExpressionOp";
+    }
+    enum class SetterStatus : std::uint8_t {
+        SUCCESS = 0,
+        FAILED = 1,
+    };
+    constexpr const char* to_string(SetterStatus e, bool origin_form = false) {
+        switch(e) {
+            case SetterStatus::SUCCESS: return origin_form ? "SUCCESS":"SUCCESS" ;
+            case SetterStatus::FAILED: return origin_form ? "FAILED":"FAILED" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<SetterStatus> SetterStatus_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "SUCCESS") {
+            return SetterStatus::SUCCESS;
+        }
+        if (str == "FAILED") {
+            return SetterStatus::FAILED;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(SetterStatus) {
+        return "SetterStatus";
     }
     enum class LoopType : std::uint8_t {
         INFINITE = 0,
@@ -408,12 +450,12 @@ namespace ebm {
         FOR_EACH = 2,
         FOR = 3,
     };
-    constexpr const char* to_string(LoopType e) {
+    constexpr const char* to_string(LoopType e, bool origin_form = false) {
         switch(e) {
-            case LoopType::INFINITE: return "INFINITE";
-            case LoopType::WHILE: return "WHILE";
-            case LoopType::FOR_EACH: return "FOR_EACH";
-            case LoopType::FOR: return "FOR";
+            case LoopType::INFINITE: return origin_form ? "INFINITE":"INFINITE" ;
+            case LoopType::WHILE: return origin_form ? "WHILE":"WHILE" ;
+            case LoopType::FOR_EACH: return origin_form ? "FOR_EACH":"FOR_EACH" ;
+            case LoopType::FOR: return origin_form ? "FOR":"FOR" ;
         }
         return "";
     }
@@ -444,11 +486,11 @@ namespace ebm {
         seek_bytes = 1,
         expression = 2,
     };
-    constexpr const char* to_string(SubByteRangeType e) {
+    constexpr const char* to_string(SubByteRangeType e, bool origin_form = false) {
         switch(e) {
-            case SubByteRangeType::bytes: return "bytes";
-            case SubByteRangeType::seek_bytes: return "seek_bytes";
-            case SubByteRangeType::expression: return "expression";
+            case SubByteRangeType::bytes: return origin_form ? "bytes":"bytes" ;
+            case SubByteRangeType::seek_bytes: return origin_form ? "seek_bytes":"seek_bytes" ;
+            case SubByteRangeType::expression: return origin_form ? "expression":"expression" ;
         }
         return "";
     }
@@ -477,12 +519,12 @@ namespace ebm {
         BIT_STREAM = 2,
         ASSEMBLY = 3,
     };
-    constexpr const char* to_string(LoweringType e) {
+    constexpr const char* to_string(LoweringType e, bool origin_form = false) {
         switch(e) {
-            case LoweringType::NAIVE: return "NAIVE";
-            case LoweringType::C_LIKE: return "C_LIKE";
-            case LoweringType::BIT_STREAM: return "BIT_STREAM";
-            case LoweringType::ASSEMBLY: return "ASSEMBLY";
+            case LoweringType::NAIVE: return origin_form ? "NAIVE":"NAIVE" ;
+            case LoweringType::C_LIKE: return origin_form ? "C_LIKE":"C_LIKE" ;
+            case LoweringType::BIT_STREAM: return origin_form ? "BIT_STREAM":"BIT_STREAM" ;
+            case LoweringType::ASSEMBLY: return origin_form ? "ASSEMBLY":"ASSEMBLY" ;
         }
         return "";
     }
@@ -543,41 +585,41 @@ namespace ebm {
         LOWERED_STATEMENTS = 31,
         SUB_BYTE_RANGE = 32,
     };
-    constexpr const char* to_string(StatementOp e) {
+    constexpr const char* to_string(StatementOp e, bool origin_form = false) {
         switch(e) {
-            case StatementOp::BLOCK: return "BLOCK";
-            case StatementOp::ASSIGNMENT: return "ASSIGNMENT";
-            case StatementOp::YIELD: return "YIELD";
-            case StatementOp::APPEND: return "APPEND";
-            case StatementOp::RETURN: return "RETURN";
-            case StatementOp::ERROR_RETURN: return "ERROR_RETURN";
-            case StatementOp::ASSERT: return "ASSERT";
-            case StatementOp::READ_DATA: return "READ_DATA";
-            case StatementOp::WRITE_DATA: return "WRITE_DATA";
-            case StatementOp::SEEK_STREAM: return "SEEK_STREAM";
-            case StatementOp::IF_STATEMENT: return "IF_STATEMENT";
-            case StatementOp::LOOP_STATEMENT: return "LOOP_STATEMENT";
-            case StatementOp::MATCH_STATEMENT: return "MATCH_STATEMENT";
-            case StatementOp::MATCH_BRANCH: return "MATCH_BRANCH";
-            case StatementOp::BREAK: return "BREAK";
-            case StatementOp::CONTINUE: return "CONTINUE";
-            case StatementOp::FUNCTION_DECL: return "FUNCTION_DECL";
-            case StatementOp::VARIABLE_DECL: return "VARIABLE_DECL";
-            case StatementOp::FIELD_DECL: return "FIELD_DECL";
-            case StatementOp::ENUM_DECL: return "ENUM_DECL";
-            case StatementOp::ENUM_MEMBER_DECL: return "ENUM_MEMBER_DECL";
-            case StatementOp::STRUCT_DECL: return "STRUCT_DECL";
-            case StatementOp::UNION_DECL: return "UNION_DECL";
-            case StatementOp::UNION_MEMBER_DECL: return "UNION_MEMBER_DECL";
-            case StatementOp::PROGRAM_DECL: return "PROGRAM_DECL";
-            case StatementOp::PROPERTY_DECL: return "PROPERTY_DECL";
-            case StatementOp::PROPERTY_MEMBER_DECL: return "PROPERTY_MEMBER_DECL";
-            case StatementOp::METADATA: return "METADATA";
-            case StatementOp::IMPORT_MODULE: return "IMPORT_MODULE";
-            case StatementOp::EXPRESSION: return "EXPRESSION";
-            case StatementOp::ERROR_REPORT: return "ERROR_REPORT";
-            case StatementOp::LOWERED_STATEMENTS: return "LOWERED_STATEMENTS";
-            case StatementOp::SUB_BYTE_RANGE: return "SUB_BYTE_RANGE";
+            case StatementOp::BLOCK: return origin_form ? "BLOCK":"BLOCK" ;
+            case StatementOp::ASSIGNMENT: return origin_form ? "ASSIGNMENT":"ASSIGNMENT" ;
+            case StatementOp::YIELD: return origin_form ? "YIELD":"YIELD" ;
+            case StatementOp::APPEND: return origin_form ? "APPEND":"APPEND" ;
+            case StatementOp::RETURN: return origin_form ? "RETURN":"RETURN" ;
+            case StatementOp::ERROR_RETURN: return origin_form ? "ERROR_RETURN":"ERROR_RETURN" ;
+            case StatementOp::ASSERT: return origin_form ? "ASSERT":"ASSERT" ;
+            case StatementOp::READ_DATA: return origin_form ? "READ_DATA":"READ_DATA" ;
+            case StatementOp::WRITE_DATA: return origin_form ? "WRITE_DATA":"WRITE_DATA" ;
+            case StatementOp::SEEK_STREAM: return origin_form ? "SEEK_STREAM":"SEEK_STREAM" ;
+            case StatementOp::IF_STATEMENT: return origin_form ? "IF_STATEMENT":"IF_STATEMENT" ;
+            case StatementOp::LOOP_STATEMENT: return origin_form ? "LOOP_STATEMENT":"LOOP_STATEMENT" ;
+            case StatementOp::MATCH_STATEMENT: return origin_form ? "MATCH_STATEMENT":"MATCH_STATEMENT" ;
+            case StatementOp::MATCH_BRANCH: return origin_form ? "MATCH_BRANCH":"MATCH_BRANCH" ;
+            case StatementOp::BREAK: return origin_form ? "BREAK":"BREAK" ;
+            case StatementOp::CONTINUE: return origin_form ? "CONTINUE":"CONTINUE" ;
+            case StatementOp::FUNCTION_DECL: return origin_form ? "FUNCTION_DECL":"FUNCTION_DECL" ;
+            case StatementOp::VARIABLE_DECL: return origin_form ? "VARIABLE_DECL":"VARIABLE_DECL" ;
+            case StatementOp::FIELD_DECL: return origin_form ? "FIELD_DECL":"FIELD_DECL" ;
+            case StatementOp::ENUM_DECL: return origin_form ? "ENUM_DECL":"ENUM_DECL" ;
+            case StatementOp::ENUM_MEMBER_DECL: return origin_form ? "ENUM_MEMBER_DECL":"ENUM_MEMBER_DECL" ;
+            case StatementOp::STRUCT_DECL: return origin_form ? "STRUCT_DECL":"STRUCT_DECL" ;
+            case StatementOp::UNION_DECL: return origin_form ? "UNION_DECL":"UNION_DECL" ;
+            case StatementOp::UNION_MEMBER_DECL: return origin_form ? "UNION_MEMBER_DECL":"UNION_MEMBER_DECL" ;
+            case StatementOp::PROGRAM_DECL: return origin_form ? "PROGRAM_DECL":"PROGRAM_DECL" ;
+            case StatementOp::PROPERTY_DECL: return origin_form ? "PROPERTY_DECL":"PROPERTY_DECL" ;
+            case StatementOp::PROPERTY_MEMBER_DECL: return origin_form ? "PROPERTY_MEMBER_DECL":"PROPERTY_MEMBER_DECL" ;
+            case StatementOp::METADATA: return origin_form ? "METADATA":"METADATA" ;
+            case StatementOp::IMPORT_MODULE: return origin_form ? "IMPORT_MODULE":"IMPORT_MODULE" ;
+            case StatementOp::EXPRESSION: return origin_form ? "EXPRESSION":"EXPRESSION" ;
+            case StatementOp::ERROR_REPORT: return origin_form ? "ERROR_REPORT":"ERROR_REPORT" ;
+            case StatementOp::LOWERED_STATEMENTS: return origin_form ? "LOWERED_STATEMENTS":"LOWERED_STATEMENTS" ;
+            case StatementOp::SUB_BYTE_RANGE: return origin_form ? "SUB_BYTE_RANGE":"SUB_BYTE_RANGE" ;
         }
         return "";
     }
@@ -694,10 +736,10 @@ namespace ebm {
         INPUT = 0,
         OUTPUT = 1,
     };
-    constexpr const char* to_string(StreamType e) {
+    constexpr const char* to_string(StreamType e, bool origin_form = false) {
         switch(e) {
-            case StreamType::INPUT: return "INPUT";
-            case StreamType::OUTPUT: return "OUTPUT";
+            case StreamType::INPUT: return origin_form ? "INPUT":"INPUT" ;
+            case StreamType::OUTPUT: return origin_form ? "OUTPUT":"OUTPUT" ;
         }
         return "";
     }
@@ -727,16 +769,16 @@ namespace ebm {
         ELEMENT_DYNAMIC = 6,
         DYNAMIC = 7,
     };
-    constexpr const char* to_string(SizeUnit e) {
+    constexpr const char* to_string(SizeUnit e, bool origin_form = false) {
         switch(e) {
-            case SizeUnit::UNKNOWN: return "UNKNOWN";
-            case SizeUnit::BIT_FIXED: return "BIT_FIXED";
-            case SizeUnit::BYTE_FIXED: return "BYTE_FIXED";
-            case SizeUnit::ELEMENT_FIXED: return "ELEMENT_FIXED";
-            case SizeUnit::BIT_DYNAMIC: return "BIT_DYNAMIC";
-            case SizeUnit::BYTE_DYNAMIC: return "BYTE_DYNAMIC";
-            case SizeUnit::ELEMENT_DYNAMIC: return "ELEMENT_DYNAMIC";
-            case SizeUnit::DYNAMIC: return "DYNAMIC";
+            case SizeUnit::UNKNOWN: return origin_form ? "UNKNOWN":"UNKNOWN" ;
+            case SizeUnit::BIT_FIXED: return origin_form ? "BIT_FIXED":"BIT_FIXED" ;
+            case SizeUnit::BYTE_FIXED: return origin_form ? "BYTE_FIXED":"BYTE_FIXED" ;
+            case SizeUnit::ELEMENT_FIXED: return origin_form ? "ELEMENT_FIXED":"ELEMENT_FIXED" ;
+            case SizeUnit::BIT_DYNAMIC: return origin_form ? "BIT_DYNAMIC":"BIT_DYNAMIC" ;
+            case SizeUnit::BYTE_DYNAMIC: return origin_form ? "BYTE_DYNAMIC":"BYTE_DYNAMIC" ;
+            case SizeUnit::ELEMENT_DYNAMIC: return origin_form ? "ELEMENT_DYNAMIC":"ELEMENT_DYNAMIC" ;
+            case SizeUnit::DYNAMIC: return origin_form ? "DYNAMIC":"DYNAMIC" ;
         }
         return "";
     }
@@ -793,25 +835,25 @@ namespace ebm {
         RECURSIVE_STRUCT_TO_STRUCT = 15,
         OTHER = 16,
     };
-    constexpr const char* to_string(CastType e) {
+    constexpr const char* to_string(CastType e, bool origin_form = false) {
         switch(e) {
-            case CastType::ENUM_TO_INT: return "ENUM_TO_INT";
-            case CastType::INT_TO_ENUM: return "INT_TO_ENUM";
-            case CastType::FLOAT_TO_INT_BIT: return "FLOAT_TO_INT_BIT";
-            case CastType::INT_TO_FLOAT_BIT: return "INT_TO_FLOAT_BIT";
-            case CastType::VECTOR_TO_ARRAY: return "VECTOR_TO_ARRAY";
-            case CastType::ARRAY_TO_VECTOR: return "ARRAY_TO_VECTOR";
-            case CastType::INT_TO_VECTOR: return "INT_TO_VECTOR";
-            case CastType::INT_TO_ARRAY: return "INT_TO_ARRAY";
-            case CastType::SMALL_INT_TO_LARGE_INT: return "SMALL_INT_TO_LARGE_INT";
-            case CastType::LARGE_INT_TO_SMALL_INT: return "LARGE_INT_TO_SMALL_INT";
-            case CastType::SIGNED_TO_UNSIGNED: return "SIGNED_TO_UNSIGNED";
-            case CastType::UNSIGNED_TO_SIGNED: return "UNSIGNED_TO_SIGNED";
-            case CastType::BOOL_TO_INT: return "BOOL_TO_INT";
-            case CastType::INT_TO_BOOL: return "INT_TO_BOOL";
-            case CastType::STRUCT_TO_RECURSIVE_STRUCT: return "STRUCT_TO_RECURSIVE_STRUCT";
-            case CastType::RECURSIVE_STRUCT_TO_STRUCT: return "RECURSIVE_STRUCT_TO_STRUCT";
-            case CastType::OTHER: return "OTHER";
+            case CastType::ENUM_TO_INT: return origin_form ? "ENUM_TO_INT":"ENUM_TO_INT" ;
+            case CastType::INT_TO_ENUM: return origin_form ? "INT_TO_ENUM":"INT_TO_ENUM" ;
+            case CastType::FLOAT_TO_INT_BIT: return origin_form ? "FLOAT_TO_INT_BIT":"FLOAT_TO_INT_BIT" ;
+            case CastType::INT_TO_FLOAT_BIT: return origin_form ? "INT_TO_FLOAT_BIT":"INT_TO_FLOAT_BIT" ;
+            case CastType::VECTOR_TO_ARRAY: return origin_form ? "VECTOR_TO_ARRAY":"VECTOR_TO_ARRAY" ;
+            case CastType::ARRAY_TO_VECTOR: return origin_form ? "ARRAY_TO_VECTOR":"ARRAY_TO_VECTOR" ;
+            case CastType::INT_TO_VECTOR: return origin_form ? "INT_TO_VECTOR":"INT_TO_VECTOR" ;
+            case CastType::INT_TO_ARRAY: return origin_form ? "INT_TO_ARRAY":"INT_TO_ARRAY" ;
+            case CastType::SMALL_INT_TO_LARGE_INT: return origin_form ? "SMALL_INT_TO_LARGE_INT":"SMALL_INT_TO_LARGE_INT" ;
+            case CastType::LARGE_INT_TO_SMALL_INT: return origin_form ? "LARGE_INT_TO_SMALL_INT":"LARGE_INT_TO_SMALL_INT" ;
+            case CastType::SIGNED_TO_UNSIGNED: return origin_form ? "SIGNED_TO_UNSIGNED":"SIGNED_TO_UNSIGNED" ;
+            case CastType::UNSIGNED_TO_SIGNED: return origin_form ? "UNSIGNED_TO_SIGNED":"UNSIGNED_TO_SIGNED" ;
+            case CastType::BOOL_TO_INT: return origin_form ? "BOOL_TO_INT":"BOOL_TO_INT" ;
+            case CastType::INT_TO_BOOL: return origin_form ? "INT_TO_BOOL":"INT_TO_BOOL" ;
+            case CastType::STRUCT_TO_RECURSIVE_STRUCT: return origin_form ? "STRUCT_TO_RECURSIVE_STRUCT":"STRUCT_TO_RECURSIVE_STRUCT" ;
+            case CastType::RECURSIVE_STRUCT_TO_STRUCT: return origin_form ? "RECURSIVE_STRUCT_TO_STRUCT":"RECURSIVE_STRUCT_TO_STRUCT" ;
+            case CastType::OTHER: return origin_form ? "OTHER":"OTHER" ;
         }
         return "";
     }
@@ -881,11 +923,11 @@ namespace ebm {
         COMMON_TYPE = 1,
         STRICT_TYPE = 2,
     };
-    constexpr const char* to_string(MergeMode e) {
+    constexpr const char* to_string(MergeMode e, bool origin_form = false) {
         switch(e) {
-            case MergeMode::UNCOMMON_TYPE: return "UNCOMMON_TYPE";
-            case MergeMode::COMMON_TYPE: return "COMMON_TYPE";
-            case MergeMode::STRICT_TYPE: return "STRICT_TYPE";
+            case MergeMode::UNCOMMON_TYPE: return origin_form ? "UNCOMMON_TYPE":"UNCOMMON_TYPE" ;
+            case MergeMode::COMMON_TYPE: return origin_form ? "COMMON_TYPE":"COMMON_TYPE" ;
+            case MergeMode::STRICT_TYPE: return origin_form ? "STRICT_TYPE":"STRICT_TYPE" ;
         }
         return "";
     }
@@ -931,29 +973,29 @@ namespace ebm {
         PTR = 19,
         FUNCTION = 20,
     };
-    constexpr const char* to_string(TypeKind e) {
+    constexpr const char* to_string(TypeKind e, bool origin_form = false) {
         switch(e) {
-            case TypeKind::INT: return "INT";
-            case TypeKind::UINT: return "UINT";
-            case TypeKind::FLOAT: return "FLOAT";
-            case TypeKind::STRUCT: return "STRUCT";
-            case TypeKind::RECURSIVE_STRUCT: return "RECURSIVE_STRUCT";
-            case TypeKind::BOOL: return "BOOL";
-            case TypeKind::VOID: return "VOID";
-            case TypeKind::META: return "META";
-            case TypeKind::ENUM: return "ENUM";
-            case TypeKind::ARRAY: return "ARRAY";
-            case TypeKind::VECTOR: return "VECTOR";
-            case TypeKind::VARIANT: return "VARIANT";
-            case TypeKind::RANGE: return "RANGE";
-            case TypeKind::ENCODER_RETURN: return "ENCODER_RETURN";
-            case TypeKind::DECODER_RETURN: return "DECODER_RETURN";
-            case TypeKind::ENCODER_INPUT: return "ENCODER_INPUT";
-            case TypeKind::DECODER_INPUT: return "DECODER_INPUT";
-            case TypeKind::PROPERTY_SETTER_RETURN: return "PROPERTY_SETTER_RETURN";
-            case TypeKind::OPTIONAL: return "OPTIONAL";
-            case TypeKind::PTR: return "PTR";
-            case TypeKind::FUNCTION: return "FUNCTION";
+            case TypeKind::INT: return origin_form ? "INT":"INT" ;
+            case TypeKind::UINT: return origin_form ? "UINT":"UINT" ;
+            case TypeKind::FLOAT: return origin_form ? "FLOAT":"FLOAT" ;
+            case TypeKind::STRUCT: return origin_form ? "STRUCT":"STRUCT" ;
+            case TypeKind::RECURSIVE_STRUCT: return origin_form ? "RECURSIVE_STRUCT":"RECURSIVE_STRUCT" ;
+            case TypeKind::BOOL: return origin_form ? "BOOL":"BOOL" ;
+            case TypeKind::VOID: return origin_form ? "VOID":"VOID" ;
+            case TypeKind::META: return origin_form ? "META":"META" ;
+            case TypeKind::ENUM: return origin_form ? "ENUM":"ENUM" ;
+            case TypeKind::ARRAY: return origin_form ? "ARRAY":"ARRAY" ;
+            case TypeKind::VECTOR: return origin_form ? "VECTOR":"VECTOR" ;
+            case TypeKind::VARIANT: return origin_form ? "VARIANT":"VARIANT" ;
+            case TypeKind::RANGE: return origin_form ? "RANGE":"RANGE" ;
+            case TypeKind::ENCODER_RETURN: return origin_form ? "ENCODER_RETURN":"ENCODER_RETURN" ;
+            case TypeKind::DECODER_RETURN: return origin_form ? "DECODER_RETURN":"DECODER_RETURN" ;
+            case TypeKind::ENCODER_INPUT: return origin_form ? "ENCODER_INPUT":"ENCODER_INPUT" ;
+            case TypeKind::DECODER_INPUT: return origin_form ? "DECODER_INPUT":"DECODER_INPUT" ;
+            case TypeKind::PROPERTY_SETTER_RETURN: return origin_form ? "PROPERTY_SETTER_RETURN":"PROPERTY_SETTER_RETURN" ;
+            case TypeKind::OPTIONAL: return origin_form ? "OPTIONAL":"OPTIONAL" ;
+            case TypeKind::PTR: return origin_form ? "PTR":"PTR" ;
+            case TypeKind::FUNCTION: return origin_form ? "FUNCTION":"FUNCTION" ;
         }
         return "";
     }
@@ -1038,14 +1080,14 @@ namespace ebm {
         STATEMENT = 4,
         ALIAS = 5,
     };
-    constexpr const char* to_string(AliasHint e) {
+    constexpr const char* to_string(AliasHint e, bool origin_form = false) {
         switch(e) {
-            case AliasHint::IDENTIFIER: return "IDENTIFIER";
-            case AliasHint::STRING: return "STRING";
-            case AliasHint::TYPE: return "TYPE";
-            case AliasHint::EXPRESSION: return "EXPRESSION";
-            case AliasHint::STATEMENT: return "STATEMENT";
-            case AliasHint::ALIAS: return "ALIAS";
+            case AliasHint::IDENTIFIER: return origin_form ? "IDENTIFIER":"IDENTIFIER" ;
+            case AliasHint::STRING: return origin_form ? "STRING":"STRING" ;
+            case AliasHint::TYPE: return origin_form ? "TYPE":"TYPE" ;
+            case AliasHint::EXPRESSION: return origin_form ? "EXPRESSION":"EXPRESSION" ;
+            case AliasHint::STATEMENT: return origin_form ? "STATEMENT":"STATEMENT" ;
+            case AliasHint::ALIAS: return origin_form ? "ALIAS":"ALIAS" ;
         }
         return "";
     }
@@ -1751,7 +1793,16 @@ namespace ebm {
         struct EBM_API union_struct_42{
             Expressions or_cond;
         };
-        std::variant<std::monostate, union_struct_14, union_struct_15, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42> union_variant_13;
+        struct EBM_API union_struct_43{
+            ExpressionRef target_expr;
+        };
+        struct EBM_API union_struct_44{
+            ExpressionRef target_expr;
+        };
+        struct EBM_API union_struct_45{
+            SetterStatus setter_status{};
+        };
+        std::variant<std::monostate, union_struct_14, union_struct_15, union_struct_16, union_struct_17, union_struct_18, union_struct_19, union_struct_20, union_struct_21, union_struct_22, union_struct_23, union_struct_24, union_struct_25, union_struct_26, union_struct_27, union_struct_28, union_struct_29, union_struct_30, union_struct_31, union_struct_32, union_struct_33, union_struct_34, union_struct_35, union_struct_36, union_struct_37, union_struct_38, union_struct_39, union_struct_40, union_struct_41, union_struct_42, union_struct_43, union_struct_44, union_struct_45> union_variant_13;
         const ExpressionRef* array_expr() const;
         ExpressionRef* array_expr();
         bool array_expr(ExpressionRef&& v);
@@ -1852,6 +1903,10 @@ namespace ebm {
         ExpressionRef* right();
         bool right(ExpressionRef&& v);
         bool right(const ExpressionRef& v);
+        const SetterStatus* setter_status() const;
+        SetterStatus* setter_status();
+        bool setter_status(SetterStatus&& v);
+        bool setter_status(const SetterStatus& v);
         const ExpressionRef* source_expr() const;
         ExpressionRef* source_expr();
         bool source_expr(ExpressionRef&& v);
@@ -1928,6 +1983,7 @@ namespace ebm {
             v(v, "operand",(*this).operand());
             v(v, "or_cond",(*this).or_cond());
             v(v, "right",(*this).right());
+            v(v, "setter_status",(*this).setter_status());
             v(v, "source_expr",(*this).source_expr());
             v(v, "start",(*this).start());
             v(v, "stream_type",(*this).stream_type());
@@ -1969,6 +2025,7 @@ namespace ebm {
             v(v, "operand",(*this).operand());
             v(v, "or_cond",(*this).or_cond());
             v(v, "right",(*this).right());
+            v(v, "setter_status",(*this).setter_status());
             v(v, "source_expr",(*this).source_expr());
             v(v, "start",(*this).start());
             v(v, "stream_type",(*this).stream_type());
@@ -2014,6 +2071,7 @@ namespace ebm {
             v(v, "operand",visitor_tag<decltype(std::declval<ExpressionBody>().operand())>{});
             v(v, "or_cond",visitor_tag<decltype(std::declval<ExpressionBody>().or_cond())>{});
             v(v, "right",visitor_tag<decltype(std::declval<ExpressionBody>().right())>{});
+            v(v, "setter_status",visitor_tag<decltype(std::declval<ExpressionBody>().setter_status())>{});
             v(v, "source_expr",visitor_tag<decltype(std::declval<ExpressionBody>().source_expr())>{});
             v(v, "start",visitor_tag<decltype(std::declval<ExpressionBody>().start())>{});
             v(v, "stream_type",visitor_tag<decltype(std::declval<ExpressionBody>().stream_type())>{});
@@ -2111,17 +2169,17 @@ namespace ebm {
     };
     struct EBM_API SubByteRange{
         SubByteRangeType range_type{};
-        struct EBM_API union_struct_45{
+        struct EBM_API union_struct_48{
             ExpressionRef length;
         };
-        struct EBM_API union_struct_46{
+        struct EBM_API union_struct_49{
             ExpressionRef offset;
             ExpressionRef length;
         };
-        struct EBM_API union_struct_47{
+        struct EBM_API union_struct_50{
             ExpressionRef expression;
         };
-        std::variant<std::monostate, union_struct_45, union_struct_46, union_struct_47> union_variant_44;
+        std::variant<std::monostate, union_struct_48, union_struct_49, union_struct_50> union_variant_47;
         const ExpressionRef* expression() const;
         ExpressionRef* expression();
         bool expression(ExpressionRef&& v);
@@ -2346,21 +2404,21 @@ namespace ebm {
     };
     struct EBM_API LoopStatement{
         LoopType loop_type{};
-        struct EBM_API union_struct_50{
+        struct EBM_API union_struct_53{
         };
-        struct EBM_API union_struct_51{
+        struct EBM_API union_struct_54{
             Condition condition;
         };
-        struct EBM_API union_struct_52{
+        struct EBM_API union_struct_55{
             StatementRef item_var;
             ExpressionRef collection;
         };
-        struct EBM_API union_struct_53{
+        struct EBM_API union_struct_56{
             StatementRef init;
             Condition condition;
             StatementRef increment;
         };
-        std::variant<std::monostate, union_struct_50, union_struct_51, union_struct_52, union_struct_53> union_variant_49;
+        std::variant<std::monostate, union_struct_53, union_struct_54, union_struct_55, union_struct_56> union_variant_52;
         const ExpressionRef* collection() const;
         ExpressionRef* collection();
         bool collection(ExpressionRef&& v);
@@ -2431,9 +2489,9 @@ namespace ebm {
     };
     struct EBM_API MatchStatement{
         ExpressionRef target;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_54_;
-        bits_flag_alias_method(flags_54_,0,is_exhaustive);
-        bits_flag_alias_method(flags_54_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_57_;
+        bits_flag_alias_method(flags_57_,0,is_exhaustive);
+        bits_flag_alias_method(flags_57_,1,reserved);
         Block branches;
         LoweredStatementRef lowered_if_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
@@ -2536,10 +2594,10 @@ namespace ebm {
         IdentifierRef name;
         TypeRef var_type;
         ExpressionRef initial_value;
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_55_;
-        bits_flag_alias_method(flags_55_,0,is_constant);
-        bits_flag_alias_method(flags_55_,1,is_reference);
-        bits_flag_alias_method(flags_55_,2,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_58_;
+        bits_flag_alias_method(flags_58_,0,is_constant);
+        bits_flag_alias_method(flags_58_,1,is_reference);
+        bits_flag_alias_method(flags_58_,2,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "VariableDecl";
@@ -2579,9 +2637,9 @@ namespace ebm {
         IdentifierRef name;
         TypeRef field_type;
         StatementRef parent_struct;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_56_;
-        bits_flag_alias_method(flags_56_,0,is_state_variable);
-        bits_flag_alias_method(flags_56_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_59_;
+        bits_flag_alias_method(flags_59_,0,is_state_variable);
+        bits_flag_alias_method(flags_59_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "FieldDecl";
@@ -2679,9 +2737,9 @@ namespace ebm {
         Block fields;
         StatementRef encode_fn;
         StatementRef decode_fn;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_57_;
-        bits_flag_alias_method(flags_57_,0,is_recursive);
-        bits_flag_alias_method(flags_57_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_60_;
+        bits_flag_alias_method(flags_60_,0,is_recursive);
+        bits_flag_alias_method(flags_60_,1,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "StructDecl";
@@ -2750,9 +2808,9 @@ namespace ebm {
     struct EBM_API UnionMemberDecl{
         IdentifierRef name;
         TypeRef field_type;
-        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_58_;
-        bits_flag_alias_method(flags_58_,0,is_state_variable);
-        bits_flag_alias_method(flags_58_,1,reserved);
+        ::futils::binary::flags_t<std::uint8_t, 1, 7> flags_61_;
+        bits_flag_alias_method(flags_61_,0,is_state_variable);
+        bits_flag_alias_method(flags_61_,1,reserved);
         StatementRef parent_union;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
@@ -2791,10 +2849,10 @@ namespace ebm {
         StatementRef parent_format;
         TypeRef property_type;
         MergeMode merge_mode{};
-        struct EBM_API union_struct_61{
+        struct EBM_API union_struct_64{
             ExpressionRef cond;
         };
-        std::variant<std::monostate, union_struct_61> union_variant_60;
+        std::variant<std::monostate, union_struct_64> union_variant_63;
         const ExpressionRef* cond() const;
         ExpressionRef* cond();
         bool cond(ExpressionRef&& v);
@@ -2871,113 +2929,113 @@ namespace ebm {
     };
     struct EBM_API StatementBody{
         StatementOp kind{};
-        struct EBM_API union_struct_64{
+        struct EBM_API union_struct_67{
             Block block;
         };
-        struct EBM_API union_struct_65{
-            ExpressionRef target;
-            ExpressionRef value;
-            StatementRef previous_assignment;
-        };
-        struct EBM_API union_struct_66{
-            ExpressionRef target;
-            ExpressionRef value;
-            StatementRef previous_assignment;
-        };
-        struct EBM_API union_struct_67{
-            ExpressionRef target;
-            ExpressionRef value;
-        };
         struct EBM_API union_struct_68{
+            ExpressionRef target;
             ExpressionRef value;
+            StatementRef previous_assignment;
         };
         struct EBM_API union_struct_69{
+            ExpressionRef target;
             ExpressionRef value;
+            StatementRef previous_assignment;
         };
         struct EBM_API union_struct_70{
-            AssertDesc assert_desc;
+            ExpressionRef target;
+            ExpressionRef value;
         };
         struct EBM_API union_struct_71{
-            IOData read_data;
+            ExpressionRef value;
         };
         struct EBM_API union_struct_72{
-            IOData write_data;
+            ExpressionRef value;
         };
         struct EBM_API union_struct_73{
+            AssertDesc assert_desc;
+        };
+        struct EBM_API union_struct_74{
+            IOData read_data;
+        };
+        struct EBM_API union_struct_75{
+            IOData write_data;
+        };
+        struct EBM_API union_struct_76{
             ExpressionRef offset;
             StreamType stream_type{};
         };
-        struct EBM_API union_struct_74{
+        struct EBM_API union_struct_77{
             IfStatement if_statement;
         };
-        struct EBM_API union_struct_75{
+        struct EBM_API union_struct_78{
             LoopStatement loop;
         };
-        struct EBM_API union_struct_76{
+        struct EBM_API union_struct_79{
             MatchStatement match_statement;
         };
-        struct EBM_API union_struct_77{
+        struct EBM_API union_struct_80{
             MatchBranch match_branch;
         };
-        struct EBM_API union_struct_78{
+        struct EBM_API union_struct_81{
             LoopFlowControl break_;
         };
-        struct EBM_API union_struct_79{
+        struct EBM_API union_struct_82{
             LoopFlowControl continue_;
         };
-        struct EBM_API union_struct_80{
+        struct EBM_API union_struct_83{
             FunctionDecl func_decl;
         };
-        struct EBM_API union_struct_81{
+        struct EBM_API union_struct_84{
             VariableDecl var_decl;
         };
-        struct EBM_API union_struct_82{
+        struct EBM_API union_struct_85{
             FieldDecl field_decl;
         };
-        struct EBM_API union_struct_83{
+        struct EBM_API union_struct_86{
             EnumDecl enum_decl;
         };
-        struct EBM_API union_struct_84{
+        struct EBM_API union_struct_87{
             EnumMemberDecl enum_member_decl;
         };
-        struct EBM_API union_struct_85{
+        struct EBM_API union_struct_88{
             StructDecl struct_decl;
         };
-        struct EBM_API union_struct_86{
+        struct EBM_API union_struct_89{
             UnionDecl union_decl;
         };
-        struct EBM_API union_struct_87{
+        struct EBM_API union_struct_90{
             UnionMemberDecl union_member_decl;
         };
-        struct EBM_API union_struct_88{
+        struct EBM_API union_struct_91{
             Block block;
         };
-        struct EBM_API union_struct_89{
+        struct EBM_API union_struct_92{
             PropertyDecl property_decl;
         };
-        struct EBM_API union_struct_90{
+        struct EBM_API union_struct_93{
             PropertyMemberDecl property_member_decl;
         };
-        struct EBM_API union_struct_91{
+        struct EBM_API union_struct_94{
             Metadata metadata;
         };
-        struct EBM_API union_struct_92{
+        struct EBM_API union_struct_95{
             IdentifierRef module_name;
             IdentifierRef alias;
         };
-        struct EBM_API union_struct_93{
+        struct EBM_API union_struct_96{
             ErrorReport error_report;
         };
-        struct EBM_API union_struct_94{
+        struct EBM_API union_struct_97{
             ExpressionRef expression;
         };
-        struct EBM_API union_struct_95{
+        struct EBM_API union_struct_98{
             LoweredStatements lowered_statements;
         };
-        struct EBM_API union_struct_96{
+        struct EBM_API union_struct_99{
             SubByteRange sub_byte_range;
         };
-        std::variant<std::monostate, union_struct_64, union_struct_65, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96> union_variant_63;
+        std::variant<std::monostate, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97, union_struct_98, union_struct_99> union_variant_66;
         const IdentifierRef* alias() const;
         IdentifierRef* alias();
         bool alias(IdentifierRef&& v);
@@ -3277,52 +3335,52 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_99{
-            Varint size;
-        };
-        struct EBM_API union_struct_100{
-            Varint size;
-        };
-        struct EBM_API union_struct_101{
-            Varint size;
-        };
         struct EBM_API union_struct_102{
+            Varint size;
         };
         struct EBM_API union_struct_103{
+            Varint size;
+        };
+        struct EBM_API union_struct_104{
+            Varint size;
+        };
+        struct EBM_API union_struct_105{
+        };
+        struct EBM_API union_struct_106{
             TypeRef element_type;
             Varint length;
         };
-        struct EBM_API union_struct_104{
+        struct EBM_API union_struct_107{
             TypeRef element_type;
         };
-        struct EBM_API union_struct_105{
+        struct EBM_API union_struct_108{
             StatementRef id;
         };
-        struct EBM_API union_struct_106{
+        struct EBM_API union_struct_109{
             StatementRef id;
         };
-        struct EBM_API union_struct_107{
+        struct EBM_API union_struct_110{
             StatementRef id;
             TypeRef base_type;
         };
-        struct EBM_API union_struct_108{
+        struct EBM_API union_struct_111{
             TypeRef common_type;
             Types members;
         };
-        struct EBM_API union_struct_109{
+        struct EBM_API union_struct_112{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_110{
+        struct EBM_API union_struct_113{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_111{
+        struct EBM_API union_struct_114{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_112{
+        struct EBM_API union_struct_115{
             TypeRef return_type;
             Types params;
         };
-        std::variant<std::monostate, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112> union_variant_98;
+        std::variant<std::monostate, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112, union_struct_113, union_struct_114, union_struct_115> union_variant_101;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);

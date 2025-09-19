@@ -337,7 +337,31 @@ namespace ebmgen {
     ebm::ExpressionBody make_or_cond(ebm::TypeRef type, ebm::Expressions&& conds) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionOp::OR_COND;
+        body.type = type;
         body.or_cond(std::move(conds));
+        return body;
+    }
+
+    ebm::StatementBody make_return(ebm::ExpressionRef ret) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementOp::RETURN;
+        body.value(ret);
+        return body;
+    }
+
+    ebm::ExpressionBody make_addressof(ebm::TypeRef type, ebm::ExpressionRef target) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionOp::ADDRESS_OF;
+        body.type = type;
+        body.target_expr(target);
+        return body;
+    }
+
+    ebm::ExpressionBody make_setter_status(ebm::TypeRef type, ebm::SetterStatus status) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionOp::SETTER_STATUS;
+        body.type = type;
+        body.setter_status(status);
         return body;
     }
 

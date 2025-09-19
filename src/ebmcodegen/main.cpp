@@ -18,6 +18,7 @@
 #include <unordered_set>
 #include "error/error.h"
 #include "helper/expected.h"
+#include "json/stringer.h"
 #include "stub/structs.hpp"
 
 enum class GenerateMode {
@@ -27,6 +28,7 @@ enum class GenerateMode {
     CodeGenerator,
     Interpreter,
     HookList,
+    SpecJSON,
 };
 
 struct Flags : futils::cmdline::templ::HelpOption {
@@ -42,7 +44,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
         ctx.VarString<true>(&template_target, "template-target", "template target name. see --mode hooklist", "target_name");
-        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,template}",
+        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,template,spec-json}",
                    std::map<std::string, GenerateMode>{
                        {"template", GenerateMode::Template},
                        {"subset", GenerateMode::BodySubset},
@@ -50,6 +52,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"codegen", GenerateMode::CodeGenerator},
                        {"interpret", GenerateMode::Interpreter},
                        {"hooklist", GenerateMode::HookList},
+                       {"spec-json", GenerateMode::SpecJSON},
                    });
     }
 };
@@ -248,13 +251,97 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cout << w.out();
         return 0;
     }
+    auto [struct_map, enum_map] = ebmcodegen::make_struct_map();
+    if (flags.mode == GenerateMode::SpecJSON) {
+        using Stringer = futils::json::Stringer<>;
+        Stringer stringer;
+        {
+            auto root = stringer.object();
+            root("structs", [&](Stringer& s) {
+                auto element = s.array();
+                for (auto& object : struct_map) {
+                    element([&](Stringer& js) {
+                        auto obj = js.object();
+                        obj("name", object.second.name);
+                        obj("fields", [&](Stringer& s) {
+                            auto element = s.array();
+                            if (object.second.name == "ExtendedBinaryModule") {  // add magic as optional field
+                                element([&](Stringer& js) {
+                                    auto object = js.object();
+                                    object("name", "magic");
+                                    object("type", "std::string");
+                                    object("is_array", false);
+                                    object("is_pointer", true);
+                                });
+                            }
+                            for (auto& s : object.second.fields) {
+                                element([&](Stringer& js) {
+                                    auto object = js.object();
+                                    object("name", s.name);
+                                    object("type", s.type);
+                                    object("is_array", bool(s.attr & ebmcodegen::ARRAY));
+                                    object("is_pointer", bool(s.attr & ebmcodegen::PTR));
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+            root("enums", [&](Stringer& s) {
+                auto element = s.array();
+                for (auto& object : enum_map) {
+                    element([&](Stringer& js) {
+                        auto obj = js.object();
+                        obj("name", object.second.name);
+                        obj("members", [&](Stringer& s) {
+                            auto element = s.array();
+                            for (auto& s : object.second.members) {
+                                element([&](Stringer& js) {
+                                    auto object = js.object();
+                                    object("name", s.name);
+                                    object("value", s.value);
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+            root("subset_info", [&] {
+                auto subset_info = [&](std::string_view name, auto t, auto info) {
+                    using T = decltype(t);
+                    auto object = stringer.object();
+                    object("name", name);
+                    object("available_field_per_kind", [&] {
+                        auto element = stringer.array();
+                        for (auto& s : info) {
+                            element([&] {
+                                auto object = stringer.object();
+                                object("kind", to_string(s.first, true));
+                                object("fields", s.second);
+                            });
+                        }
+                    });
+                };
+                auto element = stringer.array();
+                element([&] {
+                    subset_info("TypeBody", ebm::TypeKind{}, ebmcodegen::body_subset_TypeBody());
+                });
+                element([&] {
+                    subset_info("ExpressionBody", ebm::TypeKind{}, ebmcodegen::body_subset_ExpressionBody());
+                });
+                element([&] {
+                    subset_info("StatementBody", ebm::TypeKind{}, ebmcodegen::body_subset_StatementBody());
+                });
+            });
+        }
+        cout << stringer.out();
+        return 0;
+    }
     auto write_header = [&] {
         w.writeln("/*license*/");
         w.writeln("// Code generated by ebmcodegen at ", repo_url);
     };
     write_header();
-
-    auto struct_map = ebmcodegen::make_struct_map();
     if (flags.mode == GenerateMode::BodySubset) {
         w.writeln("#include <ebm/extended_binary_module.hpp>");
         w.writeln("#include <set>");

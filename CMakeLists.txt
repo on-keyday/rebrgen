@@ -72,6 +72,7 @@ add_executable(ebmgen
 add_library(ebm_mapping STATIC
     "src/ebmgen/mapping.cpp"
     "src/ebmgen/debug_printer.cpp"
+    "src/ebmgen/json_printer.cpp"
 )
 
 add_library(ebmgen_lib STATIC

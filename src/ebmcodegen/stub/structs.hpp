@@ -23,7 +23,18 @@ namespace ebmcodegen {
         std::string_view name;
         std::vector<StructField> fields;
     };
-    std::map<std::string_view, Struct> make_struct_map();
+
+    struct EnumMember {
+        std::string_view name;
+        size_t value = 0;
+    };
+
+    struct Enum {
+        std::string_view name;
+        std::vector<EnumMember> members;
+    };
+
+    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map();
     std::map<ebm::StatementOp, std::set<std::string_view>> body_subset_StatementBody();
     std::map<ebm::TypeKind, std::set<std::string_view>> body_subset_TypeBody();
     std::map<ebm::ExpressionOp, std::set<std::string_view>> body_subset_ExpressionBody();

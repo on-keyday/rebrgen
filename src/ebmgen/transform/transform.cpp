@@ -16,11 +16,14 @@ namespace ebmgen {
         for (auto& s : all_stmts) {
             if (auto prop = s.body.property_decl()) {
                 if (prop->merge_mode == ebm::MergeMode::STRICT_TYPE) {
+                    auto copy = *prop;  // avoid effect of memory relocation of adding object
+                    prop = &copy;
                     ebm::FunctionDecl getter, setter;
                     getter.name = prop->name;
                     setter.name = prop->name;
                     getter.parent_format = prop->parent_format;
                     setter.parent_format = prop->parent_format;
+                    // getter return value
                     {
                         ebm::TypeBody ptr_type;
                         ptr_type.kind = ebm::TypeKind::PTR;
@@ -28,6 +31,7 @@ namespace ebmgen {
                         EBMA_ADD_TYPE(ret_type, std::move(ptr_type));
                         getter.return_type = ret_type;
                     }
+                    // setter return value and arguments
                     EBM_DEFINE_ANONYMOUS_VARIABLE(arg, prop->property_type, {});
                     {
                         ebm::TypeBody set_return;
@@ -36,11 +40,66 @@ namespace ebmgen {
                         setter.return_type = ret_type;
                         append(setter.params, arg_def);
                     }
-                    ebm::Block getter_block;
-                    for (auto& m : prop->members.container) {
-                        MAYBE(stmt, ctx.repository().get_statement(m));
-                        MAYBE(member, stmt.body.property_member_decl());
-                        ebm::IfStatement if_stmt;
+                    // getter match
+                    {
+                        ebm::MatchStatement m;
+                        m.target = *prop->cond();
+                        EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
+                        EBM_RETURN(default_return, default_);
+                        for (auto& m : prop->members.container) {
+                            MAYBE(stmt, ctx.repository().get_statement(m));
+                            MAYBE(member, stmt.body.property_member_decl());
+                            ebm::MatchBranch br;
+                            br.condition = make_condition(member.condition);
+                            if (is_nil(member.field)) {
+                                br.body = default_return;
+                            }
+                            else {
+                                EBM_IDENTIFIER(id, member.field, prop->property_type);
+                                EBM_ADDRESSOF(addr, getter.return_type, id);
+                                EBM_RETURN(ret, addr);
+                                br.body = ret;
+                            }
+                            ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
+                            body.match_branch(std::move(br));
+                            EBMA_ADD_STATEMENT(s, std::move(body));
+                        }
+                        MAYBE_VOID(getter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
+                        ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};
+                        body.match_statement(std::move(m));
+                        EBMA_ADD_STATEMENT(match, std::move(body));
+                        ebm::Block getter_block;
+                        append(getter_block, match);
+                        append(getter_block, default_return);
+                        EBM_BLOCK(gblock, std::move(getter_block));
+                        getter.body = gblock;
+                    }
+                    // setter match
+                    {
+                        ebm::MatchStatement m;
+                        m.target = *prop->cond();
+
+                        for (auto& m : prop->members.container) {
+                            MAYBE(stmt, ctx.repository().get_statement(m));
+                            MAYBE(member, stmt.body.property_member_decl());
+                            ebm::MatchBranch br;
+                            br.condition = make_condition(member.condition);
+                            if (is_nil(member.field)) {
+                                EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
+                                EBM_RETURN(ret, default_);
+                                br.body = ret;
+                            }
+                            else {
+                                EBM_IDENTIFIER(id, member.field, prop->property_type);
+                                EBM_ADDRESSOF(addr, getter.return_type, id);
+                                EBM_RETURN(ret, addr);
+                                br.body = ret;
+                            }
+                            ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
+                            body.match_branch(std::move(br));
+                            EBMA_ADD_STATEMENT(s, std::move(body));
+                        }
+                        MAYBE_VOID(setter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
                     }
                 }
             }

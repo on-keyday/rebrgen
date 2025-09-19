@@ -321,6 +321,21 @@ namespace ebmgen {
 
     ebm::IOData make_io_data(ebm::StatementRef io_ref, ebm::ExpressionRef target, ebm::TypeRef data_type, ebm::IOAttribute attr, ebm::Size size);
 
+    ebm::StatementBody make_return(ebm::ExpressionRef ret);
+
+#define EBM_RETURN(ref_name, value) \
+    EBM_AST_STATEMENT(ref_name, make_return, value)
+
+    ebm::ExpressionBody make_addressof(ebm::TypeRef type, ebm::ExpressionRef target);
+
+#define EBM_ADDRESSOF(ref_name, type, target) \
+    EBM_AST_EXPRESSION(ref_name, make_addressof, type, target)
+
+    ebm::ExpressionBody make_setter_status(ebm::TypeRef type, ebm::SetterStatus status);
+
+#define EBM_SETTER_STATUS(ref_name, type, status) \
+    EBM_AST_EXPRESSION(ref_name, make_setter_status, type, status)
+
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);

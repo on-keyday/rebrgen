@@ -21,6 +21,15 @@ namespace ebmgen {
         MAYBE(type_A, ctx.repository().get_type(a));
         MAYBE(type_B, ctx.repository().get_type(b));
         if (type_A.body.kind != type_B.body.kind) {
+            auto is_any_range = [&](ebm::Type& t) {
+                return t.body.kind == ebm::TypeKind::RANGE && is_nil(*t.body.base_type());
+            };
+            if (is_any_range(type_A)) {
+                return b;
+            }
+            else if (is_any_range(type_B)) {
+                return a;
+            }
             return std::nullopt;
         }
         switch (type_A.body.kind) {

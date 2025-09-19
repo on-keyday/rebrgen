@@ -3,8 +3,10 @@
 #include <wrap/cout.h>
 #include "core/byte.h"
 #include <wrap/iostream.h>
+#include "ebmgen/json_printer.hpp"
 #include "ebmgen/mapping.hpp"
 #include "fnet/util/base64.h"
+#include "json/stringer.h"
 #include "load_json.hpp"
 #include "convert.hpp"
 #include "debug_printer.hpp"  // Include the new header
@@ -14,10 +16,16 @@
 #include <fstream>             // Required for std::ofstream
 #include <sstream>             // Required for std::stringstream
 
+enum class DebugOutputFormat {
+    Text,
+    JSON,
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
+    DebugOutputFormat format = DebugOutputFormat::Text;
     std::string_view cfg_output;
     bool base64 = false;
     bool verbose = false;
@@ -28,6 +36,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file", "FILE");
+        ctx.VarMap(&format, "debug-format", "debug output format (default: text)", "{text,json}", std::map<std::string, DebugOutputFormat>{{"text", DebugOutputFormat::Text}, {"json", DebugOutputFormat::JSON}});
         ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
         ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
@@ -59,18 +68,39 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     // Debug print if requested
     if (!flags.debug_output.empty()) {
-        std::stringstream debug_ss;
-        ebmgen::DebugPrinter printer(*table, debug_ss);
+        auto save_to_file = [&](auto&& out) {
+            std::ofstream debug_ofs(std::string(flags.debug_output));
+            if (!debug_ofs.is_open()) {
+                cerr << "Failed to open debug output file: " << flags.debug_output << '\n';
+                return 1;
+            }
+            debug_ofs << out;
+            debug_ofs.close();
+            return 0;
+        };
+        if (flags.format == DebugOutputFormat::Text) {
+            std::stringstream debug_ss;
+            ebmgen::DebugPrinter printer(*table, debug_ss);
 
-        printer.print_module();
-
-        std::ofstream debug_ofs(std::string(flags.debug_output));
-        if (!debug_ofs.is_open()) {
-            cerr << "Failed to open debug output file: " << flags.debug_output << '\n';
+            printer.print_module();
+            auto ret = save_to_file(debug_ss.str());
+            if (ret != 0) {
+                return ret;
+            }
+        }
+        else if (flags.format == DebugOutputFormat::JSON) {
+            ebmgen::JSONPrinter p(*table);
+            futils::json::Stringer<> s;
+            p.print_module(s);
+            auto ret = save_to_file(s.out());
+            if (ret != 0) {
+                return ret;
+            }
+        }
+        else {
+            cerr << "Unsupported format\n";
             return 1;
         }
-        debug_ofs << debug_ss.str();
-        debug_ofs.close();
     }
 
     // also generates control flow graph
@@ -113,14 +143,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return 0;
     };
 
-    if (flags.output.empty()) {
+    if (flags.output == "-") {
         futils::file::FileStream<std::string> fs{futils::file::File::stdout_file()};
         futils::binary::writer writer{fs.get_write_handler(), &fs};
         if (write_ebm(writer)) {
             return 1;
         }
     }
-    else {
+    else if (!flags.output.empty()) {
         // Serialize and write to output file
         auto file = futils::file::File::create(flags.output);
         if (!file) {

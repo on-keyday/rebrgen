@@ -292,34 +292,20 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::MATCH_STATEMENT;
-        ebm::MatchStatement match_stmt;
-        if (node->cond) {
-            EBMA_CONVERT_EXPRESSION(target_ref, node->cond->expr);
-            match_stmt.target = target_ref;
-        }
-        match_stmt.is_exhaustive(node->struct_union_type->exhaustive);
-
-        for (auto& branch : node->branch) {
-            EBMA_CONVERT_STATEMENT(branch_ref, branch);
-            append(match_stmt.branches, branch_ref);
-        }
-
+    expected<void> StatementConverter::derive_match_lowered_if(ebm::MatchStatement& match_stmt, bool trial_match) {
         std::vector<std::pair<ebm::StatementRef, ebm::IfStatement>> lowered_if;
-
         for (auto& b : match_stmt.branches.container) {
             auto if_cond = ctx.repository().get_statement(b)->body.match_branch();
             auto cond_expr = ctx.repository().get_expression(if_cond->condition.cond);
-            // any range -> else block or
+            // any range -> else block
             if (cond_expr->body.kind == ebm::ExpressionOp::RANGE &&
-                cond_expr->body.start()->id.value() == 0 &&
-                cond_expr->body.end()->id.value() == 0) {
+                is_nil(*cond_expr->body.start()) &&
+                is_nil(*cond_expr->body.end())) {
                 if (lowered_if.size()) {
                     lowered_if.back().second.else_block = if_cond->body;
                     break;
                 }
-                if (node->trial_match) {
+                if (trial_match) {
                     return unexpect_error("Trial match is not supported yet");
                 }
                 match_stmt.lowered_if_statement = ebm::LoweredStatementRef{if_cond->body};
@@ -350,6 +336,24 @@ namespace ebmgen {
             if_body.if_statement(std::move(if_stmt));
             EBMA_ADD_STATEMENT(new_stmt_id, if_id, std::move(if_body));
         }
+        return {};
+    }
+
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        body.kind = ebm::StatementOp::MATCH_STATEMENT;
+        ebm::MatchStatement match_stmt;
+        if (node->cond) {
+            EBMA_CONVERT_EXPRESSION(target_ref, node->cond->expr);
+            match_stmt.target = target_ref;
+        }
+        match_stmt.is_exhaustive(node->struct_union_type->exhaustive);
+
+        for (auto& branch : node->branch) {
+            EBMA_CONVERT_STATEMENT(branch_ref, branch);
+            append(match_stmt.branches, branch_ref);
+        }
+
+        MAYBE_VOID(derived, derive_match_lowered_if(match_stmt, node->trial_match));
 
         body.match_statement(std::move(match_stmt));
         return {};

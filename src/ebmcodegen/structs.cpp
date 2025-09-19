@@ -1,13 +1,16 @@
 /*license*/
 #include "stub/structs.hpp"
+#include <type_traits>
 #include "../ebmgen/common.hpp"
+#include "ebm/extended_binary_module.hpp"
 namespace ebmcodegen {
-    std::map<std::string_view, Struct> make_struct_map() {
+    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map() {
         std::vector<Struct> structs;
         structs.push_back({
             ebm::ExtendedBinaryModule::visitor_name,
         });
         std::map<std::string_view, Struct> struct_map;
+        std::map<std::string_view, Enum> enum_map;
 
         ebm::ExtendedBinaryModule::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
             using T = typename decltype(tag)::type;
@@ -17,7 +20,7 @@ namespace ebmcodegen {
                     T::visitor_name,
                     dispatch,
                 });
-                if constexpr (!ebmgen::AnyRef<T>) {
+                if constexpr (!ebmgen::AnyRef<T> && !std::is_same_v<T, ebm::Varint>) {
                     structs.push_back({
                         T::visitor_name,
                     });
@@ -42,6 +45,16 @@ namespace ebmcodegen {
                     enum_name,
                     dispatch,
                 });
+                if (!enum_map.contains(enum_name)) {
+                    auto& added = enum_map[enum_name];
+                    added.name = enum_name;
+                    for (size_t i = 0; to_string(T(i))[0] != 0; i++) {
+                        added.members.push_back({
+                            .name = to_string(T(i), true),
+                            .value = i,
+                        });
+                    }
+                }
             }
             else if constexpr (std::is_same_v<T, std::uint64_t>) {
                 structs.back().fields.push_back({
@@ -106,6 +119,6 @@ namespace ebmcodegen {
             }
         });
         struct_map["ExtendedBinaryModule"] = std::move(structs[0]);
-        return struct_map;
+        return {struct_map, enum_map};
     }
 }  // namespace ebmcodegen

@@ -513,6 +513,7 @@ namespace ebmgen {
         expected<ebm::StructDecl> convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node);
         expected<ebm::StatementRef> convert_statement(ebm::StatementRef ref, const std::shared_ptr<ast::Node>& node);
         expected<ebm::FunctionDecl> convert_function_decl(const std::shared_ptr<ast::Function>& node, GenerateType typ, ebm::StatementRef coder_input_ref);
+        expected<void> derive_match_lowered_if(ebm::MatchStatement& match_stmt, bool trial_match);
 
        private:
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Assert>& node, ebm::StatementRef id, ebm::StatementBody& body);

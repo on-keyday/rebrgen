@@ -13,7 +13,9 @@ namespace ebmgen {
     expected<void> derive_property_setter_getter(TransformContext& tctx) {
         auto& ctx = tctx.context();
         auto& all_stmts = tctx.statement_repository().get_all();
-        for (auto& s : all_stmts) {
+        size_t current_index = all_stmts.size();
+        for (size_t i = 0; i < current_index; i++) {
+            auto& s = all_stmts[i];
             if (auto prop = s.body.property_decl()) {
                 if (prop->merge_mode == ebm::MergeMode::STRICT_TYPE) {
                     auto copy = *prop;  // avoid effect of memory relocation of adding object
@@ -78,29 +80,49 @@ namespace ebmgen {
                     {
                         ebm::MatchStatement m;
                         m.target = *prop->cond();
-
+                        EBM_SETTER_STATUS(default_status, setter.return_type, ebm::SetterStatus::FAILED);
+                        EBM_RETURN(default_return, default_status);
                         for (auto& m : prop->members.container) {
                             MAYBE(stmt, ctx.repository().get_statement(m));
                             MAYBE(member, stmt.body.property_member_decl());
                             ebm::MatchBranch br;
                             br.condition = make_condition(member.condition);
                             if (is_nil(member.field)) {
-                                EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
-                                EBM_RETURN(ret, default_);
-                                br.body = ret;
+                                br.body = default_return;
                             }
                             else {
                                 EBM_IDENTIFIER(id, member.field, prop->property_type);
-                                EBM_ADDRESSOF(addr, getter.return_type, id);
-                                EBM_RETURN(ret, addr);
-                                br.body = ret;
+                                EBM_ASSIGNMENT(assign, id, arg);
+                                ebm::Block block;
+                                append(block, assign);
+                                EBM_SETTER_STATUS(success_status, setter.return_type, ebm::SetterStatus::SUCCESS);
+                                EBM_RETURN(success_return, success_status);
+                                append(block, success_return);
+                                EBM_BLOCK(b, std::move(block));
+                                br.body = b;
                             }
                             ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
                             body.match_branch(std::move(br));
                             EBMA_ADD_STATEMENT(s, std::move(body));
                         }
                         MAYBE_VOID(setter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
+                        ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};
+                        body.match_statement(std::move(m));
+                        EBMA_ADD_STATEMENT(match, std::move(body));
+                        ebm::Block setter_block;
+                        append(setter_block, match);
+                        append(setter_block, default_return);
+                        EBM_BLOCK(sblock, std::move(setter_block));
+                        setter.body = sblock;
                     }
+                    ebm::StatementBody func{.kind = ebm::StatementOp::FUNCTION_DECL};
+                    func.func_decl(std::move(getter));
+                    EBMA_ADD_STATEMENT(getter_ref, std::move(func));
+                    func.func_decl(std::move(setter));
+                    EBMA_ADD_STATEMENT(setter_ref, std::move(func));
+                    prop = all_stmts[i].body.property_decl();
+                    prop->getter_function = ebm::LoweredStatementRef{getter_ref};
+                    prop->setter_function = ebm::LoweredStatementRef{setter_ref};
                 }
             }
         }
@@ -117,6 +139,7 @@ namespace ebmgen {
         }
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
+        MAYBE_VOID(prop_setter_getter, derive_property_setter_getter(ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
             ctx.recalculate_id_index_map();

@@ -414,6 +414,35 @@ namespace ebmgen {
         return coder_input;
     }
 
+    expected<ebm::StatementRef> StatementConverter::convert_struct_decl(const std::shared_ptr<ast::StructType>& node) {
+        const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
+        if (auto v = ctx.state().is_visited(node)) {
+            return *v;
+        }
+        if (auto locked_base = node->base.lock()) {
+            if (ast::as<ast::Format>(locked_base) || ast::as<ast::State>(locked_base)) {
+                EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
+                ctx.state().add_visited_node(node, name_ref);
+                return name_ref;
+            }
+            else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
+                ebm::StatementBody stmt;
+                stmt.kind = ebm::StatementOp::STRUCT_DECL;
+                MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, node));
+                stmt.struct_decl(std::move(struct_decl));
+                EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
+                ctx.state().add_visited_node(node, name_ref);
+                return name_ref;
+            }
+            else {
+                return unexpect_error("StructType base must be a Format or State :{}", node_type_to_string(locked_base->node_type));
+            }
+        }
+        else {
+            return unexpect_error("StructType has no base");
+        }
+    }
+
     expected<ebm::StructDecl> StatementConverter::convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node) {
         ebm::StructDecl struct_decl;
         struct_decl.name = name;
@@ -739,8 +768,8 @@ namespace ebmgen {
             EBMA_CONVERT_TYPE(type_ref, node->field_type);
             field_decl.field_type = type_ref;
             field_decl.is_state_variable(node->is_state_variable);
-            if (auto locked = node->belong.lock()) {
-                MAYBE(parent_member_ref, ctx.state().is_visited(locked, GenerateType::Normal));
+            if (auto locked = node->belong_struct.lock(); locked && node->belong.lock()) {
+                MAYBE(parent_member_ref, ctx.get_statement_converter().convert_struct_decl(locked));
                 field_decl.parent_struct = parent_member_ref;
             }
             body.field_decl(std::move(field_decl));

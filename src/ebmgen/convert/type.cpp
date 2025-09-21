@@ -121,28 +121,9 @@ namespace ebmgen {
                 }
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructType>>) {
-                const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
-                if (auto locked_base = n->base.lock()) {
-                    if (ast::as<ast::Format>(locked_base) || ast::as<ast::State>(locked_base)) {
-                        EBMA_CONVERT_STATEMENT(name_ref, locked_base);  // Convert the struct declaration
-                        body.id(name_ref);                              // Use the ID of the struct declaration
-                    }
-                    else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
-                        ebm::StatementBody stmt;
-                        stmt.kind = ebm::StatementOp::STRUCT_DECL;
-                        MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, n));
-                        stmt.struct_decl(std::move(struct_decl));
-                        EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
-                        body.id(name_ref);  // Use the ID of the struct declaration
-                    }
-                    else {
-                        return unexpect_error("StructType base must be a Format or State :{}", node_type_to_string(locked_base->node_type));
-                    }
-                }
-                else {
-                    return unexpect_error("StructType has no base");
-                }
+                MAYBE(name_ref, ctx.get_statement_converter().convert_struct_decl(n));
+                body.id(name_ref);
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructUnionType>>) {
                 body.kind = ebm::TypeKind::VARIANT;

@@ -208,6 +208,7 @@ namespace ebmgen {
                 EBM_OR_COND(or_, common_type, std::move(*got));
                 ebm::PropertyMemberDecl m{.condition = or_};
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
+                append(derive.members, member_ref);
             }
             else {
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(std::get<1>(member)));

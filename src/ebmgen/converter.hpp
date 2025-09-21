@@ -389,10 +389,6 @@ namespace ebmgen {
             return {};
         }
 
-        expected<ebm::IdentifierRef> anonymous_identifier() {
-            return identifier_repo.new_id(ident_source);
-        }
-
         expected<ebm::StatementRef> new_statement_id() {
             return statement_repo.new_id(ident_source);
         }

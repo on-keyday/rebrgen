@@ -1,4 +1,5 @@
 /*license*/
+#include "ebmgen/converter.hpp"
 #include "transform.hpp"
 #include "../convert/helper.hpp"
 namespace ebmgen {
@@ -25,22 +26,19 @@ namespace ebmgen {
             if (!block) {
                 continue;
             }
-            auto iter = block->container.begin();
-            std::vector<std::tuple<size_t, ebm::StatementRef, ebm::IOData*>> io;
+            std::vector<std::tuple<size_t /*index in block*/, ebm::StatementRef, ebm::IOData*>> io;
             std::vector<std::vector<std::tuple<size_t, ebm::StatementRef, ebm::IOData*>>> ios;
-            for (size_t j = 0; j < block->container.size(); ++j, ++iter) {
-                auto stmt = tctx.statement_repository().get(*iter);
-                if (!stmt) {
-                    return unexpect_error("Invalid statement reference in block: {}", iter->id.value());
-                }
-                if (auto n = (write ? stmt->body.write_data() : stmt->body.read_data()); n && (n->size.unit == ebm::SizeUnit::BIT_FIXED || n->size.unit == ebm::SizeUnit::BYTE_FIXED)) {
-                    io.push_back({j, *iter, n});
+            for (size_t j = 0; j < block->container.size(); j++) {
+                auto id = block->container[j];
+                MAYBE(stmt, tctx.statement_repository().get(id));
+                if (auto n = (write ? stmt.body.write_data() : stmt.body.read_data()); n && (n->size.unit == ebm::SizeUnit::BIT_FIXED || n->size.unit == ebm::SizeUnit::BYTE_FIXED)) {
+                    io.push_back({j, id, n});
                 }
                 else {
                     if (io.size() > 1) {
                         ios.push_back(std::move(io));
-                        io.clear();
                     }
+                    io.clear();
                 }
             }
             if (io.size() > 1) {
@@ -156,6 +154,7 @@ namespace ebmgen {
                 if constexpr (std::is_same_v<ebm::StatementRef&, decltype(value)>) {
                     auto found = map_statements.find(get_id(value));
                     if (found != map_statements.end()) {
+                        print_if_verbose("map old to new: ", get_id(value), " -> ", get_id(found->second), "\n");
                         value = found->second;
                     }
                 }
@@ -168,8 +167,15 @@ namespace ebmgen {
             if (alias.hint == ebm::AliasHint::STATEMENT) {
                 auto found = map_statements.find(get_id(alias.to));
                 if (found != map_statements.end()) {
+                    print_if_verbose("map old to new: ", get_id(alias.to), " -> ", get_id(found->second), "\n");
                     alias.to.id = found->second.id;
                 }
+            }
+        }
+        for (auto& dbg : tctx.debug_locations()) {
+            auto found = map_statements.find(get_id(dbg.ident));
+            if (found != map_statements.end()) {
+                dbg.ident.id = found->second.id;
             }
         }
         return {};

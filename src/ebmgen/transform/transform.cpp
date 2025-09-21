@@ -48,8 +48,8 @@ namespace ebmgen {
                         m.target = *prop->cond();
                         EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
                         EBM_RETURN(default_return, default_);
-                        for (auto& m : prop->members.container) {
-                            MAYBE(stmt, ctx.repository().get_statement(m));
+                        for (auto& b : prop->members.container) {
+                            MAYBE(stmt, ctx.repository().get_statement(b));
                             MAYBE(member, stmt.body.property_member_decl());
                             ebm::MatchBranch br;
                             br.condition = make_condition(member.condition);
@@ -65,6 +65,7 @@ namespace ebmgen {
                             ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
                             body.match_branch(std::move(br));
                             EBMA_ADD_STATEMENT(s, std::move(body));
+                            append(m.branches, s);
                         }
                         MAYBE_VOID(getter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
                         ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};
@@ -82,8 +83,8 @@ namespace ebmgen {
                         m.target = *prop->cond();
                         EBM_SETTER_STATUS(default_status, setter.return_type, ebm::SetterStatus::FAILED);
                         EBM_RETURN(default_return, default_status);
-                        for (auto& m : prop->members.container) {
-                            MAYBE(stmt, ctx.repository().get_statement(m));
+                        for (auto& b : prop->members.container) {
+                            MAYBE(stmt, ctx.repository().get_statement(b));
                             MAYBE(member, stmt.body.property_member_decl());
                             ebm::MatchBranch br;
                             br.condition = make_condition(member.condition);
@@ -104,6 +105,7 @@ namespace ebmgen {
                             ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
                             body.match_branch(std::move(br));
                             EBMA_ADD_STATEMENT(s, std::move(body));
+                            append(m.branches, s);
                         }
                         MAYBE_VOID(setter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
                         ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};

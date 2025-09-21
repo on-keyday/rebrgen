@@ -1,4 +1,5 @@
 /*license*/
+#include "ebmgen/converter.hpp"
 #include "transform.hpp"
 #include <set>
 #include <testutil/timer.h>
@@ -11,15 +12,21 @@ namespace ebmgen {
 
     expected<void> remove_unused_object(TransformContext& ctx) {
         MAYBE(max_id, ctx.max_id());
-        std::map<size_t, std::vector<ebm::AnyRef>> used_refs;
+        std::map<size_t, std::vector<ebm::AnyRef>> inverse_refs;  // ref -> item.id
+        std::map<size_t, std::vector<ebm::AnyRef>> use_refs;      // item.id -> ref
+        size_t trial_counter = 0;
         auto trial = [&] -> expected<size_t> {
-            used_refs.clear();
+            print_if_verbose("Remove Trial: ", trial_counter, "\n");
+            trial_counter++;
+            inverse_refs.clear();
+            use_refs.clear();
             auto map_to = [&](const auto& vec) {
                 for (const auto& item : vec) {
                     item.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                         if constexpr (AnyRef<decltype(val)>) {
                             if (!is_nil(val)) {
-                                used_refs[get_id(val)].push_back(ebm::AnyRef{item.id.id});
+                                inverse_refs[get_id(val)].push_back(ebm::AnyRef{item.id.id});
+                                use_refs[get_id(item.id)].push_back(ebm::AnyRef{val.id});
                             }
                         }
                         else
@@ -34,25 +41,25 @@ namespace ebmgen {
             map_to(ctx.string_repository().get_all());
             map_to(ctx.expression_repository().get_all());
             for (auto& alias : ctx.alias_vector()) {
-                if (used_refs.find(get_id(alias.from)) == used_refs.end()) {
+                if (inverse_refs.find(get_id(alias.from)) == inverse_refs.end()) {
                     print_if_verbose("Removing unused alias: ", get_id(alias.from), "\n");
                     continue;  // Skip unused aliases
                 }
                 switch (alias.hint) {
                     case ebm::AliasHint::IDENTIFIER:
-                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::STATEMENT:
-                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::STRING:
-                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::EXPRESSION:
-                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::TYPE:
-                        used_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
                         break;
                     case ebm::AliasHint::ALIAS:
                         return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", get_id(alias.from), get_id(alias.to));
@@ -60,8 +67,8 @@ namespace ebmgen {
             }
             std::set<std::uint64_t> should_remove;
             for (size_t i = 2 /*0 is nil, 1 is root node*/; i < max_id.value(); i++) {
-                auto found = used_refs.find(i);
-                if (found != used_refs.end()) {
+                auto found = inverse_refs.find(i);
+                if (found != inverse_refs.end()) {
                     continue;
                 }
                 should_remove.insert(i);
@@ -75,6 +82,11 @@ namespace ebmgen {
                             print_if_verbose("(", to_string(item.body.kind), ")");
                         }
                         print_if_verbose("\n");
+                        if (auto found = use_refs.find(get_id(item.id)); found != use_refs.end()) {
+                            for (auto& remove_candidate : found->second) {
+                                print_if_verbose("    Next candidate: ", get_id(remove_candidate), "\n");
+                            }
+                        }
                         return true;
                     }
                     return false;
@@ -89,7 +101,7 @@ namespace ebmgen {
                 return should_remove.find(get_id(alias.from)) != should_remove.end() ||
                        should_remove.find(get_id(alias.to)) != should_remove.end();
             });
-            return used_refs.size();
+            return inverse_refs.size();
         };
         futils::test::Timer t;
         MAYBE(first_size, trial());
@@ -101,7 +113,7 @@ namespace ebmgen {
         }
         print_if_verbose("Removed unused items in ", t.next_step<std::chrono::microseconds>(), "\n");
         std::vector<std::tuple<ebm::AnyRef, size_t>> most_used;
-        for (const auto& [id, refs] : used_refs) {
+        for (const auto& [id, refs] : inverse_refs) {
             most_used.emplace_back(ebm::AnyRef{id}, refs.size());
         }
         std::stable_sort(most_used.begin(), most_used.end(), [](const auto& a, const auto& b) {

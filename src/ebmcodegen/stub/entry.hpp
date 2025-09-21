@@ -10,6 +10,7 @@
 #include <file/file_stream.h>
 #include <json/stringer.h>
 #include <set>
+#include "flags.hpp"
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <tool/common/em_main.h>
@@ -49,27 +50,7 @@ namespace ebmcodegen {
     namespace internal {
         int load_file(auto& flags, auto& output, futils::cmdline::option::Context& ctx, auto&& then) {
             if (flags.show_flags) {
-                futils::json::Stringer<> str;
-                str.set_indent("  ");
-                auto root_obj = str.object();
-                root_obj("lang_name", flags.lang_name);
-                root_obj("lsp_name", flags.lsp_name);
-                root_obj("webworker_name", flags.webworker_name);
-                root_obj("flags", [&](auto& s) {
-                    auto fields = s.array();
-                    for (auto& opt : ctx.options()) {
-                        fields([&](auto& s) {
-                            auto obj = s.object();
-                            obj("name", opt->mainname);
-                            obj("help", opt->help);
-                            obj("argdesc", opt->argdesc);
-                            obj("type", opt->type);
-                            obj("web_filtered", flags.web_filtered.contains(opt->mainname));
-                        });
-                    }
-                });
-                root_obj.close();
-                futils::wrap::cout_wrap() << str.out() << '\n';
+                futils::wrap::cout_wrap() << flag_description_json(ctx, flags.lang_name, flags.lsp_name, flags.webworker_name, flags.web_filtered) << '\n';
                 return 0;
             }
             if (flags.input.empty()) {

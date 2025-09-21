@@ -77,7 +77,7 @@ def generate_web_glue_files(config_dir, output_dir):
     UI_SETS = b""
     LSP_MAPPER = b"export const BM_LSP_LANGUAGES = Object.freeze({\n"
     UI_CANDIDATES = b"export const BM_LANGUAGES = Object.freeze(["
-    BROWSER_WORKER_FACTORY = b"const workers = Object.freeze({\n"
+    BROWSER_WORKER_FACTORY = b"export const bm_workers = Object.freeze({\n"
     COPY_WASM = b""
     for config_file in config_files:
         web_glue = generate_web_glue(config_file)
@@ -86,7 +86,7 @@ def generate_web_glue_files(config_dir, output_dir):
         UI_GLUE += web_glue["ui_code"]
         UI_CALLS += f"    case \"{web_glue['lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
         UI_CANDIDATES += f"\"{web_glue['lang_name']}\", ".encode()
-        BROWSER_WORKER_FACTORY += f"    \"{web_glue['lang_name']}\": () => new JobManager(new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url))),\n".encode()
+        BROWSER_WORKER_FACTORY += f"    \"{web_glue['worker_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += (
             f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
@@ -99,20 +99,6 @@ def generate_web_glue_files(config_dir, output_dir):
     UI_CANDIDATES += b"]);\n"
     BROWSER_WORKER_FACTORY += b"});\n"
     LSP_MAPPER += b"});\n"
-    BROWSER_WORKER_FACTORY += b"""
-export const factory = new (class {
-    constructor() {
-        this.workers = {};
-    }
-
-    getWorker(lang) {
-        if (!this.workers[lang]) {
-            this.workers[lang] = workers[lang]();
-        }
-        return this.workers[lang];
-    }
-})();
-"""
     with open(f"{output_dir}/bm_caller.js", "wb") as f:
         f.write(UI_GLUE)
         f.write(
@@ -127,8 +113,7 @@ export const factory = new (class {
         f.write(LSP_MAPPER)
         f.write(b"export function setBMUIConfig(ui) {\n" + UI_SETS + b"}\n")
 
-    with open(f"{output_dir}/bm_worker_factory.js", "wb") as f:
-        f.write(b"import { JobManager } from '../../s2j/job_mgr.js';\n")
+    with open(f"{output_dir}/bm_workers.js", "wb") as f:
         f.write(BROWSER_WORKER_FACTORY)
 
     with open(f"{output_dir}/wasmCopy.js.txt", "wb") as f:

@@ -71,7 +71,7 @@ struct Flags : ebmcodegen::Flags {
     void bind(futils::cmdline::option::Context& ctx) {
         lang_name = "python";
         lsp_name = lang_name;
-        webworker_name = lang_name;
+        webworker_name = "ebm2python";
         ebmcodegen::Flags::bind(ctx); // bind basis
         #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
             ctx.flag_func(&name,flag_name,__VA_ARGS__)

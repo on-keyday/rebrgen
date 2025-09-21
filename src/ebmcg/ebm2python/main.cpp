@@ -8798,11 +8798,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Expression_SETTER_STATUS = requires(Visitor v) {
-         { v.visit_Expression_SETTER_STATUS(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Expression_SETTER_STATUS(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().setter_status()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Expression_SETTER_STATUS_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().setter_status()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Expression_SETTER_STATUS(Visitor&& visitor,const ebm::Expression& in) {
@@ -8842,6 +8842,10 @@ namespace ebm2python {
         #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
+        if (!in.body.setter_status()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::setter_status");
+        }
+        auto& setter_status = *in.body.setter_status();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
         #endif
@@ -8878,10 +8882,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_SETTER_STATUS<Visitor>) {
-            result = visitor.visit_Expression_SETTER_STATUS(in.id,type,kind);
+            result = visitor.visit_Expression_SETTER_STATUS(in.id,type,kind,setter_status);
         }
         else if constexpr (has_visitor_Expression_SETTER_STATUS_call<Visitor>) {
-            result = visitor(in.id,type,kind);
+            result = visitor(in.id,type,kind,setter_status);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -13427,7 +13431,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Expression_SETTER_STATUS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind) {
+        expected<Result> visit_Expression_SETTER_STATUS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionOp& kind,const ebm::SetterStatus& setter_status) {
             #if __has_include("visitor/Expression_SETTER_STATUS_before.hpp")
             #include "visitor/Expression_SETTER_STATUS_before.hpp"
             #endif

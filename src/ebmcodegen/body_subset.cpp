@@ -85,6 +85,7 @@ namespace ebmcodegen {
             body.operand({});
             body.or_cond({});
             body.right({});
+            body.setter_status({});
             body.source_expr({});
             body.start({});
             body.stream_type({});

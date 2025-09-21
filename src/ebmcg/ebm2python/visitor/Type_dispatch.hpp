@@ -28,6 +28,7 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+#include "ebm/extended_binary_module.hpp"
 const auto& type = in;
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {
@@ -112,6 +113,9 @@ switch (type.body.kind) {
         // For pointers, return Any or a specific type if context allows
         MAYBE(pointee_type_str, type_to_python_str(*type.body.pointee_type()));
         return "Any";  // Or "Pointer[" + pointee_type_str + "]" if a custom type is defined
+    }
+    case ebm::TypeKind::PROPERTY_SETTER_RETURN: {
+        return "bool";
     }
     default:
         return unexpect_error("Unhandled TypeKind: {}", to_string(type.body.kind));  // Return an error for unhandled types

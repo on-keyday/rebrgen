@@ -16,6 +16,7 @@
 #include <tool/common/em_main.h>
 #endif
 #include "output.hpp"
+#include <wrap/argv.h>
 
 namespace ebmcodegen {
     struct Flags : futils::cmdline::templ::HelpOption {
@@ -27,6 +28,7 @@ namespace ebmcodegen {
         // static constexpr auto arg_desc = "[option] args...";
         const char* program_name;
         const char* lang_name = "";
+        const char* ui_lang_name = "";
         const char* lsp_name = "";
         const char* webworker_name = "";
 
@@ -50,7 +52,7 @@ namespace ebmcodegen {
     namespace internal {
         int load_file(auto& flags, auto& output, futils::cmdline::option::Context& ctx, auto&& then) {
             if (flags.show_flags) {
-                futils::wrap::cout_wrap() << flag_description_json(ctx, flags.lang_name, flags.lsp_name, flags.webworker_name, flags.web_filtered) << '\n';
+                futils::wrap::cout_wrap() << flag_description_json(ctx, flags.lang_name, flags.ui_lang_name, flags.lsp_name, flags.webworker_name, flags.web_filtered) << '\n';
                 return 0;
             }
             if (flags.input.empty()) {
@@ -133,6 +135,7 @@ extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
 }
 #else
 int main(int argc, char** argv) {
+    futils::wrap::U8Arg _(argc, argv);
     return ebmcodegen_main(argc, argv);
 }
 #endif

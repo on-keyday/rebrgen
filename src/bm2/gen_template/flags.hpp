@@ -62,7 +62,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool debug = false;
     bool print_hooks = false;
 
-    const std::string& worker_name() {
+    std::string worker_name() {
         if (worker_request_name.empty()) {
             return lang_name;
         }

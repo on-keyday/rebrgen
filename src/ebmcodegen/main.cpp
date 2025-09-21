@@ -525,6 +525,11 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.write("web_filtered.insert_range(std::set{__VA_ARGS__})");
         }
         w.writeln();
+        w.write("#define WEB_UI_NAME(ui_name) ");
+        if (!on_define) {
+            w.write("ui_lang_name = ui_name");
+        }
+        w.writeln();
         w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
         w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
         insert_include(w, prefixes[prefix_flags]);
@@ -532,6 +537,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#undef WEB_FILTERED");
         w.writeln("#undef DEFINE_BOOL_FLAG");
         w.writeln("#undef DEFINE_STRING_FLAG");
+        w.writeln("#undef WEB_UI_NAME");
     };
 
     w.writeln("struct Flags : ebmcodegen::Flags {");
@@ -542,6 +548,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
         auto nested_scope = w.indent_scope();
         w.writeln("lang_name = \"", flags.lang, "\";");
+        w.writeln("ui_lang_name = lang_name;");
         w.writeln("lsp_name = lang_name;");
         w.writeln("webworker_name = \"", flags.program_name, "\";");
         w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
@@ -887,6 +894,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 if (result->flags_suffix == suffixes[suffix_bind]) {
                     w.writeln("ctx: futils::cmdline::option::Context&");
                     w.writeln("lang_name: const char*");
+                    w.writeln("ui_lang_name: const char*");
                     w.writeln("lsp_name: const char*");
                     w.writeln("worker_name: const char*");
                     w.writeln("web_filtered: std::set<std::string>");
@@ -898,6 +906,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     w.writeln("WEB_FILTERED(filtered_flag_names...)");
                     w.writeln("DEFINE_BOOL_FLAG(name,flag_name,help)");
                     w.writeln("DEFINE_STRING_FLAG(name,flag_name,help,arg_description)");
+                    w.writeln("WEB_UI_NAME(ui_name)");
                 }
             }
             if (result->visitor_location == suffixes[suffix_pre_validate] ||

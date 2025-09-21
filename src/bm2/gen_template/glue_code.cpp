@@ -228,7 +228,7 @@ const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {{
 
         w.writeln("const generate", upperWorkerName, " = async (factory,traceID,opt,sourceCode) => {");
         auto scope_generate = w.indent_scope();
-        w.writeln("const worker_mgr = factory.getWorker(\"", workerName, "\");");
+        w.writeln("const worker_mgr = factory.getWorker(\"bm2", flags.lang_name, "\");");
         w.writeln("const req = worker_mgr.getRequest(traceID,\"", workerName, "\",sourceCode);");
         w.writeln("req.arguments = convert", upperWorkerName, "OptionToFlags(opt);");
         w.writeln("return worker_mgr.doRequest(req);");

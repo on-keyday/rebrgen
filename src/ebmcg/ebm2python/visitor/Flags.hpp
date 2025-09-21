@@ -10,7 +10,9 @@
     WEB_FILTERED(filtered_flag_names...)
     DEFINE_BOOL_FLAG(name,flag_name,help)
     DEFINE_STRING_FLAG(name,flag_name,help,arg_description)
+    WEB_UI_NAME(ui_name)
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 DEFINE_BOOL_FLAG(async, false, "async", "use async for encoder/decoder");
+WEB_UI_NAME("python2");

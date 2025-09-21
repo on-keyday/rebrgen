@@ -6,6 +6,7 @@
   Available variables:
     ctx: futils::cmdline::option::Context&
     lang_name: const char*
+    ui_lang_name: const char*
     lsp_name: const char*
     worker_name: const char*
     web_filtered: std::set<std::string>

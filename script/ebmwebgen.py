@@ -49,17 +49,17 @@ def get_tools():
 
 # 5. generate web glue code
 def web_glue_names(tool: dict) -> dict:
-    LANG_NAME = str(tool["flags"]["lang_name"])
     LSP_LANG = str(tool["flags"]["lsp_name"])
     WORKER_NAME = str(tool["flags"]["webworker_name"])
-    UPPER_LANG_NAME = LANG_NAME[0].upper() + LANG_NAME[1:]
+    UI_LANG_NAME = str(tool["flags"]["ui_lang_name"])
+    UPPER_LANG_NAME = UI_LANG_NAME[0].upper() + UI_LANG_NAME[1:]
     CALL_WORKER_FUNC = "generate" + UPPER_LANG_NAME
     CALL_UI_FUNC = "set" + UPPER_LANG_NAME + "UIConfig"
     CALL_UI_TO_OPT_FUNC = "convert" + UPPER_LANG_NAME + "UIConfigToOption"
     CALL_SET_UI_FUNC = "set" + UPPER_LANG_NAME + "UIConfig"
-    print(f"Generating web glue for {LANG_NAME} ({tool['path']})")
+    print(f"Generating web glue for {tool["flags"]["lang_name"]} ({tool['path']})")
     return {
-        "lang_name": LANG_NAME,
+        "ui_lang_name": UI_LANG_NAME,
         "worker_name": WORKER_NAME,
         "call_worker_func": CALL_WORKER_FUNC,
         "call_ui_func": CALL_UI_FUNC,
@@ -111,7 +111,7 @@ export const base64ToUint8Array = (base64) => {
 const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {
     switch (e.lang /*as string*/) {"""
         + f"""
-        case "{web_glue['lang_name']}":
+        case "{web_glue['ui_lang_name']}":
 """
         + """            const bm = base64ToUint8Array(e.sourceCode);
             if(bm instanceof Error) {
@@ -133,13 +133,13 @@ const bmgenWorker = new EmWorkContext(ebmgenModule,requestCallback, () => {
 
 
 def ui_glue_code(web_glue: dict, tool: dict):
-    lang_name = web_glue["lang_name"]
-    upper_lang_name = lang_name[0].upper() + lang_name[1:]
+    ui_lang_name = web_glue["ui_lang_name"]
+    upper_ui_lang_name = ui_lang_name[0].upper() + ui_lang_name[1:]
     worker_name = web_glue["worker_name"]
     flags = tool["flags"]["flags"]  # Access the 'flags' list from the tool dictionary
 
     code = f"""
-const convert{upper_lang_name}OptionToFlags = (opt) => {{
+const convert{upper_ui_lang_name}OptionToFlags = (opt) => {{
     const flags = [];
 """
     for flag in flags:
@@ -164,14 +164,14 @@ const convert{upper_lang_name}OptionToFlags = (opt) => {{
     code += f"""    return flags;
 }};
 
-const generate{upper_lang_name} = async (factory,traceID,opt,sourceCode) => {{
+const generate{upper_ui_lang_name} = async (factory,traceID,opt,sourceCode) => {{
     const worker_mgr = factory.getWorker("{worker_name}");
-    const req = worker_mgr.getRequest(traceID,"{lang_name}",sourceCode);
-    req.arguments = convert{upper_lang_name}OptionToFlags(opt);
+    const req = worker_mgr.getRequest(traceID,"{ui_lang_name}",sourceCode);
+    req.arguments = convert{upper_ui_lang_name}OptionToFlags(opt);
     return worker_mgr.doRequest(req);
 }};
 
-const convert{upper_lang_name}UIConfigToOption = (ui) => {{
+const convert{upper_ui_lang_name}UIConfigToOption = (ui) => {{
     const opt = {{}};
 """
     for flag in flags:
@@ -179,12 +179,12 @@ const convert{upper_lang_name}UIConfigToOption = (ui) => {{
             continue
         flag_name = flag["name"]
         flag_var_name = flag_name.replace("-", "_")
-        code += f"""    opt.{flag_var_name} = ui.getLanguageConfig("{lang_name}","{flag_name}");
+        code += f"""    opt.{flag_var_name} = ui.getLanguageConfig("{ui_lang_name}","{flag_name}");
 """
     code += f"""    return opt;
 }};
 
-function set{upper_lang_name}UIConfig(ui) {{
+function set{upper_ui_lang_name}UIConfig(ui) {{
     ui.set_flags("{worker_name}",(nest_setter) => {{
 """
     for flag in flags:
@@ -226,12 +226,12 @@ def generate_web_glue_files(tools: list[dict], output_dir):
         print(f"Generated: {output_dir}/{web_glue["worker_name"]}_worker.js")
         # print(WORKER_GLUE)
         UI_GLUE += ui_glue_code(web_glue, tool).encode()
-        UI_CALLS += f"    case \"{web_glue['lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
-        UI_CANDIDATES += f"\"{web_glue['lang_name']}\", ".encode()
+        UI_CALLS += f"    case \"{web_glue['ui_lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
+        UI_CANDIDATES += f"\"{web_glue['ui_lang_name']}\", ".encode()
         WORKER_FACTORY += f"    \"{web_glue['worker_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += (
-            f"  \"{web_glue['lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
+            f"  \"{web_glue['ui_lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()
         )
         COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.js');\n".encode()
         COPY_WASM += f"copyWasm('bmgen/{web_glue['worker_name']}.wasm');\n".encode()

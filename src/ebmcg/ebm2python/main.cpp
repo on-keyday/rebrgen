@@ -28,6 +28,7 @@ struct Flags : ebmcodegen::Flags {
     #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
         type name = default_
     #define WEB_FILTERED(...) 
+    #define WEB_UI_NAME(ui_name) 
     #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
     #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
     #if __has_include("visitor/Flags_before.hpp")
@@ -51,6 +52,7 @@ struct Flags : ebmcodegen::Flags {
     #undef WEB_FILTERED
     #undef DEFINE_BOOL_FLAG
     #undef DEFINE_STRING_FLAG
+    #undef WEB_UI_NAME
     #if __has_include("visitor/Flags_struct_before.hpp")
     #include "visitor/Flags_struct_before.hpp"
     #endif
@@ -70,12 +72,14 @@ struct Flags : ebmcodegen::Flags {
     #endif
     void bind(futils::cmdline::option::Context& ctx) {
         lang_name = "python";
+        ui_lang_name = lang_name;
         lsp_name = lang_name;
         webworker_name = "ebm2python";
         ebmcodegen::Flags::bind(ctx); // bind basis
         #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
             ctx.flag_func(&name,flag_name,__VA_ARGS__)
         #define WEB_FILTERED(...) web_filtered.insert_range(std::set{__VA_ARGS__})
+        #define WEB_UI_NAME(ui_name) ui_lang_name = ui_name
         #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
         #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
         #if __has_include("visitor/Flags_before.hpp")
@@ -99,6 +103,7 @@ struct Flags : ebmcodegen::Flags {
         #undef WEB_FILTERED
         #undef DEFINE_BOOL_FLAG
         #undef DEFINE_STRING_FLAG
+        #undef WEB_UI_NAME
         #if __has_include("visitor/Flags_bind_before.hpp")
         #include "visitor/Flags_bind_before.hpp"
         #endif

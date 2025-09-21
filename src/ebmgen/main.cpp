@@ -12,6 +12,7 @@
 #include "convert.hpp"
 #include "debug_printer.hpp"  // Include the new header
 #include "transform/control_flow_graph.hpp"
+#include "wrap/argv.h"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <fstream>             // Required for std::ofstream
@@ -229,6 +230,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 }
 
 int main(int argc, char** argv) {
+    futils::wrap::U8Arg _(argc, argv);
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags,

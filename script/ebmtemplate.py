@@ -208,6 +208,56 @@ def run_test_mode(tool_path):
     print("\nSuccess! All template targets generated successfully.", file=sys.stderr)
 
 
+def list_defined_templates(lang: str):
+    """List all defined templates for a given language."""
+    if lang == "default_codegen":
+        visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+    else:
+        visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
+    if not os.path.isdir(visitor_dir):
+        print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
+        return
+    hooklist_cmd = [get_tool_path(), "--mode", "hooklist"]
+    try:
+        result = subprocess.run(
+            hooklist_cmd, check=True, capture_output=True, text=True, encoding="utf-8"
+        )
+        available_hooks = {line.strip() for line in result.stdout.splitlines() if line}
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
+            file=sys.stderr,
+        )
+        return
+    # detect defined hook file and non template files
+    defined_hooks = dict()
+    non_template_files = set()
+    for filename in os.listdir(visitor_dir):
+        added = False
+        if filename.endswith(".hpp"):
+            hook_name = os.path.splitext(filename)[0]
+            if hook_name in available_hooks:
+                defined_hooks[hook_name] = os.path.join(visitor_dir, filename)
+                added = True
+        if not added:
+            non_template_files.add(os.path.join(visitor_dir, filename))
+    defined_hooks = dict(sorted(defined_hooks.items()))
+    non_template_files = sorted(non_template_files)
+    print(
+        f"Implemented hooks in '{visitor_dir}' (Implemented/Available: {len(defined_hooks)}/{len(available_hooks)}):"
+    )
+    print(
+        "Note: Hooks are activated when the corresponding hook file exists. Otherwise, the default template is used."
+    )
+    adjusted_width = max((len(k) for k in defined_hooks.keys()), default=0) + 4
+    for k, v in defined_hooks.items():
+        print(f"  {k.ljust(adjusted_width)} {v}")
+    if non_template_files:
+        print(f"Non-template files in '{visitor_dir}':")
+        for f in non_template_files:
+            print(f"  {f}")
+
+
 def main():
     # Ensure the script is run from the project root
     if not os.path.exists("tool"):
@@ -236,6 +286,10 @@ def main():
             file=sys.stderr,
         )
         print(
+            "  list             : List all defined templates in the specified [lang] directory.",
+            file=sys.stderr,
+        )
+        print(
             "  [lang]           : Optional/Required. For new templates, saves to 'src/ebmcg/ebm2<lang>/visitor/'. Required for 'update'.",
             file=sys.stderr,
         )
@@ -261,6 +315,12 @@ def main():
             sys.exit(1)
         lang_arg = sys.argv[2]
         run_update_hooks(tool_path, lang_arg)
+    elif target_arg == "list":
+        if len(sys.argv) < 3:
+            print("Error: 'list' command requires a [lang] argument.", file=sys.stderr)
+            sys.exit(1)
+        lang_arg = sys.argv[2]
+        list_defined_templates(lang_arg)
     elif len(sys.argv) == 3:
         lang_arg = sys.argv[2]
         run_save_template(tool_path, target_arg, lang_arg)

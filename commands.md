@@ -25,6 +25,8 @@
 
 `ebmcodegen` を利用して、コードジェネレータの各 EBM ノードに対応する「ビジターフック」のテンプレートファイルを管理（作成・更新）するためのヘルパースクリプトです。
 
+- **`ebmtemplate.py`**: 使い方の help がでます
+- **`ebmtemplate.py <template_target>`**:　フックファイルの概要を標準出力に出力します
 - **`ebmtemplate.py <template_target> <lang>`**: 新しいフックファイル (`.hpp`) を `src/ebmcg/ebm2<lang>/visitor/` に生成します。
 - **`ebmtemplate.py update <lang>`**: 既存のフックファイルのコメントブロック（利用可能な変数一覧）を最新の状態に更新します。
 - **`ebmtemplate.py test`**: 利用可能な全てのテンプレートターゲットの生成をテストします。

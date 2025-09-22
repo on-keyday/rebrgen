@@ -4,6 +4,7 @@
 #include <core/ast/json.h>
 #include <json/parser.h>
 #include <json/constructor.h>
+#include <string_view>
 #include "load_json.hpp"
 
 namespace ebmgen {
@@ -55,13 +56,9 @@ namespace ebmgen {
         }
     };
 
-    expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json(std::string_view input, std::function<void(const char*)> timer_cb) {
-        futils::file::View view;
-        if (auto res = view.open(input); !res) {
-            return unexpect_error(Error(res.error()));
-        }
+    expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json_file(futils::view::rvec input, std::function<void(const char*)> timer_cb) {
         if (timer_cb) timer_cb("json file open");
-        futils::json::BytesLikeReader<futils::view::rvec> r{futils::view::rvec(view)};
+        futils::json::BytesLikeReader<futils::view::rvec> r{input};
         r.size = r.bytes.size();
         futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>, DecoderObserver> jc;
         futils::json::GenericConstructor<decltype(r)&, futils::json::StaticStack<8, futils::json::ParseStateDetail>, decltype(jc)&> g{r, jc};
@@ -91,5 +88,13 @@ namespace ebmgen {
         }
         if (timer_cb) timer_cb("json file decode");
         return std::pair{*res, file.files};
+    }
+
+    expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json(std::string_view input, std::function<void(const char*)> timer_cb) {
+        futils::file::View view;
+        if (auto res = view.open(input); !res) {
+            return unexpect_error(Error(res.error()));
+        }
+        return load_json_file(futils::view::rvec(view), timer_cb);
     }
 }  // namespace ebmgen

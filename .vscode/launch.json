@@ -123,14 +123,16 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "${workspaceRoot}/save/simple.json",
+        "${workspaceRoot}/test/simple_case.bgn",
         "-o",
         "${workspaceRoot}/save/out.ebm",
         "-d",
         "${workspaceRoot}/save/debug_output.txt",
         "-v",
         "-c",
-        "${workspaceRoot}/save/diagram.dot"
+        "${workspaceRoot}/save/diagram.dot",
+        "--input-format",
+        "bgn"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

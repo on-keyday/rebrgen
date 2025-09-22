@@ -12,12 +12,19 @@
 #include "convert.hpp"
 #include "debug_printer.hpp"  // Include the new header
 #include "transform/control_flow_graph.hpp"
+#include "unicode/utf/convert.h"
 #include "wrap/argv.h"
+#include "wrap/light/string.h"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
 #include <fstream>             // Required for std::ofstream
 #include <optional>
 #include <sstream>  // Required for std::stringstream
+#include <platform/lazy_dll.h>
+#include <tool/src2json/capi.h>  // libs2j C API
+#include <env/env_sys.h>
+#include <wrap/exepath.h>
+#include <filesystem>
 
 enum class DebugOutputFormat {
     Text,
@@ -25,6 +32,8 @@ enum class DebugOutputFormat {
 };
 
 enum class InputFormat {
+    AUTO,
+    BGN,  // with libs2j
     JSON_AST,
     EBM,
 };
@@ -39,26 +48,36 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool base64 = false;
     bool verbose = false;
     bool debug = false;
+    std::string_view libs2j_path;  // Path to libs2j directory
+    std::string env_libs2j_path;
 
     void bind(futils::cmdline::option::Context& ctx) {
+        auto exe_path = futils::wrap::get_exepath();
+        auto exe_dir = std::filesystem::path(exe_path).parent_path();
+        auto joined = (exe_dir / "libs2j" futils_default_dll_suffix).generic_u8string();
+        env_libs2j_path = futils::env::sys::env_getter().get_or<std::string>("LIBS2J_PATH", futils::strutil::concat<std::string>(joined));
+        libs2j_path = env_libs2j_path;
         bind_help(ctx);
-        ctx.VarString<true>(&input, "i,input", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
-        ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm}",
+        ctx.VarString<true>(&input, "input,i", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
+        ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm,bgn}",
                    std::map<std::string, InputFormat>{
+                       {"auto", InputFormat::AUTO},
+                       {"bgn", InputFormat::BGN},
                        {"ebm", InputFormat::EBM},
                        {"json-ast", InputFormat::JSON_AST},
                    });
-        ctx.VarString<true>(&output, "o,output", "output file (if -, write to stdout)", "FILE");
-        ctx.VarString<true>(&debug_output, "d,debug-print", "debug output file (if -, write to stdout)", "FILE");
+        ctx.VarString<true>(&output, "output,o", "output file (if -, write to stdout)", "FILE");
+        ctx.VarString<true>(&debug_output, "debug-print,d", "debug output file (if -, write to stdout)", "FILE");
         ctx.VarMap(&debug_format, "debug-format", "debug output format (default: text)", "{text,json}",
                    std::map<std::string, DebugOutputFormat>{
                        {"text", DebugOutputFormat::Text},
                        {"json", DebugOutputFormat::JSON},
                    });
-        ctx.VarString<true>(&cfg_output, "c,cfg-output", "control flow graph output file (if -, write to stdout)", "FILE");
+        ctx.VarString<true>(&cfg_output, "cfg-output,c", "control flow graph output file (if -, write to stdout)", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
-        ctx.VarBool(&verbose, "v,verbose", "verbose output (for debug)");
-        ctx.VarBool(&debug, "g,debug", "enable debug transformations (do not remove unused items)");
+        ctx.VarBool(&verbose, "verbose,v", "verbose output (for debug)");
+        ctx.VarBool(&debug, "debug,g", "enable debug transformations (do not remove unused items)");
+        ctx.VarString<true>(&libs2j_path, "libs2j-path", "path to libs2j (default: {executable_dir}/libs2j" futils_default_dll_suffix ")", "PATH");
     }
 };
 
@@ -67,6 +86,21 @@ auto& cerr = futils::wrap::cerr_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     ebmgen::verbose_error = flags.verbose;
+    if (flags.input_format == InputFormat::AUTO) {
+        if (flags.input.ends_with(".bgn")) {
+            flags.input_format = InputFormat::BGN;
+        }
+        else if (flags.input.ends_with(".ebm")) {
+            flags.input_format = InputFormat::EBM;
+        }
+        else if (flags.input.ends_with(".json")) {
+            flags.input_format = InputFormat::JSON_AST;
+        }
+        else {
+            cerr << "Cannot detect input format from file extension. Please specify --input-format\n";
+            return 1;
+        }
+    }
     ebm::ExtendedBinaryModule ebm;
     std::optional<ebmgen::Output> out;
     if (flags.input_format == InputFormat::EBM) {
@@ -87,7 +121,34 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
     }
     else {
-        auto ast = ebmgen::load_json(flags.input, nullptr);
+        ebmgen::expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> ast;
+        if (flags.input_format == InputFormat::BGN) {
+            const char* argv[] = {"libs2j", flags.input.data(), "--no-color", "--print-json", "--print-on-error", nullptr};
+            auto callback = [](const char* data, unsigned long long len, unsigned long long is_error, void* ast_raw) {
+                if (is_error) {
+                    cerr << std::string_view(data, len);
+                    return;
+                }
+                decltype(ast)* astp = (decltype(ast)*)ast_raw;
+                *astp = ebmgen::load_json_file(std::string_view(data, len), nullptr);
+            };
+            futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
+            futils::platform::dll::DLL libs2j(path.c_str(), false);
+            futils::platform::dll::Func<decltype(libs2j_call)> libs2j_call(libs2j, "libs2j_call");
+            if (!libs2j_call.find()) {
+                cerr << "Failed to load libs2j_call from " << flags.libs2j_path << '\n';
+                return 1;
+            }
+            int ret = libs2j_call(5, (char**)argv, S2J_CAPABILITY_FILE | S2J_CAPABILITY_IMPORTER | S2J_CAPABILITY_PARSER | S2J_CAPABILITY_AST_JSON, +callback, &ast);
+            if (ret != 0) {
+                cerr << "libs2j failed: " << ret << '\n';
+                return 1;
+            }
+        }
+        else {
+            ast = ebmgen::load_json(flags.input, nullptr);
+        }
+
         if (!ast) {
             cerr << ast.error().error<std::string>() << '\n';
             return 1;

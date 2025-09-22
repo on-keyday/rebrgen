@@ -122,7 +122,7 @@ namespace ebmgen {
                     EBMA_ADD_STATEMENT(getter_ref, std::move(func));
                     func.func_decl(std::move(setter));
                     EBMA_ADD_STATEMENT(setter_ref, std::move(func));
-                    prop = all_stmts[i].body.property_decl();
+                    prop = all_stmts[i].body.property_decl();  // refresh
                     prop->getter_function = ebm::LoweredStatementRef{getter_ref};
                     prop->setter_function = ebm::LoweredStatementRef{setter_ref};
                 }

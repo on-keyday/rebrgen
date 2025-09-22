@@ -9,4 +9,5 @@
 namespace ebmgen {
     // Function to load brgen AST from JSON
     expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json(std::string_view input, std::function<void(const char*)> timer_cb);
+    expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json_file(futils::view::rvec input, std::function<void(const char*)> timer_cb);
 }  // namespace ebmgen

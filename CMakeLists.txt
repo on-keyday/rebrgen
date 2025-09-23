@@ -145,16 +145,28 @@ install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
 if(UNIX)
-add_custom_command(
-TARGET ebmgen POST_BUILD
-COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_SOURCE_DIR}/tool/libfutils.so"
-)
-# install(PROGRAMS "${CMAKE_BINARY_DIR}/tool/libfutils.so" DESTINATION tool)
+    add_custom_command(
+    TARGET ebmgen POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.so" "${CMAKE_SOURCE_DIR}/tool/libfutils.so"
+    )
+    # if BRGEN_PATH environment variable exists, copy libs2j.so 
+    if(DEFINED ENV{BRGEN_DIR})
+    add_custom_command(
+    TARGET ebmgen POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{BRGEN_DIR}/tool/libs2j.so" "${CMAKE_SOURCE_DIR}/tool/libs2j.so"
+    )
+    endif()
 elseif(WIN32)
-add_custom_command(
-TARGET ebmgen POST_BUILD
-COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.dll" "${CMAKE_SOURCE_DIR}/tool/libfutils.dll"
-)
+    add_custom_command(
+    TARGET ebmgen POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "$ENV{FUTILS_DIR}/lib/libfutils.dll" "${CMAKE_SOURCE_DIR}/tool/libfutils.dll"
+    )
+    if(DEFINED ENV{BRGEN_DIR})
+        add_custom_command(
+        TARGET ebmgen POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy "$ENV{BRGEN_DIR}/tool/libs2j.dll" "${CMAKE_SOURCE_DIR}/tool/libs2j.dll"
+        )
+    endif()
 endif()
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)

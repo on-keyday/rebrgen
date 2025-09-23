@@ -123,7 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "${workspaceRoot}/test/simple_case.bgn",
+        "${workspaceRoot}/src/test/simple_case.bgn",
         "-o",
         "${workspaceRoot}/save/out.ebm",
         "-d",

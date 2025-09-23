@@ -1,6 +1,7 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
+#include "core/ast/file.h"
 #include "core/byte.h"
 #include <wrap/iostream.h>
 #include "ebmgen/json_printer.hpp"
@@ -121,25 +122,34 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
     }
     else {
-        ebmgen::expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> ast;
+        futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
+        futils::platform::dll::DLL libs2j(path.c_str(), false); // this is lazy load, so if not need, not loaded
+        futils::platform::dll::Func<decltype(libs2j_call)> libs2j_call(libs2j, "libs2j_call");
+        ebmgen::expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> ast;  // NOTE: definition order of this `ast` definition is important for `direct ast pass` destructor execution
         if (flags.input_format == InputFormat::BGN) {
             const char* argv[] = {"libs2j", flags.input.data(), "--no-color", "--print-json", "--print-on-error", nullptr};
             auto callback = [](const char* data, unsigned long long len, unsigned long long is_error, void* ast_raw) {
-                if (is_error) {
+                decltype(ast)* astp = (decltype(ast)*)ast_raw;
+                if (IS_DIRECT_AST_PASS(is_error)) {
+                    if (sizeof(brgen::ast::DirectASTPassInterface) != len) {
+                        *astp = ebmgen::unexpect_error("size of DirectASTPassInterface mismatch");
+                        return;
+                    }
+                    brgen::ast::DirectASTPassInterface* p = (brgen::ast::DirectASTPassInterface*)data;
+                    *astp = {*p->ast, *p->files};
+                    return;
+                }
+                if (IS_STDERR(is_error)) {
                     cerr << std::string_view(data, len);
                     return;
                 }
-                decltype(ast)* astp = (decltype(ast)*)ast_raw;
                 *astp = ebmgen::load_json_file(std::string_view(data, len), nullptr);
             };
-            futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
-            futils::platform::dll::DLL libs2j(path.c_str(), false);
-            futils::platform::dll::Func<decltype(libs2j_call)> libs2j_call(libs2j, "libs2j_call");
             if (!libs2j_call.find()) {
                 cerr << "Failed to load libs2j_call from " << flags.libs2j_path << '\n';
                 return 1;
             }
-            int ret = libs2j_call(5, (char**)argv, S2J_CAPABILITY_FILE | S2J_CAPABILITY_IMPORTER | S2J_CAPABILITY_PARSER | S2J_CAPABILITY_AST_JSON, +callback, &ast);
+            int ret = libs2j_call(5, (char**)argv, S2J_CAPABILITY_FILE | S2J_CAPABILITY_IMPORTER | S2J_CAPABILITY_PARSER | S2J_CAPABILITY_AST_JSON | S2J_CAPABILITY_DIRECT_AST_PASS, +callback, &ast);
             if (ret != 0) {
                 cerr << "libs2j failed: " << ret << '\n';
                 return 1;

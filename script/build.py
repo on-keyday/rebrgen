@@ -8,6 +8,7 @@ BUILD_TYPE = sys.argv[2] if len(sys.argv) > 2 else "Debug"
 BUILD_MODE = sys.argv[1] if len(sys.argv) > 1 else "native"
 INSTALL_PREFIX = "."
 FUTILS_DIR = os.getenv("FUTILS_DIR", "C:/workspace/utils_backup")
+BRGEN_DIR = os.getenv("BRGEN_DIR", "C:/workspace/shbrgen/brgen")
 
 print("BUILD_TYPE:", BUILD_TYPE)
 print("BUILD_MODE:", BUILD_MODE)
@@ -24,6 +25,8 @@ else:
 
 os.environ["FUTILS_DIR"] = FUTILS_DIR
 os.environ["BUILD_MODE"] = BUILD_MODE
+if os.path.exists(BRGEN_DIR):
+    os.environ["BRGEN_DIR"] = BRGEN_DIR
 
 
 def source_emsdk():

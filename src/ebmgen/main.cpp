@@ -43,7 +43,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
-    InputFormat input_format = InputFormat::JSON_AST;
+    InputFormat input_format = InputFormat::AUTO;
     DebugOutputFormat debug_format = DebugOutputFormat::Text;
     std::string_view cfg_output;
     bool base64 = false;
@@ -62,7 +62,6 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&input, "input,i", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
         ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm,bgn}",
                    std::map<std::string, InputFormat>{
-                       {"auto", InputFormat::AUTO},
                        {"bgn", InputFormat::BGN},
                        {"ebm", InputFormat::EBM},
                        {"json-ast", InputFormat::JSON_AST},

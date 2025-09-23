@@ -144,7 +144,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 *astp = ebmgen::load_json_file(std::string_view(data, len), nullptr);
             };
-            if (!libs2j_call.find()) {
+            if (!libs2j_call.find()) { // load dll here
                 cerr << "Failed to load libs2j_call from " << flags.libs2j_path << '\n';
                 return 1;
             }

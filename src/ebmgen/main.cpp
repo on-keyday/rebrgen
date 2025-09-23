@@ -119,6 +119,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "error: failed to load ebm" << err.template error<std::string>() << '\n';
             return 1;
         }
+        if(!r.empty()){
+            cerr << "error: extra data at the end of file\n";
+            return 1;
+        }
     }
     else {
         futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
@@ -174,6 +178,15 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     std::optional<ebmgen::MappingTable> table;
     if (!flags.debug_output.empty() || !flags.cfg_output.empty()) {
         table.emplace(ebm);
+    }
+    if(flags.input_format ==InputFormat::EBM) {
+        if(!table){
+            table.emplace(ebm);
+        }
+        if(!table->valid()){
+            cerr<<"error: invalid ebm structure\n";
+            return 1;
+        }
     }
 
     // Debug print if requested

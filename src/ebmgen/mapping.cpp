@@ -148,4 +148,19 @@ namespace ebmgen {
         return nullptr;
     }
 
+    bool MappingTable::valid() const {
+        auto original_id_count =  module_.identifiers.size() +
+                                  module_.strings.size() +
+                                  module_.types.size() +
+                                  module_.statements.size() +
+                                  module_.expressions.size() +
+                                  module_.aliases.size();
+        auto mapped_id_count =  identifier_map_.size() +
+                                string_literal_map_.size() +
+                                type_map_.size() +
+                                statement_map_.size() +
+                                expression_map_.size();
+        return original_id_count == mapped_id_count;
+    }
+
 }  // namespace ebmgen

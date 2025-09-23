@@ -20,6 +20,9 @@ namespace ebmgen {
             : module_(module) {
             build_maps();
         }
+
+        bool valid() const;
+
         const ebm::Identifier* get_identifier(const ebm::IdentifierRef& ref) const;
         const ebm::StringLiteral* get_string_literal(const ebm::StringRef& ref) const;
         const ebm::Type* get_type(const ebm::TypeRef& ref) const;

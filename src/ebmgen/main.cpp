@@ -119,19 +119,19 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "error: failed to load ebm" << err.template error<std::string>() << '\n';
             return 1;
         }
-        if(!r.empty()){
+        if (!r.empty()) {
             cerr << "error: extra data at the end of file\n";
             return 1;
         }
     }
     else {
         futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
-        futils::platform::dll::DLL libs2j(path.c_str(), false); // this is lazy load, so if not need, not loaded
+        futils::platform::dll::DLL libs2j(path.c_str(), false);  // this is lazy load, so if not need, not loaded
         futils::platform::dll::Func<decltype(libs2j_call)> libs2j_call(libs2j, "libs2j_call");
         ebmgen::expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> ast;  // NOTE: definition order of this `ast` definition is important for `direct ast pass` destructor execution
         if (flags.input_format == InputFormat::BGN) {
             const char* argv[] = {"libs2j", flags.input.data(), "--no-color", "--print-json", "--print-on-error", nullptr};
-            auto callback = [](const char* data, unsigned long long len, unsigned long long is_error, void* ast_raw) {
+            auto callback = [](const char* data, size_t len, size_t is_error, void* ast_raw) {
                 decltype(ast)* astp = (decltype(ast)*)ast_raw;
                 if (IS_DIRECT_AST_PASS(is_error)) {
                     if (sizeof(brgen::ast::DirectASTPassInterface) != len) {
@@ -148,7 +148,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 *astp = ebmgen::load_json_file(std::string_view(data, len), nullptr);
             };
-            if (!libs2j_call.find()) { // load dll here
+            if (!libs2j_call.find()) {  // load dll here
                 cerr << "Failed to load libs2j_call from " << flags.libs2j_path << '\n';
                 return 1;
             }
@@ -179,12 +179,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (!flags.debug_output.empty() || !flags.cfg_output.empty()) {
         table.emplace(ebm);
     }
-    if(flags.input_format ==InputFormat::EBM) {
-        if(!table){
+    if (flags.input_format == InputFormat::EBM) {
+        if (!table) {
             table.emplace(ebm);
         }
-        if(!table->valid()){
-            cerr<<"error: invalid ebm structure\n";
+        if (!table->valid()) {
+            cerr << "error: invalid ebm structure\n";
             return 1;
         }
     }

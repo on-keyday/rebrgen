@@ -16,7 +16,7 @@ namespace ebmgen {
                             inverse_refs_[get_id(val)].push_back(InverseRef{
                                 .name = name,
                                 .index = index,
-                                .ref = ebm::AnyRef{item.id.id},
+                                .ref = to_any_ref(item.id),
                                 .hint = hint,
                             });
                         }
@@ -41,7 +41,7 @@ namespace ebmgen {
             map[get_id(alias.from)] = map[get_id(alias.to)];
             inverse_refs_[get_id(alias.to)].push_back(InverseRef{
                 .name = to_string(alias.hint),
-                .ref = ebm::AnyRef{alias.from.id},
+                .ref = to_any_ref(alias.from),
                 .hint = ebm::AliasHint::ALIAS,
             });
         };
@@ -94,6 +94,25 @@ namespace ebmgen {
     const ebm::Expression* MappingTable::get_expression(const ebm::ExpressionRef& ref) const {
         auto it = expression_map_.find(get_id(ref));
         return (it != expression_map_.end()) ? it->second : nullptr;
+    }
+
+    std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> MappingTable::get_object(const ebm::AnyRef& ref) {
+        if (auto i = get_identifier(ebm::IdentifierRef{ref.id})) {
+            return i;
+        }
+        if (auto s = get_string_literal(ebm::StringRef{ref.id})) {
+            return s;
+        }
+        if (auto t = get_type(ebm::TypeRef{ref.id})) {
+            return t;
+        }
+        if (auto s = get_statement(ebm::StatementRef{ref.id})) {
+            return s;
+        }
+        if (auto e = get_expression(ebm::ExpressionRef{ref.id})) {
+            return e;
+        }
+        return std::monostate{};
     }
 
     const std::vector<InverseRef>* MappingTable::get_inverse_ref(const ebm::AnyRef& ref) const {
@@ -149,17 +168,17 @@ namespace ebmgen {
     }
 
     bool MappingTable::valid() const {
-        auto original_id_count =  module_.identifiers.size() +
-                                  module_.strings.size() +
-                                  module_.types.size() +
-                                  module_.statements.size() +
-                                  module_.expressions.size() +
-                                  module_.aliases.size();
-        auto mapped_id_count =  identifier_map_.size() +
-                                string_literal_map_.size() +
-                                type_map_.size() +
-                                statement_map_.size() +
-                                expression_map_.size();
+        auto original_id_count = module_.identifiers.size() +
+                                 module_.strings.size() +
+                                 module_.types.size() +
+                                 module_.statements.size() +
+                                 module_.expressions.size() +
+                                 module_.aliases.size();
+        auto mapped_id_count = identifier_map_.size() +
+                               string_literal_map_.size() +
+                               type_map_.size() +
+                               statement_map_.size() +
+                               expression_map_.size();
         return original_id_count == mapped_id_count;
     }
 

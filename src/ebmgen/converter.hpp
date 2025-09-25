@@ -100,8 +100,8 @@ namespace ebmgen {
                 // add alias if the same body is already present
                 aliases.push_back(ebm::RefAlias{
                     .hint = hint,
-                    .from = ebm::AnyRef{id.id},
-                    .to = ebm::AnyRef{it->second.id},
+                    .from = to_any_ref(id),
+                    .to = to_any_ref(it->second),
                 });
                 alias_id_map[get_id(id)] = get_id(it->second);
                 return id;
@@ -379,7 +379,7 @@ namespace ebmgen {
             MAYBE(column, varint(loc.col));
             MAYBE(start, varint(loc.pos.begin));
             MAYBE(end, varint(loc.pos.end));
-            debug_loc.ident = ebm::AnyRef{ref.id};
+            debug_loc.ident = to_any_ref(ref);
             debug_loc.file_id = file_id;
             debug_loc.line = line;
             debug_loc.column = column;

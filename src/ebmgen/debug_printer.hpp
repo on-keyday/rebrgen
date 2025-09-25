@@ -14,6 +14,12 @@ namespace ebmgen {
 
         void print_module() const;
 
+        void print_object(const ebm::Identifier& obj) const;
+        void print_object(const ebm::StringLiteral& obj) const;
+        void print_object(const ebm::Type& obj) const;
+        void print_object(const ebm::Statement& obj) const;
+        void print_object(const ebm::Expression& obj) const;
+
        private:
         std::ostream& os_;  // Reference to the output stream
         const MappingTable& module_;

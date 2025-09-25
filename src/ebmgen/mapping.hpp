@@ -3,6 +3,7 @@
 #include <ebm/extended_binary_module.hpp>
 #include <unordered_map>
 #include <cstdint>
+#include <variant>
 #include <vector>
 #include "common.hpp"
 
@@ -29,6 +30,8 @@ namespace ebmgen {
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
+        std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> get_object(const ebm::AnyRef& ref);
+
         std::optional<ebm::TypeKind> get_type_kind(const ebm::TypeRef& ref) const {
             if (const auto* type = get_type(ref)) {
                 return type->body.kind;
@@ -54,7 +57,7 @@ namespace ebmgen {
 
         template <AnyRef T>
         std::string get_identifier_or(const ebm::IdentifierRef& ref, const T& default_ref, std::string_view prefix = "tmp") const {
-            return get_identifier_or(ref, ebm::AnyRef{default_ref.id}, prefix);
+            return get_identifier_or(ref, to_any_ref(default_ref), prefix);
         }
 
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;

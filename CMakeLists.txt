@@ -92,6 +92,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/transform/io_vectorized.cpp"
     "src/ebmgen/transform/remove_unused.cpp"
     "src/ebmgen/transform/bit_fields.cpp"
+    "src/ebmgen/interactive/debugger.cpp"
 )
 
 target_link_libraries(ebm_mapping ebm futils)

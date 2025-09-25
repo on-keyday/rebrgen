@@ -237,4 +237,20 @@ namespace ebmgen {
         indent_level_--;
     }
 
+    void DebugPrinter::print_object(const ebm::Identifier& ref) const {
+        print_value(ref);
+    }
+    void DebugPrinter::print_object(const ebm::StringLiteral& ref) const {
+        print_value(ref);
+    }
+    void DebugPrinter::print_object(const ebm::Type& ref) const {
+        print_value(ref);
+    }
+    void DebugPrinter::print_object(const ebm::Statement& ref) const {
+        print_value(ref);
+    }
+    void DebugPrinter::print_object(const ebm::Expression& ref) const {
+        print_value(ref);
+    }
+
 }  // namespace ebmgen

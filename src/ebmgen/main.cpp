@@ -26,6 +26,7 @@
 #include <env/env_sys.h>
 #include <wrap/exepath.h>
 #include <filesystem>
+#include "interactive/debugger.hpp"
 
 enum class DebugOutputFormat {
     Text,
@@ -51,6 +52,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool debug = false;
     std::string_view libs2j_path;  // Path to libs2j directory
     std::string env_libs2j_path;
+    bool interactive = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -78,6 +80,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&verbose, "verbose,v", "verbose output (for debug)");
         ctx.VarBool(&debug, "debug,g", "enable debug transformations (do not remove unused items)");
         ctx.VarString<true>(&libs2j_path, "libs2j-path", "path to libs2j (default: {executable_dir}/libs2j" futils_default_dll_suffix ")", "PATH");
+        ctx.VarBool(&interactive, "interactive,I", "start interactive debugger");
     }
 };
 
@@ -176,7 +179,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     std::optional<ebmgen::MappingTable> table;
-    if (!flags.debug_output.empty() || !flags.cfg_output.empty()) {
+    if (!flags.debug_output.empty() || !flags.cfg_output.empty() || flags.interactive) {
         table.emplace(ebm);
     }
     if (flags.input_format == InputFormat::EBM) {
@@ -309,11 +312,18 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                  << "Output written to: " << flags.output << '\n';
         }
     }
+
+    if (flags.interactive) {
+        ebmgen::interactive_debugger(*table);
+    }
+
     return 0;
 }
 
 int main(int argc, char** argv) {
     futils::wrap::U8Arg _(argc, argv);
+    futils::wrap::cout_wrap().set_virtual_terminal(true);
+    futils::wrap::cerr_wrap().set_virtual_terminal(true);
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags,

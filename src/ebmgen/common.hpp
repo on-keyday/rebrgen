@@ -164,7 +164,7 @@ namespace ebmgen {
         else if (error_convertible<decltype(o)>) {
             return unexpect_error_with_loc(loc, std::move(o.error()), out, expr);
         }
-        else{
+        else {
             return unexpect_error_with_loc(loc, unexpected_nullptr(), out, expr);
         }
     }
@@ -187,5 +187,10 @@ namespace ebmgen {
     template <AnyRef T>
     constexpr std::uint64_t get_id(T t) {
         return t.id.value();
+    }
+
+    template <AnyRef T>
+    constexpr ebm::AnyRef to_any_ref(T t) {
+        return ebm::AnyRef{t.id};
     }
 }  // namespace ebmgen

@@ -21,7 +21,7 @@
 // This code is included within the visit_Statement_FUNCTION_DECL function.
 // We can use variables like `visitor` and `func_decl` directly.
 CodeWriter w;
-auto func_name = this->module_.get_identifier_or(func_decl.name, ebm::AnyRef{item_id.id}, "function");
+auto func_name = this->module_.get_identifier_or(func_decl.name, item_id, "function");
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 std::string params_str = "";

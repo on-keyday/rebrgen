@@ -25,8 +25,8 @@ namespace ebmgen {
                     item.body.visit([&](auto&& visitor, const char* name, auto&& val) -> void {
                         if constexpr (AnyRef<decltype(val)>) {
                             if (!is_nil(val)) {
-                                inverse_refs[get_id(val)].push_back(ebm::AnyRef{item.id.id});
-                                use_refs[get_id(item.id)].push_back(ebm::AnyRef{val.id});
+                                inverse_refs[get_id(val)].push_back(to_any_ref(item.id));
+                                use_refs[get_id(item.id)].push_back(to_any_ref(val));
                             }
                         }
                         else
@@ -47,19 +47,19 @@ namespace ebmgen {
                 }
                 switch (alias.hint) {
                     case ebm::AliasHint::IDENTIFIER:
-                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(to_any_ref(alias.from));
                         break;
                     case ebm::AliasHint::STATEMENT:
-                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(to_any_ref(alias.from));
                         break;
                     case ebm::AliasHint::STRING:
-                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(to_any_ref(alias.from));
                         break;
                     case ebm::AliasHint::EXPRESSION:
-                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(to_any_ref(alias.from));
                         break;
                     case ebm::AliasHint::TYPE:
-                        inverse_refs[get_id(alias.to)].push_back(ebm::AnyRef{alias.from.id});
+                        inverse_refs[get_id(alias.to)].push_back(to_any_ref(alias.from));
                         break;
                     case ebm::AliasHint::ALIAS:
                         return unexpect_error("Alias hint should not contains ALIAS: {} -> {}", get_id(alias.from), get_id(alias.to));

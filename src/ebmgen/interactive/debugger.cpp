@@ -500,8 +500,8 @@ namespace ebmgen {
 
         void print_help() {
             cout << "Commands:\n";
-            cout << "  help               Show this help message\n";
-            cout << "  exit, quit        Exit the debugger\n";
+            cout << "  help             Show this help message\n";
+            cout << "  exit, quit       Exit the debugger\n";
             cout << "  print <id>       Print the object with the given identifier\n";
             cout << "  p <id>           Alias for print\n";
             cout << "  pr <id>          Alias for print\n";

@@ -8,6 +8,7 @@
 #include <string>
 #include <type_traits>
 #include <unordered_set>
+#include <variant>
 #include "comb2/composite/number.h"
 #include "comb2/composite/range.h"
 #include "comb2/composite/string.h"
@@ -46,7 +47,7 @@ namespace ebmgen {
         constexpr auto or_op = str(NodeType::Operator, lit("or") | lit("||"));
         constexpr auto not_op = str(NodeType::Operator, lit("not") | lit("!"));
         constexpr auto number = str(NodeType::Number, futils::comb2::composite::hex_integer | futils::comb2::composite::dec_integer);
-        constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*(lit(".") & +futils::comb2::composite::c_ident));
+        constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*((lit(".") & +futils::comb2::composite::c_ident) | lit("[") & +futils::comb2::composite::dec_integer & +lit("]")));
         constexpr auto string_lit = str(NodeType::StringLit, futils::comb2::composite::c_str);
         constexpr auto expr_recurse = method_proxy(expr);
         constexpr auto compare_recurse = method_proxy(compare);
@@ -58,7 +59,7 @@ namespace ebmgen {
         constexpr auto and_expr = group(NodeType::BinaryOp, compare & -(and_op & +and_recurse));
         constexpr auto or_expr = group(NodeType::BinaryOp, and_expr & -(or_op & +or_recurse));
         constexpr auto expr = or_expr;
-        constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression"));
+        constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Any"));
         constexpr auto object = group(NodeType::Object, object_type& spaces & +lit("{") & spaces & +expr_recurse & spaces & +lit("}"));
         constexpr auto full_expr = spaces & ~(object & spaces) & spaces & eos;
         struct Recurse {
@@ -130,11 +131,37 @@ namespace ebmgen {
             cout << "----\n";
         }
 
-        using EvalValue = std::variant<bool, std::uint64_t, std::string>;
+        using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef>;
 
         struct EvalContext {
+            MappingTable& table;
             std::vector<EvalValue> stack;
             std::map<std::string, EvalValue> variables;
+
+            template <class T>
+            void unwrap_any_ref(EvalValue& value) {
+                if (std::holds_alternative<ebm::AnyRef>(value)) {
+                    auto ref = std::get<ebm::AnyRef>(value);
+                    if constexpr (std::is_same_v<T, std::string>) {
+                        auto ident = table.get_identifier(ref);
+                        if (ident) {
+                            value = ident->body.data;
+                        }
+                        else {
+                            auto str_lit = table.get_string_literal(ebm::StringRef{ref.id});
+                            if (str_lit) {
+                                value = str_lit->body.data;
+                            }
+                        }
+                    }
+                    else if (std::is_same_v<T, std::uint64_t>) {
+                        value = get_id(ref);
+                    }
+                    else if (std::is_same_v<T, bool>) {
+                        value = !is_nil(ref);
+                    }
+                }
+            }
         };
 
         using EvalFunc = std::function<bool(EvalContext&)>;
@@ -153,6 +180,7 @@ namespace ebmgen {
 
 #define CHECK_AND_TAKE_AS(var, T)              \
     CHECK_AND_TAKE(var##__);                   \
+    ctx.unwrap_any_ref<T>(var##__);            \
     if (!std::holds_alternative<T>(var##__)) { \
         return false;                          \
     }                                          \
@@ -212,6 +240,24 @@ namespace ebmgen {
                                         return false;
                                     }
                                     CHECK_AND_TAKE(right_value);
+                                    auto adjust_any_ref = [&](EvalValue& any_ref, EvalValue& adjust_to) {
+                                        if (std::holds_alternative<std::string>(adjust_to)) {
+                                            ctx.unwrap_any_ref<std::string>(any_ref);
+                                        }
+                                        else if (std::holds_alternative<std::uint64_t>(adjust_to)) {
+                                            ctx.unwrap_any_ref<std::uint64_t>(any_ref);
+                                        }
+                                        else if (std::holds_alternative<bool>(adjust_to)) {
+                                            ctx.unwrap_any_ref<bool>(any_ref);
+                                        }
+                                    };
+                                    if (std::holds_alternative<ebm::AnyRef>(left_value) && !std::holds_alternative<ebm::AnyRef>(right_value)) {
+                                        adjust_any_ref(left_value, right_value);
+                                    }
+                                    else if (std::holds_alternative<ebm::AnyRef>(right_value) && !std::holds_alternative<ebm::AnyRef>(left_value)) {
+                                        adjust_any_ref(right_value, left_value);
+                                    }
+
                                     bool result = false;
                                     if (std::holds_alternative<bool>(left_value) && std::holds_alternative<bool>(right_value)) {
                                         auto l = std::get<bool>(left_value);
@@ -259,6 +305,19 @@ namespace ebmgen {
                                         }
                                         else if (op == "<=") {
                                             result = (l <= r);
+                                        }
+                                    }
+                                    else if (std::holds_alternative<ebm::AnyRef>(left_value) && std::holds_alternative<ebm::AnyRef>(right_value)) {
+                                        auto l = std::get<ebm::AnyRef>(left_value);
+                                        auto r = std::get<ebm::AnyRef>(right_value);
+                                        if (op == "==") {
+                                            result = (get_id(l) == get_id(r));
+                                        }
+                                        else if (op == "!=") {
+                                            result = (get_id(l) != get_id(r));
+                                        }
+                                        else {
+                                            return false;
                                         }
                                     }
                                     else {
@@ -406,6 +465,7 @@ namespace ebmgen {
             if (!setup_evaluator(eval)) {
                 return;
             }
+            size_t count = 0;
             auto for_each = [&](Object& obj, auto& objects) {
                 std::vector<std::string> idents;
                 auto qualified_name = [&](const char* name) -> std::string {
@@ -415,7 +475,7 @@ namespace ebmgen {
                     return name;
                 };
                 for (auto& t : objects) {
-                    EvalContext ctx;
+                    EvalContext ctx{table};
                     t.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
                         using T = std::decay_t<decltype(value)>;
                         if constexpr (std::is_same_v<T, ebm::Varint>) {
@@ -425,7 +485,7 @@ namespace ebmgen {
                         }
                         else if constexpr (AnyRef<T>) {
                             if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = get_id(value);
+                                ctx.variables[qualified_name(name)] = to_any_ref(value);
                             }
                         }
                         else if constexpr (std::is_same_v<T, bool>) {
@@ -475,6 +535,7 @@ namespace ebmgen {
                             printer.print_object(t);
                             cout << print_buf.str();
                             cout << "----\n";
+                            count++;
                         }
                     }
                 }
@@ -495,7 +556,18 @@ namespace ebmgen {
                 else if (obj.type == "Expression") {
                     for_each(obj, table.module().expressions);
                 }
+                else if (obj.type == "Any") {
+                    for_each(obj, table.module().identifiers);
+                    for_each(obj, table.module().strings);
+                    for_each(obj, table.module().types);
+                    for_each(obj, table.module().statements);
+                    for_each(obj, table.module().expressions);
+                }
+                else {
+                    cout << "Unknown object type: " << obj.type << "\n";
+                }
             }
+            cout << "Total matched objects: " << count << "\n";
         }
 
         void print_help() {
@@ -518,6 +590,9 @@ namespace ebmgen {
                 cout << "ebmgen> ";
                 line.clear();
                 cin >> line;
+                while (!line.empty() && (line.back() == '\n' || line.back() == '\r')) {
+                    line.pop_back();
+                }
                 std::set<std::string> temporary_buffer;
                 args = futils::comb2::cmdline::command_line<std::vector<std::string_view>>(std::string_view(line), [&](auto& buf) {
                     buf = buf.substr(1, buf.size() - 2);

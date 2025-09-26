@@ -30,7 +30,7 @@ namespace ebmgen {
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
-        std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> get_object(const ebm::AnyRef& ref);
+        std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> get_object(const ebm::AnyRef& ref) const;
 
         std::optional<ebm::TypeKind> get_type_kind(const ebm::TypeRef& ref) const {
             if (const auto* type = get_type(ref)) {
@@ -64,6 +64,10 @@ namespace ebmgen {
         std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "tmp") const;
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
+
+        const ebm::Identifier* get_identifier(const ebm::TypeRef& ref) const;
+
+        const ebm::Identifier* get_identifier(const ebm::AnyRef& ref) const;
 
         // same as get_statement(ebm::StatementRef{module().max_id.id})
         const ebm::Statement* get_entry_point() const;

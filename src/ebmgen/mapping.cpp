@@ -96,7 +96,7 @@ namespace ebmgen {
         return (it != expression_map_.end()) ? it->second : nullptr;
     }
 
-    std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> MappingTable::get_object(const ebm::AnyRef& ref) {
+    std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> MappingTable::get_object(const ebm::AnyRef& ref) const {
         if (auto i = get_identifier(ebm::IdentifierRef{ref.id})) {
             return i;
         }
@@ -165,6 +165,39 @@ namespace ebmgen {
             return get_identifier(*expr->body.id());
         }
         return nullptr;
+    }
+
+    const ebm::Identifier* MappingTable::get_identifier(const ebm::TypeRef& ref) const {
+        if (auto type = get_type(ref); type && type->body.id()) {
+            return get_identifier(*type->body.id());
+        }
+        return nullptr;
+    }
+
+    const ebm::Identifier* MappingTable::get_identifier(const ebm::AnyRef& ref) const {
+        auto obj = get_object(ref);
+        return std::visit(
+            [&](auto&& obj) -> const ebm::Identifier* {
+                using T = std::decay_t<decltype(obj)>;
+                if constexpr (std::is_same_v<T, const ebm::Identifier*>) {
+                    return obj;
+                }
+                else if constexpr (std::is_same_v<T, const ebm::Type*>) {
+                    if (obj->body.id()) {
+                        return get_identifier(*obj->body.id());
+                    }
+                }
+                else if constexpr (std::is_same_v<T, const ebm::Statement*>) {
+                    return get_identifier(ebm::StatementRef{obj->id.id});
+                }
+                else if constexpr (std::is_same_v<T, const ebm::Expression*>) {
+                    if (obj->body.id()) {
+                        return get_identifier(*obj->body.id());
+                    }
+                }
+                return nullptr;
+            },
+            obj);
     }
 
     bool MappingTable::valid() const {

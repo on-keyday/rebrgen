@@ -194,3 +194,27 @@ namespace ebmgen {
         return ebm::AnyRef{t.id};
     }
 }  // namespace ebmgen
+
+namespace ebm {
+    constexpr bool operator==(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
+        return ebmgen::get_id(lhs) == ebmgen::get_id(rhs);
+    }
+
+    constexpr bool operator!=(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
+        return !(lhs == rhs);
+    }
+
+    constexpr auto operator<=>(const ebm::AnyRef& lhs, const ebm::AnyRef& rhs) {
+        return ebmgen::get_id(lhs) <=> ebmgen::get_id(rhs);
+    }
+
+}  // namespace ebm
+
+namespace std {
+    template <>
+    struct hash<ebm::AnyRef> {
+        size_t operator()(const ebm::AnyRef& ref) const noexcept {
+            return std::hash<std::uint64_t>{}(ebmgen::get_id(ref));
+        }
+    };
+}  // namespace std

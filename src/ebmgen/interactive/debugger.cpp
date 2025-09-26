@@ -1,6 +1,7 @@
 /*license*/
 #include <wrap/cin.h>
 #include <wrap/cout.h>
+#include <algorithm>
 #include <cstddef>
 #include <memory>
 #include <set>
@@ -46,31 +47,35 @@ namespace ebmgen {
         constexpr auto and_op = str(NodeType::Operator, lit("and") | lit("&&"));
         constexpr auto or_op = str(NodeType::Operator, lit("or") | lit("||"));
         constexpr auto not_op = str(NodeType::Operator, lit("not") | lit("!"));
+        constexpr auto in_op = str(NodeType::Operator, lit("in"));
         constexpr auto number = str(NodeType::Number, futils::comb2::composite::hex_integer | futils::comb2::composite::dec_integer);
-        constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*((lit(".") & +futils::comb2::composite::c_ident) | lit("[") & +futils::comb2::composite::dec_integer & +lit("]")));
+        constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*(((lit(".") | lit("->")) & +futils::comb2::composite::c_ident) | lit("[") & +futils::comb2::composite::dec_integer & +lit("]")));
         constexpr auto string_lit = str(NodeType::StringLit, futils::comb2::composite::c_str);
         constexpr auto expr_recurse = method_proxy(expr);
         constexpr auto compare_recurse = method_proxy(compare);
         constexpr auto and_recurse = method_proxy(and_expr);
         constexpr auto or_recurse = method_proxy(or_expr);
-        constexpr auto primary = spaces & +(string_lit | number | ident | ('('_l & expr_recurse & +')'_l)) & spaces;
+        constexpr auto object_recurse = method_proxy(object);
+        constexpr auto primary = spaces & +(string_lit | number | object_recurse | ident | ('('_l & expr_recurse & +')'_l)) & spaces;
         constexpr auto unary_op = group(NodeType::UnaryOp, (not_op & +primary) | +primary);
-        constexpr auto compare = group(NodeType::BinaryOp, unary_op & -(compare_op & +compare_recurse));
+        constexpr auto in_object = group(NodeType::BinaryOp, (unary_op & -(in_op & spaces & +unary_op)));
+        constexpr auto compare = group(NodeType::BinaryOp, in_object & -(compare_op & +compare_recurse));
         constexpr auto and_expr = group(NodeType::BinaryOp, compare & -(and_op & +and_recurse));
         constexpr auto or_expr = group(NodeType::BinaryOp, and_expr & -(or_op & +or_recurse));
         constexpr auto expr = or_expr;
         constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Any"));
         constexpr auto object = group(NodeType::Object, object_type& spaces & +lit("{") & spaces & +expr_recurse & spaces & +lit("}"));
-        constexpr auto full_expr = spaces & ~(object & spaces) & spaces & eos;
+        constexpr auto full_expr = spaces & ~(object_recurse & spaces) & spaces & eos;
         struct Recurse {
             decltype(expr) expr;
             decltype(compare) compare;
             decltype(and_expr) and_expr;
             decltype(or_expr) or_expr;
+            decltype(object) object;
         };
-        constexpr Recurse recurse{expr, compare, and_expr, or_expr};
+        constexpr Recurse recurse{expr, compare, and_expr, or_expr, object};
         constexpr auto check = []() {
-            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"}");
+            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"} Any { body.condition->body.kind == \"Identifier\" or body.condition in Any { id == 456 } }");
             return full_expr(seq, futils::comb2::test::TestContext<>{}, recurse) == futils::comb2::Status::match;
         };
 
@@ -131,7 +136,9 @@ namespace ebmgen {
             cout << "----\n";
         }
 
-        using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef>;
+        using ObjectSet = std::unordered_set<ebm::AnyRef>;
+
+        using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef, ObjectSet>;
 
         struct EvalContext {
             MappingTable& table;
@@ -163,8 +170,16 @@ namespace ebmgen {
                 }
             }
         };
+        enum class ExecutionResult {
+            Success,
+            Exit,
+            StackEmpty,
+            TypeMismatch,
+            InvalidOperator,
+            IdentifierNotFound,
+        };
 
-        using EvalFunc = std::function<bool(EvalContext&)>;
+        using EvalFunc = std::function<ExecutionResult(EvalContext&)>;
 
         struct Object {
             std::string type;
@@ -173,7 +188,7 @@ namespace ebmgen {
         };
 #define CHECK_AND_TAKE(var)                 \
     if (ctx.stack.empty()) {                \
-        return false;                       \
+        return ExecutionResult::StackEmpty; \
     }                                       \
     auto var = std::move(ctx.stack.back()); \
     ctx.stack.pop_back()
@@ -182,7 +197,7 @@ namespace ebmgen {
     CHECK_AND_TAKE(var##__);                   \
     ctx.unwrap_any_ref<T>(var##__);            \
     if (!std::holds_alternative<T>(var##__)) { \
-        return false;                          \
+        return ExecutionResult::TypeMismatch;  \
     }                                          \
     auto var = std::get<T>(var##__)
 
@@ -191,6 +206,43 @@ namespace ebmgen {
         };
         using NodeType = query::NodeType;
         using Node = futils::comb2::tree::node::GenericNode<NodeType>;
+
+#define RETURN_EXEC_FAILURE(expr)                                 \
+    do {                                                          \
+        if (auto res = (expr); res != ExecutionResult::Success) { \
+            return res;                                           \
+        }                                                         \
+    } while (0)
+
+        ExecutionResult query_short_circuit(EvalContext& ctx, const EvalFunc& left, const EvalFunc& right, bool short_circuit) {
+            RETURN_EXEC_FAILURE(left(ctx));
+            CHECK_AND_TAKE_AS(left_value, bool);
+            if (left_value == short_circuit) {
+                ctx.stack.push_back(EvalValue{left_value});
+                return ExecutionResult::Success;
+            }
+            return right(ctx);
+        }
+
+        static void adjust_operands(EvalContext& ctx, EvalValue& left_value, EvalValue& right_value) {
+            auto adjust_any_ref = [&](EvalValue& any_ref, EvalValue& adjust_to) {
+                if (std::holds_alternative<std::string>(adjust_to)) {
+                    ctx.unwrap_any_ref<std::string>(any_ref);
+                }
+                else if (std::holds_alternative<std::uint64_t>(adjust_to)) {
+                    ctx.unwrap_any_ref<std::uint64_t>(any_ref);
+                }
+                else if (std::holds_alternative<bool>(adjust_to)) {
+                    ctx.unwrap_any_ref<bool>(any_ref);
+                }
+            };
+            if (std::holds_alternative<ebm::AnyRef>(left_value) && !std::holds_alternative<ebm::AnyRef>(right_value)) {
+                adjust_any_ref(left_value, right_value);
+            }
+            else if (std::holds_alternative<ebm::AnyRef>(right_value) && !std::holds_alternative<ebm::AnyRef>(left_value)) {
+                adjust_any_ref(right_value, left_value);
+            }
+        }
 
         expected<EvalFunc> eval_expr(Object& object, const std::shared_ptr<Node>& node) {
             using futils::comb2::tree::node::as_group, futils::comb2::tree::node::as_tok;
@@ -204,60 +256,25 @@ namespace ebmgen {
                         auto op = as_tok<NodeType>(g->children[1]);
                         MAYBE(right, eval_expr(object, g->children[2]));
                         if (op && op->tag == NodeType::Operator) {
-                            if (op->token == "and" || op->token == "&&") {
-                                return [left = std::move(left), right = std::move(right)](EvalContext& ctx) {
-                                    if (!left(ctx)) {
-                                        return false;
-                                    }
-                                    CHECK_AND_TAKE_AS(left_value, bool);
-                                    if (!left_value) {
-                                        ctx.stack.push_back(EvalValue{false});
-                                        return true;
-                                    }
-                                    return right(ctx);
+                            if (op->token == "in") {
+                            }
+                            else if (op->token == "and" || op->token == "&&") {
+                                return [this, left = std::move(left), right = std::move(right)](EvalContext& ctx) {
+                                    return query_short_circuit(ctx, left, right, false);
                                 };
                             }
                             else if (op->token == "or" || op->token == "||") {
-                                return [left = std::move(left), right = std::move(right)](EvalContext& ctx) {
-                                    if (!left(ctx)) {
-                                        return false;
-                                    }
-                                    CHECK_AND_TAKE_AS(left_value, bool);
-                                    if (left_value) {
-                                        ctx.stack.push_back(EvalValue{true});
-                                        return true;
-                                    }
-                                    return right(ctx);
+                                return [this, left = std::move(left), right = std::move(right)](EvalContext& ctx) {
+                                    return query_short_circuit(ctx, left, right, true);
                                 };
                             }
                             else if (op->token == "==" || op->token == "!=" || op->token == ">" || op->token == ">=" || op->token == "<" || op->token == "<=") {
-                                return [left = std::move(left), right = std::move(right), op = op->token](EvalContext& ctx) {
-                                    if (!left(ctx)) {
-                                        return false;
-                                    }
+                                return [this, left = std::move(left), right = std::move(right), op = op->token](EvalContext& ctx) {
+                                    RETURN_EXEC_FAILURE(left(ctx));
                                     CHECK_AND_TAKE(left_value);
-                                    if (!right(ctx)) {
-                                        return false;
-                                    }
+                                    RETURN_EXEC_FAILURE(right(ctx));
                                     CHECK_AND_TAKE(right_value);
-                                    auto adjust_any_ref = [&](EvalValue& any_ref, EvalValue& adjust_to) {
-                                        if (std::holds_alternative<std::string>(adjust_to)) {
-                                            ctx.unwrap_any_ref<std::string>(any_ref);
-                                        }
-                                        else if (std::holds_alternative<std::uint64_t>(adjust_to)) {
-                                            ctx.unwrap_any_ref<std::uint64_t>(any_ref);
-                                        }
-                                        else if (std::holds_alternative<bool>(adjust_to)) {
-                                            ctx.unwrap_any_ref<bool>(any_ref);
-                                        }
-                                    };
-                                    if (std::holds_alternative<ebm::AnyRef>(left_value) && !std::holds_alternative<ebm::AnyRef>(right_value)) {
-                                        adjust_any_ref(left_value, right_value);
-                                    }
-                                    else if (std::holds_alternative<ebm::AnyRef>(right_value) && !std::holds_alternative<ebm::AnyRef>(left_value)) {
-                                        adjust_any_ref(right_value, left_value);
-                                    }
-
+                                    adjust_operands(ctx, left_value, right_value);
                                     bool result = false;
                                     if (std::holds_alternative<bool>(left_value) && std::holds_alternative<bool>(right_value)) {
                                         auto l = std::get<bool>(left_value);
@@ -269,7 +286,7 @@ namespace ebmgen {
                                             result = (l != r);
                                         }
                                         else {
-                                            return false;
+                                            return ExecutionResult::InvalidOperator;
                                         }
                                     }
                                     else if (std::holds_alternative<std::string>(left_value) && std::holds_alternative<std::string>(right_value)) {
@@ -282,7 +299,7 @@ namespace ebmgen {
                                             result = (l != r);
                                         }
                                         else {
-                                            return false;
+                                            return ExecutionResult::InvalidOperator;
                                         }
                                     }
                                     else if (std::holds_alternative<std::uint64_t>(left_value) && std::holds_alternative<std::uint64_t>(right_value)) {
@@ -306,6 +323,9 @@ namespace ebmgen {
                                         else if (op == "<=") {
                                             result = (l <= r);
                                         }
+                                        else {
+                                            return ExecutionResult::InvalidOperator;
+                                        }
                                     }
                                     else if (std::holds_alternative<ebm::AnyRef>(left_value) && std::holds_alternative<ebm::AnyRef>(right_value)) {
                                         auto l = std::get<ebm::AnyRef>(left_value);
@@ -317,14 +337,14 @@ namespace ebmgen {
                                             result = (get_id(l) != get_id(r));
                                         }
                                         else {
-                                            return false;
+                                            return ExecutionResult::InvalidOperator;
                                         }
                                     }
                                     else {
-                                        return false;
+                                        return ExecutionResult::InvalidOperator;
                                     }
                                     ctx.stack.push_back(EvalValue{result});
-                                    return true;
+                                    return ExecutionResult::Success;
                                 };
                             }
                             else {
@@ -347,12 +367,10 @@ namespace ebmgen {
                         if (op && op->tag == NodeType::Operator) {
                             if (op->token == "not" || op->token == "!") {
                                 return [operand = std::move(operand)](EvalContext& ctx) {
-                                    if (!operand(ctx)) {
-                                        return false;
-                                    }
+                                    RETURN_EXEC_FAILURE(operand(ctx));
                                     CHECK_AND_TAKE_AS(value, bool);
                                     ctx.stack.push_back(EvalValue{!value});
-                                    return true;
+                                    return ExecutionResult::Success;
                                 };
                             }
                             else {
@@ -364,6 +382,15 @@ namespace ebmgen {
                     else {
                         return unexpect_error("Invalid unary operation node with {} children", g->children.size());
                     }
+                }
+                else if (g->tag == NodeType::Object) {
+                    MAYBE(obj, eval_object(node));
+                    return [this, obj = std::move(obj)](EvalContext& ctx) {
+                        std::unordered_set<ebm::AnyRef> matched;
+                        RETURN_EXEC_FAILURE(query_object(obj, matched));
+                        ctx.stack.push_back(EvalValue{std::move(matched)});
+                        return ExecutionResult::Success;
+                    };
                 }
                 else {
                     return unexpect_error("Unsupported expression group node");
@@ -377,17 +404,39 @@ namespace ebmgen {
                     }
                     return [value](EvalContext& ctx) {
                         ctx.stack.push_back(EvalValue{value});
-                        return true;
+                        return ExecutionResult::Success;
                     };
                 }
                 else if (t->tag == NodeType::Ident) {
-                    object.related_identifiers.insert(t->token);
-                    return [token = t->token](EvalContext& ctx) {
-                        if (auto found = ctx.variables.find(token); found != ctx.variables.end()) {
-                            ctx.stack.push_back(found->second);
-                            return true;
+                    auto per_pointer = futils::strutil::split<std::string>(t->token, "->");
+                    object.related_identifiers.insert(per_pointer[0]);
+                    return [this, per_pointer](EvalContext& ctx) {
+                        if (auto found = ctx.variables.find(per_pointer[0]); found != ctx.variables.end()) {
+                            auto result = found->second;
+                            for (size_t i = 1; i < per_pointer.size(); i++) {
+                                if (!std::holds_alternative<ebm::AnyRef>(result)) {
+                                    return ExecutionResult::TypeMismatch;
+                                }
+                                const auto& part = per_pointer[i];
+                                std::unordered_set<std::string> member_idents{part};
+                                auto v = table.get_object(std::get<ebm::AnyRef>(result));
+                                std::map<std::string, EvalValue> members;
+                                std::visit(
+                                    [&](auto&& obj) {
+                                        if constexpr (std::is_pointer_v<std::decay_t<decltype(obj)>>) {
+                                            collect_variables(members, member_idents, *obj);
+                                        }
+                                    },
+                                    v);
+                                if (members.empty()) {
+                                    return ExecutionResult::IdentifierNotFound;
+                                }
+                                result = std::move(members[part]);
+                            }
+                            ctx.stack.push_back(std::move(result));
+                            return ExecutionResult::Success;
                         }
-                        return false;
+                        return ExecutionResult::IdentifierNotFound;
                     };
                 }
                 else if (t->tag == NodeType::StringLit) {
@@ -400,14 +449,14 @@ namespace ebmgen {
                     }
                     return [value = std::move(value)](EvalContext& ctx) {
                         ctx.stack.push_back(EvalValue{value});
-                        return true;
+                        return ExecutionResult::Success;
                     };
                 }
             }
             return unexpect_error("Unsupported expression node");
         }
 
-        expected<void> eval_object(Evaluator& eval, const std::shared_ptr<Node>& node) {
+        expected<Object> eval_object(const std::shared_ptr<Node>& node) {
             using futils::comb2::tree::node::as_group, futils::comb2::tree::node::as_tok;
             if (auto g = as_group<NodeType>(node)) {
                 if (g->tag == NodeType::Object) {
@@ -421,21 +470,28 @@ namespace ebmgen {
                         MAYBE(fn, eval_expr(obj, expr_node));
                         obj.evaluator = std::move(fn);
                         obj.type = type_tok->token;
-                        eval.objects.push_back(std::move(obj));
-                        return {};
+                        return obj;
                     }
                     else {
                         return unexpect_error("Invalid object node with {} children", g->children.size());
                     }
                 }
+            }
+            return unexpect_error("Unsupported object node");
+        }
+
+        expected<void> eval_root(Evaluator& eval, const std::shared_ptr<Node>& node) {
+            using futils::comb2::tree::node::as_group;
+            if (auto g = as_group<NodeType>(node)) {
                 if (g->tag == NodeType::Root) {
                     for (auto& child : g->children) {
-                        MAYBE_VOID(v, eval_object(eval, child));
+                        MAYBE(obj, eval_object(child));
+                        eval.objects.push_back(std::move(obj));
                     }
                     return {};
                 }
             }
-            return unexpect_error("Unsupported object node");
+            return unexpect_error("Unsupported root node");
         }
 
         bool setup_evaluator(Evaluator& eval) {
@@ -448,12 +504,117 @@ namespace ebmgen {
                 return false;
             }
             auto collected = futils::comb2::tree::node::collect<NodeType>(table.root_branch);
-            auto result = eval_object(eval, collected);
+            auto result = eval_root(eval, collected);
             if (!result) {
                 cout << "Error in query expression: " << result.error().error() << "\n";
                 return false;
             }
             return true;
+        }
+
+        static void collect_variables(std::map<std::string, EvalValue>& variables, const std::unordered_set<std::string>& related_identifiers, has_visit<DummyFn> auto& t) {
+            std::vector<std::string> idents;
+            auto qualified_name = [&](const char* name) -> std::string {
+                if (idents.size()) {
+                    return idents.back() + "." + name;
+                }
+                return name;
+            };
+            t.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+                using T = std::decay_t<decltype(value)>;
+                if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) {
+                    if (value) {
+                        visitor(visitor, name, *value);
+                    }
+                }
+                else if constexpr (is_container<decltype(value)>) {
+                    for (size_t i = 0; i < value.container.size(); i++) {
+                        std::string elem_name = std::format("{}[{}]", name, i);
+                        visitor(visitor, elem_name.c_str(), value.container[i]);
+                    }
+                }
+                else {
+                    auto qname = qualified_name(name);
+                    if constexpr (std::is_same_v<T, ebm::Varint>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = value.value();
+                        }
+                    }
+                    else if constexpr (AnyRef<T>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = to_any_ref(value);
+                        }
+                    }
+                    else if constexpr (std::is_enum_v<T>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = to_string(value, true);
+                        }
+                    }
+                    else if constexpr (std::is_same_v<T, bool>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = value;
+                        }
+                    }
+                    else if constexpr (std::is_integral_v<T>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = std::uint64_t(value);
+                        }
+                    }
+                    else if constexpr (std::is_same_v<T, ebm::String>) {
+                        if (related_identifiers.contains(qname)) {
+                            variables[qname] = value.data;
+                        }
+                    }
+                    else if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) {
+                        idents.push_back(std::move(qname));
+                        value.visit(visitor);
+                        idents.pop_back();
+                    }
+                    else {
+                        static_assert(std::is_same_v<T, void>, "unsupported type in query");
+                    }
+                }
+            });
+        }
+
+        ExecutionResult query_object(const Object& obj, ObjectSet& matched) {
+            auto for_each = [&](auto& objects) {
+                for (auto& t : objects) {
+                    EvalContext ctx{table};
+                    collect_variables(ctx.variables, obj.related_identifiers, t);
+                    if (obj.evaluator(ctx) == ExecutionResult::Success) {
+                        if (ctx.stack.size() == 1 && std::holds_alternative<bool>(ctx.stack.back()) && std::get<bool>(ctx.stack.back())) {
+                            matched.insert(to_any_ref(t.id));
+                        }
+                    }
+                }
+            };
+            if (obj.type == "Identifier") {
+                for_each(table.module().identifiers);
+            }
+            else if (obj.type == "String") {
+                for_each(table.module().strings);
+            }
+            else if (obj.type == "Type") {
+                for_each(table.module().types);
+            }
+            else if (obj.type == "Statement") {
+                for_each(table.module().statements);
+            }
+            else if (obj.type == "Expression") {
+                for_each(table.module().expressions);
+            }
+            else if (obj.type == "Any") {
+                for_each(table.module().identifiers);
+                for_each(table.module().strings);
+                for_each(table.module().types);
+                for_each(table.module().statements);
+                for_each(table.module().expressions);
+            }
+            else {
+                return ExecutionResult::InvalidOperator;
+            }
+            return ExecutionResult::Success;
         }
 
         void query() {
@@ -466,105 +627,28 @@ namespace ebmgen {
                 return;
             }
             size_t count = 0;
-            auto for_each = [&](Object& obj, auto& objects) {
-                std::vector<std::string> idents;
-                auto qualified_name = [&](const char* name) -> std::string {
-                    if (idents.size()) {
-                        return idents.back() + "." + name;
-                    }
-                    return name;
-                };
-                for (auto& t : objects) {
-                    EvalContext ctx{table};
-                    t.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
-                        using T = std::decay_t<decltype(value)>;
-                        if constexpr (std::is_same_v<T, ebm::Varint>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = value.value();
-                            }
-                        }
-                        else if constexpr (AnyRef<T>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = to_any_ref(value);
-                            }
-                        }
-                        else if constexpr (std::is_same_v<T, bool>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = value;
-                            }
-                        }
-                        else if constexpr (std::is_integral_v<T>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = std::uint64_t(value);
-                            }
-                        }
-                        else if constexpr (std::is_same_v<T, ebm::String>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = value.data;
-                            }
-                        }
-                        else if constexpr (is_container<decltype(value)>) {
-                            for (size_t i = 0; i < value.container.size(); i++) {
-                                std::string elem_name = std::format("{}[{}]", name, i);
-                                visitor(visitor, elem_name.c_str(), value.container[i]);
-                            }
-                        }
-                        else if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) {
-                            idents.push_back(qualified_name(name));
-                            value.visit(visitor);
-                            idents.pop_back();
-                        }
-                        else if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) {
-                            if (value) {
-                                visitor(visitor, name, *value);
-                            }
-                        }
-                        else if constexpr (std::is_enum_v<T>) {
-                            if (obj.related_identifiers.contains(qualified_name(name))) {
-                                ctx.variables[qualified_name(name)] = to_string(value, true);
-                            }
-                        }
-                        else {
-                            static_assert(std::is_same_v<T, void>, "unsupported type in query");
-                        }
-                    });
-                    if (obj.evaluator(ctx)) {
-                        if (ctx.stack.size() == 1 && std::holds_alternative<bool>(ctx.stack.back()) && std::get<bool>(ctx.stack.back())) {
-                            std::stringstream print_buf;
-                            DebugPrinter printer{table, print_buf};
-                            printer.print_object(t);
-                            cout << print_buf.str();
-                            cout << "----\n";
-                            count++;
-                        }
-                    }
-                }
-            };
             for (auto& obj : eval.objects) {
-                if (obj.type == "Identifier") {
-                    for_each(obj, table.module().identifiers);
+                ObjectSet matched;
+                if (auto res = query_object(obj, matched); res != ExecutionResult::Success) {
+                    cout << "Error during query evaluation: " << static_cast<int>(res) << "\n";
+                    return;
                 }
-                else if (obj.type == "String") {
-                    for_each(obj, table.module().strings);
-                }
-                else if (obj.type == "Type") {
-                    for_each(obj, table.module().types);
-                }
-                else if (obj.type == "Statement") {
-                    for_each(obj, table.module().statements);
-                }
-                else if (obj.type == "Expression") {
-                    for_each(obj, table.module().expressions);
-                }
-                else if (obj.type == "Any") {
-                    for_each(obj, table.module().identifiers);
-                    for_each(obj, table.module().strings);
-                    for_each(obj, table.module().types);
-                    for_each(obj, table.module().statements);
-                    for_each(obj, table.module().expressions);
-                }
-                else {
-                    cout << "Unknown object type: " << obj.type << "\n";
+                std::stringstream print_buf;
+                DebugPrinter printer{table, print_buf};
+                for (auto& ref : matched) {
+                    auto obj = table.get_object(ref);
+                    std::visit(
+                        [&](auto&& obj) {
+                            if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
+                            }
+                            else {
+                                printer.print_object(*obj);
+                                cout << print_buf.str();
+                                cout << "----\n";
+                                count++;
+                            }
+                        },
+                        obj);
                 }
             }
             cout << "Total matched objects: " << count << "\n";
@@ -582,6 +666,47 @@ namespace ebmgen {
             cout << "  clear            Clear the console\n";
         }
 
+        ExecutionResult run_line() {
+            while (!line.empty() && (line.back() == '\n' || line.back() == '\r')) {
+                line.pop_back();
+            }
+            std::set<std::string> temporary_buffer;
+            args = futils::comb2::cmdline::command_line<std::vector<std::string_view>>(std::string_view(line), [&](auto& buf) {
+                buf = buf.substr(1, buf.size() - 2);
+                if (buf.contains("\\")) {
+                    auto tmp_buf = futils::escape::unescape_str<std::string>(buf);
+                    buf = *temporary_buffer.insert(std::move(tmp_buf)).first;
+                }
+            });
+            if (args.empty()) {
+                return ExecutionResult::Success;
+            }
+            auto command = args[0];
+            if (command == "exit" || command == "quit") {
+                return ExecutionResult::Exit;
+            }
+            else if (command == "help") {
+                print_help();
+            }
+            else if (command == "print" || command == "p" || command == "pr") {
+                print();
+            }
+            else if (command == "header") {
+                header();
+            }
+            else if (command == "clear") {
+                cout << futils::console::escape::cursor(futils::console::escape::CursorMove::clear, 2).c_str();
+                cout << futils::console::escape::cursor(futils::console::escape::CursorMove::home, 1).c_str();
+            }
+            else if (command == "query") {
+                query();
+            }
+            else {
+                cout << "Unknown command: " << command << ", type 'help' for commands\n";
+            }
+            return ExecutionResult::Success;
+        }
+
         void start() {
             cout << "Interactive Debugger\n";
             cout << "Type 'exit' to quit\n";
@@ -590,42 +715,9 @@ namespace ebmgen {
                 cout << "ebmgen> ";
                 line.clear();
                 cin >> line;
-                while (!line.empty() && (line.back() == '\n' || line.back() == '\r')) {
-                    line.pop_back();
-                }
-                std::set<std::string> temporary_buffer;
-                args = futils::comb2::cmdline::command_line<std::vector<std::string_view>>(std::string_view(line), [&](auto& buf) {
-                    buf = buf.substr(1, buf.size() - 2);
-                    if (buf.contains("\\")) {
-                        auto tmp_buf = futils::escape::unescape_str<std::string>(buf);
-                        buf = *temporary_buffer.insert(std::move(tmp_buf)).first;
-                    }
-                });
-                if (args.empty()) {
-                    continue;
-                }
-                auto command = args[0];
-                if (command == "exit" || command == "quit") {
+                auto res = run_line();
+                if (res == ExecutionResult::Exit) {
                     break;
-                }
-                else if (command == "help") {
-                    print_help();
-                }
-                else if (command == "print" || command == "p" || command == "pr") {
-                    print();
-                }
-                else if (command == "header") {
-                    header();
-                }
-                else if (command == "clear") {
-                    cout << futils::console::escape::cursor(futils::console::escape::CursorMove::clear, 2).c_str();
-                    cout << futils::console::escape::cursor(futils::console::escape::CursorMove::home, 1).c_str();
-                }
-                else if (command == "query") {
-                    query();
-                }
-                else {
-                    cout << "Unknown command: " << command << ", type 'help' for commands\n";
                 }
             }
         }

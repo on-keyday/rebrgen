@@ -65,7 +65,7 @@ namespace ebmgen {
         constexpr auto expr = or_expr;
         constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Any"));
         constexpr auto object = group(NodeType::Object, object_type& spaces & +lit("{") & spaces & +expr_recurse & spaces & +lit("}"));
-        constexpr auto full_expr = spaces & ~(object_recurse & spaces) & spaces & eos;
+        constexpr auto full_expr = spaces & ~(object_recurse & spaces) & spaces & +eos;
         struct Recurse {
             decltype(expr) expr;
             decltype(compare) compare;
@@ -257,6 +257,7 @@ namespace ebmgen {
                         MAYBE(right, eval_expr(object, g->children[2]));
                         if (op && op->tag == NodeType::Operator) {
                             if (op->token == "in") {
+                                return unexpect_error("Operator 'in' not implemented");
                             }
                             else if (op->token == "and" || op->token == "&&") {
                                 return [this, left = std::move(left), right = std::move(right)](EvalContext& ctx) {
@@ -633,8 +634,7 @@ namespace ebmgen {
                     cout << "Error during query evaluation: " << static_cast<int>(res) << "\n";
                     return;
                 }
-                std::stringstream print_buf;
-                DebugPrinter printer{table, print_buf};
+
                 for (auto& ref : matched) {
                     auto obj = table.get_object(ref);
                     std::visit(
@@ -642,6 +642,8 @@ namespace ebmgen {
                             if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
                             }
                             else {
+                                std::stringstream print_buf;
+                                DebugPrinter printer{table, print_buf};
                                 printer.print_object(*obj);
                                 cout << print_buf.str();
                                 cout << "----\n";
@@ -663,6 +665,7 @@ namespace ebmgen {
             cout << "  pr <id>          Alias for print\n";
             cout << "  header           Print module header information\n";
             cout << "  query <expr>     Query objects matching the expression\n";
+            cout << "  q <expr>         Alias for query\n";
             cout << "  clear            Clear the console\n";
         }
 
@@ -698,7 +701,7 @@ namespace ebmgen {
                 cout << futils::console::escape::cursor(futils::console::escape::CursorMove::clear, 2).c_str();
                 cout << futils::console::escape::cursor(futils::console::escape::CursorMove::home, 1).c_str();
             }
-            else if (command == "query") {
+            else if (command == "query" || command == "q") {
                 query();
             }
             else {

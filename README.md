@@ -9,15 +9,16 @@ This is aimed at improving flexibility and inter-language compatibility
 
 # How to add language
 
-1. run `python script/build.py` to build `./tool/ebmcodegen[.exe]`
-2. run `python script/ebmcodegen.py <lang name>`
-3. run `python script/build.py` again
-4. write `<any>.bgn` file (see https://github.com/on-keyday/brgen) and run the `src2json <any>.bgn > <saved>.json`
-   - you can use generating `.json` file at [WebPlayground](https://on-keyday.github.io/brgen/#code=Zm9ybWF0IERhdGE6DQogICAgbGVuIDp1OA0KICAgIGRhdGEgOltsZW5ddTgNCg&lang=json+ast)
-5. run `./tool/ebmgen -i <saved>.json -o <output>.ebm [-d <debug_output.txt>]`
-6. run `./tool/ebm2<lang name> -i <output>.ebm` then you can see the generated code
-7. to edit `ebm2<lang name>` code, write template code in `src/ebmcg/ebm2<lang name>/visitor`
-   - you can see examples in `src/ebmcodegen/default_codegen_visitor/`
+1. you may copy `build_config.template.json` to `build_config.json`
+2. run `python script/build.py` to build `./tool/ebmcodegen[.exe]`
+   - at first build, also run `./brgen/script/clone_utils.[bat|sh]` to fetch and build dependency
+3. run `python script/ebmcodegen.py <lang name>`
+4. run `python script/build.py` again
+5. write `<any>.bgn` file (see https://github.com/on-keyday/brgen) and run the `src2json <any>.bgn > <saved>.json`
+   - you can use  [WebPlayground](https://on-keyday.github.io/brgen/#code=Zm9ybWF0IERhdGE6DQogICAgbGVuIDp1OA0KICAgIGRhdGEgOltsZW5ddTgNCg&lang=json+ast) to generate `.json` file
+6. run `./tool/ebmgen -i <saved>.json -o <output>.ebm`
+7. run `./tool/ebm2<lang name> -i <output>.ebm` then you can see the generated code
+8. to edit `ebm2<lang name>` code, run `python script/ebmtemplate.py tutorial` for more info.
 
 # Current Status
 

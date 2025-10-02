@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <memory>
+#include <map>
 #include <set>
 #include <sstream>
 #include <string>
@@ -15,6 +16,7 @@
 #include "comb2/composite/string.h"
 #include "comb2/internal/test.h"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/structs.hpp"
 #include "ebmgen/common.hpp"
 #include "ebmgen/debug_printer.hpp"
 #include "ebmgen/mapping.hpp"
@@ -497,7 +499,7 @@ namespace ebmgen {
 
         bool setup_evaluator(Evaluator& eval) {
             auto input = futils::make_ref_seq(std::string_view(line));
-            input.rptr = args[0].size();
+            input.rptr = args[0].data() + args[0].size() - line.data();
             futils::comb2::tree::BranchTable table;
             auto res = query::full_expr(input, table, query::recurse);
             if (res != futils::comb2::Status::match || !input.eos()) {
@@ -583,8 +585,9 @@ namespace ebmgen {
                 for (auto& t : objects) {
                     EvalContext ctx{table};
                     collect_variables(ctx.variables, obj.related_identifiers, t);
-                    if (obj.evaluator(ctx) == ExecutionResult::Success) {
-                        if (ctx.stack.size() == 1 && std::holds_alternative<bool>(ctx.stack.back()) && std::get<bool>(ctx.stack.back())) {
+                    if (obj.evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
+                        ctx.unwrap_any_ref<bool>(ctx.stack[0]);
+                        if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
                             matched.insert(to_any_ref(t.id));
                         }
                     }
@@ -656,6 +659,41 @@ namespace ebmgen {
             cout << "Total matched objects: " << count << "\n";
         }
 
+        void print_struct() {
+            if (args.size() < 2) {
+                cout << "Usage: show <struct_or_enum_name>\n";
+                return;
+            }
+            auto [struct_, enum_] = ebmcodegen::make_struct_map();
+            auto it = struct_.find(args[1]);
+            if (it == struct_.end()) {
+                if (auto eit = enum_.find(args[1]); eit != enum_.end()) {
+                    auto& e = eit->second;
+                    cout << "enum " << e.name << " {\n";
+                    for (auto& member : e.members) {
+                        cout << "  " << member.name << " = " << member.value << ";\n";
+                    }
+                    cout << "}\n";
+                    return;
+                }
+                cout << "Struct or enum not found: " << args[1] << "\n";
+                return;
+            }
+            auto& s = it->second;
+            cout << "struct " << s.name << " {\n";
+            for (auto& field : s.fields) {
+                cout << "  " << field.type;
+                if (field.attr & ebmcodegen::ARRAY) {
+                    cout << "[]";
+                }
+                if (field.attr & ebmcodegen::PTR) {
+                    cout << "*";
+                }
+                cout << " " << field.name << ";\n";
+            }
+            cout << "}\n";
+        }
+
         void print_help() {
             cout << "Commands:\n";
             cout << "  help             Show this help message\n";
@@ -667,6 +705,8 @@ namespace ebmgen {
             cout << "  query <expr>     Query objects matching the expression\n";
             cout << "  q <expr>         Alias for query\n";
             cout << "  clear            Clear the console\n";
+            cout << "  show <name>     Show the structure of the given struct or enum\n";
+            cout << "  (empty line)     Do nothing\n";
         }
 
         ExecutionResult run_line() {
@@ -703,6 +743,9 @@ namespace ebmgen {
             }
             else if (command == "query" || command == "q") {
                 query();
+            }
+            else if (command == "show") {
+                print_struct();
             }
             else {
                 cout << "Unknown command: " << command << ", type 'help' for commands\n";

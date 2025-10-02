@@ -93,6 +93,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/transform/remove_unused.cpp"
     "src/ebmgen/transform/bit_fields.cpp"
     "src/ebmgen/interactive/debugger.cpp"
+    "src/ebmcodegen/structs.cpp" # for debug info
 )
 
 target_link_libraries(ebm_mapping ebm futils)
@@ -100,7 +101,7 @@ target_link_libraries(ebmgen_lib ebm futils ebm_mapping)
 target_link_libraries(ebmgen ebmgen_lib)
 
 
-add_library(ebmcodgen_lib STATIC
+add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/body_subset.cpp"
     "src/ebmcodegen/structs.cpp"
 )
@@ -109,7 +110,7 @@ add_executable(ebmcodegen
     "src/ebmcodegen/main.cpp"
 )
 
-target_link_libraries(ebmcodegen ebm futils ebmcodgen_lib)
+target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 add_executable(gen_template 
     "src/bm2/gen_template/main.cpp"

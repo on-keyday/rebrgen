@@ -205,8 +205,17 @@ namespace ebmgen {
                         common_type = *ct;
                     }
                 }
-                EBM_OR_COND(or_, common_type, std::move(*got));
-                ebm::PropertyMemberDecl m{.condition = or_};
+                if (got->container.size() == 0) {
+                    return unexpect_error("This is a bug: empty condition in strict type merge");
+                }
+                ebm::PropertyMemberDecl m{};
+                if (got->container.size() == 1) {
+                    m.condition = got->container[0];
+                }
+                else {
+                    EBM_OR_COND(or_, common_type, std::move(*got));
+                    m.condition = or_;
+                }
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
                 append(derive.members, member_ref);
             }

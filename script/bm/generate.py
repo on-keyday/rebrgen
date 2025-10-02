@@ -11,21 +11,21 @@ SRC2JSON = (
 
 for lang in LANG_LIST:
     sp.run(
-        ["python", "script/gen_template.py", lang, BUILD_MODE, BUILD_TYPE],
+        ["python", "script/bm/gen_template.py", lang, BUILD_MODE, BUILD_TYPE],
         check=True,
         stdout=sys.stdout,
         stderr=sys.stderr,
     )
 
 sp.run(
-    ["python", "script/collect_cmake.py", INPUT, SRC2JSON],
+    ["python", "script/bm/collect_cmake.py", INPUT, SRC2JSON],
     check=True,
     stdout=sys.stdout,
     stderr=sys.stderr,
 )
 
 sp.run(
-    ["python", "script/generate_test_glue.py"],
+    ["python", "script/bm/generate_test_glue.py"],
     check=True,
     stdout=sys.stdout,
     stderr=sys.stderr,

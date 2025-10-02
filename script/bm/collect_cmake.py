@@ -50,7 +50,7 @@ with open(output, "w") as f:
     for file in src:
         f.write(f'add_subdirectory("{file["name"]}")\n')
 
-output = "script/run_generated.py"
+output = "script/bm/run_generated.py"
 with open(output, "w") as f:
     f.write("import os\n")
     f.write("import subprocess as sp\n")
@@ -122,21 +122,22 @@ with open(output, "w") as f:
         )
         f.write(f"        f.write(src)\n")
         f.write(f'    print(f"Generated: save/{file["lang"]}/save.{file["suffix"]}")\n')
+script_root = "script/bm"
 
-output = "script/run_generated.bat"
+output = f"{script_root}/run_generated.bat"
 
 with open(output, "w") as f:
     f.write("@echo off\n")
     f.write("setlocal\n")
-    f.write("python script/run_generated.py %*\n")
+    f.write(f"python {script_root}/run_generated.py %*\n")
 
-output = "script/run_generated.sh"
+output = f"{script_root}/run_generated.sh"
 
 with open(output, "wb") as f:
     f.write("#!/bin/bash\n".encode())
-    f.write('python script/run_generated.py "$@"\n'.encode())
-output = "script/run_generated.ps1"
+    f.write(f'python {script_root}/run_generated.py "$@"\n'.encode())
+output = f"{script_root}/run_generated.ps1"
 
 with open(output, "w") as f:
     f.write("$ErrorActionPreference = 'Stop'\n")
-    f.write("python script/run_generated.py @args\n")
+    f.write(f"python {script_root}/run_generated.py @args\n")

@@ -160,7 +160,7 @@ jobs:
       - name: Generate Glue
         run: |
           chmod -R +x ./tool
-          python script/generate_web_glue.py
+          python script/bm/generate_web_glue.py
           python script/ebmwebgen.py
       - name: Upload Web Artifacts
         uses: actions/upload-artifact@v4

@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     enum_member_decl: EnumMemberDecl
       name: IdentifierRef
       value: ExpressionRef

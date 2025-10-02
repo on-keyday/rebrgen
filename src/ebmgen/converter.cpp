@@ -148,7 +148,7 @@ namespace ebmgen {
         const auto is_native_or_dynamic = endian.endian() == ebm::Endian::native || endian.endian() == ebm::Endian::dynamic;
         if (is_native_or_dynamic) {
             ebm::ExpressionBody is_little;
-            is_little.kind = ebm::ExpressionOp::IS_LITTLE_ENDIAN;
+            is_little.kind = ebm::ExpressionKind::IS_LITTLE_ENDIAN;
             is_little.endian_expr(endian.dynamic_ref);  // if native, this will be empty
             EBMA_ADD_EXPR(is_little_ref, std::move(is_little));
             MAYBE(then_block, on_little_endian());
@@ -186,8 +186,8 @@ namespace ebmgen {
     ebm::ExpressionBody get_int_literal_body(ebm::TypeRef type, std::uint64_t value) {
         ebm::ExpressionBody body;
         body.type = type;
-        body.kind = value >= (std::uint64_t(1) << 62) ? ebm::ExpressionOp::LITERAL_INT64 : ebm::ExpressionOp::LITERAL_INT;
-        if (body.kind == ebm::ExpressionOp::LITERAL_INT64) {
+        body.kind = value >= (std::uint64_t(1) << 62) ? ebm::ExpressionKind::LITERAL_INT64 : ebm::ExpressionKind::LITERAL_INT;
+        if (body.kind == ebm::ExpressionKind::LITERAL_INT64) {
             body.int64_value(value);
         }
         else {

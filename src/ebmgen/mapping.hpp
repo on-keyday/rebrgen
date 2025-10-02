@@ -39,14 +39,14 @@ namespace ebmgen {
             return std::nullopt;
         }
 
-        std::optional<ebm::StatementOp> get_statement_op(const ebm::StatementRef& ref) const {
+        std::optional<ebm::StatementKind> get_statement_op(const ebm::StatementRef& ref) const {
             if (const auto* stmt = get_statement(ref)) {
                 return stmt->body.kind;
             }
             return std::nullopt;
         }
 
-        std::optional<ebm::ExpressionOp> get_expression_op(const ebm::ExpressionRef& ref) const {
+        std::optional<ebm::ExpressionKind> get_expression_op(const ebm::ExpressionRef& ref) const {
             if (const auto* expr = get_expression(ref)) {
                 return expr->body.kind;
             }

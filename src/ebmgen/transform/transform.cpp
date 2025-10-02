@@ -62,13 +62,13 @@ namespace ebmgen {
                                 EBM_RETURN(ret, addr);
                                 br.body = ret;
                             }
-                            ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
+                            ebm::StatementBody body{.kind = ebm::StatementKind::MATCH_BRANCH};
                             body.match_branch(std::move(br));
                             EBMA_ADD_STATEMENT(s, std::move(body));
                             append(m.branches, s);
                         }
                         MAYBE_VOID(getter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
-                        ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};
+                        ebm::StatementBody body{.kind = ebm::StatementKind::MATCH_STATEMENT};
                         body.match_statement(std::move(m));
                         EBMA_ADD_STATEMENT(match, std::move(body));
                         ebm::Block getter_block;
@@ -102,13 +102,13 @@ namespace ebmgen {
                                 EBM_BLOCK(b, std::move(block));
                                 br.body = b;
                             }
-                            ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_BRANCH};
+                            ebm::StatementBody body{.kind = ebm::StatementKind::MATCH_BRANCH};
                             body.match_branch(std::move(br));
                             EBMA_ADD_STATEMENT(s, std::move(body));
                             append(m.branches, s);
                         }
                         MAYBE_VOID(setter_lowered, ctx.get_statement_converter().derive_match_lowered_if(m, false));
-                        ebm::StatementBody body{.kind = ebm::StatementOp::MATCH_STATEMENT};
+                        ebm::StatementBody body{.kind = ebm::StatementKind::MATCH_STATEMENT};
                         body.match_statement(std::move(m));
                         EBMA_ADD_STATEMENT(match, std::move(body));
                         ebm::Block setter_block;
@@ -117,7 +117,7 @@ namespace ebmgen {
                         EBM_BLOCK(sblock, std::move(setter_block));
                         setter.body = sblock;
                     }
-                    ebm::StatementBody func{.kind = ebm::StatementOp::FUNCTION_DECL};
+                    ebm::StatementBody func{.kind = ebm::StatementKind::FUNCTION_DECL};
                     func.func_decl(std::move(getter));
                     EBMA_ADD_STATEMENT(getter_ref, std::move(func));
                     func.func_decl(std::move(setter));

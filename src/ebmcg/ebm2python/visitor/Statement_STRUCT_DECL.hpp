@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     struct_decl: StructDecl
       name: IdentifierRef
       fields: Block
@@ -17,6 +17,7 @@
       decode_fn: StatementRef
       is_recursive: bool
       reserved: std::uint8_t
+      related_variant: TypeRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_STRUCT_DECL function.

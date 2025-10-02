@@ -660,11 +660,21 @@ namespace ebmgen {
         }
 
         void print_struct() {
+            auto [struct_, enum_] = ebmcodegen::make_struct_map();
+            if (args[0] == "list") {
+                cout << "Available structs and enums:\n";
+                for (auto& [name, _] : struct_) {
+                    cout << "  struct " << name << "\n";
+                }
+                for (auto& [name, _] : enum_) {
+                    cout << "  enum " << name << "\n";
+                }
+                return;
+            }
             if (args.size() < 2) {
                 cout << "Usage: show <struct_or_enum_name>\n";
                 return;
             }
-            auto [struct_, enum_] = ebmcodegen::make_struct_map();
             auto it = struct_.find(args[1]);
             if (it == struct_.end()) {
                 if (auto eit = enum_.find(args[1]); eit != enum_.end()) {
@@ -705,7 +715,8 @@ namespace ebmgen {
             cout << "  query <expr>     Query objects matching the expression\n";
             cout << "  q <expr>         Alias for query\n";
             cout << "  clear            Clear the console\n";
-            cout << "  show <name>     Show the structure of the given struct or enum\n";
+            cout << "  show <name>      Show the structure of the given struct or enum\n";
+            cout << "  list             List all available structs and enums\n";
             cout << "  (empty line)     Do nothing\n";
         }
 
@@ -745,6 +756,9 @@ namespace ebmgen {
                 query();
             }
             else if (command == "show") {
+                print_struct();
+            }
+            else if (command == "list") {
                 print_struct();
             }
             else {

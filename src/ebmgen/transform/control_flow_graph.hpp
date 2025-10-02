@@ -30,7 +30,7 @@ namespace ebmgen {
     struct CFG {
         ebm::StatementRef original_node;
         std::shared_ptr<CFGExpression> condition;
-        std::optional<ebm::StatementOp> statement_op;  // for debug
+        std::optional<ebm::StatementKind> statement_op;  // for debug
         std::vector<std::shared_ptr<CFG>> next;
         std::vector<std::weak_ptr<CFG>> prev;
         // for lowered statement representation

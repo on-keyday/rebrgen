@@ -8,7 +8,7 @@
     module_: MappingTable
     item_id: ExpressionRef
     type: TypeRef
-    kind: ExpressionOp
+    kind: ExpressionKind
     char_value: Varint
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

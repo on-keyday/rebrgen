@@ -57,14 +57,14 @@ namespace ebmcodegen::util {
             case ebm::TypeKind::INT:
             case ebm::TypeKind::UINT: {
                 ebm::Expression int_literal;
-                int_literal.body.kind = ebm::ExpressionOp::LITERAL_INT;
+                int_literal.body.kind = ebm::ExpressionKind::LITERAL_INT;
                 int_literal.body.int_value(*ebmgen::varint(0));
                 MAYBE(val, visit_Expression(visitor, int_literal));
                 return val.value;
             }
             case ebm::TypeKind::BOOL: {
                 ebm::Expression bool_literal;
-                bool_literal.body.kind = ebm::ExpressionOp::LITERAL_BOOL;
+                bool_literal.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
                 bool_literal.body.bool_value(0);
                 MAYBE(val, visit_Expression(visitor, bool_literal));
                 return val.value;

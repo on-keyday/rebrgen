@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     enum_decl: EnumDecl
       name: IdentifierRef
       base_type: TypeRef
@@ -16,7 +16,6 @@
         container: std::vector<StatementRef>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-
 
 auto name = module_.get_identifier_or(item_id);
 

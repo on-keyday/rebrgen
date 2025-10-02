@@ -8,7 +8,7 @@
     module_: MappingTable
     item_id: ExpressionRef
     type: TypeRef
-    kind: ExpressionOp
+    kind: ExpressionKind
     cast_kind: CastType
     from_type: TypeRef
     source_expr: ExpressionRef

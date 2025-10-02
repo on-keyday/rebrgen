@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     lowered_statements: LoweredStatements
       len: Varint
       container: std::vector<LoweredStatement>

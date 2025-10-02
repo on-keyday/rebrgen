@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     struct_decl: StructDecl
       name: IdentifierRef
       fields: Block
@@ -17,9 +17,9 @@
       decode_fn: StatementRef
       is_recursive: bool
       reserved: std::uint8_t
+      related_variant: TypeRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-
 
 auto name = module_.get_identifier_or(struct_decl.name, item_id);
 

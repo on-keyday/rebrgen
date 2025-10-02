@@ -174,10 +174,10 @@ namespace ebmgen {
             link(current, tctx.loop_stack.back().end);
             brk = true;
         }
-        else if (stmt.body.kind == ebm::StatementOp::RETURN ||
-                 stmt.body.kind == ebm::StatementOp::ERROR_RETURN ||
-                 stmt.body.kind == ebm::StatementOp::ERROR_REPORT) {
-            if (stmt.body.kind != ebm::StatementOp::ERROR_REPORT) {
+        else if (stmt.body.kind == ebm::StatementKind::RETURN ||
+                 stmt.body.kind == ebm::StatementKind::ERROR_RETURN ||
+                 stmt.body.kind == ebm::StatementKind::ERROR_REPORT) {
+            if (stmt.body.kind != ebm::StatementKind::ERROR_REPORT) {
                 if (stmt.body.value()->id.value() != 0) {
                     MAYBE(expr_node, analyze_expression(tctx, *stmt.body.value()));
                     current->condition = std::move(expr_node);
@@ -186,8 +186,8 @@ namespace ebmgen {
             link(current, tctx.end_of_function);
             brk = true;
         }
-        else if (stmt.body.kind == ebm::StatementOp::READ_DATA ||
-                 stmt.body.kind == ebm::StatementOp::WRITE_DATA) {
+        else if (stmt.body.kind == ebm::StatementKind::READ_DATA ||
+                 stmt.body.kind == ebm::StatementKind::WRITE_DATA) {
             auto io_ = stmt.body.read_data() ? stmt.body.read_data() : stmt.body.write_data();
             if (!is_nil(io_->lowered_statement.id)) {
                 MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
@@ -475,7 +475,7 @@ namespace ebmgen {
             }
             if (auto call_ = origin ? origin->body.call_desc() : nullptr) {
                 auto expr = ctx.get_expression(call_->callee);
-                while (expr && expr->body.kind != ebm::ExpressionOp::IDENTIFIER) {
+                while (expr && expr->body.kind != ebm::ExpressionKind::IDENTIFIER) {
                     if (auto member = expr->body.member()) {
                         expr = ctx.get_expression(*member);
                         continue;

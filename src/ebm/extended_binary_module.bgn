@@ -95,7 +95,7 @@ format LoweredStatementRef:
 format LoweredExpressionRef:
     id :ExpressionRef
 
-enum ExpressionOp:
+enum ExpressionKind:
     :u8
     LITERAL_INT 
     LITERAL_INT64
@@ -147,91 +147,91 @@ format CallDesc:
 
 format ExpressionBody:
     type :TypeRef # Type of the expression
-    kind :ExpressionOp
+    kind :ExpressionKind
     match kind:
-        ExpressionOp.LITERAL_INT:
+        ExpressionKind.LITERAL_INT:
             int_value :Varint
-        ExpressionOp.LITERAL_INT64:
+        ExpressionKind.LITERAL_INT64:
             int64_value :u64 # 64-bit integer value
-        ExpressionOp.LITERAL_BOOL:
+        ExpressionKind.LITERAL_BOOL:
             bool_value :u8 # 0: false, 1: true other values are invalid
             bool_value == 0 || bool_value == 1
-        ExpressionOp.LITERAL_STRING:
+        ExpressionKind.LITERAL_STRING:
             string_value :StringRef # Reference to string in string table
-        ExpressionOp.LITERAL_TYPE:
+        ExpressionKind.LITERAL_TYPE:
             type_ref :TypeRef
-        ExpressionOp.LITERAL_CHAR:
+        ExpressionKind.LITERAL_CHAR:
             char_value :Varint # Unicode code point
-        ExpressionOp.IDENTIFIER:
+        ExpressionKind.IDENTIFIER:
             id :StatementRef # reference to definition of the identifier 
-        ExpressionOp.BINARY_OP:
+        ExpressionKind.BINARY_OP:
             bop :BinaryOp
             left :ExpressionRef
             right :ExpressionRef
-        ExpressionOp.UNARY_OP:
+        ExpressionKind.UNARY_OP:
             uop :UnaryOp
             operand :ExpressionRef
-        ExpressionOp.CALL:
+        ExpressionKind.CALL:
             call_desc :CallDesc # Call description
-        ExpressionOp.INDEX_ACCESS:
+        ExpressionKind.INDEX_ACCESS:
             base :ExpressionRef
             index :ExpressionRef
-        ExpressionOp.MEMBER_ACCESS:
+        ExpressionKind.MEMBER_ACCESS:
             base :ExpressionRef
             member :ExpressionRef # Reference to the member identifier
-        ExpressionOp.TYPE_CAST:
+        ExpressionKind.TYPE_CAST:
             from_type :TypeRef
             source_expr :ExpressionRef
             cast_kind :CastType # Hint for the backend
-        ExpressionOp.RANGE:
+        ExpressionKind.RANGE:
             start :ExpressionRef # Start of the range (maybe null)
             end :ExpressionRef # End of the range (maybe null)
-        ExpressionOp.IS_LITTLE_ENDIAN:
+        ExpressionKind.IS_LITTLE_ENDIAN:
             endian_expr :StatementRef # Reference to the dynamic endian expression (maybe null)
-        ExpressionOp.GET_STREAM_OFFSET:
+        ExpressionKind.GET_STREAM_OFFSET:
             stream_type :StreamType
             unit :SizeUnit # Size unit for the offset (e.g., BIT_FIXED, BYTE_FIXED, ELEMENT_FIXED)
             unit == SizeUnit.BIT_FIXED || unit == SizeUnit.BYTE_FIXED
-        ExpressionOp.GET_REMAINING_BYTES:
+        ExpressionKind.GET_REMAINING_BYTES:
             stream_type :StreamType
-        ExpressionOp.CAN_READ_STREAM:
+        ExpressionKind.CAN_READ_STREAM:
             stream_type :StreamType
             num_bytes :Size
-        ExpressionOp.ARRAY_SIZE:
+        ExpressionKind.ARRAY_SIZE:
             array_expr :ExpressionRef # Reference to the array or vector expression
-        ExpressionOp.IS_ERROR:
+        ExpressionKind.IS_ERROR:
             target_expr :ExpressionRef # Expression to check for error (ENCODER_RETURN or DECODER_RETURN type)
-        ExpressionOp.MAX_VALUE:
+        ExpressionKind.MAX_VALUE:
             lowered_expr :LoweredExpressionRef # Optional lowered expression for the maximum value
-        ExpressionOp.READ_DATA:
+        ExpressionKind.READ_DATA:
             target_stmt :StatementRef # reference to variable to read data into
             io_statement :StatementRef # Reference to the IOData statement for reading data
-        ExpressionOp.WRITE_DATA:
+        ExpressionKind.WRITE_DATA:
             target_expr :ExpressionRef # Expression to write data from
             io_statement :StatementRef # Reference to the IOData statement for writing data
-        ExpressionOp.CONDITIONAL_STATEMENT:
+        ExpressionKind.CONDITIONAL_STATEMENT:
             target_stmt :StatementRef # Reference to the variable result is held into
             conditional_stmt :StatementRef # Reference to the if or match statement used as expression
-        ExpressionOp.CONDITIONAL:
+        ExpressionKind.CONDITIONAL:
             condition :ExpressionRef
             then :ExpressionRef
             else_ :ExpressionRef
             lowered_expr :LoweredExpressionRef
-        ExpressionOp.AVAILABLE:
+        ExpressionKind.AVAILABLE:
             target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
-        ExpressionOp.SIZEOF:
+        ExpressionKind.SIZEOF:
             target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
-        ExpressionOp.SUB_RANGE_INIT:
+        ExpressionKind.SUB_RANGE_INIT:
             sub_range :StatementRef
-        ExpressionOp.OR_COND:
+        ExpressionKind.OR_COND:
             or_cond :Expressions
-        ExpressionOp.ADDRESS_OF:
+        ExpressionKind.ADDRESS_OF:
             target_expr :ExpressionRef
-        ExpressionOp.OPTIONAL_OF:
+        ExpressionKind.OPTIONAL_OF:
             target_expr :ExpressionRef
-        ExpressionOp.SETTER_STATUS:
+        ExpressionKind.SETTER_STATUS:
             setter_status :SetterStatus
 
 enum LoopType:
@@ -379,7 +379,7 @@ format LoweredExpressions:
     container :[len.value]LoweredExpression # List of lowered expressions
 
 
-enum StatementOp:
+enum StatementKind:
     :u8
     BLOCK # Block of statements
     ASSIGNMENT
@@ -472,76 +472,76 @@ format Condition:
     cond :ExpressionRef
 
 format StatementBody:
-    kind :StatementOp
+    kind :StatementKind
     match kind:
-        StatementOp.BLOCK:
+        StatementKind.BLOCK:
             block :Block # List of statements
-        StatementOp.ASSIGNMENT:
+        StatementKind.ASSIGNMENT:
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
             previous_assignment :StatementRef # Previous assignment or phi node (optional)
-        StatementOp.YIELD: # for match/if expression
+        StatementKind.YIELD: # for match/if expression
             target :ExpressionRef # Left-hand side (e.g., variable, member, index)
             value :ExpressionRef # Right-hand side
             previous_assignment :StatementRef # Previous assignment or phi node (optional)
-        StatementOp.APPEND:
+        StatementKind.APPEND:
             target :ExpressionRef # Target vector to append to
             value :ExpressionRef # Value to append
-        StatementOp.RETURN:
+        StatementKind.RETURN:
             value :ExpressionRef # Return value (optional)
-        StatementOp.ERROR_RETURN:
+        StatementKind.ERROR_RETURN:
             value :ExpressionRef # Error return value (e.g., ENCODER_RETURN or DECODER_RETURN)
-        StatementOp.ASSERT:
+        StatementKind.ASSERT:
             assert_desc :AssertDesc # Assertion description
-        StatementOp.READ_DATA:
+        StatementKind.READ_DATA:
             read_data :IOData # Descriptor for reading data
-        StatementOp.WRITE_DATA:
+        StatementKind.WRITE_DATA:
             write_data :IOData # Descriptor for writing data
-        StatementOp.SEEK_STREAM:
+        StatementKind.SEEK_STREAM:
             offset :ExpressionRef # Offset to seek to
             stream_type :StreamType
-        StatementOp.IF_STATEMENT:
+        StatementKind.IF_STATEMENT:
             if_statement :IfStatement
-        StatementOp.LOOP_STATEMENT:
+        StatementKind.LOOP_STATEMENT:
             loop :LoopStatement
-        StatementOp.MATCH_STATEMENT:
+        StatementKind.MATCH_STATEMENT:
             match_statement :MatchStatement
-        StatementOp.MATCH_BRANCH:
+        StatementKind.MATCH_BRANCH:
             match_branch :MatchBranch # Single branch of a match statement
-        StatementOp.BREAK:
+        StatementKind.BREAK:
             break_ :LoopFlowControl
-        StatementOp.CONTINUE:
+        StatementKind.CONTINUE:
             continue_ :LoopFlowControl
-        StatementOp.FUNCTION_DECL:
+        StatementKind.FUNCTION_DECL:
             func_decl :FunctionDecl
-        StatementOp.VARIABLE_DECL:
+        StatementKind.VARIABLE_DECL:
             var_decl :VariableDecl
-        StatementOp.FIELD_DECL:
+        StatementKind.FIELD_DECL:
             field_decl :FieldDecl
-        StatementOp.ENUM_DECL:
+        StatementKind.ENUM_DECL:
             enum_decl :EnumDecl
-        StatementOp.ENUM_MEMBER_DECL:
+        StatementKind.ENUM_MEMBER_DECL:
             enum_member_decl :EnumMemberDecl
-        StatementOp.STRUCT_DECL:
+        StatementKind.STRUCT_DECL:
             struct_decl :StructDecl
-        StatementOp.PROGRAM_DECL:
+        StatementKind.PROGRAM_DECL:
             block :Block
-        StatementOp.PROPERTY_DECL:
+        StatementKind.PROPERTY_DECL:
             property_decl :PropertyDecl
-        StatementOp.PROPERTY_MEMBER_DECL:
+        StatementKind.PROPERTY_MEMBER_DECL:
             property_member_decl :PropertyMemberDecl
-        StatementOp.METADATA:
+        StatementKind.METADATA:
             metadata :Metadata
-        StatementOp.IMPORT_MODULE:
+        StatementKind.IMPORT_MODULE:
             module_name :IdentifierRef
             alias :IdentifierRef # Optional alias
-        StatementOp.ERROR_REPORT:
+        StatementKind.ERROR_REPORT:
             error_report :ErrorReport
-        StatementOp.EXPRESSION:
+        StatementKind.EXPRESSION:
             expression :ExpressionRef # Expression statement
-        StatementOp.LOWERED_STATEMENTS:
+        StatementKind.LOWERED_STATEMENTS:
             lowered_statements :LoweredStatements # Lowered expressions
-        StatementOp.SUB_BYTE_RANGE:
+        StatementKind.SUB_BYTE_RANGE:
             sub_byte_range :SubByteRange
 
 format Expressions:

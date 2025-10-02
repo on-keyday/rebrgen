@@ -244,7 +244,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::RETURN;
+        body.kind = ebm::StatementKind::RETURN;
         if (node->expr) {
             EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
             body.value(expr_ref);
@@ -268,7 +268,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::If>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::IF_STATEMENT;
+        body.kind = ebm::StatementKind::IF_STATEMENT;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
 
         // Convert then block
@@ -298,7 +298,7 @@ namespace ebmgen {
             auto if_cond = ctx.repository().get_statement(b)->body.match_branch();
             auto cond_expr = ctx.repository().get_expression(if_cond->condition.cond);
             // any range -> else block
-            if (cond_expr->body.kind == ebm::ExpressionOp::RANGE &&
+            if (cond_expr->body.kind == ebm::ExpressionKind::RANGE &&
                 is_nil(*cond_expr->body.start()) &&
                 is_nil(*cond_expr->body.end())) {
                 if (lowered_if.size()) {
@@ -332,7 +332,7 @@ namespace ebmgen {
                 match_stmt.lowered_if_statement = ebm::LoweredStatementRef{if_id};
             }
             ebm::StatementBody if_body;
-            if_body.kind = ebm::StatementOp::IF_STATEMENT;
+            if_body.kind = ebm::StatementKind::IF_STATEMENT;
             if_body.if_statement(std::move(if_stmt));
             EBMA_ADD_STATEMENT(new_stmt_id, if_id, std::move(if_body));
         }
@@ -340,7 +340,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Match>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::MATCH_STATEMENT;
+        body.kind = ebm::StatementKind::MATCH_STATEMENT;
         ebm::MatchStatement match_stmt;
         if (node->cond) {
             EBMA_CONVERT_EXPRESSION(target_ref, node->cond->expr);
@@ -360,7 +360,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::BLOCK;
+        body.kind = ebm::StatementKind::BLOCK;
         ebm::Block block_body;
         const auto _scope = ctx.state().set_current_block(&block_body);
         for (auto& element : node->elements) {
@@ -372,7 +372,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::MatchBranch>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::MATCH_BRANCH;
+        body.kind = ebm::StatementKind::MATCH_BRANCH;
         ebm::MatchBranch ebm_branch;
         EBMA_CONVERT_EXPRESSION(cond_ref, node->cond->expr);
         ebm_branch.condition = make_condition(cond_ref);
@@ -388,7 +388,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Program>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::PROGRAM_DECL;
+        body.kind = ebm::StatementKind::PROGRAM_DECL;
 
         ebm::Block program_body_block;
         const auto _scope = ctx.state().set_current_block(&program_body_block);
@@ -414,7 +414,7 @@ namespace ebmgen {
         return coder_input;
     }
 
-    expected<ebm::StatementRef> StatementConverter::convert_struct_decl(const std::shared_ptr<ast::StructType>& node) {
+    expected<ebm::StatementRef> StatementConverter::convert_struct_decl(const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant) {
         const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
         if (auto v = ctx.state().is_visited(node)) {
             return *v;
@@ -427,8 +427,8 @@ namespace ebmgen {
             }
             else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
                 ebm::StatementBody stmt;
-                stmt.kind = ebm::StatementOp::STRUCT_DECL;
-                MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, node));
+                stmt.kind = ebm::StatementKind::STRUCT_DECL;
+                MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, node, related_variant));
                 stmt.struct_decl(std::move(struct_decl));
                 EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
                 ctx.state().add_visited_node(node, name_ref);
@@ -443,9 +443,11 @@ namespace ebmgen {
         }
     }
 
-    expected<ebm::StructDecl> StatementConverter::convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node) {
+    expected<ebm::StructDecl> StatementConverter::convert_struct_decl(ebm::IdentifierRef name, const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant) {
         ebm::StructDecl struct_decl;
         struct_decl.name = name;
+        struct_decl.is_recursive(node->recursive);
+        struct_decl.related_variant = related_variant;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {
@@ -462,7 +464,7 @@ namespace ebmgen {
         if (ctx.state().get_current_generate_type() != GenerateType::Normal) {
             return unexpect_error("unexpected node type: {}", to_string(ctx.state().get_current_generate_type()));
         }
-        body.kind = ebm::StatementOp::STRUCT_DECL;
+        body.kind = ebm::StatementKind::STRUCT_DECL;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         MAYBE(encoder_input, get_coder_input(ctx, true));
         MAYBE(decoder_input, get_coder_input(ctx, false));
@@ -515,7 +517,7 @@ namespace ebmgen {
                 derived_fn.body = body;
             }
             ebm::StatementBody b;
-            b.kind = ebm::StatementOp::FUNCTION_DECL;
+            b.kind = ebm::StatementKind::FUNCTION_DECL;
             b.func_decl(std::move(derived_fn));
             EBMA_ADD_STATEMENT(stmt, fn_ref, std::move(b));
             fn_ref = stmt;
@@ -530,7 +532,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Enum>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::ENUM_DECL;
+        body.kind = ebm::StatementKind::ENUM_DECL;
         ebm::EnumDecl ebm_enum_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         ebm_enum_decl.name = name_ref;
@@ -558,7 +560,7 @@ namespace ebmgen {
             EBMA_ADD_STRING(str_ref, node->str_literal->value);
             ebm_enum_member_decl.string_repr = str_ref;
         }
-        body.kind = ebm::StatementOp::ENUM_MEMBER_DECL;
+        body.kind = ebm::StatementKind::ENUM_MEMBER_DECL;
         body.enum_member_decl(std::move(ebm_enum_member_decl));
         return {};
     }
@@ -600,14 +602,14 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::FUNCTION_DECL;
+        body.kind = ebm::StatementKind::FUNCTION_DECL;
         MAYBE(decl, convert_function_decl(node, GenerateType::Normal, {}));
         body.func_decl(std::move(decl));
         return {};
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Metadata>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::METADATA;
+        body.kind = ebm::StatementKind::METADATA;
         ebm::Metadata ebm_metadata;
         EBMA_ADD_IDENTIFIER(name_ref, node->name);
         ebm_metadata.name = name_ref;
@@ -629,7 +631,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::STRUCT_DECL;
+        body.kind = ebm::StatementKind::STRUCT_DECL;
         ebm::StructDecl state_decl;
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         state_decl.name = name_ref;
@@ -714,7 +716,7 @@ namespace ebmgen {
             MAYBE(subrange_body, with_io_changed(ctx, sub_byte_io, sub_byte_io_def, is_enc, do_io));
             EBMA_ADD_STATEMENT(io_stmt, std::move(subrange_body));
             sub_range->io_statement = io_stmt;
-            body.kind = ebm::StatementOp::SUB_BYTE_RANGE;
+            body.kind = ebm::StatementKind::SUB_BYTE_RANGE;
             body.sub_byte_range(std::move(*sub_range));
         }
         else {
@@ -723,7 +725,7 @@ namespace ebmgen {
         }
         if (assert_stmt) {
             ebm::StatementRef inner;
-            if (body.kind == ebm::StatementOp::SUB_BYTE_RANGE) {
+            if (body.kind == ebm::StatementKind::SUB_BYTE_RANGE) {
                 EBMA_ADD_STATEMENT(inner_, sub_range_id, std::move(body));
                 inner = inner_;
             }
@@ -740,7 +742,7 @@ namespace ebmgen {
                 append(with_assert, inner);
                 append(with_assert, *assert_stmt);
             }
-            body.kind = ebm::StatementOp::BLOCK;
+            body.kind = ebm::StatementKind::BLOCK;
             body.block(std::move(with_assert));
         }
         return body;
@@ -759,13 +761,13 @@ namespace ebmgen {
             body = std::move(body_);
         }
         else {
-            body.kind = ebm::StatementOp::FIELD_DECL;
+            body.kind = ebm::StatementKind::FIELD_DECL;
             ebm::FieldDecl field_decl;
             if (node->ident) {
                 EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
                 field_decl.name = field_name_ref;
             }
-            EBMA_CONVERT_TYPE(type_ref, node->field_type);
+            EBMA_CONVERT_TYPE(type_ref, node->field_type, node);
             field_decl.field_type = type_ref;
             field_decl.is_state_variable(node->is_state_variable);
             if (auto locked = node->belong_struct.lock(); locked && node->belong.lock()) {
@@ -778,7 +780,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ExplicitError>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::ERROR_REPORT;
+        body.kind = ebm::StatementKind::ERROR_REPORT;
         ebm::ErrorReport error_report;
         MAYBE(decoded, decode_base64(node->message));
         EBMA_ADD_STRING(message_str_ref, decoded);
@@ -792,7 +794,7 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        body.kind = ebm::StatementOp::IMPORT_MODULE;
+        body.kind = ebm::StatementKind::IMPORT_MODULE;
         EBMA_ADD_IDENTIFIER(module_name_ref, node->path);
         body.module_name(module_name_ref);
         return {};
@@ -802,7 +804,7 @@ namespace ebmgen {
         MAYBE(yield_stmt, ctx.state().get_current_yield_statement());
         MAYBE(stmt, ctx.repository().get_statement(yield_stmt));
         MAYBE(var_decl, stmt.body.var_decl());
-        body.kind = ebm::StatementOp::YIELD;
+        body.kind = ebm::StatementKind::YIELD;
         EBM_IDENTIFIER(temp_var, yield_stmt, var_decl.var_type);
         body.target(temp_var);
         EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
@@ -813,14 +815,14 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         auto assign_with_op = convert_assignment_binary_op(node->op);
         if (node->op == ast::BinaryOp::assign) {
-            body.kind = ebm::StatementOp::ASSIGNMENT;
+            body.kind = ebm::StatementKind::ASSIGNMENT;
             EBMA_CONVERT_EXPRESSION(target_ref, node->left);
             body.target(target_ref);
             EBMA_CONVERT_EXPRESSION(value_ref, node->right);
             body.value(value_ref);
         }
         else if (node->op == ast::BinaryOp::define_assign || node->op == ast::BinaryOp::const_assign) {
-            body.kind = ebm::StatementOp::VARIABLE_DECL;
+            body.kind = ebm::StatementKind::VARIABLE_DECL;
             ebm::VariableDecl var_decl;
             auto name_ident = ast::as<ast::Ident>(node->left);
             if (!name_ident) {
@@ -840,14 +842,14 @@ namespace ebmgen {
             body.var_decl(std::move(var_decl));
         }
         else if (assign_with_op) {
-            body.kind = ebm::StatementOp::ASSIGNMENT;
+            body.kind = ebm::StatementKind::ASSIGNMENT;
             EBMA_CONVERT_EXPRESSION(calc, ast::cast_to<ast::Expr>(node));
             EBMA_CONVERT_EXPRESSION(target_ref, node->left);
             body.target(target_ref);
             body.value(calc);
         }
         else {
-            body.kind = ebm::StatementOp::EXPRESSION;
+            body.kind = ebm::StatementKind::EXPRESSION;
             EBMA_CONVERT_EXPRESSION(expr_ref, ast::cast_to<ast::Expr>(node));
             body.expression(expr_ref);
         }
@@ -856,7 +858,7 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         if (ast::as<ast::Expr>(node)) {
-            body.kind = ebm::StatementOp::EXPRESSION;
+            body.kind = ebm::StatementKind::EXPRESSION;
             EBMA_CONVERT_EXPRESSION(expr_ref, ast::cast_to<ast::Expr>(node));
             body.expression(expr_ref);
             return {};

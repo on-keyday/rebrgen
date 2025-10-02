@@ -31,6 +31,26 @@ namespace ebmgen {
         ebm::TypeBody body;
         expected<void> result = {};  // To capture errors from within the lambda
 
+        // special case for StructUnionType
+        if (auto n = ast::as<ast::StructUnionType>(type)) {
+            MAYBE(varint_id, ctx.repository().new_type_id());
+            body.kind = ebm::TypeKind::VARIANT;
+            EBMA_CONVERT_STATEMENT(related_field, field);
+            body.related_field(related_field);
+            ebm::Types members;
+            for (auto& struct_member : n->structs) {
+                MAYBE(member_type_ref, ctx.get_statement_converter().convert_struct_decl(struct_member, varint_id));
+                ebm::TypeBody body;
+                body.kind = ebm::TypeKind::STRUCT;
+                body.id(member_type_ref);
+                EBMA_ADD_TYPE(member_type_ref2, std::move(body));
+                append(members, member_type_ref2);
+            }
+            body.members(std::move(members));
+            EBMA_ADD_TYPE(type_ref, varint_id, std::move(body));
+            return type_ref;
+        }
+
         auto fn = [&](auto&& n) -> expected<void> {
             using T = std::decay_t<decltype(n)>;
             if constexpr (std::is_same_v<T, std::shared_ptr<ast::IntType>>) {
@@ -124,15 +144,6 @@ namespace ebmgen {
                 body.kind = n->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
                 MAYBE(name_ref, ctx.get_statement_converter().convert_struct_decl(n));
                 body.id(name_ref);
-            }
-            else if constexpr (std::is_same_v<T, std::shared_ptr<ast::StructUnionType>>) {
-                body.kind = ebm::TypeKind::VARIANT;
-                ebm::Types members;
-                for (auto& struct_member : n->structs) {
-                    EBMA_CONVERT_TYPE(member_type_ref, struct_member);
-                    append(members, member_type_ref);
-                }
-                body.members(std::move(members));
             }
             else if constexpr (std::is_same_v<T, std::shared_ptr<ast::VoidType>>) {
                 body.kind = ebm::TypeKind::VOID;

@@ -8,7 +8,7 @@
     module_: MappingTable
     item_id: ExpressionRef
     type: TypeRef
-    kind: ExpressionOp
+    kind: ExpressionKind
     int64_value: std::uint64_t
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

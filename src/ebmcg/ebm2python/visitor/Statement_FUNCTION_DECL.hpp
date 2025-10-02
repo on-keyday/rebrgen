@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     func_decl: FunctionDecl
       name: IdentifierRef
       return_type: TypeRef
@@ -31,7 +31,7 @@ if (!is_nil(func_decl.parent_format)) {
 if (func_decl.params.container.empty() == false) {
     for (auto& param_stmt_ref : func_decl.params.container) {
         MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
-        if (param_stmt.body.kind == ebm::StatementOp::VARIABLE_DECL) {
+        if (param_stmt.body.kind == ebm::StatementKind::VARIABLE_DECL) {
             auto& var_decl = *param_stmt.body.var_decl();
             auto param_name = this->module_.get_identifier_or(param_stmt_ref, "param");
             MAYBE(param_type_str, visit_Type(*this, var_decl.var_type));  // Correctly extract the string value

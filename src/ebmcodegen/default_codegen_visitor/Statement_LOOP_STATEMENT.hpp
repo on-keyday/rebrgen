@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     loop: LoopStatement
       loop_type: LoopType
       collection: *ExpressionRef
@@ -37,7 +37,7 @@ if (auto c = loop.condition()) {
 }
 else {
     ebm::Expression bool_true;
-    bool_true.body.kind = ebm::ExpressionOp::LITERAL_BOOL;
+    bool_true.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
     bool_true.body.bool_value(1);
     MAYBE(expr, visit_Expression(*this, bool_true));
     cond = std::move(expr.value);

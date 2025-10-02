@@ -379,7 +379,7 @@ namespace ebmgen {
     expected<ebm::StatementBody> StatementConverter::convert_property_decl(const std::shared_ptr<ast::Field>& node) {
         ebm::StatementBody body;
         MAYBE(union_type, ast::as<ast::UnionType>(node->field_type));
-        body.kind = ebm::StatementOp::PROPERTY_DECL;
+        body.kind = ebm::StatementKind::PROPERTY_DECL;
         ebm::PropertyDecl prop_decl;
         EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
         prop_decl.name = field_name_ref;

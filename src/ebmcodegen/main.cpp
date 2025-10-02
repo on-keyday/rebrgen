@@ -191,7 +191,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
     if (parsed.starts_with("_")) {
         parsed = parsed.substr(1);
         if (result.target == "Expression") {
-            auto expr = ebm::ExpressionOp_from_string(parsed);
+            auto expr = ebm::ExpressionKind_from_string(parsed);
             if (!expr) {
                 return error("Invalid expression: {}", parsed);
             }
@@ -209,7 +209,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
             result.struct_info = structs.find("TypeBody")->second;
         }
         else if (result.target == "Statement") {
-            auto stmt = ebm::StatementOp_from_string(parsed);
+            auto stmt = ebm::StatementKind_from_string(parsed);
             if (!stmt) {
                 return error("Invalid statement: {}", parsed);
             }
@@ -380,8 +380,8 @@ int print_body_subset(CodeWriter& w, std::map<std::string_view, ebmcodegen::Stru
             w.writeln("}");
         };
 
-        do_visit_body(ebm::StatementOp{}, struct_map["StatementBody"]);
-        do_visit_body(ebm::ExpressionOp{}, struct_map["ExpressionBody"]);
+        do_visit_body(ebm::StatementKind{}, struct_map["StatementBody"]);
+        do_visit_body(ebm::ExpressionKind{}, struct_map["ExpressionBody"]);
         do_visit_body(ebm::TypeKind{}, struct_map["TypeBody"]);
     }
     w.writeln("} // namespace ebmcodegen");
@@ -802,8 +802,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.write_unformatted(stmt_dispatcher.out());
     };
 
-    dispatcher(ebm::StatementOp{}, prefixes[prefix_statement], ebmcodegen::body_subset_StatementBody());
-    dispatcher(ebm::ExpressionOp{}, prefixes[prefix_expression], ebmcodegen::body_subset_ExpressionBody());
+    dispatcher(ebm::StatementKind{}, prefixes[prefix_statement], ebmcodegen::body_subset_StatementBody());
+    dispatcher(ebm::ExpressionKind{}, prefixes[prefix_expression], ebmcodegen::body_subset_ExpressionBody());
     dispatcher(ebm::TypeKind{}, prefixes[prefix_type], ebmcodegen::body_subset_TypeBody());
 
     visitor_scope.execute();

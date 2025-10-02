@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     read_data: IOData
       io_ref: StatementRef
       target: ExpressionRef

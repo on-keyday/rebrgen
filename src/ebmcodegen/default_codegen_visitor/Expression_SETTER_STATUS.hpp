@@ -8,12 +8,12 @@
     module_: MappingTable
     item_id: ExpressionRef
     type: TypeRef
-    kind: ExpressionOp
+    kind: ExpressionKind
     setter_status: SetterStatus
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 ebm::Expression expr;
-expr.body.kind = ebm::ExpressionOp::LITERAL_BOOL;
+expr.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
 expr.body.bool_value(setter_status == ebm::SetterStatus::SUCCESS);
 return visit_Expression(*this, expr);

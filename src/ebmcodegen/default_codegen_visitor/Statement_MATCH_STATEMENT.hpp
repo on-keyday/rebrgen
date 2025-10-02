@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     match_statement: MatchStatement
       target: ExpressionRef
       is_exhaustive: bool

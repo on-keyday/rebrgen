@@ -23,12 +23,12 @@
           len: Varint
           container: std::vector<TypeRef>
         pointee_type: *TypeRef
+        related_field: *StatementRef
         return_type: *TypeRef
         size: *Varint
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-#include "ebm/extended_binary_module.hpp"
 const auto& type = in;
 
 auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {

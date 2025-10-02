@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     field_decl: FieldDecl
       name: IdentifierRef
       field_type: TypeRef

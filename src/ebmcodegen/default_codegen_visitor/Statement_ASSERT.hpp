@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     assert_desc: AssertDesc
       condition: Condition
         cond: ExpressionRef

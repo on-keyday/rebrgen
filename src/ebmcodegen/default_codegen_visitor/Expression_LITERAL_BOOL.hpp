@@ -8,7 +8,7 @@
     module_: MappingTable
     item_id: ExpressionRef
     type: TypeRef
-    kind: ExpressionOp
+    kind: ExpressionKind
     bool_value: std::uint8_t
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

@@ -7,7 +7,7 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
-    kind: StatementOp
+    kind: StatementKind
     if_statement: IfStatement
       condition: Condition
         cond: ExpressionRef
@@ -43,7 +43,7 @@ while (!is_nil(els_block)) {
         w.write(" else ");
     }
     auto kind = module_.get_statement_op(els_block);
-    if (kind == ebm::StatementOp::IF_STATEMENT) {
+    if (kind == ebm::StatementKind::IF_STATEMENT) {
         MAYBE(next_if_stmt, module_.get_statement(els_block));
         MAYBE(next_if, next_if_stmt.body.if_statement());
         MAYBE(condition, visit_Expression(*this, next_if.condition.cond));

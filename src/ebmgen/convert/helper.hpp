@@ -44,8 +44,8 @@ namespace ebmgen {
 #define EBMA_ADD_STRING(ref_name, candidate) \
     MAYBE(ref_name, ctx.repository().add_string(candidate));
 
-#define EBMA_ADD_TYPE(ref_name, type) \
-    MAYBE(ref_name, ctx.repository().add_type(type));
+#define EBMA_ADD_TYPE(ref_name, ...) \
+    MAYBE(ref_name, ctx.repository().add_type(__VA_ARGS__));
 
 #define EBMA_ADD_STATEMENT(ref_name, ...) \
     MAYBE(ref_name, ctx.repository().add_statement(__VA_ARGS__));

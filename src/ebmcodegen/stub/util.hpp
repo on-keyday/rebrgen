@@ -1,6 +1,5 @@
 /*license*/
 #pragma once
-#include <functional>
 #include <string>
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>

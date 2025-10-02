@@ -13,3 +13,12 @@ end_block = "";
 use_brace_for_condition = false;
 use_elif = true;
 empty_block_marker = "pass";
+alt_binary_op = {
+    {ebm::BinaryOp::logical_and, "and"},
+    {ebm::BinaryOp::logical_or, "or"},
+};
+alt_unary_op = {
+    {ebm::UnaryOp::logical_not, "not"},
+};
+metadata_comment_prefix = "#";
+metadata_comment_suffix = "";

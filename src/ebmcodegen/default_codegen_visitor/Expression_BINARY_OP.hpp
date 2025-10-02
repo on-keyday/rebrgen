@@ -20,7 +20,12 @@ CodeWriter w;
 
 MAYBE(left_str, visit_Expression(*this, left));
 MAYBE(right_str, visit_Expression(*this, right));
-
-w.write("(", left_str.value, " ", to_string(bop), " ", right_str.value, ")");
+auto it = this->alt_binary_op.find(bop);
+if (it != this->alt_binary_op.end()) {
+    w.write("(", left_str.value, " ", it->second, " ", right_str.value, ")");
+}
+else {
+    w.write("(", left_str.value, " ", to_string(bop), " ", right_str.value, ")");
+}
 
 return w.out();

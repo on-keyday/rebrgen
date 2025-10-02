@@ -4,5 +4,8 @@
     "DEFAULT_BUILD_TYPE": "Debug",
     "DEFAULT_BUILD_MODE": "native",
     "EMSDK_DIR": "./emsdk",
-    "BUILD_OLD_BMGEN": false
+    "BUILD_OLD_BMGEN": false,
+    "AUTO_SETUP_BRGEN": false,
+    "AUTO_SETUP_FUTILS": true,
+    "AUTO_SETUP_EMSDK": false
 }

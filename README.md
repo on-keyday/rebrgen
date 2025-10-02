@@ -7,18 +7,21 @@ rebrgen is as AST-to-IR-to-Code model
 
 This is aimed at improving flexibility and inter-language compatibility
 
-# How to add language
+# How to build
 
 1. you may copy `build_config.template.json` to `build_config.json`
-2. run `python script/build.py` to build `./tool/ebmcodegen[.exe]`
-   - at first build, also run `./brgen/script/clone_utils.[bat|sh]` to fetch and build dependency
-3. run `python script/ebmcodegen.py <lang name>`
-4. run `python script/build.py` again
-5. write `<any>.bgn` file (see https://github.com/on-keyday/brgen) and run the `src2json <any>.bgn > <saved>.json`
+2. at first run `python script/auto_setup.py`. on subsequent build, run `python script/build.py`
+
+# How to Add Language
+
+0. before you add language, `tool/ebmcodegen[.exe]` must be built
+1. run `python script/ebmcodegen.py <lang name>`
+2. run `python script/build.py` again
+3. write `<any>.bgn` file (see https://github.com/on-keyday/brgen) and run the `src2json <any>.bgn > <saved>.json`
    - you can use [WebPlayground](https://on-keyday.github.io/brgen/#code=Zm9ybWF0IERhdGE6DQogICAgbGVuIDp1OA0KICAgIGRhdGEgOltsZW5ddTgNCg&lang=json+ast) to generate `.json` file
-6. run `./tool/ebmgen -i <saved>.json -o <output>.ebm`
-7. run `./tool/ebm2<lang name> -i <output>.ebm` then you can see the generated code
-8. to edit `ebm2<lang name>` code, run `python script/ebmtemplate.py interactive` for more info.
+4. run `./tool/ebmgen -i <saved>.json -o <output>.ebm`
+5. run `./tool/ebm2<lang name> -i <output>.ebm` then you can see the generated code
+6. to edit `ebm2<lang name>` code, run `python script/ebmtemplate.py interactive` for more info.
 
 # Current Status
 

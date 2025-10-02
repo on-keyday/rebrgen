@@ -28,6 +28,7 @@ enum class GenerateMode {
     CodeGenerator,
     Interpreter,
     HookList,
+    HookKind,
     SpecJSON,
 };
 
@@ -46,7 +47,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
         ctx.VarString<true>(&template_target, "template-target", "template target name. see --mode hooklist", "target_name");
-        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,template,spec-json}",
+        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,hookkind,template,spec-json}",
                    std::map<std::string, GenerateMode>{
                        {"template", GenerateMode::Template},
                        {"subset", GenerateMode::BodySubset},
@@ -54,6 +55,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"codegen", GenerateMode::CodeGenerator},
                        {"interpret", GenerateMode::Interpreter},
                        {"hooklist", GenerateMode::HookList},
+                       {"hookkind", GenerateMode::HookKind},
                        {"spec-json", GenerateMode::SpecJSON},
                    });
     }
@@ -389,6 +391,27 @@ int print_body_subset(CodeWriter& w, std::map<std::string_view, ebmcodegen::Stru
     return 0;
 }
 
+int print_hook_kind() {
+    futils::json::Stringer<> stringer;
+    {
+        auto root = stringer.object();
+        root("prefixes", [&](futils::json::Stringer<>& s) {
+            auto element = s.array();
+            for (auto& p : prefixes) {
+                element(p);
+            }
+        });
+        root("suffixes", [&](futils::json::Stringer<>& s) {
+            auto element = s.array();
+            for (auto& p : suffixes) {
+                element(p);
+            }
+        });
+    }
+    cout << stringer.out();
+    return 0;
+}
+
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     std::string prog_name_buf;
     if (flags.program_name.empty()) {
@@ -398,6 +421,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     CodeWriter w;
     if (flags.mode == GenerateMode::CMake) {
         return print_cmake(w, flags);
+    }
+    if (flags.mode == GenerateMode::HookKind) {
+        return print_hook_kind();
     }
     auto [struct_map, enum_map] = ebmcodegen::make_struct_map();
     if (flags.mode == GenerateMode::SpecJSON) {
@@ -846,6 +872,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         return 0;
     }
+
     if (flags.mode == GenerateMode::Template) {
         if (flags.template_target.empty()) {
             cerr << "Requires template --template-target option: use --mode hooklist to see what kind exists.\n";

@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 import os
@@ -208,6 +209,27 @@ def run_test_mode(tool_path):
     print("\nSuccess! All template targets generated successfully.", file=sys.stderr)
 
 
+def get_available_templates() -> list[str]:
+    """List all available template targets."""
+    tool_path = get_tool_path()
+    if not tool_path:
+        return []
+    try:
+        hooklist_cmd = [tool_path, "--mode", "hooklist"]
+        result = subprocess.run(
+            hooklist_cmd, check=True, capture_output=True, text=True, encoding="utf-8"
+        )
+        targets = [line for line in result.stdout.splitlines() if line.strip()]
+        return targets
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
+            file=sys.stderr,
+        )
+        print(f"Stderr: {e.stderr}", file=sys.stderr)
+        return []
+
+
 def list_defined_templates(lang: str):
     """List all defined templates for a given language."""
     if lang == "default_codegen":
@@ -217,17 +239,9 @@ def list_defined_templates(lang: str):
     if not os.path.isdir(visitor_dir):
         print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
         return
-    hooklist_cmd = [get_tool_path(), "--mode", "hooklist"]
-    try:
-        result = subprocess.run(
-            hooklist_cmd, check=True, capture_output=True, text=True, encoding="utf-8"
-        )
-        available_hooks = {line.strip() for line in result.stdout.splitlines() if line}
-    except subprocess.CalledProcessError as e:
-        print(
-            f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
-            file=sys.stderr,
-        )
+    available_hooks = set(get_available_templates())
+    if not available_hooks:
+        print("No available templates found.", file=sys.stderr)
         return
     # detect defined hook file and non template files
     defined_hooks = dict()
@@ -258,6 +272,155 @@ def list_defined_templates(lang: str):
             print(f"  {f}")
 
 
+def parseInt(s: str) -> int:
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
+
+def interactive_generate_single():
+    """Generate a single template."""
+    tool_path = get_tool_path()
+    if not tool_path:
+        return
+    # tool/ebmcodegen --mode hookkind
+    command = [tool_path, "--mode", "hookkind"]
+    try:
+        result = subprocess.run(
+            command, check=True, capture_output=True, text=True, encoding="utf-8"
+        )
+        output = json.loads(result.stdout)
+        print("Which kind of template would you like to generate?")
+        print("0. <Exit>")
+        print(
+            "\n".join(
+                [f"{i + 1}. {prefix}" for i, prefix in enumerate(output["prefixes"])]
+            )
+        )
+        choice = parseInt(input("Enter the number of your choice: ").strip())
+        if choice == 0:
+            print("Exiting the generation.")
+            return
+        index = choice - 1
+        if index < 0 or index >= len(output["prefixes"]):
+            print("Invalid choice. Exiting.")
+            return
+        selected_prefix = output["prefixes"][index]
+        print(f"You selected: {selected_prefix}")
+        available_templates = get_available_templates()
+        suffixes = tuple([x for x in output["suffixes"] if x != "_dispatch"])
+        matching_templates = [
+            t
+            for t in available_templates
+            if t.startswith(selected_prefix) and not t.endswith(suffixes)
+        ]
+        if not matching_templates:
+            print(f"No templates found for prefix '{selected_prefix}'. Exiting.")
+            return
+        matching_templates.sort()
+        if len(matching_templates) > 1:
+            print("Which specific template would you like to generate?")
+            for i, template in enumerate(matching_templates):
+                print(f"{i + 1}. {template}")
+            choice = parseInt(input("Enter the number of your choice: ").strip())
+            if choice == 0:
+                print("Exiting the generation.")
+                return
+            index = choice - 1
+            if index < 0 or index >= len(matching_templates):
+                print("Invalid choice. Exiting.")
+                return
+            selected_template = matching_templates[index]
+            print(f"You selected: {selected_template}")
+        else:
+            selected_template = matching_templates[0]
+        matching_templates = [
+            t
+            for t in available_templates
+            if t == selected_template or t.startswith(selected_template + "_")
+        ]
+        matching_templates.sort()
+        print("Which template variant would you like to generate?")
+        print("0. <Exit>")
+        for i, template in enumerate(matching_templates):
+            print(f"{i + 1}. {template}")
+        choice = parseInt(input("Enter the number of your choice: ").strip())
+        if choice == 0:
+            print("Exiting the generation.")
+            return
+        index = choice - 1
+        if index < 0 or index >= len(matching_templates):
+            print("Invalid choice. Exiting.")
+            return
+        selected_variant = matching_templates[index]
+        print(f"You selected: {selected_variant}")
+        run_single_template(tool_path, selected_variant)
+        would_save = (
+            input(
+                "Would you like to save this template to a language visitor directory? (y/N): "
+            )
+            .strip()
+            .lower()
+        )
+        if would_save == "y":
+            lang = input(
+                "Enter the language directory to save to (e.g., 'cpp', 'python', or 'default_codegen'): "
+            ).strip()
+            if lang:
+                run_save_template(tool_path, selected_variant, lang)
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
+            file=sys.stderr,
+        )
+        print(f"Stderr: {e.stderr}", file=sys.stderr)
+        return
+
+
+def interactive():
+    """interactive guide through the script features."""
+    print("Welcome to the interactive guide!")
+    print("This guide will help you use the ebmcodegen tool for template generation.")
+    print("You can choose from the following options:")
+
+    while True:
+        command = input(
+            "\nChoose an option:\n"
+            "1. Generate a single template\n"
+            "2. Update existing hook files\n"
+            "3. Test generation for all templates\n"
+            "4. List defined templates in a language directory\n"
+            "5. Exit\n"
+            "Enter the number of your choice: "
+        ).strip()
+        if command == "1":
+            interactive_generate_single()
+        elif command == "2":
+            lang = input(
+                "Enter the language directory to update (e.g., 'cpp', 'python', or 'default_codegen'): "
+            ).strip()
+            if lang:
+                tool_path = get_tool_path()
+                if tool_path:
+                    run_update_hooks(tool_path, lang)
+        elif command == "3":
+            tool_path = get_tool_path()
+            if tool_path:
+                run_test_mode(tool_path)
+        elif command == "4":
+            lang = input(
+                "Enter the language directory to list (e.g., 'cpp', 'python', or 'default_codegen'): "
+            ).strip()
+            if lang:
+                list_defined_templates(lang)
+        elif command == "5":
+            print("Exiting the interactive guide. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number from 1 to 5.")
+
+
 def main():
     # Ensure the script is run from the project root
     if not os.path.exists("tool"):
@@ -275,6 +438,10 @@ def main():
         )
         print(
             "  <template_target>: Generate a template to stdout (e.g., 'Statement_BLOCK').",
+            file=sys.stderr,
+        )
+        print(
+            "  interactive      : Start an interactive guide through the script features.",
             file=sys.stderr,
         )
         print(
@@ -305,6 +472,9 @@ def main():
 
     target_arg = sys.argv[1]
 
+    if target_arg == "interactive":
+        interactive()
+        return
     if target_arg == "test":
         run_test_mode(tool_path)
     elif target_arg == "update":

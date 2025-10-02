@@ -2,7 +2,7 @@
 
 #### AI generated
 
-This document describes how the hook files are used in `src/bm2python/bm2python.cpp`.
+This document describes how the hook files are used in `src/old/bm2python/bm2python.cpp`.
 
 ## Hook File Usage
 

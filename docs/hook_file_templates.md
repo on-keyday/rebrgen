@@ -1,10 +1,10 @@
 ## Hook File Templates
 
-The `bm2` code generator uses a set of template files, referred to as "Hook Files", to generate code for different languages. These templates allow for customization of the generated code, such as specifying language-specific syntax, data types, and code structures. Hook files are located in the `src/bm2{lang_name}/hook/` directories.
+The `bm2` code generator uses a set of template files, referred to as "Hook Files", to generate code for different languages. These templates allow for customization of the generated code, such as specifying language-specific syntax, data types, and code structures. Hook files are located in the `src/old/bm2{lang_name}/hook/` directories.
 
-The `src/bm2/gen_template/` directory contains the core logic for reading and processing these hook files. The `src/bm2/gen_template.cpp` file is responsible for reading the template files and using them to generate code. The `may_write_from_hook` function reads the content of a template file and inserts it into the generated code.
+The `src/old/bm2/gen_template/` directory contains the core logic for reading and processing these hook files. The `src/old/bm2/gen_template.cpp` file is responsible for reading the template files and using them to generate code. The `may_write_from_hook` function reads the content of a template file and inserts it into the generated code.
 
-The `src/bm2/gen_template/hook_list.bgn` file defines an enum `HookFile` that lists all available template files.
+The `src/old/bm2/gen_template/hook_list.bgn` file defines an enum `HookFile` that lists all available template files.
 
 ### Template Categories
 
@@ -48,7 +48,7 @@ The Hook File templates are categorized into several groups:
 
 The `gen_template.cpp` file reads the binary module and iterates through its code, using the `AbstractOp` enum to determine the type of instruction. For each instruction, it calls the `may_write_from_hook` function with the appropriate `HookFile` enum value to insert the corresponding template code into the generated code.
 
-The template files can contain placeholders that are replaced with language-specific values. These placeholders are defined and managed within the `src/bm2/gen_template/` directory.
+The template files can contain placeholders that are replaced with language-specific values. These placeholders are defined and managed within the `src/old/bm2/gen_template/` directory.
 
 ### Parameters and Variables
 
@@ -108,7 +108,7 @@ The `docs/template_parameters.md` file describes the variables that can be used 
 
 ### Flags
 
-The `Flags` struct in `src/bm2/gen_template/flags.hpp` defines variables that can be used as placeholders in the hook files. These flags provide language-specific information and settings. Some examples include:
+The `Flags` struct in `src/old/bm2/gen_template/flags.hpp` defines variables that can be used as placeholders in the hook files. These flags provide language-specific information and settings. Some examples include:
 
 - `lang_name`: The name of the target language.
 - `comment_prefix`: The prefix for comments.

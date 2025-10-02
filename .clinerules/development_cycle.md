@@ -4,7 +4,7 @@ Action order below is NO MATTER. You can choose actions below as if you need
 
 ## 0. Important Constraints
 
-- **Do not edit `src/bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files because they are auto generated file. Before you modify, ensure following this rule.
+- **Do not edit `src/old/bm2{lang_name}/*.[h|c]pp` directly**: Avoid manual edits in these files because they are auto generated file. Before you modify, ensure following this rule.
 - **Read and Update `docs/cline`**: Before you act, you have to write previous `docs/cline`. write your plan and action each time when you found the important things to note at `docs/cline` directory.
 
 ## 1. Setup and Configuration
@@ -15,8 +15,8 @@ Action order below is NO MATTER. You can choose actions below as if you need
 
 ## 2. Template and Hook Management
 
-- **Modify `src/bm2/gen_template/`**: For language-independent logic, you’ll need to modify these templates.
-- **Modify or add files in `src/bm2{lang_name}/hook/`**: For language-specific custom logic, edit these files based on the hook definitions. hook file is piece of C++ code that is not complete by itself. (some exception exists like flags.txt, cmptest_build.txt,cmptest_run.txt)
+- **Modify `src/old/bm2/gen_template/`**: For language-independent logic, you’ll need to modify these templates.
+- **Modify or add files in `src/old/bm2{lang_name}/hook/`**: For language-specific custom logic, edit these files based on the hook definitions. hook file is piece of C++ code that is not complete by itself. (some exception exists like flags.txt, cmptest_build.txt,cmptest_run.txt)
 - **Check hook definitions**: Use `tool\gen_template --print-hooks` to ensure the desired hook file exists before creating it.
 - **Read documentation**: `docs/template_parameters.md` for understanding placeholder usage in hooks and configuration files. Regenerate the documentation with `tool\gen_template --mode docs-markdown`.
 
@@ -35,7 +35,7 @@ The goal of test is to `PASS` the `script/run_cmptest`
 
 ## 5. Debugging and Maintenance
 
-- **Ignore `Unimplemented` in `src/bm2{lang_name}/bm2{lang_name}.cpp`**: Don't worry about `Unimplemented` unless it causes issues in `save/{lang_name}/save.{language_specific_suffix}`.
+- **Ignore `Unimplemented` in `src/old/bm2{lang_name}/bm2{lang_name}.cpp`**: Don't worry about `Unimplemented` unless it causes issues in `save/{lang_name}/save.{language_specific_suffix}`.
 - **Locate hook mappings**: Use the comments `// load hook: <hook name>` and `// end hook: <hook name>` in `bm2{lang_name}/*.cpp` to map hook names to hook files.
 
 ## 6. Execution Environment

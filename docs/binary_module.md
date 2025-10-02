@@ -1,6 +1,6 @@
 ## AbstractOp Arguments
 
-This document describes the arguments for each `AbstractOp` defined in `src/bm/binary_module.bgn`.
+This document describes the arguments for each `AbstractOp` defined in `src/old/bm/binary_module.bgn`.
 
 ```
 enum AbstractOp:

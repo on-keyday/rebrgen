@@ -10,32 +10,32 @@
 
 ## 2. Binary Module (`bm`)
 
-| Directory / File                                        | Description                                                     | Notes                                                                       |
-| ------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `src/bm/`                                               | Binary module definition                                        |                                                                             |
-| `src/bm/binary_module.bgn`                              | Base definition for `binary_module.hpp` and `binary_module.cpp` | Defines `BinaryModule` structure and `AbstractOp` enum for code generation. |
-| `src/bm/binary_module.hpp` / `src/bm/binary_module.cpp` | Generated files from `binary_module.bgn`                        |                                                                             |
+| Directory / File                                                | Description                                                     | Notes                                                                       |
+| --------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `src/old/bm/`                                                   | Binary module definition                                        |                                                                             |
+| `src/old/bm/binary_module.bgn`                                  | Base definition for `binary_module.hpp` and `binary_module.cpp` | Defines `BinaryModule` structure and `AbstractOp` enum for code generation. |
+| `src/old/bm/binary_module.hpp` / `src/old/bm/binary_module.cpp` | Generated files from `binary_module.bgn`                        |                                                                             |
 
 ## 3. Binary Module Generator (`bmgen`)
 
-| Directory / File       | Description                                                                                        | Notes |
-| ---------------------- | -------------------------------------------------------------------------------------------------- | ----- |
-| `src/bmgen/`           | Converts `brgen` AST (`brgen/web/doc/content/docs/ast.md`) to `BinaryModule` (`binary_module.bgn`) |       |
-| `src/bmgen/transform/` | Binary Module transformation logic                                                                 |       |
-| `src/bmgen/main.cpp`   | Entry point                                                                                        |       |
+| Directory / File           | Description                                                                                        | Notes |
+| -------------------------- | -------------------------------------------------------------------------------------------------- | ----- |
+| `src/old/bmgen/`           | Converts `brgen` AST (`brgen/web/doc/content/docs/ast.md`) to `BinaryModule` (`binary_module.bgn`) |       |
+| `src/old/bmgen/transform/` | Binary Module transformation logic                                                                 |       |
+| `src/old/bmgen/main.cpp`   | Entry point                                                                                        |       |
 
 ## 4. Generator (`bm2`)
 
-| Directory / File                       | Description                                    | Notes                                                                                                                                    |
-| -------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `src/bm2/`                             | Common generator tools and generator-generator |                                                                                                                                          |
-| `src/bm2/gen_template/`                | Generator-generator source code                | Includes entry point.                                                                                                                    |
-| `src/bm2{lang_name}/`                  | Generator for `{lang_name}`                    | Run `script/list_lang.py` to list available languages. These generate code from `BinaryModule`. \*\*DO NOT edit `src/bm2{lang*name}/*.[h | c]pp` directly.\*\* |
-| `src/bm2hexmap/`                       | Maps hex representation to format              | Not a code generator.                                                                                                                    |
-| `src/bm2rust/`, `src/bm2cpp/`          | Hand-written generators                        | Created before generator-generator was available.                                                                                        |
-| `src/bm2{lang_name}/hook/`             | Hook directory for each language               |                                                                                                                                          |
-| `src/bm2{lang_name}/hook/sections.txt` | main hook file if exists                       |
-| `src/bm2{lang_name}/config.json`       | Placeholder & basic language configurations    |                                                                                                                                          |
+| Directory / File                           | Description                                    | Notes                                                                                                                                        |
+| ------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `src/old/bm2/`                             | Common generator tools and generator-generator |                                                                                                                                              |
+| `src/old/bm2/gen_template/`                | Generator-generator source code                | Includes entry point.                                                                                                                        |
+| `src/old/bm2{lang_name}/`                  | Generator for `{lang_name}`                    | Run `script/list_lang.py` to list available languages. These generate code from `BinaryModule`. \*\*DO NOT edit `src/old/bm2{lang*name}/*.[h | c]pp` directly.\*\* |
+| `src/old/bm2hexmap/`                       | Maps hex representation to format              | Not a code generator.                                                                                                                        |
+| `src/old/bm2rust/`, `src/old/bm2cpp/`      | Hand-written generators                        | Created before generator-generator was available.                                                                                            |
+| `src/old/bm2{lang_name}/hook/`             | Hook directory for each language               |                                                                                                                                              |
+| `src/old/bm2{lang_name}/hook/sections.txt` | main hook file if exists                       |
+| `src/old/bm2{lang_name}/config.json`       | Placeholder & basic language configurations    |                                                                                                                                              |
 
 ## 5. Testing (`test`)
 

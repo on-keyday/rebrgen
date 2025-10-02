@@ -10,14 +10,14 @@ This project is a C++-based code generator that automatically creates structures
 
 ## Components
 
-### src/bmgen
+### src/old/bmgen
 
-This directory contains the logic for converting brgen's AST into an intermediate representation defined in `src/bm/binary_module.bgn`. This intermediate representation is designed to be easily transformed by the code generators.
+This directory contains the logic for converting brgen's AST into an intermediate representation defined in `src/old/bm/binary_module.bgn`. This intermediate representation is designed to be easily transformed by the code generators.
 
-### src/bm2
+### src/old/bm2
 
-This directory contains the common logic for the language-specific code generators, as well as a code generator that generates code generators from the intermediate representation. The implementation for the code generator generator is in `src/bm2/gen_template.cpp`.
+This directory contains the common logic for the language-specific code generators, as well as a code generator that generates code generators from the intermediate representation. The implementation for the code generator generator is in `src/old/bm2/gen_template.cpp`.
 
-### src/bm2\*
+### src/old/bm2\*
 
-These directories contain the code generator implementations for different languages. Each directory is named `src/bm2[language]`, where `[language]` is the target language (e.g., `src/bm2py` for Python, `src/bm2c` for C).
+These directories contain the code generator implementations for different languages. Each directory is named `src/old/bm2[language]`, where `[language]` is the target language (e.g., `src/old/bm2py` for Python, `src/old/bm2c` for C).

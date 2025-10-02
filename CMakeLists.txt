@@ -40,30 +40,32 @@ include_directories("src")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
-add_library(bm SHARED "src/bm/binary_module.cpp")
+add_library(bm SHARED "src/old/bm/binary_module.cpp")
 
 add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
 
 add_executable(bmgen
-    "src/bmgen/main.cpp" 
-    "src/bmgen/convert.cpp" 
-    "src/bmgen/encode.cpp"
-    "src/bmgen/load_json.cpp" 
-    "src/bmgen/save_module.cpp"
-    "src/bmgen/transform.cpp"
-    "src/bmgen/transform/bind_coder.cpp"
-    "src/bmgen/transform/bit_field_size.cpp"
-    "src/bmgen/transform/control_flow_graph.cpp"
-    "src/bmgen/transform/flatten.cpp"
-    "src/bmgen/transform/merge_conditional.cpp"
-    "src/bmgen/transform/property_accessor.cpp"
-    "src/bmgen/transform/bit_accessor.cpp"
-    "src/bmgen/transform/sort_formats.cpp"
-    "src/bmgen/transform/sort_func_loc.cpp"
-    "src/bmgen/transform/fallback/bit_op.cpp"
-    "src/bmgen/transform/fallback/encode.cpp"
-    "src/bmgen/transform/fallback/endian.cpp"
+    "src/old/bmgen/main.cpp" 
+    "src/old/bmgen/convert.cpp" 
+    "src/old/bmgen/encode.cpp"
+    "src/old/bmgen/load_json.cpp" 
+    "src/old/bmgen/save_module.cpp"
+    "src/old/bmgen/transform.cpp"
+    "src/old/bmgen/transform/bind_coder.cpp"
+    "src/old/bmgen/transform/bit_field_size.cpp"
+    "src/old/bmgen/transform/control_flow_graph.cpp"
+    "src/old/bmgen/transform/flatten.cpp"
+    "src/old/bmgen/transform/merge_conditional.cpp"
+    "src/old/bmgen/transform/property_accessor.cpp"
+    "src/old/bmgen/transform/bit_accessor.cpp"
+    "src/old/bmgen/transform/sort_formats.cpp"
+    "src/old/bmgen/transform/sort_func_loc.cpp"
+    "src/old/bmgen/transform/fallback/bit_op.cpp"
+    "src/old/bmgen/transform/fallback/encode.cpp"
+    "src/old/bmgen/transform/fallback/endian.cpp"
 )
+
+target_include_directories(bmgen PUBLIC "src/old")
 
 add_executable(ebmgen
     "src/ebmgen/main.cpp"
@@ -113,24 +115,27 @@ add_executable(ebmcodegen
 target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 add_executable(gen_template 
-    "src/bm2/gen_template/main.cpp"
-    "src/bm2/gen_template/accessor.cpp"
-    "src/bm2/gen_template/eval.cpp"
-    "src/bm2/gen_template/glue_code.cpp"
-    "src/bm2/gen_template/inner_block.cpp"
-    "src/bm2/gen_template/inner_function.cpp"
-    "src/bm2/gen_template/parameter.cpp"
-    "src/bm2/gen_template/type.cpp"
-    "src/bm2/gen_template/hook_load.cpp"
+    "src/old/bm2/gen_template/main.cpp"
+    "src/old/bm2/gen_template/accessor.cpp"
+    "src/old/bm2/gen_template/eval.cpp"
+    "src/old/bm2/gen_template/glue_code.cpp"
+    "src/old/bm2/gen_template/inner_block.cpp"
+    "src/old/bm2/gen_template/inner_function.cpp"
+    "src/old/bm2/gen_template/parameter.cpp"
+    "src/old/bm2/gen_template/type.cpp"
+    "src/old/bm2/gen_template/hook_load.cpp"
 )
 
+target_include_directories(gen_template PUBLIC "src/old")
+
 #add_executable(gen_template2
-#    "src/bm2/gen_template2/main.cpp"
+#    "src/old/bm2/gen_template2/main.cpp"
 #)
 
-add_subdirectory("src")
+add_subdirectory("src/old")
 #add_subdirectory("src/ebmgen/test")
 add_subdirectory("src/ebmcg")
+
 
 target_link_libraries(bmgen futils bm)
 target_link_libraries(ebmgen futils ebm)

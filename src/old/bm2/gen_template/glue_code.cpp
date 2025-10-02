@@ -121,6 +121,7 @@ namespace rebgn {
         w.writeln("project(bm2", flags.lang_name, ")");
         w.writeln("set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)");
         w.writeln("add_executable(bm2", flags.lang_name, " main.cpp bm2", flags.lang_name, ".cpp)");
+        w.writeln("target_include_directories(bm2", flags.lang_name, " PRIVATE \"${CMAKE_CURRENT_SOURCE_DIR}/..\")");
         w.writeln("target_link_libraries(bm2", flags.lang_name, " futils bm)");
         w.writeln("install(TARGETS bm2", flags.lang_name, " DESTINATION tool)");
         w.writeln("if (\"$ENV{BUILD_MODE}\" STREQUAL \"web\")");

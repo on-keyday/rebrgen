@@ -8,6 +8,7 @@ BUILD_MODE = "native"
 BUILD_TYPE = "Debug"
 GOLDEN_MASTER_DIR = "test/golden_masters"
 
+
 def execute(command, env=None, capture=True):
     passEnv = os.environ.copy()
     if env:
@@ -16,6 +17,7 @@ def execute(command, env=None, capture=True):
         return sp.check_output(command, env=passEnv, stderr=sys.stderr)
     else:
         sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
+
 
 def build_gen_template():
     print("Building gen_template...")
@@ -41,6 +43,7 @@ def build_gen_template():
     )
     print("gen_template built successfully.")
 
+
 def generate_golden_masters():
     if os.path.exists(GOLDEN_MASTER_DIR):
         shutil.rmtree(GOLDEN_MASTER_DIR)
@@ -61,7 +64,7 @@ def generate_golden_masters():
                 "--mode",
                 "header",
                 "--hook-dir",
-                f"src/bm2{lang}/hook",
+                f"src/old/bm2{lang}/hook",
             ]
         )
         with open(os.path.join(lang_output_dir, f"bm2{lang}.hpp"), "wb") as f:
@@ -74,9 +77,9 @@ def generate_golden_masters():
                 "--mode",
                 "generator",
                 "--config-file",
-                f"src/bm2{lang}/config.json",
+                f"src/old/bm2{lang}/config.json",
                 "--hook-dir",
-                f"src/bm2{lang}/hook",
+                f"src/old/bm2{lang}/hook",
             ]
         )
         with open(os.path.join(lang_output_dir, f"bm2{lang}.cpp"), "wb") as f:
@@ -91,7 +94,7 @@ def generate_golden_masters():
                 "--mode",
                 "main",
                 "--hook-dir",
-                f"src/bm2{lang}/hook",
+                f"src/old/bm2{lang}/hook",
             ]
         )
         with open(os.path.join(lang_output_dir, f"main.cpp"), "wb") as f:
@@ -106,13 +109,14 @@ def generate_golden_masters():
                 "--mode",
                 "cmake",
                 "--hook-dir",
-                f"src/bm2{lang}/hook",
+                f"src/old/bm2{lang}/hook",
             ]
         )
         with open(os.path.join(lang_output_dir, f"CMakeLists.txt"), "wb") as f:
             f.write(cmake_content)
 
     print("Golden master generation complete.")
+
 
 if __name__ == "__main__":
     build_gen_template()

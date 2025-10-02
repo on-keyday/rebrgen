@@ -10,6 +10,7 @@ BUILD_TYPE = "Debug"
 GOLDEN_MASTER_DIR = "test/golden_masters"
 TEMP_GEN_DIR = "test/temp_generated"
 
+
 def execute(command, env=None, capture=True):
     passEnv = os.environ.copy()
     if env:
@@ -18,6 +19,7 @@ def execute(command, env=None, capture=True):
         return sp.check_output(command, env=passEnv, stderr=sys.stderr)
     else:
         sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
+
 
 def build_gen_template():
     print("Building gen_template...")
@@ -43,6 +45,7 @@ def build_gen_template():
     )
     print("gen_template built successfully.")
 
+
 def test_compatibility():
     if os.path.exists(TEMP_GEN_DIR):
         shutil.rmtree(TEMP_GEN_DIR)
@@ -60,27 +63,39 @@ def test_compatibility():
         files_to_generate = {
             f"bm2{lang}.hpp": [
                 "./tool/gen_template",
-                "--lang", lang,
-                "--mode", "header",
-                "--hook-dir", f"src/bm2{lang}/hook"
+                "--lang",
+                lang,
+                "--mode",
+                "header",
+                "--hook-dir",
+                f"src/old/bm2{lang}/hook",
             ],
             f"bm2{lang}.cpp": [
                 "./tool/gen_template",
-                "--mode", "generator",
-                "--config-file", f"src/bm2{lang}/config.json",
-                "--hook-dir", f"src/bm2{lang}/hook"
+                "--mode",
+                "generator",
+                "--config-file",
+                f"src/old/bm2{lang}/config.json",
+                "--hook-dir",
+                f"src/old/bm2{lang}/hook",
             ],
             f"main.cpp": [
                 "./tool/gen_template",
-                "--lang", lang,
-                "--mode", "main",
-                "--hook-dir", f"src/bm2{lang}/hook"
+                "--lang",
+                lang,
+                "--mode",
+                "main",
+                "--hook-dir",
+                f"src/old/bm2{lang}/hook",
             ],
             f"CMakeLists.txt": [
                 "./tool/gen_template",
-                "--lang", lang,
-                "--mode", "cmake",
-                "--hook-dir", f"src/bm2{lang}/hook"
+                "--lang",
+                lang,
+                "--mode",
+                "cmake",
+                "--hook-dir",
+                f"src/old/bm2{lang}/hook",
             ],
         }
 
@@ -108,7 +123,9 @@ def test_compatibility():
                 print(f"ERROR: Command failed for {filename} in {lang}: {e}")
                 all_tests_passed = False
             except Exception as e:
-                print(f"ERROR: An unexpected error occurred for {filename} in {lang}: {e}")
+                print(
+                    f"ERROR: An unexpected error occurred for {filename} in {lang}: {e}"
+                )
                 all_tests_passed = False
 
     shutil.rmtree(TEMP_GEN_DIR)
@@ -119,6 +136,7 @@ def test_compatibility():
     else:
         print("Some compatibility tests FAILED.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     build_gen_template()

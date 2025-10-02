@@ -79,7 +79,7 @@ for more detail about variables in hook, see `docs/template_parameters.md`
 
 include file content from other file. this is like C/C++ `#include`
 when loaded via `!@include` debug log indicates like `loaded hook via include: hook/block_define_format.txt`
-when using with sections.txt, loaded from sections.txt contents if exists and debug log indicates like `loaded hook via include: src/bm2python/hook/func_call_code_common.txt (from sections.txt)`
+when using with sections.txt, loaded from sections.txt contents if exists and debug log indicates like `loaded hook via include: src/old/bm2python/hook/func_call_code_common.txt (from sections.txt)`
 
 ## sections.txt
 

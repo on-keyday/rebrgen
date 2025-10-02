@@ -51,38 +51,38 @@ Description: is enum member
 ##### access_style
 Name: BASE
 Mapped Value: `",left_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:232
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:232
 Function Name: operator()
 Name: IDENT
 Mapped Value: `",right_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:232
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:232
 Function Name: operator()
 ##### enum_access_style
 Name: BASE
 Mapped Value: `",left_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:233
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:233
 Function Name: operator()
 Name: IDENT
 Mapped Value: `",right_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:233
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:233
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",left_eval.result,"::",right_ident,"")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",left_eval.result,".",right_ident,"")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### ADDRESS_OF
@@ -99,16 +99,16 @@ Description: target object
 ##### address_of_placeholder
 Name: VALUE
 Mapped Value: `",target.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:114
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:114
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("&",target.result,"")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### ARRAY_SIZE
@@ -125,16 +125,16 @@ Description: array
 ##### size_method
 Name: VECTOR
 Mapped Value: `",vector_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:265
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:265
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",vector_eval.result,".size()")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### ASSIGN
@@ -155,20 +155,20 @@ Description: reference of previous assignment or phi or definition
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(left_ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### BEGIN_COND_BLOCK
@@ -181,11 +181,11 @@ Description: reference of expression
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### BINARY
@@ -218,11 +218,11 @@ Description: binary operator string
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("({} {} {})", left_eval.result, opstr, right_eval.result)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### CALL
@@ -231,11 +231,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented CALL*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### CALL_CAST
@@ -244,11 +244,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented CALL_CAST*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### CAN_READ
@@ -257,11 +257,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented CAN_READ*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### CAST
@@ -290,16 +290,16 @@ Description: cast source value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("({}){}", type, evaluated.result)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### func_style_cast
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:298
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:298
 Function Name: operator()
 ### DECLARE_VARIABLE
 #### Variables: 
@@ -311,11 +311,11 @@ Description: reference of expression
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_BIT_FIELD
@@ -324,11 +324,11 @@ Function Name: do_make_eval_result
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `field_accessor(code,ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_CONSTANT
@@ -345,11 +345,11 @@ Description: identifier of constant name
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_FIELD
@@ -358,11 +358,11 @@ Function Name: do_make_eval_result
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `field_accessor(code,ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_PARAMETER
@@ -379,16 +379,16 @@ Description: identifier of variable value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### self_param
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:149
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:149
 Function Name: write_parameter_func
 ### DEFINE_PROPERTY
 #### Variables: 
@@ -396,11 +396,11 @@ Function Name: write_parameter_func
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `field_accessor(code,ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_VARIABLE
@@ -417,11 +417,11 @@ Description: identifier of variable value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_VARIABLE_REF
@@ -434,11 +434,11 @@ Description: reference of expression
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### EMPTY_OPTIONAL
@@ -447,16 +447,16 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"std::nullopt"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### empty_optional
 Flag Value: `std::nullopt`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:195
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:195
 Function Name: operator()
 ### EMPTY_PTR
 #### Variables: 
@@ -464,16 +464,16 @@ Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"nullptr"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### empty_pointer
 Flag Value: `nullptr`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:190
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:190
 Function Name: operator()
 ### FIELD_AVAILABLE
 #### Variables: 
@@ -497,20 +497,20 @@ Description: reference of condition
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(right_ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(right_ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IMMEDIATE_CHAR
@@ -523,11 +523,11 @@ Description: immediate char code
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}", char_code)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IMMEDIATE_FALSE
@@ -536,16 +536,16 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"false"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### false_literal
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:167
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:167
 Function Name: operator()
 ### IMMEDIATE_INT
 #### Variables: 
@@ -557,11 +557,11 @@ Description: immediate value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}", value)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IMMEDIATE_INT64
@@ -574,11 +574,11 @@ Description: immediate value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}", value)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IMMEDIATE_STRING
@@ -591,11 +591,11 @@ Description: immediate string
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("\"{}\"", futils::escape::escape_str<std::string>(str,futils::escape::EscapeFlag::hex,futils::escape::no_escape_set(),futils::escape::escape_all()))`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IMMEDIATE_TRUE
@@ -604,16 +604,16 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"true"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### true_literal
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:162
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:162
 Function Name: operator()
 ### IMMEDIATE_TYPE
 #### Variables: 
@@ -629,11 +629,11 @@ Description: immediate type
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `type`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### INDEX
@@ -658,11 +658,11 @@ Description: index
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}[{}]", left_eval.result, right_eval.result)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### INPUT_BIT_OFFSET
@@ -671,11 +671,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented INPUT_BIT_OFFSET*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### INPUT_BYTE_OFFSET
@@ -684,16 +684,16 @@ Function Name: do_make_eval_result
 ##### decode_offset
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:135
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:135
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",ctx.r(),".offset()")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### IS_LITTLE_ENDIAN
@@ -706,25 +706,25 @@ Description: reference of fallback expression
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(fallback), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"std::endian::native == std::endian::little"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### is_little_endian
 Flag Value: `std::endian::native == std::endian::little`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:101
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:101
 Function Name: operator()
 ### NEW_OBJECT
 #### Variables: 
@@ -740,11 +740,11 @@ Description: object type
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}()", type)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### OPTIONAL_OF
@@ -769,20 +769,20 @@ Description: type of optional (not include optional)
 ##### optional_of_placeholder
 Name: TYPE
 Mapped Value: `",type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:126
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:126
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",target.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:126
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:126
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",target.result,"")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### OUTPUT_BIT_OFFSET
@@ -791,11 +791,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented OUTPUT_BIT_OFFSET*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### OUTPUT_BYTE_OFFSET
@@ -804,16 +804,16 @@ Function Name: do_make_eval_result
 ##### encode_offset
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:144
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:144
 Function Name: operator()
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `futils::strutil::concat<std::string>("",ctx.w(),".offset()")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### PHI
@@ -826,11 +826,11 @@ Description: reference of expression
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `eval(ctx.ref(ref), ctx)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### PROPERTY_INPUT_PARAMETER
@@ -847,11 +847,11 @@ Description: identifier of variable value
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### REMAIN_BYTES
@@ -860,11 +860,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `"/*Unimplemented REMAIN_BYTES*/"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### UNARY
@@ -889,11 +889,11 @@ Description: unary operator string
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("({}{})", opstr, target.result)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ## function `inner_function`
@@ -919,16 +919,16 @@ Description: new element
 ##### append_method
 Name: ITEM
 Mapped Value: `",new_element_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:69
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:69
 Function Name: operator()
 Name: VECTOR
 Mapped Value: `",vector_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:69
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:69
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:70
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:70
 Function Name: operator()
 ### ASSERT
 #### Variables: 
@@ -944,12 +944,12 @@ Description: assertion condition
 ##### assert_method
 Name: CONDITION
 Mapped Value: `",evaluated.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:244
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:244
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:245
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:245
 Function Name: operator()
 ### ASSIGN
 #### Variables: 
@@ -973,7 +973,7 @@ Description: assignment source
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:77
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:77
 Function Name: operator()
 ### BACKWARD_INPUT
 #### Variables: 
@@ -989,16 +989,16 @@ Description: backward offset to move (in byte)
 ##### decode_backward
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:88
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:88
 Function Name: operator()
 Name: OFFSET
 Mapped Value: `",evaluated.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:88
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:88
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:89
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:89
 Function Name: operator()
 ### BACKWARD_OUTPUT
 #### Variables: 
@@ -1014,16 +1014,16 @@ Description: backward offset to move (in byte)
 ##### encode_backward
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:96
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:96
 Function Name: operator()
 Name: OFFSET
 Mapped Value: `",evaluated.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:96
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:96
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:97
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:97
 Function Name: operator()
 ### BEGIN_DECODE_PACKED_OPERATION
 #### Variables: 
@@ -1087,7 +1087,7 @@ Description: sub range type (byte_len or replacement)
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:357
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:357
 Function Name: operator()
 ### CALL_DECODE
 #### Variables: 
@@ -1123,7 +1123,7 @@ Description: range of function call range
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:461
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:461
 Function Name: operator()
 ### CALL_ENCODE
 #### Variables: 
@@ -1159,7 +1159,7 @@ Description: range of function call range
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:461
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:461
 Function Name: operator()
 ### CASE
 #### Variables: 
@@ -1175,19 +1175,19 @@ Description: condition
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:330
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:330
 Function Name: operator()
 ##### match_case_separator
 Flag Value: `:`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:330
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:330
 Function Name: operator()
 ##### match_case_keyword
 Flag Value: `case`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:330
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:330
 Function Name: operator()
 ### CHECK_UNION
 #### Variables: 
@@ -1227,93 +1227,93 @@ Description: union check location
 ##### check_union_condition
 Name: FIELD_IDENT
 Mapped Value: `",union_field_ident.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_IDENT
 Mapped Value: `",union_member_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_INDEX
 Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: UNION_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: UNION_IDENT
 Mapped Value: `",union_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 ##### check_union_fail_return_value
 Name: FIELD_IDENT
 Mapped Value: `",union_field_ident.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 Name: MEMBER_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 Name: MEMBER_IDENT
 Mapped Value: `",union_member_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 Name: MEMBER_INDEX
 Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 Name: UNION_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 Name: UNION_IDENT
 Mapped Value: `",union_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:428
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:428
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:423
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:423
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:423
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:423
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:422
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:422
 Function Name: operator()
 ##### if_keyword
 Flag Value: `if`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:422
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:422
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:429
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:429
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:434
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:434
 Function Name: operator()
 ##### empty_pointer
 Flag Value: `nullptr`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:434
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:434
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:439
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:439
 Function Name: operator()
 ##### empty_optional
 Flag Value: `std::nullopt`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:439
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:439
 Function Name: operator()
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:448
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:448
 Function Name: operator()
 ### CONTINUE
 #### Variables: 
@@ -1321,7 +1321,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:352
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:352
 Function Name: operator()
 ### DECLARE_VARIABLE
 #### Variables: 
@@ -1353,31 +1353,31 @@ Description: variable
 #### Flag Usage Mappings: 
 ##### define_variable
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:125
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:125
 Function Name: operator()
 ##### omit_type_on_define_var
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:134
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:134
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:138
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:138
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### define_var_assign
 Flag Value: `=`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### var_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### define_var_keyword
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ### DECODE_INT
 #### Variables: 
@@ -1445,15 +1445,15 @@ Description: size
 ##### decode_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DECODE_INT_VECTOR_FIXED
@@ -1494,15 +1494,15 @@ Description: size
 ##### decode_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:510
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:510
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DECODE_INT_VECTOR_UNTIL_EOF
@@ -1535,11 +1535,11 @@ Description: element
 ##### decode_bytes_until_eof_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:518
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:518
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",evaluated.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:518
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:518
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### DEFAULT_CASE
@@ -1548,15 +1548,15 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:333
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:333
 Function Name: operator()
 ##### match_default_keyword
 Flag Value: `default`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:333
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:333
 Function Name: operator()
 ### DEFINE_CONSTANT
 #### Variables: 
@@ -1580,11 +1580,11 @@ Description: constant value
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:184
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:184
 Function Name: operator()
 ##### define_const_keyword
 Flag Value: `const`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:184
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:184
 Function Name: operator()
 ### DEFINE_FUNCTION
 #### Variables: 
@@ -1620,27 +1620,27 @@ Description: function belong name
 #### Flag Usage Mappings: 
 ##### func_keyword
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:10
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:10
 Function Name: write_func_decl
 ##### trailing_return_type
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:14
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:14
 Function Name: write_func_decl
 ##### func_void_return_type
 Flag Value: `void`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:19
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:19
 Function Name: write_func_decl
 ##### func_brace_ident_separator
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:23
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:23
 Function Name: write_func_decl
 ##### trailing_return_type
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:26
 Function Name: write_func_decl
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:285
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:285
 Function Name: operator()
 ### DEFINE_VARIABLE
 #### Variables: 
@@ -1672,31 +1672,31 @@ Description: variable
 #### Flag Usage Mappings: 
 ##### define_variable
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:125
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:125
 Function Name: operator()
 ##### omit_type_on_define_var
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:134
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:134
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:138
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:138
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### define_var_assign
 Flag Value: `=`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### var_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ##### define_var_keyword
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:142
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:142
 Function Name: operator()
 ### DYNAMIC_ENDIAN
 #### Variables: 
@@ -1728,23 +1728,23 @@ Description: empty block
 #### Flag Usage Mappings: 
 ##### otbs_on_block_end
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:297
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:297
 Function Name: operator()
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:301
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:301
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:314
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:314
 Function Name: operator()
 ##### elif_keyword
 Flag Value: `else if`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:314
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:314
 Function Name: operator()
 ### ELSE
 #### Variables: 
@@ -1756,23 +1756,23 @@ Description: empty block
 #### Flag Usage Mappings: 
 ##### otbs_on_block_end
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:297
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:297
 Function Name: operator()
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:301
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:301
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:317
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:317
 Function Name: operator()
 ##### else_keyword
 Flag Value: `else`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:317
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:317
 Function Name: operator()
 ### ENCODE_INT
 #### Variables: 
@@ -1840,15 +1840,15 @@ Description: size
 ##### encode_bytes_op
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### ENCODE_INT_VECTOR_FIXED
@@ -1889,15 +1889,15 @@ Description: size
 ##### encode_bytes_op
 Name: ENCODER
 Mapped Value: `",ctx.w(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:501
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:501
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### END_CASE
@@ -1906,7 +1906,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:347
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:347
 Function Name: operator()
 ### END_DECODE_PACKED_OPERATION
 #### Variables: 
@@ -1938,7 +1938,7 @@ Description: range of fallback operation
 #### Flag Usage Mappings: 
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:347
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:347
 Function Name: operator()
 ### END_IF
 #### Variables: 
@@ -1946,7 +1946,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:347
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:347
 Function Name: operator()
 ### END_LOOP
 #### Variables: 
@@ -1954,7 +1954,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:347
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:347
 Function Name: operator()
 ### END_MATCH
 #### Variables: 
@@ -1962,7 +1962,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:347
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:347
 Function Name: operator()
 ### EXHAUSTIVE_MATCH
 #### Variables: 
@@ -1978,15 +1978,15 @@ Description: condition
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:327
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:327
 Function Name: operator()
 ##### match_keyword
 Flag Value: `switch`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:327
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:327
 Function Name: operator()
 ### EXPLICIT_ERROR
 #### Variables: 
@@ -2002,7 +2002,7 @@ Description: error message
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:252
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:252
 Function Name: operator()
 ### IF
 #### Variables: 
@@ -2022,15 +2022,15 @@ Description: empty block
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:311
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:311
 Function Name: operator()
 ##### if_keyword
 Flag Value: `if`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:311
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:311
 Function Name: operator()
 ### INC
 #### Variables: 
@@ -2046,7 +2046,7 @@ Description: increment target
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:398
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:398
 Function Name: operator()
 ### LENGTH_CHECK
 #### Variables: 
@@ -2070,16 +2070,16 @@ Description: size to check
 ##### length_check_method
 Name: SIZE
 Mapped Value: `",size_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:109
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:109
 Function Name: operator()
 Name: VECTOR
 Mapped Value: `",vector_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:109
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:109
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:110
 Function Name: operator()
 ### LOOP_CONDITION
 #### Variables: 
@@ -2099,15 +2099,15 @@ Description: empty block
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:323
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:323
 Function Name: operator()
 ##### conditional_loop
 Flag Value: `while`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:323
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:323
 Function Name: operator()
 ### LOOP_INFINITE
 #### Variables: 
@@ -2119,15 +2119,15 @@ Description: empty block
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:320
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:320
 Function Name: operator()
 ##### infinity_loop
 Flag Value: `for(;;)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:320
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:320
 Function Name: operator()
 ### MATCH
 #### Variables: 
@@ -2143,15 +2143,15 @@ Description: condition
 #### Flag Usage Mappings: 
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:306
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:306
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:327
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:327
 Function Name: operator()
 ##### match_keyword
 Flag Value: `switch`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:327
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:327
 Function Name: operator()
 ### PEEK_INT_VECTOR
 #### Variables: 
@@ -2191,15 +2191,15 @@ Description: size
 ##### peek_bytes_op
 Name: DECODER
 Mapped Value: `",ctx.r(),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 Name: LEN
 Mapped Value: `",size_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 Name: VALUE
 Mapped Value: `",vector_value.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:527
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:527
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### RESERVE_SIZE
@@ -2228,20 +2228,20 @@ Description: reserve vector type
 ##### reserve_size_static
 Name: SIZE
 Mapped Value: `",size_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:159
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:159
 Function Name: operator()
 Name: VECTOR
 Mapped Value: `",vector_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:159
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:159
 Function Name: operator()
 ##### reserve_size_dynamic
 Name: SIZE
 Mapped Value: `",size_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:172
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:172
 Function Name: operator()
 Name: VECTOR
 Mapped Value: `",vector_eval.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:172
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:172
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### RET
@@ -2258,11 +2258,11 @@ Description: return value
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:366
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:366
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:374
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:374
 Function Name: operator()
 ### RET_PROPERTY_SETTER_FAIL
 #### Variables: 
@@ -2270,11 +2270,11 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:392
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:392
 Function Name: operator()
 ##### property_setter_fail
 Flag Value: `return false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:392
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:392
 Function Name: operator()
 ### RET_PROPERTY_SETTER_OK
 #### Variables: 
@@ -2282,11 +2282,11 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:387
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:387
 Function Name: operator()
 ##### property_setter_ok
 Flag Value: `return true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:387
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:387
 Function Name: operator()
 ### RET_SUCCESS
 #### Variables: 
@@ -2294,11 +2294,11 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:382
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:382
 Function Name: operator()
 ##### coder_success
 Flag Value: `return true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:382
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:382
 Function Name: operator()
 ### SWITCH_UNION
 #### Variables: 
@@ -2334,77 +2334,77 @@ Description: union field
 ##### check_union_condition
 Name: FIELD_IDENT
 Mapped Value: `",union_field_ident.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_IDENT
 Mapped Value: `",union_member_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: MEMBER_INDEX
 Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: UNION_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 Name: UNION_IDENT
 Mapped Value: `",union_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:421
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:421
 Function Name: operator()
 ##### switch_union
 Name: FIELD_IDENT
 Mapped Value: `",union_field_ident.result,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 Name: MEMBER_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_member_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 Name: MEMBER_IDENT
 Mapped Value: `",union_member_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 Name: MEMBER_INDEX
 Mapped Value: `",futils::number::to_string<std::string>(union_member_index),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 Name: UNION_FULL_IDENT
 Mapped Value: `",type_accessor(ctx.ref(union_ref),ctx),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 Name: UNION_IDENT
 Mapped Value: `",union_ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:444
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:444
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:423
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:423
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:423
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:423
 Function Name: operator()
 ##### condition_has_parentheses
 Flag Value: `true`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:422
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:422
 Function Name: operator()
 ##### if_keyword
 Flag Value: `if`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:422
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:422
 Function Name: operator()
 ##### end_of_statement
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:445
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:445
 Function Name: operator()
 ##### block_end
 Flag Value: `}`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_function.cpp:448
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_function.cpp:448
 Function Name: operator()
 ## function `inner_block`
 ### DECLARE_BIT_FIELD
@@ -2493,7 +2493,7 @@ Description: function belong name
 #### Flag Usage Mappings: 
 ##### format_nested_function
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:47
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:47
 Function Name: operator()
 ### DECLARE_PROPERTY
 #### Variables: 
@@ -2541,7 +2541,7 @@ Description: range of UNION
 #### Flag Usage Mappings: 
 ##### format_nested_struct
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:93
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:93
 Function Name: operator()
 ### DECLARE_UNION_MEMBER
 #### Variables: 
@@ -2557,7 +2557,7 @@ Description: range of UNION_MEMBER
 #### Flag Usage Mappings: 
 ##### format_nested_struct
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:93
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:93
 Function Name: operator()
 ### DEFINE_BIT_FIELD
 #### Variables: 
@@ -2581,7 +2581,7 @@ Description: reference of belonging struct or bit field
 #### Flag Usage Mappings: 
 ##### compact_bit_field
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:168
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:168
 Function Name: operator()
 ### DEFINE_ENUM
 #### Variables: 
@@ -2605,19 +2605,19 @@ Description: enum base type
 #### Flag Usage Mappings: 
 ##### default_enum_base
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:141
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:141
 Function Name: write_inner_block
 ##### enum_keyword
 Flag Value: `enum`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:147
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:147
 Function Name: operator()
 ##### enum_base_separator
 Flag Value: ` : `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:149
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:149
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:151
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:151
 Function Name: operator()
 ### DEFINE_ENUM_MEMBER
 #### Variables: 
@@ -2649,7 +2649,7 @@ Description: identifier of enum
 #### Flag Usage Mappings: 
 ##### enum_member_end
 Flag Value: `,`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:160
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:160
 Function Name: operator()
 ### DEFINE_FIELD
 #### Variables: 
@@ -2677,27 +2677,27 @@ Description: is part of bit field
 #### Flag Usage Mappings: 
 ##### compact_bit_field
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:202
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:202
 Function Name: operator()
 ##### define_field
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:206
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:206
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:215
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:215
 Function Name: operator()
 ##### field_end
 Flag Value: `;`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:219
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:219
 Function Name: operator()
 ##### field_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:219
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:219
 Function Name: operator()
 ##### compact_bit_field
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:222
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:222
 Function Name: operator()
 ### DEFINE_FORMAT
 #### Variables: 
@@ -2717,11 +2717,11 @@ Description: is empty block
 #### Flag Usage Mappings: 
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ##### struct_keyword
 Flag Value: `struct`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ### DEFINE_PROPERTY_GETTER
 #### Variables: 
@@ -2753,7 +2753,7 @@ Description: function belong name
 #### Flag Usage Mappings: 
 ##### format_nested_function
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:252
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:252
 Function Name: operator()
 ### DEFINE_PROPERTY_SETTER
 #### Variables: 
@@ -2785,7 +2785,7 @@ Description: function belong name
 #### Flag Usage Mappings: 
 ##### format_nested_function
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:252
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:252
 Function Name: operator()
 ### DEFINE_STATE
 #### Variables: 
@@ -2805,11 +2805,11 @@ Description: is empty block
 #### Flag Usage Mappings: 
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ##### struct_keyword
 Flag Value: `struct`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ### DEFINE_UNION
 #### Variables: 
@@ -2829,15 +2829,15 @@ Description: is empty block
 #### Flag Usage Mappings: 
 ##### variant_mode
 Flag Value: `union`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:118
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:118
 Function Name: operator()
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:119
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:119
 Function Name: operator()
 ##### union_keyword
 Flag Value: `union`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:119
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:119
 Function Name: operator()
 ### DEFINE_UNION_MEMBER
 #### Variables: 
@@ -2857,11 +2857,11 @@ Description: is empty block
 #### Flag Usage Mappings: 
 ##### block_begin
 Flag Value: `{`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ##### struct_keyword
 Flag Value: `struct`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:110
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:110
 Function Name: operator()
 ### END_ENUM
 #### Variables: 
@@ -2869,7 +2869,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end_type
 Flag Value: `};`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:237
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:237
 Function Name: operator()
 ### END_FORMAT
 #### Variables: 
@@ -2877,7 +2877,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end_type
 Flag Value: `};`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:237
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:237
 Function Name: operator()
 ### END_STATE
 #### Variables: 
@@ -2885,7 +2885,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end_type
 Flag Value: `};`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:237
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:237
 Function Name: operator()
 ### END_UNION
 #### Variables: 
@@ -2893,11 +2893,11 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### variant_mode
 Flag Value: `union`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:126
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:126
 Function Name: operator()
 ##### block_end_type
 Flag Value: `};`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:128
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:128
 Function Name: operator()
 ### END_UNION_MEMBER
 #### Variables: 
@@ -2905,7 +2905,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### block_end_type
 Flag Value: `};`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/inner_block.cpp:237
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/inner_block.cpp:237
 Function Name: operator()
 ## function `add_parameter`
 ### DECODER_PARAMETER
@@ -2914,7 +2914,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### decoder_param
 Flag Value: `Decoder& r`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:67
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:67
 Function Name: operator()
 ### DEFINE_PARAMETER
 #### Variables: 
@@ -2938,15 +2938,15 @@ Description: parameter type
 #### Flag Usage Mappings: 
 ##### define_parameter
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ### ENCODER_PARAMETER
 #### Variables: 
@@ -2954,7 +2954,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### encoder_param
 Flag Value: `Encoder& w`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:61
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:61
 Function Name: operator()
 ### PROPERTY_INPUT_PARAMETER
 #### Variables: 
@@ -2978,15 +2978,15 @@ Description: parameter type
 #### Flag Usage Mappings: 
 ##### define_parameter
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ### STATE_VARIABLE_PARAMETER
 #### Variables: 
@@ -3010,15 +3010,15 @@ Description: state variable type
 #### Flag Usage Mappings: 
 ##### define_parameter
 Flag Value: ``
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:42
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:42
 Function Name: operator()
 ##### prior_ident
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:50
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:50
 Function Name: operator()
 ##### param_type_separator
 Flag Value: ` `
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/parameter.cpp:54
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/parameter.cpp:54
 Function Name: operator()
 ## function `add_call_parameter`
 ### PROPERTY_INPUT_PARAMETER
@@ -3064,25 +3064,25 @@ Description: array length
 ##### array_type
 Name: LEN
 Mapped Value: `",futils::number::to_string<std::string>(length),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:166
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:166
 Function Name: operator()
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:166
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:166
 Function Name: operator()
 ##### byte_array_type
 Name: LEN
 Mapped Value: `",futils::number::to_string<std::string>(length),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:170
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:170
 Function Name: operator()
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:170
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:170
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### byte_array_type
 Flag Value: `std::array<std::uint8_t, $LEN>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:167
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:167
 Function Name: operator()
 ### BOOL
 #### Variables: 
@@ -3090,7 +3090,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### bool_type
 Flag Value: `bool`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:78
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:78
 Function Name: operator()
 ### CODER_RETURN
 #### Variables: 
@@ -3098,7 +3098,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### coder_return_type
 Flag Value: `bool`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:141
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:141
 Function Name: operator()
 ### DEFINE_FUNCTION
 #### Variables: 
@@ -3114,7 +3114,7 @@ Description: function type
 ##### keyword_escape_style
 Name: VALUE
 Mapped Value: `",str,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/main.cpp:151
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/main.cpp:151
 Function Name: write_code_template
 #### Flag Usage Mappings: 
 ### ENUM
@@ -3143,11 +3143,11 @@ Description: aligned bit size
 ##### float_type
 Name: ALIGNED_BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:47
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:47
 Function Name: operator()
 Name: BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:47
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:47
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### INT
@@ -3164,11 +3164,11 @@ Description: aligned bit size
 ##### int_type
 Name: ALIGNED_BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:51
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:51
 Function Name: operator()
 Name: BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:51
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:51
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### OPTIONAL
@@ -3181,7 +3181,7 @@ Description: base type
 ##### optional_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:200
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:200
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### PROPERTY_SETTER_RETURN
@@ -3190,7 +3190,7 @@ Function Name: operator()
 #### Flag Usage Mappings: 
 ##### property_setter_return_type
 Flag Value: `bool`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:146
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:146
 Function Name: operator()
 ### PTR
 #### Variables: 
@@ -3202,7 +3202,7 @@ Description: base type
 ##### pointer_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:154
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:154
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### RECURSIVE_STRUCT_REF
@@ -3219,7 +3219,7 @@ Description: identifier of recursive struct
 ##### recursive_struct_type
 Name: TYPE
 Mapped Value: `",ident,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:72
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:72
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### STRUCT_REF
@@ -3248,11 +3248,11 @@ Description: aligned bit size
 ##### uint_type
 Name: ALIGNED_BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(aligned_size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:55
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:55
 Function Name: operator()
 Name: BIT_SIZE
 Mapped Value: `",futils::number::to_string<std::string>(size),"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:55
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:55
 Function Name: operator()
 #### Flag Usage Mappings: 
 ### VARIANT
@@ -3277,7 +3277,7 @@ Description: variant storage size
 #### Flag Usage Mappings: 
 ##### variant_mode
 Flag Value: `union`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:115
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:115
 Function Name: operator()
 ### VECTOR
 #### Variables: 
@@ -3293,16 +3293,16 @@ Description: is byte vector
 ##### vector_type
 Name: TYPE
 Mapped Value: `",base_type,"`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:191
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:191
 Function Name: operator()
 #### Flag Usage Mappings: 
 ##### byte_vector_type
 Flag Value: `std::vector<std::uint8_t>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:181
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:181
 Function Name: operator()
 ##### byte_vector_type
 Flag Value: `std::vector<std::uint8_t>`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/type.cpp:184
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/type.cpp:184
 Function Name: operator()
 ## function `field_accessor`
 ### DEFINE_BIT_FIELD
@@ -3331,16 +3331,16 @@ Description: field accessor
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `belong_eval`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ##### compact_bit_field
 Flag Value: `false`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/accessor.cpp:88
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/accessor.cpp:88
 Function Name: operator()
 ### DEFINE_FIELD
 #### Variables: 
@@ -3368,20 +3368,20 @@ Description: belong eval
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_FORMAT
@@ -3390,11 +3390,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ctx.this_()`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_PROPERTY
@@ -3423,20 +3423,20 @@ Description: belong eval
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_STATE
@@ -3445,11 +3445,11 @@ Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ctx.this_()`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_UNION
@@ -3478,20 +3478,20 @@ Description: belong eval
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}.{}", belong_eval.result, ident)`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `ident`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_UNION_MEMBER
@@ -3536,11 +3536,11 @@ Description: field accessor
 ##### eval_result_passthrough
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `union_field_eval`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:26
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:26
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ## function `type_accessor`
@@ -3606,11 +3606,11 @@ Description: identifier of FORMAT
 ##### eval_result_text
 Name: RESULT
 Mapped Value: `result`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 Name: TEXT
 Mapped Value: `std::format("{}{}{}","/*",to_string(code.op),"*/")`
-File: C:/workspace/shbrgen/rebrgen/src/bm2/gen_template/eval.cpp:30
+File: C:/workspace/shbrgen/rebrgen/src/old/bm2/gen_template/eval.cpp:30
 Function Name: do_make_eval_result
 #### Flag Usage Mappings: 
 ### DEFINE_PROPERTY

@@ -42,7 +42,7 @@ EBM (Extended Binary Module) の構造自体を定義した `extended_binary_mod
 
 ### `gen_template.py` / `gen_template.ps1` / `gen_template.bat` / `gen_template.sh`
 
-**[旧世代]`bmgen`** のためのスクリプト。指定された言語のコードジェネレータのテンプレート（`.hpp`, `.cpp`, `main.cpp`, `CMakeLists.txt`）を `src/bm2<lang>/` ディレクトリに生成します。`tool/gen_template` 実行ファイルをラップしています。
+**[旧世代]`bmgen`** のためのスクリプト。指定された言語のコードジェネレータのテンプレート（`.hpp`, `.cpp`, `main.cpp`, `CMakeLists.txt`）を `src/old/bm2<lang>/` ディレクトリに生成します。`tool/gen_template` 実行ファイルをラップしています。
 
 ### `generate.py` / `generate.ps1` / `generate.bat` / `generate.sh`
 
@@ -87,7 +87,7 @@ EBM (Extended Binary Module) の構造自体を定義した `extended_binary_mod
 1.  プロジェクトをビルド (`build.py`)。
 2.  `.bgn` ファイルを `src2json` で JSON AST に変換。
 3.  `bmgen` を実行してバイナリ (`.bin`) と DOT グラフ (`.dot`) を生成。
-4.  `src/bm2*` にある各言語のジェネレータを実行し、`save/<lang>/` 以下にソースコードを生成。
+4.  `src/old/bm2*` にある各言語のジェネレータを実行し、`save/<lang>/` 以下にソースコードを生成。
 
 ### `run_cmptest.py` / `run_cmptest.ps1` / `run_cmptest.bat` / `run_cmptest.sh`
 

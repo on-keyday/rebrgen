@@ -105,9 +105,9 @@
         "--lang",
         "test",
         "--config-file",
-        "src/bm2python/config.json",
+        "src/old/bm2python/config.json",
         "--hook-dir",
-        "src/bm2python/hook"
+        "src/old/bm2python/hook"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

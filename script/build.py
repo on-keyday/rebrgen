@@ -58,7 +58,6 @@ if os.path.exists(BRGEN_DIR):
 
 
 def source_emsdk():
-    print("EMSDK_PATH:", EMSDK_DIR)
     copyEnv = os.environ.copy()
     copyEnv["EMSDK_QUIET"] = "1"
     if os.name == "posix":

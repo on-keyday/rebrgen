@@ -36,8 +36,6 @@ namespace ebmcodegen {
             body.struct_decl({});
             body.sub_byte_range({});
             body.target({});
-            body.union_decl({});
-            body.union_member_decl({});
             body.value({});
             body.var_decl({});
             body.write_data({});
@@ -125,6 +123,7 @@ namespace ebmcodegen {
             body.members({});
             body.params({});
             body.pointee_type({});
+            body.related_field({});
             body.return_type({});
             body.size({});
             std::set<std::string_view> subset;

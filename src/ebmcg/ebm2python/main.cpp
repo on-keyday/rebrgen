@@ -3036,11 +3036,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Statement_UNION_DECL = requires(Visitor v) {
-         { v.visit_Statement_UNION_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_decl()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Statement_UNION_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Statement_UNION_DECL_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_decl()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Statement_UNION_DECL(Visitor&& visitor,const ebm::Statement& in) {
@@ -3079,10 +3079,6 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.union_decl()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::union_decl");
-        }
-        auto& union_decl = *in.body.union_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -3119,10 +3115,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_UNION_DECL<Visitor>) {
-            result = visitor.visit_Statement_UNION_DECL(in.id,kind,union_decl);
+            result = visitor.visit_Statement_UNION_DECL(in.id,kind);
         }
         else if constexpr (has_visitor_Statement_UNION_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,union_decl);
+            result = visitor(in.id,kind);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3165,11 +3161,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Statement_UNION_MEMBER_DECL = requires(Visitor v) {
-         { v.visit_Statement_UNION_MEMBER_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_member_decl()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Statement_UNION_MEMBER_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Statement_UNION_MEMBER_DECL_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().union_member_decl()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
@@ -3208,10 +3204,6 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.union_member_decl()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::union_member_decl");
-        }
-        auto& union_member_decl = *in.body.union_member_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -3248,10 +3240,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_UNION_MEMBER_DECL<Visitor>) {
-            result = visitor.visit_Statement_UNION_MEMBER_DECL(in.id,kind,union_member_decl);
+            result = visitor.visit_Statement_UNION_MEMBER_DECL(in.id,kind);
         }
         else if constexpr (has_visitor_Statement_UNION_MEMBER_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,union_member_decl);
+            result = visitor(in.id,kind);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -10454,11 +10446,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Type_VARIANT = requires(Visitor v) {
-         { v.visit_Type_VARIANT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Type_VARIANT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members(),*std::declval<const ebm::TypeBody&>().related_field()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Type_VARIANT_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members(),*std::declval<const ebm::TypeBody&>().related_field()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Type_VARIANT(Visitor&& visitor,const ebm::Type& in) {
@@ -10505,6 +10497,10 @@ namespace ebm2python {
             return unexpect_error("Unexpected null pointer for TypeBody::members");
         }
         auto& members = *in.body.members();
+        if (!in.body.related_field()) {
+            return unexpect_error("Unexpected null pointer for TypeBody::related_field");
+        }
+        auto& related_field = *in.body.related_field();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
         #endif
@@ -10541,10 +10537,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_VARIANT<Visitor>) {
-            result = visitor.visit_Type_VARIANT(in.id,kind,common_type,members);
+            result = visitor.visit_Type_VARIANT(in.id,kind,common_type,members,related_field);
         }
         else if constexpr (has_visitor_Type_VARIANT_call<Visitor>) {
-            result = visitor(in.id,kind,common_type,members);
+            result = visitor(in.id,kind,common_type,members,related_field);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -12399,7 +12395,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_UNION_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::UnionDecl& union_decl) {
+        expected<Result> visit_Statement_UNION_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind) {
             #if __has_include("visitor/Statement_UNION_DECL_before.hpp")
             #include "visitor/Statement_UNION_DECL_before.hpp"
             #endif
@@ -12423,7 +12419,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_UNION_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind,const ebm::UnionMemberDecl& union_member_decl) {
+        expected<Result> visit_Statement_UNION_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementOp& kind) {
             #if __has_include("visitor/Statement_UNION_MEMBER_DECL_before.hpp")
             #include "visitor/Statement_UNION_MEMBER_DECL_before.hpp"
             #endif
@@ -13719,7 +13715,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Type_VARIANT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& common_type,const ebm::Types& members) {
+        expected<Result> visit_Type_VARIANT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& common_type,const ebm::Types& members,const ebm::StatementRef& related_field) {
             #if __has_include("visitor/Type_VARIANT_before.hpp")
             #include "visitor/Type_VARIANT_before.hpp"
             #endif

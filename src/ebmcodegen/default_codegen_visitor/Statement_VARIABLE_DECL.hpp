@@ -31,7 +31,9 @@ if (!is_nil(var_decl.initial_value)) {
     w.write_unformatted(got.out());
     initial_value = initial_value_;
 }
-
+if (variable_define_keyword.size()) {
+    w.write(variable_define_keyword, " ");
+}
 w.write(name);
 if (initial_value) {
     w.write(" = ", initial_value->value);

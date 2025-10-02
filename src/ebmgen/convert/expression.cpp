@@ -392,10 +392,10 @@ namespace ebmgen {
         return result;
     }
 
-    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body) {
+    expected<void> convert_conditional_statement(ConverterContext& ctx, const std::shared_ptr<ast::Node>& node, ebm::ExpressionBody& body) {
         body.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
-
-        EBM_DEFINE_ANONYMOUS_VARIABLE(var, body.type, {});
+        EBM_DEFAULT_VALUE(default_, body.type);
+        EBM_DEFINE_ANONYMOUS_VARIABLE(var, body.type, default_);
         body.target_stmt(var_def);
 
         const auto _defer = ctx.state().set_current_yield_statement(var_def);
@@ -405,18 +405,12 @@ namespace ebmgen {
 
         return {};
     }
+
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body) {
+        return convert_conditional_statement(ctx, node, body);
+    }
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Match>& node, ebm::ExpressionBody& body) {
-        body.kind = ebm::ExpressionOp::CONDITIONAL_STATEMENT;
-
-        EBM_DEFINE_ANONYMOUS_VARIABLE(var, body.type, {});
-        body.target_stmt(var_def);
-
-        const auto _defer = ctx.state().set_current_yield_statement(var_def);
-
-        EBMA_CONVERT_STATEMENT(conditional_stmt_ref, node);
-        body.conditional_stmt(conditional_stmt_ref);
-
-        return {};
+        return convert_conditional_statement(ctx, node, body);
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::CharLiteral>& node, ebm::ExpressionBody& body) {

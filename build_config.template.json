@@ -1,0 +1,7 @@
+{
+    "FUTILS_DIR": "./brgen/utils/",
+    "BRGEN_DIR": "./brgen/",
+    "DEFAULT_BUILD_TYPE": "Debug",
+    "DEFAULT_BUILD_MODE": "native",
+    "EMSDK_DIR": "/path/to/emsdk"
+}

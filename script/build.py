@@ -1,27 +1,55 @@
 import os
 import subprocess
 import sys
+import json
 
+try:
+    with open("build_config.json", "r") as f:
+        build_config = json.load(f)
+    print("Loaded build_config.json")
+except FileNotFoundError:
+    print("build_config.json not found, using defaults")
+    build_config = {}
 
 print("Building...", sys.argv)
-BUILD_TYPE = sys.argv[2] if len(sys.argv) > 2 else "Debug"
-BUILD_MODE = sys.argv[1] if len(sys.argv) > 1 else "native"
-INSTALL_PREFIX = "."
-FUTILS_DIR = os.getenv("FUTILS_DIR", "C:/workspace/utils_backup")
-BRGEN_DIR = os.getenv("BRGEN_DIR", "C:/workspace/shbrgen/brgen")
+BUILD_TYPE = (
+    sys.argv[2]
+    if len(sys.argv) > 2
+    else build_config.get("DEFAULT_BUILD_TYPE", "Debug")
+)
+BUILD_MODE = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else build_config.get("DEFAULT_BUILD_MODE", "native")
+)
+INSTALL_PREFIX = os.getenv(
+    "INSTALL_PREFIX",
+    build_config.get("INSTALL_PREFIX", os.path.abspath(".")),
+)
+FUTILS_DIR = os.getenv(
+    "FUTILS_DIR",
+    build_config.get("FUTILS_DIR", "./brgen/utils/"),
+)
+BRGEN_DIR = os.getenv("BRGEN_DIR", build_config.get("BRGEN_DIR", "./brgen/"))
+EMSDK_DIR = os.getenv("EMSDK_DIR", build_config.get("EMSDK_DIR", "./emsdk/"))
 
 print("BUILD_TYPE:", BUILD_TYPE)
 print("BUILD_MODE:", BUILD_MODE)
 print("INSTALL_PREFIX:", INSTALL_PREFIX)
 print("FUTILS_DIR:", FUTILS_DIR)
+print("BRGEN_DIR:", BRGEN_DIR)
+print("EMSDK_DIR:", EMSDK_DIR)
 
 shell = os.getenv("SHELL")
 if os.name == "posix":
-    EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.sh")
+    EMSDK_DIR = os.path.join(EMSDK_DIR, "emsdk_env.sh")
 elif os.name == "nt":
-    EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.ps1")
+    EMSDK_DIR = os.path.join(EMSDK_DIR, "emsdk_env.ps1")
 else:
-    EMSDK_PATH = os.getenv("EMSDK_PATH", "C:/workspace/emsdk/emsdk_env.sh")
+    EMSDK_DIR = os.path.join(EMSDK_DIR, "emsdk_env.sh")
+
+EMSDK_DIR = os.path.abspath(EMSDK_DIR)
+
 
 os.environ["FUTILS_DIR"] = FUTILS_DIR
 os.environ["BUILD_MODE"] = BUILD_MODE
@@ -30,11 +58,12 @@ if os.path.exists(BRGEN_DIR):
 
 
 def source_emsdk():
+    print("EMSDK_PATH:", EMSDK_DIR)
     copyEnv = os.environ.copy()
     copyEnv["EMSDK_QUIET"] = "1"
     if os.name == "posix":
         ENV = subprocess.check_output(
-            [".", EMSDK_PATH, ">", "/dev/null", ";", "env"],
+            [".", EMSDK_DIR, ">", "/dev/null", ";", "env"],
             shell=True,
             env=copyEnv,
             stderr=sys.stderr,
@@ -50,7 +79,7 @@ def source_emsdk():
                 "[console]::OutputEncoding = [System.Text.Encoding]::UTF8",
                 ";",
                 ".",
-                EMSDK_PATH,
+                EMSDK_DIR,
                 "|",
                 "Out-Null",
                 ";",

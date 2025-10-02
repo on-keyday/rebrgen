@@ -32,6 +32,11 @@ FUTILS_DIR = os.getenv(
 )
 BRGEN_DIR = os.getenv("BRGEN_DIR", build_config.get("BRGEN_DIR", "./brgen/"))
 EMSDK_DIR = os.getenv("EMSDK_DIR", build_config.get("EMSDK_DIR", "./emsdk/"))
+BUILD_OLD_BMGEN = os.getenv(
+    "BUILD_OLD_BMGEN", build_config.get("BUILD_OLD_BMGEN", False)
+)
+if isinstance(BUILD_OLD_BMGEN, str):
+    BUILD_OLD_BMGEN = BUILD_OLD_BMGEN.lower() in ("1", "true", "yes")
 
 print("BUILD_TYPE:", BUILD_TYPE)
 print("BUILD_MODE:", BUILD_MODE)
@@ -55,6 +60,7 @@ os.environ["FUTILS_DIR"] = FUTILS_DIR
 os.environ["BUILD_MODE"] = BUILD_MODE
 if os.path.exists(BRGEN_DIR):
     os.environ["BRGEN_DIR"] = BRGEN_DIR
+os.environ["BUILD_OLD_BMGEN"] = "1" if BUILD_OLD_BMGEN else "0"
 
 
 def source_emsdk():

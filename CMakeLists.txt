@@ -40,9 +40,8 @@ include_directories("src")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY tool)
 
+if("$ENV{BUILD_OLD_BMGEN}" STREQUAL "1")
 add_library(bm SHARED "src/old/bm/binary_module.cpp")
-
-add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
 
 add_executable(bmgen
     "src/old/bmgen/main.cpp" 
@@ -66,6 +65,35 @@ add_executable(bmgen
 )
 
 target_include_directories(bmgen PUBLIC "src/old")
+
+add_executable(gen_template 
+    "src/old/bm2/gen_template/main.cpp"
+    "src/old/bm2/gen_template/accessor.cpp"
+    "src/old/bm2/gen_template/eval.cpp"
+    "src/old/bm2/gen_template/glue_code.cpp"
+    "src/old/bm2/gen_template/inner_block.cpp"
+    "src/old/bm2/gen_template/inner_function.cpp"
+    "src/old/bm2/gen_template/parameter.cpp"
+    "src/old/bm2/gen_template/type.cpp"
+    "src/old/bm2/gen_template/hook_load.cpp"
+)
+
+target_include_directories(gen_template PUBLIC "src/old")
+add_subdirectory("src/old")
+
+target_link_libraries(bmgen futils bm)
+target_link_libraries(gen_template futils)
+
+if(UNIX)
+set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
+#set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
+endif()
+install(TARGETS bmgen bm DESTINATION tool)
+install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
+
+endif()
+
+add_library(ebm SHARED "src/ebm/extended_binary_module.cpp")
 
 add_executable(ebmgen
     "src/ebmgen/main.cpp"
@@ -114,40 +142,20 @@ add_executable(ebmcodegen
 
 target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
-add_executable(gen_template 
-    "src/old/bm2/gen_template/main.cpp"
-    "src/old/bm2/gen_template/accessor.cpp"
-    "src/old/bm2/gen_template/eval.cpp"
-    "src/old/bm2/gen_template/glue_code.cpp"
-    "src/old/bm2/gen_template/inner_block.cpp"
-    "src/old/bm2/gen_template/inner_function.cpp"
-    "src/old/bm2/gen_template/parameter.cpp"
-    "src/old/bm2/gen_template/type.cpp"
-    "src/old/bm2/gen_template/hook_load.cpp"
-)
-
-target_include_directories(gen_template PUBLIC "src/old")
 
 #add_executable(gen_template2
 #    "src/old/bm2/gen_template2/main.cpp"
 #)
 
-add_subdirectory("src/old")
+
 #add_subdirectory("src/ebmgen/test")
 add_subdirectory("src/ebmcg")
 
 
-target_link_libraries(bmgen futils bm)
 target_link_libraries(ebmgen futils ebm)
-target_link_libraries(gen_template futils)
+
 #target_link_libraries(gen_template2 futils bm)
-if(UNIX)
-set_target_properties(gen_template PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
-#set_target_properties(gen_template2 PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
-endif()
-install(TARGETS bmgen bm DESTINATION tool)
 install(TARGETS ebmgen ebm ebmcodegen DESTINATION tool)
-install(TARGETS gen_template COMPONENT gen_template DESTINATION tool)
 #install(TARGETS gen_template2 COMPONENT gen_template DESTINATION tool)
 if("$ENV{BUILD_MODE}" STREQUAL "native")
 # copy libfutils.dll to tool directory
@@ -176,6 +184,8 @@ elseif(WIN32)
     endif()
 endif()
 elseif("$ENV{BUILD_MODE}" STREQUAL "web")
+if("$ENV{BUILD_OLD_BMGEN}" STREQUAL "1")
 install(FILES "${CMAKE_BINARY_DIR}/tool/bmgen.wasm" DESTINATION tool)
+endif()
 install(FILES "${CMAKE_BINARY_DIR}/tool/ebmgen.wasm" DESTINATION tool)
 endif()

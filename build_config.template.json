@@ -3,5 +3,6 @@
     "BRGEN_DIR": "./brgen/",
     "DEFAULT_BUILD_TYPE": "Debug",
     "DEFAULT_BUILD_MODE": "native",
-    "EMSDK_DIR": "./emsdk"
+    "EMSDK_DIR": "./emsdk",
+    "BUILD_OLD_BMGEN": false
 }

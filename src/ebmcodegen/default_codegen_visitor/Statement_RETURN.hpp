@@ -18,7 +18,7 @@ if (!is_nil(value)) {
     MAYBE(ret_val, visit_Expression(*this, value));
     MAYBE(got, get_writer());
     w.write_unformatted(got.out());
-    w.writeln("return ", ret_val.value);
+    w.writeln("return ", ret_val.to_string());
 }
 else {
     w.writeln("return");

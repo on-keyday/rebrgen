@@ -36,7 +36,7 @@ if (variable_define_keyword.size()) {
 }
 w.write(name);
 if (initial_value) {
-    w.write(" = ", initial_value->value);
+    w.write(" = ", initial_value->to_string());
 }
 
 w.writeln();

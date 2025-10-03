@@ -22,10 +22,10 @@ MAYBE(left_str, visit_Expression(*this, left));
 MAYBE(right_str, visit_Expression(*this, right));
 auto it = this->alt_binary_op.find(bop);
 if (it != this->alt_binary_op.end()) {
-    w.write("(", left_str.value, " ", it->second, " ", right_str.value, ")");
+    w.write("(", left_str.to_string(), " ", it->second, " ", right_str.to_string(), ")");
 }
 else {
-    w.write("(", left_str.value, " ", to_string(bop), " ", right_str.value, ")");
+    w.write("(", left_str.to_string(), " ", to_string(bop), " ", right_str.to_string(), ")");
 }
 
 return w.out();

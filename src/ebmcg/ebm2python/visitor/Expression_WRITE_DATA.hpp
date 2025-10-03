@@ -15,4 +15,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 MAYBE(statement_text, visit_Statement(*this, io_statement));
 MAYBE(w, get_writer());
-w.write_unformatted(statement_text.value);
+w.write_unformatted(statement_text.to_string());

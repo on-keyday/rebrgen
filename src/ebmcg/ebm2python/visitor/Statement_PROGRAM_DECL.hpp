@@ -19,5 +19,5 @@ w.writeln("import struct");
 w.writeln("import enum");
 w.writeln();
 MAYBE(d, visit_Block(*this, block));
-w.write_unformatted(d.value);
+w.write_unformatted(d.to_string());
 return w.out();

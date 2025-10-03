@@ -28,19 +28,16 @@ if (!is_nil(loop.lowered_statement.id)) {
 CodeWriter w;
 if (auto init = loop.init(); init && init->id.value() != 0) {
     MAYBE(init_s, visit_Statement(*this, *init));
-    w.write_unformatted(init_s.value);
+    w.write_unformatted(init_s.to_string());
 }
 std::string cond;
 if (auto c = loop.condition()) {
     MAYBE(expr, visit_Expression(*this, c->cond));
-    cond = std::move(expr.value);
+    cond = std::move(expr.to_string());
 }
 else {
-    ebm::Expression bool_true;
-    bool_true.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
-    bool_true.body.bool_value(1);
-    MAYBE(expr, visit_Expression(*this, bool_true));
-    cond = std::move(expr.value);
+    MAYBE(true_, get_bool_literal(*this, true));
+    cond = std::move(true_);
 }
 
 if (use_brace_for_condition) {
@@ -52,10 +49,10 @@ else {
 {
     auto body_indent = w.indent_scope();
     MAYBE(body, visit_Statement(*this, loop.body));
-    w.write_unformatted(body.value);
+    w.write_unformatted(body.to_string());
     if (auto iter = loop.increment()) {
         MAYBE(step, visit_Statement(*this, *iter));
-        w.write_unformatted(step.value);
+        w.write_unformatted(step.to_string());
     }
 }
 w.writeln(end_block);

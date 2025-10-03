@@ -102,7 +102,7 @@ expected<std::string> type_to_struct_format(const ebm::TypeRef& type_ref, const 
                 }
                 else if (auto r = size.ref()) {
                     MAYBE(dyn_size, visit_Expression(*this, *r));
-                    format_char = std::format("\" + f\"{{({})}}s", dyn_size.value);
+                    format_char = std::format("\" + f\"{{({})}}s", dyn_size.to_string());
                 }
             }
             else {

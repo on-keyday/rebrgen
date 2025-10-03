@@ -42,4 +42,4 @@ MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attr
 
 MAYBE(read_size_str, get_size_str(*this, io_data.size));
 
-return target_expr_str.value + " = struct.unpack(" + struct_format + ", stream.read(" + read_size_str + "))[0]\n";
+return target_expr_str.to_string() + " = struct.unpack(" + struct_format + ", stream.read(" + read_size_str + "))[0]\n";

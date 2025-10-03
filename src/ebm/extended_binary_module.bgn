@@ -268,7 +268,8 @@ format VariableDecl:
     initial_value :ExpressionRef # Optional initial value
     is_constant :u1 # 0: mutable, 1: constant
     is_reference :u1 # 0: value, 1: reference
-    reserved :u6 # Reserved for future use
+    is_parameter :u1 # 0: local variable, 1: function parameter
+    reserved :u5 # Reserved for future use
 
     
 format MatchStatement:

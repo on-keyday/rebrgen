@@ -31,21 +31,21 @@ auto scope = w.indent_scope();
 for (auto& field_ref : struct_decl.fields.container) {
     MAYBE(field, this->module_.get_statement(field_ref));
     MAYBE(res, visit_Statement(*this, field));
-    w.write_unformatted(res.value);
+    w.write_unformatted(res.to_string());
 }
 
 // Visit encode_fn if it exists
 if (!is_nil(struct_decl.encode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(encode_fn_stmt, this->module_.get_statement(struct_decl.encode_fn));
     MAYBE(res, visit_Statement(*this, encode_fn_stmt));
-    w.write_unformatted(res.value);
+    w.write_unformatted(res.to_string());
 }
 
 // Visit decode_fn if it exists
 if (!is_nil(struct_decl.decode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(decode_fn_stmt, this->module_.get_statement(struct_decl.decode_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
-    w.write_unformatted(res.value);
+    w.write_unformatted(res.to_string());
 }
 
 w.writeln();  // Add a blank line for readability.

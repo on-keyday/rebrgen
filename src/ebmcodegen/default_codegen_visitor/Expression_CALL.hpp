@@ -22,13 +22,13 @@ CodeWriter w;
 
 // Get the identifier name from call_desc.callee
 MAYBE(callee, visit_Expression(*this, call_desc.callee));
-w.write(callee.value, "(");
+w.write(callee.to_string(), "(");
 for (auto& arg : call_desc.arguments.container) {
     MAYBE(arg_str, visit_Expression(*this, arg));
     if (w.out().back() != '(') {
         w.write(",");
     }
-    w.write(arg_str.value);
+    w.write(arg_str.to_string());
 }
 w.write(")");
 return w.out();

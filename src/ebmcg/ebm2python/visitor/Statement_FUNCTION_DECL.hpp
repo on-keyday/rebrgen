@@ -38,7 +38,7 @@ if (func_decl.params.container.empty() == false) {
             if (!params_str.empty()) {
                 params_str += ", ";
             }
-            params_str += param_name + ": " + param_type_str.value;
+            params_str += param_name + ": " + param_type_str.to_string();
         }
         else {
             return unexpect_error("Function parameter is not a VARIABLE_DECL: {}", to_string(param_stmt.body.kind));
@@ -46,14 +46,14 @@ if (func_decl.params.container.empty() == false) {
     }
 }
 
-w.writeln("def ", func_name, "(", params_str, ") -> ", return_type_str.value, ":");
+w.writeln("def ", func_name, "(", params_str, ") -> ", return_type_str.to_string(), ":");
 auto scope = w.indent_scope();
 MAYBE(res, visit_Statement(*this, func_decl.body));
-if (res.value.empty()) {
+if (res.to_string().empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }
 else {
-    w.write_unformatted(res.value);
+    w.write_unformatted(res.to_string());
 }
 
 return w.out();

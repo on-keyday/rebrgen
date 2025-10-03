@@ -14,6 +14,6 @@
 auto writer_added = add_writer();
 MAYBE(r, visit_Expression(*this, expression));
 MAYBE(got, get_writer());
-got.write_unformatted(r.value);
+got.write_unformatted(r.to_string());
 auto result = std::move(got.out());
 return result;

@@ -39,7 +39,7 @@ namespace ebmcodegen::util {
         }
         else if (auto ref = s.ref()) {
             MAYBE(expr, visit_Expression(visitor, *ref));
-            return expr.value;
+            return expr.to_string();
         }
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
     }
@@ -59,14 +59,14 @@ namespace ebmcodegen::util {
                 int_literal.body.kind = ebm::ExpressionKind::LITERAL_INT;
                 int_literal.body.int_value(*ebmgen::varint(0));
                 MAYBE(val, visit_Expression(visitor, int_literal));
-                return val.value;
+                return val.to_string();
             }
             case ebm::TypeKind::BOOL: {
                 ebm::Expression bool_literal;
                 bool_literal.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
                 bool_literal.body.bool_value(0);
                 MAYBE(val, visit_Expression(visitor, bool_literal));
-                return val.value;
+                return val.to_string();
             }
             case ebm::TypeKind::ENUM:
             case ebm::TypeKind::STRUCT:
@@ -84,5 +84,13 @@ namespace ebmcodegen::util {
                 return ebmgen::unexpect_error("unsupported default: {}", to_string(type.body.kind));
             }
         }
+    }
+
+    ebmgen::expected<std::string> get_bool_literal(auto&& visitor, bool v) {
+        ebm::Expression bool_literal;
+        bool_literal.body.kind = ebm::ExpressionKind::LITERAL_BOOL;
+        bool_literal.body.bool_value(v ? 1 : 0);
+        MAYBE(expr, visit_Expression(visitor, bool_literal));
+        return expr.to_string();
     }
 }  // namespace ebmcodegen::util

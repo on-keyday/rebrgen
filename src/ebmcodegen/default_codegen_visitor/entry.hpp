@@ -10,5 +10,5 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 MAYBE(entry_point, module_.get_entry_point());
 MAYBE(result, visit_Statement(*this, entry_point));
-root.write_unformatted(result.value);
+root.write_unformatted(result.to_string());
 futils::wrap::cerr_wrap() << program_name << ": Code Generated\n";

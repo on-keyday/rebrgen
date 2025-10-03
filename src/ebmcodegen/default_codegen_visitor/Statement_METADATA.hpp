@@ -29,7 +29,7 @@ if (metadata.values.container.size()) {
         }
         first = false;
         MAYBE(val, visit_Expression(*this, v));
-        w.write_unformatted(val.value);
+        w.write_unformatted(val.to_string());
     }
     w.write(")");
 }

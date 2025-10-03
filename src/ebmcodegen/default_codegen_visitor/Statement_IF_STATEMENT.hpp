@@ -20,19 +20,19 @@ MAYBE(condition, visit_Expression(*this, if_statement.condition.cond));
 MAYBE(then_block, visit_Statement(*this, if_statement.then_block));
 CodeWriter w;
 if (use_brace_for_condition) {
-    w.writeln("if (", tidy_condition_brace(std::move(condition.value)), ") ", begin_block);
+    w.writeln("if (", tidy_condition_brace(std::move(condition.to_string())), ") ", begin_block);
 }
 else {
-    w.writeln("if ", tidy_condition_brace(std::move(condition.value)), " ", begin_block);
+    w.writeln("if ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
 }
 auto then_scope = w.indent_scope();
-if (then_block.value.empty()) {
+if (then_block.to_string().empty()) {
     if (empty_block_marker.size()) {
         w.writeln(empty_block_marker);
     }
 }
 else {
-    w.write_unformatted(std::move(then_block.value));
+    w.write_unformatted(std::move(then_block.to_string()));
 }
 then_scope.execute();
 w.write(end_block);
@@ -49,19 +49,19 @@ while (!is_nil(els_block)) {
         MAYBE(condition, visit_Expression(*this, next_if.condition.cond));
         MAYBE(then_block, visit_Statement(*this, next_if.then_block));
         if (use_brace_for_condition) {
-            w.writeln(if_word, " (", tidy_condition_brace(std::move(condition.value)), ") ", begin_block);
+            w.writeln(if_word, " (", tidy_condition_brace(std::move(condition.to_string())), ") ", begin_block);
         }
         else {
-            w.writeln(if_word, " ", tidy_condition_brace(std::move(condition.value)), " ", begin_block);
+            w.writeln(if_word, " ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
         }
         auto then_scope = w.indent_scope();
-        if (then_block.value.empty()) {
+        if (then_block.to_string().empty()) {
             if (empty_block_marker.size()) {
                 w.writeln(empty_block_marker);
             }
         }
         else {
-            w.write_unformatted(std::move(then_block.value));
+            w.write_unformatted(then_block.to_string());
         }
         then_scope.execute();
         w.write(end_block);
@@ -74,13 +74,13 @@ while (!is_nil(els_block)) {
         MAYBE(else_block, visit_Statement(*this, els_block));
         w.writeln(begin_block);
         auto else_scope = w.indent_scope();
-        if (else_block.value.empty()) {
+        if (else_block.to_string().empty()) {
             if (empty_block_marker.size()) {
                 w.writeln(empty_block_marker);
             }
         }
         else {
-            w.write_unformatted(std::move(else_block.value));
+            w.write_unformatted(else_block.to_string());
         }
         else_scope.execute();
         w.write(end_block);

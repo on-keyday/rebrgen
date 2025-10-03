@@ -29,7 +29,7 @@ w.writeln("struct ", name, " {");
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, struct_decl.fields));
-    w.write_unformatted(block.value);
+    w.write_unformatted(block.to_string());
 }
 w.writeln("};");
 return w.out();

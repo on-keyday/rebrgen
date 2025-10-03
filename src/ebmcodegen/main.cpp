@@ -598,10 +598,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("struct Result {");
     auto result_scope = w.indent_scope();
     if (flags.mode == GenerateMode::CodeGenerator) {
-        w.writeln("std::string value;");
-        w.writeln("Result(std::string v) : value(std::move(v)) {}");
+        w.writeln("private: std::string value;");
+        w.writeln("public: Result(std::string v) : value(std::move(v)) {}");
         w.writeln("Result(const char* v) : value(v) {}");
         w.writeln("Result() = default;");
+        w.writeln("constexpr const std::string& to_string() const { return value; }");
+        w.writeln("constexpr std::string& to_string() { return value; }");
     }
     insert_include(w, prefixes[prefix_result]);
     result_scope.execute();

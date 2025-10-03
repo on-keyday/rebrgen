@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <unordered_set>
 #include <variant>
+#include "code/src_location.h"
 #include "comb2/composite/number.h"
 #include "comb2/composite/range.h"
 #include "comb2/composite/string.h"
@@ -82,112 +83,184 @@ namespace ebmgen {
         };
 
         static_assert(check(), "Expression parser static assert");
+
+        using Node = futils::comb2::tree::node::GenericNode<NodeType>;
+
+        futils::helper::either::expected<std::shared_ptr<Node>, std::pair<futils::code::SrcLoc, std::string>> parse_line(std::string_view line) {
+            auto input = futils::make_ref_seq(std::string_view(line));
+            futils::comb2::tree::BranchTable table;
+            auto res = query::full_expr(input, table, query::recurse);
+            if (res != futils::comb2::Status::match || !input.eos()) {
+                std::string buffer;
+                auto src_loc = futils::code::write_src_loc(buffer, input);
+                return futils::helper::either::unexpected(std::make_pair(src_loc, std::move(buffer)));
+            }
+            return futils::comb2::tree::node::collect<NodeType>(table.root_branch);
+        }
     }  // namespace query
-    struct Debugger {
-        futils::wrap::UtfOut& cout;
-        futils::wrap::UtfIn& cin;
+
+    enum class ExecutionResult {
+        Success,
+        Exit,
+        StackEmpty,
+        TypeMismatch,
+        InvalidOperator,
+        IdentifierNotFound,
+    };
+    using ObjectSet = std::unordered_set<ebm::AnyRef>;
+
+    using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef, ObjectSet>;
+    struct EvalContext {
         MappingTable& table;
+        std::vector<EvalValue> stack;
+        std::map<std::string, EvalValue> variables;
 
-        std::string line;
-        std::vector<std::string_view> args;
-
-        void print() {
-            std::stringstream print_buf;
-            DebugPrinter printer{table, print_buf};
-            if (args.size() < 2) {
-                cout << "Usage: print <identifier>\n";
-                return;
-            }
-            auto ident = args[1];
-            std::uint64_t id;
-            if (!futils::number::parse_integer(ident, id)) {
-                cout << "Invalid identifier: " << ident << "\n";
-                return;
-            }
-            auto obj = table.get_object(ebm::AnyRef{id});
-            std::visit(
-                [&](auto&& obj) {
-                    if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
-                        cout << "Identifier not found: " << ident << "\n";
+        template <class T>
+        void unwrap_any_ref(EvalValue& value) {
+            if (std::holds_alternative<ebm::AnyRef>(value)) {
+                auto ref = std::get<ebm::AnyRef>(value);
+                if constexpr (std::is_same_v<T, std::string>) {
+                    auto ident = table.get_identifier(ref);
+                    if (ident) {
+                        value = ident->body.data;
                     }
                     else {
-                        printer.print_object(*obj);
-                    }
-                },
-                obj);
-            cout << print_buf.str();
-        }
-
-        void header() {
-            auto& raw_module = table.module();
-            cout << "Header Information:\n";
-            cout << " Version: " << raw_module.version << "\n";
-            cout << " Max ID: " << get_id(raw_module.max_id) << "\n";
-            cout << " Identifiers: " << raw_module.identifiers.size() << "\n";
-            cout << " String Literals: " << raw_module.strings.size() << "\n";
-            cout << " Types: " << raw_module.types.size() << "\n";
-            cout << " Statements: " << raw_module.statements.size() << "\n";
-            cout << " Expressions: " << raw_module.expressions.size() << "\n";
-            cout << " Aliases: " << raw_module.aliases.size() << "\n";
-            cout << " Total Objects: " << (raw_module.identifiers.size() + raw_module.strings.size() + raw_module.types.size() + raw_module.statements.size() + raw_module.expressions.size() + raw_module.aliases.size()) << "\n";
-            cout << " Source File:\n";
-            for (auto& s : raw_module.debug_info.files) {
-                cout << "  " << s.data << "\n";
-            }
-            cout << " Debug Locations: " << raw_module.debug_info.locs.size() << "\n";
-            cout << "----\n";
-        }
-
-        using ObjectSet = std::unordered_set<ebm::AnyRef>;
-
-        using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef, ObjectSet>;
-
-        struct EvalContext {
-            MappingTable& table;
-            std::vector<EvalValue> stack;
-            std::map<std::string, EvalValue> variables;
-
-            template <class T>
-            void unwrap_any_ref(EvalValue& value) {
-                if (std::holds_alternative<ebm::AnyRef>(value)) {
-                    auto ref = std::get<ebm::AnyRef>(value);
-                    if constexpr (std::is_same_v<T, std::string>) {
-                        auto ident = table.get_identifier(ref);
-                        if (ident) {
-                            value = ident->body.data;
+                        auto str_lit = table.get_string_literal(ebm::StringRef{ref.id});
+                        if (str_lit) {
+                            value = str_lit->body.data;
                         }
-                        else {
-                            auto str_lit = table.get_string_literal(ebm::StringRef{ref.id});
-                            if (str_lit) {
-                                value = str_lit->body.data;
-                            }
-                        }
-                    }
-                    else if (std::is_same_v<T, std::uint64_t>) {
-                        value = get_id(ref);
-                    }
-                    else if (std::is_same_v<T, bool>) {
-                        value = !is_nil(ref);
                     }
                 }
+                else if (std::is_same_v<T, std::uint64_t>) {
+                    value = get_id(ref);
+                }
+                else if (std::is_same_v<T, bool>) {
+                    value = !is_nil(ref);
+                }
             }
+        }
+    };
+    using EvalFunc = std::function<ExecutionResult(EvalContext&)>;
+    static void collect_variables(std::map<std::string, EvalValue>& variables, const std::unordered_set<std::string>& related_identifiers, has_visit<DummyFn> auto& t) {
+        std::vector<std::string> idents;
+        auto qualified_name = [&](const char* name) -> std::string {
+            if (idents.size()) {
+                return idents.back() + "." + name;
+            }
+            return name;
         };
-        enum class ExecutionResult {
-            Success,
-            Exit,
-            StackEmpty,
-            TypeMismatch,
-            InvalidOperator,
-            IdentifierNotFound,
-        };
+        t.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) {
+                if (value) {
+                    visitor(visitor, name, *value);
+                }
+            }
+            else if constexpr (is_container<decltype(value)>) {
+                for (size_t i = 0; i < value.container.size(); i++) {
+                    std::string elem_name = std::format("{}[{}]", name, i);
+                    visitor(visitor, elem_name.c_str(), value.container[i]);
+                }
+            }
+            else {
+                auto qname = qualified_name(name);
+                if constexpr (std::is_same_v<T, ebm::Varint>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = value.value();
+                    }
+                }
+                else if constexpr (AnyRef<T>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = to_any_ref(value);
+                    }
+                }
+                else if constexpr (std::is_enum_v<T>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = to_string(value, true);
+                    }
+                }
+                else if constexpr (std::is_same_v<T, bool>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = value;
+                    }
+                }
+                else if constexpr (std::is_integral_v<T>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = std::uint64_t(value);
+                    }
+                }
+                else if constexpr (std::is_same_v<T, ebm::String>) {
+                    if (related_identifiers.contains(qname)) {
+                        variables[qname] = value.data;
+                    }
+                }
+                else if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) {
+                    idents.push_back(std::move(qname));
+                    value.visit(visitor);
+                    idents.pop_back();
+                }
+                else {
+                    static_assert(std::is_same_v<T, void>, "unsupported type in query");
+                }
+            }
+        });
+    }
+    struct Object {
+        std::string type;
+        std::unordered_set<std::string> related_identifiers;
+        EvalFunc evaluator;
 
-        using EvalFunc = std::function<ExecutionResult(EvalContext&)>;
+        ExecutionResult query(MappingTable& table, ObjectSet& matched) const {
+            auto for_each = [&](auto& objects) {
+                for (auto& t : objects) {
+                    EvalContext ctx{table};
+                    collect_variables(ctx.variables, related_identifiers, t);
+                    if (evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
+                        ctx.unwrap_any_ref<bool>(ctx.stack[0]);
+                        if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
+                            matched.insert(to_any_ref(t.id));
+                        }
+                    }
+                }
+            };
+            if (type == "Identifier") {
+                for_each(table.module().identifiers);
+            }
+            else if (type == "String") {
+                for_each(table.module().strings);
+            }
+            else if (type == "Type") {
+                for_each(table.module().types);
+            }
+            else if (type == "Statement") {
+                for_each(table.module().statements);
+            }
+            else if (type == "Expression") {
+                for_each(table.module().expressions);
+            }
+            else if (type == "Any") {
+                for_each(table.module().identifiers);
+                for_each(table.module().strings);
+                for_each(table.module().types);
+                for_each(table.module().statements);
+                for_each(table.module().expressions);
+            }
+            else {
+                return ExecutionResult::InvalidOperator;
+            }
+            return ExecutionResult::Success;
+        }
+    };
 
-        struct Object {
-            std::string type;
-            std::unordered_set<std::string> related_identifiers;
-            EvalFunc evaluator;
-        };
+    struct Query {
+        std::vector<Object> objects;
+
+        void query(MappingTable& table, ObjectSet& matched) const {
+            for (const auto& obj : objects) {
+                obj.query(table, matched);
+            }
+        }
+    };
 #define CHECK_AND_TAKE(var)                 \
     if (ctx.stack.empty()) {                \
         return ExecutionResult::StackEmpty; \
@@ -203,11 +276,8 @@ namespace ebmgen {
     }                                          \
     auto var = std::get<T>(var##__)
 
-        struct Evaluator {
-            std::vector<Object> objects;
-        };
-        using NodeType = query::NodeType;
-        using Node = futils::comb2::tree::node::GenericNode<NodeType>;
+    using NodeType = query::NodeType;
+    using Node = query::Node;
 
 #define RETURN_EXEC_FAILURE(expr)                                 \
     do {                                                          \
@@ -216,6 +286,8 @@ namespace ebmgen {
         }                                                         \
     } while (0)
 
+    struct QueryCompiler {
+        MappingTable& table;
         ExecutionResult query_short_circuit(EvalContext& ctx, const EvalFunc& left, const EvalFunc& right, bool short_circuit) {
             RETURN_EXEC_FAILURE(left(ctx));
             CHECK_AND_TAKE_AS(left_value, bool);
@@ -246,17 +318,17 @@ namespace ebmgen {
             }
         }
 
-        expected<EvalFunc> eval_expr(Object& object, const std::shared_ptr<Node>& node) {
+        expected<EvalFunc> compile_expr(Object& object, const std::shared_ptr<Node>& node) {
             using futils::comb2::tree::node::as_group, futils::comb2::tree::node::as_tok;
             if (auto g = as_group<NodeType>(node)) {
                 if (g->tag == NodeType::BinaryOp) {
                     if (g->children.size() == 1) {
-                        return eval_expr(object, g->children[0]);
+                        return compile_expr(object, g->children[0]);
                     }
                     else if (g->children.size() == 3) {
-                        MAYBE(left, eval_expr(object, g->children[0]));
+                        MAYBE(left, compile_expr(object, g->children[0]));
                         auto op = as_tok<NodeType>(g->children[1]);
-                        MAYBE(right, eval_expr(object, g->children[2]));
+                        MAYBE(right, compile_expr(object, g->children[2]));
                         if (op && op->tag == NodeType::Operator) {
                             if (op->token == "in") {
                                 return unexpect_error("Operator 'in' not implemented");
@@ -362,11 +434,11 @@ namespace ebmgen {
                 }
                 else if (g->tag == NodeType::UnaryOp) {
                     if (g->children.size() == 1) {
-                        return eval_expr(object, g->children[0]);
+                        return compile_expr(object, g->children[0]);
                     }
                     else if (g->children.size() == 2) {
                         auto op = as_tok<NodeType>(g->children[0]);
-                        MAYBE(operand, eval_expr(object, g->children[1]));
+                        MAYBE(operand, compile_expr(object, g->children[1]));
                         if (op && op->tag == NodeType::Operator) {
                             if (op->token == "not" || op->token == "!") {
                                 return [operand = std::move(operand)](EvalContext& ctx) {
@@ -387,10 +459,10 @@ namespace ebmgen {
                     }
                 }
                 else if (g->tag == NodeType::Object) {
-                    MAYBE(obj, eval_object(node));
+                    MAYBE(obj, compile_object(node));
                     return [this, obj = std::move(obj)](EvalContext& ctx) {
                         std::unordered_set<ebm::AnyRef> matched;
-                        RETURN_EXEC_FAILURE(query_object(obj, matched));
+                        RETURN_EXEC_FAILURE(obj.query(this->table, matched));
                         ctx.stack.push_back(EvalValue{std::move(matched)});
                         return ExecutionResult::Success;
                     };
@@ -459,7 +531,7 @@ namespace ebmgen {
             return unexpect_error("Unsupported expression node");
         }
 
-        expected<Object> eval_object(const std::shared_ptr<Node>& node) {
+        expected<Object> compile_object(const std::shared_ptr<Node>& node) {
             using futils::comb2::tree::node::as_group, futils::comb2::tree::node::as_tok;
             if (auto g = as_group<NodeType>(node)) {
                 if (g->tag == NodeType::Object) {
@@ -470,7 +542,7 @@ namespace ebmgen {
                         }
                         auto expr_node = g->children[1];
                         Object obj;
-                        MAYBE(fn, eval_expr(obj, expr_node));
+                        MAYBE(fn, compile_expr(obj, expr_node));
                         obj.evaluator = std::move(fn);
                         obj.type = type_tok->token;
                         return obj;
@@ -483,12 +555,12 @@ namespace ebmgen {
             return unexpect_error("Unsupported object node");
         }
 
-        expected<void> eval_root(Evaluator& eval, const std::shared_ptr<Node>& node) {
+        expected<void> compile(Query& eval, const std::shared_ptr<Node>& node) {
             using futils::comb2::tree::node::as_group;
             if (auto g = as_group<NodeType>(node)) {
                 if (g->tag == NodeType::Root) {
                     for (auto& child : g->children) {
-                        MAYBE(obj, eval_object(child));
+                        MAYBE(obj, compile_object(child));
                         eval.objects.push_back(std::move(obj));
                     }
                     return {};
@@ -496,18 +568,74 @@ namespace ebmgen {
             }
             return unexpect_error("Unsupported root node");
         }
+    };
 
-        bool setup_evaluator(Evaluator& eval) {
-            auto input = futils::make_ref_seq(std::string_view(line));
-            input.rptr = args[0].data() + args[0].size() - line.data();
-            futils::comb2::tree::BranchTable table;
-            auto res = query::full_expr(input, table, query::recurse);
-            if (res != futils::comb2::Status::match || !input.eos()) {
-                cout << "Failed to parse query expression at position " << input.rptr << ": " << line.substr(input.rptr) << "\n";
+    struct Debugger {
+        futils::wrap::UtfOut& cout;
+        futils::wrap::UtfIn& cin;
+        MappingTable& table;
+
+        std::string line;
+        std::vector<std::string_view> args;
+
+        void print() {
+            std::stringstream print_buf;
+            DebugPrinter printer{table, print_buf};
+            if (args.size() < 2) {
+                cout << "Usage: print <identifier>\n";
+                return;
+            }
+            auto ident = args[1];
+            std::uint64_t id;
+            if (!futils::number::parse_integer(ident, id)) {
+                cout << "Invalid identifier: " << ident << "\n";
+                return;
+            }
+            auto obj = table.get_object(ebm::AnyRef{id});
+            std::visit(
+                [&](auto&& obj) {
+                    if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
+                        cout << "Identifier not found: " << ident << "\n";
+                    }
+                    else {
+                        printer.print_object(*obj);
+                    }
+                },
+                obj);
+            cout << print_buf.str();
+        }
+
+        void header() {
+            auto& raw_module = table.module();
+            cout << "Header Information:\n";
+            cout << " Version: " << raw_module.version << "\n";
+            cout << " Max ID: " << get_id(raw_module.max_id) << "\n";
+            cout << " Identifiers: " << raw_module.identifiers.size() << "\n";
+            cout << " String Literals: " << raw_module.strings.size() << "\n";
+            cout << " Types: " << raw_module.types.size() << "\n";
+            cout << " Statements: " << raw_module.statements.size() << "\n";
+            cout << " Expressions: " << raw_module.expressions.size() << "\n";
+            cout << " Aliases: " << raw_module.aliases.size() << "\n";
+            cout << " Total Objects: " << (raw_module.identifiers.size() + raw_module.strings.size() + raw_module.types.size() + raw_module.statements.size() + raw_module.expressions.size() + raw_module.aliases.size()) << "\n";
+            cout << " Source File:\n";
+            for (auto& s : raw_module.debug_info.files) {
+                cout << "  " << s.data << "\n";
+            }
+            cout << " Debug Locations: " << raw_module.debug_info.locs.size() << "\n";
+            cout << "----\n";
+        }
+
+        bool setup_evaluator(QueryCompiler& compiler, Query& eval) {
+            auto offset = args[0].data() + args[0].size() - line.data();
+            auto input = std::string_view(line).substr(offset);
+            auto parsed = query::parse_line(input);
+            if (!parsed) {
+                auto src_loc = parsed.error().first;
+                cout << "Error parsing query expression at " << src_loc.line + 1 << ":" << src_loc.pos + 1 << ":\n";
+                cout << parsed.error().second << "\n";
                 return false;
             }
-            auto collected = futils::comb2::tree::node::collect<NodeType>(table.root_branch);
-            auto result = eval_root(eval, collected);
+            auto result = compiler.compile(eval, *parsed);
             if (!result) {
                 cout << "Error in query expression: " << result.error().error() << "\n";
                 return false;
@@ -515,146 +643,36 @@ namespace ebmgen {
             return true;
         }
 
-        static void collect_variables(std::map<std::string, EvalValue>& variables, const std::unordered_set<std::string>& related_identifiers, has_visit<DummyFn> auto& t) {
-            std::vector<std::string> idents;
-            auto qualified_name = [&](const char* name) -> std::string {
-                if (idents.size()) {
-                    return idents.back() + "." + name;
-                }
-                return name;
-            };
-            t.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
-                using T = std::decay_t<decltype(value)>;
-                if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>>) {
-                    if (value) {
-                        visitor(visitor, name, *value);
-                    }
-                }
-                else if constexpr (is_container<decltype(value)>) {
-                    for (size_t i = 0; i < value.container.size(); i++) {
-                        std::string elem_name = std::format("{}[{}]", name, i);
-                        visitor(visitor, elem_name.c_str(), value.container[i]);
-                    }
-                }
-                else {
-                    auto qname = qualified_name(name);
-                    if constexpr (std::is_same_v<T, ebm::Varint>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = value.value();
-                        }
-                    }
-                    else if constexpr (AnyRef<T>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = to_any_ref(value);
-                        }
-                    }
-                    else if constexpr (std::is_enum_v<T>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = to_string(value, true);
-                        }
-                    }
-                    else if constexpr (std::is_same_v<T, bool>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = value;
-                        }
-                    }
-                    else if constexpr (std::is_integral_v<T>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = std::uint64_t(value);
-                        }
-                    }
-                    else if constexpr (std::is_same_v<T, ebm::String>) {
-                        if (related_identifiers.contains(qname)) {
-                            variables[qname] = value.data;
-                        }
-                    }
-                    else if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) {
-                        idents.push_back(std::move(qname));
-                        value.visit(visitor);
-                        idents.pop_back();
-                    }
-                    else {
-                        static_assert(std::is_same_v<T, void>, "unsupported type in query");
-                    }
-                }
-            });
-        }
-
-        ExecutionResult query_object(const Object& obj, ObjectSet& matched) {
-            auto for_each = [&](auto& objects) {
-                for (auto& t : objects) {
-                    EvalContext ctx{table};
-                    collect_variables(ctx.variables, obj.related_identifiers, t);
-                    if (obj.evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
-                        ctx.unwrap_any_ref<bool>(ctx.stack[0]);
-                        if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
-                            matched.insert(to_any_ref(t.id));
-                        }
-                    }
-                }
-            };
-            if (obj.type == "Identifier") {
-                for_each(table.module().identifiers);
-            }
-            else if (obj.type == "String") {
-                for_each(table.module().strings);
-            }
-            else if (obj.type == "Type") {
-                for_each(table.module().types);
-            }
-            else if (obj.type == "Statement") {
-                for_each(table.module().statements);
-            }
-            else if (obj.type == "Expression") {
-                for_each(table.module().expressions);
-            }
-            else if (obj.type == "Any") {
-                for_each(table.module().identifiers);
-                for_each(table.module().strings);
-                for_each(table.module().types);
-                for_each(table.module().statements);
-                for_each(table.module().expressions);
-            }
-            else {
-                return ExecutionResult::InvalidOperator;
-            }
-            return ExecutionResult::Success;
-        }
-
         void query() {
             if (args.size() < 2) {
                 cout << "Usage: query <conditions...>\n";
                 return;
             }
-            Evaluator eval;
-            if (!setup_evaluator(eval)) {
+            QueryCompiler compiler{table};
+            Query query;
+            if (!setup_evaluator(compiler, query)) {
                 return;
             }
             size_t count = 0;
-            for (auto& obj : eval.objects) {
-                ObjectSet matched;
-                if (auto res = query_object(obj, matched); res != ExecutionResult::Success) {
-                    cout << "Error during query evaluation: " << static_cast<int>(res) << "\n";
-                    return;
-                }
-
-                for (auto& ref : matched) {
-                    auto obj = table.get_object(ref);
-                    std::visit(
-                        [&](auto&& obj) {
-                            if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
-                            }
-                            else {
-                                std::stringstream print_buf;
-                                DebugPrinter printer{table, print_buf};
-                                printer.print_object(*obj);
-                                cout << print_buf.str();
-                                cout << "----\n";
-                                count++;
-                            }
-                        },
-                        obj);
-                }
+            ObjectSet matched;
+            query.query(table, matched);
+            for (auto& ref : matched) {
+                auto obj = table.get_object(ref);
+                std::visit(
+                    [&](auto&& obj) {
+                        if constexpr (std::is_same_v<std::decay_t<decltype(obj)>, std::monostate>) {
+                            cout << "Identifier not found: " << get_id(ref) << "\n";
+                        }
+                        else {
+                            std::stringstream print_buf;
+                            DebugPrinter printer{table, print_buf};
+                            printer.print_object(*obj);
+                            cout << print_buf.str();
+                            cout << "----\n";
+                            count++;
+                        }
+                    },
+                    obj);
             }
             cout << "Total matched objects: " << count << "\n";
         }
@@ -786,5 +804,22 @@ namespace ebmgen {
     void interactive_debugger(MappingTable& table) {
         Debugger debugger{futils::wrap::cout_wrap(), futils::wrap::cin_wrap(), table};
         debugger.start();
+    }
+
+    expected<ObjectSet> run_query(MappingTable& table, std::string_view input) {
+        QueryCompiler compiler{table};
+        Query query;
+        auto parsed = query::parse_line(input);
+        if (!parsed) {
+            auto src_loc = parsed.error().first;
+            return unexpect_error("Error parsing query expression at {}:{}:\n{}", src_loc.line + 1, src_loc.pos + 1, parsed.error().second);
+        }
+        auto result = compiler.compile(query, *parsed);
+        if (!result) {
+            return unexpect_error("Error in query expression: {}", result.error().error());
+        }
+        ObjectSet matched;
+        query.query(table, matched);
+        return matched;
     }
 }  // namespace ebmgen

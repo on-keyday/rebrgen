@@ -392,6 +392,7 @@ namespace ebmgen {
         MAYBE_VOID(derived, derive_property_type(ctx, prop_decl, union_type));
 
         body.property_decl(std::move(prop_decl));
+        ctx.state().cache_type(node->field_type, prop_decl.property_type);
         return body;
     }
 }  // namespace ebmgen

@@ -8,6 +8,7 @@
 #include "core/ast/node/ast_enum.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
+#include "core/ast/node/translated.h"
 #include "core/ast/node/type.h"
 #include <wrap/cout.h>
 
@@ -211,6 +212,7 @@ namespace ebmgen {
         ebm::Block* current_block = nullptr;
         ebm::StatementRef current_loop_id;
         ebm::StatementRef current_yield_statement;
+        std::unordered_map<std::shared_ptr<ast::Node>, ebm::TypeRef> type_cache;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const;
 
@@ -334,6 +336,18 @@ namespace ebmgen {
                 return &it->second;
             }
             return nullptr;
+        }
+
+        void cache_type(const std::shared_ptr<ast::Node>& node, ebm::TypeRef type) {
+            type_cache[node] = type;
+        }
+
+        ebm::TypeRef get_cached_type(const std::shared_ptr<ast::Node>& node) const {
+            auto it = type_cache.find(node);
+            if (it != type_cache.end()) {
+                return it->second;
+            }
+            return ebm::TypeRef{};
         }
     };
 
@@ -573,6 +587,8 @@ namespace ebmgen {
         expected<void> convert_expr_impl(const std::shared_ptr<ast::IOOperation>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Paren>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Cond>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Call>& node, ebm::ExpressionBody& body);
+        expected<void> convert_expr_impl(const std::shared_ptr<ast::Available>& node, ebm::ExpressionBody& body);
 
         expected<void> convert_expr_impl(const std::shared_ptr<ast::If>& node, ebm::ExpressionBody& body);
         expected<void> convert_expr_impl(const std::shared_ptr<ast::Match>& node, ebm::ExpressionBody& body);

@@ -12,16 +12,24 @@ except FileNotFoundError:
     build_config = {}
 
 print("Building...", sys.argv)
-BUILD_TYPE = (
-    sys.argv[2]
-    if len(sys.argv) > 2
-    else build_config.get("DEFAULT_BUILD_TYPE", "Debug")
-)
 BUILD_MODE = (
     sys.argv[1]
     if len(sys.argv) > 1
     else build_config.get("DEFAULT_BUILD_MODE", "native")
 )
+BUILD_TYPE = (
+    sys.argv[2]
+    if len(sys.argv) > 2
+    else build_config.get(
+        (
+            "DEFAULT_BUILD_TYPE_WEB"
+            if BUILD_MODE == "web"
+            else "DEFAULT_BUILD_TYPE_NATIVE"
+        ),
+        "Debug",
+    )
+)
+
 INSTALL_PREFIX = os.getenv(
     "INSTALL_PREFIX",
     build_config.get("INSTALL_PREFIX", os.path.abspath(".")),

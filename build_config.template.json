@@ -1,7 +1,8 @@
 {
     "FUTILS_DIR": "./brgen/utils/",
     "BRGEN_DIR": "./brgen/",
-    "DEFAULT_BUILD_TYPE": "Debug",
+    "DEFAULT_BUILD_TYPE_NATIVE": "Debug",
+    "DEFAULT_BUILD_TYPE_WEB": "RelWithDebInfo",
     "DEFAULT_BUILD_MODE": "native",
     "EMSDK_DIR": "./emsdk",
     "BUILD_OLD_BMGEN": false,

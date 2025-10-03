@@ -4,6 +4,7 @@
 #include "core/ast/file.h"
 #include "core/byte.h"
 #include <wrap/iostream.h>
+#include "ebmcodegen/stub/flags.hpp"
 #include "ebmgen/json_printer.hpp"
 #include "ebmgen/mapping.hpp"
 #include "file/file_view.h"
@@ -27,6 +28,7 @@
 #include <wrap/exepath.h>
 #include <filesystem>
 #include "interactive/debugger.hpp"
+#include <unordered_set>
 
 enum class DebugOutputFormat {
     Text,
@@ -53,6 +55,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view libs2j_path;  // Path to libs2j directory
     std::string env_libs2j_path;
     bool interactive = false;
+    bool show_flags = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -61,7 +64,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         env_libs2j_path = futils::env::sys::env_getter().get_or<std::string>("LIBS2J_PATH", futils::strutil::concat<std::string>(joined));
         libs2j_path = env_libs2j_path;
         bind_help(ctx);
-        ctx.VarString<true>(&input, "input,i", "input file", "FILE", futils::cmdline::option::CustomFlag::required);
+        ctx.VarString<true>(&input, "input,i", "input file", "FILE");
         ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm,bgn}",
                    std::map<std::string, InputFormat>{
                        {"bgn", InputFormat::BGN},
@@ -81,6 +84,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&debug, "debug,g", "enable debug transformations (do not remove unused items)");
         ctx.VarString<true>(&libs2j_path, "libs2j-path", "path to libs2j (default: {executable_dir}/libs2j" futils_default_dll_suffix ")", "PATH");
         ctx.VarBool(&interactive, "interactive,I", "start interactive debugger");
+        ctx.VarBool(&show_flags, "show-flags", "output command line flag description in JSON format");
     }
 };
 
@@ -88,6 +92,14 @@ auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
+    if (flags.show_flags) {
+        cout << ebmcodegen::flag_description_json(ctx, "ebm", "ebm", "text", "ebmgen", std::unordered_set<std::string>{"help", "show-flags"});
+        return 0;
+    }
+    if (flags.input.empty()) {
+        cerr << "error: input file is required\n";
+        return 1;
+    }
     ebmgen::verbose_error = flags.verbose;
     if (flags.input_format == InputFormat::AUTO) {
         if (flags.input.ends_with(".bgn")) {
@@ -292,6 +304,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         if (write_ebm(writer)) {
             return 1;
         }
+        if (cout.is_tty()) {  // for web playground
+            writer.write("\n");
+        }
     }
     else if (!flags.output.empty()) {
         // Serialize and write to output file
@@ -320,10 +335,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     return 0;
 }
 
-int main(int argc, char** argv) {
-    futils::wrap::U8Arg _(argc, argv);
-    futils::wrap::cout_wrap().set_virtual_terminal(true);
-    futils::wrap::cerr_wrap().set_virtual_terminal(true);
+int ebmgen_main(int argc, char** argv) {
     Flags flags;
     return futils::cmdline::templ::parse_or_err<std::string>(
         argc, argv, flags,
@@ -337,3 +349,18 @@ int main(int argc, char** argv) {
             return Main(flags, ctx);
         });
 }
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <tool/common/em_main.h>
+extern "C" int EMSCRIPTEN_KEEPALIVE emscripten_main(const char* cmdline) {
+    return em_main(cmdline, ebmgen_main);
+}
+#else
+int main(int argc, char** argv) {
+    futils::wrap::U8Arg _(argc, argv);
+    futils::wrap::cout_wrap().set_virtual_terminal(true);
+    futils::wrap::cerr_wrap().set_virtual_terminal(true);
+    return ebmgen_main(argc, argv);
+}
+#endif

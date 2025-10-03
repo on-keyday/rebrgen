@@ -185,7 +185,7 @@ const convert{upper_ui_lang_name}UIConfigToOption = (ui) => {{
 }};
 
 function set{upper_ui_lang_name}UIConfig(ui) {{
-    ui.set_flags("{worker_name}",(nest_setter) => {{
+    ui.set_flags("{ui_lang_name}",(nest_setter) => {{
 """
     for flag in flags:
         if flag["web_filtered"]:
@@ -228,7 +228,7 @@ def generate_web_glue_files(tools: list[dict], output_dir):
         UI_GLUE += ui_glue_code(web_glue, tool).encode()
         UI_CALLS += f"    case \"{web_glue['ui_lang_name']}\": return {web_glue['call_worker_func']}(factory,traceID,{web_glue["call_ui_to_opt_func"]}(ui),sourceCode);\n".encode()
         UI_CANDIDATES += f"\"{web_glue['ui_lang_name']}\", ".encode()
-        WORKER_FACTORY += f"    \"{web_glue['worker_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url)),\n".encode()
+        WORKER_FACTORY += f"    \"{web_glue['worker_name']}\": () => new Worker(new URL('./{web_glue['worker_name']}_worker.js', import.meta.url),{"{type: \"module\"}"}),\n".encode()
         UI_SETS += f"  {web_glue['call_set_ui_func']}(ui);\n".encode()
         LSP_MAPPER += (
             f"  \"{web_glue['ui_lang_name']}\": \"{web_glue['lsp_lang']}\",\n".encode()

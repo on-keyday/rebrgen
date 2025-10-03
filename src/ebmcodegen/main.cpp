@@ -558,11 +558,35 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln();
         w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
         w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
+        w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
+        if (on_define) {
+            w.write("MappedType name = default_;");
+        }
+        else {
+            w.write("{ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = \"{\"; ");
+        }
+        w.writeln();
+        w.write("#define MAP_FLAG_ITEM(key,value) ");
+        if (!on_define) {
+            w.write("map__[key] = value;");
+            w.write("if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += \",\"; }");
+            w.write("arg_desc__ += key;");
+        }
+        w.writeln();
+        w.write("#define END_MAP_FLAG() ");
+        if (!on_define) {
+            w.write("ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + \"}\",std::move(map__)); }");
+        }
+        w.writeln();
+
         insert_include(w, prefixes[prefix_flags]);
         w.writeln("#undef DEFINE_FLAG");
         w.writeln("#undef WEB_FILTERED");
         w.writeln("#undef DEFINE_BOOL_FLAG");
         w.writeln("#undef DEFINE_STRING_FLAG");
+        w.writeln("#undef BEGIN_MAP_FLAG");
+        w.writeln("#undef MAP_FLAG_ITEM");
+        w.writeln("#undef END_MAP_FLAG");
         w.writeln("#undef WEB_UI_NAME");
     };
 
@@ -815,7 +839,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
                 stmt_dispatcher.writeln("}");
                 if (flags.mode == GenerateMode::CodeGenerator) {
-                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value().value));");
+                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value().to_string()));");
                 }
             }
             stmt_dispatcher.writeln("}");
@@ -935,6 +959,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     w.writeln("WEB_FILTERED(filtered_flag_names...)");
                     w.writeln("DEFINE_BOOL_FLAG(name,flag_name,help)");
                     w.writeln("DEFINE_STRING_FLAG(name,flag_name,help,arg_description)");
+                    w.writeln("BEGIN_MAP_FLAG(name,MappedType,flag_name,help)");
+                    w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
+                    w.writeln("END_MAP_FLAG()");
                     w.writeln("WEB_UI_NAME(ui_name)");
                 }
             }

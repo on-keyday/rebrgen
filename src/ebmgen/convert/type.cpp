@@ -28,6 +28,9 @@ namespace ebmgen {
     }
 
     expected<ebm::TypeRef> TypeConverter::convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field) {
+        if (auto found = ctx.state().get_cached_type(type); !is_nil(found)) {
+            return found;
+        }
         ebm::TypeBody body;
         expected<void> result = {};  // To capture errors from within the lambda
 
@@ -182,6 +185,7 @@ namespace ebmgen {
         EBMA_ADD_TYPE(ref, std::move(body));
 
         ctx.repository().add_debug_loc(type->loc, ref);
+        ctx.state().cache_type(type, ref);
         return ref;  // Return the type reference
     }
 

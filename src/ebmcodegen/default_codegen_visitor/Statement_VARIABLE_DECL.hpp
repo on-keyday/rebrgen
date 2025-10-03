@@ -14,6 +14,7 @@
       initial_value: ExpressionRef
       is_constant: bool
       is_reference: bool
+      is_parameter: bool
       reserved: std::uint8_t
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/

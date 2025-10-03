@@ -10,9 +10,18 @@
     WEB_FILTERED(filtered_flag_names...)
     DEFINE_BOOL_FLAG(name,flag_name,help)
     DEFINE_STRING_FLAG(name,flag_name,help,arg_description)
+    BEGIN_MAP_FLAG(name,MappedType,flag_name,help)
+      MAP_FLAG_ITEM(key,value) // repeat this line for each item
+    END_MAP_FLAG()
     WEB_UI_NAME(ui_name)
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 DEFINE_BOOL_FLAG(async, false, "async", "use async for encoder/decoder");
+BEGIN_MAP_FLAG(optimization_level, int, 0, "opt-level", "optimization level")
+MAP_FLAG_ITEM("0", 0)
+MAP_FLAG_ITEM("1", 1)
+MAP_FLAG_ITEM("2", 2)
+MAP_FLAG_ITEM("3", 3)
+END_MAP_FLAG()
 WEB_UI_NAME("python2");

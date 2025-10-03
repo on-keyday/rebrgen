@@ -58,7 +58,11 @@ class SchemaValidator:
         }
 
     def validate(
-        self, data: Dict[str, Any], root_struct_name: str, rough: set[str] = set()
+        self,
+        data: Dict[str, Any],
+        root_struct_name: str,
+        rough: set[str] = set(),
+        strict: bool = False,
     ):
         """
         検証プロセスのエントリーポイント
@@ -68,13 +72,17 @@ class SchemaValidator:
                 f"ルート構造体 '{root_struct_name}' がスキーマに見つかりません。"
             )
         self._validate_object(
-            data, root_struct_name, path=root_struct_name, rough=rough
+            data, root_struct_name, path=root_struct_name, rough=rough, strict=strict
         )
 
-    def _validate_object(self, data: Any, struct_name: str, path: str, rough: set[str]):
+    def _validate_object(
+        self, data: Any, struct_name: str, path: str, rough: set[str], strict: bool
+    ):
         """
         オブジェクト（辞書）を再帰的に検証します。
         """
+        if not strict and data is None:
+            return  # nullの場合,この部分は比較対象外なので除外
         struct_def = self.structs[struct_name]
         field_map = {f["name"]: f for f in struct_def["fields"]}
         if not isinstance(data, dict):
@@ -135,17 +143,19 @@ class SchemaValidator:
                         )
                     for i, item in enumerate(value):
                         self._validate_value(
-                            item, field_type, f"{new_path}[{i}]", rough
+                            item, field_type, f"{new_path}[{i}]", rough, strict
                         )
                 else:
-                    self._validate_value(value, field_type, new_path, rough)
+                    self._validate_value(value, field_type, new_path, rough, strict)
 
-    def _validate_value(self, value: Any, type_name: str, path: str, rough: set[str]):
+    def _validate_value(
+        self, value: Any, type_name: str, path: str, rough: set[str], strict: bool
+    ):
         """
         与えられた型に基づいて個々の値を検証します。
         """
         if type_name in self.structs:
-            self._validate_object(value, type_name, path, rough)
+            self._validate_object(value, type_name, path, rough, strict)
         elif type_name in self.enums:
             valid_members = self.enums[type_name]["members_set"]
             if not isinstance(value, str) or value not in valid_members:
@@ -158,12 +168,14 @@ class SchemaValidator:
                 body_name = ref_to_body(type_name)
                 if body_name in self.structs:
                     self._validate_object(
-                        value, body_name, f"{path}->{body_name}", rough
+                        value, body_name, f"{path}->{body_name}", rough, strict
                     )
                 else:
                     raise ValidationError(
                         f"パス '{path}' の型 '{type_name}' はオブジェクトを持つことができません。"
                     )
+            elif not strict and value is None:
+                pass  # nullの場合,この部分は比較対象外なので除外
             elif not isinstance(value, int):
                 raise ValidationError(
                     f"パス '{path}' はオブジェクトまたは整数であるべきですが、型が異なります。{type(value)}"
@@ -241,6 +253,10 @@ class EqualityTester:
         if isinstance(t1_ref, int) and t1_ref in self.ebm_map:
             resolved_t1 = self.ebm_map[t1_ref]
 
+        # T2がNoneの場合,比較をskip
+        if t2_ref is None:
+            return
+
         # T1(解決後)がオブジェクトの場合
         if isinstance(resolved_t1, dict):
             body_name = ref_to_body(type_name)
@@ -272,6 +288,9 @@ class EqualityTester:
 
     def _compare_object(self, t1_obj: Any, t2_obj: Any, struct_name: str, path: str):
         """オブジェクト（辞書）を再帰的に比較する"""
+        if t2_obj is None:
+            return  # nullの場合,この部分は比較対象外なので除外
+
         # もし配列ならばlenとcontainerに読み替える
         struct_def = self.validator.structs[struct_name]
         field_map = {f["name"]: f for f in struct_def["fields"]}
@@ -344,16 +363,8 @@ def make_EBM_map(data: dict):
     return result
 
 
-def execute(command, env, capture=True, input=None) -> bytes:
-    passEnv = os.environ.copy()
-    if env is not None:
-        passEnv.update(env)
-    if capture:
-        return sp.check_output(command, env=passEnv, stderr=sys.stderr, input=input)
-    else:
-        return sp.check_call(
-            command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr, input=input
-        )
+sys.path.append(os.path.dirname(__file__))
+from util import execute
 
 
 # --- main関数を修正 ---
@@ -389,7 +400,7 @@ def main():
         print(
             f"🔬 ファイル '{args.json_data}' が '{args.struct_name}' スキーマに準拠しているか検証中..."
         )
-        validator.validate(data_json, args.struct_name)
+        validator.validate(data_json, args.struct_name, strict=True)
         print("✅ 検証成功: スキーマに準拠しています。")
 
         if args.test_case:
@@ -412,16 +423,14 @@ def main():
                 # 2. T2 (テストケース) を取得
                 case_t2 = test_case_json["case"]
                 struct_to_compare = test_case_json["struct"]
-                rough_field = set[str](test_case_json["rough"])
+                rough_field = set[str](test_case_json.get("rough", []))
 
                 # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
                 print(
                     f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
                 )
                 validator.validate(case_t2, struct_to_compare, rough_field)
-                print(
-                    f"✅ 検証成功: テストケースはスキーマに準拠しています。{"(rough)" if test_case_json["rough"]else ""}"
-                )
+                print(f"✅ 検証成功: テストケースはスキーマに準拠しています。")
 
                 # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
                 print(
@@ -447,12 +456,7 @@ def main():
                 tester.compare(target_t1, case_t2, struct_to_compare)
 
                 print(
-                    "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は等しいです。"
-                    + (
-                        f"({",".join(rough_field)}を除く)"
-                        if len(rough_field) != 0
-                        else ""
-                    )
+                    "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は意味的に等しいです。"
                 )
 
     except (ValidationError, EqualityError) as e:

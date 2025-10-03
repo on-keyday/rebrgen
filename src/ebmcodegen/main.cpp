@@ -198,7 +198,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
                 return error("Invalid expression: {}", parsed);
             }
             result.kind = parsed;
-            sub_existence = ebmcodegen::body_subset_ExpressionBody()[*expr];
+            sub_existence = ebmcodegen::body_subset_ExpressionBody()[*expr].first;
             result.struct_info = structs.find("ExpressionBody")->second;
         }
         else if (result.target == "Type") {
@@ -207,7 +207,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
                 return error("Invalid type: {}", parsed);
             }
             result.kind = parsed;
-            sub_existence = ebmcodegen::body_subset_TypeBody()[*type];
+            sub_existence = ebmcodegen::body_subset_TypeBody()[*type].first;
             result.struct_info = structs.find("TypeBody")->second;
         }
         else if (result.target == "Statement") {
@@ -216,7 +216,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
                 return error("Invalid statement: {}", parsed);
             }
             result.kind = parsed;
-            sub_existence = ebmcodegen::body_subset_StatementBody()[*stmt];
+            sub_existence = ebmcodegen::body_subset_StatementBody()[*stmt].first;
             result.struct_info = structs.find("StatementBody")->second;
         }
         else {
@@ -273,7 +273,7 @@ int print_spec_json(std::map<std::string_view, ebmcodegen::Struct>& struct_map, 
                                 object("name", "magic");
                                 object("type", "std::string");
                                 object("is_array", false);
-                                object("is_pointer", true);
+                                object("is_pointer", false);
                             });
                         }
                         for (auto& s : object.second.fields) {
@@ -319,7 +319,7 @@ int print_spec_json(std::map<std::string_view, ebmcodegen::Struct>& struct_map, 
                         element([&] {
                             auto object = stringer.object();
                             object("kind", to_string(s.first, true));
-                            object("fields", s.second);
+                            object("fields", s.second.second);
                         });
                     }
                 });
@@ -349,7 +349,7 @@ int print_body_subset(CodeWriter& w, std::map<std::string_view, ebmcodegen::Stru
         auto scope = w.indent_scope();
         auto do_visit_body = [&](auto t, ebmcodegen::Struct& s) {
             using T = std::decay_t<decltype(t)>;
-            auto map_type = std::format("std::map<ebm::{},std::set<std::string_view>>", visit_enum(t));
+            auto map_type = std::format("std::map<ebm::{},std::pair<std::set<std::string_view>,std::vector<std::string_view>>>", visit_enum(t));
             w.writeln(map_type, " body_subset_", s.name, "() {");
             auto scope2 = w.indent_scope();
             w.writeln(map_type, " subset_map;");
@@ -363,18 +363,19 @@ int print_body_subset(CodeWriter& w, std::map<std::string_view, ebmcodegen::Stru
                 }
             }
             w.writeln("std::set<std::string_view> subset;");
+            w.writeln("std::vector<std::string_view> ordered;");
             w.writeln("body.visit([&](auto&& visitor,const char* name,auto&& value) {");
             auto _scope2 = w.indent_scope();
             w.writeln("using T = std::decay_t<decltype(value)>;");
             w.writeln("if constexpr (std::is_pointer_v<T>) {");
-            w.indent_writeln("if (value) { subset.insert(name); }");
+            w.indent_writeln("if (value) { subset.insert(name); ordered.push_back(name); }");
             w.writeln("}");
             w.writeln("else {");
-            w.indent_writeln("subset.insert(name);");
+            w.indent_writeln("subset.insert(name); ordered.push_back(name);");
             w.writeln("}");
             _scope2.execute();
             w.writeln("});");
-            w.writeln("subset_map[ebm::", visit_enum(t), "(i)] = std::move(subset);");
+            w.writeln("subset_map[ebm::", visit_enum(t), "(i)] = std::make_pair(std::move(subset), std::move(ordered));");
             _scope.execute();
             w.writeln("}");
             w.writeln("return subset_map;");
@@ -659,7 +660,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             auto add_arguments = [&] {
                 w.write("std::declval<const ebm::", ref_name, "&>()");
                 for (auto& field : body.fields) {
-                    if (!subset[T(i)].contains(field.name)) {
+                    if (!subset[T(i)].first.contains(field.name)) {
                         continue;
                     }
                     if (field.attr & ebmcodegen::TypeAttribute::PTR) {
@@ -673,7 +674,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             auto call_arguments = [&] {
                 w.write("in.id");
                 for (auto& field : body.fields) {
-                    if (!subset[T(i)].contains(field.name)) {
+                    if (!subset[T(i)].first.contains(field.name)) {
                         continue;
                     }
                     w.write(",", field.name);
@@ -715,7 +716,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 insert_include(w, kind, suffixes[suffix_pre_validate]);
                 insert_include(w, kind, "_", to_string(T(i)), suffixes[suffix_pre_validate]);
                 for (auto& field : body.fields) {
-                    if (!subset[T(i)].contains(field.name)) {
+                    if (!subset[T(i)].first.contains(field.name)) {
                         continue;
                     }
                     if (field.attr & ebmcodegen::TypeAttribute::PTR) {
@@ -766,7 +767,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             {
                 visitor_stub.write(result_type, " ", visitor_func_name, "(const ebm::", ref_name, "& item_id");
                 for (auto& field : body.fields) {
-                    if (!subset[T(i)].contains(field.name)) {
+                    if (!subset[T(i)].first.contains(field.name)) {
                         continue;
                     }
                     std::string typ;

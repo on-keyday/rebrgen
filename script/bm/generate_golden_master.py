@@ -9,14 +9,10 @@ BUILD_TYPE = "Debug"
 GOLDEN_MASTER_DIR = "test/golden_masters"
 
 
-def execute(command, env=None, capture=True):
-    passEnv = os.environ.copy()
-    if env:
-        passEnv.update(env)
-    if capture:
-        return sp.check_output(command, env=passEnv, stderr=sys.stderr)
-    else:
-        sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent))
+from util import execute
 
 
 def build_gen_template():

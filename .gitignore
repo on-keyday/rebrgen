@@ -6,3 +6,4 @@ node_modules/
 *.ast.json
 .venv/
 build_config.json
+__pycache__/

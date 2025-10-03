@@ -35,7 +35,7 @@ namespace ebmcodegen {
     };
 
     std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map();
-    std::map<ebm::StatementKind, std::set<std::string_view>> body_subset_StatementBody();
-    std::map<ebm::TypeKind, std::set<std::string_view>> body_subset_TypeBody();
-    std::map<ebm::ExpressionKind, std::set<std::string_view>> body_subset_ExpressionBody();
+    std::map<ebm::StatementKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_StatementBody();
+    std::map<ebm::TypeKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_TypeBody();
+    std::map<ebm::ExpressionKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_ExpressionBody();
 }  // namespace ebmcodegen

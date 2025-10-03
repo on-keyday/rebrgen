@@ -11,14 +11,7 @@ GOLDEN_MASTER_DIR = "test/golden_masters"
 TEMP_GEN_DIR = "test/temp_generated"
 
 
-def execute(command, env=None, capture=True):
-    passEnv = os.environ.copy()
-    if env:
-        passEnv.update(env)
-    if capture:
-        return sp.check_output(command, env=passEnv, stderr=sys.stderr)
-    else:
-        sp.check_call(command, env=passEnv, stdout=sys.stdout, stderr=sys.stderr)
+from ..util import execute
 
 
 def build_gen_template():

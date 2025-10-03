@@ -4,9 +4,9 @@
 #include <set>
 #include <map>
 namespace ebmcodegen {
-    std::map<ebm::StatementKind, std::set<std::string_view>> body_subset_StatementBody() {
-        std::map<ebm::StatementKind, std::set<std::string_view>> subset_map;
-        for (size_t i = 0; to_string(ebm::StatementKind(i))[0]; i++) {
+    std::map<ebm::StatementKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> body_subset_StatementBody() {
+        std::map<ebm::StatementKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> subset_map;
+        for(size_t i = 0;to_string(ebm::StatementKind(i))[0];i++) {
             ebm::StatementBody body;
             body.kind = ebm::StatementKind(i);
             body.alias({});
@@ -40,24 +40,23 @@ namespace ebmcodegen {
             body.var_decl({});
             body.write_data({});
             std::set<std::string_view> subset;
-            body.visit([&](auto&& visitor, const char* name, auto&& value) {
+            std::vector<std::string_view> ordered;
+            body.visit([&](auto&& visitor,const char* name,auto&& value) {
                 using T = std::decay_t<decltype(value)>;
                 if constexpr (std::is_pointer_v<T>) {
-                    if (value) {
-                        subset.insert(name);
-                    }
+                    if (value) { subset.insert(name); ordered.push_back(name); }
                 }
                 else {
-                    subset.insert(name);
+                    subset.insert(name); ordered.push_back(name);
                 }
             });
-            subset_map[ebm::StatementKind(i)] = std::move(subset);
+            subset_map[ebm::StatementKind(i)] = std::make_pair(std::move(subset), std::move(ordered));
         }
         return subset_map;
     }
-    std::map<ebm::ExpressionKind, std::set<std::string_view>> body_subset_ExpressionBody() {
-        std::map<ebm::ExpressionKind, std::set<std::string_view>> subset_map;
-        for (size_t i = 0; to_string(ebm::ExpressionKind(i))[0]; i++) {
+    std::map<ebm::ExpressionKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> body_subset_ExpressionBody() {
+        std::map<ebm::ExpressionKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> subset_map;
+        for(size_t i = 0;to_string(ebm::ExpressionKind(i))[0];i++) {
             ebm::ExpressionBody body;
             body.kind = ebm::ExpressionKind(i);
             body.array_expr({});
@@ -98,24 +97,23 @@ namespace ebmcodegen {
             body.unit({});
             body.uop({});
             std::set<std::string_view> subset;
-            body.visit([&](auto&& visitor, const char* name, auto&& value) {
+            std::vector<std::string_view> ordered;
+            body.visit([&](auto&& visitor,const char* name,auto&& value) {
                 using T = std::decay_t<decltype(value)>;
                 if constexpr (std::is_pointer_v<T>) {
-                    if (value) {
-                        subset.insert(name);
-                    }
+                    if (value) { subset.insert(name); ordered.push_back(name); }
                 }
                 else {
-                    subset.insert(name);
+                    subset.insert(name); ordered.push_back(name);
                 }
             });
-            subset_map[ebm::ExpressionKind(i)] = std::move(subset);
+            subset_map[ebm::ExpressionKind(i)] = std::make_pair(std::move(subset), std::move(ordered));
         }
         return subset_map;
     }
-    std::map<ebm::TypeKind, std::set<std::string_view>> body_subset_TypeBody() {
-        std::map<ebm::TypeKind, std::set<std::string_view>> subset_map;
-        for (size_t i = 0; to_string(ebm::TypeKind(i))[0]; i++) {
+    std::map<ebm::TypeKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> body_subset_TypeBody() {
+        std::map<ebm::TypeKind,std::pair<std::set<std::string_view>,std::vector<std::string_view>>> subset_map;
+        for(size_t i = 0;to_string(ebm::TypeKind(i))[0];i++) {
             ebm::TypeBody body;
             body.kind = ebm::TypeKind(i);
             body.base_type({});
@@ -131,19 +129,18 @@ namespace ebmcodegen {
             body.return_type({});
             body.size({});
             std::set<std::string_view> subset;
-            body.visit([&](auto&& visitor, const char* name, auto&& value) {
+            std::vector<std::string_view> ordered;
+            body.visit([&](auto&& visitor,const char* name,auto&& value) {
                 using T = std::decay_t<decltype(value)>;
                 if constexpr (std::is_pointer_v<T>) {
-                    if (value) {
-                        subset.insert(name);
-                    }
+                    if (value) { subset.insert(name); ordered.push_back(name); }
                 }
                 else {
-                    subset.insert(name);
+                    subset.insert(name); ordered.push_back(name);
                 }
             });
-            subset_map[ebm::TypeKind(i)] = std::move(subset);
+            subset_map[ebm::TypeKind(i)] = std::make_pair(std::move(subset), std::move(ordered));
         }
         return subset_map;
     }
-}  // namespace ebmcodegen
+} // namespace ebmcodegen

@@ -113,7 +113,7 @@ const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {
         + f"""
         case "{web_glue['ui_lang_name']}":
 """
-        + """            const bm = base64ToUint8Array(e.sourceCode);
+        + """            const bm = base64ToUint8Array(e.sourceCode.trim());
             if(bm instanceof Error) {
                 return bm;
             }

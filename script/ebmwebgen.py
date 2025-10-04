@@ -74,7 +74,11 @@ import * as ebmgen  from "./{web_glue["worker_name"]}.js";
 const ebmgenModule = ebmgen.default /*as EmscriptenModuleFactory<MyEmscriptenModule>*/;
 // avoid exceptions
 export const base64ToUint8Array = (base64) => {
-    const base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    if(Uint8Array.fromBase64) {
+        return Uint8Array.fromBase64(base64);
+    }
+    // fallback
+    const base64Characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     //const base64URLCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
     let cleanedBase64 = base64.replace(/-/g, "+").replace(/_/g, "/").trim();
     const padding = (4 - (cleanedBase64.length % 4)) % 4;
@@ -88,19 +92,19 @@ export const base64ToUint8Array = (base64) => {
         const encoded2 = base64Characters.indexOf(cleanedBase64[i + 1]);
         const encoded3 = base64Characters.indexOf(cleanedBase64[i + 2]);
         const encoded4 = base64Characters.indexOf(cleanedBase64[i + 3]);
-        if (encoded1 < 0 || encoded2 < 0 || encoded3 < 0 || encoded4 < 0) {
+        if (encoded1 === -1 || encoded2 === -1) {
             return new Error("invalid base64 string");
         }
         const decoded1 = (encoded1 << 2) | (encoded2 >> 4);
         const decoded2 = ((encoded2 & 15) << 4) | (encoded3 >> 2);
         const decoded3 = ((encoded3 & 3) << 6) | encoded4;
         uint8Array[byteIndex++] = decoded1;
-        if (encoded3 !== 64)
+        if (encoded3 !== -1)
             uint8Array[byteIndex++] = decoded2;
-        if (encoded4 !== 64)
+        if (encoded4 !== -1)
             uint8Array[byteIndex++] = decoded3;
     }
-    return uint8Array;
+    return uint8Array.subarray(0, byteIndex);
 };
 const requestCallback = (e /*JobRequest*/, m /* MyEmscriptenModule */) => {
     switch (e.lang /*as string*/) {"""

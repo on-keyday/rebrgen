@@ -24,6 +24,8 @@
 enum class GenerateMode {
     Template,
     BodySubset,
+    JSONConverterHeader,
+    JSONConverterSource,
     CMake,
     CodeGenerator,
     Interpreter,
@@ -51,6 +53,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
                    std::map<std::string, GenerateMode>{
                        {"template", GenerateMode::Template},
                        {"subset", GenerateMode::BodySubset},
+                       {"json-conv-header", GenerateMode::JSONConverterHeader},
+                       {"json-conv-source", GenerateMode::JSONConverterSource},
                        {"cmake", GenerateMode::CMake},
                        {"codegen", GenerateMode::CodeGenerator},
                        {"interpret", GenerateMode::Interpreter},
@@ -231,7 +235,7 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
 }
 
 constexpr auto repo_url = "https://github.com/on-keyday/rebrgen";
-using CodeWriter = futils::code::CodeWriter<std::string>;
+using CodeWriter = ebmcodegen::CodeWriter;
 
 int print_cmake(CodeWriter& w, Flags& flags) {
     auto target_name = flags.program_name;
@@ -340,6 +344,39 @@ int print_spec_json(std::map<std::string_view, ebmcodegen::Struct>& struct_map, 
     return 0;
 }
 
+int print_json_converter(CodeWriter& w, bool src, std::map<std::string_view, ebmcodegen::Struct>& struct_map, std::map<std::string_view, ebmcodegen::Enum>& enum_map) {
+    w.writeln("#include <ebm/extended_binary_module.hpp>");
+    if (src) {
+        w.writeln("#include <json/convert_json.h>");
+    }
+    w.writeln("#include <json/json.h>");
+    w.writeln("namespace ebm {");
+    {
+        auto scope = w.indent_scope();
+        for (auto& s : struct_map) {
+            if (src) {
+                w.write_unformatted(ebmcodegen::write_convert_from_json(s.second));
+            }
+            else {
+                w.writeln("bool from_json(", s.second.name, "& obj, const futils::json::JSON& j);");
+            }
+            w.writeln();
+        }
+        for (auto& e : enum_map) {
+            if (src) {
+                w.write_unformatted(ebmcodegen::write_convert_from_json(e.second));
+            }
+            else {
+                w.writeln("bool from_json(", e.second.name, "& obj, const futils::json::JSON& j);");
+            }
+            w.writeln();
+        }
+    }
+    w.writeln("} // namespace ebm");
+    cout << w.out();
+    return 0;
+}
+
 int print_body_subset(CodeWriter& w, std::map<std::string_view, ebmcodegen::Struct>& struct_map) {
     w.writeln("#include <ebm/extended_binary_module.hpp>");
     w.writeln("#include <set>");
@@ -437,6 +474,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     write_header();
     if (flags.mode == GenerateMode::BodySubset) {
         return print_body_subset(w, struct_map);
+    }
+    if (flags.mode == GenerateMode::JSONConverterSource || flags.mode == GenerateMode::JSONConverterHeader) {
+        return print_json_converter(w, flags.mode == GenerateMode::JSONConverterSource, struct_map, enum_map);
     }
 
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");

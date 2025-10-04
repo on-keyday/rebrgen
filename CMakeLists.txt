@@ -134,6 +134,7 @@ target_link_libraries(ebmgen ebmgen_lib)
 add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/body_subset.cpp"
     "src/ebmcodegen/structs.cpp"
+    "src/ebmcodegen/json_loader.cpp"
 )
 
 add_executable(ebmcodegen

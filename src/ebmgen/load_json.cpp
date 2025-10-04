@@ -97,4 +97,20 @@ namespace ebmgen {
         }
         return load_json_file(futils::view::rvec(view), timer_cb);
     }
+
+    expected<void> decode_json_ebm(std::string_view input) {
+        futils::json::BytesLikeReader<futils::view::rvec> r{input};
+        r.size = r.bytes.size();
+        futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>> jc;
+        futils::json::GenericConstructor<decltype(r)&, futils::json::StaticStack<8, futils::json::ParseStateDetail>, decltype(jc)&> g{r, jc};
+        futils::json::Parser<decltype(g)&> p{g};
+        p.skip_space();
+        auto result = p.parse();
+        if (result != futils::json::ParseResult::end) {
+            return unexpect_error("cannot parse json file: {} {}", futils::json::to_string(result), futils::json::to_string(p.state.state()));
+        }
+        auto js = std::move(jc.stack.back());
+        ebm::ExtendedBinaryModule ebm;
+        js.get_holder().as_str();
+    }
 }  // namespace ebmgen

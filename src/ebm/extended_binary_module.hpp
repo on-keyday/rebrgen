@@ -1188,14 +1188,15 @@ namespace ebm {
             v(v, "prefix",(*this).prefix());
             v(v, "value",(*this).value());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "prefix",visitor_tag<decltype(std::declval<Varint>().prefix())>{});
-            v(v, "value",visitor_tag<decltype(std::declval<Varint>().value())>{});
+            v(v, "prefix",visitor_tag<decltype(std::declval<Varint>().prefix()),true>{});
+            v(v, "value",visitor_tag<decltype(std::declval<Varint>().value()),true>{});
         }
     };
     struct EBM_API StatementRef{
@@ -1211,13 +1212,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<StatementRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<StatementRef>().id),false>{});
         }
     };
     struct EBM_API IOAttribute{
@@ -1250,18 +1252,19 @@ namespace ebm {
             v(v, "reserved",(*this).reserved());
             v(v, "dynamic_ref",(*this).dynamic_ref);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "endian",visitor_tag<decltype(std::declval<IOAttribute>().endian())>{});
-            v(v, "sign",visitor_tag<decltype(std::declval<IOAttribute>().sign())>{});
-            v(v, "is_peek",visitor_tag<decltype(std::declval<IOAttribute>().is_peek())>{});
-            v(v, "vectorized",visitor_tag<decltype(std::declval<IOAttribute>().vectorized())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<IOAttribute>().reserved())>{});
-            v(v, "dynamic_ref",visitor_tag<decltype(std::declval<IOAttribute>().dynamic_ref)>{});
+            v(v, "endian",visitor_tag<decltype(std::declval<IOAttribute>().endian()),true>{});
+            v(v, "sign",visitor_tag<decltype(std::declval<IOAttribute>().sign()),true>{});
+            v(v, "is_peek",visitor_tag<decltype(std::declval<IOAttribute>().is_peek()),true>{});
+            v(v, "vectorized",visitor_tag<decltype(std::declval<IOAttribute>().vectorized()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<IOAttribute>().reserved()),true>{});
+            v(v, "dynamic_ref",visitor_tag<decltype(std::declval<IOAttribute>().dynamic_ref),false>{});
         }
     };
     struct EBM_API String{
@@ -1280,14 +1283,15 @@ namespace ebm {
             v(v, "length",(*this).length);
             v(v, "data",(*this).data);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "length",visitor_tag<decltype(std::declval<String>().length)>{});
-            v(v, "data",visitor_tag<decltype(std::declval<String>().data)>{});
+            v(v, "length",visitor_tag<decltype(std::declval<String>().length),false>{});
+            v(v, "data",visitor_tag<decltype(std::declval<String>().data),false>{});
         }
     };
     struct EBM_API IdentifierRef{
@@ -1303,13 +1307,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<IdentifierRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<IdentifierRef>().id),false>{});
         }
     };
     struct EBM_API TypeRef{
@@ -1325,13 +1330,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<TypeRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<TypeRef>().id),false>{});
         }
     };
     struct EBM_API ExpressionRef{
@@ -1347,13 +1353,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<ExpressionRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<ExpressionRef>().id),false>{});
         }
     };
     struct EBM_API StringRef{
@@ -1369,13 +1376,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<StringRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<StringRef>().id),false>{});
         }
     };
     struct EBM_API LoweredStatementRef{
@@ -1391,13 +1399,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<LoweredStatementRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<LoweredStatementRef>().id),false>{});
         }
     };
     struct EBM_API LoweredExpressionRef{
@@ -1413,13 +1422,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<LoweredExpressionRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<LoweredExpressionRef>().id),false>{});
         }
     };
     struct EBM_API LoweredStatement{
@@ -1439,14 +1449,15 @@ namespace ebm {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "statement",(*this).statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredStatement>().lowering_type)>{});
-            v(v, "statement",visitor_tag<decltype(std::declval<LoweredStatement>().statement)>{});
+            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredStatement>().lowering_type),false>{});
+            v(v, "statement",visitor_tag<decltype(std::declval<LoweredStatement>().statement),false>{});
         }
     };
     struct EBM_API LoweredExpression{
@@ -1466,14 +1477,15 @@ namespace ebm {
             v(v, "lowering_type",(*this).lowering_type);
             v(v, "expression",(*this).expression);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredExpression>().lowering_type)>{});
-            v(v, "expression",visitor_tag<decltype(std::declval<LoweredExpression>().expression)>{});
+            v(v, "lowering_type",visitor_tag<decltype(std::declval<LoweredExpression>().lowering_type),false>{});
+            v(v, "expression",visitor_tag<decltype(std::declval<LoweredExpression>().expression),false>{});
         }
     };
     struct EBM_API LoopFlowControl{
@@ -1489,13 +1501,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "related_statement",(*this).related_statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "related_statement",visitor_tag<decltype(std::declval<LoopFlowControl>().related_statement)>{});
+            v(v, "related_statement",visitor_tag<decltype(std::declval<LoopFlowControl>().related_statement),false>{});
         }
     };
     struct EBM_API Condition{
@@ -1511,13 +1524,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "cond",(*this).cond);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "cond",visitor_tag<decltype(std::declval<Condition>().cond)>{});
+            v(v, "cond",visitor_tag<decltype(std::declval<Condition>().cond),false>{});
         }
     };
     struct EBM_API AnyRef{
@@ -1533,13 +1547,14 @@ namespace ebm {
         constexpr void visit(Visitor&& v) const {
             v(v, "id",(*this).id);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<AnyRef>().id)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<AnyRef>().id),false>{});
         }
     };
     struct EBM_API RefAlias{
@@ -1562,15 +1577,16 @@ namespace ebm {
             v(v, "from",(*this).from);
             v(v, "to",(*this).to);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "hint",visitor_tag<decltype(std::declval<RefAlias>().hint)>{});
-            v(v, "from",visitor_tag<decltype(std::declval<RefAlias>().from)>{});
-            v(v, "to",visitor_tag<decltype(std::declval<RefAlias>().to)>{});
+            v(v, "hint",visitor_tag<decltype(std::declval<RefAlias>().hint),false>{});
+            v(v, "from",visitor_tag<decltype(std::declval<RefAlias>().from),false>{});
+            v(v, "to",visitor_tag<decltype(std::declval<RefAlias>().to),false>{});
         }
     };
     struct EBM_API Expressions{
@@ -1589,14 +1605,15 @@ namespace ebm {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<Expressions>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<Expressions>().container)>{});
+            v(v, "len",visitor_tag<decltype(std::declval<Expressions>().len),false>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Expressions>().container),false>{});
         }
     };
     struct EBM_API CallDesc{
@@ -1615,14 +1632,15 @@ namespace ebm {
             v(v, "callee",(*this).callee);
             v(v, "arguments",(*this).arguments);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "callee",visitor_tag<decltype(std::declval<CallDesc>().callee)>{});
-            v(v, "arguments",visitor_tag<decltype(std::declval<CallDesc>().arguments)>{});
+            v(v, "callee",visitor_tag<decltype(std::declval<CallDesc>().callee),false>{});
+            v(v, "arguments",visitor_tag<decltype(std::declval<CallDesc>().arguments),false>{});
         }
     };
     struct EBM_API Size{
@@ -1672,15 +1690,16 @@ namespace ebm {
             v(v, "ref",(*this).ref());
             v(v, "size",(*this).size());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "unit",visitor_tag<decltype(std::declval<Size>().unit)>{});
-            v(v, "ref",visitor_tag<decltype(std::declval<Size>().ref())>{});
-            v(v, "size",visitor_tag<decltype(std::declval<Size>().size())>{});
+            v(v, "unit",visitor_tag<decltype(std::declval<Size>().unit),false>{});
+            v(v, "ref",visitor_tag<decltype(std::declval<Size>().ref()),false>{});
+            v(v, "size",visitor_tag<decltype(std::declval<Size>().size()),false>{});
         }
     };
     struct EBM_API ExpressionBody{
@@ -2036,51 +2055,52 @@ namespace ebm {
             v(v, "unit",(*this).unit());
             v(v, "uop",(*this).uop());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "type",visitor_tag<decltype(std::declval<ExpressionBody>().type)>{});
-            v(v, "kind",visitor_tag<decltype(std::declval<ExpressionBody>().kind)>{});
-            v(v, "array_expr",visitor_tag<decltype(std::declval<ExpressionBody>().array_expr())>{});
-            v(v, "base",visitor_tag<decltype(std::declval<ExpressionBody>().base())>{});
-            v(v, "bool_value",visitor_tag<decltype(std::declval<ExpressionBody>().bool_value())>{});
-            v(v, "bop",visitor_tag<decltype(std::declval<ExpressionBody>().bop())>{});
-            v(v, "call_desc",visitor_tag<decltype(std::declval<ExpressionBody>().call_desc())>{});
-            v(v, "cast_kind",visitor_tag<decltype(std::declval<ExpressionBody>().cast_kind())>{});
-            v(v, "char_value",visitor_tag<decltype(std::declval<ExpressionBody>().char_value())>{});
-            v(v, "condition",visitor_tag<decltype(std::declval<ExpressionBody>().condition())>{});
-            v(v, "conditional_stmt",visitor_tag<decltype(std::declval<ExpressionBody>().conditional_stmt())>{});
-            v(v, "else_",visitor_tag<decltype(std::declval<ExpressionBody>().else_())>{});
-            v(v, "end",visitor_tag<decltype(std::declval<ExpressionBody>().end())>{});
-            v(v, "endian_expr",visitor_tag<decltype(std::declval<ExpressionBody>().endian_expr())>{});
-            v(v, "from_type",visitor_tag<decltype(std::declval<ExpressionBody>().from_type())>{});
-            v(v, "id",visitor_tag<decltype(std::declval<ExpressionBody>().id())>{});
-            v(v, "index",visitor_tag<decltype(std::declval<ExpressionBody>().index())>{});
-            v(v, "int64_value",visitor_tag<decltype(std::declval<ExpressionBody>().int64_value())>{});
-            v(v, "int_value",visitor_tag<decltype(std::declval<ExpressionBody>().int_value())>{});
-            v(v, "io_statement",visitor_tag<decltype(std::declval<ExpressionBody>().io_statement())>{});
-            v(v, "left",visitor_tag<decltype(std::declval<ExpressionBody>().left())>{});
-            v(v, "lowered_expr",visitor_tag<decltype(std::declval<ExpressionBody>().lowered_expr())>{});
-            v(v, "member",visitor_tag<decltype(std::declval<ExpressionBody>().member())>{});
-            v(v, "num_bytes",visitor_tag<decltype(std::declval<ExpressionBody>().num_bytes())>{});
-            v(v, "operand",visitor_tag<decltype(std::declval<ExpressionBody>().operand())>{});
-            v(v, "or_cond",visitor_tag<decltype(std::declval<ExpressionBody>().or_cond())>{});
-            v(v, "right",visitor_tag<decltype(std::declval<ExpressionBody>().right())>{});
-            v(v, "setter_status",visitor_tag<decltype(std::declval<ExpressionBody>().setter_status())>{});
-            v(v, "source_expr",visitor_tag<decltype(std::declval<ExpressionBody>().source_expr())>{});
-            v(v, "start",visitor_tag<decltype(std::declval<ExpressionBody>().start())>{});
-            v(v, "stream_type",visitor_tag<decltype(std::declval<ExpressionBody>().stream_type())>{});
-            v(v, "string_value",visitor_tag<decltype(std::declval<ExpressionBody>().string_value())>{});
-            v(v, "sub_range",visitor_tag<decltype(std::declval<ExpressionBody>().sub_range())>{});
-            v(v, "target_expr",visitor_tag<decltype(std::declval<ExpressionBody>().target_expr())>{});
-            v(v, "target_stmt",visitor_tag<decltype(std::declval<ExpressionBody>().target_stmt())>{});
-            v(v, "then",visitor_tag<decltype(std::declval<ExpressionBody>().then())>{});
-            v(v, "type_ref",visitor_tag<decltype(std::declval<ExpressionBody>().type_ref())>{});
-            v(v, "unit",visitor_tag<decltype(std::declval<ExpressionBody>().unit())>{});
-            v(v, "uop",visitor_tag<decltype(std::declval<ExpressionBody>().uop())>{});
+            v(v, "type",visitor_tag<decltype(std::declval<ExpressionBody>().type),false>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<ExpressionBody>().kind),false>{});
+            v(v, "array_expr",visitor_tag<decltype(std::declval<ExpressionBody>().array_expr()),false>{});
+            v(v, "base",visitor_tag<decltype(std::declval<ExpressionBody>().base()),false>{});
+            v(v, "bool_value",visitor_tag<decltype(std::declval<ExpressionBody>().bool_value()),false>{});
+            v(v, "bop",visitor_tag<decltype(std::declval<ExpressionBody>().bop()),false>{});
+            v(v, "call_desc",visitor_tag<decltype(std::declval<ExpressionBody>().call_desc()),false>{});
+            v(v, "cast_kind",visitor_tag<decltype(std::declval<ExpressionBody>().cast_kind()),false>{});
+            v(v, "char_value",visitor_tag<decltype(std::declval<ExpressionBody>().char_value()),false>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<ExpressionBody>().condition()),false>{});
+            v(v, "conditional_stmt",visitor_tag<decltype(std::declval<ExpressionBody>().conditional_stmt()),false>{});
+            v(v, "else_",visitor_tag<decltype(std::declval<ExpressionBody>().else_()),false>{});
+            v(v, "end",visitor_tag<decltype(std::declval<ExpressionBody>().end()),false>{});
+            v(v, "endian_expr",visitor_tag<decltype(std::declval<ExpressionBody>().endian_expr()),false>{});
+            v(v, "from_type",visitor_tag<decltype(std::declval<ExpressionBody>().from_type()),false>{});
+            v(v, "id",visitor_tag<decltype(std::declval<ExpressionBody>().id()),false>{});
+            v(v, "index",visitor_tag<decltype(std::declval<ExpressionBody>().index()),false>{});
+            v(v, "int64_value",visitor_tag<decltype(std::declval<ExpressionBody>().int64_value()),false>{});
+            v(v, "int_value",visitor_tag<decltype(std::declval<ExpressionBody>().int_value()),false>{});
+            v(v, "io_statement",visitor_tag<decltype(std::declval<ExpressionBody>().io_statement()),false>{});
+            v(v, "left",visitor_tag<decltype(std::declval<ExpressionBody>().left()),false>{});
+            v(v, "lowered_expr",visitor_tag<decltype(std::declval<ExpressionBody>().lowered_expr()),false>{});
+            v(v, "member",visitor_tag<decltype(std::declval<ExpressionBody>().member()),false>{});
+            v(v, "num_bytes",visitor_tag<decltype(std::declval<ExpressionBody>().num_bytes()),false>{});
+            v(v, "operand",visitor_tag<decltype(std::declval<ExpressionBody>().operand()),false>{});
+            v(v, "or_cond",visitor_tag<decltype(std::declval<ExpressionBody>().or_cond()),false>{});
+            v(v, "right",visitor_tag<decltype(std::declval<ExpressionBody>().right()),false>{});
+            v(v, "setter_status",visitor_tag<decltype(std::declval<ExpressionBody>().setter_status()),false>{});
+            v(v, "source_expr",visitor_tag<decltype(std::declval<ExpressionBody>().source_expr()),false>{});
+            v(v, "start",visitor_tag<decltype(std::declval<ExpressionBody>().start()),false>{});
+            v(v, "stream_type",visitor_tag<decltype(std::declval<ExpressionBody>().stream_type()),false>{});
+            v(v, "string_value",visitor_tag<decltype(std::declval<ExpressionBody>().string_value()),false>{});
+            v(v, "sub_range",visitor_tag<decltype(std::declval<ExpressionBody>().sub_range()),false>{});
+            v(v, "target_expr",visitor_tag<decltype(std::declval<ExpressionBody>().target_expr()),false>{});
+            v(v, "target_stmt",visitor_tag<decltype(std::declval<ExpressionBody>().target_stmt()),false>{});
+            v(v, "then",visitor_tag<decltype(std::declval<ExpressionBody>().then()),false>{});
+            v(v, "type_ref",visitor_tag<decltype(std::declval<ExpressionBody>().type_ref()),false>{});
+            v(v, "unit",visitor_tag<decltype(std::declval<ExpressionBody>().unit()),false>{});
+            v(v, "uop",visitor_tag<decltype(std::declval<ExpressionBody>().uop()),false>{});
         }
     };
     struct EBM_API Expression{
@@ -2099,14 +2119,15 @@ namespace ebm {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<Expression>().id)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<Expression>().body)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<Expression>().id),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Expression>().body),false>{});
         }
     };
     struct EBM_API IfStatement{
@@ -2128,15 +2149,16 @@ namespace ebm {
             v(v, "then_block",(*this).then_block);
             v(v, "else_block",(*this).else_block);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<IfStatement>().condition)>{});
-            v(v, "then_block",visitor_tag<decltype(std::declval<IfStatement>().then_block)>{});
-            v(v, "else_block",visitor_tag<decltype(std::declval<IfStatement>().else_block)>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<IfStatement>().condition),false>{});
+            v(v, "then_block",visitor_tag<decltype(std::declval<IfStatement>().then_block),false>{});
+            v(v, "else_block",visitor_tag<decltype(std::declval<IfStatement>().else_block),false>{});
         }
     };
     struct EBM_API PropertyMemberDecl{
@@ -2155,14 +2177,15 @@ namespace ebm {
             v(v, "condition",(*this).condition);
             v(v, "field",(*this).field);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<PropertyMemberDecl>().condition)>{});
-            v(v, "field",visitor_tag<decltype(std::declval<PropertyMemberDecl>().field)>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<PropertyMemberDecl>().condition),false>{});
+            v(v, "field",visitor_tag<decltype(std::declval<PropertyMemberDecl>().field),false>{});
         }
     };
     struct EBM_API SubByteRange{
@@ -2214,18 +2237,19 @@ namespace ebm {
             v(v, "io_ref",(*this).io_ref);
             v(v, "io_statement",(*this).io_statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "range_type",visitor_tag<decltype(std::declval<SubByteRange>().range_type)>{});
-            v(v, "expression",visitor_tag<decltype(std::declval<SubByteRange>().expression())>{});
-            v(v, "length",visitor_tag<decltype(std::declval<SubByteRange>().length())>{});
-            v(v, "offset",visitor_tag<decltype(std::declval<SubByteRange>().offset())>{});
-            v(v, "io_ref",visitor_tag<decltype(std::declval<SubByteRange>().io_ref)>{});
-            v(v, "io_statement",visitor_tag<decltype(std::declval<SubByteRange>().io_statement)>{});
+            v(v, "range_type",visitor_tag<decltype(std::declval<SubByteRange>().range_type),false>{});
+            v(v, "expression",visitor_tag<decltype(std::declval<SubByteRange>().expression()),false>{});
+            v(v, "length",visitor_tag<decltype(std::declval<SubByteRange>().length()),false>{});
+            v(v, "offset",visitor_tag<decltype(std::declval<SubByteRange>().offset()),false>{});
+            v(v, "io_ref",visitor_tag<decltype(std::declval<SubByteRange>().io_ref),false>{});
+            v(v, "io_statement",visitor_tag<decltype(std::declval<SubByteRange>().io_statement),false>{});
         }
     };
     struct EBM_API Metadata{
@@ -2244,14 +2268,15 @@ namespace ebm {
             v(v, "name",(*this).name);
             v(v, "values",(*this).values);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<Metadata>().name)>{});
-            v(v, "values",visitor_tag<decltype(std::declval<Metadata>().values)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<Metadata>().name),false>{});
+            v(v, "values",visitor_tag<decltype(std::declval<Metadata>().values),false>{});
         }
     };
     struct EBM_API LoweredStatements{
@@ -2270,14 +2295,15 @@ namespace ebm {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<LoweredStatements>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<LoweredStatements>().container)>{});
+            v(v, "len",visitor_tag<decltype(std::declval<LoweredStatements>().len),false>{});
+            v(v, "container",visitor_tag<decltype(std::declval<LoweredStatements>().container),false>{});
         }
     };
     struct EBM_API LoweredExpressions{
@@ -2296,14 +2322,15 @@ namespace ebm {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<LoweredExpressions>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<LoweredExpressions>().container)>{});
+            v(v, "len",visitor_tag<decltype(std::declval<LoweredExpressions>().len),false>{});
+            v(v, "container",visitor_tag<decltype(std::declval<LoweredExpressions>().container),false>{});
         }
     };
     struct EBM_API Block{
@@ -2322,14 +2349,15 @@ namespace ebm {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<Block>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<Block>().container)>{});
+            v(v, "len",visitor_tag<decltype(std::declval<Block>().len),false>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Block>().container),false>{});
         }
     };
     struct EBM_API AssertDesc{
@@ -2348,14 +2376,15 @@ namespace ebm {
             v(v, "condition",(*this).condition);
             v(v, "lowered_statement",(*this).lowered_statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<AssertDesc>().condition)>{});
-            v(v, "lowered_statement",visitor_tag<decltype(std::declval<AssertDesc>().lowered_statement)>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<AssertDesc>().condition),false>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<AssertDesc>().lowered_statement),false>{});
         }
     };
     struct EBM_API IOData{
@@ -2386,18 +2415,19 @@ namespace ebm {
             v(v, "size",(*this).size);
             v(v, "lowered_statement",(*this).lowered_statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "io_ref",visitor_tag<decltype(std::declval<IOData>().io_ref)>{});
-            v(v, "target",visitor_tag<decltype(std::declval<IOData>().target)>{});
-            v(v, "data_type",visitor_tag<decltype(std::declval<IOData>().data_type)>{});
-            v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute)>{});
-            v(v, "size",visitor_tag<decltype(std::declval<IOData>().size)>{});
-            v(v, "lowered_statement",visitor_tag<decltype(std::declval<IOData>().lowered_statement)>{});
+            v(v, "io_ref",visitor_tag<decltype(std::declval<IOData>().io_ref),false>{});
+            v(v, "target",visitor_tag<decltype(std::declval<IOData>().target),false>{});
+            v(v, "data_type",visitor_tag<decltype(std::declval<IOData>().data_type),false>{});
+            v(v, "attribute",visitor_tag<decltype(std::declval<IOData>().attribute),false>{});
+            v(v, "size",visitor_tag<decltype(std::declval<IOData>().size),false>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<IOData>().lowered_statement),false>{});
         }
     };
     struct EBM_API LoopStatement{
@@ -2468,21 +2498,22 @@ namespace ebm {
             v(v, "lowered_statement",(*this).lowered_statement);
             v(v, "next_lowered_loop",(*this).next_lowered_loop);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "loop_type",visitor_tag<decltype(std::declval<LoopStatement>().loop_type)>{});
-            v(v, "collection",visitor_tag<decltype(std::declval<LoopStatement>().collection())>{});
-            v(v, "condition",visitor_tag<decltype(std::declval<LoopStatement>().condition())>{});
-            v(v, "increment",visitor_tag<decltype(std::declval<LoopStatement>().increment())>{});
-            v(v, "init",visitor_tag<decltype(std::declval<LoopStatement>().init())>{});
-            v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var())>{});
-            v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body)>{});
-            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement)>{});
-            v(v, "next_lowered_loop",visitor_tag<decltype(std::declval<LoopStatement>().next_lowered_loop)>{});
+            v(v, "loop_type",visitor_tag<decltype(std::declval<LoopStatement>().loop_type),false>{});
+            v(v, "collection",visitor_tag<decltype(std::declval<LoopStatement>().collection()),false>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<LoopStatement>().condition()),false>{});
+            v(v, "increment",visitor_tag<decltype(std::declval<LoopStatement>().increment()),false>{});
+            v(v, "init",visitor_tag<decltype(std::declval<LoopStatement>().init()),false>{});
+            v(v, "item_var",visitor_tag<decltype(std::declval<LoopStatement>().item_var()),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<LoopStatement>().body),false>{});
+            v(v, "lowered_statement",visitor_tag<decltype(std::declval<LoopStatement>().lowered_statement),false>{});
+            v(v, "next_lowered_loop",visitor_tag<decltype(std::declval<LoopStatement>().next_lowered_loop),false>{});
         }
     };
     struct EBM_API MatchStatement{
@@ -2511,17 +2542,18 @@ namespace ebm {
             v(v, "branches",(*this).branches);
             v(v, "lowered_if_statement",(*this).lowered_if_statement);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "target",visitor_tag<decltype(std::declval<MatchStatement>().target)>{});
-            v(v, "is_exhaustive",visitor_tag<decltype(std::declval<MatchStatement>().is_exhaustive())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<MatchStatement>().reserved())>{});
-            v(v, "branches",visitor_tag<decltype(std::declval<MatchStatement>().branches)>{});
-            v(v, "lowered_if_statement",visitor_tag<decltype(std::declval<MatchStatement>().lowered_if_statement)>{});
+            v(v, "target",visitor_tag<decltype(std::declval<MatchStatement>().target),false>{});
+            v(v, "is_exhaustive",visitor_tag<decltype(std::declval<MatchStatement>().is_exhaustive()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<MatchStatement>().reserved()),true>{});
+            v(v, "branches",visitor_tag<decltype(std::declval<MatchStatement>().branches),false>{});
+            v(v, "lowered_if_statement",visitor_tag<decltype(std::declval<MatchStatement>().lowered_if_statement),false>{});
         }
     };
     struct EBM_API MatchBranch{
@@ -2540,14 +2572,15 @@ namespace ebm {
             v(v, "condition",(*this).condition);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "condition",visitor_tag<decltype(std::declval<MatchBranch>().condition)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<MatchBranch>().body)>{});
+            v(v, "condition",visitor_tag<decltype(std::declval<MatchBranch>().condition),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<MatchBranch>().body),false>{});
         }
     };
     struct EBM_API FunctionDecl{
@@ -2575,17 +2608,18 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<FunctionDecl>().name)>{});
-            v(v, "return_type",visitor_tag<decltype(std::declval<FunctionDecl>().return_type)>{});
-            v(v, "params",visitor_tag<decltype(std::declval<FunctionDecl>().params)>{});
-            v(v, "parent_format",visitor_tag<decltype(std::declval<FunctionDecl>().parent_format)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<FunctionDecl>().body)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<FunctionDecl>().name),false>{});
+            v(v, "return_type",visitor_tag<decltype(std::declval<FunctionDecl>().return_type),false>{});
+            v(v, "params",visitor_tag<decltype(std::declval<FunctionDecl>().params),false>{});
+            v(v, "parent_format",visitor_tag<decltype(std::declval<FunctionDecl>().parent_format),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<FunctionDecl>().body),false>{});
         }
     };
     struct EBM_API VariableDecl{
@@ -2620,19 +2654,20 @@ namespace ebm {
             v(v, "is_parameter",(*this).is_parameter());
             v(v, "reserved",(*this).reserved());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<VariableDecl>().name)>{});
-            v(v, "var_type",visitor_tag<decltype(std::declval<VariableDecl>().var_type)>{});
-            v(v, "initial_value",visitor_tag<decltype(std::declval<VariableDecl>().initial_value)>{});
-            v(v, "is_constant",visitor_tag<decltype(std::declval<VariableDecl>().is_constant())>{});
-            v(v, "is_reference",visitor_tag<decltype(std::declval<VariableDecl>().is_reference())>{});
-            v(v, "is_parameter",visitor_tag<decltype(std::declval<VariableDecl>().is_parameter())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<VariableDecl>().reserved())>{});
+            v(v, "name",visitor_tag<decltype(std::declval<VariableDecl>().name),false>{});
+            v(v, "var_type",visitor_tag<decltype(std::declval<VariableDecl>().var_type),false>{});
+            v(v, "initial_value",visitor_tag<decltype(std::declval<VariableDecl>().initial_value),false>{});
+            v(v, "is_constant",visitor_tag<decltype(std::declval<VariableDecl>().is_constant()),true>{});
+            v(v, "is_reference",visitor_tag<decltype(std::declval<VariableDecl>().is_reference()),true>{});
+            v(v, "is_parameter",visitor_tag<decltype(std::declval<VariableDecl>().is_parameter()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<VariableDecl>().reserved()),true>{});
         }
     };
     struct EBM_API FieldDecl{
@@ -2661,17 +2696,18 @@ namespace ebm {
             v(v, "is_state_variable",(*this).is_state_variable());
             v(v, "reserved",(*this).reserved());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<FieldDecl>().name)>{});
-            v(v, "field_type",visitor_tag<decltype(std::declval<FieldDecl>().field_type)>{});
-            v(v, "parent_struct",visitor_tag<decltype(std::declval<FieldDecl>().parent_struct)>{});
-            v(v, "is_state_variable",visitor_tag<decltype(std::declval<FieldDecl>().is_state_variable())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<FieldDecl>().reserved())>{});
+            v(v, "name",visitor_tag<decltype(std::declval<FieldDecl>().name),false>{});
+            v(v, "field_type",visitor_tag<decltype(std::declval<FieldDecl>().field_type),false>{});
+            v(v, "parent_struct",visitor_tag<decltype(std::declval<FieldDecl>().parent_struct),false>{});
+            v(v, "is_state_variable",visitor_tag<decltype(std::declval<FieldDecl>().is_state_variable()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<FieldDecl>().reserved()),true>{});
         }
     };
     struct EBM_API EnumDecl{
@@ -2693,15 +2729,16 @@ namespace ebm {
             v(v, "base_type",(*this).base_type);
             v(v, "members",(*this).members);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<EnumDecl>().name)>{});
-            v(v, "base_type",visitor_tag<decltype(std::declval<EnumDecl>().base_type)>{});
-            v(v, "members",visitor_tag<decltype(std::declval<EnumDecl>().members)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<EnumDecl>().name),false>{});
+            v(v, "base_type",visitor_tag<decltype(std::declval<EnumDecl>().base_type),false>{});
+            v(v, "members",visitor_tag<decltype(std::declval<EnumDecl>().members),false>{});
         }
     };
     struct EBM_API EnumMemberDecl{
@@ -2723,15 +2760,16 @@ namespace ebm {
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<EnumMemberDecl>().name)>{});
-            v(v, "value",visitor_tag<decltype(std::declval<EnumMemberDecl>().value)>{});
-            v(v, "string_repr",visitor_tag<decltype(std::declval<EnumMemberDecl>().string_repr)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<EnumMemberDecl>().name),false>{});
+            v(v, "value",visitor_tag<decltype(std::declval<EnumMemberDecl>().value),false>{});
+            v(v, "string_repr",visitor_tag<decltype(std::declval<EnumMemberDecl>().string_repr),false>{});
         }
     };
     struct EBM_API StructDecl{
@@ -2766,19 +2804,20 @@ namespace ebm {
             v(v, "reserved",(*this).reserved());
             v(v, "related_variant",(*this).related_variant);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<StructDecl>().name)>{});
-            v(v, "fields",visitor_tag<decltype(std::declval<StructDecl>().fields)>{});
-            v(v, "encode_fn",visitor_tag<decltype(std::declval<StructDecl>().encode_fn)>{});
-            v(v, "decode_fn",visitor_tag<decltype(std::declval<StructDecl>().decode_fn)>{});
-            v(v, "is_recursive",visitor_tag<decltype(std::declval<StructDecl>().is_recursive())>{});
-            v(v, "reserved",visitor_tag<decltype(std::declval<StructDecl>().reserved())>{});
-            v(v, "related_variant",visitor_tag<decltype(std::declval<StructDecl>().related_variant)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<StructDecl>().name),false>{});
+            v(v, "fields",visitor_tag<decltype(std::declval<StructDecl>().fields),false>{});
+            v(v, "encode_fn",visitor_tag<decltype(std::declval<StructDecl>().encode_fn),false>{});
+            v(v, "decode_fn",visitor_tag<decltype(std::declval<StructDecl>().decode_fn),false>{});
+            v(v, "is_recursive",visitor_tag<decltype(std::declval<StructDecl>().is_recursive()),true>{});
+            v(v, "reserved",visitor_tag<decltype(std::declval<StructDecl>().reserved()),true>{});
+            v(v, "related_variant",visitor_tag<decltype(std::declval<StructDecl>().related_variant),false>{});
         }
     };
     struct EBM_API PropertyDecl{
@@ -2822,20 +2861,21 @@ namespace ebm {
             v(v, "setter_function",(*this).setter_function);
             v(v, "getter_function",(*this).getter_function);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "name",visitor_tag<decltype(std::declval<PropertyDecl>().name)>{});
-            v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format)>{});
-            v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type)>{});
-            v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode)>{});
-            v(v, "cond",visitor_tag<decltype(std::declval<PropertyDecl>().cond())>{});
-            v(v, "members",visitor_tag<decltype(std::declval<PropertyDecl>().members)>{});
-            v(v, "setter_function",visitor_tag<decltype(std::declval<PropertyDecl>().setter_function)>{});
-            v(v, "getter_function",visitor_tag<decltype(std::declval<PropertyDecl>().getter_function)>{});
+            v(v, "name",visitor_tag<decltype(std::declval<PropertyDecl>().name),false>{});
+            v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format),false>{});
+            v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type),false>{});
+            v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode),false>{});
+            v(v, "cond",visitor_tag<decltype(std::declval<PropertyDecl>().cond()),false>{});
+            v(v, "members",visitor_tag<decltype(std::declval<PropertyDecl>().members),false>{});
+            v(v, "setter_function",visitor_tag<decltype(std::declval<PropertyDecl>().setter_function),false>{});
+            v(v, "getter_function",visitor_tag<decltype(std::declval<PropertyDecl>().getter_function),false>{});
         }
     };
     struct EBM_API ErrorReport{
@@ -2854,14 +2894,15 @@ namespace ebm {
             v(v, "message",(*this).message);
             v(v, "arguments",(*this).arguments);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "message",visitor_tag<decltype(std::declval<ErrorReport>().message)>{});
-            v(v, "arguments",visitor_tag<decltype(std::declval<ErrorReport>().arguments)>{});
+            v(v, "message",visitor_tag<decltype(std::declval<ErrorReport>().message),false>{});
+            v(v, "arguments",visitor_tag<decltype(std::declval<ErrorReport>().arguments),false>{});
         }
     };
     struct EBM_API StatementBody{
@@ -3159,43 +3200,44 @@ namespace ebm {
             v(v, "var_decl",(*this).var_decl());
             v(v, "write_data",(*this).write_data());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "kind",visitor_tag<decltype(std::declval<StatementBody>().kind)>{});
-            v(v, "alias",visitor_tag<decltype(std::declval<StatementBody>().alias())>{});
-            v(v, "assert_desc",visitor_tag<decltype(std::declval<StatementBody>().assert_desc())>{});
-            v(v, "block",visitor_tag<decltype(std::declval<StatementBody>().block())>{});
-            v(v, "break_",visitor_tag<decltype(std::declval<StatementBody>().break_())>{});
-            v(v, "continue_",visitor_tag<decltype(std::declval<StatementBody>().continue_())>{});
-            v(v, "enum_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_decl())>{});
-            v(v, "enum_member_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_member_decl())>{});
-            v(v, "error_report",visitor_tag<decltype(std::declval<StatementBody>().error_report())>{});
-            v(v, "expression",visitor_tag<decltype(std::declval<StatementBody>().expression())>{});
-            v(v, "field_decl",visitor_tag<decltype(std::declval<StatementBody>().field_decl())>{});
-            v(v, "func_decl",visitor_tag<decltype(std::declval<StatementBody>().func_decl())>{});
-            v(v, "if_statement",visitor_tag<decltype(std::declval<StatementBody>().if_statement())>{});
-            v(v, "loop",visitor_tag<decltype(std::declval<StatementBody>().loop())>{});
-            v(v, "lowered_statements",visitor_tag<decltype(std::declval<StatementBody>().lowered_statements())>{});
-            v(v, "match_branch",visitor_tag<decltype(std::declval<StatementBody>().match_branch())>{});
-            v(v, "match_statement",visitor_tag<decltype(std::declval<StatementBody>().match_statement())>{});
-            v(v, "metadata",visitor_tag<decltype(std::declval<StatementBody>().metadata())>{});
-            v(v, "module_name",visitor_tag<decltype(std::declval<StatementBody>().module_name())>{});
-            v(v, "offset",visitor_tag<decltype(std::declval<StatementBody>().offset())>{});
-            v(v, "previous_assignment",visitor_tag<decltype(std::declval<StatementBody>().previous_assignment())>{});
-            v(v, "property_decl",visitor_tag<decltype(std::declval<StatementBody>().property_decl())>{});
-            v(v, "property_member_decl",visitor_tag<decltype(std::declval<StatementBody>().property_member_decl())>{});
-            v(v, "read_data",visitor_tag<decltype(std::declval<StatementBody>().read_data())>{});
-            v(v, "stream_type",visitor_tag<decltype(std::declval<StatementBody>().stream_type())>{});
-            v(v, "struct_decl",visitor_tag<decltype(std::declval<StatementBody>().struct_decl())>{});
-            v(v, "sub_byte_range",visitor_tag<decltype(std::declval<StatementBody>().sub_byte_range())>{});
-            v(v, "target",visitor_tag<decltype(std::declval<StatementBody>().target())>{});
-            v(v, "value",visitor_tag<decltype(std::declval<StatementBody>().value())>{});
-            v(v, "var_decl",visitor_tag<decltype(std::declval<StatementBody>().var_decl())>{});
-            v(v, "write_data",visitor_tag<decltype(std::declval<StatementBody>().write_data())>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<StatementBody>().kind),false>{});
+            v(v, "alias",visitor_tag<decltype(std::declval<StatementBody>().alias()),false>{});
+            v(v, "assert_desc",visitor_tag<decltype(std::declval<StatementBody>().assert_desc()),false>{});
+            v(v, "block",visitor_tag<decltype(std::declval<StatementBody>().block()),false>{});
+            v(v, "break_",visitor_tag<decltype(std::declval<StatementBody>().break_()),false>{});
+            v(v, "continue_",visitor_tag<decltype(std::declval<StatementBody>().continue_()),false>{});
+            v(v, "enum_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_decl()),false>{});
+            v(v, "enum_member_decl",visitor_tag<decltype(std::declval<StatementBody>().enum_member_decl()),false>{});
+            v(v, "error_report",visitor_tag<decltype(std::declval<StatementBody>().error_report()),false>{});
+            v(v, "expression",visitor_tag<decltype(std::declval<StatementBody>().expression()),false>{});
+            v(v, "field_decl",visitor_tag<decltype(std::declval<StatementBody>().field_decl()),false>{});
+            v(v, "func_decl",visitor_tag<decltype(std::declval<StatementBody>().func_decl()),false>{});
+            v(v, "if_statement",visitor_tag<decltype(std::declval<StatementBody>().if_statement()),false>{});
+            v(v, "loop",visitor_tag<decltype(std::declval<StatementBody>().loop()),false>{});
+            v(v, "lowered_statements",visitor_tag<decltype(std::declval<StatementBody>().lowered_statements()),false>{});
+            v(v, "match_branch",visitor_tag<decltype(std::declval<StatementBody>().match_branch()),false>{});
+            v(v, "match_statement",visitor_tag<decltype(std::declval<StatementBody>().match_statement()),false>{});
+            v(v, "metadata",visitor_tag<decltype(std::declval<StatementBody>().metadata()),false>{});
+            v(v, "module_name",visitor_tag<decltype(std::declval<StatementBody>().module_name()),false>{});
+            v(v, "offset",visitor_tag<decltype(std::declval<StatementBody>().offset()),false>{});
+            v(v, "previous_assignment",visitor_tag<decltype(std::declval<StatementBody>().previous_assignment()),false>{});
+            v(v, "property_decl",visitor_tag<decltype(std::declval<StatementBody>().property_decl()),false>{});
+            v(v, "property_member_decl",visitor_tag<decltype(std::declval<StatementBody>().property_member_decl()),false>{});
+            v(v, "read_data",visitor_tag<decltype(std::declval<StatementBody>().read_data()),false>{});
+            v(v, "stream_type",visitor_tag<decltype(std::declval<StatementBody>().stream_type()),false>{});
+            v(v, "struct_decl",visitor_tag<decltype(std::declval<StatementBody>().struct_decl()),false>{});
+            v(v, "sub_byte_range",visitor_tag<decltype(std::declval<StatementBody>().sub_byte_range()),false>{});
+            v(v, "target",visitor_tag<decltype(std::declval<StatementBody>().target()),false>{});
+            v(v, "value",visitor_tag<decltype(std::declval<StatementBody>().value()),false>{});
+            v(v, "var_decl",visitor_tag<decltype(std::declval<StatementBody>().var_decl()),false>{});
+            v(v, "write_data",visitor_tag<decltype(std::declval<StatementBody>().write_data()),false>{});
         }
     };
     struct EBM_API Statement{
@@ -3214,14 +3256,15 @@ namespace ebm {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<Statement>().id)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<Statement>().body)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<Statement>().id),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Statement>().body),false>{});
         }
     };
     struct EBM_API Types{
@@ -3240,14 +3283,15 @@ namespace ebm {
             v(v, "len",(*this).len);
             v(v, "container",(*this).container);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len",visitor_tag<decltype(std::declval<Types>().len)>{});
-            v(v, "container",visitor_tag<decltype(std::declval<Types>().container)>{});
+            v(v, "len",visitor_tag<decltype(std::declval<Types>().len),false>{});
+            v(v, "container",visitor_tag<decltype(std::declval<Types>().container),false>{});
         }
     };
     struct EBM_API TypeBody{
@@ -3383,25 +3427,26 @@ namespace ebm {
             v(v, "return_type",(*this).return_type());
             v(v, "size",(*this).size());
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "kind",visitor_tag<decltype(std::declval<TypeBody>().kind)>{});
-            v(v, "base_type",visitor_tag<decltype(std::declval<TypeBody>().base_type())>{});
-            v(v, "common_type",visitor_tag<decltype(std::declval<TypeBody>().common_type())>{});
-            v(v, "element_type",visitor_tag<decltype(std::declval<TypeBody>().element_type())>{});
-            v(v, "id",visitor_tag<decltype(std::declval<TypeBody>().id())>{});
-            v(v, "inner_type",visitor_tag<decltype(std::declval<TypeBody>().inner_type())>{});
-            v(v, "length",visitor_tag<decltype(std::declval<TypeBody>().length())>{});
-            v(v, "members",visitor_tag<decltype(std::declval<TypeBody>().members())>{});
-            v(v, "params",visitor_tag<decltype(std::declval<TypeBody>().params())>{});
-            v(v, "pointee_type",visitor_tag<decltype(std::declval<TypeBody>().pointee_type())>{});
-            v(v, "related_field",visitor_tag<decltype(std::declval<TypeBody>().related_field())>{});
-            v(v, "return_type",visitor_tag<decltype(std::declval<TypeBody>().return_type())>{});
-            v(v, "size",visitor_tag<decltype(std::declval<TypeBody>().size())>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<TypeBody>().kind),false>{});
+            v(v, "base_type",visitor_tag<decltype(std::declval<TypeBody>().base_type()),false>{});
+            v(v, "common_type",visitor_tag<decltype(std::declval<TypeBody>().common_type()),false>{});
+            v(v, "element_type",visitor_tag<decltype(std::declval<TypeBody>().element_type()),false>{});
+            v(v, "id",visitor_tag<decltype(std::declval<TypeBody>().id()),false>{});
+            v(v, "inner_type",visitor_tag<decltype(std::declval<TypeBody>().inner_type()),false>{});
+            v(v, "length",visitor_tag<decltype(std::declval<TypeBody>().length()),false>{});
+            v(v, "members",visitor_tag<decltype(std::declval<TypeBody>().members()),false>{});
+            v(v, "params",visitor_tag<decltype(std::declval<TypeBody>().params()),false>{});
+            v(v, "pointee_type",visitor_tag<decltype(std::declval<TypeBody>().pointee_type()),false>{});
+            v(v, "related_field",visitor_tag<decltype(std::declval<TypeBody>().related_field()),false>{});
+            v(v, "return_type",visitor_tag<decltype(std::declval<TypeBody>().return_type()),false>{});
+            v(v, "size",visitor_tag<decltype(std::declval<TypeBody>().size()),false>{});
         }
     };
     struct EBM_API Type{
@@ -3420,14 +3465,15 @@ namespace ebm {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<Type>().id)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<Type>().body)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<Type>().id),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Type>().body),false>{});
         }
     };
     struct EBM_API Loc{
@@ -3458,18 +3504,19 @@ namespace ebm {
             v(v, "start",(*this).start);
             v(v, "end",(*this).end);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "ident",visitor_tag<decltype(std::declval<Loc>().ident)>{});
-            v(v, "file_id",visitor_tag<decltype(std::declval<Loc>().file_id)>{});
-            v(v, "line",visitor_tag<decltype(std::declval<Loc>().line)>{});
-            v(v, "column",visitor_tag<decltype(std::declval<Loc>().column)>{});
-            v(v, "start",visitor_tag<decltype(std::declval<Loc>().start)>{});
-            v(v, "end",visitor_tag<decltype(std::declval<Loc>().end)>{});
+            v(v, "ident",visitor_tag<decltype(std::declval<Loc>().ident),false>{});
+            v(v, "file_id",visitor_tag<decltype(std::declval<Loc>().file_id),false>{});
+            v(v, "line",visitor_tag<decltype(std::declval<Loc>().line),false>{});
+            v(v, "column",visitor_tag<decltype(std::declval<Loc>().column),false>{});
+            v(v, "start",visitor_tag<decltype(std::declval<Loc>().start),false>{});
+            v(v, "end",visitor_tag<decltype(std::declval<Loc>().end),false>{});
         }
     };
     struct EBM_API Identifier{
@@ -3488,14 +3535,15 @@ namespace ebm {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<Identifier>().id)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<Identifier>().body)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<Identifier>().id),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<Identifier>().body),false>{});
         }
     };
     struct EBM_API StringLiteral{
@@ -3514,14 +3562,15 @@ namespace ebm {
             v(v, "id",(*this).id);
             v(v, "body",(*this).body);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "id",visitor_tag<decltype(std::declval<StringLiteral>().id)>{});
-            v(v, "body",visitor_tag<decltype(std::declval<StringLiteral>().body)>{});
+            v(v, "id",visitor_tag<decltype(std::declval<StringLiteral>().id),false>{});
+            v(v, "body",visitor_tag<decltype(std::declval<StringLiteral>().body),false>{});
         }
     };
     struct EBM_API DebugInfo{
@@ -3546,16 +3595,17 @@ namespace ebm {
             v(v, "len_locs",(*this).len_locs);
             v(v, "locs",(*this).locs);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "len_files",visitor_tag<decltype(std::declval<DebugInfo>().len_files)>{});
-            v(v, "files",visitor_tag<decltype(std::declval<DebugInfo>().files)>{});
-            v(v, "len_locs",visitor_tag<decltype(std::declval<DebugInfo>().len_locs)>{});
-            v(v, "locs",visitor_tag<decltype(std::declval<DebugInfo>().locs)>{});
+            v(v, "len_files",visitor_tag<decltype(std::declval<DebugInfo>().len_files),false>{});
+            v(v, "files",visitor_tag<decltype(std::declval<DebugInfo>().files),false>{});
+            v(v, "len_locs",visitor_tag<decltype(std::declval<DebugInfo>().len_locs),false>{});
+            v(v, "locs",visitor_tag<decltype(std::declval<DebugInfo>().locs),false>{});
         }
     };
     struct EBM_API ExtendedBinaryModule{
@@ -3617,28 +3667,29 @@ namespace ebm {
             v(v, "aliases",(*this).aliases);
             v(v, "debug_info",(*this).debug_info);
         }
-        template<typename T>
+        template<typename T,bool rvalue = false>
         struct visitor_tag {
             using type = T;
+            static constexpr bool is_rvalue = rvalue;
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "magic",visitor_tag<decltype("EBMG")>{});
-            v(v, "version",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().version)>{});
-            v(v, "max_id",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().max_id)>{});
-            v(v, "identifiers_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers_len)>{});
-            v(v, "identifiers",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers)>{});
-            v(v, "strings_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings_len)>{});
-            v(v, "strings",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings)>{});
-            v(v, "types_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types_len)>{});
-            v(v, "types",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types)>{});
-            v(v, "statements_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements_len)>{});
-            v(v, "statements",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements)>{});
-            v(v, "expressions_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions_len)>{});
-            v(v, "expressions",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions)>{});
-            v(v, "aliases_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases_len)>{});
-            v(v, "aliases",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases)>{});
-            v(v, "debug_info",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().debug_info)>{});
+            v(v, "magic",visitor_tag<decltype("EBMG"),false>{});
+            v(v, "version",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().version),false>{});
+            v(v, "max_id",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().max_id),false>{});
+            v(v, "identifiers_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers_len),false>{});
+            v(v, "identifiers",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().identifiers),false>{});
+            v(v, "strings_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings_len),false>{});
+            v(v, "strings",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().strings),false>{});
+            v(v, "types_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types_len),false>{});
+            v(v, "types",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().types),false>{});
+            v(v, "statements_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements_len),false>{});
+            v(v, "statements",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().statements),false>{});
+            v(v, "expressions_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions_len),false>{});
+            v(v, "expressions",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().expressions),false>{});
+            v(v, "aliases_len",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases_len),false>{});
+            v(v, "aliases",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().aliases),false>{});
+            v(v, "debug_info",visitor_tag<decltype(std::declval<ExtendedBinaryModule>().debug_info),false>{});
         }
     };
 } // namespace ebm

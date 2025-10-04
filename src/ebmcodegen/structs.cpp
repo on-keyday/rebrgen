@@ -14,6 +14,10 @@ namespace ebmcodegen {
 
         ebm::ExtendedBinaryModule::visit_static([&](auto&& visitor, const char* name, auto tag, TypeAttribute dispatch = NONE) -> void {
             using T = typename decltype(tag)::type;
+            constexpr bool is_rvalue = decltype(tag)::is_rvalue;
+            if (is_rvalue) {
+                dispatch = TypeAttribute(static_cast<int>(dispatch) | static_cast<int>(TypeAttribute::RVALUE));
+            }
             if constexpr (ebmgen::has_visit<T, decltype(visitor)>) {
                 structs.back().fields.push_back({
                     name,

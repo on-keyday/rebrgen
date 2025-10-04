@@ -24,6 +24,7 @@ namespace ebmcodegen {
     struct Struct {
         std::string_view name;
         std::vector<StructField> fields;
+        bool is_any_ref = false;
     };
 
     struct EnumMember {
@@ -36,7 +37,7 @@ namespace ebmcodegen {
         std::vector<EnumMember> members;
     };
 
-    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map();
+    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map(bool include_refs = false);
     std::map<ebm::StatementKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_StatementBody();
     std::map<ebm::TypeKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_TypeBody();
     std::map<ebm::ExpressionKind, std::pair<std::set<std::string_view>, std::vector<std::string_view>>> body_subset_ExpressionBody();

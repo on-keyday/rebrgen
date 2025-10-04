@@ -4,6 +4,15 @@
 #include <json/convert_json.h>
 #include <json/json.h>
 namespace ebm {
+    bool from_json(AnyRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = AnyRef{id};
+        return true;
+    }
+    
     bool from_json(AssertDesc& obj, const futils::json::JSON& j) {
         if (auto got = j.at("condition")) {
             if(!futils::json::convert_from_json(*got, obj.condition)) {
@@ -561,6 +570,15 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(ExpressionRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = ExpressionRef{id};
+        return true;
+    }
+    
     bool from_json(Expressions& obj, const futils::json::JSON& j) {
         if (auto got = j.at("len")) {
             if(!futils::json::convert_from_json(*got, obj.len)) {
@@ -934,6 +952,15 @@ namespace ebm {
         else {
             return false;
         }
+        return true;
+    }
+    
+    bool from_json(IdentifierRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = IdentifierRef{id};
         return true;
     }
     
@@ -1713,6 +1740,15 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(StatementRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = StatementRef{id};
+        return true;
+    }
+    
     bool from_json(String& obj, const futils::json::JSON& j) {
         if (auto got = j.at("length")) {
             if(!futils::json::convert_from_json(*got, obj.length)) {
@@ -1750,6 +1786,15 @@ namespace ebm {
         else {
             return false;
         }
+        return true;
+    }
+    
+    bool from_json(StringRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = StringRef{id};
         return true;
     }
     
@@ -2014,6 +2059,15 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(TypeRef& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = TypeRef{id};
+        return true;
+    }
+    
     bool from_json(Types& obj, const futils::json::JSON& j) {
         if (auto got = j.at("len")) {
             if(!futils::json::convert_from_json(*got, obj.len)) {
@@ -2101,6 +2155,15 @@ namespace ebm {
         else {
             return false;
         }
+        return true;
+    }
+    
+    bool from_json(Varint& obj, const futils::json::JSON& j) {
+        std::uint64_t id;
+        if(!futils::json::convert_from_json(j, id)) {
+            return false;
+        }
+        obj = Varint{id};
         return true;
     }
     

@@ -4,7 +4,7 @@
 #include "../ebmgen/common.hpp"
 #include "ebm/extended_binary_module.hpp"
 namespace ebmcodegen {
-    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map() {
+    std::pair<std::map<std::string_view, Struct>, std::map<std::string_view, Enum>> make_struct_map(bool include_refs) {
         std::vector<Struct> structs;
         structs.push_back({
             ebm::ExtendedBinaryModule::visitor_name,
@@ -24,9 +24,11 @@ namespace ebmcodegen {
                     T::visitor_name,
                     dispatch,
                 });
-                if constexpr (!ebmgen::AnyRef<T> && !std::is_same_v<T, ebm::Varint>) {
+                constexpr auto is_ref = ebmgen::AnyRef<T> || std::is_same_v<T, ebm::Varint>;
+                if (!is_ref || include_refs) {
                     structs.push_back({
-                        T::visitor_name,
+                        .name = T::visitor_name,
+                        .is_any_ref = is_ref,
                     });
                     T::visit_static(visitor);
                     auto s = std::move(structs.back());

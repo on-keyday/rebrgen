@@ -109,6 +109,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/convert.cpp"
     "src/ebmgen/converter.cpp"
     "src/ebmgen/load_json.cpp"
+    "src/ebmgen/json_conv.cpp"
     "src/ebmgen/convert/statement.cpp"
     "src/ebmgen/convert/expression.cpp"
     "src/ebmgen/convert/type.cpp"

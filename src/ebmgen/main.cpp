@@ -39,6 +39,7 @@ enum class InputFormat {
     AUTO,
     BGN,  // with libs2j
     JSON_AST,
+    JSON_EBM,  // direct EBM JSON format, for testing
     EBM,
 };
 
@@ -108,6 +109,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         else if (flags.input.ends_with(".ebm")) {
             flags.input_format = InputFormat::EBM;
         }
+        else if (flags.input.ends_with(".ebm.json")) {
+            flags.input_format = InputFormat::JSON_EBM;
+        }
         else if (flags.input.ends_with(".json")) {
             flags.input_format = InputFormat::JSON_AST;
         }
@@ -138,6 +142,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "error: extra data at the end of file\n";
             return 1;
         }
+    }
+    else if (flags.input_format == InputFormat::JSON_EBM) {
+        auto ret = ebmgen::load_json_ebm(flags.input);
+        if (!ret) {
+            cerr << "Load Error: " << ret.error().error<std::string>() << '\n';
+            return 1;
+        }
+        ebm = std::move(*ret);
     }
     else {
         futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);

@@ -6,6 +6,10 @@
 #include <json/constructor.h>
 #include <string_view>
 #include "load_json.hpp"
+#include "common.hpp"
+#include "ebm/extended_binary_module.hpp"
+#include "json_conv.hpp"
+#include <binary/discard.h>
 
 namespace ebmgen {
     struct DecoderObserver {
@@ -98,7 +102,7 @@ namespace ebmgen {
         return load_json_file(futils::view::rvec(view), timer_cb);
     }
 
-    expected<void> decode_json_ebm(std::string_view input) {
+    expected<ebm::ExtendedBinaryModule> decode_json_ebm(futils::view::rvec input) {
         futils::json::BytesLikeReader<futils::view::rvec> r{input};
         r.size = r.bytes.size();
         futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>> jc;
@@ -111,6 +115,26 @@ namespace ebmgen {
         }
         auto js = std::move(jc.stack.back());
         ebm::ExtendedBinaryModule ebm;
-        js.get_holder().as_str();
+        ///*
+        if (!futils::json::convert_from_json(js, ebm)) {
+            return unexpect_error("cannot convert json file");
+        }
+        //*/
+        // return unexpect_error("not implemented yet");
+        // check this is encodable
+        futils::binary::writer w{&futils::binary::discard<>, nullptr};
+        auto err = ebm.encode(w);
+        if (err) {
+            return unexpect_error("cannot encode ebm: {}", err.error<std::string>());
+        }
+        return ebm;
+    }
+
+    expected<ebm::ExtendedBinaryModule> load_json_ebm(std::string_view input) {
+        futils::file::View view;
+        if (auto res = view.open(input); !res) {
+            return unexpect_error(Error(res.error()));
+        }
+        return decode_json_ebm(futils::view::rvec(view));
     }
 }  // namespace ebmgen

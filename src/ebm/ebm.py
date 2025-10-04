@@ -20,17 +20,33 @@ EBM_JSON_FILE = "save/ebm.json"
 HPP_FILE = "src/ebm/extended_binary_module.hpp"
 CPP_FILE = "src/ebm/extended_binary_module.cpp"
 
+
 def run_command(command, output_file):
     """Runs a command and redirects its stdout to a file."""
     print(f"Running: {' '.join(command)} > {output_file}")
+    # read output file if it exists
+    if os.path.exists(output_file):
+        with open(output_file, "rb") as f:
+            cached = f.read()
+    else:
+        cached = None
     try:
-        with open(output_file, "w", encoding="utf-8") as f:
-            result = subprocess.run(command, stdout=f, check=True, text=True, encoding="utf-8")
+        result = subprocess.run(
+            command, capture_output=True, check=True, text=True, encoding="utf-8"
+        )
         if result.returncode != 0:
             print(f"Error running command. Return code: {result.returncode}")
             if result.stderr:
                 print(f"Stderr: {result.stderr}")
             return False
+        if result.stdout:
+            new_content = result.stdout.encode("utf-8")
+            if new_content != cached:
+                with open(output_file, "w") as f:
+                    f.write(new_content.decode("utf-8"))
+                print(f"Wrote output to {output_file}")
+            else:
+                print(f"Output unchanged, not writing to {output_file}")
     except FileNotFoundError:
         print(f"Error: Command not found at {command[0]}")
         print("Please ensure the TOOL_PATH is correct and the brgen tools are built.")
@@ -44,6 +60,7 @@ def run_command(command, output_file):
             print(f"Stderr: {e.stderr}")
         return False
     return True
+
 
 def main():
     """Main function to execute the code generation steps."""
@@ -59,12 +76,14 @@ def main():
     # & $TOOL_PATH\json2cpp2 -f save/ebm.json --mode header_file --add-visit --enum-stringer --use-error --dll-export | Out-File src/ebm/extended_binary_module.hpp -Encoding utf8
     cmd2 = [
         JSON2CPP2_EXE,
-        "-f", EBM_JSON_FILE,
-        "--mode", "header_file",
+        "-f",
+        EBM_JSON_FILE,
+        "--mode",
+        "header_file",
         "--add-visit",
         "--enum-stringer",
         "--use-error",
-        "--dll-export"
+        "--dll-export",
     ]
     if not run_command(cmd2, HPP_FILE):
         return
@@ -73,11 +92,13 @@ def main():
     # & $TOOL_PATH\json2cpp2 -f save/ebm.json --mode source_file --enum-stringer --use-error --dll-export | Out-File src/ebm/extended_binary_module.cpp -Encoding utf8
     cmd3 = [
         JSON2CPP2_EXE,
-        "-f", EBM_JSON_FILE,
-        "--mode", "source_file",
+        "-f",
+        EBM_JSON_FILE,
+        "--mode",
+        "source_file",
         "--enum-stringer",
         "--use-error",
-        "--dll-export"
+        "--dll-export",
     ]
     if not run_command(cmd3, CPP_FILE):
         return
@@ -85,6 +106,7 @@ def main():
     print("\nSuccessfully generated C++ files:")
     print(f"  - {HPP_FILE}")
     print(f"  - {CPP_FILE}")
+
 
 if __name__ == "__main__":
     # Change directory to project root to handle relative paths correctly.

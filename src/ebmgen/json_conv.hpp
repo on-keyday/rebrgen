@@ -3,6 +3,8 @@
 #include <ebm/extended_binary_module.hpp>
 #include <json/json.h>
 namespace ebm {
+    bool from_json(AnyRef& obj, const futils::json::JSON& j);
+    
     bool from_json(AssertDesc& obj, const futils::json::JSON& j);
     
     bool from_json(Block& obj, const futils::json::JSON& j);
@@ -23,6 +25,8 @@ namespace ebm {
     
     bool from_json(ExpressionBody& obj, const futils::json::JSON& j);
     
+    bool from_json(ExpressionRef& obj, const futils::json::JSON& j);
+    
     bool from_json(Expressions& obj, const futils::json::JSON& j);
     
     bool from_json(ExtendedBinaryModule& obj, const futils::json::JSON& j);
@@ -36,6 +40,8 @@ namespace ebm {
     bool from_json(IOData& obj, const futils::json::JSON& j);
     
     bool from_json(Identifier& obj, const futils::json::JSON& j);
+    
+    bool from_json(IdentifierRef& obj, const futils::json::JSON& j);
     
     bool from_json(IfStatement& obj, const futils::json::JSON& j);
     
@@ -71,9 +77,13 @@ namespace ebm {
     
     bool from_json(StatementBody& obj, const futils::json::JSON& j);
     
+    bool from_json(StatementRef& obj, const futils::json::JSON& j);
+    
     bool from_json(String& obj, const futils::json::JSON& j);
     
     bool from_json(StringLiteral& obj, const futils::json::JSON& j);
+    
+    bool from_json(StringRef& obj, const futils::json::JSON& j);
     
     bool from_json(StructDecl& obj, const futils::json::JSON& j);
     
@@ -83,9 +93,13 @@ namespace ebm {
     
     bool from_json(TypeBody& obj, const futils::json::JSON& j);
     
+    bool from_json(TypeRef& obj, const futils::json::JSON& j);
+    
     bool from_json(Types& obj, const futils::json::JSON& j);
     
     bool from_json(VariableDecl& obj, const futils::json::JSON& j);
+    
+    bool from_json(Varint& obj, const futils::json::JSON& j);
     
     bool from_json(AliasHint& obj, const futils::json::JSON& j);
     

@@ -1,0 +1,48 @@
+{
+    "condition": "[ .statements[] | select(.body.if_statement) ][0].body.if_statement",
+    "struct": "IfStatement",
+    "rough": [
+        "type",
+        "length"
+    ],
+    "case": {
+        "condition": {
+            "cond": {
+                "kind": "UNARY_OP",
+                "type": {
+                    "kind": "BOOL"
+                },
+                "operand": {
+                    "kind": "BINARY_OP",
+                    "type": {
+                        "kind": "BOOL"
+                    },
+                    "bop": "equal",
+                    "left": {
+                        "kind": "ARRAY_SIZE",
+                        "type": {
+                            "kind": "UINT",
+                            "size": 64
+                        },
+                        "array_expr": null
+                    },
+                    "right": {
+                        "kind": "IDENTIFIER",
+                        "id": null
+                    }
+                },
+                "uop": "logical_not"
+            }
+        },
+        "then_block": {
+            "kind": "ERROR_REPORT",
+            "error_report": {
+                "message": {
+                    "data": "Assertion failed"
+                },
+                "arguments": null
+            }
+        },
+        "else_block": 0
+    }
+}

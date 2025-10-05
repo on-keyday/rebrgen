@@ -121,7 +121,12 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "${workspaceRoot}/src/test/simple_case.bgn", "-I"],
+      "args": [
+        "-i",
+        "${workspaceRoot}/save/test_input.ebm.json",
+        "-q",
+        "Any{body.kind == \"IF_STATEMENT\"}"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

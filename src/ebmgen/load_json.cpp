@@ -102,10 +102,34 @@ namespace ebmgen {
         return load_json_file(futils::view::rvec(view), timer_cb);
     }
 
+    struct JSONEBMObserver {
+        std::uint64_t len = 0;
+        bool next_int_is_array_len = false;
+        void observe(futils::json::ElementType t, auto& s) {
+            if (t == futils::json::ElementType::key_string) {
+                if (s.back().get_holder().init_as_string().ends_with("len")) {
+                    next_int_is_array_len = true;
+                }
+            }
+            else if (t == futils::json::ElementType::integer) {
+                if (next_int_is_array_len) {
+                    len = *s.back().get_holder().as_numi();
+                    next_int_is_array_len = false;
+                }
+            }
+            else if (t == futils::json::ElementType::array) {
+                if (len != 0) {
+                    s.back().get_holder().init_as_array().reserve(len);
+                    len = 0;
+                }
+            }
+        }
+    };
+
     expected<ebm::ExtendedBinaryModule> decode_json_ebm(futils::view::rvec input) {
         futils::json::BytesLikeReader<futils::view::rvec> r{input};
         r.size = r.bytes.size();
-        futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>> jc;
+        futils::json::JSONConstructor<futils::json::JSON, futils::json::StaticStack<15, futils::json::JSON>, JSONEBMObserver> jc;
         futils::json::GenericConstructor<decltype(r)&, futils::json::StaticStack<8, futils::json::ParseStateDetail>, decltype(jc)&> g{r, jc};
         futils::json::Parser<decltype(g)&> p{g};
         p.skip_space();

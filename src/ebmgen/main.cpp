@@ -57,6 +57,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string env_libs2j_path;
     bool interactive = false;
     bool show_flags = false;
+    std::string_view query;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -86,6 +87,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&libs2j_path, "libs2j-path", "path to libs2j (default: {executable_dir}/libs2j" futils_default_dll_suffix ")", "PATH");
         ctx.VarBool(&interactive, "interactive,I", "start interactive debugger");
         ctx.VarBool(&show_flags, "show-flags", "output command line flag description in JSON format");
+        ctx.VarString<true>(&query, "query,q", "run query to object and output matched objects to stdout", "QUERY");
     }
 };
 
@@ -203,10 +205,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     std::optional<ebmgen::MappingTable> table;
-    if (!flags.debug_output.empty() || !flags.cfg_output.empty() || flags.interactive) {
+    if (!flags.debug_output.empty() || !flags.cfg_output.empty() || flags.interactive || !flags.query.empty()) {
         table.emplace(ebm);
     }
-    if (flags.input_format == InputFormat::EBM) {
+    if (flags.input_format == InputFormat::EBM || flags.input_format == InputFormat::JSON_EBM) {
         if (!table) {
             table.emplace(ebm);
         }
@@ -337,6 +339,17 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         if (flags.verbose) {
             cerr << "ebmgen finished successfully!\n"
                  << "Output written to: " << flags.output << '\n';
+        }
+    }
+
+    if (flags.query.size() > 0) {
+        auto r = ebmgen::run_query(*table, flags.query);
+        if (!r) {
+            cerr << "Query Error: " << r.error().error<std::string>() << '\n';
+            return 1;
+        }
+        for (auto obj : *r) {
+            cout << ebmgen::get_id(obj) << '\n';
         }
     }
 

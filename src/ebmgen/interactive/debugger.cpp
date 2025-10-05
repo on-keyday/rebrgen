@@ -29,6 +29,7 @@
 #include <comb2/composite/cmdline.h>
 #include <console/ansiesc.h>
 #include <comb2/tree/simple_node.h>
+#include "debugger.hpp"
 
 namespace ebmgen {
     namespace query {
@@ -210,7 +211,7 @@ namespace ebmgen {
         std::unordered_set<std::string> related_identifiers;
         EvalFunc evaluator;
 
-        ExecutionResult query(MappingTable& table, ObjectSet& matched) const {
+        ExecutionResult query(MappingTable& table, ObjectSet& matched, ObjectResult* result = nullptr) const {
             auto for_each = [&](auto& objects) {
                 for (auto& t : objects) {
                     EvalContext ctx{table};
@@ -218,7 +219,9 @@ namespace ebmgen {
                     if (evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
                         ctx.unwrap_any_ref<bool>(ctx.stack[0]);
                         if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
-                            matched.insert(to_any_ref(t.id));
+                            if (matched.insert(to_any_ref(t.id)).second && result) {
+                                result->push_back(to_any_ref(t.id));
+                            }
                         }
                     }
                 }
@@ -255,9 +258,9 @@ namespace ebmgen {
     struct Query {
         std::vector<Object> objects;
 
-        void query(MappingTable& table, ObjectSet& matched) const {
+        void query(MappingTable& table, ObjectSet& matched, ObjectResult* result = nullptr) const {
             for (const auto& obj : objects) {
-                obj.query(table, matched);
+                obj.query(table, matched, result);
             }
         }
     };
@@ -806,7 +809,7 @@ namespace ebmgen {
         debugger.start();
     }
 
-    expected<ObjectSet> run_query(MappingTable& table, std::string_view input) {
+    expected<ObjectResult> run_query(MappingTable& table, std::string_view input) {
         QueryCompiler compiler{table};
         Query query;
         auto parsed = query::parse_line(input);
@@ -819,7 +822,8 @@ namespace ebmgen {
             return unexpect_error("Error in query expression: {}", result.error().error());
         }
         ObjectSet matched;
-        query.query(table, matched);
-        return matched;
+        ObjectResult matched_result;
+        query.query(table, matched, &matched_result);
+        return matched_result;
     }
 }  // namespace ebmgen

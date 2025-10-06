@@ -197,6 +197,7 @@ format ExpressionBody:
         ExpressionKind.CAN_READ_STREAM:
             stream_type :StreamType
             num_bytes :Size
+            io_ref :StatementRef # Reference to the stream variable
         ExpressionKind.ARRAY_SIZE:
             array_expr :ExpressionRef # Reference to the array or vector expression
         ExpressionKind.IS_ERROR:
@@ -268,8 +269,11 @@ format VariableDecl:
     initial_value :ExpressionRef # Optional initial value
     is_constant :u1 # 0: mutable, 1: constant
     is_reference :u1 # 0: value, 1: reference
-    is_parameter :u1 # 0: local variable, 1: function parameter
-    reserved :u5 # Reserved for future use
+    reserved :u6 # Reserved for future use
+
+format ParameterDecl:
+    name :IdentifierRef # Parameter name
+    param_type :TypeRef # Type of the parameter
 
     
 format MatchStatement:
@@ -400,6 +404,7 @@ enum StatementKind:
     CONTINUE
     FUNCTION_DECL
     VARIABLE_DECL
+    PARAMETER_DECL
     FIELD_DECL
     ENUM_DECL
     ENUM_MEMBER_DECL
@@ -517,6 +522,8 @@ format StatementBody:
             func_decl :FunctionDecl
         StatementKind.VARIABLE_DECL:
             var_decl :VariableDecl
+        StatementKind.PARAMETER_DECL:
+            param_decl :ParameterDecl
         StatementKind.FIELD_DECL:
             field_decl :FieldDecl
         StatementKind.ENUM_DECL:

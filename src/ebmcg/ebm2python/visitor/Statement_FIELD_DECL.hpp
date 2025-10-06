@@ -19,17 +19,13 @@
 CodeWriter w;
 auto name = module_.get_identifier_or(item_id);
 auto type_kind = module_.get_type_kind(field_decl.field_type);
-if (type_kind == ebm::TypeKind::VARIANT) {
-    MAYBE(variant_type, module_.get_type(field_decl.field_type));
-    if (!is_nil(*variant_type.body.related_field())) {
-    }
+MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
+for (auto& member : struct_members) {
+    w.write_unformatted(member);
 }
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value
 std::string type = type_str_val.to_string();
-if (type_kind == ebm::TypeKind::STRUCT || type_kind == ebm::TypeKind::RECURSIVE_STRUCT) {
-    type = "\"" + type + "\"";  // Use forward reference for structs
-}
-
+type = "\"" + type + "\"";               // Use forward reference for structs
 w.writeln(name, ": ", type, " = None");  // Use the extracted string value
 
 return w.out();

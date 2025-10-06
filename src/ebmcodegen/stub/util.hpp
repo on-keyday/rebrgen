@@ -116,4 +116,22 @@ namespace ebmcodegen::util {
         layers.emplace_back(statement.body.kind, ident);
         return layers;
     }
+
+    ebmgen::expected<std::vector<std::string>> struct_union_members(auto&& visitor, ebm::TypeRef variant) {
+        const ebmgen::MappingTable& module_ = visitor.module_;
+        MAYBE(type, module_.get_type(variant));
+        std::vector<std::string> result;
+        if (type.body.kind == ebm::TypeKind::VARIANT) {
+            if (!ebmgen::is_nil(*type.body.related_field())) {
+                auto& members = *type.body.members();
+                for (auto& mem : members.container) {
+                    MAYBE(member_type, module_.get_type(mem));
+                    MAYBE(stmt_id, member_type.body.id());
+                    MAYBE(stmt_str, visit_Statement(visitor, stmt_id));
+                    result.push_back(stmt_str.to_string());
+                }
+            }
+        }
+        return result;
+    }
 }  // namespace ebmcodegen::util

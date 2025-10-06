@@ -28,6 +28,7 @@ namespace ebmcodegen {
             body.metadata({});
             body.module_name({});
             body.offset({});
+            body.param_decl({});
             body.previous_assignment({});
             body.property_decl({});
             body.property_member_decl({});
@@ -76,6 +77,7 @@ namespace ebmcodegen {
             body.index({});
             body.int64_value({});
             body.int_value({});
+            body.io_ref({});
             body.io_statement({});
             body.left({});
             body.lowered_expr({});

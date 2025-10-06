@@ -78,8 +78,13 @@ namespace ebmgen {
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true, false);
                     make_init_visited(identifier_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
+                    ebm::Block block;
+                    block.container.reserve(2);
+                    append(block, identifier_def);
+                    append(block, inner_block_ref);
+                    EBM_BLOCK(outer_block_ref, std::move(block));
                     EBMU_BOOL_TYPE(bool_type);
-                    EBM_COUNTER_LOOP_END(lowered_loop, i, target, inner_block_ref);
+                    EBM_COUNTER_LOOP_END(lowered_loop, i, target, outer_block_ref);
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{lowered_loop};
                     result_loop_stmt.body = inner_block_ref;
@@ -117,15 +122,20 @@ namespace ebmgen {
 
                     EBM_DEFINE_VARIABLE(identifier, ident_ref, counter_type, iter, true, false);
                     make_init_visited(identifier_def);
-                    EBMA_CONVERT_STATEMENT(body, node->body);
+                    EBMA_CONVERT_STATEMENT(inner_body, node->body);
+                    ebm::Block body;
+                    body.container.reserve(2);
+                    append(body, identifier_def);
+                    append(body, inner_body);
+                    EBM_BLOCK(outer_block_ref, std::move(body));
 
                     EBM_INCREMENT(inc, iter, counter_type);
 
-                    EBM_FOR_LOOP(loop_stmt, iter_def, cond, inc, body);
+                    EBM_FOR_LOOP(loop_stmt, iter_def, cond, inc, outer_block_ref);
 
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{loop_stmt};
-                    result_loop_stmt.body = body;
+                    result_loop_stmt.body = inner_body;
                     result_loop_stmt.next_lowered_loop = ebm::LoweredStatementRef{loop_stmt};
                 }
                 else if (ast::as<ast::ArrayType>(bop->right->expr_type)) {
@@ -136,7 +146,14 @@ namespace ebmgen {
                     EBM_DEFINE_VARIABLE(element, ident_ref, element_type, indexed, false, true);
                     make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
-                    EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, inner_block_ref);
+
+                    ebm::Block outer_block;
+                    outer_block.container.reserve(2);
+                    append(outer_block, element_def);
+                    append(outer_block, inner_block_ref);
+                    EBM_BLOCK(outer_block_ref, std::move(outer_block));
+
+                    EBM_COUNTER_LOOP_END(loop_stmt, i, array_size, outer_block_ref);
                     result_loop_stmt.item_var(element_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{loop_stmt};
                     result_loop_stmt.body = inner_block_ref;
@@ -159,8 +176,15 @@ namespace ebmgen {
                     EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, true, true);
                     make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
+
+                    ebm::Block outer_block;
+                    outer_block.container.reserve(2);
+                    append(outer_block, element_def);
+                    append(outer_block, inner_block_ref);
+                    EBM_BLOCK(outer_block_ref, std::move(outer_block));
+
                     EBMU_INT_LITERAL(len, candidate.size());
-                    EBM_COUNTER_LOOP_END(loop_stmt, i, len, inner_block_ref);
+                    EBM_COUNTER_LOOP_END(loop_stmt, i, len, outer_block_ref);
                     append(block, loop_stmt);
                     EBM_BLOCK(block_ref, std::move(block));
                     result_loop_stmt.item_var(element_def);
@@ -496,8 +520,8 @@ namespace ebmgen {
         EBM_IDENTIFIER(decode, dec_id, dec_type);
         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
 
-        EBM_DEFINE_ANONYMOUS_VARIABLE(writer, encoder_input, {});
-        EBM_DEFINE_ANONYMOUS_VARIABLE(reader, decoder_input, {});
+        EBM_DEFINE_PARAMETER(writer, {}, encoder_input);
+        EBM_DEFINE_PARAMETER(reader, {}, decoder_input);
         ctx.state().add_format_encode_decode(node, encode, enc_type, writer, writer_def, decode, dec_type, reader, reader_def);
         const auto _node = ctx.state().set_current_node(node);
         auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, ebm::StatementRef coder_input, GenerateType typ) -> expected<void> {
@@ -594,7 +618,7 @@ namespace ebmgen {
         for (auto& param : node->parameters) {
             EBMA_ADD_IDENTIFIER(param_name_ref, param->ident->ident);
             EBMA_CONVERT_TYPE(param_type_ref, param->field_type);
-            EBM_DEFINE_VARIABLE(param_ref, param_name_ref, param_type_ref, {}, true, false);
+            EBM_DEFINE_PARAMETER(param_ref, param_name_ref, param_type_ref);
             append(func_decl.params, param_ref_def);
         }
         EBMA_CONVERT_STATEMENT(fn_body, node->body);

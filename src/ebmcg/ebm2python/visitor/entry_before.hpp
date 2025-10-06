@@ -8,7 +8,7 @@
     module_: MappingTable
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-#include "ebm/extended_binary_module.hpp"
+
 begin_block = ":";
 end_block = "";
 use_brace_for_condition = false;
@@ -29,3 +29,4 @@ module_.register_default_prefix(ebm::StatementKind::ENUM_DECL, "Enum");
 module_.register_default_prefix(ebm::StatementKind::FUNCTION_DECL, "func");
 module_.register_default_prefix(ebm::StatementKind::VARIABLE_DECL, "var");
 module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");
+module_.register_default_prefix(ebm::StatementKind::PARAMETER_DECL, "param");

@@ -387,6 +387,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("io_ref")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.io_ref(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("io_statement")) {
             StatementRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1291,6 +1300,26 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(ParameterDecl& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("name")) {
+            if(!futils::json::convert_from_json(*got, obj.name)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("param_type")) {
+            if(!futils::json::convert_from_json(*got, obj.param_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(PropertyDecl& obj, const futils::json::JSON& j) {
         if (auto got = j.at("name")) {
             if(!futils::json::convert_from_json(*got, obj.name)) {
@@ -1635,6 +1664,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.offset(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("param_decl")) {
+            ParameterDecl tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.param_decl(std::move(tmp))) {
                 return false;
             }
         }
@@ -2129,16 +2167,6 @@ namespace ebm {
                 return false;
             }
             obj.is_reference(std::move(tmp));
-        }
-        else {
-            return false;
-        }
-        if (auto got = j.at("is_parameter")) {
-            bool tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            obj.is_parameter(std::move(tmp));
         }
         else {
             return false;
@@ -2720,6 +2748,10 @@ namespace ebm {
             }
             if (s == "VARIABLE_DECL") {
                 obj = StatementKind::VARIABLE_DECL;
+                return true;
+            }
+            if (s == "PARAMETER_DECL") {
+                obj = StatementKind::PARAMETER_DECL;
                 return true;
             }
             if (s == "FIELD_DECL") {

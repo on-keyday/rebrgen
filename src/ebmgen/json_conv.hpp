@@ -65,6 +65,8 @@ namespace ebm {
     
     bool from_json(Metadata& obj, const futils::json::JSON& j);
     
+    bool from_json(ParameterDecl& obj, const futils::json::JSON& j);
+    
     bool from_json(PropertyDecl& obj, const futils::json::JSON& j);
     
     bool from_json(PropertyMemberDecl& obj, const futils::json::JSON& j);

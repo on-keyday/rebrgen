@@ -569,21 +569,22 @@ namespace ebm {
         CONTINUE = 15,
         FUNCTION_DECL = 16,
         VARIABLE_DECL = 17,
-        FIELD_DECL = 18,
-        ENUM_DECL = 19,
-        ENUM_MEMBER_DECL = 20,
-        STRUCT_DECL = 21,
-        UNION_DECL = 22,
-        UNION_MEMBER_DECL = 23,
-        PROGRAM_DECL = 24,
-        PROPERTY_DECL = 25,
-        PROPERTY_MEMBER_DECL = 26,
-        METADATA = 27,
-        IMPORT_MODULE = 28,
-        EXPRESSION = 29,
-        ERROR_REPORT = 30,
-        LOWERED_STATEMENTS = 31,
-        SUB_BYTE_RANGE = 32,
+        PARAMETER_DECL = 18,
+        FIELD_DECL = 19,
+        ENUM_DECL = 20,
+        ENUM_MEMBER_DECL = 21,
+        STRUCT_DECL = 22,
+        UNION_DECL = 23,
+        UNION_MEMBER_DECL = 24,
+        PROGRAM_DECL = 25,
+        PROPERTY_DECL = 26,
+        PROPERTY_MEMBER_DECL = 27,
+        METADATA = 28,
+        IMPORT_MODULE = 29,
+        EXPRESSION = 30,
+        ERROR_REPORT = 31,
+        LOWERED_STATEMENTS = 32,
+        SUB_BYTE_RANGE = 33,
     };
     constexpr const char* to_string(StatementKind e, bool origin_form = false) {
         switch(e) {
@@ -605,6 +606,7 @@ namespace ebm {
             case StatementKind::CONTINUE: return origin_form ? "CONTINUE":"CONTINUE" ;
             case StatementKind::FUNCTION_DECL: return origin_form ? "FUNCTION_DECL":"FUNCTION_DECL" ;
             case StatementKind::VARIABLE_DECL: return origin_form ? "VARIABLE_DECL":"VARIABLE_DECL" ;
+            case StatementKind::PARAMETER_DECL: return origin_form ? "PARAMETER_DECL":"PARAMETER_DECL" ;
             case StatementKind::FIELD_DECL: return origin_form ? "FIELD_DECL":"FIELD_DECL" ;
             case StatementKind::ENUM_DECL: return origin_form ? "ENUM_DECL":"ENUM_DECL" ;
             case StatementKind::ENUM_MEMBER_DECL: return origin_form ? "ENUM_MEMBER_DECL":"ENUM_MEMBER_DECL" ;
@@ -681,6 +683,9 @@ namespace ebm {
         }
         if (str == "VARIABLE_DECL") {
             return StatementKind::VARIABLE_DECL;
+        }
+        if (str == "PARAMETER_DECL") {
+            return StatementKind::PARAMETER_DECL;
         }
         if (str == "FIELD_DECL") {
             return StatementKind::FIELD_DECL;
@@ -1141,6 +1146,7 @@ namespace ebm {
     struct ExpressionBody;
     struct Expression;
     struct IfStatement;
+    struct ParameterDecl;
     struct PropertyMemberDecl;
     struct SubByteRange;
     struct Metadata;
@@ -1768,6 +1774,7 @@ namespace ebm {
         struct EBM_API union_struct_31{
             StreamType stream_type{};
             Size num_bytes;
+            StatementRef io_ref;
         };
         struct EBM_API union_struct_32{
             ExpressionRef array_expr;
@@ -1888,6 +1895,10 @@ namespace ebm {
         Varint* int_value();
         bool int_value(Varint&& v);
         bool int_value(const Varint& v);
+        const StatementRef* io_ref() const;
+        StatementRef* io_ref();
+        bool io_ref(StatementRef&& v);
+        bool io_ref(const StatementRef& v);
         const StatementRef* io_statement() const;
         StatementRef* io_statement();
         bool io_statement(StatementRef&& v);
@@ -1992,6 +2003,7 @@ namespace ebm {
             v(v, "index",(*this).index());
             v(v, "int64_value",(*this).int64_value());
             v(v, "int_value",(*this).int_value());
+            v(v, "io_ref",(*this).io_ref());
             v(v, "io_statement",(*this).io_statement());
             v(v, "left",(*this).left());
             v(v, "lowered_expr",(*this).lowered_expr());
@@ -2034,6 +2046,7 @@ namespace ebm {
             v(v, "index",(*this).index());
             v(v, "int64_value",(*this).int64_value());
             v(v, "int_value",(*this).int_value());
+            v(v, "io_ref",(*this).io_ref());
             v(v, "io_statement",(*this).io_statement());
             v(v, "left",(*this).left());
             v(v, "lowered_expr",(*this).lowered_expr());
@@ -2081,6 +2094,7 @@ namespace ebm {
             v(v, "index",visitor_tag<decltype(std::declval<ExpressionBody>().index()),false>{});
             v(v, "int64_value",visitor_tag<decltype(std::declval<ExpressionBody>().int64_value()),false>{});
             v(v, "int_value",visitor_tag<decltype(std::declval<ExpressionBody>().int_value()),false>{});
+            v(v, "io_ref",visitor_tag<decltype(std::declval<ExpressionBody>().io_ref()),false>{});
             v(v, "io_statement",visitor_tag<decltype(std::declval<ExpressionBody>().io_statement()),false>{});
             v(v, "left",visitor_tag<decltype(std::declval<ExpressionBody>().left()),false>{});
             v(v, "lowered_expr",visitor_tag<decltype(std::declval<ExpressionBody>().lowered_expr()),false>{});
@@ -2159,6 +2173,33 @@ namespace ebm {
             v(v, "condition",visitor_tag<decltype(std::declval<IfStatement>().condition),false>{});
             v(v, "then_block",visitor_tag<decltype(std::declval<IfStatement>().then_block),false>{});
             v(v, "else_block",visitor_tag<decltype(std::declval<IfStatement>().else_block),false>{});
+        }
+    };
+    struct EBM_API ParameterDecl{
+        IdentifierRef name;
+        TypeRef param_type;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "ParameterDecl";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "param_type",(*this).param_type);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "param_type",(*this).param_type);
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<ParameterDecl>().name),false>{});
+            v(v, "param_type",visitor_tag<decltype(std::declval<ParameterDecl>().param_type),false>{});
         }
     };
     struct EBM_API PropertyMemberDecl{
@@ -2626,11 +2667,10 @@ namespace ebm {
         IdentifierRef name;
         TypeRef var_type;
         ExpressionRef initial_value;
-        ::futils::binary::flags_t<std::uint8_t, 1, 1, 1, 5> flags_58_;
+        ::futils::binary::flags_t<std::uint8_t, 1, 1, 6> flags_58_;
         bits_flag_alias_method(flags_58_,0,is_constant);
         bits_flag_alias_method(flags_58_,1,is_reference);
-        bits_flag_alias_method(flags_58_,2,is_parameter);
-        bits_flag_alias_method(flags_58_,3,reserved);
+        bits_flag_alias_method(flags_58_,2,reserved);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "VariableDecl";
@@ -2641,7 +2681,6 @@ namespace ebm {
             v(v, "initial_value",(*this).initial_value);
             v(v, "is_constant",(*this).is_constant());
             v(v, "is_reference",(*this).is_reference());
-            v(v, "is_parameter",(*this).is_parameter());
             v(v, "reserved",(*this).reserved());
         }
         template<typename Visitor>
@@ -2651,7 +2690,6 @@ namespace ebm {
             v(v, "initial_value",(*this).initial_value);
             v(v, "is_constant",(*this).is_constant());
             v(v, "is_reference",(*this).is_reference());
-            v(v, "is_parameter",(*this).is_parameter());
             v(v, "reserved",(*this).reserved());
         }
         template<typename T,bool rvalue = false>
@@ -2666,7 +2704,6 @@ namespace ebm {
             v(v, "initial_value",visitor_tag<decltype(std::declval<VariableDecl>().initial_value),false>{});
             v(v, "is_constant",visitor_tag<decltype(std::declval<VariableDecl>().is_constant()),true>{});
             v(v, "is_reference",visitor_tag<decltype(std::declval<VariableDecl>().is_reference()),true>{});
-            v(v, "is_parameter",visitor_tag<decltype(std::declval<VariableDecl>().is_parameter()),true>{});
             v(v, "reserved",visitor_tag<decltype(std::declval<VariableDecl>().reserved()),true>{});
         }
     };
@@ -2968,46 +3005,49 @@ namespace ebm {
             VariableDecl var_decl;
         };
         struct EBM_API union_struct_84{
-            FieldDecl field_decl;
+            ParameterDecl param_decl;
         };
         struct EBM_API union_struct_85{
-            EnumDecl enum_decl;
+            FieldDecl field_decl;
         };
         struct EBM_API union_struct_86{
-            EnumMemberDecl enum_member_decl;
+            EnumDecl enum_decl;
         };
         struct EBM_API union_struct_87{
-            StructDecl struct_decl;
+            EnumMemberDecl enum_member_decl;
         };
         struct EBM_API union_struct_88{
-            Block block;
+            StructDecl struct_decl;
         };
         struct EBM_API union_struct_89{
-            PropertyDecl property_decl;
+            Block block;
         };
         struct EBM_API union_struct_90{
-            PropertyMemberDecl property_member_decl;
+            PropertyDecl property_decl;
         };
         struct EBM_API union_struct_91{
-            Metadata metadata;
+            PropertyMemberDecl property_member_decl;
         };
         struct EBM_API union_struct_92{
+            Metadata metadata;
+        };
+        struct EBM_API union_struct_93{
             IdentifierRef module_name;
             IdentifierRef alias;
         };
-        struct EBM_API union_struct_93{
+        struct EBM_API union_struct_94{
             ErrorReport error_report;
         };
-        struct EBM_API union_struct_94{
+        struct EBM_API union_struct_95{
             ExpressionRef expression;
         };
-        struct EBM_API union_struct_95{
+        struct EBM_API union_struct_96{
             LoweredStatements lowered_statements;
         };
-        struct EBM_API union_struct_96{
+        struct EBM_API union_struct_97{
             SubByteRange sub_byte_range;
         };
-        std::variant<std::monostate, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96> union_variant_65;
+        std::variant<std::monostate, union_struct_66, union_struct_67, union_struct_68, union_struct_69, union_struct_70, union_struct_71, union_struct_72, union_struct_73, union_struct_74, union_struct_75, union_struct_76, union_struct_77, union_struct_78, union_struct_79, union_struct_80, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97> union_variant_65;
         const IdentifierRef* alias() const;
         IdentifierRef* alias();
         bool alias(IdentifierRef&& v);
@@ -3084,6 +3124,10 @@ namespace ebm {
         ExpressionRef* offset();
         bool offset(ExpressionRef&& v);
         bool offset(const ExpressionRef& v);
+        const ParameterDecl* param_decl() const;
+        ParameterDecl* param_decl();
+        bool param_decl(ParameterDecl&& v);
+        bool param_decl(const ParameterDecl& v);
         const StatementRef* previous_assignment() const;
         StatementRef* previous_assignment();
         bool previous_assignment(StatementRef&& v);
@@ -3154,6 +3198,7 @@ namespace ebm {
             v(v, "metadata",(*this).metadata());
             v(v, "module_name",(*this).module_name());
             v(v, "offset",(*this).offset());
+            v(v, "param_decl",(*this).param_decl());
             v(v, "previous_assignment",(*this).previous_assignment());
             v(v, "property_decl",(*this).property_decl());
             v(v, "property_member_decl",(*this).property_member_decl());
@@ -3188,6 +3233,7 @@ namespace ebm {
             v(v, "metadata",(*this).metadata());
             v(v, "module_name",(*this).module_name());
             v(v, "offset",(*this).offset());
+            v(v, "param_decl",(*this).param_decl());
             v(v, "previous_assignment",(*this).previous_assignment());
             v(v, "property_decl",(*this).property_decl());
             v(v, "property_member_decl",(*this).property_member_decl());
@@ -3227,6 +3273,7 @@ namespace ebm {
             v(v, "metadata",visitor_tag<decltype(std::declval<StatementBody>().metadata()),false>{});
             v(v, "module_name",visitor_tag<decltype(std::declval<StatementBody>().module_name()),false>{});
             v(v, "offset",visitor_tag<decltype(std::declval<StatementBody>().offset()),false>{});
+            v(v, "param_decl",visitor_tag<decltype(std::declval<StatementBody>().param_decl()),false>{});
             v(v, "previous_assignment",visitor_tag<decltype(std::declval<StatementBody>().previous_assignment()),false>{});
             v(v, "property_decl",visitor_tag<decltype(std::declval<StatementBody>().property_decl()),false>{});
             v(v, "property_member_decl",visitor_tag<decltype(std::declval<StatementBody>().property_member_decl()),false>{});
@@ -3296,9 +3343,6 @@ namespace ebm {
     };
     struct EBM_API TypeBody{
         TypeKind kind{};
-        struct EBM_API union_struct_99{
-            Varint size;
-        };
         struct EBM_API union_struct_100{
             Varint size;
         };
@@ -3306,43 +3350,46 @@ namespace ebm {
             Varint size;
         };
         struct EBM_API union_struct_102{
+            Varint size;
         };
         struct EBM_API union_struct_103{
-            TypeRef element_type;
-            Varint length;
         };
         struct EBM_API union_struct_104{
             TypeRef element_type;
+            Varint length;
         };
         struct EBM_API union_struct_105{
-            StatementRef id;
+            TypeRef element_type;
         };
         struct EBM_API union_struct_106{
             StatementRef id;
         };
         struct EBM_API union_struct_107{
             StatementRef id;
-            TypeRef base_type;
         };
         struct EBM_API union_struct_108{
+            StatementRef id;
+            TypeRef base_type;
+        };
+        struct EBM_API union_struct_109{
             TypeRef common_type;
             Types members;
             StatementRef related_field;
         };
-        struct EBM_API union_struct_109{
+        struct EBM_API union_struct_110{
             TypeRef inner_type;
         };
-        struct EBM_API union_struct_110{
+        struct EBM_API union_struct_111{
             TypeRef pointee_type;
         };
-        struct EBM_API union_struct_111{
+        struct EBM_API union_struct_112{
             TypeRef base_type;
         };
-        struct EBM_API union_struct_112{
+        struct EBM_API union_struct_113{
             TypeRef return_type;
             Types params;
         };
-        std::variant<std::monostate, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112> union_variant_98;
+        std::variant<std::monostate, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112, union_struct_113> union_variant_99;
         const TypeRef* base_type() const;
         TypeRef* base_type();
         bool base_type(TypeRef&& v);

@@ -188,7 +188,7 @@ namespace ebmgen {
                          (field->arguments && field->arguments->sub_byte_length)  // this means that the field is a sub-byte field
                 ) {
                     const auto single_byte = get_size(8);
-                    EBM_CAN_READ_STREAM(can_read, ebm::StreamType::INPUT, single_byte);
+                    EBM_CAN_READ_STREAM(can_read, io_desc.io_ref, ebm::StreamType::INPUT, single_byte);
                     MAYBE(element_decoder, underlying_decoder());
                     EBM_WHILE_LOOP(loop, can_read, element_decoder);
                     cond_loop = loop;

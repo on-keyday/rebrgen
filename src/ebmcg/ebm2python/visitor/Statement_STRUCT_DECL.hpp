@@ -26,6 +26,7 @@ CodeWriter w;
 auto name = this->module_.get_identifier_or(item_id);
 
 w.writeln("class ", name, ":");
+size_t size = w.out().size();
 auto scope = w.indent_scope();
 
 for (auto& field_ref : struct_decl.fields.container) {
@@ -46,6 +47,10 @@ if (!is_nil(struct_decl.decode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(decode_fn_stmt, this->module_.get_statement(struct_decl.decode_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
     w.write_unformatted(res.to_string());
+}
+
+if (w.out().size() == size) {
+    w.writeln("pass");  // If the class body is empty, we just pass
 }
 
 w.writeln();  // Add a blank line for readability.

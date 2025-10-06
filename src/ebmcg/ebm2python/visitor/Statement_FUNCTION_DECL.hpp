@@ -31,18 +31,13 @@ if (!is_nil(func_decl.parent_format)) {
 if (func_decl.params.container.empty() == false) {
     for (auto& param_stmt_ref : func_decl.params.container) {
         MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
-        if (param_stmt.body.kind == ebm::StatementKind::VARIABLE_DECL) {
-            auto& var_decl = *param_stmt.body.var_decl();
-            auto param_name = this->module_.get_identifier_or(param_stmt_ref, "param");
-            MAYBE(param_type_str, visit_Type(*this, var_decl.var_type));  // Correctly extract the string value
-            if (!params_str.empty()) {
-                params_str += ", ";
-            }
-            params_str += param_name + ": " + param_type_str.to_string();
+        MAYBE(param_decl, param_stmt.body.param_decl());
+        auto param_name = this->module_.get_identifier_or(param_stmt_ref);
+        MAYBE(param_type_str, visit_Type(*this, param_decl.param_type));  // Correctly extract the string value
+        if (!params_str.empty()) {
+            params_str += ", ";
         }
-        else {
-            return unexpect_error("Function parameter is not a VARIABLE_DECL: {}", to_string(param_stmt.body.kind));
-        }
+        params_str += param_name + ": " + param_type_str.to_string();
     }
 }
 

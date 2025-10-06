@@ -23,6 +23,16 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::StatementBody make_parameter_decl(ebm::IdentifierRef name, ebm::TypeRef type) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementKind::PARAMETER_DECL;
+        ebm::ParameterDecl param_decl;
+        param_decl.name = name;
+        param_decl.param_type = type;
+        body.param_decl(std::move(param_decl));
+        return body;
+    }
+
     ebm::ExpressionBody make_identifier_expr(ebm::StatementRef id, ebm::TypeRef type) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::IDENTIFIER;
@@ -259,12 +269,13 @@ namespace ebmgen {
         return size;
     }
 
-    ebm::ExpressionBody make_can_read_stream(ebm::TypeRef type, ebm::StreamType stream_type, ebm::Size num_bytes) {
+    ebm::ExpressionBody make_can_read_stream(ebm::TypeRef type, ebm::StatementRef io_ref, ebm::StreamType stream_type, ebm::Size num_bytes) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::CAN_READ_STREAM;
         body.type = type;
         body.stream_type(stream_type);
         body.num_bytes(num_bytes);
+        body.io_ref(io_ref);
         return body;
     }
 

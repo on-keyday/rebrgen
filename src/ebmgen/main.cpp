@@ -67,7 +67,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         libs2j_path = env_libs2j_path;
         bind_help(ctx);
         ctx.VarString<true>(&input, "input,i", "input file", "FILE");
-        ctx.VarMap(&input_format, "input-format", "input format (default: json-ast)", "{json-ast,ebm,bgn}",
+        ctx.VarMap(&input_format, "input-format", "input format (default: decided by file extension)", "{json-ast,ebm,bgn}",
                    std::map<std::string, InputFormat>{
                        {"bgn", InputFormat::BGN},
                        {"ebm", InputFormat::EBM},

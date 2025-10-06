@@ -18,3 +18,4 @@ std::map<ebm::BinaryOp, std::string> alt_binary_op;
 std::map<ebm::UnaryOp, std::string> alt_unary_op;
 std::string metadata_comment_prefix = "/*";
 std::string metadata_comment_suffix = "*/";
+std::string self_value = "this";

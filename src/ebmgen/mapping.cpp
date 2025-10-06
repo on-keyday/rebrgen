@@ -127,13 +127,6 @@ namespace ebmgen {
         return get_statement(ebm::StatementRef{module_.max_id.id});
     }
 
-    std::string MappingTable::get_identifier_or(const ebm::IdentifierRef& ref, const ebm::AnyRef& default_ref, std::string_view prefix) const {
-        if (const ebm::Identifier* id = get_identifier(ref)) {
-            return id->body.data;
-        }
-        return std::format("{}{}", prefix, get_id(default_ref));
-    }
-
     const ebm::Identifier* MappingTable::get_identifier(const ebm::StatementRef& ref) const {
         auto stmt = get_statement(ref);
         if (!stmt) {
@@ -153,9 +146,19 @@ namespace ebmgen {
         return get_identifier(ident);
     }
 
+    std::string_view MappingTable::get_default_prefix(ebm::StatementRef ref) const {
+        if (auto stmt = get_statement(ref)) {
+            return get_default_prefix(stmt->body.kind);
+        }
+        return "tmp";
+    }
+
     std::string MappingTable::get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix) const {
         if (const ebm::Identifier* id = get_identifier(ref)) {
             return id->body.data;
+        }
+        if (prefix.empty()) {
+            prefix = get_default_prefix(ref);
         }
         return std::format("{}{}", prefix, get_id(ref));
     }

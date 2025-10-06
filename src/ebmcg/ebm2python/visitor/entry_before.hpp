@@ -8,6 +8,7 @@
     module_: MappingTable
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
+#include "ebm/extended_binary_module.hpp"
 begin_block = ":";
 end_block = "";
 use_brace_for_condition = false;
@@ -22,3 +23,9 @@ alt_unary_op = {
 };
 metadata_comment_prefix = "#";
 metadata_comment_suffix = "";
+self_value = "self";
+module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
+module_.register_default_prefix(ebm::StatementKind::ENUM_DECL, "Enum");
+module_.register_default_prefix(ebm::StatementKind::FUNCTION_DECL, "func");
+module_.register_default_prefix(ebm::StatementKind::VARIABLE_DECL, "var");
+module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");

@@ -42,7 +42,7 @@ while (!is_nil(els_block)) {
     if (!use_elif) {
         w.write(" else ");
     }
-    auto kind = module_.get_statement_op(els_block);
+    auto kind = module_.get_statement_kind(els_block);
     if (kind == ebm::StatementKind::IF_STATEMENT) {
         MAYBE(next_if_stmt, module_.get_statement(els_block));
         MAYBE(next_if, next_if_stmt.body.if_statement());

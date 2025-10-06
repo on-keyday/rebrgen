@@ -23,7 +23,7 @@
 // This code is included within the visit_Statement_STRUCT_DECL function.
 // We can use variables like `visitor` and `struct_decl` directly.
 CodeWriter w;
-auto name = this->module_.get_identifier_or(struct_decl.name, item_id, "Struct");
+auto name = this->module_.get_identifier_or(item_id);
 
 w.writeln("class ", name, ":");
 auto scope = w.indent_scope();

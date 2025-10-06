@@ -39,29 +39,22 @@ namespace ebmgen {
             return std::nullopt;
         }
 
-        std::optional<ebm::StatementKind> get_statement_op(const ebm::StatementRef& ref) const {
+        std::optional<ebm::StatementKind> get_statement_kind(const ebm::StatementRef& ref) const {
             if (const auto* stmt = get_statement(ref)) {
                 return stmt->body.kind;
             }
             return std::nullopt;
         }
 
-        std::optional<ebm::ExpressionKind> get_expression_op(const ebm::ExpressionRef& ref) const {
+        std::optional<ebm::ExpressionKind> get_expression_kind(const ebm::ExpressionRef& ref) const {
             if (const auto* expr = get_expression(ref)) {
                 return expr->body.kind;
             }
             return std::nullopt;
         }
 
-        std::string get_identifier_or(const ebm::IdentifierRef& ref, const ebm::AnyRef& default_ref, std::string_view prefix = "tmp") const;
-
-        template <AnyRef T>
-        std::string get_identifier_or(const ebm::IdentifierRef& ref, const T& default_ref, std::string_view prefix = "tmp") const {
-            return get_identifier_or(ref, to_any_ref(default_ref), prefix);
-        }
-
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
-        std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "tmp") const;
+        std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "") const;
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
 
@@ -78,6 +71,20 @@ namespace ebmgen {
 
         const std::vector<InverseRef>* get_inverse_ref(const ebm::AnyRef& ref) const;
 
+        void register_default_prefix(ebm::StatementKind kind, std::string_view prefix) {
+            default_identifier_prefix_[kind] = prefix;
+        }
+
+        std::string_view get_default_prefix(ebm::StatementRef ref) const;
+
+        std::string_view get_default_prefix(ebm::StatementKind kind) const {
+            auto found = default_identifier_prefix_.find(kind);
+            if (found != default_identifier_prefix_.end()) {
+                return found->second;
+            }
+            return "tmp";
+        }
+
        private:
         const ebm::ExtendedBinaryModule& module_;
         // Caches for faster lookups
@@ -87,6 +94,7 @@ namespace ebmgen {
         std::unordered_map<std::uint64_t, const ebm::Statement*> statement_map_;
         std::unordered_map<std::uint64_t, const ebm::Expression*> expression_map_;
         std::unordered_map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
+        std::unordered_map<ebm::StatementKind, std::string> default_identifier_prefix_;
         void build_maps();
     };
 }  // namespace ebmgen

@@ -93,4 +93,27 @@ namespace ebmcodegen::util {
         MAYBE(expr, visit_Expression(visitor, bool_literal));
         return expr.to_string();
     }
+
+    ebmgen::expected<std::vector<std::pair<ebm::StatementKind, std::string>>> get_identifier_layer(auto&& visitor, ebm::StatementRef stmt) {
+        MAYBE(statement, visitor.module_.get_statement(stmt));
+        auto ident = visitor.module_.get_identifier_or(stmt);
+        std::vector<std::pair<ebm::StatementKind, std::string>> layers;
+        if (const ebm::StructDecl* decl = statement.body.struct_decl()) {
+            if (!ebmgen::is_nil(decl->related_variant)) {
+                MAYBE(type, visitor.module_.get_type(decl->related_variant));
+                MAYBE(upper_field, type.body.related_field());
+                MAYBE(upper_layers, get_identifier_layer(visitor, upper_field));
+                layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
+                return layers;
+            }
+        }
+        if (const ebm::FieldDecl* field = statement.body.field_decl()) {
+            if (!ebmgen::is_nil(field->parent_struct)) {
+                MAYBE(upper_layers, get_identifier_layer(visitor, field->parent_struct));
+                layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
+            }
+        }
+        layers.emplace_back(statement.body.kind, ident);
+        return layers;
+    }
 }  // namespace ebmcodegen::util

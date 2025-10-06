@@ -428,10 +428,11 @@ namespace ebmgen {
             else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
                 ebm::StatementBody stmt;
                 stmt.kind = ebm::StatementKind::STRUCT_DECL;
+                MAYBE(name_ref, ctx.repository().new_statement_id());
+                ctx.state().add_visited_node(node, name_ref);
                 MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, node, related_variant));
                 stmt.struct_decl(std::move(struct_decl));
-                EBMA_ADD_STATEMENT(name_ref, std::move(stmt));
-                ctx.state().add_visited_node(node, name_ref);
+                EBMA_ADD_STATEMENT(_, name_ref, std::move(stmt));
                 return name_ref;
             }
             else {

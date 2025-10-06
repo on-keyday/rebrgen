@@ -12,5 +12,20 @@
     id: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-/*license*/
-return module_.get_identifier_or(id);
+
+MAYBE(layers, get_identifier_layer(*this, id));
+
+std::string result;
+for (auto& layer : layers) {
+    if (!result.empty()) {
+        result += ".";
+    }
+    if (layer.first == ebm::StatementKind::STRUCT_DECL) {
+        result += self_value;
+    }
+    else {
+        result += layer.second;
+    }
+}
+
+return result;

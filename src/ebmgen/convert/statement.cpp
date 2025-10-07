@@ -383,10 +383,39 @@ namespace ebmgen {
         return {};
     }
 
+    expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, const std::shared_ptr<ast::StructType>& s) {
+        if (ctx.state().get_current_generate_type() == ebm::GenerateType::Normal) {
+            return std::nullopt;
+        }
+        auto alt_type = ctx.state().get_cached_type(s);
+        if (is_nil(alt_type)) {
+            return std::nullopt;
+        }
+        MAYBE(struct_type, ctx.repository().get_type(alt_type));
+        MAYBE(base_struct_id, struct_type.body.id());
+        MAYBE(base_struct, ctx.repository().get_statement(base_struct_id));
+        MAYBE(struct_decl, base_struct.body.struct_decl());
+        MAYBE(related_variant, ctx.repository().get_type(struct_decl.related_variant));
+        MAYBE(related_field, related_variant.body.related_field());
+        ebm::InitCheck check;
+        check.stream_type = ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::StreamType::OUTPUT : ebm::StreamType::INPUT;
+        check.target_field = related_field;
+        check.expect_type = alt_type;
+        ebm::StatementBody init_check;
+        init_check.kind = ebm::StatementKind::INIT_CHECK;
+        init_check.init_check(std::move(check));
+        EBMA_ADD_STATEMENT(init_check_ref, std::move(init_check));
+        return init_check_ref;
+    }
+
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::BLOCK;
         ebm::Block block_body;
         const auto _scope = ctx.state().set_current_block(&block_body);
+        MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
+        if (variant_alt) {
+            append(block_body, *variant_alt);
+        }
         for (auto& element : node->elements) {
             EBMA_CONVERT_STATEMENT(stmt_ref, element);
             append(block_body, stmt_ref);
@@ -621,6 +650,7 @@ namespace ebmgen {
             EBM_DEFINE_PARAMETER(param_ref, param_name_ref, param_type_ref);
             append(func_decl.params, param_ref_def);
         }
+        const auto _mode = ctx.state().set_current_generate_type(typ);
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
         func_decl.body = fn_body;
         return func_decl;
@@ -647,12 +677,24 @@ namespace ebmgen {
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementRef id, ebm::StatementBody& body) {
-        expected<void> result;
-        ast::visit(node->statement, [&](auto&& n) {
-            using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node->statement)>, std::shared_ptr>::template param_at<0>;
-            result = convert_statement_impl(n, id, body);
-        });
-        return result;
+        MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
+        if (variant_alt) {
+            ebm::Block block_body;
+            append(block_body, *variant_alt);
+            EBMA_CONVERT_STATEMENT(stmt_ref, node->statement);
+            append(block_body, stmt_ref);
+            body.kind = ebm::StatementKind::BLOCK;
+            body.block(std::move(block_body));
+            return {};
+        }
+        else {
+            expected<void> result;
+            ast::visit(node->statement, [&](auto&& n) {
+                using T = typename futils::helper::template_instance_of_t<std::decay_t<decltype(node->statement)>, std::shared_ptr>::template param_at<0>;
+                result = convert_statement_impl(n, id, body);
+            });
+            return result;
+        }
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::State>& node, ebm::StatementRef id, ebm::StatementBody& body) {

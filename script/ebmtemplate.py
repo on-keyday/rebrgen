@@ -80,6 +80,26 @@ def run_save_template(tool_path, template_target, lang):
 
 def run_update_hooks(tool_path, lang):
     """Update all existing hook files in a language directory."""
+    if lang == "all":
+        try:
+            with open("build_config.json") as f:
+                build_config = json.load(f)
+            target_languages = build_config.get("TARGET_LANGUAGE", [])
+            if not target_languages:
+                print(
+                    "Error: No target languages defined in build_config.json.",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            for lang in target_languages:
+                if lang == "all":
+                    continue  # avoid infinity recursion
+                run_update_hooks(tool_path, lang)
+            return
+        except Exception as e:
+            print(f"Error: Failed to read build_config.json: {e}", file=sys.stderr)
+            sys.exit(1)
+
     if lang == "default_codegen":
         visitor_dir = "src/ebmcodegen/default_codegen_visitor"
     else:
@@ -256,7 +276,7 @@ def list_defined_templates(lang: str):
         if not added:
             non_template_files.add(os.path.join(visitor_dir, filename))
     defined_hooks = dict(sorted(defined_hooks.items()))
-    non_template_files = sorted(non_template_files)
+    non_template_files = sorted(list(non_template_files))
     print(
         f"Implemented hooks in '{visitor_dir}' (Implemented/Available: {len(defined_hooks)}/{len(available_hooks)}):"
     )

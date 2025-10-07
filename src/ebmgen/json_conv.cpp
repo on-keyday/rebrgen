@@ -1001,6 +1001,34 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(InitCheck& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("stream_type")) {
+            if(!futils::json::convert_from_json(*got, obj.stream_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("target_field")) {
+            if(!futils::json::convert_from_json(*got, obj.target_field)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("expect_type")) {
+            if(!futils::json::convert_from_json(*got, obj.expect_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(Loc& obj, const futils::json::JSON& j) {
         if (auto got = j.at("ident")) {
             if(!futils::json::convert_from_json(*got, obj.ident)) {
@@ -1601,6 +1629,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.if_statement(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("init_check")) {
+            InitCheck tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.init_check(std::move(tmp))) {
                 return false;
             }
         }
@@ -2828,6 +2865,10 @@ namespace ebm {
             }
             if (s == "SUB_BYTE_RANGE") {
                 obj = StatementKind::SUB_BYTE_RANGE;
+                return true;
+            }
+            if (s == "INIT_CHECK") {
+                obj = StatementKind::INIT_CHECK;
                 return true;
             }
             return false;

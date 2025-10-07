@@ -44,9 +44,24 @@ namespace ebmcodegen::util {
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
     }
 
+    auto as_IDENTIFIER(auto&& visitor, ebm::StatementRef stmt) {
+        ebm::Expression expr;
+        expr.body.kind = ebm::ExpressionKind::IDENTIFIER;
+        expr.body.id(stmt);
+        return visit_Expression(visitor, expr);
+    }
+
+    auto as_DEFAULT_VALUE(auto&& visitor, ebm::TypeRef typ) {
+        ebm::Expression expr;
+        expr.body.kind = ebm::ExpressionKind::DEFAULT_VALUE;
+        expr.body.type = typ;
+        return visit_Expression(visitor, expr);
+    }
+
     struct DefaultValueOption {
         std::string_view object_init = "{}";
         std::string_view vector_init = "[]";
+        std::string_view bytes_init;
     };
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
@@ -71,13 +86,19 @@ namespace ebmcodegen::util {
             case ebm::TypeKind::ENUM:
             case ebm::TypeKind::STRUCT:
             case ebm::TypeKind::RECURSIVE_STRUCT: {
-                MAYBE(id, type.body.id());
-                return std::format("{}{}", module_.get_identifier_or(id), option.object_init);
+                MAYBE(ident, as_IDENTIFIER(visitor, *type.body.id()));
+                return std::format("{}{}", ident.to_string(), option.object_init);
             }
-            case ebm::TypeKind::ARRAY: {
-                return std::format("{}", option.vector_init);
-            }
+            case ebm::TypeKind::ARRAY:
             case ebm::TypeKind::VECTOR: {
+                MAYBE(elem_type_ref, type.body.element_type());
+                MAYBE(elem_type, module_.get_type(elem_type_ref));
+                if (elem_type.body.kind == ebm::TypeKind::UINT && elem_type.body.size() && elem_type.body.size()->value() == 8) {
+                    if (option.bytes_init.size()) {
+                        return std::format("{}", option.bytes_init);
+                    }
+                    // use default vector init
+                }
                 return std::format("{}", option.vector_init);
             }
             default: {
@@ -94,23 +115,43 @@ namespace ebmcodegen::util {
         return expr.to_string();
     }
 
-    ebmgen::expected<std::vector<std::pair<ebm::StatementKind, std::string>>> get_identifier_layer(auto&& visitor, ebm::StatementRef stmt) {
+    enum class LayerState {
+        root,
+        as_type,
+        as_expr,
+    };
+
+    ebmgen::expected<std::vector<std::pair<ebm::StatementKind, std::string>>> get_identifier_layer(auto&& visitor, ebm::StatementRef stmt, LayerState state = LayerState::root) {
         MAYBE(statement, visitor.module_.get_statement(stmt));
+        if (state == LayerState::root) {
+            if (statement.body.kind == ebm::StatementKind::STRUCT_DECL ||
+                statement.body.kind == ebm::StatementKind::ENUM_DECL) {
+                state = LayerState::as_type;
+            }
+            else {
+                state = LayerState::as_expr;
+            }
+        }
         auto ident = visitor.module_.get_identifier_or(stmt);
         std::vector<std::pair<ebm::StatementKind, std::string>> layers;
         if (const ebm::StructDecl* decl = statement.body.struct_decl()) {
             if (!ebmgen::is_nil(decl->related_variant)) {
                 MAYBE(type, visitor.module_.get_type(decl->related_variant));
                 MAYBE(upper_field, type.body.related_field());
-                MAYBE(upper_layers, get_identifier_layer(visitor, upper_field));
+                MAYBE(upper_layers, get_identifier_layer(visitor, upper_field, state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
-                return layers;
+                if (state == LayerState::as_expr) {
+                    return layers;
+                }
             }
         }
         if (const ebm::FieldDecl* field = statement.body.field_decl()) {
             if (!ebmgen::is_nil(field->parent_struct)) {
-                MAYBE(upper_layers, get_identifier_layer(visitor, field->parent_struct));
+                MAYBE(upper_layers, get_identifier_layer(visitor, field->parent_struct, state));
                 layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
+            }
+            if (state == LayerState::as_type) {
+                return layers;
             }
         }
         layers.emplace_back(statement.body.kind, ident);
@@ -131,6 +172,19 @@ namespace ebmcodegen::util {
                     result.push_back(stmt_str.to_string());
                 }
             }
+        }
+        return result;
+    }
+
+    std::string join(auto&& joint, auto&& vec) {
+        std::string result;
+        bool first = true;
+        for (auto&& v : vec) {
+            if (!first) {
+                result += joint;
+            }
+            result += v;
+            first = false;
         }
         return result;
     }

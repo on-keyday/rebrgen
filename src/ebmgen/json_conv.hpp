@@ -45,6 +45,8 @@ namespace ebm {
     
     bool from_json(IfStatement& obj, const futils::json::JSON& j);
     
+    bool from_json(InitCheck& obj, const futils::json::JSON& j);
+    
     bool from_json(Loc& obj, const futils::json::JSON& j);
     
     bool from_json(LoopFlowControl& obj, const futils::json::JSON& j);

@@ -4593,6 +4593,135 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_INIT_CHECK = requires(Visitor v) {
+         { v.visit_Statement_INIT_CHECK(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().init_check()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_INIT_CHECK_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().init_check()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_INIT_CHECK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_before.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_validate.hpp")
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_validate.hpp"
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_post_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_after.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        if (!in.body.init_check()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::init_check");
+        }
+        auto& init_check = *in.body.init_check();
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_before.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_visit.hpp")
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_visit.hpp"
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_post_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_after.hpp")
+        #include "visitor/Statement_INIT_CHECK_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_INIT_CHECK<Visitor>) {
+            result = visitor.visit_Statement_INIT_CHECK(is_nil(alias_ref) ? in.id : alias_ref,kind,init_check);
+        }
+        else if constexpr (has_visitor_Statement_INIT_CHECK_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,init_check);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_post_visit_before.hpp")
+        #include "visitor/Statement_INIT_CHECK_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_post_visit.hpp")
+        #include "visitor/Statement_INIT_CHECK_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_post_visit.hpp")
+        #if __has_include("visitor/Statement_INIT_CHECK_post_visit_pre_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_post_visit.hpp"
+        #if __has_include("visitor/Statement_INIT_CHECK_post_visit_post_default.hpp")
+        #include "visitor/Statement_INIT_CHECK_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_INIT_CHECK_post_visit_after.hpp")
+        #include "visitor/Statement_INIT_CHECK_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_dispatch_before.hpp")
         #include "visitor/Statement_dispatch_before.hpp"
@@ -4680,6 +4809,8 @@ namespace ebm2python {
             return dispatch_Statement_LOWERED_STATEMENTS(visitor,in,alias_ref);
         case ebm::StatementKind::SUB_BYTE_RANGE:
             return dispatch_Statement_SUB_BYTE_RANGE(visitor,in,alias_ref);
+        case ebm::StatementKind::INIT_CHECK:
+            return dispatch_Statement_INIT_CHECK(visitor,in,alias_ref);
         default:
             return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
         }
@@ -12832,6 +12963,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Statement_INIT_CHECK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::InitCheck& init_check) {
+            #if __has_include("visitor/Statement_INIT_CHECK_before.hpp")
+            #include "visitor/Statement_INIT_CHECK_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_INIT_CHECK.hpp")
+            #include "visitor/Statement_INIT_CHECK.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK.hpp")
+            #if __has_include("visitor/Statement_INIT_CHECK_pre_default.hpp")
+            #include "visitor/Statement_INIT_CHECK_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK.hpp"
+            #if __has_include("visitor/Statement_INIT_CHECK_post_default.hpp")
+            #include "visitor/Statement_INIT_CHECK_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_INIT_CHECK_after.hpp")
+            #include "visitor/Statement_INIT_CHECK_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Statement_INIT_CHECK {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Expression_LITERAL_INT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Varint& int_value) {
             #if __has_include("visitor/Expression_LITERAL_INT_before.hpp")
             #include "visitor/Expression_LITERAL_INT_before.hpp"
@@ -14163,6 +14318,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_ERROR_REPORT<Visitor>, "Visitor does not implement visit_Statement_ERROR_REPORT");
     static_assert(has_visitor_Statement_LOWERED_STATEMENTS<Visitor>, "Visitor does not implement visit_Statement_LOWERED_STATEMENTS");
     static_assert(has_visitor_Statement_SUB_BYTE_RANGE<Visitor>, "Visitor does not implement visit_Statement_SUB_BYTE_RANGE");
+    static_assert(has_visitor_Statement_INIT_CHECK<Visitor>, "Visitor does not implement visit_Statement_INIT_CHECK");
     static_assert(has_visitor_Expression_LITERAL_INT<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT");
     static_assert(has_visitor_Expression_LITERAL_INT64<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT64");
     static_assert(has_visitor_Expression_LITERAL_BOOL<Visitor>, "Visitor does not implement visit_Expression_LITERAL_BOOL");

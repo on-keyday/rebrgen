@@ -14,6 +14,8 @@ std::string empty_block_marker = "";
 std::string default_object_brace = "{}";
 std::string default_vector_brace = "[]";
 std::string variable_define_keyword = "";
+bool variable_with_type = true;
+std::string variable_type_separator = ":";
 std::map<ebm::BinaryOp, std::string> alt_binary_op;
 std::map<ebm::UnaryOp, std::string> alt_unary_op;
 std::string metadata_comment_prefix = "/*";

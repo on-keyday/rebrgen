@@ -14,6 +14,12 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 MAYBE(layers, get_identifier_layer(*this, id));
+bool as_type = false;
+if (!layers.empty() &&
+    (layers.back().first == ebm::StatementKind::STRUCT_DECL ||
+     layers.back().first == ebm::StatementKind::ENUM_DECL)) {
+    as_type = true;
+}
 
 std::string result;
 for (auto& layer : layers) {
@@ -21,7 +27,12 @@ for (auto& layer : layers) {
         result += ".";
     }
     if (layer.first == ebm::StatementKind::STRUCT_DECL) {
-        result += self_value;
+        if (as_type) {
+            result += layer.second;
+        }
+        else {
+            result += self_value;
+        }
     }
     else {
         result += layer.second;

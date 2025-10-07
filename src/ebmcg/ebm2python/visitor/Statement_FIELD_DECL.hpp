@@ -25,7 +25,7 @@ for (auto& member : struct_members) {
 }
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value
 std::string type = type_str_val.to_string();
-type = "\"" + type + "\"";               // Use forward reference for structs
-w.writeln(name, ": ", type, " = None");  // Use the extracted string value
+type = "\"" + type + "\"";    // Use forward reference for structs
+w.writeln(name, ": ", type);  // Use the extracted string value
 
 return w.out();

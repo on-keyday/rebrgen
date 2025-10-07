@@ -422,6 +422,7 @@ enum StatementKind:
     ERROR_REPORT # Explicit error reporting; initial raise of an error
     LOWERED_STATEMENTS # lowered statements
     SUB_BYTE_RANGE
+    INIT_CHECK # check the field is initialized for io operation (for example, check whether variant has correct member for this encoding)
 
 
 
@@ -478,6 +479,11 @@ format IOData:
 
 format Condition:
     cond :ExpressionRef
+
+format InitCheck:
+    stream_type :StreamType
+    target_field :StatementRef
+    expect_type :TypeRef
 
 format StatementBody:
     kind :StatementKind
@@ -553,6 +559,8 @@ format StatementBody:
             lowered_statements :LoweredStatements # Lowered expressions
         StatementKind.SUB_BYTE_RANGE:
             sub_byte_range :SubByteRange
+        StatementKind.INIT_CHECK:
+            init_check :InitCheck
 
 format Expressions:
     len :Varint

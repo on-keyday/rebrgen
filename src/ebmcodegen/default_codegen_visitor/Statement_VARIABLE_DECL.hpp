@@ -35,6 +35,9 @@ if (variable_define_keyword.size()) {
     w.write(variable_define_keyword, " ");
 }
 w.write(name);
+if (variable_with_type) {
+    w.write(variable_type_separator, " ", type_str_val.to_string());
+}
 if (initial_value) {
     w.write(" = ", initial_value->to_string());
 }

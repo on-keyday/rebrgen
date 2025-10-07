@@ -50,9 +50,8 @@ switch (type.body.kind) {
     case ebm::TypeKind::STRUCT:
     case ebm::TypeKind::RECURSIVE_STRUCT: {  // Handle RECURSIVE_STRUCT here as well
         // For structs, get the name of the struct
-        MAYBE(struct_decl_stmt, module_.get_statement(*type.body.id()));
-        auto struct_name = module_.get_identifier_or(struct_decl_stmt.id);
-        return struct_name;
+        MAYBE(layers, get_identifier_layer(visitor, *type.body.id()));
+        return join(".", layers | std::views::values);
     }
     case ebm::TypeKind::VOID:
         return "None";
@@ -113,7 +112,7 @@ switch (type.body.kind) {
     case ebm::TypeKind::PTR: {
         // For pointers, return Any or a specific type if context allows
         MAYBE(pointee_type_str, type_to_python_str(*type.body.pointee_type()));
-        return "Any";  // Or "Pointer[" + pointee_type_str + "]" if a custom type is defined
+        return "Optional[" + pointee_type_str + "]";  // Using Optional to represent nullable pointers
     }
     case ebm::TypeKind::PROPERTY_SETTER_RETURN: {
         return "bool";

@@ -48,6 +48,7 @@ namespace ebmgen {
                 body.id(member_type_ref);
                 EBMA_ADD_TYPE(member_type_ref2, std::move(body));
                 append(members, member_type_ref2);
+                ctx.state().cache_type(struct_member, member_type_ref2);
             }
             body.members(std::move(members));
             EBMA_ADD_TYPE(type_ref, varint_id, std::move(body));

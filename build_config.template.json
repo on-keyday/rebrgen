@@ -8,5 +8,6 @@
     "BUILD_OLD_BMGEN": false,
     "AUTO_SETUP_BRGEN": false,
     "AUTO_SETUP_FUTILS": true,
-    "AUTO_SETUP_EMSDK": false
+    "AUTO_SETUP_EMSDK": false,
+    "TARGET_LANGUAGE": ["default_codegen"]
 }

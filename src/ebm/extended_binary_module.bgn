@@ -343,6 +343,7 @@ enum SubByteRangeType:
     expression
 
 format SubByteRange:  
+    stream_type :StreamType
     range_type :SubByteRangeType
     match range_type:
         SubByteRangeType.bytes:
@@ -353,6 +354,7 @@ format SubByteRange:
         SubByteRangeType.expression:
             expression :ExpressionRef
     io_ref :StatementRef
+    parent_io_ref :StatementRef
     io_statement :StatementRef
 
 

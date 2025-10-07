@@ -37,7 +37,7 @@ if (func_decl.params.container.empty() == false) {
         if (!params_str.empty()) {
             params_str += ", ";
         }
-        params_str += param_name + ": " + param_type_str.to_string();
+        params_str += param_name + ": \"" + param_type_str.to_string() + "\"";
     }
 }
 

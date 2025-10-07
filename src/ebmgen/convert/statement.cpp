@@ -670,7 +670,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::StatementBody> with_io_changed(ConverterContext& ctx, ebm::ExpressionRef sub_byte_io, ebm::StatementRef sub_byte_io_def, bool is_enc, auto&& do_io) {
+    expected<ebm::StatementBody> with_io_changed(ConverterContext& ctx, ebm::StatementRef* parent_io_def, ebm::ExpressionRef sub_byte_io, ebm::StatementRef sub_byte_io_def, bool is_enc, auto&& do_io) {
         // this changed io_.[encoder|decoder]_input[def] are used in [encode|decode]_field_type
         MAYBE(io_, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
         auto& original = (is_enc ? io_.encoder_input : io_.decoder_input);
@@ -679,6 +679,7 @@ namespace ebmgen {
             (is_enc ? io_.encoder_input : io_.decoder_input) = original;
             (is_enc ? io_.encoder_input_def : io_.decoder_input_def) = original_def;
         });
+        *parent_io_def = original_def;
         original = sub_byte_io;
         original_def = sub_byte_io_def;
         return do_io();
@@ -719,6 +720,7 @@ namespace ebmgen {
                 sub_range_id = own_id;
             }
             auto sr = ebm::SubByteRange{.range_type = ebm::SubByteRangeType::bytes};
+            sr.stream_type = is_enc ? ebm::StreamType::OUTPUT : ebm::StreamType::INPUT;
             if (node->arguments->sub_byte_length) {
                 EBMA_CONVERT_EXPRESSION(len, node->arguments->sub_byte_length);
                 if (node->arguments->sub_byte_begin) {
@@ -738,7 +740,7 @@ namespace ebmgen {
             EBM_DEFINE_ANONYMOUS_VARIABLE(sub_byte_io, input_typ, init);
             sr.io_ref = sub_byte_io_def;
             sub_range = std::move(sr);
-            MAYBE(subrange_body, with_io_changed(ctx, sub_byte_io, sub_byte_io_def, is_enc, do_io));
+            MAYBE(subrange_body, with_io_changed(ctx, &sub_range->parent_io_ref, sub_byte_io, sub_byte_io_def, is_enc, do_io));
             EBMA_ADD_STATEMENT(io_stmt, std::move(subrange_body));
             sub_range->io_statement = io_stmt;
             body.kind = ebm::StatementKind::SUB_BYTE_RANGE;

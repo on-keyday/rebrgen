@@ -2230,6 +2230,7 @@ namespace ebm {
         }
     };
     struct EBM_API SubByteRange{
+        StreamType stream_type{};
         SubByteRangeType range_type{};
         struct EBM_API union_struct_48{
             ExpressionRef length;
@@ -2255,27 +2256,32 @@ namespace ebm {
         bool offset(ExpressionRef&& v);
         bool offset(const ExpressionRef& v);
         StatementRef io_ref;
+        StatementRef parent_io_ref;
         StatementRef io_statement;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
+        static constexpr size_t fixed_header_size = 2;
         constexpr static const char* visitor_name = "SubByteRange";
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
+            v(v, "stream_type",(*this).stream_type);
             v(v, "range_type",(*this).range_type);
             v(v, "expression",(*this).expression());
             v(v, "length",(*this).length());
             v(v, "offset",(*this).offset());
             v(v, "io_ref",(*this).io_ref);
+            v(v, "parent_io_ref",(*this).parent_io_ref);
             v(v, "io_statement",(*this).io_statement);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
+            v(v, "stream_type",(*this).stream_type);
             v(v, "range_type",(*this).range_type);
             v(v, "expression",(*this).expression());
             v(v, "length",(*this).length());
             v(v, "offset",(*this).offset());
             v(v, "io_ref",(*this).io_ref);
+            v(v, "parent_io_ref",(*this).parent_io_ref);
             v(v, "io_statement",(*this).io_statement);
         }
         template<typename T,bool rvalue = false>
@@ -2285,11 +2291,13 @@ namespace ebm {
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
+            v(v, "stream_type",visitor_tag<decltype(std::declval<SubByteRange>().stream_type),false>{});
             v(v, "range_type",visitor_tag<decltype(std::declval<SubByteRange>().range_type),false>{});
             v(v, "expression",visitor_tag<decltype(std::declval<SubByteRange>().expression()),false>{});
             v(v, "length",visitor_tag<decltype(std::declval<SubByteRange>().length()),false>{});
             v(v, "offset",visitor_tag<decltype(std::declval<SubByteRange>().offset()),false>{});
             v(v, "io_ref",visitor_tag<decltype(std::declval<SubByteRange>().io_ref),false>{});
+            v(v, "parent_io_ref",visitor_tag<decltype(std::declval<SubByteRange>().parent_io_ref),false>{});
             v(v, "io_statement",visitor_tag<decltype(std::declval<SubByteRange>().io_statement),false>{});
         }
     };

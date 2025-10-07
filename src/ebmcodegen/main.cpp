@@ -1014,6 +1014,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 result->visitor_location == suffixes[suffix_dispatch]) {
                 w.writeln("visitor: Visitor");
                 w.indent_writeln("module_: MappingTable");
+                w.writeln("alias_ref :", result->target, "Ref");
                 w.writeln("in: ", result->target);
                 print_struct(print_struct, result->target);
             }

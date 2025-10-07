@@ -6,6 +6,7 @@
   Available variables:
     visitor: Visitor
       module_: MappingTable
+    alias_ref :TypeRef
     in: Type
       id: TypeRef
       body: TypeBody
@@ -77,10 +78,10 @@ switch (type.body.kind) {
     }
     case ebm::TypeKind::ENCODER_RETURN:
     case ebm::TypeKind::DECODER_RETURN:
-        return "bytes";                 // Or some other appropriate type for return values
+        return "None";                  // Or some other appropriate type for return values
     case ebm::TypeKind::ENCODER_INPUT:  // Add this case
     case ebm::TypeKind::DECODER_INPUT:  // Add this case
-        return "bytes";                 // Map encoder/decoder input to bytes
+        return "BinaryIO";              // Map encoder/decoder input to bytes
     case ebm::TypeKind::FUNCTION: {
         // For functions, return a Callable type hint
         MAYBE(return_type_str, type_to_python_str(*type.body.return_type()));

@@ -12,5 +12,5 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-MAYBE(default_, get_default_value(*this, type));
+MAYBE(default_, get_default_value(*this, type, default_value_option));
 return default_;

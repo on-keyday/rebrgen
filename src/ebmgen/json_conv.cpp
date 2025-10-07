@@ -1903,6 +1903,14 @@ namespace ebm {
     }
     
     bool from_json(SubByteRange& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("stream_type")) {
+            if(!futils::json::convert_from_json(*got, obj.stream_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("range_type")) {
             if(!futils::json::convert_from_json(*got, obj.range_type)) {
                 return false;
@@ -1940,6 +1948,14 @@ namespace ebm {
         }
         if (auto got = j.at("io_ref")) {
             if(!futils::json::convert_from_json(*got, obj.io_ref)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("parent_io_ref")) {
+            if(!futils::json::convert_from_json(*got, obj.parent_io_ref)) {
                 return false;
             }
         }

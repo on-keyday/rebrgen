@@ -34,7 +34,7 @@ namespace ebmgen {
                         getter.return_type = ret_type;
                     }
                     // setter return value and arguments
-                    EBM_DEFINE_PARAMETER(arg, {}, prop->property_type);
+                    EBM_DEFINE_PARAMETER(arg, {}, prop->property_type, false);
                     {
                         ebm::TypeBody set_return;
                         set_return.kind = ebm::TypeKind::PROPERTY_SETTER_RETURN;

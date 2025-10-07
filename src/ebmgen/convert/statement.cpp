@@ -549,15 +549,30 @@ namespace ebmgen {
         EBM_IDENTIFIER(decode, dec_id, dec_type);
         MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl(name_ref, node->body->struct_type));
 
-        EBM_DEFINE_PARAMETER(writer, {}, encoder_input);
-        EBM_DEFINE_PARAMETER(reader, {}, decoder_input);
-        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, writer_def, decode, dec_type, reader, reader_def);
+        EBM_DEFINE_PARAMETER(writer, {}, encoder_input, false);
+        EBM_DEFINE_PARAMETER(reader, {}, decoder_input, false);
+        // TODO: strictly analyze state variable usage in ast
+        std::vector<std::pair<ebm::ExpressionRef, ebm::StatementRef>> state_vars;
+        for (auto& v : node->state_variables) {
+            auto locked = v.lock();
+            EBMA_CONVERT_TYPE(var_type, locked->field_type);
+            EBMA_ADD_IDENTIFIER(var_name, locked->ident->ident);
+            EBM_DEFINE_PARAMETER(var, var_name, var_type, true);
+            state_vars.emplace_back(var, var_def);
+        }
+
+        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, writer_def,
+                                             decode, dec_type, reader, reader_def,
+                                             state_vars);
         const auto _node = ctx.state().set_current_node(node);
         auto handle = [&](ebm::StatementRef fn_ref, std::shared_ptr<ast::Function> fn, ebm::StatementRef coder_input, GenerateType typ) -> expected<void> {
             const auto _mode = ctx.state().set_current_generate_type(typ);
             ebm::FunctionDecl derived_fn;
             if (fn) {
                 MAYBE(decl, ctx.get_statement_converter().convert_function_decl(fn, typ, coder_input));
+                for (auto& st : state_vars) {
+                    append(decl.params, st.second);
+                }
                 derived_fn = std::move(decl);
             }
             else {
@@ -567,6 +582,9 @@ namespace ebmgen {
                 derived_fn.name = enc_name;
                 derived_fn.return_type = coder_return;
                 append(derived_fn.params, coder_input);
+                for (auto& st : state_vars) {
+                    append(derived_fn.params, st.second);
+                }
                 EBMA_CONVERT_STATEMENT(body, node->body);
                 derived_fn.body = body;
             }
@@ -647,7 +665,7 @@ namespace ebmgen {
         for (auto& param : node->parameters) {
             EBMA_ADD_IDENTIFIER(param_name_ref, param->ident->ident);
             EBMA_CONVERT_TYPE(param_type_ref, param->field_type);
-            EBM_DEFINE_PARAMETER(param_ref, param_name_ref, param_type_ref);
+            EBM_DEFINE_PARAMETER(param_ref, param_name_ref, param_type_ref, false);
             append(func_decl.params, param_ref_def);
         }
         const auto _mode = ctx.state().set_current_generate_type(typ);

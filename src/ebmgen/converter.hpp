@@ -182,6 +182,8 @@ namespace ebmgen {
     };
     bool is_alignment_vector(const std::shared_ptr<ast::Field>& t);
 
+    using StateVariables = std::vector<std::pair<ebm::ExpressionRef, ebm::StatementRef>>;
+
     struct FormatEncodeDecode {
         ebm::ExpressionRef encode;
         ebm::TypeRef encode_type;
@@ -191,6 +193,7 @@ namespace ebmgen {
         ebm::TypeRef decode_type;
         ebm::ExpressionRef decoder_input;
         ebm::StatementRef decoder_input_def;
+        StateVariables state_variables;
     };
 
     struct StatementConverter;
@@ -305,7 +308,8 @@ namespace ebmgen {
                                       ebm::ExpressionRef decode,
                                       ebm::TypeRef decode_type,
                                       ebm::ExpressionRef decoder_input,
-                                      ebm::StatementRef decoder_input_def) {
+                                      ebm::StatementRef decoder_input_def,
+                                      StateVariables state_variables) {
             format_encode_decode[node] = FormatEncodeDecode{
                 .encode = encode,
                 .encode_type = encode_type,
@@ -315,6 +319,7 @@ namespace ebmgen {
                 .decode_type = decode_type,
                 .decoder_input = decoder_input,
                 .decoder_input_def = decoder_input_def,
+                .state_variables = state_variables,
             };
         }
 

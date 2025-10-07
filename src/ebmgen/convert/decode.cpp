@@ -368,6 +368,15 @@ namespace ebmgen {
         EBM_MEMBER_ACCESS(dec_access, encdec.decode_type, base_ref, encdec.decode);
         call_desc.callee = dec_access;
         append(call_desc.arguments, cur_encdec.decoder_input);
+        for (auto& st : encdec.state_variables) {
+            for (auto& cur_st : cur_encdec.state_variables) {
+                if (get_id(cur_st.second) == get_id(st.second)) {
+                    append(call_desc.arguments, cur_st.first);
+                    break;
+                }
+            }
+        }
+
         // TODO: add arguments
         MAYBE(typ_ref, get_decoder_return_type(ctx));
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));

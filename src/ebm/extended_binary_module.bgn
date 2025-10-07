@@ -274,6 +274,8 @@ format VariableDecl:
 format ParameterDecl:
     name :IdentifierRef # Parameter name
     param_type :TypeRef # Type of the parameter
+    is_state_variable :u1 # 0: regular parameter, 1: state variable
+    reserved :u7 # Reserved for future use
 
     
 format MatchStatement:

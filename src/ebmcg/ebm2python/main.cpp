@@ -31,7 +31,7 @@ struct Flags : ebmcodegen::Flags {
     #define WEB_UI_NAME(ui_name) 
     #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
     #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
-    #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc);MappedType name = default_;
+    #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)MappedType name = default_;
     #define MAP_FLAG_ITEM(key,value) 
     #define END_MAP_FLAG() 
     #if __has_include("visitor/Flags_before.hpp")
@@ -88,7 +88,7 @@ struct Flags : ebmcodegen::Flags {
         #define WEB_UI_NAME(ui_name) ui_lang_name = ui_name
         #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
         #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
-        #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc);{ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
+        #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc){ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
         #define MAP_FLAG_ITEM(key,value) map__[key] = value;if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += ","; }arg_desc__ += key;
         #define END_MAP_FLAG() ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + "}",std::move(map__)); }
         #if __has_include("visitor/Flags_before.hpp")
@@ -185,7 +185,7 @@ namespace ebm2python {
         #endif
     };
     template<typename Visitor>
-    expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in);
+    expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Visitor>
     concept has_visitor_Statement_BLOCK = requires(Visitor v) {
          { v.visit_Statement_BLOCK(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().block()) } -> std::convertible_to<expected<Result>>;
@@ -195,7 +195,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().block()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_BLOCK(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_BLOCK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -271,10 +271,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_BLOCK<Visitor>) {
-            result = visitor.visit_Statement_BLOCK(in.id,kind,block);
+            result = visitor.visit_Statement_BLOCK(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
         else if constexpr (has_visitor_Statement_BLOCK_call<Visitor>) {
-            result = visitor(in.id,kind,block);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -324,7 +324,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().previous_assignment(),*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ASSIGNMENT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ASSIGNMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -408,10 +408,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ASSIGNMENT<Visitor>) {
-            result = visitor.visit_Statement_ASSIGNMENT(in.id,kind,previous_assignment,target,value);
+            result = visitor.visit_Statement_ASSIGNMENT(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
         }
         else if constexpr (has_visitor_Statement_ASSIGNMENT_call<Visitor>) {
-            result = visitor(in.id,kind,previous_assignment,target,value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -461,7 +461,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().previous_assignment(),*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_YIELD(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_YIELD(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -545,10 +545,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_YIELD<Visitor>) {
-            result = visitor.visit_Statement_YIELD(in.id,kind,previous_assignment,target,value);
+            result = visitor.visit_Statement_YIELD(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
         }
         else if constexpr (has_visitor_Statement_YIELD_call<Visitor>) {
-            result = visitor(in.id,kind,previous_assignment,target,value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -598,7 +598,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().target(),*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_APPEND(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_APPEND(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -678,10 +678,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_APPEND<Visitor>) {
-            result = visitor.visit_Statement_APPEND(in.id,kind,target,value);
+            result = visitor.visit_Statement_APPEND(is_nil(alias_ref) ? in.id : alias_ref,kind,target,value);
         }
         else if constexpr (has_visitor_Statement_APPEND_call<Visitor>) {
-            result = visitor(in.id,kind,target,value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,target,value);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -731,7 +731,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_RETURN(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_RETURN(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -807,10 +807,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_RETURN<Visitor>) {
-            result = visitor.visit_Statement_RETURN(in.id,kind,value);
+            result = visitor.visit_Statement_RETURN(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
         }
         else if constexpr (has_visitor_Statement_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind,value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -860,7 +860,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ERROR_RETURN(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ERROR_RETURN(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -936,10 +936,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ERROR_RETURN<Visitor>) {
-            result = visitor.visit_Statement_ERROR_RETURN(in.id,kind,value);
+            result = visitor.visit_Statement_ERROR_RETURN(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
         }
         else if constexpr (has_visitor_Statement_ERROR_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind,value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -989,7 +989,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().assert_desc()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ASSERT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ASSERT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1065,10 +1065,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ASSERT<Visitor>) {
-            result = visitor.visit_Statement_ASSERT(in.id,kind,assert_desc);
+            result = visitor.visit_Statement_ASSERT(is_nil(alias_ref) ? in.id : alias_ref,kind,assert_desc);
         }
         else if constexpr (has_visitor_Statement_ASSERT_call<Visitor>) {
-            result = visitor(in.id,kind,assert_desc);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,assert_desc);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1118,7 +1118,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().read_data()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_READ_DATA(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_READ_DATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1194,10 +1194,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_READ_DATA<Visitor>) {
-            result = visitor.visit_Statement_READ_DATA(in.id,kind,read_data);
+            result = visitor.visit_Statement_READ_DATA(is_nil(alias_ref) ? in.id : alias_ref,kind,read_data);
         }
         else if constexpr (has_visitor_Statement_READ_DATA_call<Visitor>) {
-            result = visitor(in.id,kind,read_data);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,read_data);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1247,7 +1247,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().write_data()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_WRITE_DATA(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_WRITE_DATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1323,10 +1323,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_WRITE_DATA<Visitor>) {
-            result = visitor.visit_Statement_WRITE_DATA(in.id,kind,write_data);
+            result = visitor.visit_Statement_WRITE_DATA(is_nil(alias_ref) ? in.id : alias_ref,kind,write_data);
         }
         else if constexpr (has_visitor_Statement_WRITE_DATA_call<Visitor>) {
-            result = visitor(in.id,kind,write_data);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,write_data);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1376,7 +1376,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().offset(),*std::declval<const ebm::StatementBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1456,10 +1456,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_SEEK_STREAM<Visitor>) {
-            result = visitor.visit_Statement_SEEK_STREAM(in.id,kind,offset,stream_type);
+            result = visitor.visit_Statement_SEEK_STREAM(is_nil(alias_ref) ? in.id : alias_ref,kind,offset,stream_type);
         }
         else if constexpr (has_visitor_Statement_SEEK_STREAM_call<Visitor>) {
-            result = visitor(in.id,kind,offset,stream_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,offset,stream_type);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1509,7 +1509,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().if_statement()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_IF_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_IF_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1585,10 +1585,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_IF_STATEMENT<Visitor>) {
-            result = visitor.visit_Statement_IF_STATEMENT(in.id,kind,if_statement);
+            result = visitor.visit_Statement_IF_STATEMENT(is_nil(alias_ref) ? in.id : alias_ref,kind,if_statement);
         }
         else if constexpr (has_visitor_Statement_IF_STATEMENT_call<Visitor>) {
-            result = visitor(in.id,kind,if_statement);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,if_statement);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1638,7 +1638,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().loop()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_LOOP_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_LOOP_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1714,10 +1714,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_LOOP_STATEMENT<Visitor>) {
-            result = visitor.visit_Statement_LOOP_STATEMENT(in.id,kind,loop);
+            result = visitor.visit_Statement_LOOP_STATEMENT(is_nil(alias_ref) ? in.id : alias_ref,kind,loop);
         }
         else if constexpr (has_visitor_Statement_LOOP_STATEMENT_call<Visitor>) {
-            result = visitor(in.id,kind,loop);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,loop);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1767,7 +1767,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().match_statement()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_MATCH_STATEMENT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_MATCH_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1843,10 +1843,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_MATCH_STATEMENT<Visitor>) {
-            result = visitor.visit_Statement_MATCH_STATEMENT(in.id,kind,match_statement);
+            result = visitor.visit_Statement_MATCH_STATEMENT(is_nil(alias_ref) ? in.id : alias_ref,kind,match_statement);
         }
         else if constexpr (has_visitor_Statement_MATCH_STATEMENT_call<Visitor>) {
-            result = visitor(in.id,kind,match_statement);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,match_statement);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1896,7 +1896,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().match_branch()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_MATCH_BRANCH(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_MATCH_BRANCH(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -1972,10 +1972,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_MATCH_BRANCH<Visitor>) {
-            result = visitor.visit_Statement_MATCH_BRANCH(in.id,kind,match_branch);
+            result = visitor.visit_Statement_MATCH_BRANCH(is_nil(alias_ref) ? in.id : alias_ref,kind,match_branch);
         }
         else if constexpr (has_visitor_Statement_MATCH_BRANCH_call<Visitor>) {
-            result = visitor(in.id,kind,match_branch);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,match_branch);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2025,7 +2025,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().break_()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_BREAK(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_BREAK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2101,10 +2101,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_BREAK<Visitor>) {
-            result = visitor.visit_Statement_BREAK(in.id,kind,break_);
+            result = visitor.visit_Statement_BREAK(is_nil(alias_ref) ? in.id : alias_ref,kind,break_);
         }
         else if constexpr (has_visitor_Statement_BREAK_call<Visitor>) {
-            result = visitor(in.id,kind,break_);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,break_);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2154,7 +2154,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().continue_()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_CONTINUE(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_CONTINUE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2230,10 +2230,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_CONTINUE<Visitor>) {
-            result = visitor.visit_Statement_CONTINUE(in.id,kind,continue_);
+            result = visitor.visit_Statement_CONTINUE(is_nil(alias_ref) ? in.id : alias_ref,kind,continue_);
         }
         else if constexpr (has_visitor_Statement_CONTINUE_call<Visitor>) {
-            result = visitor(in.id,kind,continue_);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,continue_);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2283,7 +2283,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().func_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_FUNCTION_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_FUNCTION_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2359,10 +2359,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_FUNCTION_DECL<Visitor>) {
-            result = visitor.visit_Statement_FUNCTION_DECL(in.id,kind,func_decl);
+            result = visitor.visit_Statement_FUNCTION_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,func_decl);
         }
         else if constexpr (has_visitor_Statement_FUNCTION_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,func_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,func_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2412,7 +2412,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().var_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_VARIABLE_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_VARIABLE_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2488,10 +2488,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_VARIABLE_DECL<Visitor>) {
-            result = visitor.visit_Statement_VARIABLE_DECL(in.id,kind,var_decl);
+            result = visitor.visit_Statement_VARIABLE_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,var_decl);
         }
         else if constexpr (has_visitor_Statement_VARIABLE_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,var_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,var_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2533,6 +2533,135 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_PARAMETER_DECL = requires(Visitor v) {
+         { v.visit_Statement_PARAMETER_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().param_decl()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_PARAMETER_DECL_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().param_decl()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_PARAMETER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_validate.hpp")
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_validate.hpp"
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_post_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_after.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        if (!in.body.param_decl()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::param_decl");
+        }
+        auto& param_decl = *in.body.param_decl();
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_visit.hpp")
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_visit.hpp"
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_post_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_after.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_PARAMETER_DECL<Visitor>) {
+            result = visitor.visit_Statement_PARAMETER_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,param_decl);
+        }
+        else if constexpr (has_visitor_Statement_PARAMETER_DECL_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,param_decl);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_before.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_post_visit.hpp")
+        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_pre_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_post_visit.hpp"
+        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_post_default.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_after.hpp")
+        #include "visitor/Statement_PARAMETER_DECL_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Statement_FIELD_DECL = requires(Visitor v) {
          { v.visit_Statement_FIELD_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().field_decl()) } -> std::convertible_to<expected<Result>>;
     };
@@ -2541,7 +2670,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().field_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2617,10 +2746,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_FIELD_DECL<Visitor>) {
-            result = visitor.visit_Statement_FIELD_DECL(in.id,kind,field_decl);
+            result = visitor.visit_Statement_FIELD_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,field_decl);
         }
         else if constexpr (has_visitor_Statement_FIELD_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,field_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,field_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2670,7 +2799,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().enum_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ENUM_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ENUM_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2746,10 +2875,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ENUM_DECL<Visitor>) {
-            result = visitor.visit_Statement_ENUM_DECL(in.id,kind,enum_decl);
+            result = visitor.visit_Statement_ENUM_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_decl);
         }
         else if constexpr (has_visitor_Statement_ENUM_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,enum_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2799,7 +2928,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().enum_member_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -2875,10 +3004,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ENUM_MEMBER_DECL<Visitor>) {
-            result = visitor.visit_Statement_ENUM_MEMBER_DECL(in.id,kind,enum_member_decl);
+            result = visitor.visit_Statement_ENUM_MEMBER_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_member_decl);
         }
         else if constexpr (has_visitor_Statement_ENUM_MEMBER_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,enum_member_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_member_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2928,7 +3057,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().struct_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_STRUCT_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_STRUCT_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3004,10 +3133,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_STRUCT_DECL<Visitor>) {
-            result = visitor.visit_Statement_STRUCT_DECL(in.id,kind,struct_decl);
+            result = visitor.visit_Statement_STRUCT_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,struct_decl);
         }
         else if constexpr (has_visitor_Statement_STRUCT_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,struct_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,struct_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3057,7 +3186,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_UNION_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_UNION_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3129,10 +3258,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_UNION_DECL<Visitor>) {
-            result = visitor.visit_Statement_UNION_DECL(in.id,kind);
+            result = visitor.visit_Statement_UNION_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Statement_UNION_DECL_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3182,7 +3311,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3254,10 +3383,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_UNION_MEMBER_DECL<Visitor>) {
-            result = visitor.visit_Statement_UNION_MEMBER_DECL(in.id,kind);
+            result = visitor.visit_Statement_UNION_MEMBER_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Statement_UNION_MEMBER_DECL_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3307,7 +3436,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().block()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_PROGRAM_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_PROGRAM_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3383,10 +3512,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_PROGRAM_DECL<Visitor>) {
-            result = visitor.visit_Statement_PROGRAM_DECL(in.id,kind,block);
+            result = visitor.visit_Statement_PROGRAM_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
         else if constexpr (has_visitor_Statement_PROGRAM_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,block);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3436,7 +3565,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().property_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_PROPERTY_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_PROPERTY_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3512,10 +3641,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_PROPERTY_DECL<Visitor>) {
-            result = visitor.visit_Statement_PROPERTY_DECL(in.id,kind,property_decl);
+            result = visitor.visit_Statement_PROPERTY_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,property_decl);
         }
         else if constexpr (has_visitor_Statement_PROPERTY_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,property_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,property_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3565,7 +3694,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().property_member_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3641,10 +3770,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_PROPERTY_MEMBER_DECL<Visitor>) {
-            result = visitor.visit_Statement_PROPERTY_MEMBER_DECL(in.id,kind,property_member_decl);
+            result = visitor.visit_Statement_PROPERTY_MEMBER_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,property_member_decl);
         }
         else if constexpr (has_visitor_Statement_PROPERTY_MEMBER_DECL_call<Visitor>) {
-            result = visitor(in.id,kind,property_member_decl);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,property_member_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3694,7 +3823,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().metadata()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_METADATA(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_METADATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3770,10 +3899,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_METADATA<Visitor>) {
-            result = visitor.visit_Statement_METADATA(in.id,kind,metadata);
+            result = visitor.visit_Statement_METADATA(is_nil(alias_ref) ? in.id : alias_ref,kind,metadata);
         }
         else if constexpr (has_visitor_Statement_METADATA_call<Visitor>) {
-            result = visitor(in.id,kind,metadata);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,metadata);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3823,7 +3952,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().alias(),*std::declval<const ebm::StatementBody&>().module_name()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_IMPORT_MODULE(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_IMPORT_MODULE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -3903,10 +4032,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_IMPORT_MODULE<Visitor>) {
-            result = visitor.visit_Statement_IMPORT_MODULE(in.id,kind,alias,module_name);
+            result = visitor.visit_Statement_IMPORT_MODULE(is_nil(alias_ref) ? in.id : alias_ref,kind,alias,module_name);
         }
         else if constexpr (has_visitor_Statement_IMPORT_MODULE_call<Visitor>) {
-            result = visitor(in.id,kind,alias,module_name);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,alias,module_name);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3956,7 +4085,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().expression()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_EXPRESSION(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_EXPRESSION(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -4032,10 +4161,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_EXPRESSION<Visitor>) {
-            result = visitor.visit_Statement_EXPRESSION(in.id,kind,expression);
+            result = visitor.visit_Statement_EXPRESSION(is_nil(alias_ref) ? in.id : alias_ref,kind,expression);
         }
         else if constexpr (has_visitor_Statement_EXPRESSION_call<Visitor>) {
-            result = visitor(in.id,kind,expression);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,expression);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4085,7 +4214,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().error_report()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_ERROR_REPORT(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_ERROR_REPORT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -4161,10 +4290,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_ERROR_REPORT<Visitor>) {
-            result = visitor.visit_Statement_ERROR_REPORT(in.id,kind,error_report);
+            result = visitor.visit_Statement_ERROR_REPORT(is_nil(alias_ref) ? in.id : alias_ref,kind,error_report);
         }
         else if constexpr (has_visitor_Statement_ERROR_REPORT_call<Visitor>) {
-            result = visitor(in.id,kind,error_report);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,error_report);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4214,7 +4343,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_statements()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_LOWERED_STATEMENTS(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_LOWERED_STATEMENTS(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -4290,10 +4419,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_LOWERED_STATEMENTS<Visitor>) {
-            result = visitor.visit_Statement_LOWERED_STATEMENTS(in.id,kind,lowered_statements);
+            result = visitor.visit_Statement_LOWERED_STATEMENTS(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_statements);
         }
         else if constexpr (has_visitor_Statement_LOWERED_STATEMENTS_call<Visitor>) {
-            result = visitor(in.id,kind,lowered_statements);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_statements);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4343,7 +4472,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().sub_byte_range()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -4419,10 +4548,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_SUB_BYTE_RANGE<Visitor>) {
-            result = visitor.visit_Statement_SUB_BYTE_RANGE(in.id,kind,sub_byte_range);
+            result = visitor.visit_Statement_SUB_BYTE_RANGE(is_nil(alias_ref) ? in.id : alias_ref,kind,sub_byte_range);
         }
         else if constexpr (has_visitor_Statement_SUB_BYTE_RANGE_call<Visitor>) {
-            result = visitor(in.id,kind,sub_byte_range);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,sub_byte_range);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4464,7 +4593,7 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in) {
+    expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_dispatch_before.hpp")
         #include "visitor/Statement_dispatch_before.hpp"
         #endif
@@ -4484,71 +4613,73 @@ namespace ebm2python {
         #else
         switch (in.body.kind) {
         case ebm::StatementKind::BLOCK:
-            return dispatch_Statement_BLOCK(visitor,in);
+            return dispatch_Statement_BLOCK(visitor,in,alias_ref);
         case ebm::StatementKind::ASSIGNMENT:
-            return dispatch_Statement_ASSIGNMENT(visitor,in);
+            return dispatch_Statement_ASSIGNMENT(visitor,in,alias_ref);
         case ebm::StatementKind::YIELD:
-            return dispatch_Statement_YIELD(visitor,in);
+            return dispatch_Statement_YIELD(visitor,in,alias_ref);
         case ebm::StatementKind::APPEND:
-            return dispatch_Statement_APPEND(visitor,in);
+            return dispatch_Statement_APPEND(visitor,in,alias_ref);
         case ebm::StatementKind::RETURN:
-            return dispatch_Statement_RETURN(visitor,in);
+            return dispatch_Statement_RETURN(visitor,in,alias_ref);
         case ebm::StatementKind::ERROR_RETURN:
-            return dispatch_Statement_ERROR_RETURN(visitor,in);
+            return dispatch_Statement_ERROR_RETURN(visitor,in,alias_ref);
         case ebm::StatementKind::ASSERT:
-            return dispatch_Statement_ASSERT(visitor,in);
+            return dispatch_Statement_ASSERT(visitor,in,alias_ref);
         case ebm::StatementKind::READ_DATA:
-            return dispatch_Statement_READ_DATA(visitor,in);
+            return dispatch_Statement_READ_DATA(visitor,in,alias_ref);
         case ebm::StatementKind::WRITE_DATA:
-            return dispatch_Statement_WRITE_DATA(visitor,in);
+            return dispatch_Statement_WRITE_DATA(visitor,in,alias_ref);
         case ebm::StatementKind::SEEK_STREAM:
-            return dispatch_Statement_SEEK_STREAM(visitor,in);
+            return dispatch_Statement_SEEK_STREAM(visitor,in,alias_ref);
         case ebm::StatementKind::IF_STATEMENT:
-            return dispatch_Statement_IF_STATEMENT(visitor,in);
+            return dispatch_Statement_IF_STATEMENT(visitor,in,alias_ref);
         case ebm::StatementKind::LOOP_STATEMENT:
-            return dispatch_Statement_LOOP_STATEMENT(visitor,in);
+            return dispatch_Statement_LOOP_STATEMENT(visitor,in,alias_ref);
         case ebm::StatementKind::MATCH_STATEMENT:
-            return dispatch_Statement_MATCH_STATEMENT(visitor,in);
+            return dispatch_Statement_MATCH_STATEMENT(visitor,in,alias_ref);
         case ebm::StatementKind::MATCH_BRANCH:
-            return dispatch_Statement_MATCH_BRANCH(visitor,in);
+            return dispatch_Statement_MATCH_BRANCH(visitor,in,alias_ref);
         case ebm::StatementKind::BREAK:
-            return dispatch_Statement_BREAK(visitor,in);
+            return dispatch_Statement_BREAK(visitor,in,alias_ref);
         case ebm::StatementKind::CONTINUE:
-            return dispatch_Statement_CONTINUE(visitor,in);
+            return dispatch_Statement_CONTINUE(visitor,in,alias_ref);
         case ebm::StatementKind::FUNCTION_DECL:
-            return dispatch_Statement_FUNCTION_DECL(visitor,in);
+            return dispatch_Statement_FUNCTION_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::VARIABLE_DECL:
-            return dispatch_Statement_VARIABLE_DECL(visitor,in);
+            return dispatch_Statement_VARIABLE_DECL(visitor,in,alias_ref);
+        case ebm::StatementKind::PARAMETER_DECL:
+            return dispatch_Statement_PARAMETER_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::FIELD_DECL:
-            return dispatch_Statement_FIELD_DECL(visitor,in);
+            return dispatch_Statement_FIELD_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::ENUM_DECL:
-            return dispatch_Statement_ENUM_DECL(visitor,in);
+            return dispatch_Statement_ENUM_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::ENUM_MEMBER_DECL:
-            return dispatch_Statement_ENUM_MEMBER_DECL(visitor,in);
+            return dispatch_Statement_ENUM_MEMBER_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::STRUCT_DECL:
-            return dispatch_Statement_STRUCT_DECL(visitor,in);
+            return dispatch_Statement_STRUCT_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::UNION_DECL:
-            return dispatch_Statement_UNION_DECL(visitor,in);
+            return dispatch_Statement_UNION_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::UNION_MEMBER_DECL:
-            return dispatch_Statement_UNION_MEMBER_DECL(visitor,in);
+            return dispatch_Statement_UNION_MEMBER_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::PROGRAM_DECL:
-            return dispatch_Statement_PROGRAM_DECL(visitor,in);
+            return dispatch_Statement_PROGRAM_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::PROPERTY_DECL:
-            return dispatch_Statement_PROPERTY_DECL(visitor,in);
+            return dispatch_Statement_PROPERTY_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::PROPERTY_MEMBER_DECL:
-            return dispatch_Statement_PROPERTY_MEMBER_DECL(visitor,in);
+            return dispatch_Statement_PROPERTY_MEMBER_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::METADATA:
-            return dispatch_Statement_METADATA(visitor,in);
+            return dispatch_Statement_METADATA(visitor,in,alias_ref);
         case ebm::StatementKind::IMPORT_MODULE:
-            return dispatch_Statement_IMPORT_MODULE(visitor,in);
+            return dispatch_Statement_IMPORT_MODULE(visitor,in,alias_ref);
         case ebm::StatementKind::EXPRESSION:
-            return dispatch_Statement_EXPRESSION(visitor,in);
+            return dispatch_Statement_EXPRESSION(visitor,in,alias_ref);
         case ebm::StatementKind::ERROR_REPORT:
-            return dispatch_Statement_ERROR_REPORT(visitor,in);
+            return dispatch_Statement_ERROR_REPORT(visitor,in,alias_ref);
         case ebm::StatementKind::LOWERED_STATEMENTS:
-            return dispatch_Statement_LOWERED_STATEMENTS(visitor,in);
+            return dispatch_Statement_LOWERED_STATEMENTS(visitor,in,alias_ref);
         case ebm::StatementKind::SUB_BYTE_RANGE:
-            return dispatch_Statement_SUB_BYTE_RANGE(visitor,in);
+            return dispatch_Statement_SUB_BYTE_RANGE(visitor,in,alias_ref);
         default:
             return unexpect_error("Unknown Statement kind: {}", to_string(in.body.kind));
         }
@@ -4558,7 +4689,7 @@ namespace ebm2python {
     template<typename Visitor>
     expected<Result> visit_Statement(Visitor&& visitor,const ebm::StatementRef& ref) {
         MAYBE(elem, visitor.module_.get_statement(ref));
-        return visit_Statement(visitor,elem);
+        return visit_Statement(visitor,elem,ref);
     }
     template<typename Visitor>
     expected<Result> visit_Block(Visitor&& visitor,const ebm::Block& in) {
@@ -4573,7 +4704,7 @@ namespace ebm2python {
         return w.out();
     }
     template<typename Visitor>
-    expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in);
+    expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
     template<typename Visitor>
     concept has_visitor_Expression_LITERAL_INT = requires(Visitor v) {
          { v.visit_Expression_LITERAL_INT(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().int_value()) } -> std::convertible_to<expected<Result>>;
@@ -4583,7 +4714,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().int_value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_INT(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_INT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -4660,10 +4791,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_INT<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_INT(in.id,type,kind,int_value);
+            result = visitor.visit_Expression_LITERAL_INT(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int_value);
         }
         else if constexpr (has_visitor_Expression_LITERAL_INT_call<Visitor>) {
-            result = visitor(in.id,type,kind,int_value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int_value);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -4713,7 +4844,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().int64_value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_INT64(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_INT64(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -4790,10 +4921,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_INT64<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_INT64(in.id,type,kind,int64_value);
+            result = visitor.visit_Expression_LITERAL_INT64(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int64_value);
         }
         else if constexpr (has_visitor_Expression_LITERAL_INT64_call<Visitor>) {
-            result = visitor(in.id,type,kind,int64_value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int64_value);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -4843,7 +4974,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().bool_value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_BOOL(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_BOOL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -4920,10 +5051,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_BOOL<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_BOOL(in.id,type,kind,bool_value);
+            result = visitor.visit_Expression_LITERAL_BOOL(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bool_value);
         }
         else if constexpr (has_visitor_Expression_LITERAL_BOOL_call<Visitor>) {
-            result = visitor(in.id,type,kind,bool_value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bool_value);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -4973,7 +5104,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().string_value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_STRING(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_STRING(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5050,10 +5181,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_STRING<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_STRING(in.id,type,kind,string_value);
+            result = visitor.visit_Expression_LITERAL_STRING(is_nil(alias_ref) ? in.id : alias_ref,type,kind,string_value);
         }
         else if constexpr (has_visitor_Expression_LITERAL_STRING_call<Visitor>) {
-            result = visitor(in.id,type,kind,string_value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,string_value);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5103,7 +5234,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().type_ref()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_TYPE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_TYPE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5180,10 +5311,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_TYPE<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_TYPE(in.id,type,kind,type_ref);
+            result = visitor.visit_Expression_LITERAL_TYPE(is_nil(alias_ref) ? in.id : alias_ref,type,kind,type_ref);
         }
         else if constexpr (has_visitor_Expression_LITERAL_TYPE_call<Visitor>) {
-            result = visitor(in.id,type,kind,type_ref);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,type_ref);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5233,7 +5364,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().char_value()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_LITERAL_CHAR(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_LITERAL_CHAR(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5310,10 +5441,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_LITERAL_CHAR<Visitor>) {
-            result = visitor.visit_Expression_LITERAL_CHAR(in.id,type,kind,char_value);
+            result = visitor.visit_Expression_LITERAL_CHAR(is_nil(alias_ref) ? in.id : alias_ref,type,kind,char_value);
         }
         else if constexpr (has_visitor_Expression_LITERAL_CHAR_call<Visitor>) {
-            result = visitor(in.id,type,kind,char_value);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,char_value);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5363,7 +5494,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().id()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_IDENTIFIER(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_IDENTIFIER(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5440,10 +5571,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_IDENTIFIER<Visitor>) {
-            result = visitor.visit_Expression_IDENTIFIER(in.id,type,kind,id);
+            result = visitor.visit_Expression_IDENTIFIER(is_nil(alias_ref) ? in.id : alias_ref,type,kind,id);
         }
         else if constexpr (has_visitor_Expression_IDENTIFIER_call<Visitor>) {
-            result = visitor(in.id,type,kind,id);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,id);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5493,7 +5624,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().bop(),*std::declval<const ebm::ExpressionBody&>().left(),*std::declval<const ebm::ExpressionBody&>().right()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_BINARY_OP(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_BINARY_OP(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5578,10 +5709,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_BINARY_OP<Visitor>) {
-            result = visitor.visit_Expression_BINARY_OP(in.id,type,kind,bop,left,right);
+            result = visitor.visit_Expression_BINARY_OP(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bop,left,right);
         }
         else if constexpr (has_visitor_Expression_BINARY_OP_call<Visitor>) {
-            result = visitor(in.id,type,kind,bop,left,right);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bop,left,right);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5631,7 +5762,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().operand(),*std::declval<const ebm::ExpressionBody&>().uop()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_UNARY_OP(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_UNARY_OP(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5712,10 +5843,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_UNARY_OP<Visitor>) {
-            result = visitor.visit_Expression_UNARY_OP(in.id,type,kind,operand,uop);
+            result = visitor.visit_Expression_UNARY_OP(is_nil(alias_ref) ? in.id : alias_ref,type,kind,operand,uop);
         }
         else if constexpr (has_visitor_Expression_UNARY_OP_call<Visitor>) {
-            result = visitor(in.id,type,kind,operand,uop);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,operand,uop);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5765,7 +5896,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().call_desc()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_CALL(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_CALL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5842,10 +5973,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_CALL<Visitor>) {
-            result = visitor.visit_Expression_CALL(in.id,type,kind,call_desc);
+            result = visitor.visit_Expression_CALL(is_nil(alias_ref) ? in.id : alias_ref,type,kind,call_desc);
         }
         else if constexpr (has_visitor_Expression_CALL_call<Visitor>) {
-            result = visitor(in.id,type,kind,call_desc);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,call_desc);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5895,7 +6026,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().base(),*std::declval<const ebm::ExpressionBody&>().index()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_INDEX_ACCESS(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_INDEX_ACCESS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -5976,10 +6107,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_INDEX_ACCESS<Visitor>) {
-            result = visitor.visit_Expression_INDEX_ACCESS(in.id,type,kind,base,index);
+            result = visitor.visit_Expression_INDEX_ACCESS(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,index);
         }
         else if constexpr (has_visitor_Expression_INDEX_ACCESS_call<Visitor>) {
-            result = visitor(in.id,type,kind,base,index);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,index);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6029,7 +6160,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().base(),*std::declval<const ebm::ExpressionBody&>().member()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_MEMBER_ACCESS(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_MEMBER_ACCESS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6110,10 +6241,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_MEMBER_ACCESS<Visitor>) {
-            result = visitor.visit_Expression_MEMBER_ACCESS(in.id,type,kind,base,member);
+            result = visitor.visit_Expression_MEMBER_ACCESS(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,member);
         }
         else if constexpr (has_visitor_Expression_MEMBER_ACCESS_call<Visitor>) {
-            result = visitor(in.id,type,kind,base,member);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,member);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6163,7 +6294,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().cast_kind(),*std::declval<const ebm::ExpressionBody&>().from_type(),*std::declval<const ebm::ExpressionBody&>().source_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_TYPE_CAST(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_TYPE_CAST(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6248,10 +6379,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_TYPE_CAST<Visitor>) {
-            result = visitor.visit_Expression_TYPE_CAST(in.id,type,kind,cast_kind,from_type,source_expr);
+            result = visitor.visit_Expression_TYPE_CAST(is_nil(alias_ref) ? in.id : alias_ref,type,kind,cast_kind,from_type,source_expr);
         }
         else if constexpr (has_visitor_Expression_TYPE_CAST_call<Visitor>) {
-            result = visitor(in.id,type,kind,cast_kind,from_type,source_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,cast_kind,from_type,source_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6301,7 +6432,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().end(),*std::declval<const ebm::ExpressionBody&>().start()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_RANGE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_RANGE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6382,10 +6513,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_RANGE<Visitor>) {
-            result = visitor.visit_Expression_RANGE(in.id,type,kind,end,start);
+            result = visitor.visit_Expression_RANGE(is_nil(alias_ref) ? in.id : alias_ref,type,kind,end,start);
         }
         else if constexpr (has_visitor_Expression_RANGE_call<Visitor>) {
-            result = visitor(in.id,type,kind,end,start);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,end,start);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6435,7 +6566,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_DEFAULT_VALUE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_DEFAULT_VALUE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6508,10 +6639,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_DEFAULT_VALUE<Visitor>) {
-            result = visitor.visit_Expression_DEFAULT_VALUE(in.id,type,kind);
+            result = visitor.visit_Expression_DEFAULT_VALUE(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
         }
         else if constexpr (has_visitor_Expression_DEFAULT_VALUE_call<Visitor>) {
-            result = visitor(in.id,type,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6561,7 +6692,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().endian_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6638,10 +6769,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_IS_LITTLE_ENDIAN<Visitor>) {
-            result = visitor.visit_Expression_IS_LITTLE_ENDIAN(in.id,type,kind,endian_expr);
+            result = visitor.visit_Expression_IS_LITTLE_ENDIAN(is_nil(alias_ref) ? in.id : alias_ref,type,kind,endian_expr);
         }
         else if constexpr (has_visitor_Expression_IS_LITTLE_ENDIAN_call<Visitor>) {
-            result = visitor(in.id,type,kind,endian_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,endian_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6691,7 +6822,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().stream_type(),*std::declval<const ebm::ExpressionBody&>().unit()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6772,10 +6903,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_GET_STREAM_OFFSET<Visitor>) {
-            result = visitor.visit_Expression_GET_STREAM_OFFSET(in.id,type,kind,stream_type,unit);
+            result = visitor.visit_Expression_GET_STREAM_OFFSET(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type,unit);
         }
         else if constexpr (has_visitor_Expression_GET_STREAM_OFFSET_call<Visitor>) {
-            result = visitor(in.id,type,kind,stream_type,unit);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type,unit);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6825,7 +6956,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6902,10 +7033,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_GET_REMAINING_BYTES<Visitor>) {
-            result = visitor.visit_Expression_GET_REMAINING_BYTES(in.id,type,kind,stream_type);
+            result = visitor.visit_Expression_GET_REMAINING_BYTES(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type);
         }
         else if constexpr (has_visitor_Expression_GET_REMAINING_BYTES_call<Visitor>) {
-            result = visitor(in.id,type,kind,stream_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6948,14 +7079,14 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Expression_CAN_READ_STREAM = requires(Visitor v) {
-         { v.visit_Expression_CAN_READ_STREAM(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().num_bytes(),*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Expression_CAN_READ_STREAM(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_ref(),*std::declval<const ebm::ExpressionBody&>().num_bytes(),*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Expression_CAN_READ_STREAM_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().num_bytes(),*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_ref(),*std::declval<const ebm::ExpressionBody&>().num_bytes(),*std::declval<const ebm::ExpressionBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_CAN_READ_STREAM(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_CAN_READ_STREAM(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -6992,6 +7123,10 @@ namespace ebm2python {
         #endif
         auto& type = in.body.type;
         auto& kind = in.body.kind;
+        if (!in.body.io_ref()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::io_ref");
+        }
+        auto& io_ref = *in.body.io_ref();
         if (!in.body.num_bytes()) {
             return unexpect_error("Unexpected null pointer for ExpressionBody::num_bytes");
         }
@@ -7036,10 +7171,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_CAN_READ_STREAM<Visitor>) {
-            result = visitor.visit_Expression_CAN_READ_STREAM(in.id,type,kind,num_bytes,stream_type);
+            result = visitor.visit_Expression_CAN_READ_STREAM(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_ref,num_bytes,stream_type);
         }
         else if constexpr (has_visitor_Expression_CAN_READ_STREAM_call<Visitor>) {
-            result = visitor(in.id,type,kind,num_bytes,stream_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_ref,num_bytes,stream_type);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7089,7 +7224,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().array_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_ARRAY_SIZE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_ARRAY_SIZE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7166,10 +7301,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_ARRAY_SIZE<Visitor>) {
-            result = visitor.visit_Expression_ARRAY_SIZE(in.id,type,kind,array_expr);
+            result = visitor.visit_Expression_ARRAY_SIZE(is_nil(alias_ref) ? in.id : alias_ref,type,kind,array_expr);
         }
         else if constexpr (has_visitor_Expression_ARRAY_SIZE_call<Visitor>) {
-            result = visitor(in.id,type,kind,array_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,array_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7219,7 +7354,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_IS_ERROR(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_IS_ERROR(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7296,10 +7431,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_IS_ERROR<Visitor>) {
-            result = visitor.visit_Expression_IS_ERROR(in.id,type,kind,target_expr);
+            result = visitor.visit_Expression_IS_ERROR(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         else if constexpr (has_visitor_Expression_IS_ERROR_call<Visitor>) {
-            result = visitor(in.id,type,kind,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7349,7 +7484,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_MAX_VALUE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_MAX_VALUE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7426,10 +7561,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_MAX_VALUE<Visitor>) {
-            result = visitor.visit_Expression_MAX_VALUE(in.id,type,kind,lowered_expr);
+            result = visitor.visit_Expression_MAX_VALUE(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr);
         }
         else if constexpr (has_visitor_Expression_MAX_VALUE_call<Visitor>) {
-            result = visitor(in.id,type,kind,lowered_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7479,7 +7614,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_statement(),*std::declval<const ebm::ExpressionBody&>().target_stmt()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_READ_DATA(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_READ_DATA(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7560,10 +7695,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_READ_DATA<Visitor>) {
-            result = visitor.visit_Expression_READ_DATA(in.id,type,kind,io_statement,target_stmt);
+            result = visitor.visit_Expression_READ_DATA(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_stmt);
         }
         else if constexpr (has_visitor_Expression_READ_DATA_call<Visitor>) {
-            result = visitor(in.id,type,kind,io_statement,target_stmt);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_stmt);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7613,7 +7748,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().io_statement(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_WRITE_DATA(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_WRITE_DATA(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7694,10 +7829,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_WRITE_DATA<Visitor>) {
-            result = visitor.visit_Expression_WRITE_DATA(in.id,type,kind,io_statement,target_expr);
+            result = visitor.visit_Expression_WRITE_DATA(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_expr);
         }
         else if constexpr (has_visitor_Expression_WRITE_DATA_call<Visitor>) {
-            result = visitor(in.id,type,kind,io_statement,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7747,7 +7882,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().conditional_stmt(),*std::declval<const ebm::ExpressionBody&>().target_stmt()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7828,10 +7963,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_CONDITIONAL_STATEMENT<Visitor>) {
-            result = visitor.visit_Expression_CONDITIONAL_STATEMENT(in.id,type,kind,conditional_stmt,target_stmt);
+            result = visitor.visit_Expression_CONDITIONAL_STATEMENT(is_nil(alias_ref) ? in.id : alias_ref,type,kind,conditional_stmt,target_stmt);
         }
         else if constexpr (has_visitor_Expression_CONDITIONAL_STATEMENT_call<Visitor>) {
-            result = visitor(in.id,type,kind,conditional_stmt,target_stmt);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,conditional_stmt,target_stmt);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7881,7 +8016,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().condition(),*std::declval<const ebm::ExpressionBody&>().else_(),*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().then()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_CONDITIONAL(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_CONDITIONAL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -7970,10 +8105,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_CONDITIONAL<Visitor>) {
-            result = visitor.visit_Expression_CONDITIONAL(in.id,type,kind,condition,else_,lowered_expr,then);
+            result = visitor.visit_Expression_CONDITIONAL(is_nil(alias_ref) ? in.id : alias_ref,type,kind,condition,else_,lowered_expr,then);
         }
         else if constexpr (has_visitor_Expression_CONDITIONAL_call<Visitor>) {
-            result = visitor(in.id,type,kind,condition,else_,lowered_expr,then);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,condition,else_,lowered_expr,then);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8023,7 +8158,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_AVAILABLE(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_AVAILABLE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8104,10 +8239,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_AVAILABLE<Visitor>) {
-            result = visitor.visit_Expression_AVAILABLE(in.id,type,kind,lowered_expr,target_expr);
+            result = visitor.visit_Expression_AVAILABLE(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
         else if constexpr (has_visitor_Expression_AVAILABLE_call<Visitor>) {
-            result = visitor(in.id,type,kind,lowered_expr,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8157,7 +8292,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_SIZEOF(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_SIZEOF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8238,10 +8373,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_SIZEOF<Visitor>) {
-            result = visitor.visit_Expression_SIZEOF(in.id,type,kind,lowered_expr,target_expr);
+            result = visitor.visit_Expression_SIZEOF(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
         else if constexpr (has_visitor_Expression_SIZEOF_call<Visitor>) {
-            result = visitor(in.id,type,kind,lowered_expr,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8291,7 +8426,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().sub_range()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_SUB_RANGE_INIT(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_SUB_RANGE_INIT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8368,10 +8503,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_SUB_RANGE_INIT<Visitor>) {
-            result = visitor.visit_Expression_SUB_RANGE_INIT(in.id,type,kind,sub_range);
+            result = visitor.visit_Expression_SUB_RANGE_INIT(is_nil(alias_ref) ? in.id : alias_ref,type,kind,sub_range);
         }
         else if constexpr (has_visitor_Expression_SUB_RANGE_INIT_call<Visitor>) {
-            result = visitor(in.id,type,kind,sub_range);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,sub_range);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8421,7 +8556,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().or_cond()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_OR_COND(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_OR_COND(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8498,10 +8633,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_OR_COND<Visitor>) {
-            result = visitor.visit_Expression_OR_COND(in.id,type,kind,or_cond);
+            result = visitor.visit_Expression_OR_COND(is_nil(alias_ref) ? in.id : alias_ref,type,kind,or_cond);
         }
         else if constexpr (has_visitor_Expression_OR_COND_call<Visitor>) {
-            result = visitor(in.id,type,kind,or_cond);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,or_cond);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8551,7 +8686,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_ADDRESS_OF(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_ADDRESS_OF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8628,10 +8763,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_ADDRESS_OF<Visitor>) {
-            result = visitor.visit_Expression_ADDRESS_OF(in.id,type,kind,target_expr);
+            result = visitor.visit_Expression_ADDRESS_OF(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         else if constexpr (has_visitor_Expression_ADDRESS_OF_call<Visitor>) {
-            result = visitor(in.id,type,kind,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8681,7 +8816,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_OPTIONAL_OF(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_OPTIONAL_OF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8758,10 +8893,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_OPTIONAL_OF<Visitor>) {
-            result = visitor.visit_Expression_OPTIONAL_OF(in.id,type,kind,target_expr);
+            result = visitor.visit_Expression_OPTIONAL_OF(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         else if constexpr (has_visitor_Expression_OPTIONAL_OF_call<Visitor>) {
-            result = visitor(in.id,type,kind,target_expr);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8811,7 +8946,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().setter_status()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Expression_SETTER_STATUS(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> dispatch_Expression_SETTER_STATUS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
         #endif
@@ -8888,10 +9023,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Expression_SETTER_STATUS<Visitor>) {
-            result = visitor.visit_Expression_SETTER_STATUS(in.id,type,kind,setter_status);
+            result = visitor.visit_Expression_SETTER_STATUS(is_nil(alias_ref) ? in.id : alias_ref,type,kind,setter_status);
         }
         else if constexpr (has_visitor_Expression_SETTER_STATUS_call<Visitor>) {
-            result = visitor(in.id,type,kind,setter_status);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,setter_status);
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8933,7 +9068,7 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in) {
+    expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
         #endif
@@ -8953,71 +9088,71 @@ namespace ebm2python {
         #else
         switch (in.body.kind) {
         case ebm::ExpressionKind::LITERAL_INT:
-            return dispatch_Expression_LITERAL_INT(visitor,in);
+            return dispatch_Expression_LITERAL_INT(visitor,in,alias_ref);
         case ebm::ExpressionKind::LITERAL_INT64:
-            return dispatch_Expression_LITERAL_INT64(visitor,in);
+            return dispatch_Expression_LITERAL_INT64(visitor,in,alias_ref);
         case ebm::ExpressionKind::LITERAL_BOOL:
-            return dispatch_Expression_LITERAL_BOOL(visitor,in);
+            return dispatch_Expression_LITERAL_BOOL(visitor,in,alias_ref);
         case ebm::ExpressionKind::LITERAL_STRING:
-            return dispatch_Expression_LITERAL_STRING(visitor,in);
+            return dispatch_Expression_LITERAL_STRING(visitor,in,alias_ref);
         case ebm::ExpressionKind::LITERAL_TYPE:
-            return dispatch_Expression_LITERAL_TYPE(visitor,in);
+            return dispatch_Expression_LITERAL_TYPE(visitor,in,alias_ref);
         case ebm::ExpressionKind::LITERAL_CHAR:
-            return dispatch_Expression_LITERAL_CHAR(visitor,in);
+            return dispatch_Expression_LITERAL_CHAR(visitor,in,alias_ref);
         case ebm::ExpressionKind::IDENTIFIER:
-            return dispatch_Expression_IDENTIFIER(visitor,in);
+            return dispatch_Expression_IDENTIFIER(visitor,in,alias_ref);
         case ebm::ExpressionKind::BINARY_OP:
-            return dispatch_Expression_BINARY_OP(visitor,in);
+            return dispatch_Expression_BINARY_OP(visitor,in,alias_ref);
         case ebm::ExpressionKind::UNARY_OP:
-            return dispatch_Expression_UNARY_OP(visitor,in);
+            return dispatch_Expression_UNARY_OP(visitor,in,alias_ref);
         case ebm::ExpressionKind::CALL:
-            return dispatch_Expression_CALL(visitor,in);
+            return dispatch_Expression_CALL(visitor,in,alias_ref);
         case ebm::ExpressionKind::INDEX_ACCESS:
-            return dispatch_Expression_INDEX_ACCESS(visitor,in);
+            return dispatch_Expression_INDEX_ACCESS(visitor,in,alias_ref);
         case ebm::ExpressionKind::MEMBER_ACCESS:
-            return dispatch_Expression_MEMBER_ACCESS(visitor,in);
+            return dispatch_Expression_MEMBER_ACCESS(visitor,in,alias_ref);
         case ebm::ExpressionKind::TYPE_CAST:
-            return dispatch_Expression_TYPE_CAST(visitor,in);
+            return dispatch_Expression_TYPE_CAST(visitor,in,alias_ref);
         case ebm::ExpressionKind::RANGE:
-            return dispatch_Expression_RANGE(visitor,in);
+            return dispatch_Expression_RANGE(visitor,in,alias_ref);
         case ebm::ExpressionKind::DEFAULT_VALUE:
-            return dispatch_Expression_DEFAULT_VALUE(visitor,in);
+            return dispatch_Expression_DEFAULT_VALUE(visitor,in,alias_ref);
         case ebm::ExpressionKind::IS_LITTLE_ENDIAN:
-            return dispatch_Expression_IS_LITTLE_ENDIAN(visitor,in);
+            return dispatch_Expression_IS_LITTLE_ENDIAN(visitor,in,alias_ref);
         case ebm::ExpressionKind::GET_STREAM_OFFSET:
-            return dispatch_Expression_GET_STREAM_OFFSET(visitor,in);
+            return dispatch_Expression_GET_STREAM_OFFSET(visitor,in,alias_ref);
         case ebm::ExpressionKind::GET_REMAINING_BYTES:
-            return dispatch_Expression_GET_REMAINING_BYTES(visitor,in);
+            return dispatch_Expression_GET_REMAINING_BYTES(visitor,in,alias_ref);
         case ebm::ExpressionKind::CAN_READ_STREAM:
-            return dispatch_Expression_CAN_READ_STREAM(visitor,in);
+            return dispatch_Expression_CAN_READ_STREAM(visitor,in,alias_ref);
         case ebm::ExpressionKind::ARRAY_SIZE:
-            return dispatch_Expression_ARRAY_SIZE(visitor,in);
+            return dispatch_Expression_ARRAY_SIZE(visitor,in,alias_ref);
         case ebm::ExpressionKind::IS_ERROR:
-            return dispatch_Expression_IS_ERROR(visitor,in);
+            return dispatch_Expression_IS_ERROR(visitor,in,alias_ref);
         case ebm::ExpressionKind::MAX_VALUE:
-            return dispatch_Expression_MAX_VALUE(visitor,in);
+            return dispatch_Expression_MAX_VALUE(visitor,in,alias_ref);
         case ebm::ExpressionKind::READ_DATA:
-            return dispatch_Expression_READ_DATA(visitor,in);
+            return dispatch_Expression_READ_DATA(visitor,in,alias_ref);
         case ebm::ExpressionKind::WRITE_DATA:
-            return dispatch_Expression_WRITE_DATA(visitor,in);
+            return dispatch_Expression_WRITE_DATA(visitor,in,alias_ref);
         case ebm::ExpressionKind::CONDITIONAL_STATEMENT:
-            return dispatch_Expression_CONDITIONAL_STATEMENT(visitor,in);
+            return dispatch_Expression_CONDITIONAL_STATEMENT(visitor,in,alias_ref);
         case ebm::ExpressionKind::CONDITIONAL:
-            return dispatch_Expression_CONDITIONAL(visitor,in);
+            return dispatch_Expression_CONDITIONAL(visitor,in,alias_ref);
         case ebm::ExpressionKind::AVAILABLE:
-            return dispatch_Expression_AVAILABLE(visitor,in);
+            return dispatch_Expression_AVAILABLE(visitor,in,alias_ref);
         case ebm::ExpressionKind::SIZEOF:
-            return dispatch_Expression_SIZEOF(visitor,in);
+            return dispatch_Expression_SIZEOF(visitor,in,alias_ref);
         case ebm::ExpressionKind::SUB_RANGE_INIT:
-            return dispatch_Expression_SUB_RANGE_INIT(visitor,in);
+            return dispatch_Expression_SUB_RANGE_INIT(visitor,in,alias_ref);
         case ebm::ExpressionKind::OR_COND:
-            return dispatch_Expression_OR_COND(visitor,in);
+            return dispatch_Expression_OR_COND(visitor,in,alias_ref);
         case ebm::ExpressionKind::ADDRESS_OF:
-            return dispatch_Expression_ADDRESS_OF(visitor,in);
+            return dispatch_Expression_ADDRESS_OF(visitor,in,alias_ref);
         case ebm::ExpressionKind::OPTIONAL_OF:
-            return dispatch_Expression_OPTIONAL_OF(visitor,in);
+            return dispatch_Expression_OPTIONAL_OF(visitor,in,alias_ref);
         case ebm::ExpressionKind::SETTER_STATUS:
-            return dispatch_Expression_SETTER_STATUS(visitor,in);
+            return dispatch_Expression_SETTER_STATUS(visitor,in,alias_ref);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -9027,7 +9162,7 @@ namespace ebm2python {
     template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::ExpressionRef& ref) {
         MAYBE(elem, visitor.module_.get_expression(ref));
-        return visit_Expression(visitor,elem);
+        return visit_Expression(visitor,elem,ref);
     }
     template<typename Visitor>
     expected<Result> visit_Expressions(Visitor&& visitor,const ebm::Expressions& in) {
@@ -9042,7 +9177,7 @@ namespace ebm2python {
         return w.out();
     }
     template<typename Visitor>
-    expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in);
+    expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref = {});
     template<typename Visitor>
     concept has_visitor_Type_INT = requires(Visitor v) {
          { v.visit_Type_INT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<Result>>;
@@ -9052,7 +9187,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_INT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_INT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9128,10 +9263,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_INT<Visitor>) {
-            result = visitor.visit_Type_INT(in.id,kind,size);
+            result = visitor.visit_Type_INT(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         else if constexpr (has_visitor_Type_INT_call<Visitor>) {
-            result = visitor(in.id,kind,size);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9181,7 +9316,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_UINT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_UINT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9257,10 +9392,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_UINT<Visitor>) {
-            result = visitor.visit_Type_UINT(in.id,kind,size);
+            result = visitor.visit_Type_UINT(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         else if constexpr (has_visitor_Type_UINT_call<Visitor>) {
-            result = visitor(in.id,kind,size);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9310,7 +9445,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_FLOAT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_FLOAT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9386,10 +9521,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_FLOAT<Visitor>) {
-            result = visitor.visit_Type_FLOAT(in.id,kind,size);
+            result = visitor.visit_Type_FLOAT(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         else if constexpr (has_visitor_Type_FLOAT_call<Visitor>) {
-            result = visitor(in.id,kind,size);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9439,7 +9574,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_STRUCT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_STRUCT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9515,10 +9650,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_STRUCT<Visitor>) {
-            result = visitor.visit_Type_STRUCT(in.id,kind,id);
+            result = visitor.visit_Type_STRUCT(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
         }
         else if constexpr (has_visitor_Type_STRUCT_call<Visitor>) {
-            result = visitor(in.id,kind,id);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9568,7 +9703,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_RECURSIVE_STRUCT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_RECURSIVE_STRUCT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9644,10 +9779,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_RECURSIVE_STRUCT<Visitor>) {
-            result = visitor.visit_Type_RECURSIVE_STRUCT(in.id,kind,id);
+            result = visitor.visit_Type_RECURSIVE_STRUCT(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
         }
         else if constexpr (has_visitor_Type_RECURSIVE_STRUCT_call<Visitor>) {
-            result = visitor(in.id,kind,id);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9697,7 +9832,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_BOOL(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_BOOL(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9769,10 +9904,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_BOOL<Visitor>) {
-            result = visitor.visit_Type_BOOL(in.id,kind);
+            result = visitor.visit_Type_BOOL(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_BOOL_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9822,7 +9957,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_VOID(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_VOID(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -9894,10 +10029,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_VOID<Visitor>) {
-            result = visitor.visit_Type_VOID(in.id,kind);
+            result = visitor.visit_Type_VOID(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_VOID_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -9947,7 +10082,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_META(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_META(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10019,10 +10154,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_META<Visitor>) {
-            result = visitor.visit_Type_META(in.id,kind);
+            result = visitor.visit_Type_META(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_META_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10072,7 +10207,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().base_type(),*std::declval<const ebm::TypeBody&>().id()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_ENUM(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_ENUM(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10152,10 +10287,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_ENUM<Visitor>) {
-            result = visitor.visit_Type_ENUM(in.id,kind,base_type,id);
+            result = visitor.visit_Type_ENUM(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type,id);
         }
         else if constexpr (has_visitor_Type_ENUM_call<Visitor>) {
-            result = visitor(in.id,kind,base_type,id);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type,id);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10205,7 +10340,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().element_type(),*std::declval<const ebm::TypeBody&>().length()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_ARRAY(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_ARRAY(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10285,10 +10420,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_ARRAY<Visitor>) {
-            result = visitor.visit_Type_ARRAY(in.id,kind,element_type,length);
+            result = visitor.visit_Type_ARRAY(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type,length);
         }
         else if constexpr (has_visitor_Type_ARRAY_call<Visitor>) {
-            result = visitor(in.id,kind,element_type,length);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type,length);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10338,7 +10473,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().element_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_VECTOR(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_VECTOR(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10414,10 +10549,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_VECTOR<Visitor>) {
-            result = visitor.visit_Type_VECTOR(in.id,kind,element_type);
+            result = visitor.visit_Type_VECTOR(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type);
         }
         else if constexpr (has_visitor_Type_VECTOR_call<Visitor>) {
-            result = visitor(in.id,kind,element_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10467,7 +10602,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().common_type(),*std::declval<const ebm::TypeBody&>().members(),*std::declval<const ebm::TypeBody&>().related_field()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_VARIANT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_VARIANT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10551,10 +10686,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_VARIANT<Visitor>) {
-            result = visitor.visit_Type_VARIANT(in.id,kind,common_type,members,related_field);
+            result = visitor.visit_Type_VARIANT(is_nil(alias_ref) ? in.id : alias_ref,kind,common_type,members,related_field);
         }
         else if constexpr (has_visitor_Type_VARIANT_call<Visitor>) {
-            result = visitor(in.id,kind,common_type,members,related_field);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,common_type,members,related_field);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10604,7 +10739,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().base_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_RANGE(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_RANGE(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10680,10 +10815,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_RANGE<Visitor>) {
-            result = visitor.visit_Type_RANGE(in.id,kind,base_type);
+            result = visitor.visit_Type_RANGE(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type);
         }
         else if constexpr (has_visitor_Type_RANGE_call<Visitor>) {
-            result = visitor(in.id,kind,base_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10733,7 +10868,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_ENCODER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_ENCODER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10805,10 +10940,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_ENCODER_RETURN<Visitor>) {
-            result = visitor.visit_Type_ENCODER_RETURN(in.id,kind);
+            result = visitor.visit_Type_ENCODER_RETURN(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_ENCODER_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10858,7 +10993,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_DECODER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_DECODER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -10930,10 +11065,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_DECODER_RETURN<Visitor>) {
-            result = visitor.visit_Type_DECODER_RETURN(in.id,kind);
+            result = visitor.visit_Type_DECODER_RETURN(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_DECODER_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10983,7 +11118,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_ENCODER_INPUT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_ENCODER_INPUT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11055,10 +11190,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_ENCODER_INPUT<Visitor>) {
-            result = visitor.visit_Type_ENCODER_INPUT(in.id,kind);
+            result = visitor.visit_Type_ENCODER_INPUT(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_ENCODER_INPUT_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11108,7 +11243,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_DECODER_INPUT(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_DECODER_INPUT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11180,10 +11315,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_DECODER_INPUT<Visitor>) {
-            result = visitor.visit_Type_DECODER_INPUT(in.id,kind);
+            result = visitor.visit_Type_DECODER_INPUT(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_DECODER_INPUT_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11233,7 +11368,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11305,10 +11440,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN<Visitor>) {
-            result = visitor.visit_Type_PROPERTY_SETTER_RETURN(in.id,kind);
+            result = visitor.visit_Type_PROPERTY_SETTER_RETURN(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN_call<Visitor>) {
-            result = visitor(in.id,kind);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11358,7 +11493,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().inner_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_OPTIONAL(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_OPTIONAL(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11434,10 +11569,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_OPTIONAL<Visitor>) {
-            result = visitor.visit_Type_OPTIONAL(in.id,kind,inner_type);
+            result = visitor.visit_Type_OPTIONAL(is_nil(alias_ref) ? in.id : alias_ref,kind,inner_type);
         }
         else if constexpr (has_visitor_Type_OPTIONAL_call<Visitor>) {
-            result = visitor(in.id,kind,inner_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,inner_type);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11487,7 +11622,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().pointee_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_PTR(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_PTR(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11563,10 +11698,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_PTR<Visitor>) {
-            result = visitor.visit_Type_PTR(in.id,kind,pointee_type);
+            result = visitor.visit_Type_PTR(is_nil(alias_ref) ? in.id : alias_ref,kind,pointee_type);
         }
         else if constexpr (has_visitor_Type_PTR_call<Visitor>) {
-            result = visitor(in.id,kind,pointee_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,pointee_type);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11616,7 +11751,7 @@ namespace ebm2python {
          { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().params(),*std::declval<const ebm::TypeBody&>().return_type()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Type_FUNCTION(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> dispatch_Type_FUNCTION(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
         #endif
@@ -11696,10 +11831,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Type_FUNCTION<Visitor>) {
-            result = visitor.visit_Type_FUNCTION(in.id,kind,params,return_type);
+            result = visitor.visit_Type_FUNCTION(is_nil(alias_ref) ? in.id : alias_ref,kind,params,return_type);
         }
         else if constexpr (has_visitor_Type_FUNCTION_call<Visitor>) {
-            result = visitor(in.id,kind,params,return_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,params,return_type);
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11741,7 +11876,7 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in) {
+    expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_dispatch_before.hpp")
         #include "visitor/Type_dispatch_before.hpp"
         #endif
@@ -11761,47 +11896,47 @@ namespace ebm2python {
         #else
         switch (in.body.kind) {
         case ebm::TypeKind::INT:
-            return dispatch_Type_INT(visitor,in);
+            return dispatch_Type_INT(visitor,in,alias_ref);
         case ebm::TypeKind::UINT:
-            return dispatch_Type_UINT(visitor,in);
+            return dispatch_Type_UINT(visitor,in,alias_ref);
         case ebm::TypeKind::FLOAT:
-            return dispatch_Type_FLOAT(visitor,in);
+            return dispatch_Type_FLOAT(visitor,in,alias_ref);
         case ebm::TypeKind::STRUCT:
-            return dispatch_Type_STRUCT(visitor,in);
+            return dispatch_Type_STRUCT(visitor,in,alias_ref);
         case ebm::TypeKind::RECURSIVE_STRUCT:
-            return dispatch_Type_RECURSIVE_STRUCT(visitor,in);
+            return dispatch_Type_RECURSIVE_STRUCT(visitor,in,alias_ref);
         case ebm::TypeKind::BOOL:
-            return dispatch_Type_BOOL(visitor,in);
+            return dispatch_Type_BOOL(visitor,in,alias_ref);
         case ebm::TypeKind::VOID:
-            return dispatch_Type_VOID(visitor,in);
+            return dispatch_Type_VOID(visitor,in,alias_ref);
         case ebm::TypeKind::META:
-            return dispatch_Type_META(visitor,in);
+            return dispatch_Type_META(visitor,in,alias_ref);
         case ebm::TypeKind::ENUM:
-            return dispatch_Type_ENUM(visitor,in);
+            return dispatch_Type_ENUM(visitor,in,alias_ref);
         case ebm::TypeKind::ARRAY:
-            return dispatch_Type_ARRAY(visitor,in);
+            return dispatch_Type_ARRAY(visitor,in,alias_ref);
         case ebm::TypeKind::VECTOR:
-            return dispatch_Type_VECTOR(visitor,in);
+            return dispatch_Type_VECTOR(visitor,in,alias_ref);
         case ebm::TypeKind::VARIANT:
-            return dispatch_Type_VARIANT(visitor,in);
+            return dispatch_Type_VARIANT(visitor,in,alias_ref);
         case ebm::TypeKind::RANGE:
-            return dispatch_Type_RANGE(visitor,in);
+            return dispatch_Type_RANGE(visitor,in,alias_ref);
         case ebm::TypeKind::ENCODER_RETURN:
-            return dispatch_Type_ENCODER_RETURN(visitor,in);
+            return dispatch_Type_ENCODER_RETURN(visitor,in,alias_ref);
         case ebm::TypeKind::DECODER_RETURN:
-            return dispatch_Type_DECODER_RETURN(visitor,in);
+            return dispatch_Type_DECODER_RETURN(visitor,in,alias_ref);
         case ebm::TypeKind::ENCODER_INPUT:
-            return dispatch_Type_ENCODER_INPUT(visitor,in);
+            return dispatch_Type_ENCODER_INPUT(visitor,in,alias_ref);
         case ebm::TypeKind::DECODER_INPUT:
-            return dispatch_Type_DECODER_INPUT(visitor,in);
+            return dispatch_Type_DECODER_INPUT(visitor,in,alias_ref);
         case ebm::TypeKind::PROPERTY_SETTER_RETURN:
-            return dispatch_Type_PROPERTY_SETTER_RETURN(visitor,in);
+            return dispatch_Type_PROPERTY_SETTER_RETURN(visitor,in,alias_ref);
         case ebm::TypeKind::OPTIONAL:
-            return dispatch_Type_OPTIONAL(visitor,in);
+            return dispatch_Type_OPTIONAL(visitor,in,alias_ref);
         case ebm::TypeKind::PTR:
-            return dispatch_Type_PTR(visitor,in);
+            return dispatch_Type_PTR(visitor,in,alias_ref);
         case ebm::TypeKind::FUNCTION:
-            return dispatch_Type_FUNCTION(visitor,in);
+            return dispatch_Type_FUNCTION(visitor,in,alias_ref);
         default:
             return unexpect_error("Unknown Type kind: {}", to_string(in.body.kind));
         }
@@ -11811,7 +11946,7 @@ namespace ebm2python {
     template<typename Visitor>
     expected<Result> visit_Type(Visitor&& visitor,const ebm::TypeRef& ref) {
         MAYBE(elem, visitor.module_.get_type(ref));
-        return visit_Type(visitor,elem);
+        return visit_Type(visitor,elem,ref);
     }
     template<typename Visitor>
     expected<Result> visit_Types(Visitor&& visitor,const ebm::Types& in) {
@@ -12309,6 +12444,30 @@ namespace ebm2python {
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_VARIABLE_DECL {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
+        expected<Result> visit_Statement_PARAMETER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ParameterDecl& param_decl) {
+            #if __has_include("visitor/Statement_PARAMETER_DECL_before.hpp")
+            #include "visitor/Statement_PARAMETER_DECL_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_PARAMETER_DECL.hpp")
+            #include "visitor/Statement_PARAMETER_DECL.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp")
+            #if __has_include("visitor/Statement_PARAMETER_DECL_pre_default.hpp")
+            #include "visitor/Statement_PARAMETER_DECL_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp"
+            #if __has_include("visitor/Statement_PARAMETER_DECL_post_default.hpp")
+            #include "visitor/Statement_PARAMETER_DECL_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_PARAMETER_DECL_after.hpp")
+            #include "visitor/Statement_PARAMETER_DECL_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Statement_PARAMETER_DECL {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -13105,7 +13264,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Expression_CAN_READ_STREAM(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Size& num_bytes,const ebm::StreamType& stream_type) {
+        expected<Result> visit_Expression_CAN_READ_STREAM(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_ref,const ebm::Size& num_bytes,const ebm::StreamType& stream_type) {
             #if __has_include("visitor/Expression_CAN_READ_STREAM_before.hpp")
             #include "visitor/Expression_CAN_READ_STREAM_before.hpp"
             #endif
@@ -13988,6 +14147,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_CONTINUE<Visitor>, "Visitor does not implement visit_Statement_CONTINUE");
     static_assert(has_visitor_Statement_FUNCTION_DECL<Visitor>, "Visitor does not implement visit_Statement_FUNCTION_DECL");
     static_assert(has_visitor_Statement_VARIABLE_DECL<Visitor>, "Visitor does not implement visit_Statement_VARIABLE_DECL");
+    static_assert(has_visitor_Statement_PARAMETER_DECL<Visitor>, "Visitor does not implement visit_Statement_PARAMETER_DECL");
     static_assert(has_visitor_Statement_FIELD_DECL<Visitor>, "Visitor does not implement visit_Statement_FIELD_DECL");
     static_assert(has_visitor_Statement_ENUM_DECL<Visitor>, "Visitor does not implement visit_Statement_ENUM_DECL");
     static_assert(has_visitor_Statement_ENUM_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_ENUM_MEMBER_DECL");

@@ -16,6 +16,8 @@ namespace ebmgen {
         ebm::AliasHint hint;
     };
 
+    using ObjectVariant = std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*>;
+
     struct MappingTable {
         MappingTable(const ebm::ExtendedBinaryModule& module)
             : module_(module) {
@@ -30,7 +32,7 @@ namespace ebmgen {
         const ebm::Statement* get_statement(const ebm::StatementRef& ref) const;
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
-        std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> get_object(const ebm::AnyRef& ref) const;
+        ObjectVariant get_object(const ebm::AnyRef& ref) const;
 
         std::optional<ebm::TypeKind> get_type_kind(const ebm::TypeRef& ref) const {
             if (const auto* type = get_type(ref)) {

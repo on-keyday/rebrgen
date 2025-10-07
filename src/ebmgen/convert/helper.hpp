@@ -92,11 +92,12 @@ namespace ebmgen {
 #define EBM_IDENTIFIER(ref_name, id, typ) \
     EBM_AST_EXPRESSION(ref_name, make_identifier_expr, id, typ)
 
-#define EBM_DEFINE_VARIABLE(ref_name, id, typ, initial_ref, is_const, is_reference)                           \
-    EBM_AST_VARIABLE_REF(ref_name) {                                                                          \
-        EBMA_ADD_STATEMENT(new_var_ref_, (make_variable_decl(id, typ, initial_ref, is_const, is_reference))); \
-        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                     \
-        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                      \
+#define EBM_DEFINE_VARIABLE(ref_name, id, typ, initial_ref, is_const, is_reference)                                    \
+    EBM_AST_VARIABLE_REF(ref_name) {                                                                                   \
+        MAYBE(new_id_, ctx.repository().new_statement_id());                                                           \
+        EBMA_ADD_STATEMENT(new_var_ref_, new_id_, (make_variable_decl(id, typ, initial_ref, is_const, is_reference))); \
+        EBM_IDENTIFIER(new_expr_ref_, new_var_ref_, typ);                                                              \
+        EBM_AST_VARIABLE_REF_SET(ref_name, new_expr_ref_, new_var_ref_);                                               \
     }
 
 #define EBM_DEFINE_ANONYMOUS_VARIABLE(ref_name, typ, initial_ref) \

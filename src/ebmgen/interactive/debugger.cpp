@@ -51,6 +51,7 @@ namespace ebmgen {
         constexpr auto and_op = str(NodeType::Operator, lit("and") | lit("&&"));
         constexpr auto or_op = str(NodeType::Operator, lit("or") | lit("||"));
         constexpr auto not_op = str(NodeType::Operator, lit("not") | lit("!"));
+        constexpr auto contains_op = str(NodeType::Operator, lit("contains"));
         constexpr auto in_op = str(NodeType::Operator, lit("in"));
         constexpr auto number = str(NodeType::Number, futils::comb2::composite::hex_integer | futils::comb2::composite::dec_integer);
         constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*(((lit(".") | lit("->")) & +futils::comb2::composite::c_ident) | lit("[") & +futils::comb2::composite::dec_integer & +lit("]")));
@@ -61,11 +62,11 @@ namespace ebmgen {
         constexpr auto or_recurse = method_proxy(or_expr);
         constexpr auto object_recurse = method_proxy(object);
         constexpr auto primary = spaces & +(string_lit | number | object_recurse | ident | ('('_l & expr_recurse & +')'_l)) & spaces;
-        constexpr auto unary_op = group(NodeType::UnaryOp, (not_op & +primary) | +primary);
+        constexpr auto unary_op = group(NodeType::UnaryOp, ((not_op | contains_op) & +primary) | +primary);
         constexpr auto in_object = group(NodeType::BinaryOp, (unary_op & -(in_op & spaces & +unary_op)));
-        constexpr auto compare = group(NodeType::BinaryOp, in_object & -(compare_op & +compare_recurse));
-        constexpr auto and_expr = group(NodeType::BinaryOp, compare & -(and_op & +and_recurse));
-        constexpr auto or_expr = group(NodeType::BinaryOp, and_expr & -(or_op & +or_recurse));
+        constexpr auto compare = group(NodeType::BinaryOp, in_object & -(compare_op & spaces & +compare_recurse));
+        constexpr auto and_expr = group(NodeType::BinaryOp, compare & -(and_op & spaces & +and_recurse));
+        constexpr auto or_expr = group(NodeType::BinaryOp, and_expr & -(or_op & spaces & +or_recurse));
         constexpr auto expr = or_expr;
         constexpr auto object_type = str(NodeType::ObjectType, lit("Identifier") | lit("String") | lit("Type") | lit("Statement") | lit("Expression") | lit("Any"));
         constexpr auto object = group(NodeType::Object, object_type& spaces & +lit("{") & spaces & +expr_recurse & spaces & +lit("}"));
@@ -79,7 +80,7 @@ namespace ebmgen {
         };
         constexpr Recurse recurse{expr, compare, and_expr, or_expr, object};
         constexpr auto check = []() {
-            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"} Any { body.condition->body.kind == \"Identifier\" or body.condition in Any { id == 456 } }");
+            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"} Any { body.condition->body.kind == \"Identifier\" or body.condition in Any { id == 456 } } Any{contains 11 and not (id == 11)}");
             return full_expr(seq, futils::comb2::test::TestContext<>{}, recurse) == futils::comb2::Status::match;
         };
 
@@ -115,6 +116,7 @@ namespace ebmgen {
         MappingTable& table;
         std::vector<EvalValue> stack;
         std::map<std::string, EvalValue> variables;
+        ObjectVariant current_target;
 
         template <class T>
         void unwrap_any_ref(EvalValue& value) {
@@ -214,7 +216,7 @@ namespace ebmgen {
         ExecutionResult query(MappingTable& table, ObjectSet& matched, ObjectResult* result = nullptr) const {
             auto for_each = [&](auto& objects) {
                 for (auto& t : objects) {
-                    EvalContext ctx{table};
+                    EvalContext ctx{.table = table, .current_target = &t};
                     collect_variables(ctx.variables, related_identifiers, t);
                     if (evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
                         ctx.unwrap_any_ref<bool>(ctx.stack[0]);
@@ -448,6 +450,52 @@ namespace ebmgen {
                                     RETURN_EXEC_FAILURE(operand(ctx));
                                     CHECK_AND_TAKE_AS(value, bool);
                                     ctx.stack.push_back(EvalValue{!value});
+                                    return ExecutionResult::Success;
+                                };
+                            }
+                            else if (op->token == "contains") {
+                                return [operand = std::move(operand)](EvalContext& ctx) {
+                                    RETURN_EXEC_FAILURE(operand(ctx));
+                                    CHECK_AND_TAKE(operand_value);
+                                    bool found = std::visit([&](auto& target) {
+                                        if constexpr (std::is_pointer_v<std::decay_t<decltype(target)>>) {
+                                            bool found = false;
+                                            target->visit([&](auto&& v, auto name, auto&& value) {
+                                                if (found) {
+                                                    return;
+                                                }
+                                                if constexpr (AnyRef<decltype(value)>) {
+                                                    auto ref = to_any_ref(value);
+                                                    EvalValue val{ref};
+                                                    adjust_operands(ctx, operand_value, val);
+                                                    if (std::holds_alternative<std::string>(operand_value) && std::holds_alternative<std::string>(val)) {
+                                                        found = (std::get<std::string>(operand_value) == std::get<std::string>(val));
+                                                    }
+                                                    else if (std::holds_alternative<std::uint64_t>(operand_value) && std::holds_alternative<std::uint64_t>(val)) {
+                                                        found = (std::get<std::uint64_t>(operand_value) == std::get<std::uint64_t>(val));
+                                                    }
+                                                    else if (std::holds_alternative<bool>(operand_value) && std::holds_alternative<bool>(val)) {
+                                                        found = (std::get<bool>(operand_value) == std::get<bool>(val));
+                                                    }
+                                                    else if (std::holds_alternative<ebm::AnyRef>(operand_value) && std::holds_alternative<ebm::AnyRef>(val)) {
+                                                        found = (get_id(std::get<ebm::AnyRef>(operand_value)) == get_id(std::get<ebm::AnyRef>(val)));
+                                                    }
+                                                    else if (std::holds_alternative<ObjectSet>(operand_value) && std::holds_alternative<ebm::AnyRef>(val)) {
+                                                        found = (std::get<ObjectSet>(operand_value).contains(std::get<ebm::AnyRef>(val)));
+                                                    }
+                                                }
+                                                else
+                                                    VISITOR_RECURSE_CONTAINER(v, name, value)
+                                                else VISITOR_RECURSE(v, name, value)
+                                            });
+                                            return found;
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                    },
+                                                            ctx.current_target);
+                                    ctx.stack.push_back(EvalValue{found});
                                     return ExecutionResult::Success;
                                 };
                             }

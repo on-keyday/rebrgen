@@ -682,13 +682,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         using T = std::decay_t<decltype(t)>;
         CodeWriter stmt_dispatcher;
 
-        auto write_visit_entry = [&](auto& w, auto&&... name) {
+        auto write_visit_entry = [&](auto& w, bool decl, auto&&... name) {
             w.writeln("template<typename Visitor>");
-            w.write(result_type, " ", name..., "(Visitor&& visitor,const ebm::", kind, "& in)");
+            w.write(result_type, " ", name..., "(Visitor&& visitor,const ebm::", kind, "& in,ebm::", kind, "Ref alias_ref", decl ? " = {}" : "", ")");
         };
-        write_visit_entry(w, "visit_", kind);
+        write_visit_entry(w, true, "visit_", kind);
         w.writeln(";");
-        write_visit_entry(stmt_dispatcher, "visit_", kind);
+        write_visit_entry(stmt_dispatcher, false, "visit_", kind);
         stmt_dispatcher.writeln(" {");
         auto scope_ = stmt_dispatcher.indent_scope();
         insert_include_without_endif(stmt_dispatcher, kind, suffixes[suffix_dispatch]);
@@ -714,7 +714,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
             };
             auto call_arguments = [&] {
-                w.write("in.id");
+                w.write("is_nil(alias_ref) ? in.id : alias_ref");
                 for (auto& field : body.fields) {
                     if (!subset[T(i)].first.contains(field.name)) {
                         continue;
@@ -751,7 +751,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
 
             // generating dispatch function
-            write_visit_entry(w, dispatch_func_name);
+            write_visit_entry(w, false, dispatch_func_name);
             w.writeln(" {");
             {
                 auto scope = w.indent_scope();
@@ -802,7 +802,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             // generating entry point of dispatch function
             {
                 stmt_dispatcher.writeln("case ebm::", visit_enum(t), "::", to_string(T(i)), ":");
-                stmt_dispatcher.indent_writeln("return ", dispatch_func_name, "(visitor,in);");
+                stmt_dispatcher.indent_writeln("return ", dispatch_func_name, "(visitor,in,alias_ref);");
             }
 
             // generating visitor function
@@ -858,7 +858,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         {
             auto scope = stmt_dispatcher.indent_scope();
             stmt_dispatcher.writeln("MAYBE(elem, visitor.module_.get_", lowered_kind, "(ref));");
-            stmt_dispatcher.writeln("return visit_", kind, "(visitor,elem);");
+            stmt_dispatcher.writeln("return visit_", kind, "(visitor,elem,ref);");
         }
         stmt_dispatcher.writeln("}");
 

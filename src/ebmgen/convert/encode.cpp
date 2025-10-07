@@ -178,7 +178,6 @@ namespace ebmgen {
 
         ebm::Block block;
         block.container.reserve(2 + (!is_nil(assert_)));
-        append(block, counter_def);
         if (!is_nil(assert_)) {
             append(block, assert_);
         }

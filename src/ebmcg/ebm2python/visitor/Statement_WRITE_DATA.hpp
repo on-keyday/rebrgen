@@ -41,6 +41,8 @@ MAYBE(target_expr_str, visit_Expression(*this, io_data.target));
 // Generate Python code for writing
 MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attribute, io_data.size));
 
-w.writeln("stream.write(struct.pack(" + struct_format + ", ", target_expr_str.to_string(), "))");
+auto io_value = module_.get_identifier_or(io_data.io_ref);
+
+w.writeln(io_value, ".write(struct.pack(" + struct_format + ", ", target_expr_str.to_string(), "))");
 
 return w.out();

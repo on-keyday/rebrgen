@@ -1306,7 +1306,12 @@ namespace bm2rust {
                                     value = "if value {1} else {0}";
                                 }
                                 auto shift = std::format("{}", bit_size - consumed_size);
-                                w2.writeln("self.", field_name, " = self.", field_name, "& !(", mask, "<< ", shift, ") | ((", value, " as ", type, ") << ", shift, ");");
+
+                                auto as_type = std::format("({} as {})", value, type);
+                                if(!enum_ident.empty()){
+                                    as_type = std::format("{}::from({})",type,value);
+                                }
+                                w2.writeln("self.", field_name, " = self.", field_name, "& !(", mask, "<< ", shift, ") | (", as_type, " << ", shift, ");");
                                 w2.writeln("true");
                                 scope3.execute();
                                 w2.writeln("}");

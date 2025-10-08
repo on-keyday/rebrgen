@@ -138,6 +138,7 @@ namespace ebmgen {
                     if (i == 0) {
                         append(block, tmp_buffer_def);
                         append(block, current_bit_offset_def);
+                        append(block,read_offset_def);
                     }
                     if (!write) {
                         MAYBE(io_cond, read_incremental(new_size_bit));

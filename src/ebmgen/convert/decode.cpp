@@ -72,7 +72,8 @@ namespace ebmgen {
         EBM_ASSIGNMENT(assign, to, cast_ref);
 
         ebm::Block block;
-        block.container.reserve(4);
+        block.container.reserve(5);
+        append(block, value_holder_def);
         append(block, buffer_def);
         append(block, read_ref);
         append(block, loop_stmt);

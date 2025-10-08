@@ -32,3 +32,4 @@ module_.register_default_prefix(ebm::StatementKind::VARIABLE_DECL, "var");
 module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");
 module_.register_default_prefix(ebm::StatementKind::PARAMETER_DECL, "param");
 default_value_option.object_init = "()";
+default_value_option.bytes_init = "bytearray()";

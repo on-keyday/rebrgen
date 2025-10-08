@@ -482,8 +482,15 @@ format IOData:
 format Condition:
     cond :ExpressionRef
 
+enum InitCheckType:
+    :u8
+    encode
+    decode
+    union_get
+    union_set
+
 format InitCheck:
-    stream_type :StreamType
+    init_check_type :InitCheckType
     target_field :StatementRef
     expect_type :TypeRef
 

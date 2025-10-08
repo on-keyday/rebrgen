@@ -826,6 +826,43 @@ namespace ebm {
     constexpr const char* visit_enum(SizeUnit) {
         return "SizeUnit";
     }
+    enum class InitCheckType : std::uint8_t {
+        encode = 0,
+        decode = 1,
+        union_get = 2,
+        union_set = 3,
+    };
+    constexpr const char* to_string(InitCheckType e, bool origin_form = false) {
+        switch(e) {
+            case InitCheckType::encode: return origin_form ? "encode":"encode" ;
+            case InitCheckType::decode: return origin_form ? "decode":"decode" ;
+            case InitCheckType::union_get: return origin_form ? "union_get":"union_get" ;
+            case InitCheckType::union_set: return origin_form ? "union_set":"union_set" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<InitCheckType> InitCheckType_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "encode") {
+            return InitCheckType::encode;
+        }
+        if (str == "decode") {
+            return InitCheckType::decode;
+        }
+        if (str == "union_get") {
+            return InitCheckType::union_get;
+        }
+        if (str == "union_set") {
+            return InitCheckType::union_set;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(InitCheckType) {
+        return "InitCheckType";
+    }
     enum class CastType : std::uint8_t {
         ENUM_TO_INT = 0,
         INT_TO_ENUM = 1,
@@ -2966,7 +3003,7 @@ namespace ebm {
         }
     };
     struct EBM_API InitCheck{
-        StreamType stream_type{};
+        InitCheckType init_check_type{};
         StatementRef target_field;
         TypeRef expect_type;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
@@ -2975,13 +3012,13 @@ namespace ebm {
         constexpr static const char* visitor_name = "InitCheck";
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
-            v(v, "stream_type",(*this).stream_type);
+            v(v, "init_check_type",(*this).init_check_type);
             v(v, "target_field",(*this).target_field);
             v(v, "expect_type",(*this).expect_type);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
-            v(v, "stream_type",(*this).stream_type);
+            v(v, "init_check_type",(*this).init_check_type);
             v(v, "target_field",(*this).target_field);
             v(v, "expect_type",(*this).expect_type);
         }
@@ -2992,7 +3029,7 @@ namespace ebm {
         };
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
-            v(v, "stream_type",visitor_tag<decltype(std::declval<InitCheck>().stream_type),false>{});
+            v(v, "init_check_type",visitor_tag<decltype(std::declval<InitCheck>().init_check_type),false>{});
             v(v, "target_field",visitor_tag<decltype(std::declval<InitCheck>().target_field),false>{});
             v(v, "expect_type",visitor_tag<decltype(std::declval<InitCheck>().expect_type),false>{});
         }

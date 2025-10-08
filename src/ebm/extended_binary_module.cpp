@@ -16360,9 +16360,9 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> InitCheck::encode(::futils::binary::writer& w) const {
-        auto tmp_178_ = static_cast<std::uint8_t>((*this).stream_type);
+        auto tmp_178_ = static_cast<std::uint8_t>((*this).init_check_type);
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_178_) ,true)) {
-            return ::futils::error::Error<>("encode: InitCheck::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("encode: InitCheck::init_check_type: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (auto err = (*this).target_field.encode(w)) {
             return err;
@@ -16375,9 +16375,9 @@ namespace ebm {
     ::futils::error::Error<> InitCheck::decode(::futils::binary::reader& r) {
         std::uint8_t tmp_179_ = 0;
         if (!::futils::binary::read_num(r,tmp_179_ ,true)) {
-            return ::futils::error::Error<>("decode: InitCheck::stream_type: read int failed",::futils::error::Category::lib);
+            return ::futils::error::Error<>("decode: InitCheck::init_check_type: read int failed",::futils::error::Category::lib);
         }
-        (*this).stream_type = static_cast<StreamType>(tmp_179_);
+        (*this).init_check_type = static_cast<InitCheckType>(tmp_179_);
         if (auto err = (*this).target_field.decode(r)) {
             return err;
         }

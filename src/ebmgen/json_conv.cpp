@@ -1002,8 +1002,8 @@ namespace ebm {
     }
     
     bool from_json(InitCheck& obj, const futils::json::JSON& j) {
-        if (auto got = j.at("stream_type")) {
-            if(!futils::json::convert_from_json(*got, obj.stream_type)) {
+        if (auto got = j.at("init_check_type")) {
+            if(!futils::json::convert_from_json(*got, obj.init_check_type)) {
                 return false;
             }
         }
@@ -1339,6 +1339,28 @@ namespace ebm {
         }
         if (auto got = j.at("param_type")) {
             if(!futils::json::convert_from_json(*got, obj.param_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("is_state_variable")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.is_state_variable(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
                 return false;
             }
         }
@@ -2597,6 +2619,30 @@ namespace ebm {
             }
             if (s == "SETTER_STATUS") {
                 obj = ExpressionKind::SETTER_STATUS;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
+    bool from_json(InitCheckType& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "encode") {
+                obj = InitCheckType::encode;
+                return true;
+            }
+            if (s == "decode") {
+                obj = InitCheckType::decode;
+                return true;
+            }
+            if (s == "union_get") {
+                obj = InitCheckType::union_get;
+                return true;
+            }
+            if (s == "union_set") {
+                obj = InitCheckType::union_set;
                 return true;
             }
             return false;

@@ -162,6 +162,7 @@ namespace ebmgen {
         ebm::Block outer;
         append(outer, offset_def);
         append(outer, bit_offset_def);
+        append(outer, bit_processed_def);
         append(outer, loop_);
         EBM_BLOCK(operation, std::move(outer));
         return operation;

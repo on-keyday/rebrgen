@@ -383,6 +383,24 @@ namespace ebmgen {
         return {};
     }
 
+    expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ) {
+        MAYBE(struct_type, ctx.repository().get_type(alt_type));
+        MAYBE(base_struct_id, struct_type.body.id());
+        MAYBE(base_struct, ctx.repository().get_statement(base_struct_id));
+        MAYBE(struct_decl, base_struct.body.struct_decl());
+        MAYBE(related_variant, ctx.repository().get_type(struct_decl.related_variant));
+        MAYBE(related_field, related_variant.body.related_field());
+        ebm::InitCheck check;
+        check.init_check_type = typ;
+        check.target_field = related_field;
+        check.expect_type = alt_type;
+        ebm::StatementBody init_check;
+        init_check.kind = ebm::StatementKind::INIT_CHECK;
+        init_check.init_check(std::move(check));
+        EBMA_ADD_STATEMENT(init_check_ref, std::move(init_check));
+        return init_check_ref;
+    }
+
     expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, const std::shared_ptr<ast::StructType>& s) {
         if (ctx.state().get_current_generate_type() == ebm::GenerateType::Normal) {
             return std::nullopt;
@@ -391,21 +409,7 @@ namespace ebmgen {
         if (is_nil(alt_type)) {
             return std::nullopt;
         }
-        MAYBE(struct_type, ctx.repository().get_type(alt_type));
-        MAYBE(base_struct_id, struct_type.body.id());
-        MAYBE(base_struct, ctx.repository().get_statement(base_struct_id));
-        MAYBE(struct_decl, base_struct.body.struct_decl());
-        MAYBE(related_variant, ctx.repository().get_type(struct_decl.related_variant));
-        MAYBE(related_field, related_variant.body.related_field());
-        ebm::InitCheck check;
-        check.stream_type = ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::StreamType::OUTPUT : ebm::StreamType::INPUT;
-        check.target_field = related_field;
-        check.expect_type = alt_type;
-        ebm::StatementBody init_check;
-        init_check.kind = ebm::StatementKind::INIT_CHECK;
-        init_check.init_check(std::move(check));
-        EBMA_ADD_STATEMENT(init_check_ref, std::move(init_check));
-        return init_check_ref;
+        return handle_variant_alternative(ctx, alt_type, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode ? ebm::InitCheckType::encode : ebm::InitCheckType::decode);
     }
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::IndentBlock>& node, ebm::StatementRef id, ebm::StatementBody& body) {

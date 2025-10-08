@@ -62,7 +62,7 @@ switch (type.body.kind) {
         MAYBE(element_type_obj, module_.get_type(*type.body.element_type()));
         if ((element_type_obj.body.kind == ebm::TypeKind::UINT || element_type_obj.body.kind == ebm::TypeKind::INT) &&
             element_type_obj.body.size() && element_type_obj.body.size()->value() == 8) {
-            return "bytes";
+            return "bytearray";
         }
         else {
             MAYBE(element_type_str, type_to_python_str(*type.body.element_type()));  // Recursive call

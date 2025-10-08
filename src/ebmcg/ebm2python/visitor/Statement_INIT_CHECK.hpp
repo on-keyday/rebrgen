@@ -20,15 +20,20 @@
 MAYBE(init_check_field, as_IDENTIFIER(*this, init_check.target_field));
 MAYBE(init_check_type, visit_Type(*this, init_check.expect_type));
 CodeWriter w;
-if (init_check.stream_type == ebm::StreamType::OUTPUT) {
+if (init_check.init_check_type == ebm::InitCheckType::encode) {
     w.writeln("assert isinstance(", init_check_field.to_string(), ", ", init_check_type.to_string(), ")");
 }
 else {
     w.writeln("if not isinstance(", init_check_field.to_string(), ", ", init_check_type.to_string(), "):");
     {
         auto indent = w.indent_scope();
-        MAYBE(default_expr, as_DEFAULT_VALUE(*this, init_check.expect_type));
-        w.writeln(init_check_field.to_string(), " = ", default_expr.to_string());
+        if (init_check.init_check_type == ebm::InitCheckType::union_get) {
+            w.writeln("return None");
+        }
+        else {
+            MAYBE(default_expr, as_DEFAULT_VALUE(*this, init_check.expect_type));
+            w.writeln(init_check_field.to_string(), " = ", default_expr.to_string());
+        }
     }
 }
 

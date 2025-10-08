@@ -381,9 +381,8 @@ namespace ebmgen {
         EBM_COUNTER_LOOP_END(loop_stmt, counter, len, *do_it);
 
         ebm::Block block;
-        block.container.reserve(4);
+        block.container.reserve(3);
         append(block, buffer_def);
-        append(block, counter_def);
         append(block, loop_stmt);
         append(block, write_ref);
         EBM_BLOCK(block_ref, std::move(block));

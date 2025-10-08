@@ -17,6 +17,7 @@ empty_block_marker = "pass";
 alt_binary_op = {
     {ebm::BinaryOp::logical_and, "and"},
     {ebm::BinaryOp::logical_or, "or"},
+    {ebm::BinaryOp::div, "//"},
 };
 alt_unary_op = {
     {ebm::UnaryOp::logical_not, "not"},

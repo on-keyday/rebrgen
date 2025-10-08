@@ -115,6 +115,8 @@ namespace ebm {
     
     bool from_json(ExpressionKind& obj, const futils::json::JSON& j);
     
+    bool from_json(InitCheckType& obj, const futils::json::JSON& j);
+    
     bool from_json(LoopType& obj, const futils::json::JSON& j);
     
     bool from_json(LoweringType& obj, const futils::json::JSON& j);

@@ -60,7 +60,21 @@ namespace ebmgen {
                                 EBM_IDENTIFIER(id, member.field, prop->property_type);
                                 EBM_ADDRESSOF(addr, getter.return_type, id);
                                 EBM_RETURN(ret, addr);
-                                br.body = ret;
+                                MAYBE(field_stmt, ctx.repository().get_statement(member.field));
+                                if (auto field_decl = field_stmt.body.field_decl()) {
+                                    ebm::TypeBody body{.kind = ebm::TypeKind::STRUCT};
+                                    body.id(field_decl->parent_struct);
+                                    EBMA_ADD_TYPE(struct_type_ref, std::move(body));
+                                    MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_get));
+                                    ebm::Block block;
+                                    append(block, *handle_union);
+                                    append(block, ret);
+                                    EBM_BLOCK(block_ref, std::move(block));
+                                    br.body = block_ref;
+                                }
+                                else {
+                                    br.body = ret;
+                                }
                             }
                             ebm::StatementBody body{.kind = ebm::StatementKind::MATCH_BRANCH};
                             body.match_branch(std::move(br));
@@ -92,9 +106,17 @@ namespace ebmgen {
                                 br.body = default_return;
                             }
                             else {
+                                ebm::Block block;
+                                MAYBE(field_stmt, ctx.repository().get_statement(member.field));
+                                if (auto field_decl = field_stmt.body.field_decl()) {
+                                    ebm::TypeBody body{.kind = ebm::TypeKind::STRUCT};
+                                    body.id(field_decl->parent_struct);
+                                    EBMA_ADD_TYPE(struct_type_ref, std::move(body));
+                                    MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_set));
+                                    append(block, *handle_union);
+                                }
                                 EBM_IDENTIFIER(id, member.field, prop->property_type);
                                 EBM_ASSIGNMENT(assign, id, arg);
-                                ebm::Block block;
                                 append(block, assign);
                                 EBM_SETTER_STATUS(success_status, setter.return_type, ebm::SetterStatus::SUCCESS);
                                 EBM_RETURN(success_return, success_status);

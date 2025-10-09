@@ -13,6 +13,7 @@ namespace ebmcodegen {
             body.assert_desc({});
             body.block({});
             body.break_({});
+            body.composite_field_decl({});
             body.continue_({});
             body.enum_decl({});
             body.enum_member_decl({});

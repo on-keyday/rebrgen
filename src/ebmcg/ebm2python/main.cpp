@@ -2791,6 +2791,135 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Statement_COMPOSITE_FIELD_DECL = requires(Visitor v) {
+         { v.visit_Statement_COMPOSITE_FIELD_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().composite_field_decl()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Statement_COMPOSITE_FIELD_DECL_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().composite_field_decl()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Statement_COMPOSITE_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
+        #if __has_include("visitor/Statement_pre_validate_before.hpp")
+        #include "visitor/Statement_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate.hpp")
+        #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
+        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
+        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
+        #include "visitor/Statement_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_validate_after.hpp")
+        #include "visitor/Statement_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp")
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp"
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_post_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_after.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        if (!in.body.composite_field_decl()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::composite_field_decl");
+        }
+        auto& composite_field_decl = *in.body.composite_field_decl();
+        #if __has_include("visitor/Statement_pre_visit_before.hpp")
+        #include "visitor/Statement_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit.hpp")
+        #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
+        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
+        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
+        #include "visitor/Statement_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_pre_visit_after.hpp")
+        #include "visitor/Statement_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp")
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp"
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_post_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_after.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Statement_COMPOSITE_FIELD_DECL<Visitor>) {
+            result = visitor.visit_Statement_COMPOSITE_FIELD_DECL(is_nil(alias_ref) ? in.id : alias_ref,kind,composite_field_decl);
+        }
+        else if constexpr (has_visitor_Statement_COMPOSITE_FIELD_DECL_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,composite_field_decl);
+        }
+        #if __has_include("visitor/Statement_post_visit_before.hpp")
+        #include "visitor/Statement_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit.hpp")
+        #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
+        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
+        #include "visitor/Statement_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
+        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
+        #include "visitor/Statement_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_post_visit_after.hpp")
+        #include "visitor/Statement_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp")
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_pre_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp"
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_post_default.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_after.hpp")
+        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Statement_ENUM_DECL = requires(Visitor v) {
          { v.visit_Statement_ENUM_DECL(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().enum_decl()) } -> std::convertible_to<expected<Result>>;
     };
@@ -4781,6 +4910,8 @@ namespace ebm2python {
             return dispatch_Statement_PARAMETER_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::FIELD_DECL:
             return dispatch_Statement_FIELD_DECL(visitor,in,alias_ref);
+        case ebm::StatementKind::COMPOSITE_FIELD_DECL:
+            return dispatch_Statement_COMPOSITE_FIELD_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::ENUM_DECL:
             return dispatch_Statement_ENUM_DECL(visitor,in,alias_ref);
         case ebm::StatementKind::ENUM_MEMBER_DECL:
@@ -12627,6 +12758,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Statement_COMPOSITE_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::CompositeFieldDecl& composite_field_decl) {
+            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp")
+            #include "visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp"
+            #endif
+            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
+            #include "visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
+            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_default.hpp")
+            #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
+            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_default.hpp")
+            #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp")
+            #include "visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Statement_COMPOSITE_FIELD_DECL {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Statement_ENUM_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EnumDecl& enum_decl) {
             #if __has_include("visitor/Statement_ENUM_DECL_before.hpp")
             #include "visitor/Statement_ENUM_DECL_before.hpp"
@@ -14304,6 +14459,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_VARIABLE_DECL<Visitor>, "Visitor does not implement visit_Statement_VARIABLE_DECL");
     static_assert(has_visitor_Statement_PARAMETER_DECL<Visitor>, "Visitor does not implement visit_Statement_PARAMETER_DECL");
     static_assert(has_visitor_Statement_FIELD_DECL<Visitor>, "Visitor does not implement visit_Statement_FIELD_DECL");
+    static_assert(has_visitor_Statement_COMPOSITE_FIELD_DECL<Visitor>, "Visitor does not implement visit_Statement_COMPOSITE_FIELD_DECL");
     static_assert(has_visitor_Statement_ENUM_DECL<Visitor>, "Visitor does not implement visit_Statement_ENUM_DECL");
     static_assert(has_visitor_Statement_ENUM_MEMBER_DECL<Visitor>, "Visitor does not implement visit_Statement_ENUM_MEMBER_DECL");
     static_assert(has_visitor_Statement_STRUCT_DECL<Visitor>, "Visitor does not implement visit_Statement_STRUCT_DECL");

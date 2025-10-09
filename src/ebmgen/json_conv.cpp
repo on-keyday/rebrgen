@@ -73,6 +73,26 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(CompositeFieldDecl& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("fields")) {
+            if(!futils::json::convert_from_json(*got, obj.fields)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("composite_type")) {
+            if(!futils::json::convert_from_json(*got, obj.composite_type)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(Condition& obj, const futils::json::JSON& j) {
         if (auto got = j.at("cond")) {
             if(!futils::json::convert_from_json(*got, obj.cond)) {
@@ -1582,6 +1602,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("composite_field_decl")) {
+            CompositeFieldDecl tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.composite_field_decl(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("continue_")) {
             LoopFlowControl tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1938,6 +1967,26 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("is_fixed_size")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.is_fixed_size(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("has_related_variant")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_related_variant(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1951,12 +2000,22 @@ namespace ebm {
             return false;
         }
         if (auto got = j.at("related_variant")) {
-            if(!futils::json::convert_from_json(*got, obj.related_variant)) {
+            TypeRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.related_variant(std::move(tmp))) {
                 return false;
             }
         }
-        else {
-            return false;
+        if (auto got = j.at("size")) {
+            Size tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.size(std::move(tmp))) {
+                return false;
+            }
         }
         return true;
     }
@@ -2855,6 +2914,10 @@ namespace ebm {
             }
             if (s == "FIELD_DECL") {
                 obj = StatementKind::FIELD_DECL;
+                return true;
+            }
+            if (s == "COMPOSITE_FIELD_DECL") {
+                obj = StatementKind::COMPOSITE_FIELD_DECL;
                 return true;
             }
             if (s == "ENUM_DECL") {

@@ -16,8 +16,14 @@
       encode_fn: StatementRef
       decode_fn: StatementRef
       is_recursive: bool
+      is_fixed_size: bool
+      has_related_variant: bool
       reserved: std::uint8_t
-      related_variant: TypeRef
+      related_variant: *TypeRef
+      size: *Size
+        unit: SizeUnit
+        ref: *ExpressionRef
+        size: *Varint
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_STRUCT_DECL function.

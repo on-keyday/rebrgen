@@ -6,6 +6,7 @@
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
+#include "ebmgen/convert/helper.hpp"
 #include "helper.hpp"
 #include <core/ast/traverse.h>
 #include <memory>
@@ -388,7 +389,8 @@ namespace ebmgen {
         MAYBE(base_struct_id, struct_type.body.id());
         MAYBE(base_struct, ctx.repository().get_statement(base_struct_id));
         MAYBE(struct_decl, base_struct.body.struct_decl());
-        MAYBE(related_variant, ctx.repository().get_type(struct_decl.related_variant));
+        MAYBE(related_variant_ref, struct_decl.related_variant());
+        MAYBE(related_variant, ctx.repository().get_type(related_variant_ref));
         MAYBE(related_field, related_variant.body.related_field());
         ebm::InitCheck check;
         check.init_check_type = typ;
@@ -505,7 +507,14 @@ namespace ebmgen {
         ebm::StructDecl struct_decl;
         struct_decl.name = name;
         struct_decl.is_recursive(node->recursive);
-        struct_decl.related_variant = related_variant;
+        if (node->bit_size) {
+            struct_decl.is_fixed_size(true);
+            struct_decl.size(get_size(*node->bit_size));
+        }
+        if (!is_nil(related_variant)) {
+            struct_decl.has_related_variant(true);
+            struct_decl.related_variant(related_variant);
+        }
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {

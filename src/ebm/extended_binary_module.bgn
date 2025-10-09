@@ -298,14 +298,22 @@ format StructDecl:
     encode_fn :StatementRef
     decode_fn :StatementRef
     is_recursive :u1 # 0: no, 1: yes (for recursive structs)
-    reserved :u7 # Reserved for future use
-    related_variant :TypeRef # Reference to related variant type (maybe null)
+    is_fixed_size :u1 # 0: no, 1: yes (if all fields are fixed size)
+    has_related_variant :u1 # 0: no, 1: yes (if this struct is related to a variant type)
+    reserved :u5 # Reserved for future use
+    if has_related_variant == 1:
+        related_variant :TypeRef # Reference to related variant type (maybe null)
+    if is_fixed_size == 1:
+        size :Size # Fixed size of the struct
 
 
 format PropertyMemberDecl:
     condition :ExpressionRef
     field :StatementRef # FieldDecl or null
 
+format CompositeFieldDecl:
+    fields :Block # List of FieldDecl or CompositeFieldDecl
+    composite_type :TypeRef # Type of the composite field 
 
 format PropertyDecl:
     name :IdentifierRef # Property name
@@ -410,6 +418,7 @@ enum StatementKind:
     VARIABLE_DECL
     PARAMETER_DECL
     FIELD_DECL
+    COMPOSITE_FIELD_DECL
     ENUM_DECL
     ENUM_MEMBER_DECL
     STRUCT_DECL
@@ -543,6 +552,8 @@ format StatementBody:
             param_decl :ParameterDecl
         StatementKind.FIELD_DECL:
             field_decl :FieldDecl
+        StatementKind.COMPOSITE_FIELD_DECL:
+            composite_field_decl :CompositeFieldDecl
         StatementKind.ENUM_DECL:
             enum_decl :EnumDecl
         StatementKind.ENUM_MEMBER_DECL:

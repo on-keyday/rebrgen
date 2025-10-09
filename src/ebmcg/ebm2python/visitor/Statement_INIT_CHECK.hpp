@@ -9,7 +9,7 @@
     item_id: StatementRef
     kind: StatementKind
     init_check: InitCheck
-      stream_type: StreamType
+      init_check_type: InitCheckType
       target_field: StatementRef
       expect_type: TypeRef
 */

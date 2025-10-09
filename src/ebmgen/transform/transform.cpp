@@ -164,6 +164,7 @@ namespace ebmgen {
         MAYBE_VOID(vio_read, vectorized_io(ctx, false));
         MAYBE_VOID(vio_write, vectorized_io(ctx, true));
         MAYBE_VOID(prop_setter_getter, derive_property_setter_getter(ctx));
+        MAYBE_VOID(merge_bit_field, merge_bit_field(ctx));
         if (!debug) {
             MAYBE_VOID(remove_unused, remove_unused_object(ctx));
             ctx.recalculate_id_index_map();

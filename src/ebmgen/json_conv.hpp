@@ -11,6 +11,8 @@ namespace ebm {
     
     bool from_json(CallDesc& obj, const futils::json::JSON& j);
     
+    bool from_json(CompositeFieldDecl& obj, const futils::json::JSON& j);
+    
     bool from_json(Condition& obj, const futils::json::JSON& j);
     
     bool from_json(DebugInfo& obj, const futils::json::JSON& j);

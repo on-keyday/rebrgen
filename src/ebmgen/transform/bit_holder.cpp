@@ -53,7 +53,8 @@ namespace ebmgen {
                 std::vector<std::pair<size_t, std::optional<size_t>>> sized_fields;
                 std::vector<size_t> not_added_index;
                 size_t added = 0;
-                for (auto [index, field] : fields | std::views::enumerate) {
+                for (size_t index=0;index<fields.size();index++ ) {
+                    auto& field = fields[index];
                     MAYBE(field_stmt, tctx.statement_repository().get(field));
                     if (auto field_decl = field_stmt.body.field_decl()) {
                         MAYBE(size, sizeof_type(tctx, field_decl->field_type));

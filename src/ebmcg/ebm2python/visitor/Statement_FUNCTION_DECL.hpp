@@ -41,7 +41,7 @@ if (func_decl.params.container.empty() == false) {
     }
 }
 
-w.writeln("def ", func_name, "(", params_str, ") -> ", return_type_str.to_string(), ":");
+w.writeln("def ", func_name, "(", params_str, ") -> \"", return_type_str.to_string(), "\":");
 auto scope = w.indent_scope();
 MAYBE(res, visit_Statement(*this, func_decl.body));
 if (res.to_string().empty()) {

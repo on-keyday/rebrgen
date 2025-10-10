@@ -1,5 +1,6 @@
 import subprocess
 import os
+import difflib
 
 # This script is a Python port of ebm.ps1.
 # It generates C++ header and source files for the Extended Binary Module (EBM)
@@ -26,7 +27,7 @@ def run_command(command, output_file):
     print(f"Running: {' '.join(command)} > {output_file}")
     # read output file if it exists
     if os.path.exists(output_file):
-        with open(output_file, "rb") as f:
+        with open(output_file, "r") as f:
             cached = f.read()
     else:
         cached = None
@@ -40,10 +41,20 @@ def run_command(command, output_file):
                 print(f"Stderr: {result.stderr}")
             return False
         if result.stdout:
-            new_content = result.stdout.encode("utf-8")
+            new_content = result.stdout
             if new_content != cached:
+                print(
+                    f"Output changed: len(new_content) = {len(new_content)}, len(cached) = {len(cached) if cached else 'N/A'}"
+                )
+                difflib_context = difflib.unified_diff(
+                    cached.splitlines(keepends=True) if cached else [],
+                    new_content.splitlines(keepends=True),
+                    fromfile="cached",
+                    tofile="new",
+                )
+                print("".join(difflib_context))
                 with open(output_file, "w") as f:
-                    f.write(new_content.decode("utf-8"))
+                    f.write(new_content)
                 print(f"Wrote output to {output_file}")
             else:
                 print(f"Output unchanged, not writing to {output_file}")

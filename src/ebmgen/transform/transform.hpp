@@ -6,7 +6,7 @@
 
 namespace ebmgen {
 
-    expected<CFGList> transform(TransformContext& ctx, bool debug);
+    expected<void> transform(TransformContext& ctx, bool debug, std::function<void(const char*)> timer);
 
     ebm::Block* get_block(ebm::StatementBody& body);
     expected<void> vectorized_io(TransformContext& tctx, bool write);

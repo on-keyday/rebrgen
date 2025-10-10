@@ -537,4 +537,24 @@ namespace ebmgen {
         return convert_equal_impl(ctx, a, b, A, B);
     }
 
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Available>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionKind::AVAILABLE;
+        EBMA_CONVERT_EXPRESSION(target, node->target);
+        body.target_expr(target);
+        return {};
+    }
+
+    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Call>& node, ebm::ExpressionBody& body) {
+        body.kind = ebm::ExpressionKind::CALL;
+        ebm::CallDesc call;
+        EBMA_CONVERT_EXPRESSION(callee, node->callee);
+        call.callee = callee;
+        for (const auto& arg : node->arguments) {
+            EBMA_CONVERT_EXPRESSION(arg_ref, arg);
+            append(call.arguments, arg_ref);
+        }
+        body.call_desc(std::move(call));
+        return {};
+    }
+
 }  // namespace ebmgen

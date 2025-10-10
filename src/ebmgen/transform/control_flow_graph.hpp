@@ -51,13 +51,49 @@ namespace ebmgen {
         std::map<std::uint64_t, CFGResult> list;
     };
 
-    struct CFGContext {
-        TransformContext& tctx;
+    struct RepositoryProxy {
+       private:
+        void* original = nullptr;
+        const ebm::Statement* (*get_statement_)(void*, ebm::StatementRef) = nullptr;
+        const ebm::Expression* (*get_expression_)(void*, ebm::ExpressionRef) = nullptr;
+        const std::vector<ebm::Statement>* all_statement = nullptr;
+
+       public:
+        template <class T>
+        RepositoryProxy(T* t, const std::vector<ebm::Statement>* all_stmt)
+            : original(t), all_statement(all_stmt) {
+            get_statement_ = [](void* o, ebm::StatementRef ref) -> const ebm::Statement* {
+                return static_cast<T*>(o)->get_statement(ref);
+            };
+            get_expression_ = [](void* o, ebm::ExpressionRef ref) -> const ebm::Expression* {
+                return static_cast<T*>(o)->get_expression(ref);
+            };
+        }
+
+        const ebm::Statement* get_statement(ebm::StatementRef ref) {
+            return get_statement_(original, ref);
+        }
+
+        const ebm::Expression* get_expression(ebm::ExpressionRef ref) {
+            return get_expression_(original, ref);
+        }
+
+        const std::vector<ebm::Statement>* get_all_statement() {
+            return all_statement;
+        }
+    };
+
+    struct CFGStack {
         std::vector<CFGTuple> loop_stack;
         std::shared_ptr<CFG> end_of_function;
         std::map<std::uint64_t, std::shared_ptr<CFG>> cfg_map;
     };
 
-    expected<CFGList> analyze_control_flow_graph(CFGContext& ctx);
+    struct CFGContext {
+        TransformContext& tctx;
+        CFGStack stack;
+    };
+
+    expected<CFGList> analyze_control_flow_graph(CFGStack& stack, RepositoryProxy proxy);
     void write_cfg(futils::binary::writer& w, const CFGList& m, const MappingTable& ctx);
 }  // namespace ebmgen

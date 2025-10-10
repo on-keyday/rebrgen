@@ -4,7 +4,6 @@
 #include "code/code_writer.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
-#include "ebmgen/converter.hpp"
 #include "ebmgen/mapping.hpp"
 #include <optional>
 #include <set>
@@ -14,13 +13,17 @@
 #include <vector>
 
 namespace ebmgen {
+    struct InternalCFGContext {
+        CFGStack& stack;
+        RepositoryProxy proxy;
+    };
 
-    expected<CFGTuple> analyze_ref(CFGContext& tctx, ebm::StatementRef ref);
+    expected<CFGTuple> analyze_ref(InternalCFGContext& tctx, ebm::StatementRef ref);
 
-    expected<std::shared_ptr<CFGExpression>> analyze_expression(CFGContext& tctx, ebm::ExpressionRef ref) {
+    expected<std::shared_ptr<CFGExpression>> analyze_expression(InternalCFGContext& tctx, ebm::ExpressionRef ref) {
         auto expr = std::make_shared<CFGExpression>();
         expr->original_node = ref;
-        MAYBE(expr_v, tctx.tctx.expression_repository().get(ref));
+        MAYBE(expr_v, tctx.proxy.get_expression(ref));
         std::vector<std::pair<std::string_view, ebm::ExpressionRef>> children;
         expr_v.body.visit([&](auto&& visitor, const char* name, auto&& value) -> void {
             using T = std::decay_t<decltype(value)>;
@@ -53,9 +56,8 @@ namespace ebmgen {
         return expr;
     }
 
-    expected<std::vector<CFGTuple>> analyze_lowered(CFGContext& tctx, ebm::StatementRef ref) {
-        auto& ctx = tctx.tctx.context();
-        MAYBE(stmt, ctx.repository().get_statement(ref));
+    expected<std::vector<CFGTuple>> analyze_lowered(InternalCFGContext& tctx, ebm::StatementRef ref) {
+        MAYBE(stmt, tctx.proxy.get_statement(ref));
         std::vector<CFGTuple> lowered;
         if (auto lw = stmt.body.lowered_statements()) {
             for (auto& r : lw->container) {
@@ -70,7 +72,7 @@ namespace ebmgen {
         return lowered;
     }
 
-    expected<CFGTuple> analyze_ref(CFGContext& tctx, ebm::StatementRef ref) {
+    expected<CFGTuple> analyze_ref(InternalCFGContext& tctx, ebm::StatementRef ref) {
         auto root = std::make_shared<CFG>();
         root->original_node = ref;
         auto current = root;
@@ -78,10 +80,9 @@ namespace ebmgen {
             from->next.push_back(to);
             to->prev.push_back(from);
         };
-        auto& ctx = tctx.tctx.context();
-        MAYBE(stmt, ctx.repository().get_statement(ref));
+        MAYBE(stmt, tctx.proxy.get_statement(ref));
         root->statement_op = stmt.body.kind;
-        tctx.cfg_map[get_id(ref)] = root;
+        tctx.stack.cfg_map[get_id(ref)] = root;
         bool brk = false;
         if (auto block = stmt.body.block()) {
             auto join = std::make_shared<CFG>();
@@ -127,9 +128,9 @@ namespace ebmgen {
                 current->condition = std::move(cond_node);
             }
             auto join = std::make_shared<CFG>();
-            tctx.loop_stack.push_back(CFGTuple{current, join});
+            tctx.stack.loop_stack.push_back(CFGTuple{current, join});
             MAYBE(body, analyze_ref(tctx, loop_->body));
-            tctx.loop_stack.pop_back();
+            tctx.stack.loop_stack.pop_back();
             link(current, body.start);
             if (loop_->loop_type != ebm::LoopType::INFINITE) {
                 link(current, join);
@@ -143,7 +144,7 @@ namespace ebmgen {
             auto join = std::make_shared<CFG>();
             bool all_break = true;
             for (auto& b : match_->branches.container) {
-                MAYBE(branch_stmt, ctx.repository().get_statement(b));
+                MAYBE(branch_stmt, tctx.proxy.get_statement(b));
                 MAYBE(branch_ptr, branch_stmt.body.match_branch());
                 MAYBE(branch, analyze_ref(tctx, branch_ptr.body));
                 MAYBE(cond, analyze_expression(tctx, branch_ptr.condition.cond));
@@ -161,17 +162,17 @@ namespace ebmgen {
             current = std::move(join);
         }
         else if (auto cont = stmt.body.continue_()) {
-            if (tctx.loop_stack.size() == 0) {
+            if (tctx.stack.loop_stack.size() == 0) {
                 return unexpect_error("Continue outside of loop");
             }
-            link(current, tctx.loop_stack.back().start);
+            link(current, tctx.stack.loop_stack.back().start);
             brk = true;
         }
         else if (auto brk_ = stmt.body.break_()) {
-            if (tctx.loop_stack.size() == 0) {
+            if (tctx.stack.loop_stack.size() == 0) {
                 return unexpect_error("Break outside of loop");
             }
-            link(current, tctx.loop_stack.back().end);
+            link(current, tctx.stack.loop_stack.back().end);
             brk = true;
         }
         else if (stmt.body.kind == ebm::StatementKind::RETURN ||
@@ -183,7 +184,7 @@ namespace ebmgen {
                     current->condition = std::move(expr_node);
                 }
             }
-            link(current, tctx.end_of_function);
+            link(current, tctx.stack.end_of_function);
             brk = true;
         }
         else if (stmt.body.kind == ebm::StatementKind::READ_DATA ||
@@ -388,17 +389,22 @@ namespace ebmgen {
         return {};
     }
 
-    expected<CFGList> analyze_control_flow_graph(CFGContext& tctx) {
+    expected<CFGList> analyze_control_flow_graph(CFGStack& stack, RepositoryProxy proxy) {
+        InternalCFGContext ctx{
+            .stack = stack,
+            .proxy = proxy,
+        };
+        auto all_stmt = ctx.proxy.get_all_statement();
         CFGList cfg_list;
-        for (auto& stmt : tctx.tctx.statement_repository().get_all()) {
+        for (auto& stmt : *all_stmt) {
             auto fn = stmt.body.func_decl();
             if (!fn) {
                 continue;
             }
-            tctx.end_of_function = std::make_shared<CFG>();
-            MAYBE(cfg, analyze_ref(tctx, fn->body));
-            cfg.end->next.push_back(tctx.end_of_function);
-            tctx.end_of_function->prev.push_back(cfg.end);
+            ctx.stack.end_of_function = std::make_shared<CFG>();
+            MAYBE(cfg, analyze_ref(ctx, fn->body));
+            cfg.end->next.push_back(ctx.stack.end_of_function);
+            ctx.stack.end_of_function->prev.push_back(cfg.end);
             OptimizeContext ctx;
             ctx.with_root(cfg.start, [&] {
                 cfg.start = optimize_cfg_node(cfg.start, ctx);

@@ -32,7 +32,7 @@ namespace ebmgen {
             e.endian(local_endian);
         }
         if (e.endian() == ebm::Endian::dynamic) {
-            e.dynamic_ref = current_dynamic_endian;
+            e.dynamic_ref(current_dynamic_endian);
         }
         return e;
     }
@@ -149,7 +149,8 @@ namespace ebmgen {
         if (is_native_or_dynamic) {
             ebm::ExpressionBody is_little;
             is_little.kind = ebm::ExpressionKind::IS_LITTLE_ENDIAN;
-            is_little.endian_expr(endian.dynamic_ref);  // if native, this will be empty
+            auto endian_expr = endian.dynamic_ref();
+            is_little.endian_expr(endian_expr ? *endian_expr : ebm::StatementRef{});  // if native, this will be empty
             EBMA_ADD_EXPR(is_little_ref, std::move(is_little));
             MAYBE(then_block, on_little_endian());
             MAYBE(else_block, on_big_endian());
@@ -234,26 +235,6 @@ namespace ebmgen {
         typ.length(*varint(n));
         EBMA_ADD_TYPE(type_ref, std::move(typ));
         return type_ref;
-    }
-
-    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Available>& node, ebm::ExpressionBody& body) {
-        body.kind = ebm::ExpressionKind::AVAILABLE;
-        EBMA_CONVERT_EXPRESSION(target, node->target);
-        body.target_expr(target);
-        return {};
-    }
-
-    expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Call>& node, ebm::ExpressionBody& body) {
-        body.kind = ebm::ExpressionKind::CALL;
-        ebm::CallDesc call;
-        EBMA_CONVERT_EXPRESSION(callee, node->callee);
-        call.callee = callee;
-        for (const auto& arg : node->arguments) {
-            EBMA_CONVERT_EXPRESSION(arg_ref, arg);
-            append(call.arguments, arg_ref);
-        }
-        body.call_desc(std::move(call));
-        return {};
     }
 
 }  // namespace ebmgen

@@ -141,6 +141,43 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(EndianVariable& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("endian")) {
+            Endian tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.endian(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("reserved")) {
+            std::uint8_t tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.reserved(std::move(tmp))) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("dynamic_expr")) {
+            ExpressionRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.dynamic_expr(std::move(tmp))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     bool from_json(EnumDecl& obj, const futils::json::JSON& j) {
         if (auto got = j.at("name")) {
             if(!futils::json::convert_from_json(*got, obj.name)) {
@@ -902,12 +939,13 @@ namespace ebm {
             return false;
         }
         if (auto got = j.at("dynamic_ref")) {
-            if(!futils::json::convert_from_json(*got, obj.dynamic_ref)) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
-        }
-        else {
-            return false;
+            if(!obj.dynamic_ref(std::move(tmp))) {
+                return false;
+            }
         }
         return true;
     }
@@ -1617,6 +1655,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.continue_(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("endian_variable")) {
+            EndianVariable tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.endian_variable(std::move(tmp))) {
                 return false;
             }
         }
@@ -2978,6 +3025,10 @@ namespace ebm {
             }
             if (s == "INIT_CHECK") {
                 obj = StatementKind::INIT_CHECK;
+                return true;
+            }
+            if (s == "ENDIAN_VARIABLE") {
+                obj = StatementKind::ENDIAN_VARIABLE;
                 return true;
             }
             return false;

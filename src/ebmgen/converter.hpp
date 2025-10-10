@@ -562,6 +562,8 @@ namespace ebmgen {
         expected<void> convert_statement_impl(const std::shared_ptr<ast::ImplicitYield>& node, ebm::StatementRef id, ebm::StatementBody& body);
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Binary>& node, ebm::StatementRef id, ebm::StatementBody& body);
         expected<void> convert_statement_impl(const std::shared_ptr<ast::ScopedStatement>& node, ebm::StatementRef id, ebm::StatementBody& body);
+        expected<void> convert_statement_impl(const std::shared_ptr<ast::SpecifyOrder>& node, ebm::StatementRef id, ebm::StatementBody& body);
+
         // Fallback for unhandled types
         expected<void> convert_statement_impl(const std::shared_ptr<ast::Node>& node, ebm::StatementRef id, ebm::StatementBody& body);
 

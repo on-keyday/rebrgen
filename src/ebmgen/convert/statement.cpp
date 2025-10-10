@@ -966,4 +966,34 @@ namespace ebmgen {
         return unexpect_error("Statement conversion not implemented yet: {}", node_type_to_string(node->node_type));
     }
 
+    expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::SpecifyOrder>& node, ebm::StatementRef id, ebm::StatementBody& body) {
+        body.kind = ebm::StatementKind::ENDIAN_VARIABLE;
+        ebm::EndianVariable endian_var;
+        if (node->order_value) {
+            if (node->order_value == 0) {
+                ctx.state().set_endian(ebm::Endian::big);
+                endian_var.endian(ebm::Endian::big);
+            }
+            else if (node->order_value == 1) {
+                ctx.state().set_endian(ebm::Endian::little);
+                endian_var.endian(ebm::Endian::little);
+            }
+            else if (node->order_value == 2) {
+                ctx.state().set_endian(ebm::Endian::native);
+                endian_var.endian(ebm::Endian::native);
+            }
+            else {
+                return unexpect_error("unexpected endian value: {}", *node->order_value);
+            }
+        }
+        else {
+            EBMA_CONVERT_EXPRESSION(order_expr, node->order);
+            endian_var.endian(ebm::Endian::dynamic);
+            endian_var.dynamic_expr(order_expr);
+            ctx.state().set_endian(ebm::Endian::dynamic, id);
+        }
+        body.endian_variable(std::move(endian_var));
+        return {};
+    }
+
 }  // namespace ebmgen

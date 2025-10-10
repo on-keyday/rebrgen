@@ -138,7 +138,7 @@ namespace ebmgen {
                     if (i == 0) {
                         append(block, tmp_buffer_def);
                         append(block, current_bit_offset_def);
-                        append(block,read_offset_def);
+                        append(block, read_offset_def);
                     }
                     if (!write) {
                         MAYBE(io_cond, read_incremental(new_size_bit));
@@ -213,8 +213,8 @@ namespace ebmgen {
             for (auto& ref : block->container) {
                 MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
                 if (auto r = get_io(stmt, write); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
-                    auto found = tctx.cfg_map.find(get_id(stmt.id));
-                    if (found == tctx.cfg_map.end()) {
+                    auto found = tctx.stack.cfg_map.find(get_id(stmt.id));
+                    if (found == tctx.stack.cfg_map.end()) {
                         return unexpect_error("no cfg found for {}:{}", get_id(stmt.id), to_string(stmt.body.kind));
                     }
                     auto finalized_routes = search_byte_aligned_route(tctx, found->second, r->size.size()->value(), write);

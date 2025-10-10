@@ -10,10 +10,10 @@ namespace ebmgen {
     // This will be the main entry point for the conversion logic
     struct Option {
         bool not_remove_unused = false;  // for debug transformation
+        std::function<void(const char*)> timer_cb;
     };
 
     struct Output {
-        CFGList control_flow_graph;
     };
 
     expected<Output> convert_ast_to_ebm(std::shared_ptr<brgen::ast::Node>& ast_root, std::vector<std::string>&& files, ebm::ExtendedBinaryModule& ebm, Option opt);

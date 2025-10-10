@@ -29,6 +29,7 @@
 #include <filesystem>
 #include "interactive/debugger.hpp"
 #include <unordered_set>
+#include <testutil/timer.h>
 
 enum class DebugOutputFormat {
     Text,
@@ -58,6 +59,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool interactive = false;
     bool show_flags = false;
     std::string_view query;
+    bool timing = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -88,11 +90,17 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&interactive, "interactive,I", "start interactive debugger");
         ctx.VarBool(&show_flags, "show-flags", "output command line flag description in JSON format");
         ctx.VarString<true>(&query, "query,q", "run query to object and output matched objects to stdout", "QUERY");
+        ctx.VarBool(&timing, "timing", "Processing timing (for performance debug)");
     }
 };
 
 auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
+
+#define TIMING(text)                                                  \
+    if (flags.timing) {                                               \
+        cerr << std::format("Timing: {}: {}\n", text, t.next_step()); \
+    }
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.show_flags) {
@@ -122,6 +130,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             return 1;
         }
     }
+    futils::test::Timer t;
     ebm::ExtendedBinaryModule ebm;
     std::optional<ebmgen::Output> out;
     if (flags.input_format == InputFormat::EBM) {
@@ -144,6 +153,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "error: extra data at the end of file\n";
             return 1;
         }
+        TIMING("load");
     }
     else if (flags.input_format == InputFormat::JSON_EBM) {
         auto ret = ebmgen::load_json_ebm(flags.input);
@@ -152,6 +162,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             return 1;
         }
         ebm = std::move(*ret);
+        TIMING("load");
     }
     else {
         futils::wrap::path_string path = futils::utf::convert<futils::wrap::path_string>(flags.libs2j_path);
@@ -195,8 +206,11 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << ast.error().error<std::string>() << '\n';
             return 1;
         }
+        TIMING("load and parse");
 
-        auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug});
+        auto output = ebmgen::convert_ast_to_ebm(ast->first, std::move(ast->second), ebm, {.not_remove_unused = flags.debug, .timer_cb = [&](const char* phase) {
+                                                                                               TIMING(phase);
+                                                                                           }});
         if (!output) {
             cerr << "Convert Error: " << output.error().error<std::string>() << '\n';
             return 1;
@@ -258,18 +272,22 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Unsupported format\n";
             return 1;
         }
+        TIMING("debug output");
     }
 
     // also generates control flow graph
     if (!flags.cfg_output.empty()) {
-        if (!out) {
-            cerr << "Currently, generate cfg from ebm is not supported\n";
+        ebmgen::CFGStack stack;
+        auto cfgs = ebmgen::analyze_control_flow_graph(stack, {&*table, &ebm.statements});
+        if (!cfgs) {
+            cerr << "Failed to analyze control flow graph: " << cfgs.error().error<std::string>() << '\n';
             return 1;
         }
+        TIMING("cfg generate");
         if (flags.cfg_output == "-") {
             std::string buffer;
             futils::binary::writer w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
-            ebmgen::write_cfg(w, out->control_flow_graph, *table);
+            ebmgen::write_cfg(w, *cfgs, *table);
             cout << buffer;
         }
         else {
@@ -279,8 +297,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 return 1;
             }
             futils::binary::writer w{&futils::wrap::iostream_adapter<futils::byte>::out, &debug_ofs};
-            ebmgen::write_cfg(w, out->control_flow_graph, *table);
+            ebmgen::write_cfg(w, *cfgs, *table);
         }
+        TIMING("cfg output");
     }
 
     auto write_ebm = [&](futils::binary::writer& w) {
@@ -321,6 +340,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         if (cout.is_tty()) {  // for web playground
             writer.write("\n");
         }
+        TIMING("output");
     }
     else if (!flags.output.empty()) {
         // Serialize and write to output file
@@ -340,6 +360,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "ebmgen finished successfully!\n"
                  << "Output written to: " << flags.output << '\n';
         }
+        TIMING("output");
     }
 
     if (flags.query.size() > 0) {
@@ -351,6 +372,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         for (auto obj : *r) {
             cout << ebmgen::get_id(obj) << '\n';
         }
+        TIMING("query");
     }
 
     if (flags.interactive) {

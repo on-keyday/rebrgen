@@ -62,8 +62,14 @@ format IOAttribute:
     is_peek :u1 # 0 for non-peek, 1 for peek 
     vectorized :u1 # this is marker for several data is into single io data. lowered_statement is a block contains original io data
     reserved :u2
-    dynamic_ref :StatementRef # ref to dynamic endian or null
+    if endian == Endian.dynamic:
+        dynamic_ref :StatementRef # ref to dynamic endian or null
 
+format EndianVariable:
+    endian :Endian
+    reserved :u5
+    if endian == Endian.dynamic:
+        dynamic_expr :ExpressionRef # ref to dynamic endian or null
 
 format String:
     length :Varint
@@ -434,6 +440,7 @@ enum StatementKind:
     LOWERED_STATEMENTS # lowered statements
     SUB_BYTE_RANGE
     INIT_CHECK # check the field is initialized for io operation (for example, check whether variant has correct member for this encoding)
+    ENDIAN_VARIABLE
 
 
 
@@ -581,6 +588,8 @@ format StatementBody:
             sub_byte_range :SubByteRange
         StatementKind.INIT_CHECK:
             init_check :InitCheck
+        StatementKind.ENDIAN_VARIABLE:
+            endian_variable :EndianVariable
 
 format Expressions:
     len :Varint

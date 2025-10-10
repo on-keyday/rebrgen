@@ -2,6 +2,7 @@
 #include "transform.hpp"
 #include "../convert/helper.hpp"
 #include <testutil/timer.h>
+#include <ranges>
 
 namespace ebmgen {
 

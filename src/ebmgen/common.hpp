@@ -169,6 +169,22 @@ namespace ebmgen {
         }
     }
 
+    auto& dereference(auto& v) {
+        using T = std::decay_t<decltype(v)>;
+        if constexpr (futils::helper::is_template_instance_of<T, expected>) {
+            using P = typename futils::helper::template_of_t<T>::template param_at<0>;
+            if constexpr (std::is_pointer_v<P>) {
+                return **v;
+            }
+            else {
+                return *v;
+            }
+        }
+        else {
+            return *v;
+        }
+    }
+
 #define MAYBE_VOID(out, expr)                                  \
     auto out##____ = expr;                                     \
     if (!out##____) {                                          \
@@ -177,7 +193,7 @@ namespace ebmgen {
 
 #define MAYBE(out, expr)  \
     MAYBE_VOID(out, expr) \
-    decltype(auto) out = *out##____
+    decltype(auto) out = ::ebmgen::dereference(out##____);
 
     template <AnyRef T>
     constexpr bool is_nil(T t) {

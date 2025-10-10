@@ -58,7 +58,7 @@ namespace ebmgen {
 
     expected<void> add_lowered_bit_io(CFGContext& tctx, ebm::StatementRef io_ref, std::vector<Route>& finalized_routes, bool write) {
         auto& ctx = tctx.tctx.context();
-        print_if_verbose("Found ", finalized_routes.size(), " routes\n");
+        print_if_verbose("Found ", finalized_routes.size(), " routes for ", write ? "write" : "read", "\n");
         size_t max_bit_size = 0;
         for (auto& r : finalized_routes) {
             print_if_verbose("  - ", r.route.size(), " node with ", r.bit_size, " bit\n");
@@ -138,7 +138,9 @@ namespace ebmgen {
                     if (i == 0) {
                         append(block, tmp_buffer_def);
                         append(block, current_bit_offset_def);
-                        append(block, read_offset_def);
+                        if (!write) {
+                            append(block, read_offset_def);
+                        }
                     }
                     if (!write) {
                         MAYBE(io_cond, read_incremental(new_size_bit));
@@ -210,6 +212,7 @@ namespace ebmgen {
             if (!block) {
                 continue;
             }
+            std::set<std::shared_ptr<CFG>> handled;
             for (auto& ref : block->container) {
                 MAYBE(stmt, tctx.tctx.statement_repository().get(ref));
                 if (auto r = get_io(stmt, write); r && r->size.unit == ebm::SizeUnit::BIT_FIXED) {
@@ -217,9 +220,17 @@ namespace ebmgen {
                     if (found == tctx.stack.cfg_map.end()) {
                         return unexpect_error("no cfg found for {}:{}", get_id(stmt.id), to_string(stmt.body.kind));
                     }
+                    if (handled.contains(found->second)) {
+                        continue;
+                    }
                     auto finalized_routes = search_byte_aligned_route(tctx, found->second, r->size.size()->value(), write);
                     if (finalized_routes.size()) {
                         MAYBE_VOID(added, add_lowered_bit_io(tctx, r->io_ref, finalized_routes, write));
+                        for (auto& fin : finalized_routes) {
+                            for (auto& node : fin.route) {
+                                handled.insert(node);
+                            }
+                        }
                     }
                 }
             }

@@ -121,11 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": [
-        "-i",
-        "${workspaceRoot}/src/test/simple_case.bgn",
-        "-I"
-      ],
+      "args": ["-i", "${workspaceRoot}/src/test/simple_case.bgn", "-v"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

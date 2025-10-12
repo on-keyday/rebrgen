@@ -541,6 +541,53 @@ namespace ebmgen {
         body.kind = ebm::ExpressionKind::AVAILABLE;
         EBMA_CONVERT_EXPRESSION(target, node->target);
         body.target_expr(target);
+        EBMU_BOOL_TYPE(bool_type);
+        auto get_bool = [&](bool b) -> expected<ebm::ExpressionRef> {
+            ebm::ExpressionBody body;
+            body.kind = ebm::ExpressionKind::LITERAL_BOOL;
+            body.type = bool_type;
+            body.bool_value(b ? 1 : 0);
+            EBMA_ADD_EXPR(ref, std::move(body));
+            return ref;
+        };
+        if (auto typ = ast::as<ast::UnionType>(node->expr_type)) {
+            ebm::ExpressionRef base_cond;
+            if (auto b = typ->cond.lock()) {
+                EBMA_CONVERT_EXPRESSION(cond, b);
+                base_cond = cond;
+            }
+            struct LCond {
+                ebm::ExpressionRef cond;
+                ebm::ExpressionRef then;
+            };
+
+            std::vector<LCond> conds;
+            for (auto& c : typ->candidates) {
+                auto expr = c->cond.lock();
+                EBMA_CONVERT_EXPRESSION(cond, expr);
+                if (!is_nil(base_cond)) {
+                    MAYBE(eq, convert_equal(base_cond, cond));
+                    cond = eq;
+                }
+                MAYBE(result, get_bool(c->field.lock() != nullptr));
+                conds.push_back(LCond{cond, result});
+            }
+            ebm::ExpressionRef else_;
+            for (auto& cond : conds | std::views::reverse) {
+                if (is_nil(else_)) {
+                    MAYBE(false_, get_bool(false));
+                    else_ = false_;
+                }
+                MAYBE(conditional, make_conditional(ctx, bool_type, cond.cond, cond.then, else_));
+                EBMA_ADD_EXPR(ref, std::move(conditional));
+                else_ = ref;
+            }
+            body.lowered_expr(ebm::LoweredExpressionRef{else_});
+        }
+        else {
+            MAYBE(result, get_bool(true));
+            body.lowered_expr(ebm::LoweredExpressionRef{result});
+        }
         return {};
     }
 

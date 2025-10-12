@@ -154,6 +154,15 @@ namespace ebmcodegen::util {
                 return layers;
             }
         }
+        if (const ebm::PropertyDecl* prop = statement.body.property_decl()) {
+            if (!ebmgen::is_nil(prop->parent_format)) {
+                MAYBE(upper_layers, get_identifier_layer(visitor, prop->parent_format, state));
+                layers.insert(layers.end(), upper_layers.begin(), upper_layers.end());
+            }
+            if (state == LayerState::as_type) {
+                return layers;
+            }
+        }
         layers.emplace_back(statement.body.kind, ident);
         return layers;
     }

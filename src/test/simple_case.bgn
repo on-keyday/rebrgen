@@ -333,6 +333,7 @@ enum EAPCode:
 
 format EAPPacket:
     code :EAPCode
+    available(code) == true
     id :u8
     length :u16
     length >= 4
@@ -432,3 +433,15 @@ format WebSocketFrame:
         MaskingKey :u32
     
     Payload :[available(ExtendedPayloadLength) ? ExtendedPayloadLength : PayloadLength]u8
+
+CONSTANT ::= 0x12345678
+
+format WebSocketAvailable:
+    ws :WebSocketFrame
+    available(ws.ExtendedPayloadLength) == true
+
+format X:
+    a :u8
+    if a != 0:
+        x :X
+

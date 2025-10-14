@@ -216,6 +216,10 @@ namespace ebmgen {
         ebm::StatementRef current_loop_id;
         ebm::StatementRef current_yield_statement;
         std::unordered_map<std::shared_ptr<ast::Node>, ebm::TypeRef> type_cache;
+        std::optional<ebm::ExpressionRef> self_ref;
+        std::unordered_map<std::uint64_t, ebm::ExpressionRef> self_ref_map;
+        std::unordered_map<std::uint64_t, ebm::TypeRef> struct_variant_map;
+        bool on_available_check = false;
 
         void debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const;
 
@@ -354,6 +358,54 @@ namespace ebmgen {
             }
             return ebm::TypeRef{};
         }
+
+        [[nodiscard]] auto set_self_ref(std::optional<ebm::ExpressionRef> ref) {
+            auto old = self_ref;
+            self_ref = ref;
+            return futils::helper::defer([this, old]() {
+                self_ref = old;
+            });
+        }
+
+        std::optional<ebm::ExpressionRef> get_self_ref() const {
+            return self_ref;
+        }
+
+        void set_self_ref_for_id(ebm::StatementRef id, ebm::ExpressionRef ref) {
+            self_ref_map[get_id(id)] = ref;
+        }
+
+        std::optional<ebm::ExpressionRef> get_self_ref_for_id(ebm::StatementRef id) const {
+            auto it = self_ref_map.find(get_id(id));
+            if (it != self_ref_map.end()) {
+                return it->second;
+            }
+            return std::nullopt;
+        }
+
+        void set_struct_variant_for_id(ebm::StatementRef id, ebm::TypeRef type) {
+            struct_variant_map[get_id(id)] = type;
+        }
+
+        std::optional<ebm::TypeRef> get_struct_variant_for_id(ebm::StatementRef id) const {
+            auto it = struct_variant_map.find(get_id(id));
+            if (it != struct_variant_map.end()) {
+                return it->second;
+            }
+            return std::nullopt;
+        }
+
+        bool is_on_available_check() const {
+            return on_available_check;
+        }
+
+        auto set_on_available_check(bool value) {
+            auto old = on_available_check;
+            on_available_check = value;
+            return futils::helper::defer([this, old]() {
+                on_available_check = old;
+            });
+        }
     };
 
     struct EBMRepository {
@@ -416,6 +468,10 @@ namespace ebmgen {
             return type_repo.new_id(ident_source);
         }
 
+        expected<ebm::ExpressionRef> new_expression_id() {
+            return expression_repo.new_id(ident_source);
+        }
+
         ReferenceSource& get_identifier_source() {
             return ident_source;
         }
@@ -463,6 +519,13 @@ namespace ebmgen {
                 return unexpect_error("Expression type is not set: {}", to_string(body.kind));
             }
             return expression_repo.add(ident_source, std::move(body));
+        }
+
+        expected<ebm::ExpressionRef> add_expr(ebm::ExpressionRef id, ebm::ExpressionBody&& body) {
+            if (is_nil(body.type)) {
+                return unexpect_error("Expression type is not set: {}", to_string(body.kind));
+            }
+            return expression_repo.add(id, std::move(body));
         }
 
         ebm::Statement* get_statement(const ebm::StatementRef& ref) {
@@ -655,7 +718,7 @@ namespace ebmgen {
     expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op);
     expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
     expected<ebm::ExpressionBody> make_conditional(ConverterContext& ctx, ebm::TypeRef type, ebm::ExpressionRef cond, ebm::ExpressionRef then, ebm::ExpressionRef els);
-    expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ);
+    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ);
     struct TransformContext {
        private:
         ConverterContext& ctx;

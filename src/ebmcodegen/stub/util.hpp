@@ -86,7 +86,7 @@ namespace ebmcodegen::util {
             case ebm::TypeKind::ENUM:
             case ebm::TypeKind::STRUCT:
             case ebm::TypeKind::RECURSIVE_STRUCT: {
-                MAYBE(ident, as_IDENTIFIER(visitor, *type.body.id()));
+                MAYBE(ident, visit_Type(visitor, ref));
                 return std::format("{}{}", ident.to_string(), option.object_init);
             }
             case ebm::TypeKind::ARRAY:

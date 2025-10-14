@@ -269,6 +269,7 @@ namespace ebm {
         ADDRESS_OF = 30,
         OPTIONAL_OF = 31,
         SETTER_STATUS = 32,
+        SELF = 33,
     };
     constexpr const char* to_string(ExpressionKind e, bool origin_form = false) {
         switch(e) {
@@ -305,6 +306,7 @@ namespace ebm {
             case ExpressionKind::ADDRESS_OF: return origin_form ? "ADDRESS_OF":"ADDRESS_OF" ;
             case ExpressionKind::OPTIONAL_OF: return origin_form ? "OPTIONAL_OF":"OPTIONAL_OF" ;
             case ExpressionKind::SETTER_STATUS: return origin_form ? "SETTER_STATUS":"SETTER_STATUS" ;
+            case ExpressionKind::SELF: return origin_form ? "SELF":"SELF" ;
         }
         return "";
     }
@@ -411,6 +413,9 @@ namespace ebm {
         }
         if (str == "SETTER_STATUS") {
             return ExpressionKind::SETTER_STATUS;
+        }
+        if (str == "SELF") {
+            return ExpressionKind::SELF;
         }
         return std::nullopt;
     }
@@ -1191,6 +1196,7 @@ namespace ebm {
     struct LoweredExpression;
     struct LoopFlowControl;
     struct Condition;
+    struct InitCheck;
     struct AnyRef;
     struct RefAlias;
     struct Expressions;
@@ -1220,7 +1226,6 @@ namespace ebm {
     struct StructDecl;
     struct PropertyDecl;
     struct ErrorReport;
-    struct InitCheck;
     struct StatementBody;
     struct Statement;
     struct Types;
@@ -1640,6 +1645,38 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "cond",visitor_tag<decltype(std::declval<Condition>().cond),false>{});
+        }
+    };
+    struct EBM_API InitCheck{
+        InitCheckType init_check_type{};
+        ExpressionRef target_field;
+        ExpressionRef expect_value;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        static constexpr size_t fixed_header_size = 1;
+        constexpr static const char* visitor_name = "InitCheck";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "init_check_type",(*this).init_check_type);
+            v(v, "target_field",(*this).target_field);
+            v(v, "expect_value",(*this).expect_value);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "init_check_type",(*this).init_check_type);
+            v(v, "target_field",(*this).target_field);
+            v(v, "expect_value",(*this).expect_value);
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "init_check_type",visitor_tag<decltype(std::declval<InitCheck>().init_check_type),false>{});
+            v(v, "target_field",visitor_tag<decltype(std::declval<InitCheck>().target_field),false>{});
+            v(v, "expect_value",visitor_tag<decltype(std::declval<InitCheck>().expect_value),false>{});
         }
     };
     struct EBM_API AnyRef{
@@ -3112,38 +3149,6 @@ namespace ebm {
         static constexpr void visit_static(Visitor&& v) {
             v(v, "message",visitor_tag<decltype(std::declval<ErrorReport>().message),false>{});
             v(v, "arguments",visitor_tag<decltype(std::declval<ErrorReport>().arguments),false>{});
-        }
-    };
-    struct EBM_API InitCheck{
-        InitCheckType init_check_type{};
-        StatementRef target_field;
-        TypeRef expect_type;
-        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
-        ::futils::error::Error<> decode(::futils::binary::reader& r);
-        static constexpr size_t fixed_header_size = 1;
-        constexpr static const char* visitor_name = "InitCheck";
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) {
-            v(v, "init_check_type",(*this).init_check_type);
-            v(v, "target_field",(*this).target_field);
-            v(v, "expect_type",(*this).expect_type);
-        }
-        template<typename Visitor>
-        constexpr void visit(Visitor&& v) const {
-            v(v, "init_check_type",(*this).init_check_type);
-            v(v, "target_field",(*this).target_field);
-            v(v, "expect_type",(*this).expect_type);
-        }
-        template<typename T,bool rvalue = false>
-        struct visitor_tag {
-            using type = T;
-            static constexpr bool is_rvalue = rvalue;
-        };
-        template<typename Visitor>
-        static constexpr void visit_static(Visitor&& v) {
-            v(v, "init_check_type",visitor_tag<decltype(std::declval<InitCheck>().init_check_type),false>{});
-            v(v, "target_field",visitor_tag<decltype(std::declval<InitCheck>().target_field),false>{});
-            v(v, "expect_type",visitor_tag<decltype(std::declval<InitCheck>().expect_type),false>{});
         }
     };
     struct EBM_API StatementBody{

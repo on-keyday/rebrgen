@@ -57,6 +57,7 @@ namespace ebmgen {
 
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
         std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "") const;
+        expected<std::string> get_identifier_or(const ebm::ExpressionRef& ref, std::string_view prefix = "") const;
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
 

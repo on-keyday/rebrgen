@@ -39,4 +39,6 @@ for (auto& layer : layers) {
     }
 }
 
-return result;
+auto ident = module_.get_identifier_or(id);
+
+return ident;

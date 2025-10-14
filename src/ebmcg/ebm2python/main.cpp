@@ -9461,6 +9461,132 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Expression_SELF = requires(Visitor v) {
+         { v.visit_Expression_SELF(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_SELF_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_SELF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_validate_before.hpp")
+        #include "visitor/Expression_SELF_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_validate.hpp")
+        #include "visitor/Expression_SELF_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_pre_validate.hpp")
+        #if __has_include("visitor/Expression_SELF_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_SELF_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SELF_pre_validate.hpp"
+        #if __has_include("visitor/Expression_SELF_pre_validate_post_default.hpp")
+        #include "visitor/Expression_SELF_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_validate_after.hpp")
+        #include "visitor/Expression_SELF_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_visit_before.hpp")
+        #include "visitor/Expression_SELF_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_visit.hpp")
+        #include "visitor/Expression_SELF_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_pre_visit.hpp")
+        #if __has_include("visitor/Expression_SELF_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_SELF_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SELF_pre_visit.hpp"
+        #if __has_include("visitor/Expression_SELF_pre_visit_post_default.hpp")
+        #include "visitor/Expression_SELF_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_pre_visit_after.hpp")
+        #include "visitor/Expression_SELF_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_SELF<Visitor>) {
+            result = visitor.visit_Expression_SELF(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
+        }
+        else if constexpr (has_visitor_Expression_SELF_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_SELF_post_visit_before.hpp")
+        #include "visitor/Expression_SELF_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_post_visit.hpp")
+        #include "visitor/Expression_SELF_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_post_visit.hpp")
+        #if __has_include("visitor/Expression_SELF_post_visit_pre_default.hpp")
+        #include "visitor/Expression_SELF_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_SELF_post_visit.hpp"
+        #if __has_include("visitor/Expression_SELF_post_visit_post_default.hpp")
+        #include "visitor/Expression_SELF_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_SELF_post_visit_after.hpp")
+        #include "visitor/Expression_SELF_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
@@ -9546,6 +9672,8 @@ namespace ebm2python {
             return dispatch_Expression_OPTIONAL_OF(visitor,in,alias_ref);
         case ebm::ExpressionKind::SETTER_STATUS:
             return dispatch_Expression_SETTER_STATUS(visitor,in,alias_ref);
+        case ebm::ExpressionKind::SELF:
+            return dispatch_Expression_SELF(visitor,in,alias_ref);
         default:
             return unexpect_error("Unknown Expression kind: {}", to_string(in.body.kind));
         }
@@ -14089,6 +14217,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_SELF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind) {
+            #if __has_include("visitor/Expression_SELF_before.hpp")
+            #include "visitor/Expression_SELF_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SELF.hpp")
+            #include "visitor/Expression_SELF.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF.hpp")
+            #if __has_include("visitor/Expression_SELF_pre_default.hpp")
+            #include "visitor/Expression_SELF_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_SELF.hpp"
+            #if __has_include("visitor/Expression_SELF_post_default.hpp")
+            #include "visitor/Expression_SELF_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_SELF_after.hpp")
+            #include "visitor/Expression_SELF_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_SELF {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
@@ -14664,6 +14816,7 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_ADDRESS_OF<Visitor>, "Visitor does not implement visit_Expression_ADDRESS_OF");
     static_assert(has_visitor_Expression_OPTIONAL_OF<Visitor>, "Visitor does not implement visit_Expression_OPTIONAL_OF");
     static_assert(has_visitor_Expression_SETTER_STATUS<Visitor>, "Visitor does not implement visit_Expression_SETTER_STATUS");
+    static_assert(has_visitor_Expression_SELF<Visitor>, "Visitor does not implement visit_Expression_SELF");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");

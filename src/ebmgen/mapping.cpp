@@ -163,6 +163,17 @@ namespace ebmgen {
         return std::format("{}{}", prefix, get_id(ref));
     }
 
+    expected<std::string> MappingTable::get_identifier_or(const ebm::ExpressionRef& ref, std::string_view prefix) const {
+        auto expr = get_expression(ref);
+        if (!expr) {
+            return unexpect_error("Invalid expression reference: {}", get_id(ref));
+        }
+        if (auto id = expr->body.id()) {
+            return get_identifier_or(*id, prefix);
+        }
+        return unexpect_error("Expression does not have an associated identifier: {}", get_id(ref));
+    }
+
     const ebm::Identifier* MappingTable::get_identifier(const ebm::ExpressionRef& ref) const {
         if (auto expr = get_expression(ref); expr && expr->body.id()) {
             return get_identifier(*expr->body.id());

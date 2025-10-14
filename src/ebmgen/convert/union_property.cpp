@@ -55,14 +55,8 @@ namespace ebmgen {
             DerivedTypeInfo c;
             auto cond_locked = cand->cond.lock();
             if (cond_locked) {
-                if (auto i = ast::as<ast::Identity>(cond_locked)) {
-                    EBMA_CONVERT_EXPRESSION(expr, i->expr);
-                    c.cond = expr;
-                }
-                else {
-                    EBMA_CONVERT_EXPRESSION(expr, cond_locked);
-                    c.cond = expr;
-                }
+                EBMA_CONVERT_EXPRESSION(expr, cond_locked);
+                c.cond = expr;
             }
             auto field = cand->field.lock();
             if (field) {
@@ -73,14 +67,8 @@ namespace ebmgen {
         }
         ebm::ExpressionRef base_cond;
         if (auto cond = union_type.cond.lock()) {
-            if (auto i = ast::as<ast::Identity>(cond)) {
-                EBMA_CONVERT_EXPRESSION(expr, i->expr);
-                base_cond = expr;
-            }
-            else {
-                EBMA_CONVERT_EXPRESSION(expr, cond);
-                base_cond = expr;
-            }
+            EBMA_CONVERT_EXPRESSION(expr, cond);
+            base_cond = expr;
         }
         return std::make_pair(std::move(base_cond), std::move(cases));
     }

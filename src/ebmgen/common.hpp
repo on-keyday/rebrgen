@@ -161,7 +161,7 @@ namespace ebmgen {
         if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {
             return unexpect_error_with_loc(loc, unexpected_nullptr(), out, expr);
         }
-        else if (error_convertible<decltype(o)>) {
+        else if constexpr (error_convertible<decltype(o)>) {
             return unexpect_error_with_loc(loc, std::move(o.error()), out, expr);
         }
         else {

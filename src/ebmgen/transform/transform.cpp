@@ -58,8 +58,8 @@ namespace ebmgen {
                                 br.body = default_return;
                             }
                             else {
-                                EBM_IDENTIFIER(id, member.field, prop->property_type);
-                                EBM_ADDRESSOF(addr, getter.return_type, id);
+                                MAYBE(self_expr, ctx.state().get_self_ref_for_id(member.field));
+                                EBM_ADDRESSOF(addr, getter.return_type, self_expr);
                                 EBM_RETURN(ret, addr);
                                 MAYBE(field_stmt, ctx.repository().get_statement(member.field));
                                 if (auto field_decl = field_stmt.body.field_decl()) {
@@ -68,7 +68,7 @@ namespace ebmgen {
                                     EBMA_ADD_TYPE(struct_type_ref, std::move(body));
                                     MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_get));
                                     ebm::Block block;
-                                    append(block, *handle_union);
+                                    append(block, handle_union->first);
                                     append(block, ret);
                                     EBM_BLOCK(block_ref, std::move(block));
                                     br.body = block_ref;
@@ -114,10 +114,10 @@ namespace ebmgen {
                                     body.id(field_decl->parent_struct);
                                     EBMA_ADD_TYPE(struct_type_ref, std::move(body));
                                     MAYBE(handle_union, handle_variant_alternative(ctx, struct_type_ref, ebm::InitCheckType::union_set));
-                                    append(block, *handle_union);
+                                    append(block, handle_union->first);
                                 }
-                                EBM_IDENTIFIER(id, member.field, prop->property_type);
-                                EBM_ASSIGNMENT(assign, id, arg);
+                                MAYBE(self_expr, ctx.state().get_self_ref_for_id(member.field));
+                                EBM_ASSIGNMENT(assign, self_expr, arg);
                                 append(block, assign);
                                 EBM_SETTER_STATUS(success_status, setter.return_type, ebm::SetterStatus::SUCCESS);
                                 EBM_RETURN(success_return, success_status);

@@ -159,6 +159,9 @@ namespace ebmgen {
     };
 
     expected<ebm::ExpressionRef> ExpressionConverter::convert_expr(const std::shared_ptr<ast::Expr>& node) {
+        if (auto identity = ast::as<ast::Identity>(node)) {
+            return convert_expr(identity->expr);
+        }
         ebm::ExpressionBody body;
         EBMA_CONVERT_TYPE(type_ref, node->expr_type);
         body.type = type_ref;
@@ -257,10 +260,37 @@ namespace ebmgen {
         if (!base) {
             return unexpect_error("Identifier {} not found", node->ident);
         }
+        ebm::StatementKind kind = ebm::StatementKind::BLOCK;  // temporary init
+        ebm::StatementRef id;
+        bool is_state_variable = false;
         {
             const auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
             body.id(id_ref);
+            id = id_ref;
+            if (auto got = ctx.repository().get_statement(id_ref)) {
+                kind = got->body.kind;
+                auto state_var = got->body.field_decl();
+                if (state_var) {
+                    is_state_variable = state_var->is_state_variable();
+                }
+            }
+        }
+        if (auto self = ctx.state().get_self_ref(); self && (kind == ebm::StatementKind::FIELD_DECL || kind == ebm::StatementKind::PROPERTY_DECL) && !is_state_variable) {
+            if (!ctx.state().is_on_available_check()) {
+                auto got = ctx.state().get_self_ref_for_id(id);
+                if (got) {
+                    MAYBE(expr, ctx.repository().get_expression(*got));
+                    auto base = expr.body.base();
+                    if (base) {
+                        self = *base;
+                    }
+                }
+            }
+            EBMA_ADD_EXPR(ident_ref, std::move(body));
+            body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
+            body.base(*self);
+            body.member(ident_ref);
         }
         return {};
     }
@@ -297,6 +327,7 @@ namespace ebmgen {
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body) {
         body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
         EBMA_CONVERT_EXPRESSION(base_ref, node->target);
+        auto temporary = ctx.state().set_self_ref(std::nullopt);
         EBMA_CONVERT_EXPRESSION(member_ref, node->member);
         body.base(base_ref);
         body.member(member_ref);
@@ -304,6 +335,10 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::Cast>& node, ebm::ExpressionBody& body) {
+        if (node->arguments.size() == 0) {
+            body.kind = ebm::ExpressionKind::DEFAULT_VALUE;
+            return {};
+        }
         body.kind = ebm::ExpressionKind::TYPE_CAST;
         EBMA_CONVERT_EXPRESSION(source_expr_ref, node->arguments[0]);
         EBMA_CONVERT_TYPE(source_expr_type_ref, node->arguments[0]->expr_type);
@@ -541,6 +576,17 @@ namespace ebmgen {
         body.kind = ebm::ExpressionKind::AVAILABLE;
         EBMA_CONVERT_EXPRESSION(target, node->target);
         body.target_expr(target);
+        ebm::ExpressionRef additional_base;
+        if (auto member = ctx.repository().get_expression(target)) {
+            if (member->body.kind == ebm::ExpressionKind::MEMBER_ACCESS) {
+                auto base_ref = *member->body.base();
+                if (auto base = ctx.repository().get_expression(base_ref)) {
+                    if (base->body.kind != ebm::ExpressionKind::SELF) {
+                        additional_base = base_ref;
+                    }
+                }
+            }
+        }
         EBMU_BOOL_TYPE(bool_type);
         auto get_bool = [&](bool b) -> expected<ebm::ExpressionRef> {
             ebm::ExpressionBody body;
@@ -550,39 +596,69 @@ namespace ebmgen {
             EBMA_ADD_EXPR(ref, std::move(body));
             return ref;
         };
-        if (auto typ = ast::as<ast::UnionType>(node->expr_type)) {
-            ebm::ExpressionRef base_cond;
-            if (auto b = typ->cond.lock()) {
-                EBMA_CONVERT_EXPRESSION(cond, b);
-                base_cond = cond;
-            }
-            struct LCond {
-                ebm::ExpressionRef cond;
-                ebm::ExpressionRef then;
-            };
+        if (auto typ = ast::as<ast::UnionType>(node->target->expr_type)) {
+            auto make_lowered_expr = [&]() -> expected<void> {
+                ebm::ExpressionRef base_cond;
+                if (auto b = typ->cond.lock()) {
+                    EBMA_CONVERT_EXPRESSION(cond, b);
+                    base_cond = cond;
+                }
+                struct LCond {
+                    ebm::ExpressionRef cond;
+                    ebm::ExpressionRef then;
+                };
 
-            std::vector<LCond> conds;
-            for (auto& c : typ->candidates) {
-                auto expr = c->cond.lock();
-                EBMA_CONVERT_EXPRESSION(cond, expr);
-                if (!is_nil(base_cond)) {
-                    MAYBE(eq, convert_equal(base_cond, cond));
-                    cond = eq;
+                std::vector<LCond> conds;
+                for (auto& c : typ->candidates) {
+                    auto expr = c->cond.lock();
+                    EBMA_CONVERT_EXPRESSION(cond, expr);
+                    if (!is_nil(base_cond)) {
+                        MAYBE(eq, convert_equal(base_cond, cond));
+                        cond = eq;
+                    }
+                    MAYBE(result, get_bool(c->field.lock() != nullptr));
+                    conds.push_back(LCond{cond, result});
                 }
-                MAYBE(result, get_bool(c->field.lock() != nullptr));
-                conds.push_back(LCond{cond, result});
-            }
-            ebm::ExpressionRef else_;
-            for (auto& cond : conds | std::views::reverse) {
-                if (is_nil(else_)) {
-                    MAYBE(false_, get_bool(false));
-                    else_ = false_;
+                ebm::ExpressionRef else_;
+                for (auto& cond : conds | std::views::reverse) {
+                    if (is_nil(else_)) {
+                        MAYBE(false_, get_bool(false));
+                        else_ = false_;
+                    }
+                    MAYBE(conditional, make_conditional(ctx, bool_type, cond.cond, cond.then, else_));
+                    EBMA_ADD_EXPR(ref, std::move(conditional));
+                    else_ = ref;
                 }
-                MAYBE(conditional, make_conditional(ctx, bool_type, cond.cond, cond.then, else_));
-                EBMA_ADD_EXPR(ref, std::move(conditional));
-                else_ = ref;
+                body.lowered_expr(ebm::LoweredExpressionRef{else_});
+                return {};
+            };
+            if (!is_nil(additional_base)) {
+                auto self_ = ctx.state().set_self_ref(additional_base);
+                auto available_ = ctx.state().set_on_available_check(true);
+                MAYBE_VOID(ok, make_lowered_expr());
             }
-            body.lowered_expr(ebm::LoweredExpressionRef{else_});
+            else {
+                MAYBE_VOID(ok, make_lowered_expr());
+            }
+        }
+        else if (auto enum_ = ast::as<ast::EnumType>(node->target->expr_type)) {
+            EBMA_CONVERT_STATEMENT(base_stmt, enum_->base.lock());
+            MAYBE(base_enum, ctx.repository().get_statement(base_stmt));
+            MAYBE(enum_decl_ref, base_enum.body.enum_decl());
+            auto enum_decl = enum_decl_ref;
+            for (auto& m : enum_decl.members.container) {
+                MAYBE(stmt, ctx.repository().get_statement(m));
+                MAYBE(member_decl, stmt.body.enum_member_decl());
+            }
+            if (is_nil(cond)) {
+                MAYBE(result, get_bool(false));
+                body.lowered_expr(ebm::LoweredExpressionRef{result});
+            }
+            else {
+                MAYBE(result, get_bool(true));
+                EBM_BINARY_OP(final_cond, ebm::BinaryOp::logical_and, bool_type, cond, cond);
+                body.lowered_expr(ebm::LoweredExpressionRef{final_cond});
+            }
         }
         else {
             MAYBE(result, get_bool(true));

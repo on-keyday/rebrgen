@@ -10,15 +10,16 @@
     kind: StatementKind
     init_check: InitCheck
       init_check_type: InitCheckType
-      target_field: StatementRef
-      expect_type: TypeRef
+      target_field: ExpressionRef
+      expect_value: ExpressionRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
 
-MAYBE(init_check_field, as_IDENTIFIER(*this, init_check.target_field));
-MAYBE(init_check_type, visit_Type(*this, init_check.expect_type));
+MAYBE(init_check_field, visit_Expression(*this, init_check.target_field));
+MAYBE(expect_expr, module_.get_expression(init_check.expect_value));
+MAYBE(init_check_type, visit_Type(*this, expect_expr.body.type));
 CodeWriter w;
 if (init_check.init_check_type == ebm::InitCheckType::encode) {
     w.writeln("assert isinstance(", init_check_field.to_string(), ", ", init_check_type.to_string(), ")");
@@ -31,7 +32,7 @@ else {
             w.writeln("return None");
         }
         else {
-            MAYBE(default_expr, as_DEFAULT_VALUE(*this, init_check.expect_type));
+            MAYBE(default_expr, visit_Expression(*this, init_check.expect_value));
             w.writeln(init_check_field.to_string(), " = ", default_expr.to_string());
         }
     }

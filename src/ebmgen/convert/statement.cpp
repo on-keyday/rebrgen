@@ -384,26 +384,29 @@ namespace ebmgen {
         return {};
     }
 
-    expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ) {
+    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ) {
         MAYBE(struct_type, ctx.repository().get_type(alt_type));
         MAYBE(base_struct_id, struct_type.body.id());
-        MAYBE(base_struct, ctx.repository().get_statement(base_struct_id));
-        MAYBE(struct_decl, base_struct.body.struct_decl());
-        MAYBE(related_variant_ref, struct_decl.related_variant());
-        MAYBE(related_variant, ctx.repository().get_type(related_variant_ref));
+        auto related_variant_ref = ctx.state().get_struct_variant_for_id(base_struct_id);
+        if (!related_variant_ref) {
+            return std::nullopt;
+        }
+        MAYBE(related_variant, ctx.repository().get_type(*related_variant_ref));
         MAYBE(related_field, related_variant.body.related_field());
+        MAYBE(self_ref, ctx.state().get_self_ref_for_id(related_field));
         ebm::InitCheck check;
         check.init_check_type = typ;
-        check.target_field = related_field;
-        check.expect_type = alt_type;
+        check.target_field = self_ref;
+        EBM_DEFAULT_VALUE(default_, alt_type);
+        check.expect_value = default_;
         ebm::StatementBody init_check;
         init_check.kind = ebm::StatementKind::INIT_CHECK;
         init_check.init_check(std::move(check));
         EBMA_ADD_STATEMENT(init_check_ref, std::move(init_check));
-        return init_check_ref;
+        return std::pair{init_check_ref, self_ref};
     }
 
-    expected<std::optional<ebm::StatementRef>> handle_variant_alternative(ConverterContext& ctx, const std::shared_ptr<ast::StructType>& s) {
+    expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, const std::shared_ptr<ast::StructType>& s) {
         if (ctx.state().get_current_generate_type() == ebm::GenerateType::Normal) {
             return std::nullopt;
         }
@@ -419,12 +422,20 @@ namespace ebmgen {
         ebm::Block block_body;
         const auto _scope = ctx.state().set_current_block(&block_body);
         MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
+        auto for_each_node = [&]() -> expected<void> {
+            for (auto& element : node->elements) {
+                EBMA_CONVERT_STATEMENT(stmt_ref, element);
+                append(block_body, stmt_ref);
+            }
+            return {};
+        };
         if (variant_alt) {
-            append(block_body, *variant_alt);
+            append(block_body, variant_alt->first);
+            auto set_self = ctx.state().set_self_ref(variant_alt->second);
+            MAYBE_VOID(ok, for_each_node());
         }
-        for (auto& element : node->elements) {
-            EBMA_CONVERT_STATEMENT(stmt_ref, element);
-            append(block_body, stmt_ref);
+        else {
+            MAYBE_VOID(ok, for_each_node());
         }
         body.block(std::move(block_body));
         return {};
@@ -489,6 +500,9 @@ namespace ebmgen {
                 stmt.kind = ebm::StatementKind::STRUCT_DECL;
                 MAYBE(name_ref, ctx.repository().new_statement_id());
                 ctx.state().add_visited_node(node, name_ref);
+                if (!is_nil(related_variant)) {
+                    ctx.state().set_struct_variant_for_id(name_ref, related_variant);
+                }
                 MAYBE(struct_decl, ctx.get_statement_converter().convert_struct_decl({}, node, related_variant));
                 stmt.struct_decl(std::move(struct_decl));
                 EBMA_ADD_STATEMENT(_, name_ref, std::move(stmt));
@@ -535,6 +549,18 @@ namespace ebmgen {
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         MAYBE(encoder_input, get_coder_input(ctx, true));
         MAYBE(decoder_input, get_coder_input(ctx, false));
+
+        ebm::TypeBody struct_type_body;
+        struct_type_body.kind = node->body->struct_type->recursive ? ebm::TypeKind::RECURSIVE_STRUCT : ebm::TypeKind::STRUCT;
+        struct_type_body.id(id);
+        EBMA_ADD_TYPE(struct_type, std::move(struct_type_body));
+        ebm::ExpressionBody self_expr_body;
+        self_expr_body.kind = ebm::ExpressionKind::SELF;
+        self_expr_body.type = struct_type;
+        EBMA_ADD_EXPR(self_expr, std::move(self_expr_body));
+
+        auto set_self = ctx.state().set_self_ref(self_expr);
+
         auto get_type = [&](std::shared_ptr<ast::Function> fn, GenerateType typ) -> expected<ebm::TypeRef> {
             ebm::TypeBody b;
             b.kind = typ == GenerateType::Encode ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
@@ -711,7 +737,8 @@ namespace ebmgen {
         MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
         if (variant_alt) {
             ebm::Block block_body;
-            append(block_body, *variant_alt);
+            append(block_body, variant_alt->first);
+            auto set_self = ctx.state().set_self_ref(variant_alt->second);
             EBMA_CONVERT_STATEMENT(stmt_ref, node->statement);
             append(block_body, stmt_ref);
             body.kind = ebm::StatementKind::BLOCK;
@@ -762,8 +789,9 @@ namespace ebmgen {
         ebm::StatementBody body;
         const bool is_enc = ctx.state().get_current_generate_type() == GenerateType::Encode;
         MAYBE(def_ref, ctx.state().is_visited(node, GenerateType::Normal));
-        auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
-        EBM_IDENTIFIER(def_id, def_ref, def->field_type);
+        MAYBE(def_id, ctx.state().get_self_ref_for_id(def_ref));
+        // auto def = ctx.repository().get_statement(def_ref)->body.field_decl();
+        // EBM_IDENTIFIER(def_id, def_ref, def->field_type);
         std::optional<ebm::StatementRef> assert_stmt;
         std::optional<ebm::SubByteRange> sub_range;
         ebm::StatementRef sub_range_id = id;
@@ -867,6 +895,9 @@ namespace ebmgen {
                 EBMA_ADD_IDENTIFIER(field_name_ref, node->ident->ident);
                 field_decl.name = field_name_ref;
             }
+            // self_ref is maybe IDENTIFIER or MEMBER_ACCESS
+            MAYBE(self_ref, ctx.repository().new_expression_id());
+            auto temporary = ctx.state().set_self_ref(self_ref);
             EBMA_CONVERT_TYPE(type_ref, node->field_type, node);
             field_decl.field_type = type_ref;
             field_decl.is_state_variable(node->is_state_variable);
@@ -875,6 +906,29 @@ namespace ebmgen {
                 field_decl.parent_struct = parent_member_ref;
             }
             body.field_decl(std::move(field_decl));
+            temporary.execute();
+            if (auto self = ctx.state().get_self_ref()) {
+                ebm::ExpressionBody ident;
+                ident.kind = ebm::ExpressionKind::IDENTIFIER;
+                ident.type = type_ref;
+                ident.id(id);
+                EBMA_ADD_EXPR(ident_expr, std::move(ident));
+                ebm::ExpressionBody self_body;
+                self_body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
+                self_body.type = type_ref;
+                self_body.base(*self);
+                self_body.member(ident_expr);
+                EBMA_ADD_EXPR(self_expr, self_ref, std::move(self_body));
+                ctx.state().set_self_ref_for_id(id, self_expr);
+            }
+            else {
+                ebm::ExpressionBody ident;
+                ident.kind = ebm::ExpressionKind::IDENTIFIER;
+                ident.type = type_ref;
+                ident.id(id);
+                EBMA_ADD_EXPR(self_expr, self_ref, std::move(ident));
+                ctx.state().set_self_ref_for_id(id, self_expr);
+            }
         }
         return {};
     }

@@ -50,8 +50,8 @@ namespace ebmgen {
 #define EBMA_ADD_STATEMENT(ref_name, ...) \
     MAYBE(ref_name, ctx.repository().add_statement(__VA_ARGS__));
 
-#define EBMA_ADD_EXPR(ref_name, expr) \
-    MAYBE(ref_name, ctx.repository().add_expr(expr));
+#define EBMA_ADD_EXPR(ref_name, ...) \
+    MAYBE(ref_name, ctx.repository().add_expr(__VA_ARGS__));
 
     // ebm utility
 

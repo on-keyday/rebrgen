@@ -129,13 +129,14 @@ enum ExpressionKind:
     WRITE_DATA # this is for expression like `output.put(x)`
     CONDITIONAL_STATEMENT # if or match that is used as expression
     CONDITIONAL # x ? y : z
-    AVAILABLE  # field availability check (for union)
+    AVAILABLE  # field availability check (for union) 
     SIZEOF # TODO(on-keyday): add sizeof to ast first
-    SUB_RANGE_INIT
+    SUB_RANGE_INIT # stub for sub range init
     OR_COND # for match branch like `x,y => z`
     ADDRESS_OF # for strict property getter
     OPTIONAL_OF # for common/uncommon property getter
     SETTER_STATUS # for property setter
+    SELF # self reference in method
 
 enum SetterStatus:
     :u8
@@ -507,8 +508,8 @@ enum InitCheckType:
 
 format InitCheck:
     init_check_type :InitCheckType
-    target_field :StatementRef
-    expect_type :TypeRef
+    target_field :ExpressionRef
+    expect_value :ExpressionRef
 
 format StatementBody:
     kind :StatementKind

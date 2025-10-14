@@ -18,7 +18,7 @@
         is_peek: bool
         vectorized: bool
         reserved: std::uint8_t
-        dynamic_ref: StatementRef
+        dynamic_ref: *StatementRef
       size: Size
         unit: SizeUnit
         ref: *ExpressionRef

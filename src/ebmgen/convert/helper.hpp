@@ -346,6 +346,12 @@ namespace ebmgen {
 #define EBM_SETTER_STATUS(ref_name, type, status) \
     EBM_AST_EXPRESSION(ref_name, make_setter_status, type, status)
 
+    ebm::ExpressionBody make_bool_literal(ebm::TypeRef type, bool value);
+
+#define EBM_BOOL_LITERAL(ref_name, value) \
+    EBMU_BOOL_TYPE(ref_name##_type_____); \
+    EBM_AST_EXPRESSION(ref_name, make_bool_literal, ref_name##_type_____, value)
+
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit);
     expected<ebm::Size> make_dynamic_size(ebm::ExpressionRef ref, ebm::SizeUnit unit);
     ebm::Size get_size(size_t bit_size);

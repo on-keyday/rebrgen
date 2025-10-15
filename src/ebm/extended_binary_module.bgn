@@ -123,6 +123,7 @@ enum ExpressionKind:
     GET_REMAINING_BYTES
     CAN_READ_STREAM
     ARRAY_SIZE # Get the size of an array or vector
+    ENUM_IS_DEFINED # Check if an enum value is defined
     IS_ERROR # check if encoder/decoder value is error
     MAX_VALUE # Get the maximum value of a type (e.g., u8, u16, u32, u64)
     READ_DATA # this is for expression like `input.get(u8)`
@@ -226,6 +227,9 @@ format ExpressionBody:
             else_ :ExpressionRef
             lowered_expr :LoweredExpressionRef
         ExpressionKind.AVAILABLE:
+            target_expr :ExpressionRef
+            lowered_expr :LoweredExpressionRef
+        ExpressionKind.ENUM_IS_DEFINED:
             target_expr :ExpressionRef
             lowered_expr :LoweredExpressionRef
         ExpressionKind.SIZEOF:

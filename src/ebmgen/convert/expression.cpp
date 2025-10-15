@@ -327,6 +327,51 @@ namespace ebmgen {
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body) {
         body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
         EBMA_CONVERT_EXPRESSION(base_ref, node->target);
+        if (auto member = ast::as<ast::Ident>(node->member); member && member->usage == ast::IdentUsage::reference_builtin_fn) {
+            if (auto typ = ast::as<ast::ArrayType>(node->target->expr_type)) {
+                if (member->ident == "length") {
+                    body.kind = ebm::ExpressionKind::ARRAY_SIZE;
+                    body.array_expr(base_ref);
+                    return {};
+                }
+            }
+            else if (auto ident_ = ast::as<ast::IdentType>(node->target->expr_type)) {
+                if (auto enum_ = ast::as<ast::EnumType>(ident_->base.lock())) {
+                    if (member->ident == "is_defined") {
+                        MAYBE(target_expr, ctx.repository().get_expression(base_ref));
+                        auto enum_type = target_expr.body.type;
+                        body.kind = ebm::ExpressionKind::ENUM_IS_DEFINED;
+                        body.target_expr(base_ref);
+                        EBMA_CONVERT_STATEMENT(base_stmt, enum_->base.lock());
+                        MAYBE(base_enum, ctx.repository().get_statement(base_stmt));
+                        MAYBE(enum_decl_ref, base_enum.body.enum_decl());
+                        auto enum_decl = enum_decl_ref;
+                        MAYBE(meta_type, get_single_type(ebm::TypeKind::META, ctx));
+                        EBM_IDENTIFIER(enum_, base_stmt, meta_type);
+                        ebm::ExpressionRef cond;
+                        EBMU_BOOL_TYPE(bool_type);
+                        for (auto& m : enum_decl.members.container) {
+                            EBM_IDENTIFIER(member, m, enum_type);
+                            EBM_MEMBER_ACCESS(enum_member, enum_type, enum_, member);
+                            MAYBE(eq, convert_equal(base_ref, enum_member));
+                            if (is_nil(cond)) {
+                                cond = eq;
+                            }
+                            else {
+                                EBM_BINARY_OP(or_, ebm::BinaryOp::logical_or, bool_type, cond, eq);
+                                cond = or_;
+                            }
+                        }
+                        if (is_nil(cond)) {
+                            return unexpect_error("Enum has no members");
+                        }
+                        body.lowered_expr(ebm::LoweredExpressionRef{cond});
+                        return {};
+                    }
+                }
+            }
+            return unexpect_error("Unsupported builtin member function '{}' for type '{}'", member->ident, node_type_to_string(node->target->expr_type->node_type));
+        }
         auto temporary = ctx.state().set_self_ref(std::nullopt);
         EBMA_CONVERT_EXPRESSION(member_ref, node->member);
         body.base(base_ref);
@@ -588,14 +633,8 @@ namespace ebmgen {
             }
         }
         EBMU_BOOL_TYPE(bool_type);
-        auto get_bool = [&](bool b) -> expected<ebm::ExpressionRef> {
-            ebm::ExpressionBody body;
-            body.kind = ebm::ExpressionKind::LITERAL_BOOL;
-            body.type = bool_type;
-            body.bool_value(b ? 1 : 0);
-            EBMA_ADD_EXPR(ref, std::move(body));
-            return ref;
-        };
+        EBM_BOOL_LITERAL(true_, true);
+        EBM_BOOL_LITERAL(false_, false);
         if (auto typ = ast::as<ast::UnionType>(node->target->expr_type)) {
             auto make_lowered_expr = [&]() -> expected<void> {
                 ebm::ExpressionRef base_cond;
@@ -616,15 +655,10 @@ namespace ebmgen {
                         MAYBE(eq, convert_equal(base_cond, cond));
                         cond = eq;
                     }
-                    MAYBE(result, get_bool(c->field.lock() != nullptr));
-                    conds.push_back(LCond{cond, result});
+                    conds.push_back(LCond{cond, c->field.lock() != nullptr ? true_ : false_});
                 }
-                ebm::ExpressionRef else_;
+                ebm::ExpressionRef else_ = false_;
                 for (auto& cond : conds | std::views::reverse) {
-                    if (is_nil(else_)) {
-                        MAYBE(false_, get_bool(false));
-                        else_ = false_;
-                    }
                     MAYBE(conditional, make_conditional(ctx, bool_type, cond.cond, cond.then, else_));
                     EBMA_ADD_EXPR(ref, std::move(conditional));
                     else_ = ref;
@@ -641,27 +675,8 @@ namespace ebmgen {
                 MAYBE_VOID(ok, make_lowered_expr());
             }
         }
-        else if (auto enum_ = ast::as<ast::EnumType>(node->target->expr_type)) {
-            EBMA_CONVERT_STATEMENT(base_stmt, enum_->base.lock());
-            MAYBE(base_enum, ctx.repository().get_statement(base_stmt));
-            MAYBE(enum_decl_ref, base_enum.body.enum_decl());
-            auto enum_decl = enum_decl_ref;
-            for (auto& m : enum_decl.members.container) {
-                MAYBE(stmt, ctx.repository().get_statement(m));
-                MAYBE(member_decl, stmt.body.enum_member_decl());
-            }
-            if (is_nil(cond)) {
-                MAYBE(result, get_bool(false));
-                body.lowered_expr(ebm::LoweredExpressionRef{result});
-            }
-            else {
-                MAYBE(result, get_bool(true));
-                EBM_BINARY_OP(final_cond, ebm::BinaryOp::logical_and, bool_type, cond, cond);
-                body.lowered_expr(ebm::LoweredExpressionRef{final_cond});
-            }
-        }
         else {
-            MAYBE(result, get_bool(true));
+            EBM_BOOL_LITERAL(result, true);
             body.lowered_expr(ebm::LoweredExpressionRef{result});
         }
         return {};

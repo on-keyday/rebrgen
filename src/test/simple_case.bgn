@@ -333,7 +333,7 @@ enum EAPCode:
 
 format EAPPacket:
     code :EAPCode
-    available(code) == true
+    code.is_defined == true
     id :u8
     length :u16
     length >= 4

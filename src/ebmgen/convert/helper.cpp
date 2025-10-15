@@ -377,4 +377,12 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_bool_literal(ebm::TypeRef type, bool value) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionKind::LITERAL_BOOL;
+        body.type = type;
+        body.bool_value(value ? 1 : 0);
+        return body;
+    }
+
 }  // namespace ebmgen

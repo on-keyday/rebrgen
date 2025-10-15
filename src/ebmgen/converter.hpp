@@ -580,6 +580,7 @@ namespace ebmgen {
         expected<ebm::TypeRef> convert_type(const std::shared_ptr<ast::Type>& type, const std::shared_ptr<ast::Field>& field = nullptr);
     };
 
+    expected<ebm::TypeRef> get_single_type(ebm::TypeKind kind, ConverterContext& ctx);
     expected<ebm::TypeRef> get_counter_type(ConverterContext& ctx);
     expected<ebm::TypeRef> get_unsigned_n_int(ConverterContext& ctx, size_t n);
     expected<ebm::TypeRef> get_u8_n_array(ConverterContext& ctx, size_t n);

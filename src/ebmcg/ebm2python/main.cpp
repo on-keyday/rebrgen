@@ -7739,6 +7739,140 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Expression_ENUM_IS_DEFINED = requires(Visitor v) {
+         { v.visit_Expression_ENUM_IS_DEFINED(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Expression_ENUM_IS_DEFINED_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().lowered_expr(),*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Expression_ENUM_IS_DEFINED(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
+        #if __has_include("visitor/Expression_pre_validate_before.hpp")
+        #include "visitor/Expression_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate.hpp")
+        #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
+        #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp"
+        #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
+        #include "visitor/Expression_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_validate_after.hpp")
+        #include "visitor/Expression_pre_validate_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp")
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_pre_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp"
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_post_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_after.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_after.hpp"
+        #endif
+        #endif
+        auto& type = in.body.type;
+        auto& kind = in.body.kind;
+        if (!in.body.lowered_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::lowered_expr");
+        }
+        auto& lowered_expr = *in.body.lowered_expr();
+        if (!in.body.target_expr()) {
+            return unexpect_error("Unexpected null pointer for ExpressionBody::target_expr");
+        }
+        auto& target_expr = *in.body.target_expr();
+        #if __has_include("visitor/Expression_pre_visit_before.hpp")
+        #include "visitor/Expression_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit.hpp")
+        #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
+        #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp"
+        #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
+        #include "visitor/Expression_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_pre_visit_after.hpp")
+        #include "visitor/Expression_pre_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp")
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_pre_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp"
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_post_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_after.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_after.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Expression_ENUM_IS_DEFINED<Visitor>) {
+            result = visitor.visit_Expression_ENUM_IS_DEFINED(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
+        }
+        else if constexpr (has_visitor_Expression_ENUM_IS_DEFINED_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
+        }
+        #if __has_include("visitor/Expression_post_visit_before.hpp")
+        #include "visitor/Expression_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit.hpp")
+        #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
+        #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
+        #include "visitor/Expression_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp"
+        #if __has_include("visitor/Expression_post_visit_post_default.hpp")
+        #include "visitor/Expression_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_post_visit_after.hpp")
+        #include "visitor/Expression_post_visit_after.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp")
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_pre_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp"
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_post_default.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_post_default.hpp"
+        #endif
+        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_after.hpp")
+        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_after.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Expression_IS_ERROR = requires(Visitor v) {
          { v.visit_Expression_IS_ERROR(std::declval<const ebm::ExpressionRef&>(),std::declval<const ebm::ExpressionBody&>().type,std::declval<const ebm::ExpressionBody&>().kind,*std::declval<const ebm::ExpressionBody&>().target_expr()) } -> std::convertible_to<expected<Result>>;
     };
@@ -9646,6 +9780,8 @@ namespace ebm2python {
             return dispatch_Expression_CAN_READ_STREAM(visitor,in,alias_ref);
         case ebm::ExpressionKind::ARRAY_SIZE:
             return dispatch_Expression_ARRAY_SIZE(visitor,in,alias_ref);
+        case ebm::ExpressionKind::ENUM_IS_DEFINED:
+            return dispatch_Expression_ENUM_IS_DEFINED(visitor,in,alias_ref);
         case ebm::ExpressionKind::IS_ERROR:
             return dispatch_Expression_IS_ERROR(visitor,in,alias_ref);
         case ebm::ExpressionKind::MAX_VALUE:
@@ -13905,6 +14041,30 @@ namespace ebm2python {
             #endif
             return {};
         }
+        expected<Result> visit_Expression_ENUM_IS_DEFINED(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            #if __has_include("visitor/Expression_ENUM_IS_DEFINED_before.hpp")
+            #include "visitor/Expression_ENUM_IS_DEFINED_before.hpp"
+            #endif
+            #if __has_include("visitor/Expression_ENUM_IS_DEFINED.hpp")
+            #include "visitor/Expression_ENUM_IS_DEFINED.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp")
+            #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_default.hpp")
+            #include "visitor/Expression_ENUM_IS_DEFINED_pre_default.hpp"
+            #endif
+            #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp"
+            #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_default.hpp")
+            #include "visitor/Expression_ENUM_IS_DEFINED_post_default.hpp"
+            #endif
+            #if __has_include("visitor/Expression_ENUM_IS_DEFINED_after.hpp")
+            #include "visitor/Expression_ENUM_IS_DEFINED_after.hpp"
+            #endif
+            #else
+            if (flags.debug_unimplemented) {
+                return std::format("{{{{Unimplemented Expression_ENUM_IS_DEFINED {}}}}}",get_id(item_id));
+            }
+            #endif
+            return {};
+        }
         expected<Result> visit_Expression_IS_ERROR(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_IS_ERROR_before.hpp")
             #include "visitor/Expression_IS_ERROR_before.hpp"
@@ -14803,6 +14963,7 @@ namespace ebm2python {
     static_assert(has_visitor_Expression_GET_REMAINING_BYTES<Visitor>, "Visitor does not implement visit_Expression_GET_REMAINING_BYTES");
     static_assert(has_visitor_Expression_CAN_READ_STREAM<Visitor>, "Visitor does not implement visit_Expression_CAN_READ_STREAM");
     static_assert(has_visitor_Expression_ARRAY_SIZE<Visitor>, "Visitor does not implement visit_Expression_ARRAY_SIZE");
+    static_assert(has_visitor_Expression_ENUM_IS_DEFINED<Visitor>, "Visitor does not implement visit_Expression_ENUM_IS_DEFINED");
     static_assert(has_visitor_Expression_IS_ERROR<Visitor>, "Visitor does not implement visit_Expression_IS_ERROR");
     static_assert(has_visitor_Expression_MAX_VALUE<Visitor>, "Visitor does not implement visit_Expression_MAX_VALUE");
     static_assert(has_visitor_Expression_READ_DATA<Visitor>, "Visitor does not implement visit_Expression_READ_DATA");

@@ -416,6 +416,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                            objv);
             }
             cout << ss.str();
+            cout << "Total matched objects: " << result.size() << "\n";
         }
         else {
             for (auto obj : result) {

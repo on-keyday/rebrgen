@@ -44,4 +44,4 @@ if (initial_value) {
 
 w.writeln();
 
-return w.out();
+return w;

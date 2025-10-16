@@ -22,5 +22,5 @@ w.writeln("import io");
 w.writeln("from typing import Any, Union, BinaryIO, Optional");
 w.writeln();
 MAYBE(d, visit_Block(*this, block));
-w.write_unformatted(d.to_string());
-return w.out();
+merge_result(*this, w, d);
+return w;

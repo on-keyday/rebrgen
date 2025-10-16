@@ -17,5 +17,7 @@
 MAYBE(target_str, visit_Expression(*this, target));
 MAYBE(value_str, visit_Expression(*this, value));
 CodeWriter w;
-w.writeln(target_str.to_string(), " = ", value_str.to_string());
-return w.out();
+merge_result(*this, w, target_str);
+w.write(" = ");
+merge_result(*this, w, value_str);
+return w;

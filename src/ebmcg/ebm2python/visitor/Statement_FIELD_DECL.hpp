@@ -28,4 +28,4 @@ std::string type = type_str_val.to_string();
 type = "\"" + type + "\"";    // Use forward reference for structs
 w.writeln(name, ": ", type);  // Use the extracted string value
 
-return w.out();
+return w;

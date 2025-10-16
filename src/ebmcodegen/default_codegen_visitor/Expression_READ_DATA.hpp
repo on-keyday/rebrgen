@@ -19,6 +19,6 @@ std::string ident = module_.get_identifier_or(target_stmt);
 MAYBE(define_variable, visit_Statement(*this, target_stmt));
 MAYBE(io_logic, visit_Statement(*this, io_statement));
 MAYBE(w, get_writer());
-w.write_unformatted(define_variable.to_string());
-w.write_unformatted(io_logic.to_string());
+merge_result(*this, w, define_variable);
+merge_result(*this, w, io_logic);
 return ident;

@@ -487,6 +487,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("#include <ebmgen/convert/helper.hpp>");
     w.writeln("#include <ebmgen/mapping.hpp>");
     w.writeln("#include <code/code_writer.h>");
+    w.writeln("#include <code/loc_writer.h>");
 
     auto ns_name = flags.program_name;
 
@@ -659,18 +660,26 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     auto ns_scope = w.indent_scope();
     w.writeln("using namespace ebmgen;");
     w.writeln("using namespace ebmcodegen::util;");
-    w.writeln("using CodeWriter = futils::code::CodeWriter<std::string>;");
+    w.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
 
     w.writeln();
     w.writeln("struct Result {");
     auto result_scope = w.indent_scope();
     if (flags.mode == GenerateMode::CodeGenerator) {
-        w.writeln("private: std::string value;");
-        w.writeln("public: Result(std::string v) : value(std::move(v)) {}");
-        w.writeln("Result(const char* v) : value(v) {}");
+        w.writeln("private: CodeWriter value;");
+        w.writeln("public: Result(std::string v) { value.write(v); }");
+        w.writeln("Result(const char* v) { value.write(v); }");
+        w.writeln("Result(CodeWriter&& v) : value(std::move(v)) {}");
         w.writeln("Result() = default;");
-        w.writeln("constexpr const std::string& to_string() const { return value; }");
-        w.writeln("constexpr std::string& to_string() { return value; }");
+        w.writeln("constexpr std::string to_string() const {");
+        w.indent_writeln("return value.to_string();");
+        w.writeln("}");
+        w.writeln("constexpr const CodeWriter& to_writer() const {");
+        w.indent_writeln("return value;");
+        w.writeln("}");
+        w.writeln("constexpr CodeWriter& to_writer() {");
+        w.indent_writeln("return value;");
+        w.writeln("}");
     }
     insert_include(w, prefixes[prefix_result]);
     result_scope.execute();
@@ -872,7 +881,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         {
             auto list_scope = stmt_dispatcher.indent_scope();
             if (flags.mode == GenerateMode::CodeGenerator) {
-                stmt_dispatcher.writeln("futils::code::CodeWriter<std::string> w;");
+                stmt_dispatcher.writeln("CodeWriter w;");
             }
             stmt_dispatcher.writeln("for(auto& elem:in.container) {");
             {
@@ -882,12 +891,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
                 stmt_dispatcher.writeln("}");
                 if (flags.mode == GenerateMode::CodeGenerator) {
-                    stmt_dispatcher.writeln("w.write_unformatted(std::move(result.value().to_string()));");
+                    stmt_dispatcher.writeln("merge_result(visitor, w, std::move(result.value()));");
                 }
             }
             stmt_dispatcher.writeln("}");
             if (flags.mode == GenerateMode::CodeGenerator) {
-                stmt_dispatcher.writeln("return w.out();");
+                stmt_dispatcher.writeln("return w;");
             }
             else {
                 stmt_dispatcher.writeln("return {};");  // Placeholder for non-codegen mode

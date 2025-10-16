@@ -25,7 +25,7 @@ w.writeln("class ", name, "(enum.Enum)", begin_block);
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, enum_decl.members));
-    w.write_unformatted(block.to_string());
+    merge_result(*this, w, block);
 }
 w.writeln(end_block);
 return w.out();

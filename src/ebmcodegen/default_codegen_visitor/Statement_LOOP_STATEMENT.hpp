@@ -28,7 +28,7 @@ if (!is_nil(loop.lowered_statement.id)) {
 CodeWriter w;
 if (auto init = loop.init(); init && init->id.value() != 0) {
     MAYBE(init_s, visit_Statement(*this, *init));
-    w.write_unformatted(init_s.to_string());
+    merge_result(*this, w, init_s);
 }
 std::string cond;
 if (auto c = loop.condition()) {
@@ -49,10 +49,10 @@ else {
 {
     auto body_indent = w.indent_scope();
     MAYBE(body, visit_Statement(*this, loop.body));
-    w.write_unformatted(body.to_string());
+    merge_result(*this, w, body);
     if (auto iter = loop.increment()) {
         MAYBE(step, visit_Statement(*this, *iter));
-        w.write_unformatted(step.to_string());
+        merge_result(*this, w, step);
     }
 }
 w.writeln(end_block);

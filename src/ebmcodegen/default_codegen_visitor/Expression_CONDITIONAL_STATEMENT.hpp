@@ -17,6 +17,6 @@
 MAYBE(target_str, visit_Statement(*this, target_stmt));
 MAYBE(conditional_str, visit_Statement(*this, conditional_stmt));
 MAYBE(w, get_writer());
-w.write_unformatted(target_str.to_string());
-w.write_unformatted(conditional_str.to_string());
+merge_result(*this, w, target_str);
+merge_result(*this, w, conditional_str);
 return module_.get_identifier_or(target_stmt);

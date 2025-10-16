@@ -6,6 +6,7 @@
 #include <ebmgen/convert/helper.hpp>
 #include <ebmgen/mapping.hpp>
 #include <code/code_writer.h>
+#include <code/loc_writer.h>
 #if __has_include("visitor/includes_before.hpp")
 #include "visitor/includes_before.hpp"
 #endif
@@ -157,15 +158,23 @@ struct Output : ebmcodegen::Output {
 namespace ebm2python {
     using namespace ebmgen;
     using namespace ebmcodegen::util;
-    using CodeWriter = futils::code::CodeWriter<std::string>;
+    using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;
     
     struct Result {
-        private: std::string value;
-        public: Result(std::string v) : value(std::move(v)) {}
-        Result(const char* v) : value(v) {}
+        private: CodeWriter value;
+        public: Result(std::string v) { value.write(v); }
+        Result(const char* v) { value.write(v); }
+        Result(CodeWriter&& v) : value(std::move(v)) {}
         Result() = default;
-        constexpr const std::string& to_string() const { return value; }
-        constexpr std::string& to_string() { return value; }
+        constexpr std::string to_string() const {
+            return value.to_string();
+        }
+        constexpr const CodeWriter& to_writer() const {
+            return value;
+        }
+        constexpr CodeWriter& to_writer() {
+            return value;
+        }
         #if __has_include("visitor/Result_before.hpp")
         #include "visitor/Result_before.hpp"
         #endif
@@ -5086,13 +5095,13 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Block(Visitor&& visitor,const ebm::Block& in) {
-        futils::code::CodeWriter<std::string> w;
+        CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Statement(visitor,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write_unformatted(std::move(result.value().to_string()));
+            merge_result(visitor, w, std::move(result.value()));
         }
         return w.out();
     }
@@ -9823,13 +9832,13 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Expressions(Visitor&& visitor,const ebm::Expressions& in) {
-        futils::code::CodeWriter<std::string> w;
+        CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Expression(visitor,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write_unformatted(std::move(result.value().to_string()));
+            merge_result(visitor, w, std::move(result.value()));
         }
         return w.out();
     }
@@ -12607,13 +12616,13 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Types(Visitor&& visitor,const ebm::Types& in) {
-        futils::code::CodeWriter<std::string> w;
+        CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Type(visitor,elem);
             if (!result) {
                 return unexpect_error(std::move(result.error()));
             }
-            w.write_unformatted(std::move(result.value().to_string()));
+            merge_result(visitor, w, std::move(result.value()));
         }
         return w.out();
     }

@@ -29,9 +29,9 @@ if (metadata.values.container.size()) {
         }
         first = false;
         MAYBE(val, visit_Expression(*this, v));
-        w.write_unformatted(val.to_string());
+        merge_result(*this, w, val);
     }
     w.write(")");
 }
 w.writeln(this->metadata_comment_suffix);
-return w.out();
+return w;

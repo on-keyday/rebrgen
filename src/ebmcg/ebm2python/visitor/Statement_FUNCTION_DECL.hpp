@@ -54,7 +54,7 @@ if (res.to_string().empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }
 else {
-    w.write_unformatted(res.to_string());
+    merge_result(*this, w, res);
 }
 
 return w.out();

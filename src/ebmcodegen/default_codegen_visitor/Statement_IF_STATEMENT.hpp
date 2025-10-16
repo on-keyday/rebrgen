@@ -32,7 +32,7 @@ if (then_block.to_string().empty()) {
     }
 }
 else {
-    w.write_unformatted(std::move(then_block.to_string()));
+    merge_result(*this, w, then_block);
 }
 then_scope.execute();
 w.write(end_block);
@@ -61,7 +61,7 @@ while (!is_nil(els_block)) {
             }
         }
         else {
-            w.write_unformatted(then_block.to_string());
+            merge_result(*this, w, then_block);
         }
         then_scope.execute();
         w.write(end_block);
@@ -80,7 +80,7 @@ while (!is_nil(els_block)) {
             }
         }
         else {
-            w.write_unformatted(else_block.to_string());
+            merge_result(*this, w, else_block);
         }
         else_scope.execute();
         w.write(end_block);

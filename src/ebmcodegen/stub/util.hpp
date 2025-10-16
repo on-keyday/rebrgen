@@ -206,4 +206,8 @@ namespace ebmcodegen::util {
         }
         return result;
     }
+
+    void merge_result(auto&& visitor, auto& w, auto&& result) {
+        w.write_unformatted(result.to_string());
+    }
 }  // namespace ebmcodegen::util

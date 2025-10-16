@@ -21,6 +21,8 @@ namespace ebmgen {
                     auto copy = *prop;  // avoid effect of memory relocation of adding object
                     prop = &copy;
                     ebm::FunctionDecl getter, setter;
+                    getter.kind = ebm::FunctionKind::PROPERTY_GETTER;
+                    setter.kind = ebm::FunctionKind::PROPERTY_SETTER;
                     getter.name = prop->name;
                     setter.name = prop->name;
                     getter.parent_format = prop->parent_format;
@@ -28,8 +30,13 @@ namespace ebmgen {
                     // getter return value
                     {
                         ebm::TypeBody ptr_type;
-                        ptr_type.kind = ebm::TypeKind::PTR;
-                        ptr_type.pointee_type(prop->property_type);
+                        ptr_type.kind = prop->merge_mode == ebm::MergeMode::STRICT_TYPE ? ebm::TypeKind::PTR : ebm::TypeKind::OPTIONAL;
+                        if (ptr_type.kind == ebm::TypeKind::PTR) {
+                            ptr_type.pointee_type(prop->property_type);
+                        }
+                        else {
+                            ptr_type.inner_type(prop->property_type);
+                        }
                         EBMA_ADD_TYPE(ret_type, std::move(ptr_type));
                         getter.return_type = ret_type;
                     }
@@ -117,7 +124,10 @@ namespace ebmgen {
                                     append(block, handle_union->first);
                                 }
                                 MAYBE(self_expr, ctx.state().get_self_ref_for_id(member.field));
-                                EBM_ASSIGNMENT(assign, self_expr, arg);
+                                MAYBE(field_expr, ctx.repository().get_expression(self_expr));
+                                auto expr_type = field_expr.body.type;
+                                EBM_CAST(casted_arg, expr_type, prop->property_type, arg);
+                                EBM_ASSIGNMENT(assign, self_expr, casted_arg);
                                 append(block, assign);
                                 EBM_SETTER_STATUS(success_status, setter.return_type, ebm::SetterStatus::SUCCESS);
                                 EBM_RETURN(success_return, success_status);

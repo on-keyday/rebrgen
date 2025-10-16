@@ -491,6 +491,53 @@ namespace ebm {
     constexpr const char* visit_enum(LoopType) {
         return "LoopType";
     }
+    enum class FunctionKind : std::uint8_t {
+        NORMAL = 0,
+        METHOD = 1,
+        ENCODE = 2,
+        DECODE = 3,
+        PROPERTY_GETTER = 4,
+        PROPERTY_SETTER = 5,
+    };
+    constexpr const char* to_string(FunctionKind e, bool origin_form = false) {
+        switch(e) {
+            case FunctionKind::NORMAL: return origin_form ? "NORMAL":"NORMAL" ;
+            case FunctionKind::METHOD: return origin_form ? "METHOD":"METHOD" ;
+            case FunctionKind::ENCODE: return origin_form ? "ENCODE":"ENCODE" ;
+            case FunctionKind::DECODE: return origin_form ? "DECODE":"DECODE" ;
+            case FunctionKind::PROPERTY_GETTER: return origin_form ? "PROPERTY_GETTER":"PROPERTY_GETTER" ;
+            case FunctionKind::PROPERTY_SETTER: return origin_form ? "PROPERTY_SETTER":"PROPERTY_SETTER" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<FunctionKind> FunctionKind_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "NORMAL") {
+            return FunctionKind::NORMAL;
+        }
+        if (str == "METHOD") {
+            return FunctionKind::METHOD;
+        }
+        if (str == "ENCODE") {
+            return FunctionKind::ENCODE;
+        }
+        if (str == "DECODE") {
+            return FunctionKind::DECODE;
+        }
+        if (str == "PROPERTY_GETTER") {
+            return FunctionKind::PROPERTY_GETTER;
+        }
+        if (str == "PROPERTY_SETTER") {
+            return FunctionKind::PROPERTY_SETTER;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(FunctionKind) {
+        return "FunctionKind";
+    }
     enum class SubByteRangeType : std::uint8_t {
         bytes = 0,
         seek_bytes = 1,
@@ -2821,6 +2868,7 @@ namespace ebm {
         TypeRef return_type;
         Block params;
         StatementRef parent_format;
+        FunctionKind kind{};
         StatementRef body;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
@@ -2831,6 +2879,7 @@ namespace ebm {
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
             v(v, "parent_format",(*this).parent_format);
+            v(v, "kind",(*this).kind);
             v(v, "body",(*this).body);
         }
         template<typename Visitor>
@@ -2839,6 +2888,7 @@ namespace ebm {
             v(v, "return_type",(*this).return_type);
             v(v, "params",(*this).params);
             v(v, "parent_format",(*this).parent_format);
+            v(v, "kind",(*this).kind);
             v(v, "body",(*this).body);
         }
         template<typename T,bool rvalue = false>
@@ -2852,6 +2902,7 @@ namespace ebm {
             v(v, "return_type",visitor_tag<decltype(std::declval<FunctionDecl>().return_type),false>{});
             v(v, "params",visitor_tag<decltype(std::declval<FunctionDecl>().params),false>{});
             v(v, "parent_format",visitor_tag<decltype(std::declval<FunctionDecl>().parent_format),false>{});
+            v(v, "kind",visitor_tag<decltype(std::declval<FunctionDecl>().kind),false>{});
             v(v, "body",visitor_tag<decltype(std::declval<FunctionDecl>().body),false>{});
         }
     };

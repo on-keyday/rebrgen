@@ -338,12 +338,21 @@ format PropertyDecl:
     getter_function :LoweredStatementRef
 
 
+enum FunctionKind:
+    :u8
+    NORMAL = 0 # Normal function
+    METHOD = 1 # Method (has self parameter)
+    ENCODE = 2 # Encoder function
+    DECODE = 3 # Decoder function
+    PROPERTY_GETTER = 4 # Property getter function
+    PROPERTY_SETTER = 5 # Property setter function
 
 format FunctionDecl:
     name :IdentifierRef # Function name
     return_type :TypeRef # Return type of the function
     params: Block
     parent_format :StatementRef # Reference to parent format (maybe null) (e.g., struct, union)
+    kind :FunctionKind # Kind of the function
     body :StatementRef
 
 format EnumDecl:

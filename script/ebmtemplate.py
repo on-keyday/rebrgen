@@ -69,6 +69,10 @@ def run_save_template(tool_path, template_target, lang):
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")
         # touch main file
+        main_file = os.path.join(lang_dir, "main.cpp")
+        if os.path.exists(main_file):
+            os.utime(main_file, None)
+            print(f"Touched '{main_file}' to update its timestamp.")
     except subprocess.CalledProcessError as e:
         print(
             f"Error: ebmcodegen failed for target '{template_target}' with exit code {e.returncode}",

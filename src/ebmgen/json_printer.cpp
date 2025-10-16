@@ -70,4 +70,25 @@ namespace ebmgen {
         os_ = &os;
         print_value(module_.module());
     }
+
+    void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::Statement& obj) {
+        os_ = &os;
+        print_value(obj);
+    }
+    void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::Expression& obj) {
+        os_ = &os;
+        print_value(obj);
+    }
+    void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::Type& obj) {
+        os_ = &os;
+        print_value(obj);
+    }
+    void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::Identifier& obj) {
+        os_ = &os;
+        print_value(obj);
+    }
+    void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::StringLiteral& obj) {
+        os_ = &os;
+        print_value(obj);
+    }
 }  // namespace ebmgen

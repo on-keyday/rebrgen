@@ -337,9 +337,13 @@ namespace ebmgen {
     EBM_AST_STATEMENT(ref_name, make_return, value)
 
     ebm::ExpressionBody make_addressof(ebm::TypeRef type, ebm::ExpressionRef target);
+    ebm::ExpressionBody make_optionalof(ebm::TypeRef type, ebm::ExpressionRef target);
 
 #define EBM_ADDRESSOF(ref_name, type, target) \
     EBM_AST_EXPRESSION(ref_name, make_addressof, type, target)
+
+#define EBM_OPTIONALOF(ref_name, type, target) \
+    EBM_AST_EXPRESSION(ref_name, make_optionalof, type, target)
 
     ebm::ExpressionBody make_setter_status(ebm::TypeRef type, ebm::SetterStatus status);
 

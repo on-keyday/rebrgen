@@ -17077,6 +17077,10 @@ namespace ebm {
         if (auto err = (*this).parent_format.encode(w)) {
             return err;
         }
+        auto tmp_194_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_194_) ,true)) {
+            return ::futils::error::Error<>("encode: FunctionDecl::kind: write std::uint8_t failed",::futils::error::Category::lib);
+        }
         if (auto err = (*this).body.encode(w)) {
             return err;
         }
@@ -17095,6 +17099,11 @@ namespace ebm {
         if (auto err = (*this).parent_format.decode(r)) {
             return err;
         }
+        std::uint8_t tmp_195_ = 0;
+        if (!::futils::binary::read_num(r,tmp_195_ ,true)) {
+            return ::futils::error::Error<>("decode: FunctionDecl::kind: read int failed",::futils::error::Category::lib);
+        }
+        (*this).kind = static_cast<FunctionKind>(tmp_195_);
         if (auto err = (*this).body.decode(r)) {
             return err;
         }
@@ -17286,8 +17295,8 @@ namespace ebm {
         if (auto err = (*this).property_type.encode(w)) {
             return err;
         }
-        auto tmp_194_ = static_cast<std::uint8_t>((*this).merge_mode);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_194_) ,true)) {
+        auto tmp_196_ = static_cast<std::uint8_t>((*this).merge_mode);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_196_) ,true)) {
             return ::futils::error::Error<>("encode: PropertyDecl::merge_mode: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if ((*this).merge_mode == MergeMode::STRICT_TYPE) {
@@ -17319,11 +17328,11 @@ namespace ebm {
         if (auto err = (*this).property_type.decode(r)) {
             return err;
         }
-        std::uint8_t tmp_195_ = 0;
-        if (!::futils::binary::read_num(r,tmp_195_ ,true)) {
+        std::uint8_t tmp_197_ = 0;
+        if (!::futils::binary::read_num(r,tmp_197_ ,true)) {
             return ::futils::error::Error<>("decode: PropertyDecl::merge_mode: read int failed",::futils::error::Category::lib);
         }
-        (*this).merge_mode = static_cast<MergeMode>(tmp_195_);
+        (*this).merge_mode = static_cast<MergeMode>(tmp_197_);
         if ((*this).merge_mode == MergeMode::STRICT_TYPE) {
             if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
                 union_variant_77 = union_struct_78();
@@ -17362,8 +17371,8 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> StatementBody::encode(::futils::binary::writer& w) const {
-        auto tmp_196_ = static_cast<std::uint8_t>((*this).kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_196_) ,true)) {
+        auto tmp_198_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_198_) ,true)) {
             return ::futils::error::Error<>("encode: StatementBody::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (StatementKind::BLOCK==(*this).kind) {
@@ -17460,8 +17469,8 @@ namespace ebm {
             if (auto err = std::get<10>((*this).union_variant_80).offset.encode(w)) {
                 return err;
             }
-            auto tmp_197_ = static_cast<std::uint8_t>(std::get<10>((*this).union_variant_80).stream_type);
-            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_197_) ,true)) {
+            auto tmp_199_ = static_cast<std::uint8_t>(std::get<10>((*this).union_variant_80).stream_type);
+            if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_199_) ,true)) {
                 return ::futils::error::Error<>("encode: StatementBody::stream_type: write std::uint8_t failed",::futils::error::Category::lib);
             }
         }
@@ -17671,11 +17680,11 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> StatementBody::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_198_ = 0;
-        if (!::futils::binary::read_num(r,tmp_198_ ,true)) {
+        std::uint8_t tmp_200_ = 0;
+        if (!::futils::binary::read_num(r,tmp_200_ ,true)) {
             return ::futils::error::Error<>("decode: StatementBody::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).kind = static_cast<StatementKind>(tmp_198_);
+        (*this).kind = static_cast<StatementKind>(tmp_200_);
         if (StatementKind::BLOCK==(*this).kind) {
             if(!std::holds_alternative<union_struct_81>(union_variant_80)) {
                 union_variant_80 = union_struct_81();
@@ -17770,11 +17779,11 @@ namespace ebm {
             if (auto err = std::get<10>((*this).union_variant_80).offset.decode(r)) {
                 return err;
             }
-            std::uint8_t tmp_199_ = 0;
-            if (!::futils::binary::read_num(r,tmp_199_ ,true)) {
+            std::uint8_t tmp_201_ = 0;
+            if (!::futils::binary::read_num(r,tmp_201_ ,true)) {
                 return ::futils::error::Error<>("decode: StatementBody::stream_type: read int failed",::futils::error::Category::lib);
             }
-            std::get<10>((*this).union_variant_80).stream_type = static_cast<StreamType>(tmp_199_);
+            std::get<10>((*this).union_variant_80).stream_type = static_cast<StreamType>(tmp_201_);
         }
         else if (StatementKind::IF_STATEMENT==(*this).kind) {
             if(!std::holds_alternative<union_struct_91>(union_variant_80)) {
@@ -18003,12 +18012,12 @@ namespace ebm {
         if (auto err = (*this).len.encode(w)) {
             return err;
         }
-        auto tmp_200_ = (*this).len.value();
-        if (tmp_200_!=(*this).container.size()) {
-            return ::futils::error::Error<>("encode: Types::container: dynamic length is not compatible with its length; tmp_200_!=(*this).container.size()",::futils::error::Category::lib);
+        auto tmp_202_ = (*this).len.value();
+        if (tmp_202_!=(*this).container.size()) {
+            return ::futils::error::Error<>("encode: Types::container: dynamic length is not compatible with its length; tmp_202_!=(*this).container.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_201_ : (*this).container) {
-            if (auto err = tmp_201_.encode(w)) {
+        for (auto& tmp_203_ : (*this).container) {
+            if (auto err = tmp_203_.encode(w)) {
                 return err;
             }
         }
@@ -18018,20 +18027,20 @@ namespace ebm {
         if (auto err = (*this).len.decode(r)) {
             return err;
         }
-        auto tmp_202_ = (*this).len.value();
+        auto tmp_204_ = (*this).len.value();
         (*this).container.clear();
-        for (size_t  tmp_204_= 0; tmp_204_<tmp_202_; ++tmp_204_ ) {
-            TypeRef tmp_203_;
-            if (auto err = tmp_203_.decode(r)) {
+        for (size_t  tmp_206_= 0; tmp_206_<tmp_204_; ++tmp_206_ ) {
+            TypeRef tmp_205_;
+            if (auto err = tmp_205_.decode(r)) {
                 return err;
             }
-            (*this).container.push_back(std::move(tmp_203_));
+            (*this).container.push_back(std::move(tmp_205_));
         }
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> TypeBody::encode(::futils::binary::writer& w) const {
-        auto tmp_205_ = static_cast<std::uint8_t>((*this).kind);
-        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_205_) ,true)) {
+        auto tmp_207_ = static_cast<std::uint8_t>((*this).kind);
+        if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_207_) ,true)) {
             return ::futils::error::Error<>("encode: TypeBody::kind: write std::uint8_t failed",::futils::error::Category::lib);
         }
         if (TypeKind::INT==(*this).kind) {
@@ -18158,11 +18167,11 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> TypeBody::decode(::futils::binary::reader& r) {
-        std::uint8_t tmp_206_ = 0;
-        if (!::futils::binary::read_num(r,tmp_206_ ,true)) {
+        std::uint8_t tmp_208_ = 0;
+        if (!::futils::binary::read_num(r,tmp_208_ ,true)) {
             return ::futils::error::Error<>("decode: TypeBody::kind: read int failed",::futils::error::Category::lib);
         }
-        (*this).kind = static_cast<TypeKind>(tmp_206_);
+        (*this).kind = static_cast<TypeKind>(tmp_208_);
         if (TypeKind::INT==(*this).kind) {
             if(!std::holds_alternative<union_struct_118>(union_variant_117)) {
                 union_variant_117 = union_struct_118();
@@ -18389,24 +18398,24 @@ namespace ebm {
         if (auto err = (*this).len_files.encode(w)) {
             return err;
         }
-        auto tmp_207_ = (*this).len_files.value();
-        if (tmp_207_!=(*this).files.size()) {
-            return ::futils::error::Error<>("encode: DebugInfo::files: dynamic length is not compatible with its length; tmp_207_!=(*this).files.size()",::futils::error::Category::lib);
+        auto tmp_209_ = (*this).len_files.value();
+        if (tmp_209_!=(*this).files.size()) {
+            return ::futils::error::Error<>("encode: DebugInfo::files: dynamic length is not compatible with its length; tmp_209_!=(*this).files.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_208_ : (*this).files) {
-            if (auto err = tmp_208_.encode(w)) {
+        for (auto& tmp_210_ : (*this).files) {
+            if (auto err = tmp_210_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).len_locs.encode(w)) {
             return err;
         }
-        auto tmp_209_ = (*this).len_locs.value();
-        if (tmp_209_!=(*this).locs.size()) {
-            return ::futils::error::Error<>("encode: DebugInfo::locs: dynamic length is not compatible with its length; tmp_209_!=(*this).locs.size()",::futils::error::Category::lib);
+        auto tmp_211_ = (*this).len_locs.value();
+        if (tmp_211_!=(*this).locs.size()) {
+            return ::futils::error::Error<>("encode: DebugInfo::locs: dynamic length is not compatible with its length; tmp_211_!=(*this).locs.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_210_ : (*this).locs) {
-            if (auto err = tmp_210_.encode(w)) {
+        for (auto& tmp_212_ : (*this).locs) {
+            if (auto err = tmp_212_.encode(w)) {
                 return err;
             }
         }
@@ -18416,26 +18425,26 @@ namespace ebm {
         if (auto err = (*this).len_files.decode(r)) {
             return err;
         }
-        auto tmp_211_ = (*this).len_files.value();
+        auto tmp_213_ = (*this).len_files.value();
         (*this).files.clear();
-        for (size_t  tmp_213_= 0; tmp_213_<tmp_211_; ++tmp_213_ ) {
-            String tmp_212_;
-            if (auto err = tmp_212_.decode(r)) {
+        for (size_t  tmp_215_= 0; tmp_215_<tmp_213_; ++tmp_215_ ) {
+            String tmp_214_;
+            if (auto err = tmp_214_.decode(r)) {
                 return err;
             }
-            (*this).files.push_back(std::move(tmp_212_));
+            (*this).files.push_back(std::move(tmp_214_));
         }
         if (auto err = (*this).len_locs.decode(r)) {
             return err;
         }
-        auto tmp_214_ = (*this).len_locs.value();
+        auto tmp_216_ = (*this).len_locs.value();
         (*this).locs.clear();
-        for (size_t  tmp_216_= 0; tmp_216_<tmp_214_; ++tmp_216_ ) {
-            Loc tmp_215_;
-            if (auto err = tmp_215_.decode(r)) {
+        for (size_t  tmp_218_= 0; tmp_218_<tmp_216_; ++tmp_218_ ) {
+            Loc tmp_217_;
+            if (auto err = tmp_217_.decode(r)) {
                 return err;
             }
-            (*this).locs.push_back(std::move(tmp_215_));
+            (*this).locs.push_back(std::move(tmp_217_));
         }
         return ::futils::error::Error<>();
     }
@@ -18452,72 +18461,72 @@ namespace ebm {
         if (auto err = (*this).identifiers_len.encode(w)) {
             return err;
         }
-        auto tmp_217_ = (*this).identifiers_len.value();
-        if (tmp_217_!=(*this).identifiers.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::identifiers: dynamic length is not compatible with its length; tmp_217_!=(*this).identifiers.size()",::futils::error::Category::lib);
+        auto tmp_219_ = (*this).identifiers_len.value();
+        if (tmp_219_!=(*this).identifiers.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::identifiers: dynamic length is not compatible with its length; tmp_219_!=(*this).identifiers.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_218_ : (*this).identifiers) {
-            if (auto err = tmp_218_.encode(w)) {
+        for (auto& tmp_220_ : (*this).identifiers) {
+            if (auto err = tmp_220_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).strings_len.encode(w)) {
             return err;
         }
-        auto tmp_219_ = (*this).strings_len.value();
-        if (tmp_219_!=(*this).strings.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::strings: dynamic length is not compatible with its length; tmp_219_!=(*this).strings.size()",::futils::error::Category::lib);
+        auto tmp_221_ = (*this).strings_len.value();
+        if (tmp_221_!=(*this).strings.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::strings: dynamic length is not compatible with its length; tmp_221_!=(*this).strings.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_220_ : (*this).strings) {
-            if (auto err = tmp_220_.encode(w)) {
+        for (auto& tmp_222_ : (*this).strings) {
+            if (auto err = tmp_222_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).types_len.encode(w)) {
             return err;
         }
-        auto tmp_221_ = (*this).types_len.value();
-        if (tmp_221_!=(*this).types.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::types: dynamic length is not compatible with its length; tmp_221_!=(*this).types.size()",::futils::error::Category::lib);
+        auto tmp_223_ = (*this).types_len.value();
+        if (tmp_223_!=(*this).types.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::types: dynamic length is not compatible with its length; tmp_223_!=(*this).types.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_222_ : (*this).types) {
-            if (auto err = tmp_222_.encode(w)) {
+        for (auto& tmp_224_ : (*this).types) {
+            if (auto err = tmp_224_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).statements_len.encode(w)) {
             return err;
         }
-        auto tmp_223_ = (*this).statements_len.value();
-        if (tmp_223_!=(*this).statements.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::statements: dynamic length is not compatible with its length; tmp_223_!=(*this).statements.size()",::futils::error::Category::lib);
+        auto tmp_225_ = (*this).statements_len.value();
+        if (tmp_225_!=(*this).statements.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::statements: dynamic length is not compatible with its length; tmp_225_!=(*this).statements.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_224_ : (*this).statements) {
-            if (auto err = tmp_224_.encode(w)) {
+        for (auto& tmp_226_ : (*this).statements) {
+            if (auto err = tmp_226_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).expressions_len.encode(w)) {
             return err;
         }
-        auto tmp_225_ = (*this).expressions_len.value();
-        if (tmp_225_!=(*this).expressions.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::expressions: dynamic length is not compatible with its length; tmp_225_!=(*this).expressions.size()",::futils::error::Category::lib);
+        auto tmp_227_ = (*this).expressions_len.value();
+        if (tmp_227_!=(*this).expressions.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::expressions: dynamic length is not compatible with its length; tmp_227_!=(*this).expressions.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_226_ : (*this).expressions) {
-            if (auto err = tmp_226_.encode(w)) {
+        for (auto& tmp_228_ : (*this).expressions) {
+            if (auto err = tmp_228_.encode(w)) {
                 return err;
             }
         }
         if (auto err = (*this).aliases_len.encode(w)) {
             return err;
         }
-        auto tmp_227_ = (*this).aliases_len.value();
-        if (tmp_227_!=(*this).aliases.size()) {
-            return ::futils::error::Error<>("encode: ExtendedBinaryModule::aliases: dynamic length is not compatible with its length; tmp_227_!=(*this).aliases.size()",::futils::error::Category::lib);
+        auto tmp_229_ = (*this).aliases_len.value();
+        if (tmp_229_!=(*this).aliases.size()) {
+            return ::futils::error::Error<>("encode: ExtendedBinaryModule::aliases: dynamic length is not compatible with its length; tmp_229_!=(*this).aliases.size()",::futils::error::Category::lib);
         }
-        for (auto& tmp_228_ : (*this).aliases) {
-            if (auto err = tmp_228_.encode(w)) {
+        for (auto& tmp_230_ : (*this).aliases) {
+            if (auto err = tmp_230_.encode(w)) {
                 return err;
             }
         }
@@ -18527,11 +18536,11 @@ namespace ebm {
         return ::futils::error::Error<>();
     }
     ::futils::error::Error<> ExtendedBinaryModule::decode(::futils::binary::reader& r) {
-        ::futils::view::rvec tmp_229_ = {};
-        if (!r.read_direct(tmp_229_, 4)) {
+        ::futils::view::rvec tmp_231_ = {};
+        if (!r.read_direct(tmp_231_, 4)) {
             return ::futils::error::Error<>("decode: ExtendedBinaryModule::magic: read string failed",::futils::error::Category::lib);
         }
-        if (tmp_229_ != ::futils::view::rvec("EBMG",4)) {
+        if (tmp_231_ != ::futils::view::rvec("EBMG",4)) {
             return ::futils::error::Error<>("decode: ExtendedBinaryModule::magic: read string failed; not match to \"EBMG\"",::futils::error::Category::lib);
         }
         if (!::futils::binary::read_num(r,(*this).version ,true)) {
@@ -18543,74 +18552,74 @@ namespace ebm {
         if (auto err = (*this).identifiers_len.decode(r)) {
             return err;
         }
-        auto tmp_230_ = (*this).identifiers_len.value();
+        auto tmp_232_ = (*this).identifiers_len.value();
         (*this).identifiers.clear();
-        for (size_t  tmp_232_= 0; tmp_232_<tmp_230_; ++tmp_232_ ) {
-            Identifier tmp_231_;
-            if (auto err = tmp_231_.decode(r)) {
+        for (size_t  tmp_234_= 0; tmp_234_<tmp_232_; ++tmp_234_ ) {
+            Identifier tmp_233_;
+            if (auto err = tmp_233_.decode(r)) {
                 return err;
             }
-            (*this).identifiers.push_back(std::move(tmp_231_));
+            (*this).identifiers.push_back(std::move(tmp_233_));
         }
         if (auto err = (*this).strings_len.decode(r)) {
             return err;
         }
-        auto tmp_233_ = (*this).strings_len.value();
+        auto tmp_235_ = (*this).strings_len.value();
         (*this).strings.clear();
-        for (size_t  tmp_235_= 0; tmp_235_<tmp_233_; ++tmp_235_ ) {
-            StringLiteral tmp_234_;
-            if (auto err = tmp_234_.decode(r)) {
+        for (size_t  tmp_237_= 0; tmp_237_<tmp_235_; ++tmp_237_ ) {
+            StringLiteral tmp_236_;
+            if (auto err = tmp_236_.decode(r)) {
                 return err;
             }
-            (*this).strings.push_back(std::move(tmp_234_));
+            (*this).strings.push_back(std::move(tmp_236_));
         }
         if (auto err = (*this).types_len.decode(r)) {
             return err;
         }
-        auto tmp_236_ = (*this).types_len.value();
+        auto tmp_238_ = (*this).types_len.value();
         (*this).types.clear();
-        for (size_t  tmp_238_= 0; tmp_238_<tmp_236_; ++tmp_238_ ) {
-            Type tmp_237_;
-            if (auto err = tmp_237_.decode(r)) {
+        for (size_t  tmp_240_= 0; tmp_240_<tmp_238_; ++tmp_240_ ) {
+            Type tmp_239_;
+            if (auto err = tmp_239_.decode(r)) {
                 return err;
             }
-            (*this).types.push_back(std::move(tmp_237_));
+            (*this).types.push_back(std::move(tmp_239_));
         }
         if (auto err = (*this).statements_len.decode(r)) {
             return err;
         }
-        auto tmp_239_ = (*this).statements_len.value();
+        auto tmp_241_ = (*this).statements_len.value();
         (*this).statements.clear();
-        for (size_t  tmp_241_= 0; tmp_241_<tmp_239_; ++tmp_241_ ) {
-            Statement tmp_240_;
-            if (auto err = tmp_240_.decode(r)) {
+        for (size_t  tmp_243_= 0; tmp_243_<tmp_241_; ++tmp_243_ ) {
+            Statement tmp_242_;
+            if (auto err = tmp_242_.decode(r)) {
                 return err;
             }
-            (*this).statements.push_back(std::move(tmp_240_));
+            (*this).statements.push_back(std::move(tmp_242_));
         }
         if (auto err = (*this).expressions_len.decode(r)) {
             return err;
         }
-        auto tmp_242_ = (*this).expressions_len.value();
+        auto tmp_244_ = (*this).expressions_len.value();
         (*this).expressions.clear();
-        for (size_t  tmp_244_= 0; tmp_244_<tmp_242_; ++tmp_244_ ) {
-            Expression tmp_243_;
-            if (auto err = tmp_243_.decode(r)) {
+        for (size_t  tmp_246_= 0; tmp_246_<tmp_244_; ++tmp_246_ ) {
+            Expression tmp_245_;
+            if (auto err = tmp_245_.decode(r)) {
                 return err;
             }
-            (*this).expressions.push_back(std::move(tmp_243_));
+            (*this).expressions.push_back(std::move(tmp_245_));
         }
         if (auto err = (*this).aliases_len.decode(r)) {
             return err;
         }
-        auto tmp_245_ = (*this).aliases_len.value();
+        auto tmp_247_ = (*this).aliases_len.value();
         (*this).aliases.clear();
-        for (size_t  tmp_247_= 0; tmp_247_<tmp_245_; ++tmp_247_ ) {
-            RefAlias tmp_246_;
-            if (auto err = tmp_246_.decode(r)) {
+        for (size_t  tmp_249_= 0; tmp_249_<tmp_247_; ++tmp_249_ ) {
+            RefAlias tmp_248_;
+            if (auto err = tmp_248_.decode(r)) {
                 return err;
             }
-            (*this).aliases.push_back(std::move(tmp_246_));
+            (*this).aliases.push_back(std::move(tmp_248_));
         }
         if (auto err = (*this).debug_info.decode(r)) {
             return err;

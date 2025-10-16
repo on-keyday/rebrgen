@@ -361,6 +361,14 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_optionalof(ebm::TypeRef type, ebm::ExpressionRef target) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionKind::OPTIONAL_OF;
+        body.type = type;
+        body.target_expr(target);
+        return body;
+    }
+
     ebm::ExpressionBody make_addressof(ebm::TypeRef type, ebm::ExpressionRef target) {
         ebm::ExpressionBody body;
         body.kind = ebm::ExpressionKind::ADDRESS_OF;

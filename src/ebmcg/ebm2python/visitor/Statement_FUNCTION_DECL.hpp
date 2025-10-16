@@ -15,11 +15,13 @@
         len: Varint
         container: std::vector<StatementRef>
       parent_format: StatementRef
+      kind: FunctionKind
       body: StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_FUNCTION_DECL function.
 // We can use variables like `visitor` and `func_decl` directly.
+#include "ebm/extended_binary_module.hpp"
 CodeWriter w;
 auto func_name = this->module_.get_identifier_or(item_id);
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
@@ -28,19 +30,23 @@ std::string params_str = "";
 if (!is_nil(func_decl.parent_format)) {
     params_str += "self";
 }
-if (func_decl.params.container.empty() == false) {
-    for (auto& param_stmt_ref : func_decl.params.container) {
-        MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
-        MAYBE(param_decl, param_stmt.body.param_decl());
-        auto param_name = this->module_.get_identifier_or(param_stmt_ref);
-        MAYBE(param_type_str, visit_Type(*this, param_decl.param_type));  // Correctly extract the string value
-        if (!params_str.empty()) {
-            params_str += ", ";
-        }
-        params_str += param_name + ": \"" + param_type_str.to_string() + "\"";
+for (auto& param_stmt_ref : func_decl.params.container) {
+    MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
+    MAYBE(param_decl, param_stmt.body.param_decl());
+    auto param_name = this->module_.get_identifier_or(param_stmt_ref);
+    MAYBE(param_type_str, visit_Type(*this, param_decl.param_type));  // Correctly extract the string value
+    if (!params_str.empty()) {
+        params_str += ", ";
     }
+    params_str += param_name + ": \"" + param_type_str.to_string() + "\"";
 }
 
+if (func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+    w.writeln("@property");
+}
+else if (func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+    w.writeln("@", func_name, ".setter");
+}
 w.writeln("def ", func_name, "(", params_str, ") -> \"", return_type_str.to_string(), "\":");
 auto scope = w.indent_scope();
 MAYBE(res, visit_Statement(*this, func_decl.body));

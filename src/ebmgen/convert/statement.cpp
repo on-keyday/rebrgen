@@ -627,6 +627,7 @@ namespace ebmgen {
                 EBMA_CONVERT_STATEMENT(body, node->body);
                 derived_fn.body = body;
             }
+            derived_fn.kind = typ == GenerateType::Encode ? ebm::FunctionKind::ENCODE : ebm::FunctionKind::DECODE;
             ebm::StatementBody b;
             b.kind = ebm::StatementKind::FUNCTION_DECL;
             b.func_decl(std::move(derived_fn));
@@ -682,6 +683,10 @@ namespace ebmgen {
             auto n = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(parent_ref, parent);
             func_decl.parent_format = parent_ref;
+            func_decl.kind = ebm::FunctionKind::METHOD;
+        }
+        else {
+            func_decl.kind = ebm::FunctionKind::NORMAL;
         }
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;

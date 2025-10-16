@@ -1,6 +1,7 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
+#include "common.hpp"
 #include "core/ast/file.h"
 #include "core/byte.h"
 #include <wrap/iostream.h>
@@ -44,12 +45,19 @@ enum class InputFormat {
     EBM,
 };
 
+enum class QueryOutputFormat {
+    ID,
+    Text,
+    JSON,
+};
+
 struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view input;
     std::string_view output;
     std::string_view debug_output;  // New flag for debug output
     InputFormat input_format = InputFormat::AUTO;
     DebugOutputFormat debug_format = DebugOutputFormat::Text;
+    QueryOutputFormat query_output_format = QueryOutputFormat::ID;
     std::string_view cfg_output;
     bool base64 = false;
     bool verbose = false;
@@ -81,6 +89,12 @@ struct Flags : futils::cmdline::templ::HelpOption {
                    std::map<std::string, DebugOutputFormat>{
                        {"text", DebugOutputFormat::Text},
                        {"json", DebugOutputFormat::JSON},
+                   });
+        ctx.VarMap(&query_output_format, "query-format", "query output format (default: id)", "{id,text,json}",
+                   std::map<std::string, QueryOutputFormat>{
+                       {"id", QueryOutputFormat::ID},
+                       {"text", QueryOutputFormat::Text},
+                       {"json", QueryOutputFormat::JSON},
                    });
         ctx.VarString<true>(&cfg_output, "cfg-output,c", "control flow graph output file (if -, write to stdout)", "FILE");
         ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
@@ -369,8 +383,43 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Query Error: " << r.error().error<std::string>() << '\n';
             return 1;
         }
-        for (auto obj : *r) {
-            cout << ebmgen::get_id(obj) << '\n';
+        if (flags.query_output_format == QueryOutputFormat::JSON) {
+            futils::json::Stringer<> s;
+            ebmgen::JSONPrinter printer(*table);
+            auto element = s.array();
+            for (auto obj : *r) {
+                auto objv = table->get_object(obj);
+                std::visit(
+                    [&](auto&& o) {
+                        if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {
+                            element([&] {
+                                printer.print_object(s, *o);
+                            });
+                        }
+                    },
+                    objv);
+            }
+            element.close();
+            cout << s.out();
+        }
+        else if (flags.query_output_format == QueryOutputFormat::Text) {
+            std::stringstream ss;
+            for (auto obj : *r) {
+                ebmgen::DebugPrinter printer(*table, ss);
+                auto objv = table->get_object(obj);
+                std::visit([&](auto&& o) {
+                    if constexpr (std::is_pointer_v<std::decay_t<decltype(o)>>) {
+                        printer.print_object(*o);
+                    }
+                },
+                           objv);
+            }
+            cout << ss.str();
+        }
+        else {
+            for (auto obj : *r) {
+                cout << ebmgen::get_id(obj) << '\n';
+            }
         }
         TIMING("query");
     }

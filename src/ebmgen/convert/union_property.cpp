@@ -78,7 +78,8 @@ namespace ebmgen {
             action(field, decl);
         }
         else {
-            for (auto& m : decl.members.container) {
+            MAYBE(derived_from, decl.derived_from());
+            for (auto& m : derived_from.container) {
                 MAYBE(child, ctx.repository().get_statement(m));
                 MAYBE(property, child.body.property_decl());
                 MAYBE_VOID(ok, map_field(ctx, child.id, property, action));
@@ -87,12 +88,14 @@ namespace ebmgen {
         return {};
     }
 
-    constexpr auto non_cond_index = 0;
-    using PropExprVec = std::vector<std::variant<ebm::Expressions, ebm::PropertyMemberDecl>>;
+    constexpr auto without_field = 0;
+    constexpr auto with_field = 1;
+    using PropExprVec = std::vector<std::variant<ebm::ExpressionRef, ebm::PropertyMemberDecl>>;
+    using MergedMap = std::unordered_map<std::uint64_t, PropExprVec>;
     struct DetectedTypes {
         std::vector<ebm::TypeRef> detected_types;
 
-        std::unordered_map<std::uint64_t, PropExprVec> merged;
+        MergedMap merged;
     };
 
     expected<DetectedTypes> detect_all_types(ConverterContext& ctx, std::vector<DerivedTypeInfo>& cases) {
@@ -121,14 +124,9 @@ namespace ebmgen {
         return result;
     }
 
-    expected<void> merge_fields(ConverterContext& ctx, std::vector<DerivedTypeInfo>& cases, std::unordered_map<std::uint64_t, PropExprVec>& merged) {
-        auto add_only_cond = [&](PropExprVec& p, ebm::ExpressionRef cond) {
-            if (p.size() && p.back().index() == non_cond_index) {
-                append(std::get<non_cond_index>(p.back()), cond);
-            }
-            else {
-                p.push_back(ebm::Expressions{.len = *varint(1), .container = {cond}});
-            }
+    expected<void> merge_fields_per_type(ConverterContext& ctx, std::vector<DerivedTypeInfo>& cases, std::unordered_map<std::uint64_t, PropExprVec>& merged) {
+        auto add_without_field = [&](PropExprVec& p, ebm::ExpressionRef cond) {
+            p.push_back(cond);
         };
         for (auto& c : cases) {
             if (c.field) {
@@ -159,68 +157,90 @@ namespace ebmgen {
                     if (added.contains(not_added.first)) {
                         continue;
                     }
-                    add_only_cond(not_added.second, c.cond);
+                    add_without_field(not_added.second, c.cond);
                 }
             }
             else {
                 for (auto& a : merged) {
-                    add_only_cond(a.second, c.cond);
+                    add_without_field(a.second, c.cond);
                 }
             }
         }
+        if (merged.size() == 0) {
+            return unexpect_error("This is a bug: no type detected in union property");
+        }
+        size_t merged_size = merged.begin()->second.size();
+        for (auto& a : merged) {
+            if (a.second.size() != merged_size) {
+                return unexpect_error("This is a bug: inconsistent merged size");
+            }
+        }
         return {};
+    }
+
+    expected<ebm::ExpressionRef> derive_cond(ConverterContext& ctx, ebm::Expressions& without_field_conds) {
+        ebm::TypeRef common_type;
+        for (auto& expr : without_field_conds.container) {
+            MAYBE(got, ctx.repository().get_expression(expr));
+            if (is_nil(common_type)) {
+                common_type = got.body.type;
+            }
+            else {
+                MAYBE(ct, get_common_type(ctx, common_type, got.body.type));
+                if (!ct) {
+                    MAYBE(prev, ctx.repository().get_type(common_type));
+                    MAYBE(current, ctx.repository().get_type(got.body.type));
+                    return unexpect_error("cannot get common type: {} vs {}", to_string(prev.body.kind), to_string(current.body.kind));
+                }
+                common_type = *ct;
+            }
+        }
+        if (without_field_conds.container.size() == 0) {
+            return unexpect_error("This is a bug: empty condition in strict type merge");
+        }
+        ebm::ExpressionRef cond;
+        if (without_field_conds.container.size() == 1) {
+            cond = without_field_conds.container[0];
+        }
+        else {
+            EBM_OR_COND(or_, common_type, std::move(without_field_conds));
+            cond = or_;
+        }
+        without_field_conds = {};
+        return cond;
     }
 
     expected<void> strict_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, ebm::ExpressionRef base_cond, ebm::TypeRef type, PropExprVec& vec) {
         derive.merge_mode = ebm::MergeMode::STRICT_TYPE;
         derive.property_type = type;
-        derive.cond(base_cond);
+        derive.cond = base_cond;
+        ebm::Expressions without_field_conds;
         for (auto& member : vec) {
-            if (auto got = std::get_if<non_cond_index>(&member)) {
-                ebm::TypeRef common_type;
-                for (auto& expr : got->container) {
-                    MAYBE(got, ctx.repository().get_expression(expr));
-                    if (is_nil(common_type)) {
-                        common_type = got.body.type;
-                    }
-                    else {
-                        MAYBE(ct, get_common_type(ctx, common_type, got.body.type));
-                        if (!ct) {
-                            MAYBE(prev, ctx.repository().get_type(common_type));
-                            MAYBE(current, ctx.repository().get_type(got.body.type));
-                            return unexpect_error("cannot get common type: {} vs {}", to_string(prev.body.kind), to_string(current.body.kind));
-                        }
-                        common_type = *ct;
-                    }
-                }
-                if (got->container.size() == 0) {
-                    return unexpect_error("This is a bug: empty condition in strict type merge");
-                }
-                ebm::PropertyMemberDecl m{};
-                if (got->container.size() == 1) {
-                    m.condition = got->container[0];
-                }
-                else {
-                    EBM_OR_COND(or_, common_type, std::move(*got));
-                    m.condition = or_;
-                }
+            if (auto got = std::get_if<without_field>(&member)) {
+                append(without_field_conds, *got);
+                continue;
+            }
+            if (without_field_conds.container.size() > 0) {
+                MAYBE(cond, derive_cond(ctx, without_field_conds));
+                ebm::PropertyMemberDecl m;
+                m.condition = cond;
                 EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
                 append(derive.members, member_ref);
             }
-            else {
-                EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(std::get<1>(member)));
-                append(derive.members, member_ref);
-            }
+            auto m = std::get<ebm::PropertyMemberDecl>(member);
+            EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
+            append(derive.members, member_ref);
         }
         return {};
     }
 
-    using IndexCluster = std::vector<std::pair<std::vector<size_t>, std::unordered_set<size_t>>>;
+    using IndexClusterElement = std::pair<std::vector<size_t>, std::unordered_set<size_t>>;
+    using IndexCluster = std::vector<IndexClusterElement>;
 
     expected<IndexCluster> clustering_properties(ConverterContext& ctx, std::vector<ebm::PropertyDecl>& properties) {
         std::map<std::uint64_t, std::vector<size_t>> edge;
         // insertion order is important, so use both vector and set
-        std::vector<std::pair<std::vector<size_t>, std::unordered_set<size_t>>> cluster;
+        IndexCluster cluster;
         for (size_t i = 0; i < properties.size(); i++) {
             edge[i].emplace_back();
             for (size_t j = i + 1; j < properties.size(); j++) {
@@ -274,7 +294,64 @@ namespace ebmgen {
         return c_type;
     }
 
-    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties) {
+    expected<void> common_merge_members(ConverterContext& ctx, ebm::PropertyDecl& prop, IndexClusterElement* c, std::vector<ebm::PropertyDecl>* properties, DetectedTypes& original_merged) {
+        auto total_size = original_merged.merged.begin()->second.size();
+        ebm::Expressions without_field_conds;
+        for (size_t i = 0; i < total_size; i++) {
+            std::optional<ebm::PropertyMemberDecl> decl;
+            std::optional<ebm::ExpressionRef> expr;
+            for (auto& type_ref : original_merged.detected_types) {
+                if (c && properties) {
+                    bool found = false;
+                    for (auto index : c->first) {
+                        if (get_id((*properties)[index].property_type) != get_id(type_ref)) {
+                            continue;
+                        }
+                        found = true;
+                    }
+                    if (!found) {
+                        continue;
+                    }
+                }
+                auto& field = original_merged.merged[get_id(type_ref)][i];
+                if (auto got = std::get_if<without_field>(&field)) {
+                    if (expr) {
+                        if (get_id(*expr) != get_id(*got)) {
+                            return unexpect_error("This is a bug: inconsistent without_field condition");
+                        }
+                    }
+                    else {
+                        expr = *got;
+                    }
+                    continue;
+                }
+                if (decl) {
+                    return unexpect_error("This is a bug: multiple field found in common merge");
+                }
+                auto m = std::get<ebm::PropertyMemberDecl>(field);
+                decl = m;
+            }
+            if (!decl && !expr) {
+                return unexpect_error("This is a bug: no field or condition found in common merge");
+            }
+            if (!decl) {
+                append(without_field_conds, *expr);
+                continue;
+            }
+            if (without_field_conds.container.size() > 0) {
+                MAYBE(cond, derive_cond(ctx, without_field_conds));
+                ebm::PropertyMemberDecl m;
+                m.condition = cond;
+                EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(m));
+                append(prop.members, member_ref);
+            }
+            EBM_PROPERTY_MEMBER_DECL(member_ref, std::move(*decl));
+            append(prop.members, member_ref);
+        }
+        return {};
+    }
+
+    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties, DetectedTypes& original_merged) {
         std::vector<ebm::PropertyDecl> final_props;
 
         for (auto& c : cluster) {
@@ -305,16 +382,19 @@ namespace ebmgen {
             prop.property_type = *c_type;
             prop.parent_format = derive.parent_format;
             prop.merge_mode = ebm::MergeMode::COMMON_TYPE;
+            MAYBE_VOID(merge_members, common_merge_members(ctx, prop, &c, &properties, original_merged));
+            ebm::Block derived_from;
             for (auto& index : c.first) {
                 EBM_PROPERTY_DECL(p, std::move(properties[index]));
-                append(prop.members, p);
+                append(derived_from, p);
             }
+            prop.derived_from(std::move(derived_from));
             final_props.push_back(std::move(prop));
         }
         return final_props;
     }
 
-    expected<void> uncommon_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props) {
+    expected<void> uncommon_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props, DetectedTypes& original_merged) {
         auto c_type = derive_variant(ctx, final_props, {}, [&](auto& prop) {
             return prop.property_type;
         });
@@ -326,10 +406,13 @@ namespace ebmgen {
         prop.property_type = *c_type;
         prop.parent_format = derive.parent_format;
         prop.merge_mode = ebm::MergeMode::UNCOMMON_TYPE;
+        MAYBE_VOID(merge_members, common_merge_members(ctx, prop, nullptr, nullptr, original_merged));
+        ebm::Block derived_from;
         for (auto& f : final_props) {
             EBM_PROPERTY_DECL(pd, std::move(f));
-            append(prop.members, pd);
+            append(derived_from, pd);
         }
+        prop.derived_from(std::move(derived_from));
         derive = std::move(prop);
         return {};
     }
@@ -338,15 +421,15 @@ namespace ebmgen {
         MAYBE(union_data, convert_union_type_to_ebm(ctx, union_type));
         auto [base_cond, cases] = std::move(union_data);
         MAYBE(all_type, detect_all_types(ctx, cases));
-        auto [detected_types, merged_fields] = std::move(all_type);
-        MAYBE_VOID(merge_field, merge_fields(ctx, cases, merged_fields));
+        auto& merged_fields = all_type.merged;
+        MAYBE_VOID(merge_field, merge_fields_per_type(ctx, cases, merged_fields));
         print_if_verbose("Merged ", merged_fields.size(), " types for property\n");
         if (merged_fields.size() == 1) {  // single strict type
             MAYBE_VOID(s, strict_merge(ctx, derive, base_cond, ebm::TypeRef{merged_fields.begin()->first}, merged_fields.begin()->second));
             return {};
         }
         std::vector<ebm::PropertyDecl> properties;
-        for (auto& ty : detected_types) {
+        for (auto& ty : all_type.detected_types) {
             ebm::PropertyDecl prop;
             prop.name = derive.name;
             prop.parent_format = derive.parent_format;
@@ -354,12 +437,12 @@ namespace ebmgen {
             properties.push_back(std::move(prop));
         }
         MAYBE(cluster, clustering_properties(ctx, properties));
-        MAYBE(final_props, common_merge(ctx, derive, cluster, properties));
+        MAYBE(final_props, common_merge(ctx, derive, cluster, properties, all_type));
         if (final_props.size() == 1) {  // all types are merged into single common type
             derive = std::move(final_props[0]);
         }
         else {
-            MAYBE_VOID(prop, uncommon_merge(ctx, derive, final_props));
+            MAYBE_VOID(prop, uncommon_merge(ctx, derive, final_props, all_type));
         }
         return {};
     }

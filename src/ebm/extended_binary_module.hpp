@@ -3131,17 +3131,18 @@ namespace ebm {
         StatementRef parent_format;
         TypeRef property_type;
         MergeMode merge_mode{};
-        struct EBM_API union_struct_78{
-            ExpressionRef cond;
-        };
-        std::variant<std::monostate, union_struct_78> union_variant_77;
-        const ExpressionRef* cond() const;
-        ExpressionRef* cond();
-        bool cond(ExpressionRef&& v);
-        bool cond(const ExpressionRef& v);
+        ExpressionRef cond;
         Block members;
         LoweredStatementRef setter_function;
         LoweredStatementRef getter_function;
+        struct EBM_API union_struct_78{
+            Block derived_from;
+        };
+        std::variant<std::monostate, union_struct_78> union_variant_77;
+        const Block* derived_from() const;
+        Block* derived_from();
+        bool derived_from(Block&& v);
+        bool derived_from(const Block& v);
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "PropertyDecl";
@@ -3151,10 +3152,11 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
-            v(v, "cond",(*this).cond());
+            v(v, "cond",(*this).cond);
             v(v, "members",(*this).members);
             v(v, "setter_function",(*this).setter_function);
             v(v, "getter_function",(*this).getter_function);
+            v(v, "derived_from",(*this).derived_from());
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
@@ -3162,10 +3164,11 @@ namespace ebm {
             v(v, "parent_format",(*this).parent_format);
             v(v, "property_type",(*this).property_type);
             v(v, "merge_mode",(*this).merge_mode);
-            v(v, "cond",(*this).cond());
+            v(v, "cond",(*this).cond);
             v(v, "members",(*this).members);
             v(v, "setter_function",(*this).setter_function);
             v(v, "getter_function",(*this).getter_function);
+            v(v, "derived_from",(*this).derived_from());
         }
         template<typename T,bool rvalue = false>
         struct visitor_tag {
@@ -3178,10 +3181,11 @@ namespace ebm {
             v(v, "parent_format",visitor_tag<decltype(std::declval<PropertyDecl>().parent_format),false>{});
             v(v, "property_type",visitor_tag<decltype(std::declval<PropertyDecl>().property_type),false>{});
             v(v, "merge_mode",visitor_tag<decltype(std::declval<PropertyDecl>().merge_mode),false>{});
-            v(v, "cond",visitor_tag<decltype(std::declval<PropertyDecl>().cond()),false>{});
+            v(v, "cond",visitor_tag<decltype(std::declval<PropertyDecl>().cond),false>{});
             v(v, "members",visitor_tag<decltype(std::declval<PropertyDecl>().members),false>{});
             v(v, "setter_function",visitor_tag<decltype(std::declval<PropertyDecl>().setter_function),false>{});
             v(v, "getter_function",visitor_tag<decltype(std::declval<PropertyDecl>().getter_function),false>{});
+            v(v, "derived_from",visitor_tag<decltype(std::declval<PropertyDecl>().derived_from()),false>{});
         }
     };
     struct EBM_API ErrorReport{

@@ -52,7 +52,7 @@ namespace ebmgen {
                     // getter match
                     {
                         ebm::MatchStatement m;
-                        m.target = *prop->cond();
+                        m.target = prop->cond;
                         EBM_DEFAULT_VALUE(default_, getter.return_type);  // nullptr
                         EBM_RETURN(default_return, default_);
                         for (auto& b : prop->members.container) {
@@ -102,7 +102,7 @@ namespace ebmgen {
                     // setter match
                     {
                         ebm::MatchStatement m;
-                        m.target = *prop->cond();
+                        m.target = prop->cond;
                         EBM_SETTER_STATUS(default_status, setter.return_type, ebm::SetterStatus::FAILED);
                         EBM_RETURN(default_return, default_status);
                         for (auto& b : prop->members.container) {

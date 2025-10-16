@@ -7051,34 +7051,34 @@ namespace ebm {
         }
         return false;
     }
-    const ExpressionRef* PropertyDecl::cond() const {
-        if (((*this).merge_mode == MergeMode::STRICT_TYPE)==true) {
+    const Block* PropertyDecl::derived_from() const {
+        if (((*this).merge_mode != MergeMode::STRICT_TYPE)==true) {
         if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
             return nullptr;
         }
-        return std::addressof(std::get<1>((*this).union_variant_77).cond);
+        return std::addressof(std::get<1>((*this).union_variant_77).derived_from);
         }
         return nullptr;
     }
-    ExpressionRef* PropertyDecl::cond() {
-        return const_cast<ExpressionRef*>(std::as_const(*this).cond());
+    Block* PropertyDecl::derived_from() {
+        return const_cast<Block*>(std::as_const(*this).derived_from());
     }
-    bool PropertyDecl::cond(const ExpressionRef& v) {
-        if (((*this).merge_mode == MergeMode::STRICT_TYPE)==true) {
+    bool PropertyDecl::derived_from(const Block& v) {
+        if (((*this).merge_mode != MergeMode::STRICT_TYPE)==true) {
             if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
                 union_variant_77 = union_struct_78();
             }
-            std::get<1>((*this).union_variant_77).cond = v;
+            std::get<1>((*this).union_variant_77).derived_from = v;
             return true;
         }
         return false;
     }
-    bool PropertyDecl::cond(ExpressionRef&& v) {
-        if (((*this).merge_mode == MergeMode::STRICT_TYPE)==true) {
+    bool PropertyDecl::derived_from(Block&& v) {
+        if (((*this).merge_mode != MergeMode::STRICT_TYPE)==true) {
             if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
                 union_variant_77 = union_struct_78();
             }
-            std::get<1>((*this).union_variant_77).cond = std::move(v);
+            std::get<1>((*this).union_variant_77).derived_from = std::move(v);
             return true;
         }
         return false;
@@ -17299,13 +17299,8 @@ namespace ebm {
         if (!::futils::binary::write_num(w,static_cast<std::uint8_t>(tmp_196_) ,true)) {
             return ::futils::error::Error<>("encode: PropertyDecl::merge_mode: write std::uint8_t failed",::futils::error::Category::lib);
         }
-        if ((*this).merge_mode == MergeMode::STRICT_TYPE) {
-            if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
-                return ::futils::error::Error<>("encode: PropertyDecl: union_variant_77 variant alternative union_struct_78 is not set",::futils::error::Category::lib);
-            }
-            if (auto err = std::get<1>((*this).union_variant_77).cond.encode(w)) {
-                return err;
-            }
+        if (auto err = (*this).cond.encode(w)) {
+            return err;
         }
         if (auto err = (*this).members.encode(w)) {
             return err;
@@ -17315,6 +17310,14 @@ namespace ebm {
         }
         if (auto err = (*this).getter_function.encode(w)) {
             return err;
+        }
+        if ((*this).merge_mode != MergeMode::STRICT_TYPE) {
+            if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
+                return ::futils::error::Error<>("encode: PropertyDecl: union_variant_77 variant alternative union_struct_78 is not set",::futils::error::Category::lib);
+            }
+            if (auto err = std::get<1>((*this).union_variant_77).derived_from.encode(w)) {
+                return err;
+            }
         }
         return ::futils::error::Error<>();
     }
@@ -17333,13 +17336,8 @@ namespace ebm {
             return ::futils::error::Error<>("decode: PropertyDecl::merge_mode: read int failed",::futils::error::Category::lib);
         }
         (*this).merge_mode = static_cast<MergeMode>(tmp_197_);
-        if ((*this).merge_mode == MergeMode::STRICT_TYPE) {
-            if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
-                union_variant_77 = union_struct_78();
-            }
-            if (auto err = std::get<1>((*this).union_variant_77).cond.decode(r)) {
-                return err;
-            }
+        if (auto err = (*this).cond.decode(r)) {
+            return err;
         }
         if (auto err = (*this).members.decode(r)) {
             return err;
@@ -17349,6 +17347,14 @@ namespace ebm {
         }
         if (auto err = (*this).getter_function.decode(r)) {
             return err;
+        }
+        if ((*this).merge_mode != MergeMode::STRICT_TYPE) {
+            if(!std::holds_alternative<union_struct_78>(union_variant_77)) {
+                union_variant_77 = union_struct_78();
+            }
+            if (auto err = std::get<1>((*this).union_variant_77).derived_from.decode(r)) {
+                return err;
+            }
         }
         return ::futils::error::Error<>();
     }

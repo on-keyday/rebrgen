@@ -876,6 +876,13 @@ namespace ebmgen {
     }
 
     expected<std::pair<ObjectResult, Failures>> run_query(MappingTable& table, std::string_view input) {
+        std::uint64_t id = 0;
+        if (futils::number::prefix_integer(input, id)) {
+            if (table.get_object(ebm::AnyRef{id}).index() == 0) {
+                return unexpect_error("Identifier not found: {}", id);
+            }
+            return std::make_pair(ObjectResult{ebm::AnyRef{id}}, Failures{});
+        }
         QueryCompiler compiler{table};
         Query query;
         auto parsed = query::parse_line(input);

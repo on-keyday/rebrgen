@@ -545,6 +545,12 @@ namespace ebmgen {
                     };
                 }
                 else if (t->tag == NodeType::Ident) {
+                    if (t->token == "nil" || t->token == "null") {
+                        return [](EvalContext& ctx) {
+                            ctx.stack.push_back(EvalValue{ebm::AnyRef{0}});
+                            return ExecutionResult::Success;
+                        };
+                    }
                     auto per_pointer = futils::strutil::split<std::string>(t->token, "->");
                     object.related_identifiers.insert(per_pointer[0]);
                     return [this, per_pointer](EvalContext& ctx) {

@@ -185,9 +185,9 @@ namespace ebmgen {
                         variables[qname] = std::uint64_t(value);
                     }
                 }
-                else if constexpr (std::is_same_v<T, ebm::String>) {
+                else if constexpr (std::is_same_v<T, std::string>) {
                     if (related_identifiers.contains(qname)) {
-                        variables[qname] = value.data;
+                        variables[qname] = value;
                     }
                 }
                 else if constexpr (ebmgen::has_visit<decltype(value), decltype(visitor)>) {
@@ -739,7 +739,7 @@ namespace ebmgen {
             }
             cout << "Total matched objects: " << count << "\n";
             if (matched.empty() && !failures.empty()) {
-                cout << "Failures during query:\n";
+                cout << "Query syntax/semantic error:\n";
                 for (auto f : failures) {
                     cout << "  " << to_string(f) << "\n";
                 }

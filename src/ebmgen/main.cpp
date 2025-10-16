@@ -424,7 +424,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
         }
         if (result.empty() && !failures.empty()) {
-            cerr << "Failures during query:\n";
+            cerr << "Query syntax/semantic error:\n";
             for (auto f : failures) {
                 cerr << "  " << to_string(f) << "\n";
             }

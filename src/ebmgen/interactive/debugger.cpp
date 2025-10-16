@@ -101,19 +101,12 @@ namespace ebmgen {
         }
     }  // namespace query
 
-    enum class ExecutionResult {
-        Success,
-        Exit,
-        StackEmpty,
-        TypeMismatch,
-        InvalidOperator,
-        IdentifierNotFound,
-    };
     using ObjectSet = std::unordered_set<ebm::AnyRef>;
 
     using EvalValue = std::variant<bool, std::uint64_t, std::string, ebm::AnyRef, ObjectSet>;
     struct EvalContext {
         MappingTable& table;
+        Failures& failures;
         std::vector<EvalValue> stack;
         std::map<std::string, EvalValue> variables;
         ObjectVariant current_target;
@@ -213,18 +206,31 @@ namespace ebmgen {
         std::unordered_set<std::string> related_identifiers;
         EvalFunc evaluator;
 
-        ExecutionResult query(MappingTable& table, ObjectSet& matched, ObjectResult* result = nullptr) const {
+        ExecutionResult query(MappingTable& table, ObjectSet& matched, Failures& failures, ObjectResult* result = nullptr) const {
+            bool some_has_valid_result = false;
+            bool has_identifier_not_found = false;
             auto for_each = [&](auto& objects) {
                 for (auto& t : objects) {
-                    EvalContext ctx{.table = table, .current_target = &t};
+                    EvalContext ctx{.table = table, .failures = failures, .current_target = &t};
                     collect_variables(ctx.variables, related_identifiers, t);
-                    if (evaluator(ctx) == ExecutionResult::Success && ctx.stack.size() == 1) {
+                    auto exec_result = evaluator(ctx);
+                    if (exec_result == ExecutionResult::Success && ctx.stack.size() == 1) {
                         ctx.unwrap_any_ref<bool>(ctx.stack[0]);
+                        some_has_valid_result = true;
                         if (std::holds_alternative<bool>(ctx.stack[0]) && std::get<bool>(ctx.stack[0])) {
                             if (matched.insert(to_any_ref(t.id)).second && result) {
                                 result->push_back(to_any_ref(t.id));
                             }
                         }
+                    }
+                    else if (exec_result == ExecutionResult::IdentifierNotFound) {
+                        has_identifier_not_found = true;
+                    }
+                    else if (exec_result != ExecutionResult::Success) {
+                        failures.insert(exec_result);
+                    }
+                    else {
+                        failures.insert(ExecutionResult::InconsistentStack);
                     }
                 }
             };
@@ -251,7 +257,12 @@ namespace ebmgen {
                 for_each(table.module().expressions);
             }
             else {
+                failures.insert(ExecutionResult::InvalidOperator);
                 return ExecutionResult::InvalidOperator;
+            }
+            if (!some_has_valid_result && has_identifier_not_found) {
+                failures.insert(ExecutionResult::IdentifierNotFound);
+                return ExecutionResult::IdentifierNotFound;
             }
             return ExecutionResult::Success;
         }
@@ -260,9 +271,9 @@ namespace ebmgen {
     struct Query {
         std::vector<Object> objects;
 
-        void query(MappingTable& table, ObjectSet& matched, ObjectResult* result = nullptr) const {
+        void query(MappingTable& table, ObjectSet& matched, Failures& failures, ObjectResult* result = nullptr) const {
             for (const auto& obj : objects) {
-                obj.query(table, matched, result);
+                obj.query(table, matched, failures, result);
             }
         }
     };
@@ -513,7 +524,7 @@ namespace ebmgen {
                     MAYBE(obj, compile_object(node));
                     return [this, obj = std::move(obj)](EvalContext& ctx) {
                         std::unordered_set<ebm::AnyRef> matched;
-                        RETURN_EXEC_FAILURE(obj.query(this->table, matched));
+                        RETURN_EXEC_FAILURE(obj.query(this->table, matched, ctx.failures));
                         ctx.stack.push_back(EvalValue{std::move(matched)});
                         return ExecutionResult::Success;
                     };
@@ -706,7 +717,8 @@ namespace ebmgen {
             }
             size_t count = 0;
             ObjectSet matched;
-            query.query(table, matched);
+            Failures failures;
+            query.query(table, matched, failures);
             for (auto& ref : matched) {
                 auto obj = table.get_object(ref);
                 std::visit(
@@ -726,6 +738,12 @@ namespace ebmgen {
                     obj);
             }
             cout << "Total matched objects: " << count << "\n";
+            if (matched.empty() && !failures.empty()) {
+                cout << "Failures during query:\n";
+                for (auto f : failures) {
+                    cout << "  " << to_string(f) << "\n";
+                }
+            }
         }
 
         void print_struct() {
@@ -857,7 +875,7 @@ namespace ebmgen {
         debugger.start();
     }
 
-    expected<ObjectResult> run_query(MappingTable& table, std::string_view input) {
+    expected<std::pair<ObjectResult, Failures>> run_query(MappingTable& table, std::string_view input) {
         QueryCompiler compiler{table};
         Query query;
         auto parsed = query::parse_line(input);
@@ -871,7 +889,8 @@ namespace ebmgen {
         }
         ObjectSet matched;
         ObjectResult matched_result;
-        query.query(table, matched, &matched_result);
-        return matched_result;
+        Failures failures;
+        query.query(table, matched, failures, &matched_result);
+        return std::make_pair(std::move(matched_result), std::move(failures));
     }
 }  // namespace ebmgen

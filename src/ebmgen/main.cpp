@@ -383,11 +383,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Query Error: " << r.error().error<std::string>() << '\n';
             return 1;
         }
+        auto& [result, failures] = *r;
         if (flags.query_output_format == QueryOutputFormat::JSON) {
             futils::json::Stringer<> s;
             ebmgen::JSONPrinter printer(*table);
             auto element = s.array();
-            for (auto obj : *r) {
+            for (auto obj : result) {
                 auto objv = table->get_object(obj);
                 std::visit(
                     [&](auto&& o) {
@@ -404,7 +405,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         else if (flags.query_output_format == QueryOutputFormat::Text) {
             std::stringstream ss;
-            for (auto obj : *r) {
+            for (auto obj : result) {
                 ebmgen::DebugPrinter printer(*table, ss);
                 auto objv = table->get_object(obj);
                 std::visit([&](auto&& o) {
@@ -417,8 +418,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cout << ss.str();
         }
         else {
-            for (auto obj : *r) {
+            for (auto obj : result) {
                 cout << ebmgen::get_id(obj) << '\n';
+            }
+        }
+        if (result.empty() && !failures.empty()) {
+            cerr << "Failures during query:\n";
+            for (auto f : failures) {
+                cerr << "  " << to_string(f) << "\n";
             }
         }
         TIMING("query");

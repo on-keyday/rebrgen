@@ -86,6 +86,10 @@ namespace ebmgen {
                 os_ << " ";
                 print_resolved_reference(*id);
             }
+            else if (auto member = expr->body.member()) {
+                os_ << " member:";
+                print_resolved_reference(*member);
+            }
             else if (auto lit = expr->body.string_value()) {
                 os_ << " ";
                 print_resolved_reference(*lit);

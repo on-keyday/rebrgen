@@ -95,31 +95,79 @@ To build the `ebmgen` or `ebmcodegen` executable, navigate to the root of the `r
 python script/build.py native Debug
 ```
 
-This command will build the project in `Debug` mode for your native platform. The `ebmgen` executable will be located at `tool/ebmgen.exe` (on Windows) or `tool/ebmgen` (on Linux/macOS) relative to the `rebrgen` root directory.
+This command will build the project in `Debug` mode for your native platform. The executables will be located at `tool/ebmgen.exe` and `tool/ebmcodegen.exe` (on Windows) or `tool/ebmgen` and `tool/ebmcodegen` (on Linux/macOS) relative to the `rebrgen` root directory.
 
-Once built, you can run `ebmgen` by providing an input `brgen` AST JSON file and specifying an output EBM file.
+##### Running `ebmgen`
+
+`ebmgen` can take various input formats and produce an EBM file. It also provides debugging and query capabilities.
+
+**Basic Conversion:**
 
 ```bash
-./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>
+# Convert a brgen AST JSON to an EBM binary file
+./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>
+
+# Convert a .bgn file directly (requires libs2j)
+./tool/ebmgen -i <path/to/input.bgn> -o <path/to/output.ebm>
 ```
 
-Replace `<path/to/input.json>` with the absolute path to your `brgen` AST JSON file, `<path/to/output.ebm>` with the desired absolute path for the generated EBM file and `<path/to/debug_output.txt>` with the desired absolute path for the generated EBM file debug information file. Currently, you might use `./save/simple.json` as input, `./save/out.ebm` as output, and `./save/debug_output3.txt` as debug output
-
-Also you can run `ebmcodegen` like below
+**Debugging:**
 
 ```bash
-python ./script/ebmcodegen.py <lang name>
+# Output a human-readable text dump of the EBM
+./tool/ebmgen -i <path/to/input.ebm> -d <path/to/debug_output.txt>
+
+# Output the EBM structure as a JSON file
+./tool/ebmgen -i <path/to/input.ebm> -d <path/to/debug_output.json> --debug-format json
 ```
 
-this command utilize `./tool/ebmcodegen` command and then create code generator templates (including main.cpp and CMakeLists.txt) in `src/ebmcg/ebm2<lang name>/` directory
+**Common Command-Line Options:**
 
-when you update EBM structure, you should rebuild `ebmcodegen` and then run below (at root of `rebrgen` project directory):
+| Flag             | Alias | Description                                                                                                             |
+| ---------------- | ----- | ----------------------------------------------------------------------------------------------------------------------- |
+| `--input`        | `-i`  | **(Required)** Specifies the input file.                                                                                |
+| `--output`       | `-o`  | Specifies the output EBM binary file. Use `-` for stdout.                                                               |
+| `--debug-print`  | `-d`  | Specifies a file for debug output. Use `-` for stdout.                                                                  |
+| `--input-format` |       | Explicitly sets the input format. One of: `bgn`, `json-ast`, `ebm`. Defaults to auto-detection based on file extension. |
+| `--debug-format` |       | Sets the format for debug output. One of: `text` (default), `json`.                                                     |
+| `--interactive`  | `-I`  | Starts the interactive debugger after loading the input file.                                                           |
+| `--query`        | `-q`  | Executes a query directly from the command line.                                                                        |
+| `--query-format` |       | Sets the output format for the `--query` flag. One of: `id` (default), `text`, `json`.                                  |
+| `--cfg-output`   | `-c`  | Outputs the Control Flow Graph (CFG) to the specified file.                                                             |
+| `--libs2j-path`  |       | Specifies the path to the `libs2j` dynamic library for converting `.bgn` files.                                         |
+| `--debug`        | `-g`  | Enables debug transformations, such as not removing unused items from the EBM.                                          |
+| `--verbose`      | `-v`  | Enables verbose logging.                                                                                                |
+| `--timing`       |       | Prints processing time for each major step.                                                                             |
+
+##### Running `ebmcodegen`
+
+`ebmcodegen` is a code-generator-generator. Its primary use is to create the C++ template for a new language-specific code generator.
 
 ```bash
+# Create a new generator template for a language named "my_lang"
+python ./script/ebmcodegen.py my_lang
+```
+
+This command utilizes `./tool/ebmcodegen` and creates a new directory at `src/ebmcg/ebm2my_lang/` containing the skeleton for the new generator.
+
+When the EBM structure itself (`extended_binary_module.bgn`) is updated, you must regenerate some of the core `ebmcodegen` and `ebmgen` files:
+
+```bash
+# 1. Regenerate the C++ header and source for the EBM structure
+python src/ebm/ebm.py
+
+# 2. Rebuild ebmcodegen with the new EBM structure
+python script/build.py native Debug
+
+# 3. Regenerate the subset metadata used by ebmcodegen itself
 ./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp
-```
 
-then rebuild `ebmcodegen` again and finally regenerate each generator files.
+# 4. Regenerate the JSON serialization/deserialization code for ebmgen
+# (This part of the process may need to be done manually or via another script)
+
+# 5. Rebuild your project to apply all changes
+python script/build.py native Debug
+```
 
 Also there are commands at `src/ebm/ebm.ps1` and `src/ebm/ebm.py`. They generate `src/ebm/extended_binary_module.hpp` and `src/ebm/extended_binary_module.cpp` from `src/ebm/extended_binary_module.bgn`. The python script (`ebm.py`) is a cross-platform port of the PowerShell script.
 
@@ -424,4 +472,119 @@ Then find the definition of `io_data.size.unit`.
 You can find type of `io_data` and then lookup type definition,
 then find the member `size` and then lookup type of `size`
 and finally you can find the definition of `unit`
-`unit`
+
+#### 11. EBM Interactive Query Engine
+
+The `ebmgen` executable includes a powerful query engine for inspecting EBM (Extended Binary Module) files. This engine can be used in two ways: through an interactive debugger or directly via command-line arguments.
+
+##### Interactive Mode
+
+To use the query engine in an interactive session, launch `ebmgen` with the `--interactive` flag after specifying an input file.
+
+```bash
+# Load an EBM file and start the interactive debugger
+./tool/ebmgen -i <path/to/input.ebm> --interactive
+```
+
+This will present you with a `ebmgen>` prompt where you can execute queries and other debugger commands.
+
+##### Direct Command-Line Execution
+
+For single, non-interactive queries, you can use the `--query` (or `-q`) flag.
+
+```bash
+# Execute a query directly and print the IDs of matching objects
+./tool/ebmgen -i <path/to/input.ebm> -q "Statement { body.kind == \"IF_STATEMENT\" }"
+
+# Execute a query and get a full text description of matching objects
+./tool/ebmgen -i <path/to/input.ebm> -q "Expression { body.kind == \"LITERAL_STRING\" }" --query-format text
+```
+
+##### Query Syntax
+
+The basic syntax for a query is:
+
+`<ObjectType> { <conditions> }`
+
+When used with the interactive `query` command, the keyword `query` (or `q`) must precede the expression.
+
+- **`ObjectType`**: Specifies which EBM table to search. Can be one of:
+
+  - `Identifier`: Searches the identifiers table.
+  - `String`: Searches the string literals table.
+  - `Type`: Searches the types table.
+  - `Statement`: Searches the statements table.
+  - `Expression`: Searches the expressions table.
+  - `Any`: Searches across all tables.
+
+- **`conditions`**: A boolean expression used to filter the objects. You can construct complex conditions using field access, operators, and literals.
+
+Multiple `ObjectType { ... }` blocks can be specified in a single query. This acts as a union (OR), meaning the final result will be the set of all objects that satisfy the conditions of _any_ of the blocks. For example, `Statement { body.kind == "RETURN" } Expression { body.kind == "LITERAL_STRING" }` will find all `RETURN` statements _and_ all string literal expressions.
+
+##### Field Access
+
+You can access members of EBM objects using three different notations: `.` (dot), `->` (arrow), and `[]` (brackets). Their behavior is distinct and crucial for writing correct queries.
+
+- **`->` (Arrow Notation): Pointer Dereference**
+  This operator performs a pointer-like dereference, which is essential for traversing the EBM graph. It is used to follow references like `StatementRef`, `ExpressionRef`, and `TypeRef`. The query engine resolves the identifier on the left to get a reference, follows it to the target object, and then accesses the member on the right.
+
+- **`.` (Dot Notation) and `[]` (Bracket Notation): Qualified Name Matching**
+  Unlike the arrow operator, the dot and bracket notations do not perform special operations during query compilation. Instead, they rely on a name-matching mechanism that happens during query execution.
+
+  When the engine evaluates an object, it recursively traverses all of its members and generates a set of "qualified names" for each field.
+
+  - For nested structs, it creates names like `"body.kind"`.
+  - For elements within a container (like a `vector`), it creates names like `"fields[0]"`, `"fields[1]"`, etc.
+
+  A query condition like `body.kind == "IF_STATEMENT"` or `body.block[0]->body.kind == "RETURN"` works because the qualified names (`body.kind`, `body.block[0]`) generated by the engine match the identifiers specified in the query.
+
+- **Summary and Correct Usage**:
+
+  - Use `->` to follow a `...Ref` and access the members of the referenced object.
+  - Use `.` to access a direct member of a struct.
+  - Use `[]` to access a specific element within a container (field of type `Block`, `Expressions`, `Types`).
+
+- **Example**: Find a `MATCH_STATEMENT` where the first branch (`branches[0]`) leads to a `RETURN` statement.
+  ```
+  q Statement { body.kind == "MATCH_STATEMENT" and body.match_statement.branches[0]->body.match_branch.body->body.kind == "RETURN" }
+  ```
+
+##### Operators
+
+The following operators are supported within conditions:
+
+- **Comparison**: `==`, `!=`, `>`, `>=`, `<`, `<=`
+- **Logical**: `and` (or `&&`), `or` (or `||`), `not` (or `!`)
+- **Containment**:
+  - `contains`: Checks if any member of the target object contains the specified value. Example: `Any { contains 123 }`
+  - `in`: Checks if a value is present in a set of objects returned by a sub-query. Example: `body.condition in Any { id == 456 }` (Note: As of the last analysis, the `in` operator was not fully implemented).
+
+##### Literals
+
+- **Numbers**: Can be specified in decimal (e.g., `123`) or hexadecimal (e.g., `0xff`).
+- **Strings**: Must be enclosed in double quotes (e.g., `"add"`, `"Identifier"`).
+
+##### Example Queries
+
+- Find the Identifier object with `id` 123:
+
+  ```
+  q Identifier { id == 123 }
+  ```
+
+- Find all Statement objects that are binary operations of type `add`:
+
+  ```
+  q Statement { body.kind == "BINARY_OP" and body.bop == "add" }
+  ```
+
+- Find all Expression objects with an `id` between 0 and 99:
+
+  ```
+  q Expression { id >= 0 and id < 100 }
+  ```
+
+- A complex query to find any object whose `body.condition` points to an Expression that is an Identifier:
+  ```
+  q Any { body.condition->body.kind == "Identifier" }
+  ```

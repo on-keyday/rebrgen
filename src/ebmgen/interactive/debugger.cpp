@@ -80,7 +80,7 @@ namespace ebmgen {
         };
         constexpr Recurse recurse{expr, compare, and_expr, or_expr, object};
         constexpr auto check = []() {
-            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"} Any { body.condition->body.kind == \"Identifier\" or body.condition in Any { id == 456 } } Any{contains 11 and not (id == 11)}");
+            auto seq = futils::make_ref_seq("Identifier { id == 123 } Expression { id >= 0 and id < 100 } Statement { bop == \"add\"} Any { body.condition->body.kind == \"Identifier\" or body.condition in Any { id == 456 } } Any{contains 11 and not (id == 11) and body.block[0] == 1}");
             return full_expr(seq, futils::comb2::test::TestContext<>{}, recurse) == futils::comb2::Status::match;
         };
 

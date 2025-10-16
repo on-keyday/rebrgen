@@ -3,6 +3,7 @@
 #include <string>
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
+#include <string_view>
 #include "ebmgen/mapping.hpp"
 
 namespace ebmcodegen::util {
@@ -62,6 +63,8 @@ namespace ebmcodegen::util {
         std::string_view object_init = "{}";
         std::string_view vector_init = "[]";
         std::string_view bytes_init;
+        std::string_view pointer_init = "nullptr";
+        std::string_view optional_init = "std::nullopt";
     };
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
@@ -100,6 +103,12 @@ namespace ebmcodegen::util {
                     // use default vector init
                 }
                 return std::format("{}", option.vector_init);
+            }
+            case ebm::TypeKind::PTR: {
+                return std::string(option.pointer_init);
+            }
+            case ebm::TypeKind::OPTIONAL: {
+                return std::string(option.optional_init);
             }
             default: {
                 return ebmgen::unexpect_error("unsupported default: {}", to_string(type.body.kind));

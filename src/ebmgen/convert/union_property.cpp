@@ -351,7 +351,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties, DetectedTypes& original_merged) {
+    expected<std::vector<ebm::PropertyDecl>> common_merge(ConverterContext& ctx, ebm::ExpressionRef base_cond, ebm::PropertyDecl& derive, IndexCluster& cluster, std::vector<ebm::PropertyDecl>& properties, DetectedTypes& original_merged) {
         std::vector<ebm::PropertyDecl> final_props;
 
         for (auto& c : cluster) {
@@ -381,6 +381,7 @@ namespace ebmgen {
             prop.name = derive.name;
             prop.property_type = *c_type;
             prop.parent_format = derive.parent_format;
+            prop.cond = base_cond;
             prop.merge_mode = ebm::MergeMode::COMMON_TYPE;
             MAYBE_VOID(merge_members, common_merge_members(ctx, prop, &c, &properties, original_merged));
             ebm::Block derived_from;
@@ -394,7 +395,7 @@ namespace ebmgen {
         return final_props;
     }
 
-    expected<void> uncommon_merge(ConverterContext& ctx, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props, DetectedTypes& original_merged) {
+    expected<void> uncommon_merge(ConverterContext& ctx, ebm::ExpressionRef base_cond, ebm::PropertyDecl& derive, std::vector<ebm::PropertyDecl>& final_props, DetectedTypes& original_merged) {
         auto c_type = derive_variant(ctx, final_props, {}, [&](auto& prop) {
             return prop.property_type;
         });
@@ -405,6 +406,7 @@ namespace ebmgen {
         prop.name = derive.name;
         prop.property_type = *c_type;
         prop.parent_format = derive.parent_format;
+        prop.cond = base_cond;
         prop.merge_mode = ebm::MergeMode::UNCOMMON_TYPE;
         MAYBE_VOID(merge_members, common_merge_members(ctx, prop, nullptr, nullptr, original_merged));
         ebm::Block derived_from;
@@ -437,12 +439,12 @@ namespace ebmgen {
             properties.push_back(std::move(prop));
         }
         MAYBE(cluster, clustering_properties(ctx, properties));
-        MAYBE(final_props, common_merge(ctx, derive, cluster, properties, all_type));
+        MAYBE(final_props, common_merge(ctx, base_cond, derive, cluster, properties, all_type));
         if (final_props.size() == 1) {  // all types are merged into single common type
             derive = std::move(final_props[0]);
         }
         else {
-            MAYBE_VOID(prop, uncommon_merge(ctx, derive, final_props, all_type));
+            MAYBE_VOID(prop, uncommon_merge(ctx, base_cond, derive, final_props, all_type));
         }
         return {};
     }

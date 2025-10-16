@@ -500,6 +500,13 @@ For single, non-interactive queries, you can use the `--query` (or `-q`) flag.
 ./tool/ebmgen -i <path/to/input.ebm> -q "Expression { body.kind == \"LITERAL_STRING\" }" --query-format text
 ```
 
+For command line, you can use id directly to fetch its information.
+
+```bash
+# Execute a id based search
+./tool/ebmgen -i <path/to/input.ebm> -q "42" --query-format text
+```
+
 ##### Query Syntax
 
 The basic syntax for a query is:

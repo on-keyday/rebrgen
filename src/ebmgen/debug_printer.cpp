@@ -49,6 +49,12 @@ namespace ebmgen {
         const auto* type = module_.get_type(ref);
         if (type) {
             os_ << to_string(type->body.kind);
+            if (auto size = type->body.size()) {
+                os_ << " size:" << size->value();
+            }
+            if (auto length = type->body.length()) {
+                os_ << " length:" << length->value();
+            }
             if (auto id = type->body.id()) {
                 os_ << " ";
                 print_resolved_reference(*id);

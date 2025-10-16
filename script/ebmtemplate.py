@@ -41,6 +41,7 @@ def run_single_template(tool_path, template_target):
 def run_save_template(tool_path, template_target, lang):
     """Generate a template and save it to the specified language's visitor directory."""
     if lang == "default_codegen":
+        lang_dir = None
         visitor_dir = "src/ebmcodegen/default_codegen_visitor"
     else:
         lang_dir = f"src/ebmcg/ebm2{lang}"
@@ -68,11 +69,12 @@ def run_save_template(tool_path, template_target, lang):
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")
-        # touch main file
-        main_file = os.path.join(lang_dir, "main.cpp")
-        if os.path.exists(main_file):
-            os.utime(main_file, None)
-            print(f"Touched '{main_file}' to update its timestamp.")
+        if lang_dir:
+            # touch main file
+            main_file = os.path.join(lang_dir, "main.cpp")
+            if os.path.exists(main_file):
+                os.utime(main_file, None)
+                print(f"Touched '{main_file}' to update its timestamp.")
     except subprocess.CalledProcessError as e:
         print(
             f"Error: ebmcodegen failed for target '{template_target}' with exit code {e.returncode}",

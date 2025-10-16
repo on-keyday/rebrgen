@@ -23,3 +23,6 @@ if (cast_kind == ebm::CastType::ENUM_TO_INT) {
     w.write(target_type_str.to_string(), "(", source_expr_str.to_string(), ".value)");
     return w.out();
 }
+if (module_.get_type_kind(type) == ebm::TypeKind::VARIANT) {
+    return visit_Expression(*this, source_expr);
+}

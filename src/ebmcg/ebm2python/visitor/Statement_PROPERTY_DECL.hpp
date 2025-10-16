@@ -13,12 +13,15 @@
       parent_format: StatementRef
       property_type: TypeRef
       merge_mode: MergeMode
-      cond: *ExpressionRef
+      cond: ExpressionRef
       members: Block
         len: Varint
         container: std::vector<StatementRef>
       setter_function: LoweredStatementRef
       getter_function: LoweredStatementRef
+      derived_from: *Block
+        len: Varint
+        container: std::vector<StatementRef>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 CodeWriter cw;

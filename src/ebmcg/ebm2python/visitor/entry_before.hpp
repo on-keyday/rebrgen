@@ -33,3 +33,5 @@ module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");
 module_.register_default_prefix(ebm::StatementKind::PARAMETER_DECL, "param");
 default_value_option.object_init = "()";
 default_value_option.bytes_init = "bytearray()";
+default_value_option.pointer_init = "None";
+default_value_option.optional_init = "None";

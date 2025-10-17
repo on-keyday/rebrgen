@@ -68,6 +68,9 @@ namespace ebmgen {
                     break;
             }
         }
+        for (const auto& debug_loc : module_.debug_info.locs) {
+            debug_loc_map_[get_id(debug_loc.ident)] = &debug_loc;
+        }
     }
 
     // --- Helper functions to get objects from references ---
@@ -227,6 +230,14 @@ namespace ebmgen {
                                statement_map_.size() +
                                expression_map_.size();
         return original_id_count == mapped_id_count;
+    }
+
+    const ebm::Loc* MappingTable::get_debug_loc(const ebm::AnyRef& ref) const {
+        auto it = debug_loc_map_.find(get_id(ref));
+        if (it != debug_loc_map_.end()) {
+            return it->second;
+        }
+        return nullptr;
     }
 
 }  // namespace ebmgen

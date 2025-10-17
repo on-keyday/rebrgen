@@ -106,7 +106,16 @@ namespace ebmcodegen {
                 futils::binary::writer w{fs.get_direct_write_handler(), &fs};
                 futils::json::Stringer str;
                 auto obj = str.object();
-                obj("line_map", [&](auto& s) { auto _ = s.array(); });  // for future use
+                obj("line_map", [&] {
+                    auto element = str.array();
+                    for (auto& lm : output.line_maps) {
+                        element([&] {
+                            auto o = str.object();
+                            o("line", lm.line);
+                            o("loc", lm.loc);
+                        });
+                    }
+                });  // for future use
                 obj("structs", output.struct_names);
                 obj.close();
                 w.write(str.out());

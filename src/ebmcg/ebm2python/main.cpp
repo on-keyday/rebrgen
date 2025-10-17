@@ -12630,6 +12630,7 @@ namespace ebm2python {
         static constexpr const char* program_name = "ebm2python";
         ebmgen::MappingTable module_;
         Flags& flags;
+        Output& output;
         futils::code::CodeWriter<futils::binary::writer&> root;
         std::vector<CodeWriter> tmp_writers;
         [[nodiscard]] auto add_writer() {
@@ -12644,7 +12645,7 @@ namespace ebm2python {
             }
             return &tmp_writers.back();
         }
-        Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}
+        Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f,Output& o) : module_(m), root{w}, flags{f}, output{o} {}
         #if __has_include("visitor/Visitor_before.hpp")
         #include "visitor/Visitor_before.hpp"
         #endif
@@ -15010,7 +15011,7 @@ namespace ebm2python {
     static_assert(has_visitor_Type_FUNCTION<Visitor>, "Visitor does not implement visit_Type_FUNCTION");
 }  // namespace ebm2python
 DEFINE_ENTRY(Flags,Output) {
-    ebm2python::Visitor visitor{ebm,w,flags};
+    ebm2python::Visitor visitor{ebm,w,flags,output};
     #if __has_include("visitor/pre_entry_before.hpp")
     #include "visitor/pre_entry_before.hpp"
     #endif

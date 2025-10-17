@@ -88,6 +88,8 @@ namespace ebmgen {
             return "tmp";
         }
 
+        const ebm::Loc* get_debug_loc(const ebm::AnyRef& ref) const;
+
        private:
         const ebm::ExtendedBinaryModule& module_;
         // Caches for faster lookups
@@ -98,6 +100,7 @@ namespace ebmgen {
         std::unordered_map<std::uint64_t, const ebm::Expression*> expression_map_;
         std::unordered_map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
         std::unordered_map<ebm::StatementKind, std::string> default_identifier_prefix_;
+        std::unordered_map<std::uint64_t, const ebm::Loc*> debug_loc_map_;
         void build_maps();
     };
 }  // namespace ebmgen

@@ -4,6 +4,7 @@
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
 #include <string_view>
+#include "output.hpp"
 #include "ebmgen/mapping.hpp"
 
 namespace ebmcodegen::util {
@@ -209,5 +210,27 @@ namespace ebmcodegen::util {
 
     void merge_result(auto&& visitor, auto& w, auto&& result) {
         w.merge(std::move(result.to_writer()));
+    }
+
+    void convert_location_info(auto&& visitor, auto&& loc_writer) {
+        auto& m = visitor.module_;
+        for (auto& loc : loc_writer.locs_data()) {
+            const ebm::Loc* l = m.get_debug_loc(loc.loc);
+            if (!l) {
+                continue;
+            }
+            visitor.output.line_maps.push_back(LineMap{
+                .line = loc.start.line,
+                .loc = brgen::lexer::Loc{
+                    .pos = {
+                        .begin = l->start.value(),
+                        .end = l->end.value(),
+                    },
+                    .file = l->file_id.value(),
+                    .line = l->line.value(),
+                    .col = l->column.value(),
+                },
+            });
+        }
     }
 }  // namespace ebmcodegen::util

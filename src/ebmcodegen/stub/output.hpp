@@ -2,12 +2,12 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "ebm/extended_binary_module.hpp"
+#include "core/lexer/token.h"
 
 namespace ebmcodegen {
     struct LineMap {
         std::uint64_t line = 0;
-        ebm::Loc loc;
+        brgen::lexer::Loc loc;
     };
     struct Output {
         std::vector<std::string> struct_names;

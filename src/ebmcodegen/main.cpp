@@ -498,6 +498,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     visitor_stub.writeln("static constexpr const char* program_name = \"", ns_name, "\";");
     visitor_stub.writeln("ebmgen::MappingTable module_;");
     visitor_stub.writeln("Flags& flags;");
+    visitor_stub.writeln("Output& output;");
     if (flags.mode == GenerateMode::CodeGenerator) {
         visitor_stub.writeln("futils::code::CodeWriter<futils::binary::writer&> root;");
         visitor_stub.writeln("std::vector<CodeWriter> tmp_writers;");
@@ -526,10 +527,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         visitor_stub.writeln("}");
 
-        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f) : module_(m), root{w}, flags{f} {}");
+        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f,Output& o) : module_(m), root{w}, flags{f}, output{o} {}");
     }
     else {
-        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,Flags& f) : module_(m), flags{f} {}");
+        visitor_stub.writeln("Visitor(const ebm::ExtendedBinaryModule& m,Flags& f,Output& o) : module_(m), flags{f}, output{o} {}");
     }
 
     std::vector<std::string> hooks;
@@ -921,10 +922,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("DEFINE_ENTRY(Flags,Output) {");
     auto main_scope = w.indent_scope();
     if (flags.mode == GenerateMode::CodeGenerator) {
-        w.writeln(ns_name, "::Visitor visitor{ebm,w,flags};");
+        w.writeln(ns_name, "::Visitor visitor{ebm,w,flags,output};");
     }
     else {
-        w.writeln(ns_name, "::Visitor visitor{ebm,flags};");
+        w.writeln(ns_name, "::Visitor visitor{ebm,flags,output};");
     }
     insert_include(w, prefixes[prefix_pre_entry]);
     w.writeln("auto result = visitor.entry();");

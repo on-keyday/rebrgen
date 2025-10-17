@@ -13,4 +13,6 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-return "break\n";
+CodeWriter w;
+w.writeln("break");
+return w;

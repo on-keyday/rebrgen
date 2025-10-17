@@ -1,4 +1,5 @@
 /*license*/
+#include "ebm/extended_binary_module.hpp"
 #include "ebmgen/converter.hpp"
 #include "transform.hpp"
 #include <set>
@@ -72,6 +73,11 @@ namespace ebmgen {
                     continue;
                 }
                 should_remove.insert(i);
+            }
+            // don't remove referenced by file names
+            for (auto& d : ctx.file_names()) {
+                should_remove.erase(get_id(d));
+                inverse_refs[get_id(d)].push_back(ebm::AnyRef{1});  // used from root
             }
             // simply remove
             auto remove = [&](auto&& rem) {
@@ -189,6 +195,12 @@ namespace ebmgen {
             }
         }
         print_if_verbose("Remap ", ctx.debug_locations().size(), " items in ", t.delta<std::chrono::microseconds>(), "\n");
+        t.reset();
+        for (auto& f : ctx.file_names()) {
+            if (auto it = old_to_new.find(get_id(f)); it != old_to_new.end()) {
+                f.id = it->second.id;
+            }
+        }
         return {};
     }
 

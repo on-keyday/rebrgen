@@ -687,7 +687,8 @@ namespace ebmgen {
             cout << " Total Objects: " << (raw_module.identifiers.size() + raw_module.strings.size() + raw_module.types.size() + raw_module.statements.size() + raw_module.expressions.size() + raw_module.aliases.size()) << "\n";
             cout << " Source File:\n";
             for (auto& s : raw_module.debug_info.files) {
-                cout << "  " << s.data << "\n";
+                auto file_path = table.get_string_literal(s);
+                cout << "  ID " << get_id(s) << ": " << (file_path ? file_path->body.data : "(invalid)") << "\n";
             }
             cout << " Debug Locations: " << raw_module.debug_info.locs.size() << "\n";
             cout << "----\n";

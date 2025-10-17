@@ -1067,6 +1067,34 @@ namespace ebm {
         return true;
     }
     
+    bool from_json(ImportDecl& obj, const futils::json::JSON& j) {
+        if (auto got = j.at("name")) {
+            if(!futils::json::convert_from_json(*got, obj.name)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("path")) {
+            if(!futils::json::convert_from_json(*got, obj.path)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("program")) {
+            if(!futils::json::convert_from_json(*got, obj.program)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
+    }
+    
     bool from_json(InitCheck& obj, const futils::json::JSON& j) {
         if (auto got = j.at("init_check_type")) {
             if(!futils::json::convert_from_json(*got, obj.init_check_type)) {
@@ -1620,15 +1648,6 @@ namespace ebm {
         else {
             return false;
         }
-        if (auto got = j.at("alias")) {
-            IdentifierRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.alias(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("assert_desc")) {
             AssertDesc tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1746,6 +1765,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("import_decl")) {
+            ImportDecl tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.import_decl(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("init_check")) {
             InitCheck tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1797,15 +1825,6 @@ namespace ebm {
                 return false;
             }
             if(!obj.metadata(std::move(tmp))) {
-                return false;
-            }
-        }
-        if (auto got = j.at("module_name")) {
-            IdentifierRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.module_name(std::move(tmp))) {
                 return false;
             }
         }

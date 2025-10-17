@@ -50,7 +50,15 @@ namespace ebmgen {
         return true;
     }
 
-    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm, std::vector<std::string>&& file_names) {
+    expected<void> EBMRepository::add_files(std::vector<std::string>&& names) {
+        for (auto& name : names) {
+            MAYBE(name_ref, add_string(name));
+            file_names.push_back(name_ref);
+        }
+        return {};
+    }
+
+    expected<void> EBMRepository::finalize(ebm::ExtendedBinaryModule& ebm) {
         MAYBE(max_id, ident_source.current_id());
         ebm.max_id = ebm::AnyRef{max_id};
         MAYBE(identifiers_len, varint(identifier_repo.get_all().size()));
@@ -84,14 +92,7 @@ namespace ebmgen {
 
         MAYBE(files_len, varint(file_names.size()));
         ebm.debug_info.len_files = files_len;
-        ebm.debug_info.files.reserve(file_names.size());
-        for (auto& f : file_names) {
-            MAYBE(name_len, varint(f.size()));
-            ebm.debug_info.files.push_back(ebm::String{
-                .length = name_len,
-                .data = std::move(f),
-            });
-        }
+        ebm.debug_info.files = std::move(file_names);
 
         MAYBE(loc_len, varint(debug_locs.size()));
 

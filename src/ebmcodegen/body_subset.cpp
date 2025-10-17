@@ -9,7 +9,6 @@ namespace ebmcodegen {
         for(size_t i = 0;to_string(ebm::StatementKind(i))[0];i++) {
             ebm::StatementBody body;
             body.kind = ebm::StatementKind(i);
-            body.alias({});
             body.assert_desc({});
             body.block({});
             body.break_({});
@@ -23,13 +22,13 @@ namespace ebmcodegen {
             body.field_decl({});
             body.func_decl({});
             body.if_statement({});
+            body.import_decl({});
             body.init_check({});
             body.loop({});
             body.lowered_statements({});
             body.match_branch({});
             body.match_statement({});
             body.metadata({});
-            body.module_name({});
             body.offset({});
             body.param_decl({});
             body.previous_assignment({});

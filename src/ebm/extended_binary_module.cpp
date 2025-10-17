@@ -7083,290 +7083,6 @@ namespace ebm {
         }
         return false;
     }
-    const IdentifierRef* StatementBody::alias() const {
-        if (StatementKind::BLOCK==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-        if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-            return nullptr;
-        }
-        return std::addressof(std::get<29>((*this).union_variant_80).alias);
-        }
-        return nullptr;
-    }
-    IdentifierRef* StatementBody::alias() {
-        return const_cast<IdentifierRef*>(std::as_const(*this).alias());
-    }
-    bool StatementBody::alias(const IdentifierRef& v) {
-        if (StatementKind::BLOCK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-                union_variant_80 = union_struct_109();
-            }
-            std::get<29>((*this).union_variant_80).alias = v;
-            return true;
-        }
-        return false;
-    }
-    bool StatementBody::alias(IdentifierRef&& v) {
-        if (StatementKind::BLOCK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-                union_variant_80 = union_struct_109();
-            }
-            std::get<29>((*this).union_variant_80).alias = std::move(v);
-            return true;
-        }
-        return false;
-    }
     const AssertDesc* StatementBody::assert_desc() const {
         if (StatementKind::BLOCK==(*this).kind) {
         return nullptr;
@@ -10134,6 +9850,290 @@ namespace ebm {
         }
         return false;
     }
+    const ImportDecl* StatementBody::import_decl() const {
+        if (StatementKind::BLOCK==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::ASSIGNMENT==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::YIELD==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::APPEND==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::RETURN==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::ERROR_RETURN==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::ASSERT==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::READ_DATA==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::WRITE_DATA==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::SEEK_STREAM==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::IF_STATEMENT==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::MATCH_BRANCH==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::BREAK==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::CONTINUE==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::FUNCTION_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::VARIABLE_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::PARAMETER_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::FIELD_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::ENUM_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::STRUCT_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::PROGRAM_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::PROPERTY_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::METADATA==(*this).kind) {
+        return nullptr;
+        }
+        if (StatementKind::IMPORT_MODULE==(*this).kind) {
+        if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<29>((*this).union_variant_80).import_decl);
+        }
+        return nullptr;
+    }
+    ImportDecl* StatementBody::import_decl() {
+        return const_cast<ImportDecl*>(std::as_const(*this).import_decl());
+    }
+    bool StatementBody::import_decl(const ImportDecl& v) {
+        if (StatementKind::BLOCK==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ASSIGNMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::YIELD==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::APPEND==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::RETURN==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ERROR_RETURN==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ASSERT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::READ_DATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::WRITE_DATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::SEEK_STREAM==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::IF_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::MATCH_BRANCH==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::BREAK==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::CONTINUE==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::FUNCTION_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::VARIABLE_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PARAMETER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::FIELD_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ENUM_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::STRUCT_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROGRAM_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROPERTY_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::METADATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::IMPORT_MODULE==(*this).kind) {
+            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
+                union_variant_80 = union_struct_109();
+            }
+            std::get<29>((*this).union_variant_80).import_decl = v;
+            return true;
+        }
+        return false;
+    }
+    bool StatementBody::import_decl(ImportDecl&& v) {
+        if (StatementKind::BLOCK==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ASSIGNMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::YIELD==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::APPEND==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::RETURN==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ERROR_RETURN==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ASSERT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::READ_DATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::WRITE_DATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::SEEK_STREAM==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::IF_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::MATCH_BRANCH==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::BREAK==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::CONTINUE==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::FUNCTION_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::VARIABLE_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PARAMETER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::FIELD_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ENUM_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::STRUCT_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROGRAM_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROPERTY_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::METADATA==(*this).kind) {
+            return false;
+        }
+        if (StatementKind::IMPORT_MODULE==(*this).kind) {
+            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
+                union_variant_80 = union_struct_109();
+            }
+            std::get<29>((*this).union_variant_80).import_decl = std::move(v);
+            return true;
+        }
+        return false;
+    }
     const InitCheck* StatementBody::init_check() const {
         if (StatementKind::BLOCK==(*this).kind) {
         return nullptr;
@@ -11465,290 +11465,6 @@ namespace ebm {
                 union_variant_80 = union_struct_108();
             }
             std::get<28>((*this).union_variant_80).metadata = std::move(v);
-            return true;
-        }
-        return false;
-    }
-    const IdentifierRef* StatementBody::module_name() const {
-        if (StatementKind::BLOCK==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-        return nullptr;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-        if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-            return nullptr;
-        }
-        return std::addressof(std::get<29>((*this).union_variant_80).module_name);
-        }
-        return nullptr;
-    }
-    IdentifierRef* StatementBody::module_name() {
-        return const_cast<IdentifierRef*>(std::as_const(*this).module_name());
-    }
-    bool StatementBody::module_name(const IdentifierRef& v) {
-        if (StatementKind::BLOCK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-                union_variant_80 = union_struct_109();
-            }
-            std::get<29>((*this).union_variant_80).module_name = v;
-            return true;
-        }
-        return false;
-    }
-    bool StatementBody::module_name(IdentifierRef&& v) {
-        if (StatementKind::BLOCK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSIGNMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::YIELD==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::APPEND==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ERROR_RETURN==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ASSERT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::READ_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::WRITE_DATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::SEEK_STREAM==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IF_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::LOOP_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_STATEMENT==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::MATCH_BRANCH==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::BREAK==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::CONTINUE==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FUNCTION_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::VARIABLE_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PARAMETER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::COMPOSITE_FIELD_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::ENUM_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::STRUCT_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROGRAM_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::PROPERTY_MEMBER_DECL==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::METADATA==(*this).kind) {
-            return false;
-        }
-        if (StatementKind::IMPORT_MODULE==(*this).kind) {
-            if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
-                union_variant_80 = union_struct_109();
-            }
-            std::get<29>((*this).union_variant_80).module_name = std::move(v);
             return true;
         }
         return false;
@@ -17358,6 +17074,30 @@ namespace ebm {
         }
         return ::futils::error::Error<>();
     }
+    ::futils::error::Error<> ImportDecl::encode(::futils::binary::writer& w) const {
+        if (auto err = (*this).name.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).path.encode(w)) {
+            return err;
+        }
+        if (auto err = (*this).program.encode(w)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
+    ::futils::error::Error<> ImportDecl::decode(::futils::binary::reader& r) {
+        if (auto err = (*this).name.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).path.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).program.decode(r)) {
+            return err;
+        }
+        return ::futils::error::Error<>();
+    }
     ::futils::error::Error<> ErrorReport::encode(::futils::binary::writer& w) const {
         if (auto err = (*this).message.encode(w)) {
             return err;
@@ -17628,10 +17368,7 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
                 return ::futils::error::Error<>("encode: StatementBody: union_variant_80 variant alternative union_struct_109 is not set",::futils::error::Category::lib);
             }
-            if (auto err = std::get<29>((*this).union_variant_80).module_name.encode(w)) {
-                return err;
-            }
-            if (auto err = std::get<29>((*this).union_variant_80).alias.encode(w)) {
+            if (auto err = std::get<29>((*this).union_variant_80).import_decl.encode(w)) {
                 return err;
             }
         }
@@ -17939,10 +17676,7 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_109>(union_variant_80)) {
                 union_variant_80 = union_struct_109();
             }
-            if (auto err = std::get<29>((*this).union_variant_80).module_name.decode(r)) {
-                return err;
-            }
-            if (auto err = std::get<29>((*this).union_variant_80).alias.decode(r)) {
+            if (auto err = std::get<29>((*this).union_variant_80).import_decl.decode(r)) {
                 return err;
             }
         }
@@ -18434,7 +18168,7 @@ namespace ebm {
         auto tmp_213_ = (*this).len_files.value();
         (*this).files.clear();
         for (size_t  tmp_215_= 0; tmp_215_<tmp_213_; ++tmp_215_ ) {
-            String tmp_214_;
+            StringRef tmp_214_;
             if (auto err = tmp_214_.decode(r)) {
                 return err;
             }

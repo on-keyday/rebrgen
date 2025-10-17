@@ -3,6 +3,7 @@
 #include "core/ast/ast.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
+#include "core/ast/node/translated.h"
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
@@ -495,7 +496,7 @@ namespace ebmgen {
                 ctx.state().add_visited_node(node, name_ref);
                 return name_ref;
             }
-            else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base)) {
+            else if (ast::as<ast::MatchBranch>(locked_base) || ast::as<ast::If>(locked_base) || ast::as<ast::Import>(locked_base)) {
                 ebm::StatementBody stmt;
                 stmt.kind = ebm::StatementKind::STRUCT_DECL;
                 MAYBE(name_ref, ctx.repository().new_statement_id());
@@ -954,8 +955,12 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Import>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::IMPORT_MODULE;
-        EBMA_ADD_IDENTIFIER(module_name_ref, node->path);
-        body.module_name(module_name_ref);
+        ebm::ImportDecl import_decl;
+        EBMA_ADD_STRING(module_name_ref, node->path);
+        import_decl.path = module_name_ref;
+        EBMA_CONVERT_STATEMENT(program, node->import_desc);
+        import_decl.program = program;
+        body.import_decl(std::move(import_decl));
         return {};
     }
 
@@ -981,24 +986,36 @@ namespace ebmgen {
             body.value(value_ref);
         }
         else if (node->op == ast::BinaryOp::define_assign || node->op == ast::BinaryOp::const_assign) {
-            body.kind = ebm::StatementKind::VARIABLE_DECL;
-            ebm::VariableDecl var_decl;
             auto name_ident = ast::as<ast::Ident>(node->left);
             if (!name_ident) {
                 return unexpect_error("Left-hand side of define_assign/const_assign must be an identifier");
             }
             EBMA_ADD_IDENTIFIER(name_ref, name_ident->ident);
-            var_decl.name = name_ref;
-
-            EBMA_CONVERT_TYPE(type_ref, node->left->expr_type);
-            var_decl.var_type = type_ref;
-
-            if (node->right) {
-                EBMA_CONVERT_EXPRESSION(initial_value_ref, node->right);
-                var_decl.initial_value = initial_value_ref;
+            if (auto import_ = ast::as<ast::Import>(node->right)) {
+                body.kind = ebm::StatementKind::IMPORT_MODULE;
+                EBMA_ADD_STRING(path_ref, import_->path);
+                ebm::ImportDecl import_decl;
+                import_decl.name = name_ref;
+                import_decl.path = path_ref;
+                ctx.state().add_visited_node(node->right, id);
+                EBMA_CONVERT_STATEMENT(program, import_->import_desc);
+                import_decl.program = program;
+                body.import_decl(std::move(import_decl));
             }
-            var_decl.is_constant(node->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
-            body.var_decl(std::move(var_decl));
+            else {
+                body.kind = ebm::StatementKind::VARIABLE_DECL;
+                ebm::VariableDecl var_decl;
+                var_decl.name = name_ref;
+                EBMA_CONVERT_TYPE(type_ref, node->left->expr_type);
+                var_decl.var_type = type_ref;
+
+                if (node->right) {
+                    EBMA_CONVERT_EXPRESSION(initial_value_ref, node->right);
+                    var_decl.initial_value = initial_value_ref;
+                }
+                var_decl.is_constant(node->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
+                body.var_decl(std::move(var_decl));
+            }
         }
         else if (assign_with_op) {
             body.kind = ebm::StatementKind::ASSIGNMENT;

@@ -525,6 +525,11 @@ format InitCheck:
     target_field :ExpressionRef
     expect_value :ExpressionRef
 
+format ImportDecl:
+    name :IdentifierRef # Name of the imported module
+    path :StringRef # Path to the imported module
+    program :StatementRef # Reference to the imported program declaration
+
 format StatementBody:
     kind :StatementKind
     match kind:
@@ -591,8 +596,7 @@ format StatementBody:
         StatementKind.METADATA:
             metadata :Metadata
         StatementKind.IMPORT_MODULE:
-            module_name :IdentifierRef
-            alias :IdentifierRef # Optional alias
+            import_decl :ImportDecl
         StatementKind.ERROR_REPORT:
             error_report :ErrorReport
         StatementKind.EXPRESSION:
@@ -738,7 +742,7 @@ format Loc:
 
 format DebugInfo:
     len_files :Varint
-    files :[len_files.value]String
+    files :[len_files.value]StringRef
     len_locs :Varint
     locs :[len_locs.value]Loc
 

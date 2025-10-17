@@ -418,6 +418,7 @@ namespace ebmgen {
         ReferenceRepository<ebm::ExpressionRef, ebm::Expression, ebm::ExpressionBody, ebm::AliasHint::EXPRESSION> expression_repo{aliases};
         ReferenceRepository<ebm::StatementRef, ebm::Statement, ebm::StatementBody, ebm::AliasHint::STATEMENT> statement_repo{aliases};
         std::vector<ebm::Loc> debug_locs;
+        std::vector<ebm::StringRef> file_names;
 
         friend struct TransformContext;
 
@@ -440,7 +441,9 @@ namespace ebmgen {
 
         // after this call, getter functions will returns nullptr
         // before reuse it, you should call clear()
-        expected<void> finalize(ebm::ExtendedBinaryModule& mod, std::vector<std::string>&& file_names);
+        expected<void> finalize(ebm::ExtendedBinaryModule& mod);
+
+        expected<void> add_files(std::vector<std::string>&& names);
 
         template <AnyRef T>
         expected<void> add_debug_loc(brgen::lexer::Loc loc, T ref) {
@@ -750,6 +753,10 @@ namespace ebmgen {
 
         auto& alias_vector() {
             return ctx.repository().aliases;
+        }
+
+        auto& file_names() {
+            return ctx.repository().file_names;
         }
 
         auto& debug_locations() {

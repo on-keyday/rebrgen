@@ -10,9 +10,10 @@ namespace ebmgen {
         if (opt.timer_cb) {
             opt.timer_cb("convert");
         }
+        MAYBE_VOID(file_names, converter.repository().add_files(std::move(file_names)));
         TransformContext transform_ctx(converter);
         MAYBE_VOID(t, transform(transform_ctx, opt.not_remove_unused, opt.timer_cb));
-        MAYBE_VOID(f, converter.repository().finalize(ebm, std::move(file_names)));
+        MAYBE_VOID(f, converter.repository().finalize(ebm));
         return {};
     }
 

@@ -1277,6 +1277,7 @@ namespace ebm {
     struct EnumMemberDecl;
     struct StructDecl;
     struct PropertyDecl;
+    struct ImportDecl;
     struct ErrorReport;
     struct StatementBody;
     struct Statement;
@@ -3188,6 +3189,37 @@ namespace ebm {
             v(v, "derived_from",visitor_tag<decltype(std::declval<PropertyDecl>().derived_from()),false>{});
         }
     };
+    struct EBM_API ImportDecl{
+        IdentifierRef name;
+        StringRef path;
+        StatementRef program;
+        ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
+        ::futils::error::Error<> decode(::futils::binary::reader& r);
+        constexpr static const char* visitor_name = "ImportDecl";
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) {
+            v(v, "name",(*this).name);
+            v(v, "path",(*this).path);
+            v(v, "program",(*this).program);
+        }
+        template<typename Visitor>
+        constexpr void visit(Visitor&& v) const {
+            v(v, "name",(*this).name);
+            v(v, "path",(*this).path);
+            v(v, "program",(*this).program);
+        }
+        template<typename T,bool rvalue = false>
+        struct visitor_tag {
+            using type = T;
+            static constexpr bool is_rvalue = rvalue;
+        };
+        template<typename Visitor>
+        static constexpr void visit_static(Visitor&& v) {
+            v(v, "name",visitor_tag<decltype(std::declval<ImportDecl>().name),false>{});
+            v(v, "path",visitor_tag<decltype(std::declval<ImportDecl>().path),false>{});
+            v(v, "program",visitor_tag<decltype(std::declval<ImportDecl>().program),false>{});
+        }
+    };
     struct EBM_API ErrorReport{
         StringRef message;
         Expressions arguments;
@@ -3308,8 +3340,7 @@ namespace ebm {
             Metadata metadata;
         };
         struct EBM_API union_struct_109{
-            IdentifierRef module_name;
-            IdentifierRef alias;
+            ImportDecl import_decl;
         };
         struct EBM_API union_struct_110{
             ErrorReport error_report;
@@ -3330,10 +3361,6 @@ namespace ebm {
             EndianVariable endian_variable;
         };
         std::variant<std::monostate, union_struct_81, union_struct_82, union_struct_83, union_struct_84, union_struct_85, union_struct_86, union_struct_87, union_struct_88, union_struct_89, union_struct_90, union_struct_91, union_struct_92, union_struct_93, union_struct_94, union_struct_95, union_struct_96, union_struct_97, union_struct_98, union_struct_99, union_struct_100, union_struct_101, union_struct_102, union_struct_103, union_struct_104, union_struct_105, union_struct_106, union_struct_107, union_struct_108, union_struct_109, union_struct_110, union_struct_111, union_struct_112, union_struct_113, union_struct_114, union_struct_115> union_variant_80;
-        const IdentifierRef* alias() const;
-        IdentifierRef* alias();
-        bool alias(IdentifierRef&& v);
-        bool alias(const IdentifierRef& v);
         const AssertDesc* assert_desc() const;
         AssertDesc* assert_desc();
         bool assert_desc(AssertDesc&& v);
@@ -3386,6 +3413,10 @@ namespace ebm {
         IfStatement* if_statement();
         bool if_statement(IfStatement&& v);
         bool if_statement(const IfStatement& v);
+        const ImportDecl* import_decl() const;
+        ImportDecl* import_decl();
+        bool import_decl(ImportDecl&& v);
+        bool import_decl(const ImportDecl& v);
         const InitCheck* init_check() const;
         InitCheck* init_check();
         bool init_check(InitCheck&& v);
@@ -3410,10 +3441,6 @@ namespace ebm {
         Metadata* metadata();
         bool metadata(Metadata&& v);
         bool metadata(const Metadata& v);
-        const IdentifierRef* module_name() const;
-        IdentifierRef* module_name();
-        bool module_name(IdentifierRef&& v);
-        bool module_name(const IdentifierRef& v);
         const ExpressionRef* offset() const;
         ExpressionRef* offset();
         bool offset(ExpressionRef&& v);
@@ -3473,7 +3500,6 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
             v(v, "kind",(*this).kind);
-            v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
             v(v, "block",(*this).block());
             v(v, "break_",(*this).break_());
@@ -3487,13 +3513,13 @@ namespace ebm {
             v(v, "field_decl",(*this).field_decl());
             v(v, "func_decl",(*this).func_decl());
             v(v, "if_statement",(*this).if_statement());
+            v(v, "import_decl",(*this).import_decl());
             v(v, "init_check",(*this).init_check());
             v(v, "loop",(*this).loop());
             v(v, "lowered_statements",(*this).lowered_statements());
             v(v, "match_branch",(*this).match_branch());
             v(v, "match_statement",(*this).match_statement());
             v(v, "metadata",(*this).metadata());
-            v(v, "module_name",(*this).module_name());
             v(v, "offset",(*this).offset());
             v(v, "param_decl",(*this).param_decl());
             v(v, "previous_assignment",(*this).previous_assignment());
@@ -3511,7 +3537,6 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "kind",(*this).kind);
-            v(v, "alias",(*this).alias());
             v(v, "assert_desc",(*this).assert_desc());
             v(v, "block",(*this).block());
             v(v, "break_",(*this).break_());
@@ -3525,13 +3550,13 @@ namespace ebm {
             v(v, "field_decl",(*this).field_decl());
             v(v, "func_decl",(*this).func_decl());
             v(v, "if_statement",(*this).if_statement());
+            v(v, "import_decl",(*this).import_decl());
             v(v, "init_check",(*this).init_check());
             v(v, "loop",(*this).loop());
             v(v, "lowered_statements",(*this).lowered_statements());
             v(v, "match_branch",(*this).match_branch());
             v(v, "match_statement",(*this).match_statement());
             v(v, "metadata",(*this).metadata());
-            v(v, "module_name",(*this).module_name());
             v(v, "offset",(*this).offset());
             v(v, "param_decl",(*this).param_decl());
             v(v, "previous_assignment",(*this).previous_assignment());
@@ -3554,7 +3579,6 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "kind",visitor_tag<decltype(std::declval<StatementBody>().kind),false>{});
-            v(v, "alias",visitor_tag<decltype(std::declval<StatementBody>().alias()),false>{});
             v(v, "assert_desc",visitor_tag<decltype(std::declval<StatementBody>().assert_desc()),false>{});
             v(v, "block",visitor_tag<decltype(std::declval<StatementBody>().block()),false>{});
             v(v, "break_",visitor_tag<decltype(std::declval<StatementBody>().break_()),false>{});
@@ -3568,13 +3592,13 @@ namespace ebm {
             v(v, "field_decl",visitor_tag<decltype(std::declval<StatementBody>().field_decl()),false>{});
             v(v, "func_decl",visitor_tag<decltype(std::declval<StatementBody>().func_decl()),false>{});
             v(v, "if_statement",visitor_tag<decltype(std::declval<StatementBody>().if_statement()),false>{});
+            v(v, "import_decl",visitor_tag<decltype(std::declval<StatementBody>().import_decl()),false>{});
             v(v, "init_check",visitor_tag<decltype(std::declval<StatementBody>().init_check()),false>{});
             v(v, "loop",visitor_tag<decltype(std::declval<StatementBody>().loop()),false>{});
             v(v, "lowered_statements",visitor_tag<decltype(std::declval<StatementBody>().lowered_statements()),false>{});
             v(v, "match_branch",visitor_tag<decltype(std::declval<StatementBody>().match_branch()),false>{});
             v(v, "match_statement",visitor_tag<decltype(std::declval<StatementBody>().match_statement()),false>{});
             v(v, "metadata",visitor_tag<decltype(std::declval<StatementBody>().metadata()),false>{});
-            v(v, "module_name",visitor_tag<decltype(std::declval<StatementBody>().module_name()),false>{});
             v(v, "offset",visitor_tag<decltype(std::declval<StatementBody>().offset()),false>{});
             v(v, "param_decl",visitor_tag<decltype(std::declval<StatementBody>().param_decl()),false>{});
             v(v, "previous_assignment",visitor_tag<decltype(std::declval<StatementBody>().previous_assignment()),false>{});
@@ -3925,7 +3949,7 @@ namespace ebm {
     };
     struct EBM_API DebugInfo{
         Varint len_files;
-        std::vector<String> files;
+        std::vector<StringRef> files;
         Varint len_locs;
         std::vector<Loc> locs;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;

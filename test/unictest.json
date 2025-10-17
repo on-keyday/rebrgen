@@ -1,0 +1,47 @@
+{
+    "runners": [
+        {
+            "name": "ebm2python",
+            "source_setup_command": [
+                "python",
+                "$WORK_DIR/script/unictest.py",
+                "setup",
+                "ebm2python",
+                "py"
+            ],
+            "run_command": [
+                "python",
+                "$WORK_DIR/script/unictest.py",
+                "test",
+                "ebm2python",
+                "py"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "name": "websocket_frame_valid",
+            "binary": "$WORK_DIR/example/wire_data/websocket.dat",
+            "format_name": "Frame",
+            "source": "$WORK_DIR/example/websocket.bgn",
+            "failure_case": false,
+            "hex": true
+        },
+        {
+            "name": "websocket_frame_invalid",
+            "binary": "$WORK_DIR/example/wire_data/websocket.dat",
+            "format_name": "Frame",
+            "source": "$WORK_DIR/example/websocket.bgn",
+            "failure_case": true,
+            "hex": false
+        },
+        {
+            "name": "varint_test",
+            "binary": "$WORK_DIR/example/wire_data/varint.dat",
+            "format_name": "TestVarint",
+            "source": "$WORK_DIR/example/feature_test/varint_test.bgn",
+            "failure_case": false,
+            "hex": true
+        }
+    ]
+}

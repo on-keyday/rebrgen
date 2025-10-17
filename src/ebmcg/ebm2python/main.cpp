@@ -4083,11 +4083,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Statement_IMPORT_MODULE = requires(Visitor v) {
-         { v.visit_Statement_IMPORT_MODULE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().alias(),*std::declval<const ebm::StatementBody&>().module_name()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Statement_IMPORT_MODULE(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().import_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Statement_IMPORT_MODULE_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().alias(),*std::declval<const ebm::StatementBody&>().module_name()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().import_decl()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Statement_IMPORT_MODULE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
@@ -4126,14 +4126,10 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.alias()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::alias");
+        if (!in.body.import_decl()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::import_decl");
         }
-        auto& alias = *in.body.alias();
-        if (!in.body.module_name()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::module_name");
-        }
-        auto& module_name = *in.body.module_name();
+        auto& import_decl = *in.body.import_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -4170,10 +4166,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_IMPORT_MODULE<Visitor>) {
-            result = visitor.visit_Statement_IMPORT_MODULE(is_nil(alias_ref) ? in.id : alias_ref,kind,alias,module_name);
+            result = visitor.visit_Statement_IMPORT_MODULE(is_nil(alias_ref) ? in.id : alias_ref,kind,import_decl);
         }
         else if constexpr (has_visitor_Statement_IMPORT_MODULE_call<Visitor>) {
-            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,alias,module_name);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,import_decl);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -13403,7 +13399,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_IMPORT_MODULE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IdentifierRef& alias,const ebm::IdentifierRef& module_name) {
+        expected<Result> visit_Statement_IMPORT_MODULE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ImportDecl& import_decl) {
             #if __has_include("visitor/Statement_IMPORT_MODULE_before.hpp")
             #include "visitor/Statement_IMPORT_MODULE_before.hpp"
             #endif

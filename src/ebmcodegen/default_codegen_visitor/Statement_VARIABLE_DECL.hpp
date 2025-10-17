@@ -28,7 +28,7 @@ if (!is_nil(var_decl.initial_value)) {
     auto add = add_writer();
     MAYBE(initial_value_, visit_Expression(*this, var_decl.initial_value));
     MAYBE(got, get_writer());
-    w.write_unformatted(got.out());
+    w.merge(std::move(got));
     initial_value = initial_value_;
 }
 if (variable_define_keyword.size()) {
@@ -36,7 +36,7 @@ if (variable_define_keyword.size()) {
 }
 w.write(name);
 if (variable_with_type) {
-    w.write(variable_type_separator, " ", type_str_val.to_string());
+    w.write(variable_type_separator, " ", type_str_val.to_writer());
 }
 if (initial_value) {
     w.write(" = ", initial_value->to_string());

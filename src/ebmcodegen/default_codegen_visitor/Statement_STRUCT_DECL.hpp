@@ -38,4 +38,4 @@ w.writeln("struct ", name, " {");
     merge_result(*this, w, block);
 }
 w.writeln("};");
-return w.out();
+return w;

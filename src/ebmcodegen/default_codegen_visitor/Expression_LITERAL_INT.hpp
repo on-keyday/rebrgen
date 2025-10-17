@@ -16,4 +16,4 @@
 // We can use variables like `this` (for Visitor) and `int_value` directly.
 CodeWriter w;
 w.write(std::to_string(int_value.value()));
-return w.out();
+return w;

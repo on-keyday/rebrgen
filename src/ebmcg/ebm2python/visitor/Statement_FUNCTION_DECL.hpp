@@ -47,14 +47,14 @@ if (func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
 else if (func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
     w.writeln("@", func_name, ".setter");
 }
-w.writeln("def ", func_name, "(", params_str, ") -> \"", return_type_str.to_string(), "\":");
+w.writeln("def ", func_name, "(", params_str, ") -> \"", return_type_str.to_writer(), "\":");
 auto scope = w.indent_scope();
 MAYBE(res, visit_Statement(*this, func_decl.body));
-if (res.to_string().empty()) {
+if (res.to_writer().empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }
 else {
     merge_result(*this, w, res);
 }
 
-return w.out();
+return w;

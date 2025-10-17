@@ -19,9 +19,9 @@ MAYBE(right_str, visit_Expression(*this, operand));
 
 auto it = this->alt_unary_op.find(uop);
 if (it != this->alt_unary_op.end()) {
-    w.write("(", it->second, " ", right_str.to_string(), ")");
+    w.write("(", it->second, " ", right_str.to_writer(), ")");
 }
 else {
-    w.write("(", to_string(uop), " ", right_str.to_string(), ")");
+    w.write("(", to_string(uop), " ", right_str.to_writer(), ")");
 }
-return w.out();
+return w;

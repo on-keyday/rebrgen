@@ -20,8 +20,8 @@ if (cast_kind == ebm::CastType::ENUM_TO_INT) {
     CodeWriter w;
     MAYBE(source_expr_str, visit_Expression(*this, source_expr));
     MAYBE(target_type_str, visit_Type(*this, type));
-    w.write(target_type_str.to_string(), "(", source_expr_str.to_string(), ".value)");
-    return w.out();
+    w.write(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ".value)");
+    return w;
 }
 if (module_.get_type_kind(type) == ebm::TypeKind::VARIANT) {
     return visit_Expression(*this, source_expr);

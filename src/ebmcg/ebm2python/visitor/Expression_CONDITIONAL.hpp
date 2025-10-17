@@ -19,4 +19,6 @@ MAYBE(cond_str, visit_Expression(*this, condition));
 MAYBE(then_str, visit_Expression(*this, then));
 MAYBE(else_str, visit_Expression(*this, else_));
 
-return std::format("({} if {} else {})", then_str.to_string(), cond_str.to_string(), else_str.to_string());
+CodeWriter w;
+w.write("(", then_str.to_writer(), " if ", cond_str.to_writer(), " else ", else_str.to_writer(), ")");
+return w;

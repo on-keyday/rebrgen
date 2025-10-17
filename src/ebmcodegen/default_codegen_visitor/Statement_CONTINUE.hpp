@@ -26,4 +26,4 @@ while (!is_nil(loop_ref)) {
 }
 
 w.writeln("continue");
-return w.out();
+return w;

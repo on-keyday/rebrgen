@@ -18,6 +18,6 @@ MAYBE(array, visit_Expression(*this, array_expr));
 
 CodeWriter w;
 
-w.write("builtins.len(", array.to_string(), ")");
+w.write("builtins.len(", array.to_writer(), ")");
 
-return w.out();
+return w;

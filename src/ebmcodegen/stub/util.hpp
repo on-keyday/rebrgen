@@ -208,6 +208,6 @@ namespace ebmcodegen::util {
     }
 
     void merge_result(auto&& visitor, auto& w, auto&& result) {
-        w.write_unformatted(result.to_string());
+        w.merge(std::move(result.to_writer()));
     }
 }  // namespace ebmcodegen::util

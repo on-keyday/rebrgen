@@ -57,4 +57,4 @@ else {
 }
 w.writeln(end_block);
 
-return w.out();
+return w;

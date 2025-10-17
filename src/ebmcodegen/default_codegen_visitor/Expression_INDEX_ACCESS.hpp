@@ -17,4 +17,6 @@
 MAYBE(base_str, visit_Expression(*this, base));
 MAYBE(index_str, visit_Expression(*this, index));
 
-return std::format("{}[{}]", base_str.to_string(), index_str.to_string());
+CodeWriter w;
+w.write(base_str.to_writer(), "[", index_str.to_writer(), "]");
+return w;

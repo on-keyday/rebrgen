@@ -30,14 +30,14 @@ MAYBE(length, sub_byte_range.length());
 MAYBE(length_str, visit_Expression(*this, length));
 
 if (sub_byte_range.stream_type == ebm::StreamType::INPUT) {
-    w.writeln(io_, " = io.BytesIO(", parent_io_, ".read(", length_str.to_string(), "))");
+    w.writeln(io_, " = io.BytesIO(", parent_io_, ".read(", length_str.to_writer(), "))");
 }
 else {
     w.writeln(io_, " = io.BytesIO()");
 }
 merge_result(*this, w, do_io);
 if (sub_byte_range.stream_type == ebm::StreamType::OUTPUT) {
-    w.writeln("assert ", length_str.to_string(), " == builtins.len(", io_, ".getvalue())");
+    w.writeln("assert ", length_str.to_writer(), " == builtins.len(", io_, ".getvalue())");
     w.writeln(parent_io_, ".write(", io_, ".getvalue())");
 }
 

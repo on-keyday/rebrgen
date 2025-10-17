@@ -44,4 +44,7 @@ MAYBE(read_size_str, get_size_str(*this, io_data.size));
 
 auto io_value = module_.get_identifier_or(io_data.io_ref);
 
-return target_expr_str.to_string() + " = struct.unpack(" + struct_format + ", " + io_value + ".read(" + read_size_str + "))[0]\n";
+CodeWriter w;
+
+w.writeln(target_expr_str.to_writer(), " = struct.unpack(", struct_format, ", ", io_value, ".read(", read_size_str, "))[0]");
+return w;

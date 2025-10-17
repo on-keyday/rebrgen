@@ -22,10 +22,10 @@ MAYBE(expect_expr, module_.get_expression(init_check.expect_value));
 MAYBE(init_check_type, visit_Type(*this, expect_expr.body.type));
 CodeWriter w;
 if (init_check.init_check_type == ebm::InitCheckType::encode) {
-    w.writeln("assert isinstance(", init_check_field.to_string(), ", ", init_check_type.to_string(), ")");
+    w.writeln("assert isinstance(", init_check_field.to_writer(), ", ", init_check_type.to_writer(), ")");
 }
 else {
-    w.writeln("if not isinstance(", init_check_field.to_string(), ", ", init_check_type.to_string(), "):");
+    w.writeln("if not isinstance(", init_check_field.to_writer(), ", ", init_check_type.to_writer(), "):");
     {
         auto indent = w.indent_scope();
         if (init_check.init_check_type == ebm::InitCheckType::union_get) {
@@ -33,9 +33,9 @@ else {
         }
         else {
             MAYBE(default_expr, visit_Expression(*this, init_check.expect_value));
-            w.writeln(init_check_field.to_string(), " = ", default_expr.to_string());
+            w.writeln(init_check_field.to_writer(), " = ", default_expr.to_writer());
         }
     }
 }
 
-return w.out();
+return w;

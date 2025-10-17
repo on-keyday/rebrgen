@@ -24,7 +24,7 @@
     if (type.body.kind == ebm::TypeKind::ENCODER_RETURN || type.body.kind == ebm::TypeKind::DECODER_RETURN) {
         MAYBE(init, visit_Expression(*this, var_decl.initial_value));
         CodeWriter w;
-        w.writeln(init.to_string());
-        return w.out();
+        w.writeln(init.to_writer());
+        return w;
     }
 }

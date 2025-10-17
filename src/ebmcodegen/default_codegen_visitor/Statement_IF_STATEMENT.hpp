@@ -26,13 +26,16 @@ else {
     w.writeln("if ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
 }
 auto then_scope = w.indent_scope();
-if (then_block.to_string().empty()) {
+if (then_block.to_writer().empty()) {
     if (empty_block_marker.size()) {
         w.writeln(empty_block_marker);
     }
 }
 else {
     merge_result(*this, w, then_block);
+}
+if (get_id(if_statement.else_block) == 4688) {
+    ;
 }
 then_scope.execute();
 w.write(end_block);
@@ -46,6 +49,7 @@ while (!is_nil(els_block)) {
     if (kind == ebm::StatementKind::IF_STATEMENT) {
         MAYBE(next_if_stmt, module_.get_statement(els_block));
         MAYBE(next_if, next_if_stmt.body.if_statement());
+
         MAYBE(condition, visit_Expression(*this, next_if.condition.cond));
         MAYBE(then_block, visit_Statement(*this, next_if.then_block));
         if (use_brace_for_condition) {
@@ -55,13 +59,13 @@ while (!is_nil(els_block)) {
             w.writeln(if_word, " ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
         }
         auto then_scope = w.indent_scope();
-        if (then_block.to_string().empty()) {
+        if (then_block.to_writer().empty()) {
             if (empty_block_marker.size()) {
                 w.writeln(empty_block_marker);
             }
         }
         else {
-            merge_result(*this, w, then_block);
+            w.write(then_block.to_writer());
         }
         then_scope.execute();
         w.write(end_block);
@@ -74,13 +78,13 @@ while (!is_nil(els_block)) {
         MAYBE(else_block, visit_Statement(*this, els_block));
         w.writeln(begin_block);
         auto else_scope = w.indent_scope();
-        if (else_block.to_string().empty()) {
+        if (else_block.to_writer().empty()) {
             if (empty_block_marker.size()) {
                 w.writeln(empty_block_marker);
             }
         }
         else {
-            merge_result(*this, w, else_block);
+            w.write(else_block.to_writer());
         }
         else_scope.execute();
         w.write(end_block);
@@ -88,4 +92,4 @@ while (!is_nil(els_block)) {
     }
 }
 w.writeln();
-return w.out();
+return w;

@@ -5103,7 +5103,7 @@ namespace ebm2python {
             }
             merge_result(visitor, w, std::move(result.value()));
         }
-        return w.out();
+        return w;
     }
     template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
@@ -9840,7 +9840,7 @@ namespace ebm2python {
             }
             merge_result(visitor, w, std::move(result.value()));
         }
-        return w.out();
+        return w;
     }
     template<typename Visitor>
     expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref = {});
@@ -12624,7 +12624,7 @@ namespace ebm2python {
             }
             merge_result(visitor, w, std::move(result.value()));
         }
-        return w.out();
+        return w;
     }
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";

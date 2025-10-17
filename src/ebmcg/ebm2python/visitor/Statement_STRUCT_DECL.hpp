@@ -32,7 +32,7 @@ CodeWriter w;
 auto name = this->module_.get_identifier_or(item_id);
 
 w.writeln("class ", name, ":");
-size_t size = w.out().size();
+size_t size = w.str_size();
 auto scope = w.indent_scope();
 
 for (auto& field_ref : struct_decl.fields.container) {
@@ -55,7 +55,7 @@ if (!is_nil(struct_decl.decode_fn)) {  // Corrected: Check value() of Varint id
     merge_result(*this, w, res);
 }
 
-if (w.out().size() == size) {
+if (w.str_size() == size) {
     w.writeln("pass");  // If the class body is empty, we just pass
 }
 

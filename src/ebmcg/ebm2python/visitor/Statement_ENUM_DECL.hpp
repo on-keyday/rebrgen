@@ -28,4 +28,4 @@ w.writeln("class ", name, "(enum.Enum)", begin_block);
     merge_result(*this, w, block);
 }
 w.writeln(end_block);
-return w.out();
+return w;

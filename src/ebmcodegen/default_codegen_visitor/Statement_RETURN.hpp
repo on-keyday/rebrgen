@@ -17,11 +17,11 @@ if (!is_nil(value)) {
     auto add = add_writer();
     MAYBE(ret_val, visit_Expression(*this, value));
     MAYBE(got, get_writer());
-    w.write_unformatted(got.out());
-    w.writeln("return ", ret_val.to_string());
+    w.merge(std::move(got));
+    w.writeln("return ", ret_val.to_writer());
 }
 else {
     w.writeln("return");
 }
 
-return w.out();
+return w;

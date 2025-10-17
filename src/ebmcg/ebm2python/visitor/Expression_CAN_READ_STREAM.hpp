@@ -25,4 +25,4 @@ MAYBE(size_str, get_size_str(*this, num_bytes));
 
 CodeWriter w;
 w.write("(builtins.len(", io_val, ".peek(", size_str, ")) == ", size_str, ")");
-return w.out();
+return w;

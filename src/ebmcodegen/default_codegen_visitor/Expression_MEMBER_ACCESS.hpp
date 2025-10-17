@@ -17,4 +17,7 @@
 MAYBE(base_str, visit_Expression(*this, base));
 MAYBE(ident, module_.get_identifier_or(member));
 
-return std::format("{}.{}", base_str.to_string(), ident);
+CodeWriter w;
+w.write(base_str.to_writer(), ".", ident);
+
+return w;

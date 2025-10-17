@@ -43,6 +43,6 @@ MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attr
 
 auto io_value = module_.get_identifier_or(io_data.io_ref);
 
-w.writeln(io_value, ".write(struct.pack(" + struct_format + ", ", target_expr_str.to_string(), "))");
+w.writeln(io_value, ".write(struct.pack(" + struct_format + ", ", target_expr_str.to_writer(), "))");
 
-return w.out();
+return w;

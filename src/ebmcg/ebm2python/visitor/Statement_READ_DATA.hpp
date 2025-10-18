@@ -16,22 +16,24 @@
         endian: Endian
         sign: bool
         is_peek: bool
-        vectorized: bool
+        has_lowered_statement: bool
         reserved: std::uint8_t
         dynamic_ref: *StatementRef
       size: Size
         unit: SizeUnit
         ref: *ExpressionRef
         size: *Varint
-      lowered_statement: LoweredStatementRef
+      lowered_statement: *LoweredIOStatement
+        lowering_type: LoweringIOType
+        io_statement: LoweredStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Expression_READ_DATA function.
 // We can use variables like `this` (for Visitor) and function parameters directly.
 
 // Get the IOData statement object from the io_statement parameter
-if (!is_nil(read_data.lowered_statement.id)) {
-    return visit_Statement(*this, read_data.lowered_statement.id);
+if (auto lw = read_data.lowered_statement()) {
+    return visit_Statement(*this, lw->io_statement.id);
 }
 auto& io_data = read_data;
 // Visit target_expr_obj to get its Python representation

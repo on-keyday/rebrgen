@@ -60,9 +60,8 @@ format IOAttribute:
     endian :Endian
     sign :u1 # 0 for unsigned, 1 for signed 
     is_peek :u1 # 0 for non-peek, 1 for peek 
-    vectorized :u1 # this is marker for several data is into single io data. lowered_statement is a block contains original io data
     has_lowered_statement :u1 # 0 for no lowered statement, 1 for has lowered statement
-    reserved :u1
+    reserved :u2
     if endian == Endian.dynamic:
         dynamic_ref :StatementRef # ref to dynamic endian or null
 
@@ -402,11 +401,17 @@ enum LoweringIOType:
     FLOAT_TO_BYTE_ARRAY # Lower float to byte array representation
     INT_TO_BYTE_ARRAY # Lower integer to byte array representation
     STRUCT_CALL # Lower struct encode/decode call
+    BIT_FIELD_TO_BIT_SHIFT # Lower bit field operations to bit shift and mask operations
+    MULTI_REPRESENTATION # Lower multi-representation field (statement is a LOWERED_IO_STATEMENTS that contains lowering candidates)
+    VECTORIZED_IO # Lower vectorized IO to multiple IO operations
   
 format LoweredIOStatement:
     lowering_type :LoweringIOType # Type of lowering
     io_statement :LoweredStatementRef # Lowered statement
 
+format LoweredIOStatements:
+    len :Varint
+    container :[len.value]LoweredIOStatement
 
 enum StatementKind:
     :u8
@@ -443,10 +448,11 @@ enum StatementKind:
     IMPORT_MODULE
     EXPRESSION # expression statement
     ERROR_REPORT # Explicit error reporting; initial raise of an error
-    LOWERED_STATEMENTS # lowered statements
+    LOWERED_IO_STATEMENTS # lowered io statements
     SUB_BYTE_RANGE
     INIT_CHECK # check the field is initialized for io operation (for example, check whether variant has correct member for this encoding)
     ENDIAN_VARIABLE
+
 
 
 
@@ -599,6 +605,8 @@ format StatementBody:
             init_check :InitCheck
         StatementKind.ENDIAN_VARIABLE:
             endian_variable :EndianVariable
+        StatementKind.LOWERED_IO_STATEMENTS:
+            lowered_io_statements :LoweredIOStatements
 
 format Expressions:
     len :Varint

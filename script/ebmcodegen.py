@@ -40,6 +40,33 @@ with open(os.path.join(OUTPUT_DIR, "CMakeLists.txt"), "wb") as f:
     f.write(CMAKE)
 with open(os.path.join(OUTPUT_DIR, "main.cpp"), "wb") as f:
     f.write(CODE_GENERATOR)
+# add test script file if not exists
+TEST_SCRIPT_PATH = os.path.join(OUTPUT_DIR, "unictest.py")
+if not os.path.exists(TEST_SCRIPT_PATH):
+    with open(TEST_SCRIPT_PATH, "w") as f:
+        f.write("#!/usr/bin/env python3\n")
+        f.write("# Test logic for ebm2" + lang_name + "\n")
+        f.write("import sys\n")
+        f.write("def main():\n")
+        f.write("    TEST_TARGET_FILE = sys.argv[1]\n")
+        f.write("    INPUT_FILE = sys.argv[2]\n")
+        f.write("    OUTPUT_FILE = sys.argv[3]\n")
+        f.write("    TEST_TARGET_FORMAT = sys.argv[4]\n")
+        f.write("    # Test logic goes here\n")
+        f.write(
+            "    print(f'Testing {TEST_TARGET_FILE} with {INPUT_FILE} and {OUTPUT_FILE}')\n"
+        )
+        f.write("    # This is a placeholder for actual test implementation\n")
+        f.write("    with open(INPUT_FILE, 'rb') as f:\n")
+        f.write("        data = f.read()\n")
+        f.write("    # For demonstration, just write the same data to output\n")
+        f.write("    with open(OUTPUT_FILE, 'wb') as f:\n")
+        f.write("        f.write(data)\n")
+        f.write("if __name__ == '__main__':\n")
+        f.write("    main()\n")
+    print(f"Created test script: {TEST_SCRIPT_PATH}")
+else:
+    print(f"Test script already exists: {TEST_SCRIPT_PATH}")
 
 if not os.path.exists(PARENT_CMAKE_PATH):
     os.makedirs(os.path.dirname(PARENT_CMAKE_PATH), exist_ok=True)

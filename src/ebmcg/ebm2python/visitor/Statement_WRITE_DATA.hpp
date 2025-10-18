@@ -16,18 +16,20 @@
         endian: Endian
         sign: bool
         is_peek: bool
-        vectorized: bool
+        has_lowered_statement: bool
         reserved: std::uint8_t
         dynamic_ref: *StatementRef
       size: Size
         unit: SizeUnit
         ref: *ExpressionRef
         size: *Varint
-      lowered_statement: LoweredStatementRef
+      lowered_statement: *LoweredIOStatement
+        lowering_type: LoweringIOType
+        io_statement: LoweredStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-if (!is_nil(write_data.lowered_statement.id)) {
-    return visit_Statement(*this, write_data.lowered_statement.id);
+if (auto lw = write_data.lowered_statement()) {
+    return visit_Statement(*this, lw->io_statement.id);
 }
 
 CodeWriter w;

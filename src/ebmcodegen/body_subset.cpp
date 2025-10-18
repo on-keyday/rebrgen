@@ -25,7 +25,7 @@ namespace ebmcodegen {
             body.import_decl({});
             body.init_check({});
             body.loop({});
-            body.lowered_statements({});
+            body.lowered_io_statements({});
             body.match_branch({});
             body.match_statement({});
             body.metadata({});

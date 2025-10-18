@@ -240,14 +240,14 @@ namespace ebmgen {
 #define EBM_IF_STATEMENT(ref_name, condition__, then_block__, else_block__) \
     EBM_AST_STATEMENT(ref_name, make_if_statement, condition__, then_block__, else_block__)
 
-    ebm::StatementBody make_lowered_statements(ebm::LoweredStatements&& lowered_stmts);
-
-#define EBM_LOWERED_STATEMENTS(ref_name, lowered_stmts__) \
-    EBM_AST_STATEMENT(ref_name, make_lowered_statements, lowered_stmts__)
-
     ebm::StatementBody make_assert_statement(ebm::ExpressionRef condition, ebm::StatementRef lowered_statement);
 #define EBM_ASSERT(ref_name, condition__, lowered_statement__) \
     EBM_AST_STATEMENT(ref_name, make_assert_statement, condition__, lowered_statement__)
+
+    ebm::StatementBody make_lowered_statements(ebm::LoweredIOStatements&& lowered_statements);
+
+#define EBM_LOWERED_IO_STATEMENTS(ref_name, lowered_statements__) \
+    EBM_AST_STATEMENT(ref_name, make_lowered_statements, std::move(lowered_statements__))
 
     ebm::ExpressionBody make_member_access(ebm::TypeRef type, ebm::ExpressionRef base, ebm::ExpressionRef member);
 #define EBM_MEMBER_ACCESS(ref_name, type, base__, member__) \

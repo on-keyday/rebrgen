@@ -1,50 +1,28 @@
+import json
 import os
+import subprocess as sp
 import sys
 import pathlib as pl
 
-mode = sys.argv[1]
-target_command = sys.argv[2]
-file_ext = sys.argv[3]
+try:
+    with open("build_config.json", "r") as f:
+        build_config = json.load(f)
+    print("Loaded build_config.json")
+except FileNotFoundError:
+    print("build_config.json not found")
+    exit(1)
 
-env = os.environ.copy()
+BRGEN_DIR = build_config.get("BRGEN_DIR", "./brgen/")
+TOOL_PATH = pl.Path(BRGEN_DIR) / "tool"
+UNICTEST = TOOL_PATH / "unictest"
+if os.name == "nt":
+    UNICTEST = UNICTEST.with_suffix(".exe")
 
-unictest_env_vars = {k: v for k, v in env.items() if k.startswith("UNICTEST_")}
+TEST_CASE_FILE = "test/unictest.json"
 
-for e in list(unictest_env_vars.keys()):
-    print(f"{e}={unictest_env_vars[e]}")
 
-runner_dir = unictest_env_vars["UNICTEST_RUNNER_DIR"]
-original_workdir = unictest_env_vars["UNICTEST_ORIGINAL_WORKDIR"]
-if mode == "setup":
-    import subprocess as sp
-
-    ebmgen = (pl.Path(original_workdir) / "tool/ebmgen").as_posix()
-    if os.name == "nt":
-        ebmgen += ".exe"
-    input_file = (pl.Path(runner_dir) / "runner_input.ebm").as_posix()
-
-    cmd = [
-        ebmgen,
-        "-i",
-        unictest_env_vars["UNICTEST_SOURCE_FILE"],
-        "-o",
-        input_file,
-    ]
-    print(f"Running command: {' '.join(cmd)}")
-    sp.check_call(cmd)
-
-    ebm2target = (pl.Path(original_workdir) / f"tool/{target_command}").as_posix()
-    if os.name == "nt":
-        ebm2target += ".exe"
-
-    cmd = [
-        ebm2target,
-        "-i",
-        input_file,
-    ]
-    print(f"Running command: {' '.join(cmd)}")
-    output = sp.check_output(cmd)
-
-    output_file = pl.Path(runner_dir) / f"test_target.{file_ext}"
-    with open(output_file, "wb") as f:
-        f.write(output)
+sp.check_call(
+    [UNICTEST.as_posix(), "-c", TEST_CASE_FILE, "--save-tmp-dir", "--clean-tmp"],
+    stdout=sys.stdout,
+    stderr=sys.stderr,
+)

@@ -59,9 +59,9 @@ namespace ebmgen {
     expected<std::vector<CFGTuple>> analyze_lowered(InternalCFGContext& tctx, ebm::StatementRef ref) {
         MAYBE(stmt, tctx.proxy.get_statement(ref));
         std::vector<CFGTuple> lowered;
-        if (auto lw = stmt.body.lowered_statements()) {
+        if (auto lw = stmt.body.lowered_io_statements()) {
             for (auto& r : lw->container) {
-                MAYBE(result, analyze_ref(tctx, r.statement));
+                MAYBE(result, analyze_ref(tctx, r.io_statement.id));
                 lowered.push_back(std::move(result));
             }
         }
@@ -190,8 +190,8 @@ namespace ebmgen {
         else if (stmt.body.kind == ebm::StatementKind::READ_DATA ||
                  stmt.body.kind == ebm::StatementKind::WRITE_DATA) {
             auto io_ = stmt.body.read_data() ? stmt.body.read_data() : stmt.body.write_data();
-            if (!is_nil(io_->lowered_statement.id)) {
-                MAYBE(r, analyze_lowered(tctx, io_->lowered_statement.id));
+            if (auto lw = io_->lowered_statement()) {
+                MAYBE(r, analyze_lowered(tctx, lw->io_statement.id));
                 current->lowered = std::move(r);
             }
             if (!is_nil(io_->target)) {

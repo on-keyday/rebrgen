@@ -4469,15 +4469,15 @@ namespace ebm2python {
         return result;
     }
     template<typename Visitor>
-    concept has_visitor_Statement_LOWERED_STATEMENTS = requires(Visitor v) {
-         { v.visit_Statement_LOWERED_STATEMENTS(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_statements()) } -> std::convertible_to<expected<Result>>;
+    concept has_visitor_Statement_LOWERED_IO_STATEMENTS = requires(Visitor v) {
+         { v.visit_Statement_LOWERED_IO_STATEMENTS(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_io_statements()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    concept has_visitor_Statement_LOWERED_STATEMENTS_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_statements()) } -> std::convertible_to<expected<Result>>;
+    concept has_visitor_Statement_LOWERED_IO_STATEMENTS_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().lowered_io_statements()) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
-    expected<Result> dispatch_Statement_LOWERED_STATEMENTS(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
+    expected<Result> dispatch_Statement_LOWERED_IO_STATEMENTS(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
         #endif
@@ -4495,28 +4495,28 @@ namespace ebm2python {
         #include "visitor/Statement_pre_validate_after.hpp"
         #endif
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate_before.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate_before.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp")
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate_pre_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate_pre_default.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp")
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_pre_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_pre_default.hpp"
         #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_pre_validate.hpp"
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate_post_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate_post_default.hpp"
+        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_post_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_validate_after.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_validate_after.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_after.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.lowered_statements()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::lowered_statements");
+        if (!in.body.lowered_io_statements()) {
+            return unexpect_error("Unexpected null pointer for StatementBody::lowered_io_statements");
         }
-        auto& lowered_statements = *in.body.lowered_statements();
+        auto& lowered_io_statements = *in.body.lowered_io_statements();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -4534,29 +4534,29 @@ namespace ebm2python {
         #include "visitor/Statement_pre_visit_after.hpp"
         #endif
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit_before.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit_before.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp")
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit_pre_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit_pre_default.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp")
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_pre_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_pre_default.hpp"
         #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_pre_visit.hpp"
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit_post_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit_post_default.hpp"
+        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_post_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_visit_after.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_pre_visit_after.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_after.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
-        if constexpr (has_visitor_Statement_LOWERED_STATEMENTS<Visitor>) {
-            result = visitor.visit_Statement_LOWERED_STATEMENTS(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_statements);
+        if constexpr (has_visitor_Statement_LOWERED_IO_STATEMENTS<Visitor>) {
+            result = visitor.visit_Statement_LOWERED_IO_STATEMENTS(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_io_statements);
         }
-        else if constexpr (has_visitor_Statement_LOWERED_STATEMENTS_call<Visitor>) {
-            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_statements);
+        else if constexpr (has_visitor_Statement_LOWERED_IO_STATEMENTS_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_io_statements);
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4575,21 +4575,21 @@ namespace ebm2python {
         #include "visitor/Statement_post_visit_after.hpp"
         #endif
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit_before.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit_before.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp")
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit_pre_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit_pre_default.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp")
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_pre_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_pre_default.hpp"
         #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS_post_visit.hpp"
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit_post_default.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit_post_default.hpp"
+        #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_post_default.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_visit_after.hpp")
-        #include "visitor/Statement_LOWERED_STATEMENTS_post_visit_after.hpp"
+        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_after.hpp")
+        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5070,8 +5070,8 @@ namespace ebm2python {
             return dispatch_Statement_EXPRESSION(visitor,in,alias_ref);
         case ebm::StatementKind::ERROR_REPORT:
             return dispatch_Statement_ERROR_REPORT(visitor,in,alias_ref);
-        case ebm::StatementKind::LOWERED_STATEMENTS:
-            return dispatch_Statement_LOWERED_STATEMENTS(visitor,in,alias_ref);
+        case ebm::StatementKind::LOWERED_IO_STATEMENTS:
+            return dispatch_Statement_LOWERED_IO_STATEMENTS(visitor,in,alias_ref);
         case ebm::StatementKind::SUB_BYTE_RANGE:
             return dispatch_Statement_SUB_BYTE_RANGE(visitor,in,alias_ref);
         case ebm::StatementKind::INIT_CHECK:
@@ -13471,26 +13471,26 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_LOWERED_STATEMENTS(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoweredStatements& lowered_statements) {
-            #if __has_include("visitor/Statement_LOWERED_STATEMENTS_before.hpp")
-            #include "visitor/Statement_LOWERED_STATEMENTS_before.hpp"
+        expected<Result> visit_Statement_LOWERED_IO_STATEMENTS(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoweredIOStatements& lowered_io_statements) {
+            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp")
+            #include "visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp"
             #endif
-            #if __has_include("visitor/Statement_LOWERED_STATEMENTS.hpp")
-            #include "visitor/Statement_LOWERED_STATEMENTS.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS.hpp")
-            #if __has_include("visitor/Statement_LOWERED_STATEMENTS_pre_default.hpp")
-            #include "visitor/Statement_LOWERED_STATEMENTS_pre_default.hpp"
+            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
+            #include "visitor/Statement_LOWERED_IO_STATEMENTS.hpp"
+            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
+            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_default.hpp")
+            #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_default.hpp"
             #endif
-            #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_STATEMENTS.hpp"
-            #if __has_include("visitor/Statement_LOWERED_STATEMENTS_post_default.hpp")
-            #include "visitor/Statement_LOWERED_STATEMENTS_post_default.hpp"
+            #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS.hpp"
+            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_default.hpp")
+            #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_LOWERED_STATEMENTS_after.hpp")
-            #include "visitor/Statement_LOWERED_STATEMENTS_after.hpp"
+            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp")
+            #include "visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_LOWERED_STATEMENTS {}}}}}",get_id(item_id));
+                return std::format("{{{{Unimplemented Statement_LOWERED_IO_STATEMENTS {}}}}}",get_id(item_id));
             }
             #endif
             return {};
@@ -14945,7 +14945,7 @@ namespace ebm2python {
     static_assert(has_visitor_Statement_IMPORT_MODULE<Visitor>, "Visitor does not implement visit_Statement_IMPORT_MODULE");
     static_assert(has_visitor_Statement_EXPRESSION<Visitor>, "Visitor does not implement visit_Statement_EXPRESSION");
     static_assert(has_visitor_Statement_ERROR_REPORT<Visitor>, "Visitor does not implement visit_Statement_ERROR_REPORT");
-    static_assert(has_visitor_Statement_LOWERED_STATEMENTS<Visitor>, "Visitor does not implement visit_Statement_LOWERED_STATEMENTS");
+    static_assert(has_visitor_Statement_LOWERED_IO_STATEMENTS<Visitor>, "Visitor does not implement visit_Statement_LOWERED_IO_STATEMENTS");
     static_assert(has_visitor_Statement_SUB_BYTE_RANGE<Visitor>, "Visitor does not implement visit_Statement_SUB_BYTE_RANGE");
     static_assert(has_visitor_Statement_INIT_CHECK<Visitor>, "Visitor does not implement visit_Statement_INIT_CHECK");
     static_assert(has_visitor_Statement_ENDIAN_VARIABLE<Visitor>, "Visitor does not implement visit_Statement_ENDIAN_VARIABLE");

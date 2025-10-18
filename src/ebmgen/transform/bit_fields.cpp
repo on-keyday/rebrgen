@@ -91,10 +91,8 @@ namespace ebmgen {
                 EBM_INDEX(indexed, u8_t, tmp_buffer, read_offset);
                 auto data = make_io_data(io_ref, indexed, u8_t, {}, get_size(8));
                 MAYBE(lowered, ctx.get_decoder_converter().decode_multi_byte_int_with_fixed_array(io_ref, 1, {}, indexed, u8_t));
-                ebm::LoweredStatements lows;
-                append(lows, make_lowered_statement(ebm::LoweringType::NAIVE, lowered));
-                EBM_LOWERED_STATEMENTS(l, std::move(lows));
-                data.lowered_statement = ebm::LoweredStatementRef{l};
+                data.attribute.has_lowered_statement(true);
+                data.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, lowered));
                 EBM_READ_DATA(read_to_temporary, std::move(data));
                 append(block, read_to_temporary);
                 EBM_INCREMENT(inc, read_offset, count_t);
@@ -184,18 +182,39 @@ namespace ebmgen {
                     }
                     append(block, update_current_bit_offset);
                     EBM_BLOCK(lowered_bit_operation, std::move(block));
-                    if (!is_nil(io_copy.lowered_statement.id)) {
-                        MAYBE(lowered_stmts, tctx.tctx.statement_repository().get(io_copy.lowered_statement.id));
-                        MAYBE(stmts, lowered_stmts.body.lowered_statements());
-                        append(stmts, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_bit_operation));
-                        stmts.container[0].statement;
+                    auto low = io_copy.lowered_statement();
+                    auto bit_shift_to_bit_op = make_lowered_statement(ebm::LoweringIOType::BIT_FIELD_TO_BIT_SHIFT, lowered_bit_operation);
+                    if (low) {
+                        auto node_id = c->original_node;
+                        MAYBE(stmt, tctx.tctx.statement_repository().get(node_id));  // refetch because memory is relocated
+                        MAYBE(io_, get_io(stmt, write));
+                        if (auto low = io_.lowered_statement()) {
+                            if (low->lowering_type == ebm::LoweringIOType::MULTI_REPRESENTATION) {
+                                MAYBE(stmt, tctx.tctx.statement_repository().get(low->io_statement.id));  // refetch because memory is relocated
+                                MAYBE(block, stmt.body.lowered_io_statements());
+                                append(block, bit_shift_to_bit_op);
+                            }
+                            else {
+                                ebm::LoweredIOStatements lows;
+                                append(lows, *low);
+                                append(lows, bit_shift_to_bit_op);
+                                EBM_LOWERED_IO_STATEMENTS(l, std::move(lows));
+                                MAYBE(stmt, tctx.tctx.statement_repository().get(node_id));  // refetch because memory is relocated
+                                MAYBE(io_, get_io(stmt, write));
+                                io_.attribute.has_lowered_statement(true);
+                                io_.lowered_statement(make_lowered_statement(ebm::LoweringIOType::MULTI_REPRESENTATION, l));
+                            }
+                        }
+                        else {
+                            io_.attribute.has_lowered_statement(true);
+                            io_.lowered_statement(bit_shift_to_bit_op);
+                        }
                     }
                     else {
-                        ebm::LoweredStatements block;
-                        append(block, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_bit_operation));
-                        EBM_LOWERED_STATEMENTS(low, std::move(block))
                         MAYBE(stmt, tctx.tctx.statement_repository().get(c->original_node));  // refetch because memory is relocated
-                        get_io(stmt, write)->lowered_statement = ebm::LoweredStatementRef{low};
+                        MAYBE(io_, get_io(stmt, write));
+                        io_.attribute.has_lowered_statement(true);
+                        io_.lowered_statement(bit_shift_to_bit_op);
                     }
                 }
             }

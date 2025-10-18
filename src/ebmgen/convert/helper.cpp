@@ -136,10 +136,10 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::LoweredStatement make_lowered_statement(ebm::LoweringIOType lowering_type, ebm::StatementRef body) {
-        ebm::LoweredStatement lowered;
+    ebm::LoweredIOStatement make_lowered_statement(ebm::LoweringIOType lowering_type, ebm::StatementRef body) {
+        ebm::LoweredIOStatement lowered;
         lowered.lowering_type = lowering_type;
-        lowered.statement = body;
+        lowered.io_statement = ebm::LoweredStatementRef{body};
         return lowered;
     }
 
@@ -165,13 +165,6 @@ namespace ebmgen {
         if_stmt.then_block = then_block;
         if_stmt.else_block = else_block;
         body.if_statement(std::move(if_stmt));
-        return body;
-    }
-
-    ebm::StatementBody make_lowered_statements(ebm::LoweredStatements&& lowered_stmts) {
-        ebm::StatementBody body;
-        body.kind = ebm::StatementKind::LOWERED_STATEMENTS;
-        body.lowered_statements(std::move(lowered_stmts));
         return body;
     }
 
@@ -247,8 +240,14 @@ namespace ebmgen {
             .data_type = data_type,
             .attribute = attr,
             .size = size,
-            .lowered_statement = ebm::LoweredStatementRef{},
         };
+    }
+
+    ebm::StatementBody make_lowered_statements(ebm::LoweredIOStatements&& lowered_statements) {
+        ebm::StatementBody body;
+        body.kind = ebm::StatementKind::LOWERED_IO_STATEMENTS;
+        body.lowered_io_statements(std::move(lowered_statements));
+        return body;
     }
 
     expected<ebm::Size> make_fixed_size(size_t n, ebm::SizeUnit unit) {

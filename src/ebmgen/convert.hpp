@@ -4,7 +4,6 @@
 #include <core/ast/ast.h>
 #include <ebm/extended_binary_module.hpp>
 #include "common.hpp"
-#include "transform/control_flow_graph.hpp"
 namespace ebmgen {
     // Function to convert brgen AST to ExtendedBinaryModule
     // This will be the main entry point for the conversion logic

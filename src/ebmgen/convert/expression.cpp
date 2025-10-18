@@ -163,6 +163,9 @@ namespace ebmgen {
             return convert_expr(identity->expr);
         }
         ebm::ExpressionBody body;
+        if (!node->expr_type) {
+            return unexpect_error("Expression has no type");
+        }
         EBMA_CONVERT_TYPE(type_ref, node->expr_type);
         body.type = type_ref;
 

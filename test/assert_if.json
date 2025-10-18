@@ -1,5 +1,6 @@
 {
-    "condition": "[ .statements[] | select(.body.if_statement) ][0].body.if_statement",
+    "query": "Any{ body.if_statement.then_block->body.kind == 'ERROR_REPORT'}",
+    "condition": ".[0].body.if_statement",
     "struct": "IfStatement",
     "rough": [
         "type",
@@ -27,8 +28,14 @@
                         "array_expr": null
                     },
                     "right": {
-                        "kind": "IDENTIFIER",
-                        "id": null
+                        "kind": "MEMBER_ACCESS",
+                        "base": {
+                            "kind": "SELF"
+                        },
+                        "member": {
+                            "kind": "IDENTIFIER",
+                            "id": null
+                        }
                     }
                 },
                 "uop": "logical_not"

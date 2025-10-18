@@ -55,7 +55,7 @@ namespace ebmgen {
         constexpr auto in_op = str(NodeType::Operator, lit("in"));
         constexpr auto number = str(NodeType::Number, futils::comb2::composite::hex_integer | futils::comb2::composite::dec_integer);
         constexpr auto ident = str(NodeType::Ident, futils::comb2::composite::c_ident&*(((lit(".") | lit("->")) & +futils::comb2::composite::c_ident) | lit("[") & +futils::comb2::composite::dec_integer & +lit("]")));
-        constexpr auto string_lit = str(NodeType::StringLit, futils::comb2::composite::c_str);
+        constexpr auto string_lit = str(NodeType::StringLit, futils::comb2::composite::c_str | futils::comb2::composite::char_str);
         constexpr auto expr_recurse = method_proxy(expr);
         constexpr auto compare_recurse = method_proxy(compare);
         constexpr auto and_recurse = method_proxy(and_expr);

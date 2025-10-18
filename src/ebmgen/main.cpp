@@ -8,6 +8,7 @@
 #include "ebmcodegen/stub/flags.hpp"
 #include "ebmgen/json_printer.hpp"
 #include "ebmgen/mapping.hpp"
+#include "file/file.h"
 #include "file/file_view.h"
 #include "fnet/util/base64.h"
 #include "json/stringer.h"
@@ -17,6 +18,7 @@
 #include "transform/control_flow_graph.hpp"
 #include "unicode/utf/convert.h"
 #include "wrap/argv.h"
+#include "wrap/cin.h"
 #include "wrap/light/string.h"
 #include <file/file_stream.h>  // Required for futils::file::FileStream
 #include <binary/writer.h>     // Required for futils::binary::writer
@@ -77,11 +79,12 @@ struct Flags : futils::cmdline::templ::HelpOption {
         libs2j_path = env_libs2j_path;
         bind_help(ctx);
         ctx.VarString<true>(&input, "input,i", "input file", "FILE");
-        ctx.VarMap(&input_format, "input-format", "input format (default: decided by file extension)", "{json-ast,ebm,bgn}",
+        ctx.VarMap(&input_format, "input-format", "input format (default: decided by file extension)", "{json-ast,ebm,bgn,json-ebm}",
                    std::map<std::string, InputFormat>{
                        {"bgn", InputFormat::BGN},
                        {"ebm", InputFormat::EBM},
                        {"json-ast", InputFormat::JSON_AST},
+                       {"json-ebm", InputFormat::JSON_EBM},
                    });
         ctx.VarString<true>(&output, "output,o", "output file (if -, write to stdout)", "FILE");
         ctx.VarString<true>(&debug_output, "debug-print,d", "debug output file (if -, write to stdout)", "FILE");
@@ -125,6 +128,39 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         cerr << "error: input file is required\n";
         return 1;
     }
+    std::variant<std::monostate, futils::file::MMap, std::string> mmapped_input;
+    std::optional<futils::view::rvec> stdin_data;
+    if (flags.input == "-") {
+        if (flags.interactive) {
+            cerr << "error: interactive mode is not supported for stdin input\n";
+            return 1;
+        }
+        if (flags.input_format == InputFormat::AUTO) {
+            cerr << "error: cannot use auto input format detection for stdin input. please specify --input-format\n";
+            return 1;
+        }
+        auto& in = futils::wrap::cin_wrap().get_file();
+        // try mmap first
+        auto mmapped = in.mmap(futils::file::r_perm);
+        if (!mmapped) {
+            // this means input is not seekable, read all data
+            std::string data;
+            auto ok = in.read_all([&](auto input) {
+                data.append((const char*)input.data(), input.size());
+                return true;
+            });
+            if (!ok) {
+                cerr << "error: failed to read stdin: " << ok.error().template error<std::string>() << '\n';
+                return 1;
+            }
+            mmapped_input = std::move(data);
+            stdin_data = std::get<std::string>(mmapped_input);
+        }
+        else {
+            mmapped_input = std::move(*mmapped);
+            stdin_data = std::get<futils::file::MMap>(mmapped_input).read_view();
+        }
+    }
     ebmgen::verbose_error = flags.verbose;
     if (flags.input_format == InputFormat::AUTO) {
         if (flags.input.ends_with(".bgn")) {
@@ -148,19 +184,27 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     ebm::ExtendedBinaryModule ebm;
     std::optional<ebmgen::Output> out;
     if (flags.input_format == InputFormat::EBM) {
-        futils::file::View view;
-        if (auto res = view.open(flags.input); !res) {
-            cerr << "error: failed to open " << flags.input << ": " << res.error().template error<std::string>() << '\n';
-            return 1;
+        futils::binary::reader r{futils::view::rvec{}};
+        futils::error::Error<> err;
+        if (stdin_data) {
+            r.reset_buffer(*stdin_data);
+            err = ebm.decode(r);
         }
-        if (!view.data()) {
-            cerr << "error: " << "Empty file\n";
-            return 1;
+        else {
+            futils::file::View view;
+            if (auto res = view.open(flags.input); !res) {
+                cerr << "error: failed to open " << flags.input << ": " << res.error().template error<std::string>() << '\n';
+                return 1;
+            }
+            if (!view.data()) {
+                cerr << "error: " << "Empty file\n";
+                return 1;
+            }
+            r.reset_buffer(futils::view::rvec(view));
+            err = ebm.decode(r);
         }
-        futils::binary::reader r{view};
-        auto err = ebm.decode(r);
         if (err) {
-            cerr << "error: failed to load ebm" << err.template error<std::string>() << '\n';
+            cerr << "error: failed to load ebm: " << err.template error<std::string>() << '\n';
             return 1;
         }
         if (!r.empty()) {
@@ -170,7 +214,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         TIMING("load");
     }
     else if (flags.input_format == InputFormat::JSON_EBM) {
-        auto ret = ebmgen::load_json_ebm(flags.input);
+        ebmgen::expected<ebm::ExtendedBinaryModule> ret;
+        if (stdin_data) {
+            ret = ebmgen::decode_json_ebm(*stdin_data);
+        }
+        else {
+            ret = ebmgen::load_json_ebm(flags.input);
+        }
         if (!ret) {
             cerr << "Load Error: " << ret.error().error<std::string>() << '\n';
             return 1;
@@ -184,7 +234,20 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         futils::platform::dll::Func<decltype(libs2j_call)> libs2j_call(libs2j, "libs2j_call");
         ebmgen::expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> ast;  // NOTE: definition order of this `ast` definition is important for `direct ast pass` destructor execution
         if (flags.input_format == InputFormat::BGN) {
-            const char* argv[] = {"libs2j", flags.input.data(), "--no-color", "--print-json", "--print-on-error", nullptr};
+            auto input = flags.input.data();
+            int argc = 5;
+            CAPABILITY capabilities = S2J_CAPABILITY_FILE | S2J_CAPABILITY_IMPORTER | S2J_CAPABILITY_PARSER | S2J_CAPABILITY_AST_JSON | S2J_CAPABILITY_DIRECT_AST_PASS;
+            const char* argv[] = {"libs2j", "--no-color", "--print-json", "--print-on-error", input, nullptr, nullptr, nullptr, nullptr};
+            std::string argv_size;
+            if (stdin_data) {
+                argv[4] = "--sized-argv";
+                argv[5] = (const char*)stdin_data->data();
+                futils::number::to_string(argv_size, stdin_data->size());
+                argv[6] = "--sized-argv-size";
+                argv[7] = argv_size.c_str();
+                capabilities |= S2J_CAPABILITY_ARGV;
+                argc = 8;
+            }
             auto callback = [](const char* data, size_t len, size_t is_error, void* ast_raw) {
                 decltype(ast)* astp = (decltype(ast)*)ast_raw;
                 if (IS_DIRECT_AST_PASS(is_error)) {
@@ -206,14 +269,19 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 cerr << "Failed to load libs2j_call from " << flags.libs2j_path << '\n';
                 return 1;
             }
-            int ret = libs2j_call(5, (char**)argv, S2J_CAPABILITY_FILE | S2J_CAPABILITY_IMPORTER | S2J_CAPABILITY_PARSER | S2J_CAPABILITY_AST_JSON | S2J_CAPABILITY_DIRECT_AST_PASS, +callback, &ast);
+            int ret = libs2j_call(argc, (char**)argv, capabilities, +callback, &ast);
             if (ret != 0) {
                 cerr << "libs2j failed: " << ret << '\n';
                 return 1;
             }
         }
         else {
-            ast = ebmgen::load_json(flags.input, nullptr);
+            if (stdin_data) {
+                ast = ebmgen::load_json_file(*stdin_data, nullptr);
+            }
+            else {
+                ast = ebmgen::load_json(flags.input, nullptr);
+            }
         }
 
         if (!ast) {

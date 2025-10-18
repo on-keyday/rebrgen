@@ -11,4 +11,5 @@ namespace ebmgen {
     expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json(std::string_view input, std::function<void(const char*)> timer_cb);
     expected<std::pair<std::shared_ptr<brgen::ast::Node>, std::vector<std::string>>> load_json_file(futils::view::rvec input, std::function<void(const char*)> timer_cb);
     expected<ebm::ExtendedBinaryModule> load_json_ebm(std::string_view input);
+    expected<ebm::ExtendedBinaryModule> decode_json_ebm(futils::view::rvec input);
 }  // namespace ebmgen

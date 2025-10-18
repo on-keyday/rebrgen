@@ -217,8 +217,8 @@ class EqualityTester:
     def __init__(
         self,
         validator: SchemaValidator,
-        ebm_map: Dict[int, Any] = None,
-        rough: set[str] = False,
+        ebm_map: Dict[int, Any] | None = None,
+        rough: set[str] = set(),
     ):
         self.validator = validator
         self.ebm_map = ebm_map if ebm_map is not None else {}
@@ -379,6 +379,9 @@ def main():
         "--test-case", default=None, help="テストケースJSONファイル(T2)"
     )
     args = parser.parse_args()
+    assert isinstance(args.json_data, str)
+    assert isinstance(args.struct_name, str)
+    assert isinstance(args.test_case, (str, type(None)))
 
     schema_json = json.loads(
         execute(["./tool/ebmcodegen", "--mode", "spec-json"], None, True)
@@ -413,11 +416,39 @@ def main():
                 with open(case, "r", encoding="utf-8") as f:
                     test_case_json = json.load(f)
 
-                # 1. T1 (テスト対象) をjqで抽出
-                target_t1 = json.loads(
-                    execute(
-                        ["jq", test_case_json["condition"]], None, True, data.encode()
+                query = test_case_json.get("query")
+                if query and args.struct_name == "ExtendedBinaryModule":
+                    print("🔍 ebmgen queryを使用して対象データを絞り込みます")
+                    print(f"    - クエリ: {query}")
+                    data = execute(
+                        [
+                            "./tool/ebmgen",
+                            "query",
+                            "-q",
+                            query,
+                            "--query-format",
+                            "json",
+                            "-i",
+                            "-",
+                            "--input-format",
+                            "json-ebm",
+                            "--timing",
+                        ],
+                        None,
+                        True,
+                        input=data.encode(),
                     )
+                    json_data = json.loads(data)
+                    ids = [int(item["id"]) for item in json_data]
+                    print(f"🔍 抽出結果ID: {ids}")
+                else:
+                    data = data.encode()
+
+                # 1. T1 (テスト対象) をjqで抽出
+                print(f"🔍 jqを使用してテスト対象(T1)を抽出中...")
+                print(f"    - 条件: {test_case_json['condition']}")
+                target_t1 = json.loads(
+                    execute(["jq", test_case_json["condition"]], None, True, data)
                 )
 
                 # 2. T2 (テストケース) を取得
@@ -445,8 +476,12 @@ def main():
                     ebm_map = make_EBM_map(data_json)
 
                 print(f"🔬 テストケース '{args.test_case}' を用いて等価性を検証中...")
+                verification_target_info = test_case_json["condition"]
+                if query:
+                    verification_target_info = f"{query} -> {verification_target_info}"
+
                 print(
-                    f"    - T1: '{args.json_data}' の '{test_case_json['condition']}' の結果"
+                    f"    - T1: '{args.json_data}' の '{verification_target_info}' の結果"
                 )
                 print(f"    - T2: '{args.test_case}' の 'case' フィールド")
                 print(f"    - テスト除外フィールド: {",".join(rough_field)}")

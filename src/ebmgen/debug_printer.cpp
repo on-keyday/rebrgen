@@ -93,6 +93,9 @@ namespace ebmgen {
                 print_resolved_reference(*id);
             }
             else if (auto member = expr->body.member()) {
+                auto base = expr->body.base();
+                os_ << " base:";
+                print_resolved_reference(*base);
                 os_ << " member:";
                 print_resolved_reference(*member);
             }
@@ -105,6 +108,10 @@ namespace ebmgen {
             }
             else if (auto lit = expr->body.int_value()) {
                 os_ << " value:" << lit->value();
+            }
+            else if (auto lit = expr->body.type_ref()) {
+                os_ << " ";
+                print_resolved_reference(*lit);
             }
             else if (auto lit = expr->body.char_value()) {
                 std::string v;

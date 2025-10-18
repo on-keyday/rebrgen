@@ -42,10 +42,14 @@ if mode == "setup":
     if os.name == "nt":
         ebm2target += ".exe"
 
+    test_info_file = pl.Path(runner_dir) / "test_info.json"
     cmd = [
         ebm2target,
         "-i",
         ebm_input_file,
+        "--debug-unimplemented",
+        "--test-info",
+        test_info_file.as_posix(),
     ]
     print(f"\nRunning command: {' '.join(cmd)}")
     output = sp.check_output(cmd)
@@ -66,19 +70,23 @@ elif mode == "test":
         pl.Path(original_workdir) / f"src/ebmcg/{target_command}/unictest.py"
     )
     print(f"\nRunning test script: {test_script_file.as_posix()}", flush=True)
-    sp.check_call(
-        [
-            sys.executable,
-            test_script_file.as_posix(),
-            setup_target_file.as_posix(),
-            input_file.as_posix(),
-            output_file.as_posix(),
-            test_format_name,
-        ],
-        env=unictest_env_vars,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    )
+    try:
+        sp.check_call(
+            [
+                sys.executable,
+                test_script_file.as_posix(),
+                setup_target_file.as_posix(),
+                input_file.as_posix(),
+                output_file.as_posix(),
+                test_format_name,
+            ],
+            env=unictest_env_vars,
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+        )
+    except sp.CalledProcessError as e:
+        print(f"Test script failed with return code: {e.returncode}")
+        sys.exit(e.returncode)
     if not output_file.exists():
         print(f"Output file not created: {output_file.as_posix()}")
         sys.exit(1)

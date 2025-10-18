@@ -2,6 +2,7 @@ import subprocess as sp
 import sys
 import os
 import argparse
+import json
 
 parser = argparse.ArgumentParser(description="Generate code generator or interpreter.")
 parser.add_argument("lang_name", help="Language name")
@@ -28,6 +29,7 @@ else:
 
 PARENT_CMAKE_PATH = f"src/{PARENT_DIR_NAME}/CMakeLists.txt"
 OUTPUT_DIR = f"src/{PARENT_DIR_NAME}/ebm2{lang_name}"
+TEST_CONFIG_PATH = "test/unictest.json"
 
 CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
 CODE_GENERATOR = execute([TOOL_PATH, "--mode", mode, "--lang", lang_name], None)
@@ -67,6 +69,39 @@ if not os.path.exists(TEST_SCRIPT_PATH):
     print(f"Created test script: {TEST_SCRIPT_PATH}")
 else:
     print(f"Test script already exists: {TEST_SCRIPT_PATH}")
+
+with open(TEST_CONFIG_PATH, "r") as f:
+    test_config = json.load(f)
+
+runners = test_config.get("runners", [])
+
+if not any(r["name"] == "ebm2" + lang_name for r in runners):
+    new_name = "ebm2" + lang_name
+    new_runner = {
+        "name": new_name,
+        "source_setup_command": [
+            "python",
+            "$WORK_DIR/script/unictest_setup.py",
+            "setup",
+            new_name,
+            "txt",
+        ],
+        "run_command": [
+            "python",
+            "$WORK_DIR/script/unictest_setup.py",
+            "test",
+            new_name,
+            "txt",
+        ],
+    }
+    runners.append(new_runner)
+    test_config["runners"] = runners
+    with open(TEST_CONFIG_PATH, "w") as f:
+        json.dump(test_config, f, indent=4)
+    print(f"Added runner for ebm2{lang_name} to {TEST_CONFIG_PATH}")
+else:
+    print(f"Runner for ebm2{lang_name} already exists in {TEST_CONFIG_PATH}")
+
 
 if not os.path.exists(PARENT_CMAKE_PATH):
     os.makedirs(os.path.dirname(PARENT_CMAKE_PATH), exist_ok=True)

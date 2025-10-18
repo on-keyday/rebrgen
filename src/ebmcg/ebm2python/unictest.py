@@ -15,7 +15,7 @@ def main():
     # Make stub python module that
     os.makedirs("ebm_python_module", exist_ok=True)
     with open(f"ebm_python_module/__init__.py", "w") as f:
-        f.write("# Stub ebm_python_module\n")
+        f.write(f"from .test_target import {TEST_TARGET_FORMAT}\n")
     # copy test_target to stub module
     with open(TEST_TARGET_FILE, "rb") as f_src:
         with open(
@@ -35,9 +35,17 @@ def main():
         f.write("       data = f.read()\n")
         f.write("       data = io.BytesIO(data)\n")
         f.write(f"    target = {TEST_TARGET_FORMAT}()\n")
-        f.write("    target.decode(data)\n")
+        f.write("    try:")
+        f.write("       target.decode(data)\n")
+        f.write("    except Exception as e:\n")
+        f.write("       print(f'Error during decoding: {e}')\n")
+        f.write("       sys.exit(10) # for testing purposes\n")
         f.write("    data = io.BytesIO()\n")
-        f.write("    target.encode(data)\n")
+        f.write("    try:\n")
+        f.write("       target.encode(data)\n")
+        f.write("    except Exception as e:\n")
+        f.write("       print(f'Error during encoding: {e}')\n")
+        f.write("       sys.exit(20) # for testing purposes\n")
         f.write("    with open(sys.argv[2], 'wb') as f:\n")
         f.write("        f.write(data.getvalue())\n")
         f.write("    print('Test completed successfully.')\n")
@@ -45,17 +53,21 @@ def main():
         f.write("    main()\n")
     # Run the test script
     print(f"\nRunning test script: test_script.py", flush=True)
-    sp.check_call(
-        [
-            sys.executable,
-            "test_script.py",
-            INPUT_FILE,
-            OUTPUT_FILE,
-        ],
-        env=os.environ,
-        stdout=sys.stdout,
-        stderr=sys.stderr,
-    )
+    try:
+        sp.check_call(
+            [
+                sys.executable,
+                "test_script.py",
+                INPUT_FILE,
+                OUTPUT_FILE,
+            ],
+            env=os.environ,
+            stdout=sys.stdout,
+            stderr=sys.stderr,
+        )
+    except sp.CalledProcessError as e:
+        print(f"Test script failed with return code: {e.returncode}")
+        sys.exit(e.returncode)
 
 
 if __name__ == "__main__":

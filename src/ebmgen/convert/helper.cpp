@@ -136,7 +136,7 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::LoweredStatement make_lowered_statement(ebm::LoweringType lowering_type, ebm::StatementRef body) {
+    ebm::LoweredStatement make_lowered_statement(ebm::LoweringIOType lowering_type, ebm::StatementRef body) {
         ebm::LoweredStatement lowered;
         lowered.lowering_type = lowering_type;
         lowered.statement = body;

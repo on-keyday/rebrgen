@@ -683,12 +683,12 @@ namespace ebmgen {
         expected<ebm::StatementRef> encode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef from, ebm::TypeRef cast_from);
 
        private:
-        expected<void> encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> encode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<void> encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<void> encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> encode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> encode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<void> encode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> encode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
     };
 
     struct DecoderConverter {
@@ -697,12 +697,12 @@ namespace ebmgen {
         expected<ebm::StatementRef> decode_multi_byte_int_with_fixed_array(ebm::StatementRef io_ref, size_t n, ebm::IOAttribute endian, ebm::ExpressionRef to, ebm::TypeRef cast_to);
 
        private:
-        expected<void> decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> decode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> decode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<void> decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
-        expected<void> decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts);
-        expected<void> decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field);
+        expected<void> decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> decode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> decode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<void> decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
+        expected<void> decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref);
+        expected<void> decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field);
     };
 
     struct TypeConverter {

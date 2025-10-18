@@ -551,6 +551,18 @@ namespace ebmgen {
                             return ExecutionResult::Success;
                         };
                     }
+                    if (t->token == "true") {
+                        return [](EvalContext& ctx) {
+                            ctx.stack.push_back(EvalValue{true});
+                            return ExecutionResult::Success;
+                        };
+                    }
+                    if (t->token == "false") {
+                        return [](EvalContext& ctx) {
+                            ctx.stack.push_back(EvalValue{false});
+                            return ExecutionResult::Success;
+                        };
+                    }
                     auto per_pointer = futils::strutil::split<std::string>(t->token, "->");
                     object.related_identifiers.insert(per_pointer[0]);
                     return [this, per_pointer](EvalContext& ctx) {

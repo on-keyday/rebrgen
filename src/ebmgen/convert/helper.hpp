@@ -229,7 +229,7 @@ namespace ebmgen {
         ref_name = array_size_ref____;                                                  \
     }
 
-    ebm::LoweredStatement make_lowered_statement(ebm::LoweringType lowering_type, ebm::StatementRef body);
+    ebm::LoweredIOStatement make_lowered_statement(ebm::LoweringIOType lowering_type, ebm::StatementRef body);
 
     ebm::StatementBody make_error_report(ebm::StringRef message, ebm::Expressions&& arguments);
 

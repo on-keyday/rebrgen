@@ -7,6 +7,14 @@ from typing import Any, Dict, List
 import os
 import subprocess as sp
 
+# coding: utf-8
+
+LANG: Dict[str, str] = {}
+
+
+def format_lang(key: str, values: Dict[str, Any] = {}) -> str:
+    return LANG[key].format(**values)
+
 
 # --- 既存のクラス (変更なし) ---
 class ValidationError(Exception):
@@ -69,7 +77,9 @@ class SchemaValidator:
         """
         if root_struct_name not in self.structs:
             raise ValidationError(
-                f"ルート構造体 '{root_struct_name}' がスキーマに見つかりません。"
+                format_lang(
+                    "root_struct_not_found", {"root_struct_name": root_struct_name}
+                )
             )
         self._validate_object(
             data, root_struct_name, path=root_struct_name, rough=rough, strict=strict
@@ -91,7 +101,9 @@ class SchemaValidator:
                 data = {"len": len(data), "container": data}
             else:
                 raise ValidationError(
-                    f"パス '{path}' はオブジェクトであるべきですが、型が異なります。{type(data)}"
+                    format_lang(
+                        "path_should_be_object", {"path": path, "type": type(data)}
+                    )
                 )
 
         active_field_names: set[str]
@@ -100,11 +112,24 @@ class SchemaValidator:
             kind_value = data.get("kind")
             if kind_value is None:
                 raise ValidationError(
-                    f"パス '{path}' は 'kind' フィールドを持つべきですが、見つかりません。 (有効な値: {",".join(self.subsets[struct_name].keys())})"
+                    format_lang(
+                        "path_should_have_kind",
+                        {
+                            "path": path,
+                            "valid_values": ",".join(self.subsets[struct_name].keys()),
+                        },
+                    )
                 )
             if kind_value not in self.subsets[struct_name]:
                 raise ValidationError(
-                    f"パス '{path}' の 'kind' の値 '{kind_value}' は不正です。(有効な値: {",".join(self.subsets[struct_name].keys())})"
+                    format_lang(
+                        "invalid_kind_value",
+                        {
+                            "path": path,
+                            "kind_value": kind_value,
+                            "valid_values": ",".join(self.subsets[struct_name].keys()),
+                        },
+                    )
                 )
             active_field_names = set(self.subsets[struct_name][kind_value])
             subset_used = True
@@ -115,7 +140,10 @@ class SchemaValidator:
         extra_fields = set(data.keys()) - active_field_names
         if extra_fields:
             raise ValidationError(
-                f"パス '{path}' に不正なフィールドがあります: {', '.join(extra_fields)}"
+                format_lang(
+                    "invalid_field",
+                    {"path": path, "extra_fields": ", ".join(extra_fields)},
+                )
             )
 
         for field_name in sorted(list(active_field_names)):
@@ -127,7 +155,10 @@ class SchemaValidator:
 
             if not is_pointer and not is_present:
                 raise ValidationError(
-                    f"パス '{path}' に必須フィールド '{field_name}' がありません。"
+                    format_lang(
+                        "missing_required_field",
+                        {"path": path, "field_name": field_name},
+                    )
                 )
 
             if is_present:
@@ -139,7 +170,10 @@ class SchemaValidator:
                 if is_array:
                     if not isinstance(value, list):
                         raise ValidationError(
-                            f"パス '{new_path}' は配列であるべきですが、型が異なります。{type(value)}"
+                            format_lang(
+                                "path_should_be_array",
+                                {"new_path": new_path, "type": type(value)},
+                            )
                         )
                     for i, item in enumerate(value):
                         self._validate_value(
@@ -160,8 +194,15 @@ class SchemaValidator:
             valid_members = self.enums[type_name]["members_set"]
             if not isinstance(value, str) or value not in valid_members:
                 raise ValidationError(
-                    f"パス '{path}' の値 '{value}' は Enum '{type_name}' のメンバーではありません。"
-                    f" (有効な値: {', '.join(sorted(list(valid_members)))})"
+                    format_lang(
+                        "not_enum_member",
+                        {
+                            "path": path,
+                            "value": value,
+                            "type_name": type_name,
+                            "valid_values": ", ".join(sorted(list(valid_members))),
+                        },
+                    )
                 )
         elif type_name.endswith("Ref") or type_name == "AnyRef":
             if isinstance(value, dict):
@@ -172,32 +213,44 @@ class SchemaValidator:
                     )
                 else:
                     raise ValidationError(
-                        f"パス '{path}' の型 '{type_name}' はオブジェクトを持つことができません。"
+                        format_lang(
+                            "type_cannot_have_object",
+                            {"path": path, "type_name": type_name},
+                        )
                     )
             elif not strict and value is None:
                 pass  # nullの場合,この部分は比較対象外なので除外
             elif not isinstance(value, int):
                 raise ValidationError(
-                    f"パス '{path}' はオブジェクトまたは整数であるべきですが、型が異なります。{type(value)}"
+                    format_lang(
+                        "path_should_be_object_or_int",
+                        {"path": path, "type": type(value)},
+                    )
                 )
         elif type_name in ("std::uint8_t", "std::uint64_t", "Varint"):
             if not isinstance(value, int):
                 raise ValidationError(
-                    f"パス '{path}' は整数であるべきですが、型が異なります。{type(value)}"
+                    format_lang(
+                        "path_should_be_int", {"path": path, "type": type(value)}
+                    )
                 )
         elif type_name == "bool":
             if not isinstance(value, bool):
                 raise ValidationError(
-                    f"パス '{path}' はブール値であるべきですが、型が異なります。{type(value)}"
+                    format_lang(
+                        "path_should_be_bool", {"path": path, "type": type(value)}
+                    )
                 )
         elif type_name == "std::string":
             if not isinstance(value, str):
                 raise ValidationError(
-                    f"パス '{path}' は文字列であるべきですが、型が異なります。{type(value)}"
+                    format_lang(
+                        "path_should_be_string", {"path": path, "type": type(value)}
+                    )
                 )
         else:
             raise ValidationError(
-                f"パス '{path}' のスキーマで定義されている型 '{type_name}' は不明な型です。"
+                format_lang("unknown_type", {"path": path, "type_name": type_name})
             )
 
 
@@ -243,7 +296,10 @@ class EqualityTester:
         # その他のプリミティブ型やEnumの場合
         if t1_val != t2_val:
             raise EqualityError(
-                f"パス '{path}' の値が異なります: T1=`{t1_val}`, T2=`{t2_val}`"
+                format_lang(
+                    "values_not_equal",
+                    {"path": path, "t1_val": t1_val, "t2_val": t2_val},
+                )
             )
 
     def _compare_ref(self, t1_ref: Any, t2_ref: Any, type_name: str, path: str):
@@ -267,24 +323,40 @@ class EqualityTester:
             elif isinstance(t2_ref, int):  # T2が数値ならT1のIDと比較
                 if t1_ref != t2_ref:
                     raise EqualityError(
-                        f"パス '{path}' のIDが異なります: T1 ID=`{t1_ref}`, T2 ID=`{t2_ref}`"
+                        format_lang(
+                            "ids_not_equal",
+                            {"path": path, "t1_ref": t1_ref, "t2_ref": t2_ref},
+                        )
                     )
             else:
                 raise EqualityError(
-                    f"パス '{path}' で型の不整合: T1はオブジェクトですが、T2は不正な型です。{type(resolved_t1)} vs {type(t2_ref)}"
+                    format_lang(
+                        "type_mismatch_t1_object",
+                        {
+                            "path": path,
+                            "t1_type": type(resolved_t1),
+                            "t2_type": type(t2_ref),
+                        },
+                    )
                 )
         # T1(解決後)が数値の場合
         elif isinstance(resolved_t1, int):
             if not isinstance(t2_ref, int):
                 raise EqualityError(
-                    f"パス '{path}' で型の不整合: T1は数値ですが、T2はオブジェクトです。{resolved_t1} vs {t2_ref}"
+                    format_lang(
+                        "type_mismatch_t1_numeric",
+                        {"path": path, "t1_val": resolved_t1, "t2_val": t2_ref},
+                    )
                 )
             if resolved_t1 != t2_ref:
                 raise EqualityError(
-                    f"パス '{path}' のRef値が異なります: T1=`{resolved_t1}`, T2=`{t2_ref}`"
+                    format_lang(
+                        "ref_values_not_equal",
+                        {"path": path, "t1_val": resolved_t1, "t2_val": t2_ref},
+                    )
                 )
         else:
-            raise EqualityError(f"パス '{path}' のT1の値の型が不正です。")
+            raise EqualityError(format_lang("invalid_t1_value_type", {"path": path}))
 
     def _compare_object(self, t1_obj: Any, t2_obj: Any, struct_name: str, path: str):
         """オブジェクト（辞書）を再帰的に比較する"""
@@ -298,7 +370,10 @@ class EqualityTester:
             t2_obj = {"len": len(t2_obj), "container": t2_obj}
         if not isinstance(t1_obj, dict) or not isinstance(t2_obj, dict):
             raise EqualityError(
-                f"パス '{path}' のどちらかまたは両方がオブジェクトではありません。{type(t1_obj)} vs {type(t2_obj)}"
+                format_lang(
+                    "not_object",
+                    {"path": path, "t1_type": type(t1_obj), "t2_type": type(t2_obj)},
+                )
             )
 
         active_field_names: set[str]
@@ -308,11 +383,16 @@ class EqualityTester:
             t2_kind = t2_obj.get("kind")
             if t1_kind != t2_kind:
                 raise EqualityError(
-                    f"パス '{path}' の 'kind' が異なります: T1=`{t1_kind}`, T2=`{t2_kind}`"
+                    format_lang(
+                        "kind_mismatch",
+                        {"path": path, "t1_kind": t1_kind, "t2_kind": t2_kind},
+                    )
                 )
             if t1_kind not in self.validator.subsets[struct_name]:
                 raise EqualityError(
-                    f"パス '{path}' の 'kind' '{t1_kind}' はスキーマに存在しません。"
+                    format_lang(
+                        "kind_not_in_schema", {"path": path, "t1_kind": t1_kind}
+                    )
                 )
             active_field_names = set(self.validator.subsets[struct_name][t1_kind])
             path = f"{path}({t1_kind})"
@@ -338,11 +418,18 @@ class EqualityTester:
             if field_def.get("is_array", False):
                 if not isinstance(t1_val, list) or not isinstance(t2_val, list):
                     raise EqualityError(
-                        f"パス '{new_path}' のどちらかが配列ではありません。"
+                        format_lang("not_array", {"new_path": new_path})
                     )
                 if len(t1_val) != len(t2_val):
                     raise EqualityError(
-                        f"パス '{new_path}' の配列の長さが異なります: T1は{len(t1_val)}個, T2は{len(t2_val)}個"
+                        format_lang(
+                            "array_length_mismatch",
+                            {
+                                "new_path": new_path,
+                                "t1_len": len(t1_val),
+                                "t2_len": len(t2_val),
+                            },
+                        )
                     )
                 for i, (t1_item, t2_item) in enumerate(zip(t1_val, t2_val)):
                     self._compare_value(
@@ -370,16 +457,29 @@ from util import execute
 # --- main関数を修正 ---
 def main():
     """CLIのエントリーポイント"""
-    parser = argparse.ArgumentParser(
-        description="JSONデータが指定されたスキーマに準拠しているかを検証します。"
+    LANG_ENV = os.environ.get("EBMTEST_LANG", "en")
+    lang_path = os.path.join(
+        os.path.dirname(__file__), f"ebmtest_lang_config.{LANG_ENV}.json"
     )
-    parser.add_argument("json_data", help="検証対象のJSONファイル (T1の元データ)")
-    parser.add_argument("struct_name", help="検証の起点となるルート構造体名")
-    parser.add_argument(
-        "--test-case", default=None, help="テストケースJSONファイル(T2)"
-    )
+    with open(lang_path, "r", encoding="utf-8") as f:
+        global LANG
+        LANG.update(json.load(f))
+
+    parser = argparse.ArgumentParser(description=LANG["cli_description"])
+    parser.add_argument("test_data", help=LANG["test_data_help"])
+    parser.add_argument("struct_name", help=LANG["struct_name_help"])
+    parser.add_argument("--test-case", default=None, help=LANG["test_case_help"])
+    parser.add_argument("--lang", default="en", help="言語設定 (en, ja)")
     args = parser.parse_args()
-    assert isinstance(args.json_data, str)
+
+    if args.lang != LANG_ENV:
+        lang_path = os.path.join(
+            os.path.dirname(__file__), f"ebmtest_lang_config.{args.lang}.json"
+        )
+        with open(lang_path, "r", encoding="utf-8") as f:
+            LANG.update(json.load(f))
+
+    assert isinstance(args.test_data, str)
     assert isinstance(args.struct_name, str)
     assert isinstance(args.test_case, (str, type(None)))
 
@@ -388,29 +488,53 @@ def main():
     )
 
     try:
-        with open(args.json_data, "r", encoding="utf-8") as f:
-            data = f.read()
-            data_json = json.loads(data)
+        # test_dataのsuffixが.ebmの場合、ebmgenでjson-ebmに変換
+        if args.test_data.endswith(".ebm"):
+            print(format_lang("converting_to_json_ebm", {"test_data": args.test_data}))
+            data = execute(
+                [
+                    "./tool/ebmgen",
+                    "-i",
+                    args.test_data,
+                    "--input-format",
+                    "ebm",
+                    "-d",
+                    "-",
+                    "--debug-format",
+                    "json",
+                ],
+                None,
+                True,
+            )
+        else:
+            with open(args.test_data, "r", encoding="utf-8") as f:
+                data = f.read()
+        data_json = json.loads(data)
     except FileNotFoundError as e:
-        print(f"エラー: ファイルが見つかりません: {e.filename}", file=sys.stderr)
+        print(format_lang("file_not_found", {"filename": e.filename}), file=sys.stderr)
         sys.exit(1)
     except json.JSONDecodeError as e:
-        print(f"エラー: JSONの解析に失敗しました: {e}", file=sys.stderr)
+        print(format_lang("json_parse_error", {"error": e}), file=sys.stderr)
         sys.exit(1)
 
     try:
         validator = SchemaValidator(schema_json)
         print(
-            f"🔬 ファイル '{args.json_data}' が '{args.struct_name}' スキーマに準拠しているか検証中..."
+            format_lang(
+                "validating_schema",
+                {"test_data": args.test_data, "struct_name": args.struct_name},
+            )
         )
         validator.validate(data_json, args.struct_name, strict=True)
-        print("✅ 検証成功: スキーマに準拠しています。")
+        print(LANG["validation_success"])
 
         if args.test_case:
             # --- テストケース実行ロジック ---
             test_cases: list[str] = [args.test_case]
             if os.path.isdir(args.test_case):
-                test_cases = os.listdir(args.test_case)
+                test_cases = [
+                    os.path.join(args.test_case, f) for f in os.listdir(args.test_case)
+                ]
             for case in test_cases:
                 print("-" * 20)
                 with open(case, "r", encoding="utf-8") as f:
@@ -418,8 +542,8 @@ def main():
 
                 query = test_case_json.get("query")
                 if query and args.struct_name == "ExtendedBinaryModule":
-                    print("🔍 ebmgen queryを使用して対象データを絞り込みます")
-                    print(f"    - クエリ: {query}")
+                    print(LANG["filtering_data_with_query"])
+                    print(format_lang("query", {"query": query}))
                     data = execute(
                         [
                             "./tool/ebmgen",
@@ -429,24 +553,23 @@ def main():
                             "--query-format",
                             "json",
                             "-i",
-                            "-",
-                            "--input-format",
-                            "json-ebm",
+                            args.test_data,
                             "--timing",
                         ],
                         None,
                         True,
-                        input=data.encode(),
                     )
                     json_data = json.loads(data)
                     ids = [int(item["id"]) for item in json_data]
-                    print(f"🔍 抽出結果ID: {ids}")
+                    print(format_lang("extracted_ids", {"ids": ids}))
                 else:
                     data = data.encode()
 
                 # 1. T1 (テスト対象) をjqで抽出
-                print(f"🔍 jqを使用してテスト対象(T1)を抽出中...")
-                print(f"    - 条件: {test_case_json['condition']}")
+                print(LANG["extracting_t1_with_jq"])
+                print(
+                    format_lang("condition", {"condition": test_case_json["condition"]})
+                )
                 target_t1 = json.loads(
                     execute(["jq", test_case_json["condition"]], None, True, data)
                 )
@@ -458,47 +581,81 @@ def main():
 
                 # ---【復活させた検証部分 1/2】テストケース(T2)自体のスキーマ検証 ---
                 print(
-                    f"🔬 テストケース '{args.test_case}' の 'case' が '{struct_to_compare}' スキーマに準拠しているか検証中..."
+                    format_lang(
+                        "validating_test_case_schema",
+                        {
+                            "test_case": args.test_case,
+                            "struct_to_compare": struct_to_compare,
+                        },
+                    )
                 )
                 validator.validate(case_t2, struct_to_compare, rough_field)
-                print(f"✅ 検証成功: テストケースはスキーマに準拠しています。")
+                print(LANG["test_case_validation_success"])
 
-                # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
-                print(
-                    f"🔬 テスト対象(T1)が '{struct_to_compare}' スキーマに準拠しているか検証中..."
-                )
-                validator.validate(target_t1, struct_to_compare)
-                print("✅ 検証成功: テスト対象はスキーマに準拠しています。")
+                if not isinstance(target_t1, list):
+                    target_t1 = [target_t1]
 
-                # 3. ebm_mapを作成 (必要な場合)
-                ebm_map = None
-                if args.struct_name == "ExtendedBinaryModule":
-                    ebm_map = make_EBM_map(data_json)
+                for i, target_t1_instance in enumerate(target_t1):
+                    print(
+                        format_lang(
+                            "validating_instance",
+                            {"index": i + 1, "total": len(target_t1)},
+                        )
+                    )
 
-                print(f"🔬 テストケース '{args.test_case}' を用いて等価性を検証中...")
-                verification_target_info = test_case_json["condition"]
-                if query:
-                    verification_target_info = f"{query} -> {verification_target_info}"
+                    # ---【復活させた検証部分 2/2】テスト対象(T1)のスキーマ検証 ---
+                    print(
+                        format_lang(
+                            "validating_t1_schema",
+                            {"struct_to_compare": struct_to_compare},
+                        )
+                    )
+                    validator.validate(target_t1_instance, struct_to_compare)
+                    print(LANG["t1_validation_success"])
 
-                print(
-                    f"    - T1: '{args.json_data}' の '{verification_target_info}' の結果"
-                )
-                print(f"    - T2: '{args.test_case}' の 'case' フィールド")
-                print(f"    - テスト除外フィールド: {",".join(rough_field)}")
+                    # 3. ebm_mapを作成 (必要な場合)
+                    ebm_map = None
+                    if args.struct_name == "ExtendedBinaryModule":
+                        ebm_map = make_EBM_map(data_json)
 
-                # 4. EqualityTesterで比較
-                tester = EqualityTester(validator, ebm_map, rough_field)
-                tester.compare(target_t1, case_t2, struct_to_compare)
+                    print(
+                        format_lang(
+                            "validating_equality", {"test_case": args.test_case}
+                        )
+                    )
+                    verification_target_info = test_case_json["condition"]
+                    if query:
+                        verification_target_info = (
+                            f"{query} -> {verification_target_info}"
+                        )
 
-                print(
-                    "✅ 等価性検証成功: テスト対象(T1)とテストケース(T2)は意味的に等しいです。"
-                )
+                    verification_target_info += f" ({1 + i}/{len(target_t1)})"
+                    print(
+                        format_lang(
+                            "t1_info",
+                            {
+                                "test_data": args.test_data,
+                                "verification_target_info": verification_target_info,
+                            },
+                        )
+                    )
+                    print(format_lang("t2_info", {"test_case": args.test_case}))
+                    print(
+                        format_lang(
+                            "excluded_fields", {"rough_field": ",".join(rough_field)}
+                        )
+                    )
+
+                    # 4. EqualityTesterで比較
+                    tester = EqualityTester(validator, ebm_map, rough_field)
+                    tester.compare(target_t1_instance, case_t2, struct_to_compare)
+                    print(LANG["equality_validation_success"])
 
     except (ValidationError, EqualityError) as e:
-        print(f"❌ 検証に失敗しました:\n{e}", file=sys.stderr)
+        print(format_lang("validation_failed", {"error": e}), file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        print(f"予期せぬエラーが発生しました: {e}", file=sys.stderr)
+        print(format_lang("unexpected_error", {"error": e}), file=sys.stderr)
         print(traceback.format_exc(), file=sys.stderr)
         sys.exit(1)
 

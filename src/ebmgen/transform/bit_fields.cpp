@@ -188,6 +188,7 @@ namespace ebmgen {
                         MAYBE(lowered_stmts, tctx.tctx.statement_repository().get(io_copy.lowered_statement.id));
                         MAYBE(stmts, lowered_stmts.body.lowered_statements());
                         append(stmts, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_bit_operation));
+                        stmts.container[0].statement;
                     }
                     else {
                         ebm::LoweredStatements block;

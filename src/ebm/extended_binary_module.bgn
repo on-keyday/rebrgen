@@ -61,7 +61,8 @@ format IOAttribute:
     sign :u1 # 0 for unsigned, 1 for signed 
     is_peek :u1 # 0 for non-peek, 1 for peek 
     vectorized :u1 # this is marker for several data is into single io data. lowered_statement is a block contains original io data
-    reserved :u2
+    has_lowered_statement :u1 # 0 for no lowered statement, 1 for has lowered statement
+    reserved :u1
     if endian == Endian.dynamic:
         dynamic_ref :StatementRef # ref to dynamic endian or null
 
@@ -393,28 +394,18 @@ format Metadata:
     name :IdentifierRef # Metadata name (e.g., "author", "version")
     values :Expressions
 
-enum LoweringType:
+enum LoweringIOType:
     :u8
-    NAIVE # Expressions that have been reduced to the basic level expressions and maybe not well optimized
-    C_LIKE # C-like expressions that can be evaluated in a C context (like direct cast to using cast e.g. (struct iphdr*)ip)
-    BIT_STREAM # bit stream model. normally, generator implicitly assumes byte aligned formats but this supports no alignment requirements. However this kind may provides too complex code that is not human-readable.
-    ASSEMBLY # Assembly-like expressions that can be evaluated in an assembly context (like JUMP)
-
-format LoweredStatement:
-    lowering_type :LoweringType # Type of lowering
-    statement :StatementRef # Lowered statement
-
-format LoweredStatements:
-    len :Varint # Number of lowered statements
-    container :[len.value]LoweredStatement # List of lowered statements
-
-format LoweredExpression:
-    lowering_type :LoweringType # Type of lowered statements
-    expression :ExpressionRef  #  Lowered expression
-
-format LoweredExpressions:
-    len :Varint # Number of lowered expressions
-    container :[len.value]LoweredExpression # List of lowered expressions
+    ENUM_UNDERLYING_TO_INT # Lower enum to its underlying integer type
+    ARRAY_FOR_EACH # Lower for-each loop over array or vector
+    STRING_FOR_EACH # Lower for-each loop over string
+    FLOAT_TO_BYTE_ARRAY # Lower float to byte array representation
+    INT_TO_BYTE_ARRAY # Lower integer to byte array representation
+    STRUCT_CALL # Lower struct encode/decode call
+  
+format LoweredIOStatement:
+    lowering_type :LoweringIOType # Type of lowering
+    io_statement :LoweredStatementRef # Lowered statement
 
 
 enum StatementKind:
@@ -508,7 +499,8 @@ format IOData:
     data_type :TypeRef # Type of the data to read/write
     attribute :IOAttribute # Endianness for write
     size :Size # Size information for read/write
-    lowered_statement :LoweredStatementRef # Optional lowered statements for read/write operations
+    if attribute.has_lowered_statement == 1:
+        lowered_statement :LoweredIOStatement # Optional lowered statements for read/write operations
 
 format Condition:
     cond :ExpressionRef
@@ -601,8 +593,6 @@ format StatementBody:
             error_report :ErrorReport
         StatementKind.EXPRESSION:
             expression :ExpressionRef # Expression statement
-        StatementKind.LOWERED_STATEMENTS:
-            lowered_statements :LoweredStatements # Lowered expressions
         StatementKind.SUB_BYTE_RANGE:
             sub_byte_range :SubByteRange
         StatementKind.INIT_CHECK:

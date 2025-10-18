@@ -82,29 +82,31 @@ namespace ebmgen {
         return block_ref;
     }
 
-    expected<void> DecoderConverter::decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& ity, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
+    expected<void> DecoderConverter::decode_int_type(ebm::IOData& io_desc, const std::shared_ptr<ast::IntType>& ity, ebm::ExpressionRef base_ref) {
         MAYBE(attr, ctx.state().get_io_attribute(ebm::Endian(ity->endian), ity->is_signed));
         io_desc.attribute = attr;
         io_desc.size = get_size(*ity->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
             MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(io_desc.io_ref, *ity->bit_size / 8, attr, base_ref, io_desc.data_type));
-            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
+            io_desc.attribute.has_lowered_statement(true);
+            io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, multi_byte_int));
         }
         return {};
     }
 
-    expected<void> DecoderConverter::decode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& fty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
+    expected<void> DecoderConverter::decode_float_type(ebm::IOData& io_desc, const std::shared_ptr<ast::FloatType>& fty, ebm::ExpressionRef base_ref) {
         MAYBE(attr, ctx.state().get_io_attribute(ebm::Endian(fty->endian), false));
         io_desc.attribute = attr;
         io_desc.size = get_size(*fty->bit_size);
         if (io_desc.size.unit == ebm::SizeUnit::BYTE_FIXED) {
             MAYBE(multi_byte_int, decode_multi_byte_int_with_fixed_array(io_desc.io_ref, *fty->bit_size / 8, attr, base_ref, io_desc.data_type));
-            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, multi_byte_int));
+            io_desc.attribute.has_lowered_statement(true);
+            io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::INT_TO_BYTE_ARRAY, multi_byte_int));
         }
         return {};
     }
 
-    expected<void> DecoderConverter::decode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& ety, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
+    expected<void> DecoderConverter::decode_enum_type(ebm::IOData& io_desc, const std::shared_ptr<ast::EnumType>& ety, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
         if (auto locked_enum = ety->base.lock()) {
             if (locked_enum->base_type) {
                 EBMA_CONVERT_TYPE(to_ty, locked_enum->base_type);
@@ -122,10 +124,8 @@ namespace ebmgen {
                 auto io_data = ctx.repository().get_statement(decode_stmt)->body.read_data();
                 io_desc.attribute = io_data->attribute;
                 io_desc.size = io_data->size;
-                ebm::LoweredStatement lowered;
-                lowered.lowering_type = ebm::LoweringType::NAIVE;
-                lowered.statement = block_ref;
-                append(lowered_stmts, std::move(lowered));
+                io_desc.attribute.has_lowered_statement(true);
+                io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ENUM_UNDERLYING_TO_INT, block_ref));
             }
             else {
                 return unexpect_error("EnumType without base type cannot be used in encoding");
@@ -137,7 +137,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> DecoderConverter::decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
+    expected<void> DecoderConverter::decode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
         EBMA_CONVERT_TYPE(element_type, aty->element_type);
         const auto elem_body = ctx.repository().get_type(element_type);
         const auto is_byte = elem_body->body.kind == ebm::TypeKind::UINT && elem_body->body.size()->value() == 8;
@@ -295,14 +295,16 @@ namespace ebmgen {
             return unexpect_error("Both length and cond_loop are set, which is not allowed; maybe BUG");
         }
         if (cond_loop) {
-            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, *cond_loop));
+            io_desc.attribute.has_lowered_statement(true);
+            io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, *cond_loop));
         }
         else if (length) {
             MAYBE(decode_info, underlying_decoder());
             EBMU_COUNTER_TYPE(counter_type);
             EBM_COUNTER_LOOP_START(counter);
             EBM_COUNTER_LOOP_END(lowered_stmt, counter, *length, decode_info);
-            append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, lowered_stmt));
+            io_desc.attribute.has_lowered_statement(true);
+            io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, lowered_stmt));
         }
         else {
             return unexpect_error("Neither length nor cond_loop is set, which is not allowed; maybe BUG");
@@ -323,7 +325,7 @@ namespace ebmgen {
         return {};
     }
 
-    expected<void> DecoderConverter::decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts) {
+    expected<void> DecoderConverter::decode_str_literal_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StrLiteralType>& typ, ebm::ExpressionRef base_ref) {
         MAYBE(candidate, decode_base64(typ->strong_ref));
 
         EBMU_U8_N_ARRAY(u8_n_array, candidate.size());
@@ -339,11 +341,12 @@ namespace ebmgen {
         append(block, read_ref);
         MAYBE_VOID(ok, compare_string_array(ctx, block, buffer, candidate));
         EBM_BLOCK(block_ref, std::move(block));
-        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));
+        io_desc.attribute.has_lowered_statement(true);
+        io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::STRING_FOR_EACH, block_ref));
         return {};
     }
 
-    expected<void> DecoderConverter::decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, ebm::LoweredStatements& lowered_stmts, const std::shared_ptr<ast::Field>& field) {
+    expected<void> DecoderConverter::decode_struct_type(ebm::IOData& io_desc, const std::shared_ptr<ast::StructType>& typ, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {
         auto base = typ->base.lock();
         auto fmt = ast::as<ast::Format>(base);
         if (!fmt) {
@@ -391,7 +394,8 @@ namespace ebmgen {
         append(block, if_stmt);
         EBM_BLOCK(block_ref, std::move(block));
 
-        append(lowered_stmts, make_lowered_statement(ebm::LoweringType::NAIVE, block_ref));
+        io_desc.attribute.has_lowered_statement(true);
+        io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::STRUCT_CALL, block_ref));
         return {};
     }
 
@@ -403,34 +407,29 @@ namespace ebmgen {
 
         EBMA_CONVERT_TYPE(typ_ref, typ, field);
         ebm::IOData io_desc = make_io_data(cur_encdec.decoder_input_def, base_ref, typ_ref, ebm::IOAttribute{}, ebm::Size{});
-        ebm::LoweredStatements lowered_stmts;  // omit if empty
 
         if (auto ity = ast::as<ast::IntType>(typ)) {
-            MAYBE_VOID(ok, decode_int_type(io_desc, ast::cast_to<ast::IntType>(typ), base_ref, lowered_stmts));
+            MAYBE_VOID(ok, decode_int_type(io_desc, ast::cast_to<ast::IntType>(typ), base_ref));
         }
         else if (auto fty = ast::as<ast::FloatType>(typ)) {
-            MAYBE_VOID(ok, decode_float_type(io_desc, ast::cast_to<ast::FloatType>(typ), base_ref, lowered_stmts));
+            MAYBE_VOID(ok, decode_float_type(io_desc, ast::cast_to<ast::FloatType>(typ), base_ref));
         }
         else if (auto str_lit = ast::as<ast::StrLiteralType>(typ)) {
-            MAYBE_VOID(ok, decode_str_literal_type(io_desc, ast::cast_to<ast::StrLiteralType>(typ), base_ref, lowered_stmts));
+            MAYBE_VOID(ok, decode_str_literal_type(io_desc, ast::cast_to<ast::StrLiteralType>(typ), base_ref));
         }
         else if (auto ety = ast::as<ast::EnumType>(typ)) {
-            MAYBE_VOID(ok, decode_enum_type(io_desc, ast::cast_to<ast::EnumType>(typ), base_ref, lowered_stmts, field));
+            MAYBE_VOID(ok, decode_enum_type(io_desc, ast::cast_to<ast::EnumType>(typ), base_ref, field));
         }
         else if (auto aty = ast::as<ast::ArrayType>(typ)) {
-            MAYBE_VOID(ok, decode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, lowered_stmts, field));
+            MAYBE_VOID(ok, decode_array_type(io_desc, ast::cast_to<ast::ArrayType>(typ), base_ref, field));
         }
         else if (auto sty = ast::as<ast::StructType>(typ)) {
-            MAYBE_VOID(ok, decode_struct_type(io_desc, ast::cast_to<ast::StructType>(typ), base_ref, lowered_stmts, field));
+            MAYBE_VOID(ok, decode_struct_type(io_desc, ast::cast_to<ast::StructType>(typ), base_ref, field));
         }
         else {
             return unexpect_error("Unsupported type for decoding: {}", node_type_to_string(typ->node_type));
         }
         assert(io_desc.size.unit != ebm::SizeUnit::UNKNOWN);
-        if (lowered_stmts.container.size()) {
-            EBM_LOWERED_STATEMENTS(lowered_stmt, std::move(lowered_stmts));
-            io_desc.lowered_statement = ebm::LoweredStatementRef{lowered_stmt};
-        }
         return make_read_data(std::move(io_desc));
     }
 

@@ -1,6 +1,7 @@
 {
-    "query": "Any{ body.if_statement.then_block->body.kind == 'ERROR_REPORT'}",
-    "condition": ".[0].body.if_statement",
+    "description": "Asserts that the size of an array is equal to a specific member variable; if not, reports an error.",
+    "query": "Any{ body.if_statement.then_block->body.kind == 'ERROR_REPORT' and body.if_statement.condition.cond->body.operand->body.left->body.kind == 'ARRAY_SIZE' }",
+    "condition": "[.[].body.if_statement]",
     "struct": "IfStatement",
     "rough": [
         "type",
@@ -27,16 +28,7 @@
                         },
                         "array_expr": null
                     },
-                    "right": {
-                        "kind": "MEMBER_ACCESS",
-                        "base": {
-                            "kind": "SELF"
-                        },
-                        "member": {
-                            "kind": "IDENTIFIER",
-                            "id": null
-                        }
-                    }
+                    "right": null
                 },
                 "uop": "logical_not"
             }

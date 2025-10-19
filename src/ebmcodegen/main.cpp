@@ -110,10 +110,11 @@ constexpr auto suffix_dispatch = indexof(suffixes, "_dispatch");
 constexpr auto suffix_struct = indexof(suffixes, "_struct");
 constexpr auto suffix_bind = indexof(suffixes, "_bind");
 
-constexpr std::string_view prefixes[] = {"entry", "includes", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
+constexpr std::string_view prefixes[] = {"entry", "includes", "pre_visitor", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
 
 constexpr auto prefix_entry = indexof(prefixes, "entry");
 constexpr auto prefix_includes = indexof(prefixes, "includes");
+constexpr auto prefix_pre_visitor = indexof(prefixes, "pre_visitor");
 constexpr auto prefix_pre_entry = indexof(prefixes, "pre_entry");
 constexpr auto prefix_post_entry = indexof(prefixes, "post_entry");
 constexpr auto prefix_visitor = indexof(prefixes, "Visitor");
@@ -927,6 +928,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     w.writeln("DEFINE_ENTRY(Flags,Output) {");
     auto main_scope = w.indent_scope();
+    insert_include(w, prefixes[prefix_pre_visitor]);
     if (flags.mode == GenerateMode::CodeGenerator) {
         w.writeln(ns_name, "::Visitor visitor{ebm,w,flags,output};");
     }
@@ -1002,6 +1004,15 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.writeln("Name: ", flags.template_target);
             w.writeln("Available variables:");
             auto indent2 = w.indent_scope();
+            if (result->target == prefixes[prefix_pre_visitor]) {
+                w.writeln("ebm :ExtendedBinaryModule");
+                w.writeln("flags :Flags");
+                w.writeln("output :Output");
+            }
+            if (result->target == prefixes[prefix_pre_entry] ||
+                result->target == prefixes[prefix_post_entry]) {
+                w.writeln("visitor: Visitor");
+            }
             if (result->target == prefixes[prefix_flags]) {
                 if (result->flags_suffix == suffixes[suffix_bind]) {
                     w.writeln("ctx: futils::cmdline::option::Context&");

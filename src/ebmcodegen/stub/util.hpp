@@ -278,6 +278,17 @@ namespace ebmcodegen::util {
         return ebmgen::unexpect_error("enum type has no members");
     }
 
+    void modify_keyword_identifier(ebm::ExtendedBinaryModule& m, auto&& keyword_list, auto&& change_rule) {
+        for (auto& ident : m.identifiers) {
+            for (auto& kw : keyword_list) {
+                if (ident.body.data == kw) {
+                    ident.body.data = change_rule(ident.body.data);
+                    break;
+                }
+            }
+        }
+    }
+
     template <class CodeWriter>
     auto code_write(auto&&... args) {
         CodeWriter w;

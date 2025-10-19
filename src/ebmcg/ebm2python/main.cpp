@@ -15286,6 +15286,23 @@ namespace ebm2python {
     static_assert(has_visitor_Type_FUNCTION<Visitor>, "Visitor does not implement visit_Type_FUNCTION");
 }  // namespace ebm2python
 DEFINE_ENTRY(Flags,Output) {
+    #if __has_include("visitor/pre_visitor_before.hpp")
+    #include "visitor/pre_visitor_before.hpp"
+    #endif
+    #if __has_include("visitor/pre_visitor.hpp")
+    #include "visitor/pre_visitor.hpp"
+    #elif __has_include("ebmcodegen/default_codegen_visitor/pre_visitor.hpp")
+    #if __has_include("visitor/pre_visitor_pre_default.hpp")
+    #include "visitor/pre_visitor_pre_default.hpp"
+    #endif
+    #include "ebmcodegen/default_codegen_visitor/pre_visitor.hpp"
+    #if __has_include("visitor/pre_visitor_post_default.hpp")
+    #include "visitor/pre_visitor_post_default.hpp"
+    #endif
+    #if __has_include("visitor/pre_visitor_after.hpp")
+    #include "visitor/pre_visitor_after.hpp"
+    #endif
+    #endif
     ebm2python::Visitor visitor{ebm,w,flags,output};
     #if __has_include("visitor/pre_entry_before.hpp")
     #include "visitor/pre_entry_before.hpp"

@@ -90,6 +90,8 @@ namespace ebmgen {
 
         const ebm::Loc* get_debug_loc(const ebm::AnyRef& ref) const;
 
+        void directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name);
+
        private:
         const ebm::ExtendedBinaryModule& module_;
         // Caches for faster lookups
@@ -100,6 +102,7 @@ namespace ebmgen {
         std::unordered_map<std::uint64_t, const ebm::Expression*> expression_map_;
         std::unordered_map<std::uint64_t, std::vector<InverseRef>> inverse_refs_;
         std::unordered_map<ebm::StatementKind, std::string> default_identifier_prefix_;
+        std::unordered_map<std::uint64_t, std::string> statement_identifier_direct_map_;
         std::unordered_map<std::uint64_t, const ebm::Loc*> debug_loc_map_;
         void build_maps();
     };

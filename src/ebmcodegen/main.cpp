@@ -800,6 +800,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     w.writeln(");");
                 }
                 w.writeln("}");
+                w.writeln("else {");
+                {
+                    auto scope4 = w.indent_scope();
+                    w.writeln("static_assert(", concept_name, "<Visitor>||", concept_call_name, "<Visitor>, \"Visitor does not implement ", visitor_func_name, "\");");
+                }
+                w.writeln("}");
                 insert_include(w, kind, suffixes[suffix_post_visit]);
                 insert_include(w, kind, "_", to_string(T(i)), suffixes[suffix_post_visit]);
                 w.writeln("if(!result) {");

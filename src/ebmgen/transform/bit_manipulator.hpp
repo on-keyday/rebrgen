@@ -81,7 +81,7 @@ namespace ebmgen {
         expected<ebm::StatementRef> write_bits(
             size_t current_bit_offset, size_t bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef src_expr);
         expected<ebm::StatementRef> process_bits_dynamic(
-            ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::TypeRef target_type, std::function<expected<ebm::StatementRef>(ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef)> process);
+            bool is_encode, ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::TypeRef target_type, std::function<expected<ebm::StatementRef>(ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef)> process);
         expected<ebm::StatementRef> read_bits_dynamic(
             ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef dst_expr);
 

@@ -157,6 +157,9 @@ namespace ebmgen {
     }
 
     std::string MappingTable::get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix) const {
+        if (auto it = statement_identifier_direct_map_.find(get_id(ref)); it != statement_identifier_direct_map_.end()) {
+            return it->second;
+        }
         if (const ebm::Identifier* id = get_identifier(ref)) {
             return id->body.data;
         }
@@ -238,6 +241,10 @@ namespace ebmgen {
             return it->second;
         }
         return nullptr;
+    }
+
+    void MappingTable::directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name) {
+        statement_identifier_direct_map_[get_id(ref)] = std::move(name);
     }
 
 }  // namespace ebmgen

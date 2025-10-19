@@ -147,16 +147,17 @@ namespace ebmgen {
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, tmp_holder);
+                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, tmp_holder);
                             },
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, tmp_holder);
+                                return extractor.read_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, tmp_holder);
                             });
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));
                         }
                         EBM_CAST(casted, io_copy.data_type, unsigned_t, tmp_holder);
-                        EBM_ASSIGNMENT(fin, io_copy.target, tmp_holder);
+                        EBM_ASSIGNMENT(fin, io_copy.target, casted);
+                        append(block, tmp_holder_def);
                         append(block, io_cond);
                         append(block, *assign);
                         append(block, fin);
@@ -166,10 +167,10 @@ namespace ebmgen {
                         auto assign = add_endian_specific(
                             ctx, io_copy.attribute,
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, casted);
+                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, casted);
                             },
                             [&] -> expected<ebm::StatementRef> {
-                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::little, unsigned_t, casted);
+                                return extractor.write_bits_dynamic(current_bit_offset, bit_size, ebm::Endian::big, unsigned_t, casted);
                             });
                         if (!assign) {
                             return unexpect_error(std::move(assign.error()));

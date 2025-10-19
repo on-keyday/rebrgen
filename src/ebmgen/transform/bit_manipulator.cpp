@@ -131,7 +131,7 @@ namespace ebmgen {
     }
 
     expected<ebm::StatementRef> BitManipulator::process_bits_dynamic(
-        ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::TypeRef target_type, std::function<expected<ebm::StatementRef>(ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef)> process) {
+        bool is_encode, ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::TypeRef target_type, std::function<expected<ebm::StatementRef>(ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef, ebm::ExpressionRef)> process) {
         EBMU_COUNTER_TYPE(counter_t);
         EBMU_INT_LITERAL(eight, 8);
         EBM_BINARY_OP(offset_start, ebm::BinaryOp::div, counter_t, current_bit_offset, eight);
@@ -145,7 +145,17 @@ namespace ebmgen {
         MAYBE(bit_to_read_v, get_bit_to_read(bit_offset, bit_size, bit_processed));
         ebm::Block inner;
         {
-            EBM_BINARY_OP(is_zero, ebm::BinaryOp::equal, bool_t, bit_processed, zero);
+            ebm::ExpressionRef is_zero;
+            if (is_encode) {
+                // when encoding, the target is tmp_buffer and bits are not assigned when bit_offset is zero
+                EBM_BINARY_OP(is_zero_, ebm::BinaryOp::equal, bool_t, bit_offset, zero);
+                is_zero = is_zero_;
+            }
+            else {
+                // when decoding, the target is self and bits are not assigned when bit_processed is zero
+                EBM_BINARY_OP(is_zero_, ebm::BinaryOp::equal, bool_t, bit_processed, zero);
+                is_zero = is_zero_;
+            }
             EBM_DEFINE_ANONYMOUS_VARIABLE(bit_to_read, counter_t, bit_to_read_v);
             MAYBE(body, process(offset, bit_offset, bit_to_read, bit_processed, is_zero));
             EBM_INCREMENT(offset_inc, offset, counter_t);
@@ -169,7 +179,7 @@ namespace ebmgen {
     }
     expected<ebm::StatementRef> BitManipulator::read_bits_dynamic(
         ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef dst_expr) {
-        return process_bits_dynamic(current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
+        return process_bits_dynamic(false, current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
             MAYBE(extracted, extractBitsFromByteDynamic(offset, bit_offset, bit_to_read, endian));
             MAYBE(to_append, appendToExpressionDynamic(extracted, bit_processed, bit_size, bit_to_read, endian, target_type));
             EBM_ASSIGNMENT(if_zero, dst_expr, to_append);
@@ -181,7 +191,7 @@ namespace ebmgen {
 
     expected<ebm::StatementRef> BitManipulator::write_bits_dynamic(
         ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef source_expr) {
-        return process_bits_dynamic(current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
+        return process_bits_dynamic(true, current_bit_offset, bit_size, target_type, [&](ebm::ExpressionRef offset, ebm::ExpressionRef bit_offset, ebm::ExpressionRef bit_to_read, ebm::ExpressionRef bit_processed, ebm::ExpressionRef is_zero) -> expected<ebm::StatementRef> {
             MAYBE(extracted, extractBitsFromExpressionDynamic(source_expr, bit_processed, bit_size, bit_to_read, endian, target_type));
             MAYBE(to_append, appendBitsToByteDynamic(offset, bit_offset, bit_to_read, endian, extracted));
             EBM_INDEX(byte_val, u8_type, tmp_buffer_, offset);

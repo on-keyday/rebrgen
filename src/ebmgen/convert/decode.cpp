@@ -1,4 +1,5 @@
 /*license*/
+#include <optional>
 #include "ebm/extended_binary_module.hpp"
 #include "helper.hpp"
 #include "../converter.hpp"
@@ -159,16 +160,26 @@ namespace ebmgen {
         };
         std::optional<ebm::ExpressionRef> length;
         std::optional<ebm::StatementRef> cond_loop;
-        auto underlying_decoder = [&] -> expected<ebm::StatementRef> {
-            EBM_DEFAULT_VALUE(new_, element_type);
-            EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_var, element_type, new_);
-            MAYBE(decode_info, decode_field_type(aty->element_type, tmp_var, nullptr));
-            EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
-            EBM_APPEND(appended, base_ref, tmp_var);
+        auto underlying_decoder = [&](std::optional<ebm::ExpressionRef> fixed_iter) -> expected<ebm::StatementRef> {
             ebm::Block block;
-            append(block, tmp_var_def);
-            append(block, decode_stmt);
-            append(block, appended);
+            if (fixed_iter) {
+                EBM_INDEX(array_index, element_type, base_ref, *fixed_iter);
+                EBM_DEFINE_VARIABLE(element, {}, element_type, array_index, false, true);
+                MAYBE(decode_info, decode_field_type(aty->element_type, element, nullptr));
+                EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
+                append(block, element_def);
+                append(block, decode_stmt);
+            }
+            else {
+                EBM_DEFAULT_VALUE(new_, element_type);
+                EBM_DEFINE_ANONYMOUS_VARIABLE(tmp_var, element_type, new_);
+                MAYBE(decode_info, decode_field_type(aty->element_type, tmp_var, nullptr));
+                EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
+                EBM_APPEND(appended, base_ref, tmp_var);
+                append(block, tmp_var_def);
+                append(block, decode_stmt);
+                append(block, appended);
+            }
             EBM_BLOCK(block_ref, std::move(block));
             return block_ref;
         };
@@ -189,7 +200,7 @@ namespace ebmgen {
                 ) {
                     const auto single_byte = get_size(8);
                     EBM_CAN_READ_STREAM(can_read, io_desc.io_ref, ebm::StreamType::INPUT, single_byte);
-                    MAYBE(element_decoder, underlying_decoder());
+                    MAYBE(element_decoder, underlying_decoder(std::nullopt));
                     EBM_WHILE_LOOP(loop, can_read, element_decoder);
                     cond_loop = loop;
 
@@ -202,7 +213,7 @@ namespace ebmgen {
                     EBM_GET_REMAINING_BYTES(remain_bytes, ebm::StreamType::INPUT);
                     EBMU_BOOL_TYPE(bool_type);
                     EBM_BINARY_OP(cond, ebm::BinaryOp::greater, bool_type, remain_bytes, last);
-                    MAYBE(element_decoder, underlying_decoder());
+                    MAYBE(element_decoder, underlying_decoder(std::nullopt));
                     EBM_WHILE_LOOP(loop, cond, element_decoder);
                     cond_loop = loop;
 
@@ -249,7 +260,7 @@ namespace ebmgen {
                     EBM_BREAK(break_stmt, loop_id);
 
                     EBM_IF_STATEMENT(if_stmt, cond, break_stmt, {});
-                    MAYBE(data_decoder, underlying_decoder());
+                    MAYBE(data_decoder, underlying_decoder(std::nullopt));
 
                     ebm::LoopStatement loop_stmt;
                     loop_stmt.loop_type = ebm::LoopType::INFINITE;
@@ -299,9 +310,9 @@ namespace ebmgen {
             io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, *cond_loop));
         }
         else if (length) {
-            MAYBE(decode_info, underlying_decoder());
             EBMU_COUNTER_TYPE(counter_type);
             EBM_COUNTER_LOOP_START(counter);
+            MAYBE(decode_info, underlying_decoder(aty->length_value.has_value() ? std::make_optional(counter) : std::nullopt));
             EBM_COUNTER_LOOP_END(lowered_stmt, counter, *length, decode_info);
             io_desc.attribute.has_lowered_statement(true);
             io_desc.lowered_statement(make_lowered_statement(ebm::LoweringIOType::ARRAY_FOR_EACH, lowered_stmt));

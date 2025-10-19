@@ -21,6 +21,17 @@ original_workdir = unictest_env_vars["UNICTEST_ORIGINAL_WORK_DIR"]
 
 setup_target_file = pl.Path(runner_dir) / f"test_target.{file_ext}"
 
+
+def hexdump(data: bytes) -> str:
+    result = ""
+    for i in range(0, len(data), 16):
+        chunk = data[i : i + 16]
+        hex_bytes = " ".join(f"{b:02x}" for b in chunk)
+        ascii_bytes = "".join((chr(b) if 32 <= b < 127 else ".") for b in chunk)
+        result += f"{i:08x}  {hex_bytes:<48}  |{ascii_bytes}|\n"
+    return result
+
+
 if mode == "setup":
 
     ebmgen = (pl.Path(original_workdir) / "tool/ebmgen").as_posix()
@@ -95,9 +106,16 @@ elif mode == "test":
     # do compare and binary diff if not match
     if output_data != input_data:
         print("Output data does not match input data!")
+        a = hexdump(input_data)
+        b = hexdump(output_data)
+        print("Hex dump of input data:")
+        print(a)
+        print("Hex dump of output data:")
+        print(b)
+        print("Diff between input and output data:")
         diff = difflib.unified_diff(
-            binascii.hexlify(input_data).decode("utf-8").splitlines(keepends=True),
-            binascii.hexlify(output_data).decode("utf-8").splitlines(keepends=True),
+            a.splitlines(keepends=True),
+            b.splitlines(keepends=True),
             fromfile="input_data",
             tofile="output_data",
         )

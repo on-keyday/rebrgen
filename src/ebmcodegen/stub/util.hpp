@@ -266,6 +266,18 @@ namespace ebmcodegen::util {
         return result;
     }
 
+    ebmgen::expected<std::pair<std::string, std::string>> first_enum_name(auto&& visitor, ebm::TypeRef enum_type) {
+        const ebmgen::MappingTable& module_ = visitor.module_;
+        MAYBE(type, module_.get_type(enum_type));
+        if (auto enum_id = type.body.id()) {
+            MAYBE(enum_decl, module_.get_statement(*enum_id));
+            if (auto enum_ = enum_decl.body.enum_decl()) {
+                return std::make_pair(module_.get_identifier_or(*enum_id), module_.get_identifier_or(enum_->members.container[0]));
+            }
+        }
+        return ebmgen::unexpect_error("enum type has no members");
+    }
+
     template <class CodeWriter>
     auto code_write(auto&&... args) {
         CodeWriter w;

@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess as sp
+import json
 
 
 def main():
@@ -56,6 +57,23 @@ def main():
         f.write("    main()\n")
     # Run the test script
     print(f"\nRunning test script: test_script.py", flush=True)
+    print("for VSCode debugging")
+    print(
+        json.dumps(
+            {
+                "type": "debugpy",
+                "request": "launch",
+                "cwd": os.getcwd(),
+                "name": f"Debug ebm2python unictest ({TEST_TARGET_FORMAT})",
+                "program": os.path.abspath("test_script.py"),
+                "args": [
+                    INPUT_FILE,
+                    OUTPUT_FILE,
+                ],
+            },
+            indent=4,
+        )
+    )
     try:
         sp.check_call(
             [

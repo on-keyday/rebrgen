@@ -27,4 +27,8 @@
         }
         return w;
     }
+    if (type_body.body.kind == ebm::TypeKind::ENUM) {
+        MAYBE(enum_names, first_enum_name(*this, type));
+        return CODE(enum_names.first, ".", enum_names.second);
+    }
 }

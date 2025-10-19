@@ -19,6 +19,11 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_VARIABLE_DECL function.
 // We can use variables like `this` (for Visitor) and `var_decl` directly.
+if (var_decl.is_reference()) {
+    MAYBE(initial_value, visit_Expression(*this, var_decl.initial_value));
+    module_.directly_map_statement_identifier(item_id, initial_value.to_string());
+    return {};
+}
 CodeWriter w;
 auto name = this->module_.get_identifier_or(item_id);
 MAYBE(type_str_val, visit_Type(*this, var_decl.var_type));

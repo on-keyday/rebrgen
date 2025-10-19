@@ -285,6 +285,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_BLOCK_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
+        else {
+            static_assert(has_visitor_Statement_BLOCK<Visitor>||has_visitor_Statement_BLOCK_call<Visitor>, "Visitor does not implement visit_Statement_BLOCK");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -421,6 +424,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_ASSIGNMENT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
+        }
+        else {
+            static_assert(has_visitor_Statement_ASSIGNMENT<Visitor>||has_visitor_Statement_ASSIGNMENT_call<Visitor>, "Visitor does not implement visit_Statement_ASSIGNMENT");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -559,6 +565,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_YIELD_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,previous_assignment,target,value);
         }
+        else {
+            static_assert(has_visitor_Statement_YIELD<Visitor>||has_visitor_Statement_YIELD_call<Visitor>, "Visitor does not implement visit_Statement_YIELD");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -692,6 +701,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_APPEND_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,target,value);
         }
+        else {
+            static_assert(has_visitor_Statement_APPEND<Visitor>||has_visitor_Statement_APPEND_call<Visitor>, "Visitor does not implement visit_Statement_APPEND");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -820,6 +832,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_RETURN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
+        }
+        else {
+            static_assert(has_visitor_Statement_RETURN<Visitor>||has_visitor_Statement_RETURN_call<Visitor>, "Visitor does not implement visit_Statement_RETURN");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -950,6 +965,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_ERROR_RETURN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,value);
         }
+        else {
+            static_assert(has_visitor_Statement_ERROR_RETURN<Visitor>||has_visitor_Statement_ERROR_RETURN_call<Visitor>, "Visitor does not implement visit_Statement_ERROR_RETURN");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -1078,6 +1096,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_ASSERT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,assert_desc);
+        }
+        else {
+            static_assert(has_visitor_Statement_ASSERT<Visitor>||has_visitor_Statement_ASSERT_call<Visitor>, "Visitor does not implement visit_Statement_ASSERT");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1208,6 +1229,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_READ_DATA_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,read_data);
         }
+        else {
+            static_assert(has_visitor_Statement_READ_DATA<Visitor>||has_visitor_Statement_READ_DATA_call<Visitor>, "Visitor does not implement visit_Statement_READ_DATA");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -1336,6 +1360,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_WRITE_DATA_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,write_data);
+        }
+        else {
+            static_assert(has_visitor_Statement_WRITE_DATA<Visitor>||has_visitor_Statement_WRITE_DATA_call<Visitor>, "Visitor does not implement visit_Statement_WRITE_DATA");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1470,6 +1497,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_SEEK_STREAM_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,offset,stream_type);
         }
+        else {
+            static_assert(has_visitor_Statement_SEEK_STREAM<Visitor>||has_visitor_Statement_SEEK_STREAM_call<Visitor>, "Visitor does not implement visit_Statement_SEEK_STREAM");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -1598,6 +1628,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_IF_STATEMENT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,if_statement);
+        }
+        else {
+            static_assert(has_visitor_Statement_IF_STATEMENT<Visitor>||has_visitor_Statement_IF_STATEMENT_call<Visitor>, "Visitor does not implement visit_Statement_IF_STATEMENT");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1728,6 +1761,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_LOOP_STATEMENT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,loop);
         }
+        else {
+            static_assert(has_visitor_Statement_LOOP_STATEMENT<Visitor>||has_visitor_Statement_LOOP_STATEMENT_call<Visitor>, "Visitor does not implement visit_Statement_LOOP_STATEMENT");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -1856,6 +1892,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_MATCH_STATEMENT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,match_statement);
+        }
+        else {
+            static_assert(has_visitor_Statement_MATCH_STATEMENT<Visitor>||has_visitor_Statement_MATCH_STATEMENT_call<Visitor>, "Visitor does not implement visit_Statement_MATCH_STATEMENT");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -1986,6 +2025,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_MATCH_BRANCH_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,match_branch);
         }
+        else {
+            static_assert(has_visitor_Statement_MATCH_BRANCH<Visitor>||has_visitor_Statement_MATCH_BRANCH_call<Visitor>, "Visitor does not implement visit_Statement_MATCH_BRANCH");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -2114,6 +2156,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_BREAK_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,break_);
+        }
+        else {
+            static_assert(has_visitor_Statement_BREAK<Visitor>||has_visitor_Statement_BREAK_call<Visitor>, "Visitor does not implement visit_Statement_BREAK");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2244,6 +2289,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_CONTINUE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,continue_);
         }
+        else {
+            static_assert(has_visitor_Statement_CONTINUE<Visitor>||has_visitor_Statement_CONTINUE_call<Visitor>, "Visitor does not implement visit_Statement_CONTINUE");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -2372,6 +2420,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_FUNCTION_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,func_decl);
+        }
+        else {
+            static_assert(has_visitor_Statement_FUNCTION_DECL<Visitor>||has_visitor_Statement_FUNCTION_DECL_call<Visitor>, "Visitor does not implement visit_Statement_FUNCTION_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2502,6 +2553,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_VARIABLE_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,var_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_VARIABLE_DECL<Visitor>||has_visitor_Statement_VARIABLE_DECL_call<Visitor>, "Visitor does not implement visit_Statement_VARIABLE_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -2630,6 +2684,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_PARAMETER_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,param_decl);
+        }
+        else {
+            static_assert(has_visitor_Statement_PARAMETER_DECL<Visitor>||has_visitor_Statement_PARAMETER_DECL_call<Visitor>, "Visitor does not implement visit_Statement_PARAMETER_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -2760,6 +2817,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_FIELD_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,field_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_FIELD_DECL<Visitor>||has_visitor_Statement_FIELD_DECL_call<Visitor>, "Visitor does not implement visit_Statement_FIELD_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -2888,6 +2948,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_COMPOSITE_FIELD_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,composite_field_decl);
+        }
+        else {
+            static_assert(has_visitor_Statement_COMPOSITE_FIELD_DECL<Visitor>||has_visitor_Statement_COMPOSITE_FIELD_DECL_call<Visitor>, "Visitor does not implement visit_Statement_COMPOSITE_FIELD_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3018,6 +3081,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_ENUM_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_ENUM_DECL<Visitor>||has_visitor_Statement_ENUM_DECL_call<Visitor>, "Visitor does not implement visit_Statement_ENUM_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -3146,6 +3212,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_ENUM_MEMBER_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,enum_member_decl);
+        }
+        else {
+            static_assert(has_visitor_Statement_ENUM_MEMBER_DECL<Visitor>||has_visitor_Statement_ENUM_MEMBER_DECL_call<Visitor>, "Visitor does not implement visit_Statement_ENUM_MEMBER_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3276,6 +3345,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_STRUCT_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,struct_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_STRUCT_DECL<Visitor>||has_visitor_Statement_STRUCT_DECL_call<Visitor>, "Visitor does not implement visit_Statement_STRUCT_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -3401,6 +3473,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_UNION_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
+        else {
+            static_assert(has_visitor_Statement_UNION_DECL<Visitor>||has_visitor_Statement_UNION_DECL_call<Visitor>, "Visitor does not implement visit_Statement_UNION_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -3525,6 +3600,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_UNION_MEMBER_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Statement_UNION_MEMBER_DECL<Visitor>||has_visitor_Statement_UNION_MEMBER_DECL_call<Visitor>, "Visitor does not implement visit_Statement_UNION_MEMBER_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3655,6 +3733,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_PROGRAM_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,block);
         }
+        else {
+            static_assert(has_visitor_Statement_PROGRAM_DECL<Visitor>||has_visitor_Statement_PROGRAM_DECL_call<Visitor>, "Visitor does not implement visit_Statement_PROGRAM_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -3783,6 +3864,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_PROPERTY_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,property_decl);
+        }
+        else {
+            static_assert(has_visitor_Statement_PROPERTY_DECL<Visitor>||has_visitor_Statement_PROPERTY_DECL_call<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_DECL");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -3913,6 +3997,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_PROPERTY_MEMBER_DECL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,property_member_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_PROPERTY_MEMBER_DECL<Visitor>||has_visitor_Statement_PROPERTY_MEMBER_DECL_call<Visitor>, "Visitor does not implement visit_Statement_PROPERTY_MEMBER_DECL");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -4041,6 +4128,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_METADATA_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,metadata);
+        }
+        else {
+            static_assert(has_visitor_Statement_METADATA<Visitor>||has_visitor_Statement_METADATA_call<Visitor>, "Visitor does not implement visit_Statement_METADATA");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4171,6 +4261,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_IMPORT_MODULE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,import_decl);
         }
+        else {
+            static_assert(has_visitor_Statement_IMPORT_MODULE<Visitor>||has_visitor_Statement_IMPORT_MODULE_call<Visitor>, "Visitor does not implement visit_Statement_IMPORT_MODULE");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -4299,6 +4392,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_EXPRESSION_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,expression);
+        }
+        else {
+            static_assert(has_visitor_Statement_EXPRESSION<Visitor>||has_visitor_Statement_EXPRESSION_call<Visitor>, "Visitor does not implement visit_Statement_EXPRESSION");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4429,6 +4525,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_ERROR_REPORT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,error_report);
         }
+        else {
+            static_assert(has_visitor_Statement_ERROR_REPORT<Visitor>||has_visitor_Statement_ERROR_REPORT_call<Visitor>, "Visitor does not implement visit_Statement_ERROR_REPORT");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -4557,6 +4656,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_LOWERED_IO_STATEMENTS_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,lowered_io_statements);
+        }
+        else {
+            static_assert(has_visitor_Statement_LOWERED_IO_STATEMENTS<Visitor>||has_visitor_Statement_LOWERED_IO_STATEMENTS_call<Visitor>, "Visitor does not implement visit_Statement_LOWERED_IO_STATEMENTS");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -4687,6 +4789,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_SUB_BYTE_RANGE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,sub_byte_range);
         }
+        else {
+            static_assert(has_visitor_Statement_SUB_BYTE_RANGE<Visitor>||has_visitor_Statement_SUB_BYTE_RANGE_call<Visitor>, "Visitor does not implement visit_Statement_SUB_BYTE_RANGE");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -4816,6 +4921,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Statement_INIT_CHECK_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,init_check);
         }
+        else {
+            static_assert(has_visitor_Statement_INIT_CHECK<Visitor>||has_visitor_Statement_INIT_CHECK_call<Visitor>, "Visitor does not implement visit_Statement_INIT_CHECK");
+        }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
         #endif
@@ -4944,6 +5052,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Statement_ENDIAN_VARIABLE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,endian_variable);
+        }
+        else {
+            static_assert(has_visitor_Statement_ENDIAN_VARIABLE<Visitor>||has_visitor_Statement_ENDIAN_VARIABLE_call<Visitor>, "Visitor does not implement visit_Statement_ENDIAN_VARIABLE");
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
@@ -5194,6 +5305,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_LITERAL_INT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int_value);
         }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_INT<Visitor>||has_visitor_Expression_LITERAL_INT_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -5323,6 +5437,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_LITERAL_INT64_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,int64_value);
+        }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_INT64<Visitor>||has_visitor_Expression_LITERAL_INT64_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_INT64");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5454,6 +5571,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_LITERAL_BOOL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bool_value);
         }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_BOOL<Visitor>||has_visitor_Expression_LITERAL_BOOL_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_BOOL");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -5583,6 +5703,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_LITERAL_STRING_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,string_value);
+        }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_STRING<Visitor>||has_visitor_Expression_LITERAL_STRING_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_STRING");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -5714,6 +5837,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_LITERAL_TYPE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,type_ref);
         }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_TYPE<Visitor>||has_visitor_Expression_LITERAL_TYPE_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_TYPE");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -5844,6 +5970,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_LITERAL_CHAR_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,char_value);
         }
+        else {
+            static_assert(has_visitor_Expression_LITERAL_CHAR<Visitor>||has_visitor_Expression_LITERAL_CHAR_call<Visitor>, "Visitor does not implement visit_Expression_LITERAL_CHAR");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -5973,6 +6102,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_IDENTIFIER_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,id);
+        }
+        else {
+            static_assert(has_visitor_Expression_IDENTIFIER<Visitor>||has_visitor_Expression_IDENTIFIER_call<Visitor>, "Visitor does not implement visit_Expression_IDENTIFIER");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6112,6 +6244,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_BINARY_OP_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,bop,left,right);
         }
+        else {
+            static_assert(has_visitor_Expression_BINARY_OP<Visitor>||has_visitor_Expression_BINARY_OP_call<Visitor>, "Visitor does not implement visit_Expression_BINARY_OP");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -6246,6 +6381,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_UNARY_OP_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,operand,uop);
         }
+        else {
+            static_assert(has_visitor_Expression_UNARY_OP<Visitor>||has_visitor_Expression_UNARY_OP_call<Visitor>, "Visitor does not implement visit_Expression_UNARY_OP");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -6375,6 +6513,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_CALL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,call_desc);
+        }
+        else {
+            static_assert(has_visitor_Expression_CALL<Visitor>||has_visitor_Expression_CALL_call<Visitor>, "Visitor does not implement visit_Expression_CALL");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6510,6 +6651,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_INDEX_ACCESS_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,index);
         }
+        else {
+            static_assert(has_visitor_Expression_INDEX_ACCESS<Visitor>||has_visitor_Expression_INDEX_ACCESS_call<Visitor>, "Visitor does not implement visit_Expression_INDEX_ACCESS");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -6643,6 +6787,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_MEMBER_ACCESS_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,base,member);
+        }
+        else {
+            static_assert(has_visitor_Expression_MEMBER_ACCESS<Visitor>||has_visitor_Expression_MEMBER_ACCESS_call<Visitor>, "Visitor does not implement visit_Expression_MEMBER_ACCESS");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -6782,6 +6929,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_TYPE_CAST_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,cast_kind,from_type,source_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_TYPE_CAST<Visitor>||has_visitor_Expression_TYPE_CAST_call<Visitor>, "Visitor does not implement visit_Expression_TYPE_CAST");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -6916,6 +7066,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_RANGE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,end,start);
         }
+        else {
+            static_assert(has_visitor_Expression_RANGE<Visitor>||has_visitor_Expression_RANGE_call<Visitor>, "Visitor does not implement visit_Expression_RANGE");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -7041,6 +7194,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_DEFAULT_VALUE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
+        }
+        else {
+            static_assert(has_visitor_Expression_DEFAULT_VALUE<Visitor>||has_visitor_Expression_DEFAULT_VALUE_call<Visitor>, "Visitor does not implement visit_Expression_DEFAULT_VALUE");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7171,6 +7327,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_IS_LITTLE_ENDIAN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,endian_expr);
+        }
+        else {
+            static_assert(has_visitor_Expression_IS_LITTLE_ENDIAN<Visitor>||has_visitor_Expression_IS_LITTLE_ENDIAN_call<Visitor>, "Visitor does not implement visit_Expression_IS_LITTLE_ENDIAN");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7306,6 +7465,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_GET_STREAM_OFFSET_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type,unit);
         }
+        else {
+            static_assert(has_visitor_Expression_GET_STREAM_OFFSET<Visitor>||has_visitor_Expression_GET_STREAM_OFFSET_call<Visitor>, "Visitor does not implement visit_Expression_GET_STREAM_OFFSET");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -7435,6 +7597,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_GET_REMAINING_BYTES_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,stream_type);
+        }
+        else {
+            static_assert(has_visitor_Expression_GET_REMAINING_BYTES<Visitor>||has_visitor_Expression_GET_REMAINING_BYTES_call<Visitor>, "Visitor does not implement visit_Expression_GET_REMAINING_BYTES");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7574,6 +7739,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_CAN_READ_STREAM_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_ref,num_bytes,stream_type);
         }
+        else {
+            static_assert(has_visitor_Expression_CAN_READ_STREAM<Visitor>||has_visitor_Expression_CAN_READ_STREAM_call<Visitor>, "Visitor does not implement visit_Expression_CAN_READ_STREAM");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -7703,6 +7871,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_ARRAY_SIZE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,array_expr);
+        }
+        else {
+            static_assert(has_visitor_Expression_ARRAY_SIZE<Visitor>||has_visitor_Expression_ARRAY_SIZE_call<Visitor>, "Visitor does not implement visit_Expression_ARRAY_SIZE");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -7838,6 +8009,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_ENUM_IS_DEFINED_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_ENUM_IS_DEFINED<Visitor>||has_visitor_Expression_ENUM_IS_DEFINED_call<Visitor>, "Visitor does not implement visit_Expression_ENUM_IS_DEFINED");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -7968,6 +8142,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_IS_ERROR_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_IS_ERROR<Visitor>||has_visitor_Expression_IS_ERROR_call<Visitor>, "Visitor does not implement visit_Expression_IS_ERROR");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -8097,6 +8274,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_MAX_VALUE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr);
+        }
+        else {
+            static_assert(has_visitor_Expression_MAX_VALUE<Visitor>||has_visitor_Expression_MAX_VALUE_call<Visitor>, "Visitor does not implement visit_Expression_MAX_VALUE");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8232,6 +8412,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_READ_DATA_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_stmt);
         }
+        else {
+            static_assert(has_visitor_Expression_READ_DATA<Visitor>||has_visitor_Expression_READ_DATA_call<Visitor>, "Visitor does not implement visit_Expression_READ_DATA");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -8366,6 +8549,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_WRITE_DATA_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,io_statement,target_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_WRITE_DATA<Visitor>||has_visitor_Expression_WRITE_DATA_call<Visitor>, "Visitor does not implement visit_Expression_WRITE_DATA");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -8499,6 +8685,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_CONDITIONAL_STATEMENT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,conditional_stmt,target_stmt);
+        }
+        else {
+            static_assert(has_visitor_Expression_CONDITIONAL_STATEMENT<Visitor>||has_visitor_Expression_CONDITIONAL_STATEMENT_call<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL_STATEMENT");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8642,6 +8831,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_CONDITIONAL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,condition,else_,lowered_expr,then);
         }
+        else {
+            static_assert(has_visitor_Expression_CONDITIONAL<Visitor>||has_visitor_Expression_CONDITIONAL_call<Visitor>, "Visitor does not implement visit_Expression_CONDITIONAL");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -8775,6 +8967,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_AVAILABLE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
+        }
+        else {
+            static_assert(has_visitor_Expression_AVAILABLE<Visitor>||has_visitor_Expression_AVAILABLE_call<Visitor>, "Visitor does not implement visit_Expression_AVAILABLE");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -8910,6 +9105,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_SIZEOF_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,lowered_expr,target_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_SIZEOF<Visitor>||has_visitor_Expression_SIZEOF_call<Visitor>, "Visitor does not implement visit_Expression_SIZEOF");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -9039,6 +9237,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_SUB_RANGE_INIT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,sub_range);
+        }
+        else {
+            static_assert(has_visitor_Expression_SUB_RANGE_INIT<Visitor>||has_visitor_Expression_SUB_RANGE_INIT_call<Visitor>, "Visitor does not implement visit_Expression_SUB_RANGE_INIT");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -9170,6 +9371,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_OR_COND_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,or_cond);
         }
+        else {
+            static_assert(has_visitor_Expression_OR_COND<Visitor>||has_visitor_Expression_OR_COND_call<Visitor>, "Visitor does not implement visit_Expression_OR_COND");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -9299,6 +9503,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_ADDRESS_OF_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
+        }
+        else {
+            static_assert(has_visitor_Expression_ADDRESS_OF<Visitor>||has_visitor_Expression_ADDRESS_OF_call<Visitor>, "Visitor does not implement visit_Expression_ADDRESS_OF");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -9430,6 +9637,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_OPTIONAL_OF_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,target_expr);
         }
+        else {
+            static_assert(has_visitor_Expression_OPTIONAL_OF<Visitor>||has_visitor_Expression_OPTIONAL_OF_call<Visitor>, "Visitor does not implement visit_Expression_OPTIONAL_OF");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -9560,6 +9770,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Expression_SETTER_STATUS_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind,setter_status);
         }
+        else {
+            static_assert(has_visitor_Expression_SETTER_STATUS<Visitor>||has_visitor_Expression_SETTER_STATUS_call<Visitor>, "Visitor does not implement visit_Expression_SETTER_STATUS");
+        }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
         #endif
@@ -9685,6 +9898,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Expression_SELF_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,type,kind);
+        }
+        else {
+            static_assert(has_visitor_Expression_SELF<Visitor>||has_visitor_Expression_SELF_call<Visitor>, "Visitor does not implement visit_Expression_SELF");
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
@@ -9930,6 +10146,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_INT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
+        else {
+            static_assert(has_visitor_Type_INT<Visitor>||has_visitor_Type_INT_call<Visitor>, "Visitor does not implement visit_Type_INT");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -10058,6 +10277,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_UINT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
+        }
+        else {
+            static_assert(has_visitor_Type_UINT<Visitor>||has_visitor_Type_UINT_call<Visitor>, "Visitor does not implement visit_Type_UINT");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10188,6 +10410,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_FLOAT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,size);
         }
+        else {
+            static_assert(has_visitor_Type_FLOAT<Visitor>||has_visitor_Type_FLOAT_call<Visitor>, "Visitor does not implement visit_Type_FLOAT");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -10316,6 +10541,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_STRUCT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
+        }
+        else {
+            static_assert(has_visitor_Type_STRUCT<Visitor>||has_visitor_Type_STRUCT_call<Visitor>, "Visitor does not implement visit_Type_STRUCT");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10446,6 +10674,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_RECURSIVE_STRUCT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,id);
         }
+        else {
+            static_assert(has_visitor_Type_RECURSIVE_STRUCT<Visitor>||has_visitor_Type_RECURSIVE_STRUCT_call<Visitor>, "Visitor does not implement visit_Type_RECURSIVE_STRUCT");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -10570,6 +10801,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_BOOL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_BOOL<Visitor>||has_visitor_Type_BOOL_call<Visitor>, "Visitor does not implement visit_Type_BOOL");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10696,6 +10930,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_VOID_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
+        else {
+            static_assert(has_visitor_Type_VOID<Visitor>||has_visitor_Type_VOID_call<Visitor>, "Visitor does not implement visit_Type_VOID");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -10820,6 +11057,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_META_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_META<Visitor>||has_visitor_Type_META_call<Visitor>, "Visitor does not implement visit_Type_META");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -10954,6 +11194,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_ENUM_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type,id);
         }
+        else {
+            static_assert(has_visitor_Type_ENUM<Visitor>||has_visitor_Type_ENUM_call<Visitor>, "Visitor does not implement visit_Type_ENUM");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -11087,6 +11330,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_ARRAY_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type,length);
         }
+        else {
+            static_assert(has_visitor_Type_ARRAY<Visitor>||has_visitor_Type_ARRAY_call<Visitor>, "Visitor does not implement visit_Type_ARRAY");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -11215,6 +11461,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_VECTOR_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,element_type);
+        }
+        else {
+            static_assert(has_visitor_Type_VECTOR<Visitor>||has_visitor_Type_VECTOR_call<Visitor>, "Visitor does not implement visit_Type_VECTOR");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11353,6 +11602,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_VARIANT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,common_type,members,related_field);
         }
+        else {
+            static_assert(has_visitor_Type_VARIANT<Visitor>||has_visitor_Type_VARIANT_call<Visitor>, "Visitor does not implement visit_Type_VARIANT");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -11482,6 +11734,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_RANGE_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,base_type);
         }
+        else {
+            static_assert(has_visitor_Type_RANGE<Visitor>||has_visitor_Type_RANGE_call<Visitor>, "Visitor does not implement visit_Type_RANGE");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -11606,6 +11861,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_ENCODER_RETURN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_ENCODER_RETURN<Visitor>||has_visitor_Type_ENCODER_RETURN_call<Visitor>, "Visitor does not implement visit_Type_ENCODER_RETURN");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11732,6 +11990,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_DECODER_RETURN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
+        else {
+            static_assert(has_visitor_Type_DECODER_RETURN<Visitor>||has_visitor_Type_DECODER_RETURN_call<Visitor>, "Visitor does not implement visit_Type_DECODER_RETURN");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -11856,6 +12117,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_ENCODER_INPUT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_ENCODER_INPUT<Visitor>||has_visitor_Type_ENCODER_INPUT_call<Visitor>, "Visitor does not implement visit_Type_ENCODER_INPUT");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -11982,6 +12246,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_DECODER_INPUT_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
+        else {
+            static_assert(has_visitor_Type_DECODER_INPUT<Visitor>||has_visitor_Type_DECODER_INPUT_call<Visitor>, "Visitor does not implement visit_Type_DECODER_INPUT");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -12106,6 +12373,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_PROPERTY_SETTER_RETURN_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_PROPERTY_SETTER_RETURN<Visitor>||has_visitor_Type_PROPERTY_SETTER_RETURN_call<Visitor>, "Visitor does not implement visit_Type_PROPERTY_SETTER_RETURN");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -12236,6 +12506,9 @@ namespace ebm2python {
         else if constexpr (has_visitor_Type_OPTIONAL_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,inner_type);
         }
+        else {
+            static_assert(has_visitor_Type_OPTIONAL<Visitor>||has_visitor_Type_OPTIONAL_call<Visitor>, "Visitor does not implement visit_Type_OPTIONAL");
+        }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
         #endif
@@ -12364,6 +12637,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_PTR_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,pointee_type);
+        }
+        else {
+            static_assert(has_visitor_Type_PTR<Visitor>||has_visitor_Type_PTR_call<Visitor>, "Visitor does not implement visit_Type_PTR");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
@@ -12497,6 +12773,9 @@ namespace ebm2python {
         }
         else if constexpr (has_visitor_Type_FUNCTION_call<Visitor>) {
             result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,params,return_type);
+        }
+        else {
+            static_assert(has_visitor_Type_FUNCTION<Visitor>||has_visitor_Type_FUNCTION_call<Visitor>, "Visitor does not implement visit_Type_FUNCTION");
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"

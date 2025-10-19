@@ -223,12 +223,12 @@ namespace ebmcodegen::util {
                 .line = loc.start.line,
                 .loc = brgen::lexer::Loc{
                     .pos = {
-                        .begin = l->start.value(),
-                        .end = l->end.value(),
+                        .begin = static_cast<size_t>(l->start.value()),
+                        .end = static_cast<size_t>(l->end.value()),
                     },
-                    .file = l->file_id.value(),
-                    .line = l->line.value(),
-                    .col = l->column.value(),
+                    .file = static_cast<size_t>(l->file_id.value()),
+                    .line = static_cast<size_t>(l->line.value()),
+                    .col = static_cast<size_t>(l->column.value()),
                 },
             });
         }

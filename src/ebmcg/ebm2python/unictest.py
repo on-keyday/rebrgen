@@ -28,6 +28,7 @@ def main():
         f.write("#!/usr/bin/env python3\n")
         f.write("import sys\n")
         f.write("import io\n")
+        f.write("import traceback\n")
         f.write(f"from ebm_python_module import {TEST_TARGET_FORMAT}\n")
         f.write("def main():\n")
         f.write(f"    print('Running test for {TEST_TARGET_FORMAT}')\n")
@@ -35,16 +36,18 @@ def main():
         f.write("       data = f.read()\n")
         f.write("       data = io.BytesIO(data)\n")
         f.write(f"    target = {TEST_TARGET_FORMAT}()\n")
-        f.write("    try:")
+        f.write("    try:\n")
         f.write("       target.decode(data)\n")
         f.write("    except Exception as e:\n")
         f.write("       print(f'Error during decoding: {e}')\n")
+        f.write("       print(traceback.format_exc())\n")
         f.write("       sys.exit(10) # for testing purposes\n")
         f.write("    data = io.BytesIO()\n")
         f.write("    try:\n")
         f.write("       target.encode(data)\n")
         f.write("    except Exception as e:\n")
         f.write("       print(f'Error during encoding: {e}')\n")
+        f.write("       print(traceback.format_exc())\n")
         f.write("       sys.exit(20) # for testing purposes\n")
         f.write("    with open(sys.argv[2], 'wb') as f:\n")
         f.write("        f.write(data.getvalue())\n")
@@ -66,7 +69,6 @@ def main():
             stderr=sys.stderr,
         )
     except sp.CalledProcessError as e:
-        print(f"Test script failed with return code: {e.returncode}")
         sys.exit(e.returncode)
 
 

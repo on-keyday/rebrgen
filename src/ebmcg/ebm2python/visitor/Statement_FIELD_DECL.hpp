@@ -16,15 +16,11 @@
       reserved: std::uint8_t
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-CodeWriter w;
 auto name = module_.get_identifier_or(item_id);
 auto type_kind = module_.get_type_kind(field_decl.field_type);
 MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
-for (auto& member : struct_members) {
-    w.write_unformatted(member);
-}
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value
                                                                 // Use forward reference for structs
-w.writeln(name, ": \"", type_str_val.to_writer(), "\"");        // Use the extracted string value
 
-return w;
+return CODELINE(SEPARATED(CODELINE(), struct_members.size(), [&](size_t n) { return std::move(struct_members[n].to_writer()); }),
+                name, ": \"", type_str_val.to_writer(), "\"");

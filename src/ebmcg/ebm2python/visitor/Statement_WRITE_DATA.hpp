@@ -32,8 +32,6 @@ if (auto lw = write_data.lowered_statement()) {
     return visit_Statement(*this, lw->io_statement.id);
 }
 
-CodeWriter w;
-
 // Get the IOData statement object from the io_statement parameter
 auto& io_data = write_data;
 
@@ -45,6 +43,4 @@ MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attr
 
 auto io_value = module_.get_identifier_or(io_data.io_ref);
 
-w.writeln(io_value, ".write(struct.pack(" + struct_format + ", ", target_expr_str.to_writer(), "))");
-
-return w;
+return CODELINE(io_value, ".write(struct.pack(", struct_format, ", ", target_expr_str.to_writer(), "))");

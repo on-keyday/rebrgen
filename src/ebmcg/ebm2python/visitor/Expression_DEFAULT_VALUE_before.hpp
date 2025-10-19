@@ -14,7 +14,17 @@
 
 {
     MAYBE(type_body, module_.get_type(type));
-    if (type_body.body.kind == ebm::TypeKind::PTR) {
+    if (type_body.body.kind == ebm::TypeKind::VARIANT) {
         return "None";
+    }
+    if (type_body.body.kind == ebm::TypeKind::ARRAY) {
+        MAYBE(size, type_body.body.length());
+        MAYBE(element_type, type_body.body.element_type());
+        MAYBE(default_, as_DEFAULT_VALUE(*this, element_type));
+        auto w = CODE("[", SEPARATED(", ", size.value(), default_.to_writer()), "]");
+        if (is_u8(*this, element_type)) {
+            return CODE("bytearray(", w, ")");
+        }
+        return w;
     }
 }

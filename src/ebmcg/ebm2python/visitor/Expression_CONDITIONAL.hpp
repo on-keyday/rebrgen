@@ -19,6 +19,4 @@ MAYBE(cond_str, visit_Expression(*this, condition));
 MAYBE(then_str, visit_Expression(*this, then));
 MAYBE(else_str, visit_Expression(*this, else_));
 
-CodeWriter w;
-w.write("(", then_str.to_writer(), " if ", cond_str.to_writer(), " else ", else_str.to_writer(), ")");
-return w;
+return CODE("(", then_str.to_writer(), " if ", cond_str.to_writer(), " else ", else_str.to_writer(), ")");

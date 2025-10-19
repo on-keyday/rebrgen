@@ -15,9 +15,4 @@
 
 /*here to write the hook*/
 MAYBE(array, visit_Expression(*this, array_expr));
-
-CodeWriter w;
-
-w.write("builtins.len(", array.to_writer(), ")");
-
-return w;
+return CODE("builtins.len(", array.to_writer(), ")");

@@ -44,6 +44,27 @@ for (auto& field_ref : struct_decl.fields.container) {
     merge_result(*this, w, res);
 }
 
+// __init__ method
+w.writeln("def __init__(self):");
+{
+    auto init_scope = w.indent_scope();
+    auto size = w.str_size();
+    auto result = handle_fields(*this, struct_decl.fields, true, [&](auto&& field_ref, auto&& field) -> ebmgen::expected<void> {
+        if (auto field_decl = field.body.field_decl()) {
+            MAYBE(default_, as_DEFAULT_VALUE(*this, field_decl->field_type));
+            auto field_name = this->module_.get_identifier_or(field_ref);
+            w.writeln("self.", field_name, " = ", default_.to_writer());
+        }
+        return {};
+    });
+    if (!result) {
+        return unexpect_error("Failed to handle fields in __init__: {}", result.error().error());
+    }
+    if (w.str_size() == size) {
+        w.writeln("pass");  // If the __init__ body is empty, we just pass
+    }
+}
+
 // Visit encode_fn if it exists
 if (!is_nil(struct_decl.encode_fn)) {  // Corrected: Check value() of Varint id
     MAYBE(encode_fn_stmt, this->module_.get_statement(struct_decl.encode_fn));

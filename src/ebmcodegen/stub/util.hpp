@@ -177,10 +177,10 @@ namespace ebmcodegen::util {
         return layers;
     }
 
-    ebmgen::expected<std::vector<std::string>> struct_union_members(auto&& visitor, ebm::TypeRef variant) {
+    auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>> {
         const ebmgen::MappingTable& module_ = visitor.module_;
         MAYBE(type, module_.get_type(variant));
-        std::vector<std::string> result;
+        std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>> result;
         if (type.body.kind == ebm::TypeKind::VARIANT) {
             if (!ebmgen::is_nil(*type.body.related_field())) {
                 auto& members = *type.body.members();
@@ -188,7 +188,7 @@ namespace ebmcodegen::util {
                     MAYBE(member_type, module_.get_type(mem));
                     MAYBE(stmt_id, member_type.body.id());
                     MAYBE(stmt_str, visit_Statement(visitor, stmt_id));
-                    result.push_back(stmt_str.to_string());
+                    result.push_back(std::move(stmt_str));
                 }
             }
         }
@@ -233,4 +233,112 @@ namespace ebmcodegen::util {
             });
         }
     }
+
+    bool is_u8(auto&& visitor, ebm::TypeRef type_ref) {
+        const ebmgen::MappingTable& module_ = visitor.module_;
+        if (auto type = module_.get_type(type_ref)) {
+            if (type->body.kind == ebm::TypeKind::UINT) {
+                if (auto size = type->body.size()) {
+                    if (size->value() == 8) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    ebmgen::expected<void> handle_fields(auto&& visitor, auto&& fields, bool recurse_composite, auto&& callback) {
+        ebmgen::expected<void> result = {};
+        for (auto& field_ref : fields.container) {
+            MAYBE(field, visitor.module_.get_statement(field_ref));
+            if (auto comp = field.body.composite_field_decl()) {
+                if (recurse_composite) {
+                    MAYBE_VOID(res, handle_fields(visitor, comp->fields, recurse_composite, callback));
+                    continue;
+                }
+            }
+            result = callback(field_ref, field);
+            if (!result) {
+                return ebmgen::unexpect_error(std::move(result.error()));
+            }
+        }
+        return result;
+    }
+
+    template <class CodeWriter>
+    auto code_write(auto&&... args) {
+        CodeWriter w;
+        w.write(std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_write(ebm::AnyRef loc, auto&&... args) {
+        CodeWriter w;
+        w.write_with_loc(loc, std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_writeln(auto&&... args) {
+        CodeWriter w;
+        w.writeln(std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_writeln(ebm::AnyRef loc, auto&&... args) {
+        CodeWriter w;
+        w.writeln_with_loc(loc, std::forward<decltype(args)>(args)...);
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(auto&& joint, auto&& vec) {
+        CodeWriter w;
+        bool first = true;
+        using T = std::decay_t<decltype(vec)>;
+        for (auto&& v : vec) {
+            if (!first) {
+                w.write(joint);
+            }
+            w.write(v);
+            first = false;
+        }
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(auto&& joint, size_t count, auto&& func) {
+        CodeWriter w;
+        bool first = true;
+        for (size_t i = 0; i < count; ++i) {
+            if (!first) {
+                w.write(joint);
+            }
+            if constexpr (std::is_invocable_v<decltype(func), size_t>) {
+                w.write(func(i));
+            }
+            else {
+                w.write(func);
+            }
+            first = false;
+        }
+        return w;
+    }
+
+    template <class CodeWriter>
+    auto code_joint_write(ebm::AnyRef loc, auto&&... vec) {
+        CodeWriter w;
+        auto loc_scope = w.with_loc_scope(loc);
+        w.write(code_joint_write<CodeWriter>(std::forward<decltype(vec)>(vec)...));
+        return w;
+    }
+
+#define CODE(...) (code_write<CodeWriter>(__VA_ARGS__))
+#define CODELINE(...) (code_writeln<CodeWriter>(__VA_ARGS__))
+
+#define SEPARATED(...) (code_joint_write<CodeWriter>(__VA_ARGS__))
+
 }  // namespace ebmcodegen::util

@@ -23,6 +23,4 @@ auto io_val = module_.get_identifier_or(io_ref);
 
 MAYBE(size_str, get_size_str(*this, num_bytes));
 
-CodeWriter w;
-w.write("(builtins.len(", io_val, ".peek(", size_str, ")) == ", size_str, ")");
-return w;
+return CODE("(builtins.len(", io_val, ".peek(", size_str, ")) == ", size_str, ")");

@@ -7,7 +7,7 @@ import pathlib as pl
 try:
     with open("build_config.json", "r") as f:
         build_config = json.load(f)
-    print("Loaded build_config.json")
+    print("Loaded build_config.json", flush=True)
 except FileNotFoundError:
     print("build_config.json not found")
     exit(1)

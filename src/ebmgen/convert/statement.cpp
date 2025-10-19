@@ -721,6 +721,7 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::FUNCTION_DECL;
+        const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
         MAYBE(decl, convert_function_decl(node, GenerateType::Normal, {}));
         body.func_decl(std::move(decl));
         return {};

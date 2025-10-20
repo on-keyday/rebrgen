@@ -162,12 +162,12 @@
     {
       "type": "debugpy",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-44bb906f-c06d-45b0-bb1f-730bb6a3e29a\\runner-5b1eb227-670f-4d70-9070-4ca063221544\\task-websocket_frame_valid-Frame-aefdb861-2a87-4a72-8506-140e265dcff7",
-      "name": "Debug ebm2python unictest (Frame)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-44bb906f-c06d-45b0-bb1f-730bb6a3e29a\\runner-5b1eb227-670f-4d70-9070-4ca063221544\\task-websocket_frame_valid-Frame-aefdb861-2a87-4a72-8506-140e265dcff7\\test_script.py",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-69a9738a-15c5-4f33-bab3-09e132548268\\runner-22c227f4-ecbf-403e-8c26-f6da85a73ed2\\task-extended_binary_module_test-ExtendedBinaryModule-48e79a53-b2b2-43dc-bab8-7dc61a8a4166",
+      "name": "Debug ebm2python unictest (ExtendedBinaryModule)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-69a9738a-15c5-4f33-bab3-09e132548268\\runner-22c227f4-ecbf-403e-8c26-f6da85a73ed2\\task-extended_binary_module_test-ExtendedBinaryModule-48e79a53-b2b2-43dc-bab8-7dc61a8a4166\\test_script.py",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-44bb906f-c06d-45b0-bb1f-730bb6a3e29a/runner-5b1eb227-670f-4d70-9070-4ca063221544/task-websocket_frame_valid-Frame-aefdb861-2a87-4a72-8506-140e265dcff7/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-44bb906f-c06d-45b0-bb1f-730bb6a3e29a/runner-5b1eb227-670f-4d70-9070-4ca063221544/task-websocket_frame_valid-Frame-aefdb861-2a87-4a72-8506-140e265dcff7/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-69a9738a-15c5-4f33-bab3-09e132548268/runner-22c227f4-ecbf-403e-8c26-f6da85a73ed2/task-extended_binary_module_test-ExtendedBinaryModule-48e79a53-b2b2-43dc-bab8-7dc61a8a4166/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-69a9738a-15c5-4f33-bab3-09e132548268/runner-22c227f4-ecbf-403e-8c26-f6da85a73ed2/task-extended_binary_module_test-ExtendedBinaryModule-48e79a53-b2b2-43dc-bab8-7dc61a8a4166/output.bin"
       ]
     }
   ]

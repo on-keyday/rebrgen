@@ -14,6 +14,9 @@
       MAP_FLAG_ITEM(key,value) // repeat this line for each item
     END_MAP_FLAG()
     WEB_UI_NAME(ui_name)
+    WEB_LSP_NAME(lsp_name)
+    WEB_WORKER_NAME(worker_name)
+    FILE_EXTENSION(file_ext)
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
@@ -25,3 +28,4 @@ MAP_FLAG_ITEM("2", 2)
 MAP_FLAG_ITEM("3", 3)
 END_MAP_FLAG()
 WEB_UI_NAME("python2");
+FILE_EXTENSION(".py");

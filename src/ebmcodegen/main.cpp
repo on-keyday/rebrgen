@@ -597,11 +597,18 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.write("web_filtered.insert_range(std::set{__VA_ARGS__})");
         }
         w.writeln();
-        w.write("#define WEB_UI_NAME(ui_name) ");
-        if (!on_define) {
-            w.write("ui_lang_name = ui_name");
-        }
-        w.writeln();
+        auto map_name = [&](auto name, auto dst, auto src) {
+            w.write("#define ", name, "(", src, ") ");
+            if (!on_define) {
+                w.write(dst, " = ", src);
+            }
+            w.writeln();
+        };
+        map_name("WEB_UI_NAME", "ui_lang_name", "name");
+        map_name("WEB_LSP_NAME", "lsp_name", "name");
+        map_name("WEB_WORKER_NAME", "webworker_name", "name");
+        map_name("FILE_EXTENSION", "file_ext_name", "name");
+
         w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
         w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
         w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
@@ -634,6 +641,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#undef MAP_FLAG_ITEM");
         w.writeln("#undef END_MAP_FLAG");
         w.writeln("#undef WEB_UI_NAME");
+        w.writeln("#undef WEB_LSP_NAME");
+        w.writeln("#undef WEB_WORKER_NAME");
+        w.writeln("#undef FILE_EXTENSION");
     };
 
     w.writeln("struct Flags : ebmcodegen::Flags {");
@@ -647,6 +657,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("ui_lang_name = lang_name;");
         w.writeln("lsp_name = lang_name;");
         w.writeln("webworker_name = \"", flags.program_name, "\";");
+        w.writeln("file_ext_name = \".", flags.lang, "\";");
         w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
         with_flag_bind(false);
         insert_include(w, prefixes[prefix_flags], suffixes[suffix_bind]);
@@ -1033,6 +1044,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
                     w.writeln("END_MAP_FLAG()");
                     w.writeln("WEB_UI_NAME(ui_name)");
+                    w.writeln("WEB_LSP_NAME(lsp_name)");
+                    w.writeln("WEB_WORKER_NAME(worker_name)");
+                    w.writeln("FILE_EXTENSION(file_ext)");
                 }
             }
             if (result->visitor_location == suffixes[suffix_pre_validate] ||

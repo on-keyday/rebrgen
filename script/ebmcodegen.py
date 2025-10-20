@@ -75,7 +75,17 @@ with open(TEST_CONFIG_PATH, "r") as f:
 
 runners = test_config.get("runners", [])
 
-if not any(r["name"] == "ebm2" + lang_name for r in runners):
+new_runner_path = (
+    "$WORK_DIR/src/" + PARENT_DIR_NAME + "/ebm2" + lang_name + "/unictest_runner.json"
+)
+
+actual_new_runner_path = os.path.join(
+    "src", PARENT_DIR_NAME, "ebm2" + lang_name, "unictest_runner.json"
+)
+
+if not any(r["file"] == new_runner_path for r in runners) and not os.path.exists(
+    new_runner_path
+):
     new_name = "ebm2" + lang_name
     new_runner = {
         "name": new_name,
@@ -94,11 +104,18 @@ if not any(r["name"] == "ebm2" + lang_name for r in runners):
             "txt",
         ],
     }
-    runners.append(new_runner)
+    with open(actual_new_runner_path, "w") as f:
+        json.dump(new_runner, f, indent=4)
+    runners.append(
+        {
+            "file": new_runner_path,
+        }
+    )
     test_config["runners"] = runners
     with open(TEST_CONFIG_PATH, "w") as f:
         json.dump(test_config, f, indent=4)
     print(f"Added runner for ebm2{lang_name} to {TEST_CONFIG_PATH}")
+    print(f"Note: you should replace 'txt' with the appropriate file extension.")
 else:
     print(f"Runner for ebm2{lang_name} already exists in {TEST_CONFIG_PATH}")
 

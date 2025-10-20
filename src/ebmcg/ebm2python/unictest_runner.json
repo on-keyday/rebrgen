@@ -1,0 +1,17 @@
+{
+    "name": "ebm2python",
+    "source_setup_command": [
+        "python",
+        "$WORK_DIR/script/unictest_setup.py",
+        "setup",
+        "ebm2python",
+        "py"
+    ],
+    "run_command": [
+        "python",
+        "$WORK_DIR/script/unictest_setup.py",
+        "test",
+        "ebm2python",
+        "py"
+    ]
+}

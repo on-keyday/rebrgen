@@ -29,7 +29,10 @@ struct Flags : ebmcodegen::Flags {
     #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
         type name = default_
     #define WEB_FILTERED(...) 
-    #define WEB_UI_NAME(ui_name) 
+    #define WEB_UI_NAME(name) 
+    #define WEB_LSP_NAME(name) 
+    #define WEB_WORKER_NAME(name) 
+    #define FILE_EXTENSION(name) 
     #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
     #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
     #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)MappedType name = default_;
@@ -60,6 +63,9 @@ struct Flags : ebmcodegen::Flags {
     #undef MAP_FLAG_ITEM
     #undef END_MAP_FLAG
     #undef WEB_UI_NAME
+    #undef WEB_LSP_NAME
+    #undef WEB_WORKER_NAME
+    #undef FILE_EXTENSION
     #if __has_include("visitor/Flags_struct_before.hpp")
     #include "visitor/Flags_struct_before.hpp"
     #endif
@@ -82,11 +88,15 @@ struct Flags : ebmcodegen::Flags {
         ui_lang_name = lang_name;
         lsp_name = lang_name;
         webworker_name = "ebm2python";
+        file_ext_name = ".python";
         ebmcodegen::Flags::bind(ctx); // bind basis
         #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
             ctx.flag_func(&name,flag_name,__VA_ARGS__)
         #define WEB_FILTERED(...) web_filtered.insert_range(std::set{__VA_ARGS__})
-        #define WEB_UI_NAME(ui_name) ui_lang_name = ui_name
+        #define WEB_UI_NAME(name) ui_lang_name = name
+        #define WEB_LSP_NAME(name) lsp_name = name
+        #define WEB_WORKER_NAME(name) webworker_name = name
+        #define FILE_EXTENSION(name) file_ext_name = name
         #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
         #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
         #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc){ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = "{"; 
@@ -117,6 +127,9 @@ struct Flags : ebmcodegen::Flags {
         #undef MAP_FLAG_ITEM
         #undef END_MAP_FLAG
         #undef WEB_UI_NAME
+        #undef WEB_LSP_NAME
+        #undef WEB_WORKER_NAME
+        #undef FILE_EXTENSION
         #if __has_include("visitor/Flags_bind_before.hpp")
         #include "visitor/Flags_bind_before.hpp"
         #endif

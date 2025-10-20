@@ -242,40 +242,44 @@ namespace ebmgen {
         // insertion order is important, so use both vector and set
         IndexCluster cluster;
         for (size_t i = 0; i < properties.size(); i++) {
-            edge[i].emplace_back();
             for (size_t j = i + 1; j < properties.size(); j++) {
                 MAYBE(common, get_common_type(ctx, properties[i].property_type, properties[j].property_type));
                 if (common) {
                     edge[i].push_back(j);
+                    edge[j].push_back(i);
                 }
             }
         }
         for (size_t i = 0; i < properties.size(); i++) {
-            auto found = edge.find(i);
-            if (found == edge.end()) {
+            if (i == 0) {
+                cluster.push_back({{i}, {i}});
                 continue;
             }
-            bool has_cluster = false;
-            for (auto& c : cluster) {
-                if (!c.second.contains(i)) {
+            // try connecting to existing cluster
+            auto& edges = edge[i];
+            size_t min_index = cluster.size();
+            for (auto& e : edges) {
+                if (e >= i) {
                     continue;
                 }
-                has_cluster = true;
-                for (auto& e : found->second) {
-                    if (c.second.insert(e).second) {
-                        c.first.push_back(e);
-                    }
-                }
-                break;
+                min_index = std::min(min_index, e);
             }
-            if (has_cluster) {
+            if (min_index == cluster.size()) {
+                // new cluster
+                cluster.push_back({{i}, {i}});
                 continue;
             }
-            cluster.push_back({{i}, {i}});
-            for (auto& e : found->second) {
-                if (cluster.back().second.insert(e).second) {
-                    cluster.back().first.push_back(e);
+            bool ok = false;
+            for (auto& c : cluster) {
+                if (c.second.contains(min_index)) {
+                    c.first.push_back(i);
+                    c.second.insert(i);
+                    ok = true;
+                    break;
                 }
+            }
+            if (!ok) {
+                return unexpect_error("This is a bug: cluster not found");
             }
         }
         return cluster;

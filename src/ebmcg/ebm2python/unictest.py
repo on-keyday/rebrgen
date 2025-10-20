@@ -43,7 +43,11 @@ def main():
         f.write("       print(f'Error during decoding: {e}')\n")
         f.write("       print(traceback.format_exc())\n")
         f.write("       sys.exit(10) # for testing purposes\n")
-        f.write("    print(f'Decoded data: {target}')\n")
+        f.write("    decoded_data = f'{target}'\n")
+        # f.write(
+        #    "    decoded_data = decoded_data[0:100] + '...' if len(decoded_data) > 100 else decoded_data\n"
+        # )
+        f.write("    print(f'Decoded data: {decoded_data}')\n")
         f.write("    data = io.BytesIO()\n")
         f.write("    try:\n")
         f.write("       target.encode(data)\n")

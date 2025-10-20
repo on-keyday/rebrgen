@@ -44,6 +44,14 @@
             "source": "$WORK_DIR/brgen/example/tcp_segment.bgn",
             "failure_case": false,
             "hex": true
+        },
+        {
+            "name": "leb128_test",
+            "binary": "$WORK_DIR/test/binary_data/leb128.dat",
+            "format_name": "Leb128Test",
+            "source": "$WORK_DIR/src/test/leb128_test.bgn",
+            "failure_case": false,
+            "hex": true
         }
     ]
 }

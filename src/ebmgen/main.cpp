@@ -121,7 +121,7 @@ auto& cerr = futils::wrap::cerr_wrap();
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.show_flags) {
-        cout << ebmcodegen::flag_description_json(ctx, "ebm", "ebm", "text", "ebmgen", ".ebm", std::unordered_set<std::string>{"help", "show-flags"});
+        cout << ebmcodegen::flag_description_json(ctx, "ebm", "ebm", "text", "ebmgen", {".ebm", ".ebm.json", ".txt"}, std::unordered_set<std::string>{"help", "show-flags"});
         return 0;
     }
     if (flags.input.empty()) {

@@ -12,10 +12,17 @@ parser.add_argument(
     default="codegen",
     help="Mode of operation",
 )
+parser.add_argument(
+    "--file-extension",
+    help="File extension for output source code",
+)
 args = parser.parse_args()
 
 lang_name = args.lang_name
 mode = args.mode
+file_extension = args.file_extension
+if file_extension is None:
+    file_extension = "." + lang_name
 
 
 sys.path.append(os.path.dirname(__file__))
@@ -27,6 +34,7 @@ if mode == "interpret":
 else:
     PARENT_DIR_NAME = "ebmcg"
 
+PROGRAM_NAME = "ebm2" + lang_name
 PARENT_CMAKE_PATH = f"src/{PARENT_DIR_NAME}/CMakeLists.txt"
 OUTPUT_DIR = f"src/{PARENT_DIR_NAME}/ebm2{lang_name}"
 TEST_CONFIG_PATH = "test/unictest.json"
@@ -42,6 +50,28 @@ with open(os.path.join(OUTPUT_DIR, "CMakeLists.txt"), "wb") as f:
     f.write(CMAKE)
 with open(os.path.join(OUTPUT_DIR, "main.cpp"), "wb") as f:
     f.write(CODE_GENERATOR)
+
+# add FILE_EXTENSIONS(ext) to Flags.hpp using script/ebmtemplate.py
+if mode == "codegen":
+    flags_path = os.path.join(VISITOR_DIR, "Flags.hpp")
+    if not os.path.exists(flags_path):
+        execute(
+            [
+                "python",
+                "./script/ebmtemplate.py",
+                "Flags",
+                lang_name,
+            ],
+            None,
+        )
+        with open(flags_path, "a") as f:
+            f.write(f'\nFILE_EXTENSIONS("{file_extension}")\n')
+        print(f"Added FILE_EXTENSIONS to {flags_path} with extension: {file_extension}")
+    else:
+        print(
+            f"Flags.hpp already exists: {flags_path}, skipping FILE_EXTENSIONS addition."
+        )
+
 # add test script file if not exists
 TEST_SCRIPT_PATH = os.path.join(OUTPUT_DIR, "unictest.py")
 if not os.path.exists(TEST_SCRIPT_PATH):
@@ -86,22 +116,20 @@ actual_new_runner_path = os.path.join(
 if not any(r["file"] == new_runner_path for r in runners) and not os.path.exists(
     new_runner_path
 ):
-    new_name = "ebm2" + lang_name
+
     new_runner = {
-        "name": new_name,
+        "name": PROGRAM_NAME,
         "source_setup_command": [
             "python",
             "$WORK_DIR/script/unictest_setup.py",
             "setup",
-            new_name,
-            "txt",
+            PROGRAM_NAME,
         ],
         "run_command": [
             "python",
             "$WORK_DIR/script/unictest_setup.py",
             "test",
-            new_name,
-            "txt",
+            PROGRAM_NAME,
         ],
     }
     with open(actual_new_runner_path, "w") as f:
@@ -115,7 +143,6 @@ if not any(r["file"] == new_runner_path for r in runners) and not os.path.exists
     with open(TEST_CONFIG_PATH, "w") as f:
         json.dump(test_config, f, indent=4)
     print(f"Added runner for ebm2{lang_name} to {TEST_CONFIG_PATH}")
-    print(f"Note: you should replace 'txt' with the appropriate file extension.")
 else:
     print(f"Runner for ebm2{lang_name} already exists in {TEST_CONFIG_PATH}")
 

@@ -34,6 +34,7 @@ auto name = this->module_.get_identifier_or(item_id);
 if (this->module_.get_identifier(item_id)) {
     output.struct_names.push_back(name);
 }
+w.writeln("@dataclasses.dataclass");
 w.writeln_with_loc(to_any_ref(item_id), "class ", name, ":");
 size_t size = w.str_size();
 auto scope = w.indent_scope();

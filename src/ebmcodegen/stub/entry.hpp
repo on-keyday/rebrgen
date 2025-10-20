@@ -31,7 +31,7 @@ namespace ebmcodegen {
         const char* ui_lang_name = "";
         const char* lsp_name = "";
         const char* webworker_name = "";
-        const char* file_ext_name = "";
+        std::vector<std::string_view> file_extensions;
 
         bool debug_unimplemented = false;
 
@@ -53,7 +53,7 @@ namespace ebmcodegen {
     namespace internal {
         int load_file(auto& flags, auto& output, futils::cmdline::option::Context& ctx, auto&& then) {
             if (flags.show_flags) {
-                futils::wrap::cout_wrap() << flag_description_json(ctx, flags.lang_name, flags.ui_lang_name, flags.lsp_name, flags.webworker_name, flags.file_ext_name, flags.web_filtered) << '\n';
+                futils::wrap::cout_wrap() << flag_description_json(ctx, flags.lang_name, flags.ui_lang_name, flags.lsp_name, flags.webworker_name, flags.file_extensions, flags.web_filtered) << '\n';
                 return 0;
             }
             if (flags.input.empty()) {

@@ -23,4 +23,36 @@ auto io_val = module_.get_identifier_or(io_ref);
 
 MAYBE(size_str, get_size_str(*this, num_bytes));
 
-return CODE("(builtins.len(", io_val, ".peek(", size_str, ")) == ", size_str, ")");
+bool only_one_byte = size_str == "1";
+auto tmp_id = std::format("{}", get_id(item_id));
+auto current_offset = std::format("current_offset_{}", tmp_id);
+auto end_offset = std::format("end_offset_{}", tmp_id);
+auto result = std::format("result_{}", tmp_id);
+
+auto peek_pattern = CODELINE(result, " = builtins.len(", io_val, ".peek(", size_str, "))");
+auto seek_pattern = CODE(
+    current_offset, " = ", io_val, ".tell()", CODELINE(),
+    end_offset, " = ", io_val, ".seek(0,2)", CODELINE(),
+    io_val, ".seek(", current_offset, ")", CODELINE(),
+    result, " = ", end_offset, " - ", current_offset, CODELINE());
+
+CodeWriter w;
+w.writeln("if isinstance(", io_val, ", io.BytesIO) and ", io_val, ".seekable():");
+{
+    auto scope = w.indent_scope();
+    w.writeln(seek_pattern);
+}
+w.writeln("elif isinstance(", io_val, ", io.BufferedReader):");
+{
+    auto scope = w.indent_scope();
+    w.writeln(peek_pattern);
+}
+w.writeln("else:");
+{
+    auto scope = w.indent_scope();
+    w.writeln("raise ValueError(\"Unsupported stream type for CAN_READ_STREAM\")");
+}
+MAYBE(got_writer, get_writer());
+got_writer.write(std::move(w));
+
+return CODE("bool(", result, " >= ", size_str, ")");

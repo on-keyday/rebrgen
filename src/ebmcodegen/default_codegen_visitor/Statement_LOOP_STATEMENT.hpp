@@ -31,9 +31,14 @@ if (auto init = loop.init(); init && init->id.value() != 0) {
     merge_result(*this, w, init_s);
 }
 std::string cond;
+CodeWriter condition_related;
 if (auto c = loop.condition()) {
+    auto added = add_writer();
     MAYBE(expr, visit_Expression(*this, c->cond));
     cond = std::move(expr.to_string());
+    MAYBE(got, get_writer());
+    condition_related = std::move(got);
+    w.write(condition_related);
 }
 else {
     MAYBE(true_, get_bool_literal(*this, true));
@@ -41,7 +46,7 @@ else {
 }
 
 if (use_brace_for_condition) {
-    w.writeln("while (", tidy_condition_brace(std::move(cond)), ") {");
+    w.writeln("while (", tidy_condition_brace(std::move(cond)), ") ", begin_block);
 }
 else {
     w.writeln("while ", tidy_condition_brace(std::move(cond)), " ", begin_block);
@@ -54,6 +59,7 @@ else {
         MAYBE(step, visit_Statement(*this, *iter));
         merge_result(*this, w, step);
     }
+    w.write(condition_related);
 }
 w.writeln(end_block);
 

@@ -2,12 +2,12 @@ import os
 import sys
 import pathlib as pl
 import subprocess as sp
-import binascii
+import json
 import difflib
 
 mode = sys.argv[1]
 target_command = sys.argv[2]
-file_ext = sys.argv[3]
+preferred_file_ext = sys.argv[3] if len(sys.argv) > 3 else None
 
 env = os.environ.copy()
 
@@ -18,8 +18,23 @@ for e in list(unictest_env_vars.keys()):
 
 runner_dir = unictest_env_vars["UNICTEST_RUNNER_DIR"]
 original_workdir = unictest_env_vars["UNICTEST_ORIGINAL_WORK_DIR"]
+ebm2target = (pl.Path(original_workdir) / f"tool/{target_command}").as_posix()
+if os.name == "nt":
+    ebm2target += ".exe"
 
-setup_target_file = pl.Path(runner_dir) / f"test_target.{file_ext}"
+
+ebm2target_spec = json.loads(sp.check_output([ebm2target, "--show-flags"]).decode())
+file_exts = ebm2target_spec.get("file_extensions", [])
+if preferred_file_ext is None:
+    if len(file_exts) > 0:
+        file_ext = file_exts[0]
+    else:
+        print(f"No file extensions specified by target command: {target_command}")
+else:
+    file_ext = preferred_file_ext
+
+
+setup_target_file = pl.Path(runner_dir) / f"test_target{file_ext}"
 
 
 def hexdump(data: bytes) -> str:
@@ -48,10 +63,6 @@ if mode == "setup":
     ]
     print(f"\nRunning command: {' '.join(cmd)}")
     sp.check_call(cmd)
-
-    ebm2target = (pl.Path(original_workdir) / f"tool/{target_command}").as_posix()
-    if os.name == "nt":
-        ebm2target += ".exe"
 
     test_info_file = pl.Path(runner_dir) / "test_info.json"
     cmd = [

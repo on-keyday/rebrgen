@@ -52,6 +52,14 @@
             "source": "$WORK_DIR/src/test/leb128_test.bgn",
             "failure_case": false,
             "hex": true
+        },
+        {
+            "name": "dns_label_test",
+            "binary": "$WORK_DIR/test/binary_data/dns_label.dat",
+            "format_name": "DNSLabelTest",
+            "source": "$WORK_DIR/src/test/dns_label.bgn",
+            "failure_case": false,
+            "hex": true
         }
     ]
 }

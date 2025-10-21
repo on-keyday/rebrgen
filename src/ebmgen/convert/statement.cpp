@@ -1,6 +1,7 @@
 #include "core/ast/node/statement.h"
 #include "../converter.hpp"
 #include "core/ast/ast.h"
+#include "core/ast/node/ast_enum.h"
 #include "core/ast/node/base.h"
 #include "core/ast/node/expr.h"
 #include "core/ast/node/translated.h"
@@ -985,6 +986,18 @@ namespace ebmgen {
             body.target(target_ref);
             EBMA_CONVERT_EXPRESSION(value_ref, node->right);
             body.value(value_ref);
+        }
+        else if (node->op == ast::BinaryOp::append_assign) {
+            body.kind = ebm::StatementKind::APPEND;
+            auto index = ast::as<ast::Index>(node->left);
+            if (!index) {
+                return unexpect_error("Left-hand side of append_assign must be an index expression");
+            }
+            EBMA_CONVERT_EXPRESSION(target_ref, index->expr);
+            EBMA_CONVERT_EXPRESSION(value_ref, node->right);
+            body.target(target_ref);
+            body.value(value_ref);
+            return {};
         }
         else if (node->op == ast::BinaryOp::define_assign || node->op == ast::BinaryOp::const_assign) {
             auto name_ident = ast::as<ast::Ident>(node->left);

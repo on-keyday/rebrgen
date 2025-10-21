@@ -121,7 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "C:/workspace/shbrgen/brgen/example/protobuf.bgn", "-v"],
+      "args": ["-i", "${workspaceFolder}/src/test/dns_label.bgn", "-v"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
@@ -157,17 +157,6 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/syntax/sections-txt"
-      ]
-    },
-    {
-      "type": "debugpy",
-      "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-cc509bb6-0642-40df-8fad-8474de180637\\runner-07ea0025-5c5a-4a1f-92e8-7add26c7e48f\\task-leb128_test-Leb128Test-6ca722ef-d0d0-4a93-9ac7-1f684c5b789a",
-      "name": "Debug ebm2python unictest (Leb128Test)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\test-run-cc509bb6-0642-40df-8fad-8474de180637\\runner-07ea0025-5c5a-4a1f-92e8-7add26c7e48f\\task-leb128_test-Leb128Test-6ca722ef-d0d0-4a93-9ac7-1f684c5b789a\\test_script.py",
-      "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-cc509bb6-0642-40df-8fad-8474de180637/runner-07ea0025-5c5a-4a1f-92e8-7add26c7e48f/task-leb128_test-Leb128Test-6ca722ef-d0d0-4a93-9ac7-1f684c5b789a/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-cc509bb6-0642-40df-8fad-8474de180637/runner-07ea0025-5c5a-4a1f-92e8-7add26c7e48f/task-leb128_test-Leb128Test-6ca722ef-d0d0-4a93-9ac7-1f684c5b789a/output.bin"
       ]
     }
   ]

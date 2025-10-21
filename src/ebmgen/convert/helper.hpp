@@ -253,6 +253,10 @@ namespace ebmgen {
 #define EBM_MEMBER_ACCESS(ref_name, type, base__, member__) \
     EBM_AST_EXPRESSION(ref_name, make_member_access, type, base__, member__)
 
+    ebm::ExpressionBody make_enum_member(ebm::TypeRef type, ebm::StatementRef enum_decl, ebm::ExpressionRef member);
+#define EBM_ENUM_MEMBER(ref_name, type, enum_decl__, member__) \
+    EBM_AST_EXPRESSION(ref_name, make_enum_member, type, enum_decl__, member__)
+
     ebm::ExpressionBody make_call(ebm::TypeRef typ, ebm::CallDesc&& call_desc);
 #define EBM_CALL(ref_name, typ, call_desc__) \
     EBM_AST_EXPRESSION(ref_name, make_call, typ, call_desc__)

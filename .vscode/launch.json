@@ -121,7 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "${workspaceFolder}/src/test/dns_label.bgn", "-v"],
+      "args": ["-i", "./src/ebm/extended_binary_module.bgn", "-v"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

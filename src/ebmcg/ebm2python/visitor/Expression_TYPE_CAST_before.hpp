@@ -19,7 +19,14 @@
 if (cast_kind == ebm::CastType::ENUM_TO_INT) {
     MAYBE(source_expr_str, visit_Expression(*this, source_expr));
     MAYBE(target_type_str, visit_Type(*this, type));
-    return CODE(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ".value)");
+    return CODE(target_type_str.to_writer(), "(", source_expr_str.to_writer(), ".value if isinstance(", source_expr_str.to_writer(), ",enum.Enum) else ", source_expr_str.to_writer(), ")");
+}
+if (module_.get_type_kind(type) == ebm::TypeKind::ENUM) {
+    MAYBE(source_expr_str, visit_Expression(*this, source_expr));
+    MAYBE(target_type, module_.get_type(type));
+    auto id_ = *target_type.body.id();
+    auto enum_name = module_.get_identifier_or(id_);
+    return CODE(enum_name, "(", source_expr_str.to_writer(), ")");
 }
 if (module_.get_type_kind(type) == ebm::TypeKind::VARIANT) {
     return visit_Expression(*this, source_expr);

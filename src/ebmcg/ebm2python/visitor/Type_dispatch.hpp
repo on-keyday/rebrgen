@@ -73,7 +73,7 @@ switch (type.body.kind) {
         // For enums, get the name of the enum
         MAYBE(enum_decl_stmt, module_.get_statement(*type.body.id()));
         auto enum_name = module_.get_identifier_or(enum_decl_stmt.id);
-        return enum_name;
+        return "Union[" + enum_name + ",int]";
     }
     case ebm::TypeKind::ENCODER_RETURN:
     case ebm::TypeKind::DECODER_RETURN:

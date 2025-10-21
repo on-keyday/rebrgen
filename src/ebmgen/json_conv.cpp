@@ -399,6 +399,15 @@ namespace ebm {
                 return false;
             }
         }
+        if (auto got = j.at("enum_decl")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.enum_decl(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("from_type")) {
             TypeRef tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2677,6 +2686,10 @@ namespace ebm {
             }
             if (s == "MEMBER_ACCESS") {
                 obj = ExpressionKind::MEMBER_ACCESS;
+                return true;
+            }
+            if (s == "ENUM_MEMBER") {
+                obj = ExpressionKind::ENUM_MEMBER;
                 return true;
             }
             if (s == "TYPE_CAST") {

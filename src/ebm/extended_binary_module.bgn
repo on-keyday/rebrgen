@@ -115,6 +115,7 @@ enum ExpressionKind:
     CALL 
     INDEX_ACCESS 
     MEMBER_ACCESS 
+    ENUM_MEMBER
     TYPE_CAST
     RANGE
     DEFAULT_VALUE
@@ -187,6 +188,9 @@ format ExpressionBody:
         ExpressionKind.MEMBER_ACCESS:
             base :ExpressionRef
             member :ExpressionRef # Reference to the member identifier
+        ExpressionKind.ENUM_MEMBER:
+            enum_decl :StatementRef # Reference to the enum declaration
+            member :ExpressionRef # Reference to the enum member identifier
         ExpressionKind.TYPE_CAST:
             from_type :TypeRef
             source_expr :ExpressionRef

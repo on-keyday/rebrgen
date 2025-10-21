@@ -74,6 +74,7 @@ namespace ebmcodegen {
             body.else_({});
             body.end({});
             body.endian_expr({});
+            body.enum_decl({});
             body.from_type({});
             body.id({});
             body.index({});

@@ -4,6 +4,7 @@
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
 #include <string_view>
+#include "helper/template_instance.h"
 #include "output.hpp"
 #include "ebmgen/mapping.hpp"
 
@@ -291,6 +292,7 @@ namespace ebmcodegen::util {
 
     template <class CodeWriter>
     auto code_write(auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
         CodeWriter w;
         w.write(std::forward<decltype(args)>(args)...);
         return w;
@@ -298,6 +300,7 @@ namespace ebmcodegen::util {
 
     template <class CodeWriter>
     auto code_write(ebm::AnyRef loc, auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");
         CodeWriter w;
         w.write_with_loc(loc, std::forward<decltype(args)>(args)...);
         return w;
@@ -305,6 +308,7 @@ namespace ebmcodegen::util {
 
     template <class CodeWriter>
     auto code_writeln(auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
         CodeWriter w;
         w.writeln(std::forward<decltype(args)>(args)...);
         return w;
@@ -312,6 +316,7 @@ namespace ebmcodegen::util {
 
     template <class CodeWriter>
     auto code_writeln(ebm::AnyRef loc, auto&&... args) {
+        static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_writeln. Please unwrap it first.");
         CodeWriter w;
         w.writeln_with_loc(loc, std::forward<decltype(args)>(args)...);
         return w;

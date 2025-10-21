@@ -328,6 +328,22 @@ namespace ebmgen {
     }
 
     expected<void> ExpressionConverter::convert_expr_impl(const std::shared_ptr<ast::MemberAccess>& node, ebm::ExpressionBody& body) {
+        if (auto typ_literal = ast::as<ast::TypeLiteral>(node->target); typ_literal) {
+            if (auto ident_ = ast::as<ast::IdentType>(typ_literal->type_literal)) {
+                auto base = ast::as<ast::EnumType>(ident_->base.lock());
+                if (base) {
+                    EBMA_CONVERT_STATEMENT(enum_decl_stmt, base->base.lock());
+                    // Enum member access
+                    body.kind = ebm::ExpressionKind::ENUM_MEMBER;
+                    body.enum_decl(enum_decl_stmt);
+                    auto temporary = ctx.state().set_self_ref(std::nullopt);
+                    EBMA_CONVERT_EXPRESSION(member_ref, node->member);
+                    body.member(member_ref);
+                    return {};
+                }
+                // currently fallback to normal member access
+            }
+        }
         body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
         EBMA_CONVERT_EXPRESSION(base_ref, node->target);
         if (auto member = ast::as<ast::Ident>(node->member); member && member->usage == ast::IdentUsage::reference_builtin_fn) {
@@ -349,13 +365,11 @@ namespace ebmgen {
                         MAYBE(base_enum, ctx.repository().get_statement(base_stmt));
                         MAYBE(enum_decl_ref, base_enum.body.enum_decl());
                         auto enum_decl = enum_decl_ref;
-                        MAYBE(meta_type, get_single_type(ebm::TypeKind::META, ctx));
-                        EBM_IDENTIFIER(enum_, base_stmt, meta_type);
                         ebm::ExpressionRef cond;
                         EBMU_BOOL_TYPE(bool_type);
                         for (auto& m : enum_decl.members.container) {
                             EBM_IDENTIFIER(member, m, enum_type);
-                            EBM_MEMBER_ACCESS(enum_member, enum_type, enum_, member);
+                            EBM_ENUM_MEMBER(enum_member, enum_type, base_stmt, member);
                             MAYBE(eq, convert_equal(base_ref, enum_member));
                             if (is_nil(cond)) {
                                 cond = eq;

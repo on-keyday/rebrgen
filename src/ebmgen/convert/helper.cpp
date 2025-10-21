@@ -188,6 +188,15 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_enum_member(ebm::TypeRef type, ebm::StatementRef enum_decl, ebm::ExpressionRef member) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionKind::ENUM_MEMBER;
+        body.type = type;
+        body.enum_decl(enum_decl);
+        body.member(member);
+        return body;
+    }
+
     ebm::ExpressionBody make_call(ebm::TypeRef type, ebm::CallDesc&& call_desc) {
         ebm::ExpressionBody body;
         body.type = type;

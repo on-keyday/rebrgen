@@ -118,7 +118,8 @@ namespace ebmgen {
                     EBM_RETURN(default_return, default_status);
                     for (auto& b : prop->members.container) {
                         MAYBE(stmt, ctx.repository().get_statement(b));
-                        MAYBE(member, stmt.body.property_member_decl());
+                        MAYBE(member_ref, stmt.body.property_member_decl());
+                        auto member = member_ref;  // copy to avoid memory relocation
                         ebm::MatchBranch br;
                         br.condition = make_condition(member.condition);
                         if (is_nil(member.field)) {

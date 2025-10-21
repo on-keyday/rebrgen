@@ -21,7 +21,7 @@ auto name = module_.get_identifier_or(item_id);
 
 CodeWriter w;
 
-w.writeln("class ", name, "(enum.Enum)", begin_block);
+w.writeln("class ", name, "(enum.IntEnum)", begin_block);
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, enum_decl.members));

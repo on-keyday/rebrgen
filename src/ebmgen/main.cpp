@@ -33,10 +33,17 @@
 #include "interactive/debugger.hpp"
 #include <unordered_set>
 #include <testutil/timer.h>
+#include <number/hex/bin2hex.h>
 
 enum class DebugOutputFormat {
     Text,
     JSON,
+};
+
+enum class OutputFormat {
+    Binary,
+    Base64,
+    Hex,
 };
 
 enum class InputFormat {
@@ -61,7 +68,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     DebugOutputFormat debug_format = DebugOutputFormat::Text;
     QueryOutputFormat query_output_format = QueryOutputFormat::ID;
     std::string_view cfg_output;
-    bool base64 = false;
+    OutputFormat output_format = OutputFormat::Binary;
     bool verbose = false;
     bool debug = false;
     std::string_view libs2j_path;  // Path to libs2j directory
@@ -100,7 +107,18 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"json", QueryOutputFormat::JSON},
                    });
         ctx.VarString<true>(&cfg_output, "cfg-output,c", "control flow graph output file (if -, write to stdout)", "FILE");
-        ctx.VarBool(&base64, "base64", "output as base64 encoding (for web playground)");
+        ctx.VarBoolFunc(&output_format, "base64", "output as base64 encoding (for web playground compatibility)", [&](bool y, auto) {
+            if (y) {
+                output_format = OutputFormat::Base64;
+            }
+            return true;
+        });
+        ctx.VarMap(&output_format, "output-format", "output format (default: binary)", "{binary,base64,hex}",
+                   std::map<std::string, OutputFormat>{
+                       {"binary", OutputFormat::Binary},
+                       {"base64", OutputFormat::Base64},
+                       {"hex", OutputFormat::Hex},
+                   });
         ctx.VarBool(&verbose, "verbose,v", "verbose output (for debug)");
         ctx.VarBool(&debug, "debug,g", "enable debug transformations (do not remove unused items)");
         ctx.VarString<true>(&libs2j_path, "libs2j-path", "path to libs2j (default: {executable_dir}/libs2j" futils_default_dll_suffix ")", "PATH");
@@ -385,7 +403,22 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     }
 
     auto write_ebm = [&](futils::binary::writer& w) {
-        if (flags.base64) {
+        if (flags.output_format == OutputFormat::Hex) {
+            std::string buffer;
+            futils::binary::writer temp_w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
+            auto err = ebm.encode(temp_w);
+            if (err) {
+                cerr << "Failed to encode EBM: " << err.error<std::string>() << '\n';
+                return 1;
+            }
+            std::string hex_output;
+            futils::number::hex::to_hex(hex_output, buffer);
+            if (!w.write(hex_output)) {
+                cerr << "Failed to write hex output\n";
+                return 1;
+            }
+        }
+        else if (flags.output_format == OutputFormat::Base64) {
             std::string buffer;
             futils::binary::writer temp_w{futils::binary::resizable_buffer_writer<std::string>(), &buffer};
             auto err = ebm.encode(temp_w);

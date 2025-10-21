@@ -29,13 +29,11 @@ namespace ebmcodegen {
             body.match_branch({});
             body.match_statement({});
             body.metadata({});
-            body.offset({});
             body.param_decl({});
             body.previous_assignment({});
             body.property_decl({});
             body.property_member_decl({});
             body.read_data({});
-            body.stream_type({});
             body.struct_decl({});
             body.sub_byte_range({});
             body.target({});

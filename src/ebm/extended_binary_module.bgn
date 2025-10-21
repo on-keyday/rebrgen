@@ -558,9 +558,6 @@ format StatementBody:
             read_data :IOData # Descriptor for reading data
         StatementKind.WRITE_DATA:
             write_data :IOData # Descriptor for writing data
-        StatementKind.SEEK_STREAM:
-            offset :ExpressionRef # Offset to seek to
-            stream_type :StreamType
         StatementKind.IF_STATEMENT:
             if_statement :IfStatement
         StatementKind.LOOP_STATEMENT:

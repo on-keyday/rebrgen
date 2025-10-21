@@ -44,9 +44,10 @@ def main():
         f.write("       print(traceback.format_exc())\n")
         f.write("       sys.exit(10) # for testing purposes\n")
         f.write("    decoded_data = f'{target}'\n")
-        # f.write(
-        #    "    decoded_data = decoded_data[0:100] + '...' if len(decoded_data) > 100 else decoded_data\n"
-        # )
+        if os.environ["UNICTEST_VERBOSE"] == "0":
+            f.write(
+                "    decoded_data = decoded_data[0:100] + '...' if len(decoded_data) > 100 else decoded_data\n"
+            )
         f.write("    print(f'Decoded data: {decoded_data}')\n")
         f.write("    data = io.BytesIO()\n")
         f.write("    try:\n")

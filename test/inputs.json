@@ -1,13 +1,5 @@
 [
     {
-        "name": "varint",
-        "binary": "$WORK_DIR/brgen/example/wire_data/websocket.dat",
-        "format_name": "Frame",
-        "source": "$WORK_DIR/brgen/example/websocket.bgn",
-        "failure_case": false,
-        "hex": true
-    },
-    {
         "name": "websocket_frame_valid",
         "binary": "$WORK_DIR/brgen/example/wire_data/websocket.dat",
         "format_name": "Frame",
@@ -22,6 +14,30 @@
         "source": "$WORK_DIR/brgen/example/websocket.bgn",
         "failure_case": true,
         "hex": false
+    },
+    {
+        "name": "varint_invalid_short_1",
+        "binary": "$WORK_DIR/test/binary_data/varint/invalid_short_1.dat",
+        "format_name": "VarInt",
+        "source": "$WORK_DIR/brgen/example/quic_varint.bgn",
+        "failure_case": true,
+        "hex": true
+    },
+    {
+        "name": "varint_invalid_short_2",
+        "binary": "$WORK_DIR/test/binary_data/varint/invalid_short_2.dat",
+        "format_name": "VarInt",
+        "source": "$WORK_DIR/brgen/example/quic_varint.bgn",
+        "failure_case": true,
+        "hex": true
+    },
+    {
+        "name": "varint_invalid_short_3",
+        "binary": "$WORK_DIR/test/binary_data/varint/invalid_short_3.dat",
+        "format_name": "VarInt",
+        "source": "$WORK_DIR/brgen/example/quic_varint.bgn",
+        "failure_case": true,
+        "hex": true
     },
     {
         "name": "varint_test",

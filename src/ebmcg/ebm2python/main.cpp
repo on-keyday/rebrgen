@@ -1419,11 +1419,11 @@ namespace ebm2python {
     }
     template<typename Visitor>
     concept has_visitor_Statement_SEEK_STREAM = requires(Visitor v) {
-         { v.visit_Statement_SEEK_STREAM(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().offset(),*std::declval<const ebm::StatementBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
+         { v.visit_Statement_SEEK_STREAM(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     concept has_visitor_Statement_SEEK_STREAM_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().offset(),*std::declval<const ebm::StatementBody&>().stream_type()) } -> std::convertible_to<expected<Result>>;
+         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
     };
     template<typename Visitor>
     expected<Result> dispatch_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
@@ -1462,14 +1462,6 @@ namespace ebm2python {
         #endif
         #endif
         auto& kind = in.body.kind;
-        if (!in.body.offset()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::offset");
-        }
-        auto& offset = *in.body.offset();
-        if (!in.body.stream_type()) {
-            return unexpect_error("Unexpected null pointer for StatementBody::stream_type");
-        }
-        auto& stream_type = *in.body.stream_type();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
         #endif
@@ -1506,10 +1498,10 @@ namespace ebm2python {
         #endif
         expected<Result> result;
         if constexpr (has_visitor_Statement_SEEK_STREAM<Visitor>) {
-            result = visitor.visit_Statement_SEEK_STREAM(is_nil(alias_ref) ? in.id : alias_ref,kind,offset,stream_type);
+            result = visitor.visit_Statement_SEEK_STREAM(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else if constexpr (has_visitor_Statement_SEEK_STREAM_call<Visitor>) {
-            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind,offset,stream_type);
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
         }
         else {
             static_assert(has_visitor_Statement_SEEK_STREAM<Visitor>||has_visitor_Statement_SEEK_STREAM_call<Visitor>, "Visitor does not implement visit_Statement_SEEK_STREAM");
@@ -13327,7 +13319,7 @@ namespace ebm2python {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_SEEK_STREAM(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& offset,const ebm::StreamType& stream_type) {
+        expected<Result> visit_Statement_SEEK_STREAM(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
             #if __has_include("visitor/Statement_SEEK_STREAM_before.hpp")
             #include "visitor/Statement_SEEK_STREAM_before.hpp"
             #endif

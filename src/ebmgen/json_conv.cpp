@@ -1838,15 +1838,6 @@ namespace ebm {
                 return false;
             }
         }
-        if (auto got = j.at("offset")) {
-            ExpressionRef tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.offset(std::move(tmp))) {
-                return false;
-            }
-        }
         if (auto got = j.at("param_decl")) {
             ParameterDecl tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -1889,15 +1880,6 @@ namespace ebm {
                 return false;
             }
             if(!obj.read_data(std::move(tmp))) {
-                return false;
-            }
-        }
-        if (auto got = j.at("stream_type")) {
-            StreamType tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.stream_type(std::move(tmp))) {
                 return false;
             }
         }

@@ -60,6 +60,14 @@
             "source": "$WORK_DIR/src/test/dns_label.bgn",
             "failure_case": false,
             "hex": true
+        },
+        {
+            "name": "dns_packet_test",
+            "binary": "$WORK_DIR/test/binary_data/dns_packet.dat",
+            "format_name": "DNSPacketTest",
+            "source": "$WORK_DIR/src/test/dns_packet.bgn",
+            "failure_case": false,
+            "hex": true
         }
     ]
 }

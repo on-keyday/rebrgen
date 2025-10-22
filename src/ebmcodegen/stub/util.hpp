@@ -4,9 +4,11 @@
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
 #include <string_view>
+#include "core/sequencer.h"
 #include "helper/template_instance.h"
 #include "output.hpp"
 #include "ebmgen/mapping.hpp"
+#include "comb2/composite/range.h"
 
 namespace ebmcodegen::util {
     // remove top level brace
@@ -370,4 +372,11 @@ namespace ebmcodegen::util {
 
 #define SEPARATED(...) (code_joint_write<CodeWriter>(__VA_ARGS__))
 
+    namespace internal {
+        constexpr bool is_c_ident(const char* ident) {
+            auto seq = futils::make_ref_seq(ident);
+            auto res = futils::comb2::composite::c_ident(seq, 0, 0);
+            return res == futils::comb2::Status::match && seq.eos();
+        }
+    }  // namespace internal
 }  // namespace ebmcodegen::util

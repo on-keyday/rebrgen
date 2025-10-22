@@ -25,7 +25,7 @@
 
 struct Flags : ebmcodegen::Flags {
     #define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \
-        type name = default_
+        static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");type name = default_
     #define WEB_FILTERED(...) 
     #define WEB_UI_NAME(name) 
     #define WEB_LSP_NAME(name) 
@@ -33,7 +33,7 @@ struct Flags : ebmcodegen::Flags {
     #define FILE_EXTENSIONS(...) 
     #define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)
     #define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)
-    #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)MappedType name = default_;
+    #define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)static_assert(ebmcodegen::util::internal::is_c_ident(#name),"name must be a valid C identifier");MappedType name = default_;
     #define MAP_FLAG_ITEM(key,value) 
     #define END_MAP_FLAG() 
     #if __has_include("visitor/Flags_before.hpp")

@@ -579,9 +579,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln();  // line for end of #include
 
     auto with_flag_bind = [&](bool on_define) {
+        constexpr auto ensure_c_ident = "static_assert(ebmcodegen::util::internal::is_c_ident(#name),\"name must be a valid C identifier\");";
         w.writeln("#define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \\");
         if (on_define) {
-            w.indent_writeln("type name = default_");
+            w.indent_writeln(ensure_c_ident, "type name = default_");
         }
         else {
             w.indent_writeln("ctx.flag_func(&name,flag_name,__VA_ARGS__)");
@@ -611,7 +612,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
         w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
         if (on_define) {
-            w.write("MappedType name = default_;");
+            w.write(ensure_c_ident, "MappedType name = default_;");
         }
         else {
             w.write("{ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = \"{\"; ");

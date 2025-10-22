@@ -20,6 +20,7 @@
 #include "helper/expected.h"
 #include "json/stringer.h"
 #include "stub/structs.hpp"
+#include "dsl/dsl.h"
 
 enum class GenerateMode {
     Template,
@@ -32,6 +33,7 @@ enum class GenerateMode {
     HookList,
     HookKind,
     SpecJSON,
+    DSL,
 };
 
 struct Flags : futils::cmdline::templ::HelpOption {
@@ -41,6 +43,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view visitor_impl_dir = "visitor/";
     std::string_view default_visitor_impl_dir = "ebmcodegen/default_codegen_visitor/";
     std::string_view template_target;
+    std::string_view dsl_file;
 
     void bind(futils::cmdline::option::Context& ctx) {
         bind_help(ctx);
@@ -49,6 +52,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
         ctx.VarString<true>(&template_target, "template-target", "template target name. see --mode hooklist", "target_name");
+        ctx.VarString<true>(&dsl_file, "dsl-file", "DSL source file for --mode dsl", "FILE");
         ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,hookkind,template,spec-json}",
                    std::map<std::string, GenerateMode>{
                        {"template", GenerateMode::Template},
@@ -61,6 +65,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"hooklist", GenerateMode::HookList},
                        {"hookkind", GenerateMode::HookKind},
                        {"spec-json", GenerateMode::SpecJSON},
+                       {"dsl", GenerateMode::DSL},
                    });
     }
 };
@@ -452,6 +457,25 @@ int print_hook_kind() {
 }
 
 int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
+    if (flags.mode == GenerateMode::DSL) {
+        if (flags.dsl_file.empty()) {
+            cerr << "dsl-file is required for dsl mode\n";
+            return 1;
+        }
+        futils::file::View view;
+        if (auto res = view.open(flags.dsl_file); !res) {
+            cerr << "Failed to open DSL file: " << res.error().error<std::string>() << "\n";
+            return 1;
+        }
+        auto dsl_source = std::string_view((const char*)view.data(), view.size());
+        auto res = ebmcodegen::dsl::generate_dsl_output(dsl_source);
+        if (!res) {
+            cerr << "Failed to generate DSL output: " << res.error().error() << "\n";
+            return 1;
+        }
+        cout << *res;
+        return 0;
+    }
     std::string prog_name_buf;
     if (flags.program_name.empty()) {
         prog_name_buf = std::format("ebm2{}", flags.lang);

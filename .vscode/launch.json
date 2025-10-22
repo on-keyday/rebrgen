@@ -130,6 +130,24 @@
       //"symbolSearchPath": "lib\\"
     },
     {
+      "name": "Debug ebmcodegen",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceRoot}/tool/ebmcodegen",
+      "args": [
+        "--mode",
+        "dsl",
+        "--dsl-file",
+        "${workspaceFolder}/save/dsl_sample.txt"
+      ],
+      "stopAtEntry": false,
+      "cwd": "${workspaceRoot}",
+      "environment": [],
+      "console": "integratedTerminal"
+      //"preLaunchTask": "build",
+      //"symbolSearchPath": "lib\\"
+    },
+    {
       "name": "Debug ebm2python",
       "type": "cppvsdbg",
       "request": "launch",

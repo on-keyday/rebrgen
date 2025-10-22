@@ -93,9 +93,14 @@ namespace ebmgen {
                 print_resolved_reference(*id);
             }
             else if (auto member = expr->body.member()) {
-                auto base = expr->body.base();
-                os_ << " base:";
-                print_resolved_reference(*base);
+                if (auto base = expr->body.base()) {
+                    os_ << " base:";
+                    print_resolved_reference(*base);
+                }
+                else if (auto enum_decl = expr->body.enum_decl()) {
+                    os_ << " enum_decl:";
+                    print_resolved_reference(*enum_decl);
+                }
                 os_ << " member:";
                 print_resolved_reference(*member);
             }

@@ -121,7 +121,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "./src/ebm/extended_binary_module.bgn", "-v"],
+      "args": ["-i", "./src/ebm/extended_binary_module.bgn", "-I"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

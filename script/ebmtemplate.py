@@ -90,7 +90,9 @@ def run_update_hooks(tool_path, lang):
         try:
             with open("build_config.json") as f:
                 build_config = json.load(f)
-            target_languages = build_config.get("TARGET_LANGUAGE", [])
+            target_languages = build_config.get("TARGET_LANGUAGE", []) + [
+                "default_codegen"
+            ]
             if not target_languages:
                 print(
                     "Error: No target languages defined in build_config.json.",

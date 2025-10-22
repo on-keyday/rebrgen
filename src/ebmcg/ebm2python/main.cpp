@@ -21,9 +21,6 @@
 #if __has_include("visitor/includes_post_default.hpp")
 #include "visitor/includes_post_default.hpp"
 #endif
-#if __has_include("visitor/includes_after.hpp")
-#include "visitor/includes_after.hpp"
-#endif
 #endif
 
 struct Flags : ebmcodegen::Flags {
@@ -52,9 +49,6 @@ struct Flags : ebmcodegen::Flags {
     #if __has_include("visitor/Flags_post_default.hpp")
     #include "visitor/Flags_post_default.hpp"
     #endif
-    #if __has_include("visitor/Flags_after.hpp")
-    #include "visitor/Flags_after.hpp"
-    #endif
     #endif
     #undef DEFINE_FLAG
     #undef WEB_FILTERED
@@ -79,9 +73,6 @@ struct Flags : ebmcodegen::Flags {
     #include "ebmcodegen/default_codegen_visitor/Flags_struct.hpp"
     #if __has_include("visitor/Flags_struct_post_default.hpp")
     #include "visitor/Flags_struct_post_default.hpp"
-    #endif
-    #if __has_include("visitor/Flags_struct_after.hpp")
-    #include "visitor/Flags_struct_after.hpp"
     #endif
     #endif
     void bind(futils::cmdline::option::Context& ctx) {
@@ -116,9 +107,6 @@ struct Flags : ebmcodegen::Flags {
         #if __has_include("visitor/Flags_post_default.hpp")
         #include "visitor/Flags_post_default.hpp"
         #endif
-        #if __has_include("visitor/Flags_after.hpp")
-        #include "visitor/Flags_after.hpp"
-        #endif
         #endif
         #undef DEFINE_FLAG
         #undef WEB_FILTERED
@@ -144,9 +132,6 @@ struct Flags : ebmcodegen::Flags {
         #if __has_include("visitor/Flags_bind_post_default.hpp")
         #include "visitor/Flags_bind_post_default.hpp"
         #endif
-        #if __has_include("visitor/Flags_bind_after.hpp")
-        #include "visitor/Flags_bind_after.hpp"
-        #endif
         #endif
     }
 };
@@ -163,9 +148,6 @@ struct Output : ebmcodegen::Output {
 #include "ebmcodegen/default_codegen_visitor/Output.hpp"
 #if __has_include("visitor/Output_post_default.hpp")
 #include "visitor/Output_post_default.hpp"
-#endif
-#if __has_include("visitor/Output_after.hpp")
-#include "visitor/Output_after.hpp"
 #endif
 #endif
 };
@@ -202,9 +184,6 @@ namespace ebm2python {
         #if __has_include("visitor/Result_post_default.hpp")
         #include "visitor/Result_post_default.hpp"
         #endif
-        #if __has_include("visitor/Result_after.hpp")
-        #include "visitor/Result_after.hpp"
-        #endif
         #endif
     };
     template<typename Visitor>
@@ -232,9 +211,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_validate_before.hpp")
         #include "visitor/Statement_BLOCK_pre_validate_before.hpp"
@@ -248,9 +224,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_pre_validate.hpp"
         #if __has_include("visitor/Statement_BLOCK_pre_validate_post_default.hpp")
         #include "visitor/Statement_BLOCK_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BLOCK_pre_validate_after.hpp")
-        #include "visitor/Statement_BLOCK_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -271,9 +244,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_visit_before.hpp")
         #include "visitor/Statement_BLOCK_pre_visit_before.hpp"
@@ -287,9 +257,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_pre_visit.hpp"
         #if __has_include("visitor/Statement_BLOCK_pre_visit_post_default.hpp")
         #include "visitor/Statement_BLOCK_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BLOCK_pre_visit_after.hpp")
-        #include "visitor/Statement_BLOCK_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -315,9 +282,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BLOCK_post_visit_before.hpp")
         #include "visitor/Statement_BLOCK_post_visit_before.hpp"
@@ -331,9 +295,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK_post_visit.hpp"
         #if __has_include("visitor/Statement_BLOCK_post_visit_post_default.hpp")
         #include "visitor/Statement_BLOCK_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BLOCK_post_visit_after.hpp")
-        #include "visitor/Statement_BLOCK_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -364,9 +325,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_validate_before.hpp"
@@ -380,9 +338,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_pre_validate.hpp"
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate_post_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate_after.hpp")
-        #include "visitor/Statement_ASSIGNMENT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -411,9 +366,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_visit_before.hpp"
@@ -427,9 +379,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_pre_visit.hpp"
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit_post_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit_after.hpp")
-        #include "visitor/Statement_ASSIGNMENT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -455,9 +404,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_post_visit_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_post_visit_before.hpp"
@@ -471,9 +417,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_post_visit.hpp"
         #if __has_include("visitor/Statement_ASSIGNMENT_post_visit_post_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSIGNMENT_post_visit_after.hpp")
-        #include "visitor/Statement_ASSIGNMENT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -504,9 +447,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_validate_before.hpp")
         #include "visitor/Statement_YIELD_pre_validate_before.hpp"
@@ -520,9 +460,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_validate.hpp"
         #if __has_include("visitor/Statement_YIELD_pre_validate_post_default.hpp")
         #include "visitor/Statement_YIELD_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_YIELD_pre_validate_after.hpp")
-        #include "visitor/Statement_YIELD_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -551,9 +488,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_visit_before.hpp")
         #include "visitor/Statement_YIELD_pre_visit_before.hpp"
@@ -567,9 +501,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_visit.hpp"
         #if __has_include("visitor/Statement_YIELD_pre_visit_post_default.hpp")
         #include "visitor/Statement_YIELD_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_YIELD_pre_visit_after.hpp")
-        #include "visitor/Statement_YIELD_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -595,9 +526,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_YIELD_post_visit_before.hpp")
         #include "visitor/Statement_YIELD_post_visit_before.hpp"
@@ -611,9 +539,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_YIELD_post_visit.hpp"
         #if __has_include("visitor/Statement_YIELD_post_visit_post_default.hpp")
         #include "visitor/Statement_YIELD_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_YIELD_post_visit_after.hpp")
-        #include "visitor/Statement_YIELD_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -644,9 +569,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_validate_before.hpp")
         #include "visitor/Statement_APPEND_pre_validate_before.hpp"
@@ -660,9 +582,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_APPEND_pre_validate.hpp"
         #if __has_include("visitor/Statement_APPEND_pre_validate_post_default.hpp")
         #include "visitor/Statement_APPEND_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_APPEND_pre_validate_after.hpp")
-        #include "visitor/Statement_APPEND_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -687,9 +606,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_visit_before.hpp")
         #include "visitor/Statement_APPEND_pre_visit_before.hpp"
@@ -703,9 +619,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_APPEND_pre_visit.hpp"
         #if __has_include("visitor/Statement_APPEND_pre_visit_post_default.hpp")
         #include "visitor/Statement_APPEND_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_APPEND_pre_visit_after.hpp")
-        #include "visitor/Statement_APPEND_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -731,9 +644,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_APPEND_post_visit_before.hpp")
         #include "visitor/Statement_APPEND_post_visit_before.hpp"
@@ -747,9 +657,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_APPEND_post_visit.hpp"
         #if __has_include("visitor/Statement_APPEND_post_visit_post_default.hpp")
         #include "visitor/Statement_APPEND_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_APPEND_post_visit_after.hpp")
-        #include "visitor/Statement_APPEND_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -780,9 +687,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_validate_before.hpp")
         #include "visitor/Statement_RETURN_pre_validate_before.hpp"
@@ -796,9 +700,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_RETURN_pre_validate.hpp"
         #if __has_include("visitor/Statement_RETURN_pre_validate_post_default.hpp")
         #include "visitor/Statement_RETURN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_RETURN_pre_validate_after.hpp")
-        #include "visitor/Statement_RETURN_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -819,9 +720,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_visit_before.hpp")
         #include "visitor/Statement_RETURN_pre_visit_before.hpp"
@@ -835,9 +733,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_RETURN_pre_visit.hpp"
         #if __has_include("visitor/Statement_RETURN_pre_visit_post_default.hpp")
         #include "visitor/Statement_RETURN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_RETURN_pre_visit_after.hpp")
-        #include "visitor/Statement_RETURN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -863,9 +758,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_RETURN_post_visit_before.hpp")
         #include "visitor/Statement_RETURN_post_visit_before.hpp"
@@ -879,9 +771,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_RETURN_post_visit.hpp"
         #if __has_include("visitor/Statement_RETURN_post_visit_post_default.hpp")
         #include "visitor/Statement_RETURN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_RETURN_post_visit_after.hpp")
-        #include "visitor/Statement_RETURN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -912,9 +801,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_validate_before.hpp"
@@ -928,9 +814,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_pre_validate.hpp"
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate_post_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate_after.hpp")
-        #include "visitor/Statement_ERROR_RETURN_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -951,9 +834,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_visit_before.hpp"
@@ -967,9 +847,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_pre_visit.hpp"
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit_post_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit_after.hpp")
-        #include "visitor/Statement_ERROR_RETURN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -995,9 +872,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_post_visit_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_post_visit_before.hpp"
@@ -1011,9 +885,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_post_visit.hpp"
         #if __has_include("visitor/Statement_ERROR_RETURN_post_visit_post_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_RETURN_post_visit_after.hpp")
-        #include "visitor/Statement_ERROR_RETURN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1044,9 +915,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_validate_before.hpp")
         #include "visitor/Statement_ASSERT_pre_validate_before.hpp"
@@ -1060,9 +928,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_pre_validate.hpp"
         #if __has_include("visitor/Statement_ASSERT_pre_validate_post_default.hpp")
         #include "visitor/Statement_ASSERT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSERT_pre_validate_after.hpp")
-        #include "visitor/Statement_ASSERT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1083,9 +948,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_visit_before.hpp")
         #include "visitor/Statement_ASSERT_pre_visit_before.hpp"
@@ -1099,9 +961,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_pre_visit.hpp"
         #if __has_include("visitor/Statement_ASSERT_pre_visit_post_default.hpp")
         #include "visitor/Statement_ASSERT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSERT_pre_visit_after.hpp")
-        #include "visitor/Statement_ASSERT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1127,9 +986,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ASSERT_post_visit_before.hpp")
         #include "visitor/Statement_ASSERT_post_visit_before.hpp"
@@ -1143,9 +999,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT_post_visit.hpp"
         #if __has_include("visitor/Statement_ASSERT_post_visit_post_default.hpp")
         #include "visitor/Statement_ASSERT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ASSERT_post_visit_after.hpp")
-        #include "visitor/Statement_ASSERT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1176,9 +1029,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_validate_before.hpp")
         #include "visitor/Statement_READ_DATA_pre_validate_before.hpp"
@@ -1192,9 +1042,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_pre_validate.hpp"
         #if __has_include("visitor/Statement_READ_DATA_pre_validate_post_default.hpp")
         #include "visitor/Statement_READ_DATA_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_READ_DATA_pre_validate_after.hpp")
-        #include "visitor/Statement_READ_DATA_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1215,9 +1062,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_visit_before.hpp")
         #include "visitor/Statement_READ_DATA_pre_visit_before.hpp"
@@ -1231,9 +1075,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_pre_visit.hpp"
         #if __has_include("visitor/Statement_READ_DATA_pre_visit_post_default.hpp")
         #include "visitor/Statement_READ_DATA_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_READ_DATA_pre_visit_after.hpp")
-        #include "visitor/Statement_READ_DATA_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1259,9 +1100,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_READ_DATA_post_visit_before.hpp")
         #include "visitor/Statement_READ_DATA_post_visit_before.hpp"
@@ -1275,9 +1113,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_READ_DATA_post_visit.hpp"
         #if __has_include("visitor/Statement_READ_DATA_post_visit_post_default.hpp")
         #include "visitor/Statement_READ_DATA_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_READ_DATA_post_visit_after.hpp")
-        #include "visitor/Statement_READ_DATA_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1308,9 +1143,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_validate_before.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_validate_before.hpp"
@@ -1324,9 +1156,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_pre_validate.hpp"
         #if __has_include("visitor/Statement_WRITE_DATA_pre_validate_post_default.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_WRITE_DATA_pre_validate_after.hpp")
-        #include "visitor/Statement_WRITE_DATA_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1347,9 +1176,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_visit_before.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_visit_before.hpp"
@@ -1363,9 +1189,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_pre_visit.hpp"
         #if __has_include("visitor/Statement_WRITE_DATA_pre_visit_post_default.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_WRITE_DATA_pre_visit_after.hpp")
-        #include "visitor/Statement_WRITE_DATA_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1391,9 +1214,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_post_visit_before.hpp")
         #include "visitor/Statement_WRITE_DATA_post_visit_before.hpp"
@@ -1407,9 +1227,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_post_visit.hpp"
         #if __has_include("visitor/Statement_WRITE_DATA_post_visit_post_default.hpp")
         #include "visitor/Statement_WRITE_DATA_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_WRITE_DATA_post_visit_after.hpp")
-        #include "visitor/Statement_WRITE_DATA_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1440,9 +1257,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_validate_before.hpp"
@@ -1456,9 +1270,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_validate.hpp"
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_post_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_after.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1475,9 +1286,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_visit_before.hpp"
@@ -1491,9 +1299,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_visit.hpp"
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_post_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_after.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1519,9 +1324,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_post_visit_before.hpp"
@@ -1535,9 +1337,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_post_visit.hpp"
         #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_post_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_after.hpp")
-        #include "visitor/Statement_SEEK_STREAM_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1568,9 +1367,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_validate_before.hpp"
@@ -1584,9 +1380,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_pre_validate.hpp"
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate_post_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate_after.hpp")
-        #include "visitor/Statement_IF_STATEMENT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1607,9 +1400,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_visit_before.hpp"
@@ -1623,9 +1413,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_pre_visit.hpp"
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit_post_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit_after.hpp")
-        #include "visitor/Statement_IF_STATEMENT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1651,9 +1438,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_post_visit_before.hpp"
@@ -1667,9 +1451,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_post_visit.hpp"
         #if __has_include("visitor/Statement_IF_STATEMENT_post_visit_post_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IF_STATEMENT_post_visit_after.hpp")
-        #include "visitor/Statement_IF_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1700,9 +1481,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_validate_before.hpp"
@@ -1716,9 +1494,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_pre_validate.hpp"
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate_post_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate_after.hpp")
-        #include "visitor/Statement_LOOP_STATEMENT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1739,9 +1514,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_visit_before.hpp"
@@ -1755,9 +1527,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_pre_visit.hpp"
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit_post_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit_after.hpp")
-        #include "visitor/Statement_LOOP_STATEMENT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1783,9 +1552,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_post_visit_before.hpp"
@@ -1799,9 +1565,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_post_visit.hpp"
         #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit_post_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit_after.hpp")
-        #include "visitor/Statement_LOOP_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1832,9 +1595,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_validate_before.hpp"
@@ -1848,9 +1608,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_pre_validate.hpp"
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate_post_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate_after.hpp")
-        #include "visitor/Statement_MATCH_STATEMENT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -1871,9 +1628,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_visit_before.hpp"
@@ -1887,9 +1641,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_pre_visit.hpp"
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit_post_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit_after.hpp")
-        #include "visitor/Statement_MATCH_STATEMENT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -1915,9 +1666,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_post_visit_before.hpp"
@@ -1931,9 +1679,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_post_visit.hpp"
         #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit_post_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit_after.hpp")
-        #include "visitor/Statement_MATCH_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -1964,9 +1709,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_validate_before.hpp"
@@ -1980,9 +1722,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_pre_validate.hpp"
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate_post_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate_after.hpp")
-        #include "visitor/Statement_MATCH_BRANCH_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2003,9 +1742,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_visit_before.hpp"
@@ -2019,9 +1755,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_pre_visit.hpp"
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit_post_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit_after.hpp")
-        #include "visitor/Statement_MATCH_BRANCH_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2047,9 +1780,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_post_visit_before.hpp"
@@ -2063,9 +1793,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_post_visit.hpp"
         #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit_post_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit_after.hpp")
-        #include "visitor/Statement_MATCH_BRANCH_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2096,9 +1823,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_validate_before.hpp")
         #include "visitor/Statement_BREAK_pre_validate_before.hpp"
@@ -2112,9 +1836,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BREAK_pre_validate.hpp"
         #if __has_include("visitor/Statement_BREAK_pre_validate_post_default.hpp")
         #include "visitor/Statement_BREAK_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BREAK_pre_validate_after.hpp")
-        #include "visitor/Statement_BREAK_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2135,9 +1856,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_visit_before.hpp")
         #include "visitor/Statement_BREAK_pre_visit_before.hpp"
@@ -2151,9 +1869,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BREAK_pre_visit.hpp"
         #if __has_include("visitor/Statement_BREAK_pre_visit_post_default.hpp")
         #include "visitor/Statement_BREAK_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BREAK_pre_visit_after.hpp")
-        #include "visitor/Statement_BREAK_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2179,9 +1894,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_BREAK_post_visit_before.hpp")
         #include "visitor/Statement_BREAK_post_visit_before.hpp"
@@ -2195,9 +1907,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_BREAK_post_visit.hpp"
         #if __has_include("visitor/Statement_BREAK_post_visit_post_default.hpp")
         #include "visitor/Statement_BREAK_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_BREAK_post_visit_after.hpp")
-        #include "visitor/Statement_BREAK_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2228,9 +1937,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_validate_before.hpp")
         #include "visitor/Statement_CONTINUE_pre_validate_before.hpp"
@@ -2244,9 +1950,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_pre_validate.hpp"
         #if __has_include("visitor/Statement_CONTINUE_pre_validate_post_default.hpp")
         #include "visitor/Statement_CONTINUE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_CONTINUE_pre_validate_after.hpp")
-        #include "visitor/Statement_CONTINUE_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2267,9 +1970,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_visit_before.hpp")
         #include "visitor/Statement_CONTINUE_pre_visit_before.hpp"
@@ -2283,9 +1983,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_pre_visit.hpp"
         #if __has_include("visitor/Statement_CONTINUE_pre_visit_post_default.hpp")
         #include "visitor/Statement_CONTINUE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_CONTINUE_pre_visit_after.hpp")
-        #include "visitor/Statement_CONTINUE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2311,9 +2008,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_CONTINUE_post_visit_before.hpp")
         #include "visitor/Statement_CONTINUE_post_visit_before.hpp"
@@ -2327,9 +2021,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_CONTINUE_post_visit.hpp"
         #if __has_include("visitor/Statement_CONTINUE_post_visit_post_default.hpp")
         #include "visitor/Statement_CONTINUE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_CONTINUE_post_visit_after.hpp")
-        #include "visitor/Statement_CONTINUE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2360,9 +2051,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_validate_before.hpp"
@@ -2376,9 +2064,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_FUNCTION_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2399,9 +2084,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_visit_before.hpp"
@@ -2415,9 +2097,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_FUNCTION_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2443,9 +2122,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_post_visit_before.hpp"
@@ -2459,9 +2135,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_FUNCTION_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2492,9 +2165,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_validate_before.hpp"
@@ -2508,9 +2178,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_VARIABLE_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2531,9 +2198,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_visit_before.hpp"
@@ -2547,9 +2211,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_VARIABLE_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2575,9 +2236,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_post_visit_before.hpp"
@@ -2591,9 +2249,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_VARIABLE_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2624,9 +2279,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp"
@@ -2640,9 +2292,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_PARAMETER_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2663,9 +2312,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp"
@@ -2679,9 +2325,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_PARAMETER_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2707,9 +2350,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_post_visit_before.hpp"
@@ -2723,9 +2363,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_PARAMETER_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2756,9 +2393,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_validate_before.hpp"
@@ -2772,9 +2406,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_FIELD_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FIELD_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_FIELD_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2795,9 +2426,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_visit_before.hpp"
@@ -2811,9 +2439,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_FIELD_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FIELD_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_FIELD_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2839,9 +2464,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_post_visit_before.hpp")
         #include "visitor/Statement_FIELD_DECL_post_visit_before.hpp"
@@ -2855,9 +2477,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_FIELD_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_FIELD_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_FIELD_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_FIELD_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -2888,9 +2507,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp"
@@ -2904,9 +2520,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -2927,9 +2540,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp"
@@ -2943,9 +2553,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -2971,9 +2578,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp"
@@ -2987,9 +2591,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3020,9 +2621,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_validate_before.hpp"
@@ -3036,9 +2634,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_ENUM_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_ENUM_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3059,9 +2654,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_visit_before.hpp"
@@ -3075,9 +2667,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_ENUM_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_ENUM_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3103,9 +2692,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_post_visit_before.hpp")
         #include "visitor/Statement_ENUM_DECL_post_visit_before.hpp"
@@ -3119,9 +2705,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_ENUM_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_ENUM_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_ENUM_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3152,9 +2735,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate_before.hpp"
@@ -3168,9 +2748,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3191,9 +2768,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit_before.hpp"
@@ -3207,9 +2781,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3235,9 +2806,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_before.hpp"
@@ -3251,9 +2819,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3284,9 +2849,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_validate_before.hpp"
@@ -3300,9 +2862,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_STRUCT_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3323,9 +2882,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_visit_before.hpp"
@@ -3339,9 +2895,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_STRUCT_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3367,9 +2920,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_post_visit_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_post_visit_before.hpp"
@@ -3383,9 +2933,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_STRUCT_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_STRUCT_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_STRUCT_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3416,9 +2963,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_UNION_DECL_pre_validate_before.hpp"
@@ -3432,9 +2976,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_UNION_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_UNION_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_UNION_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3451,9 +2992,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_UNION_DECL_pre_visit_before.hpp"
@@ -3467,9 +3005,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_UNION_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_UNION_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_UNION_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3495,9 +3030,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_post_visit_before.hpp")
         #include "visitor/Statement_UNION_DECL_post_visit_before.hpp"
@@ -3511,9 +3043,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_UNION_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_UNION_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_UNION_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3544,9 +3073,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate_before.hpp"
@@ -3560,9 +3086,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3579,9 +3102,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit_before.hpp"
@@ -3595,9 +3115,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3623,9 +3140,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_before.hpp"
@@ -3639,9 +3153,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3672,9 +3183,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_validate_before.hpp"
@@ -3688,9 +3196,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_PROGRAM_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3711,9 +3216,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_visit_before.hpp"
@@ -3727,9 +3229,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_PROGRAM_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3755,9 +3254,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_post_visit_before.hpp"
@@ -3771,9 +3267,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_PROGRAM_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3804,9 +3297,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_validate_before.hpp"
@@ -3820,9 +3310,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_PROPERTY_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3843,9 +3330,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_visit_before.hpp"
@@ -3859,9 +3343,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_PROPERTY_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -3887,9 +3368,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_post_visit_before.hpp"
@@ -3903,9 +3381,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_PROPERTY_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -3936,9 +3411,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp"
@@ -3952,9 +3424,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp"
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_post_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_after.hpp")
-        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -3975,9 +3444,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp"
@@ -3991,9 +3457,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp"
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_post_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_after.hpp")
-        #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4019,9 +3482,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp"
@@ -4035,9 +3495,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp"
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_post_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_after.hpp")
-        #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4068,9 +3525,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_validate_before.hpp")
         #include "visitor/Statement_METADATA_pre_validate_before.hpp"
@@ -4084,9 +3538,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_METADATA_pre_validate.hpp"
         #if __has_include("visitor/Statement_METADATA_pre_validate_post_default.hpp")
         #include "visitor/Statement_METADATA_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_METADATA_pre_validate_after.hpp")
-        #include "visitor/Statement_METADATA_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4107,9 +3558,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_visit_before.hpp")
         #include "visitor/Statement_METADATA_pre_visit_before.hpp"
@@ -4123,9 +3571,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_METADATA_pre_visit.hpp"
         #if __has_include("visitor/Statement_METADATA_pre_visit_post_default.hpp")
         #include "visitor/Statement_METADATA_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_METADATA_pre_visit_after.hpp")
-        #include "visitor/Statement_METADATA_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4151,9 +3596,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_METADATA_post_visit_before.hpp")
         #include "visitor/Statement_METADATA_post_visit_before.hpp"
@@ -4167,9 +3609,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_METADATA_post_visit.hpp"
         #if __has_include("visitor/Statement_METADATA_post_visit_post_default.hpp")
         #include "visitor/Statement_METADATA_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_METADATA_post_visit_after.hpp")
-        #include "visitor/Statement_METADATA_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4200,9 +3639,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_validate_before.hpp"
@@ -4216,9 +3652,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_pre_validate.hpp"
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate_post_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate_after.hpp")
-        #include "visitor/Statement_IMPORT_MODULE_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4239,9 +3672,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_visit_before.hpp"
@@ -4255,9 +3685,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_pre_visit.hpp"
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit_post_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit_after.hpp")
-        #include "visitor/Statement_IMPORT_MODULE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4283,9 +3710,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_post_visit_before.hpp"
@@ -4299,9 +3723,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_post_visit.hpp"
         #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit_post_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit_after.hpp")
-        #include "visitor/Statement_IMPORT_MODULE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4332,9 +3753,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_validate_before.hpp")
         #include "visitor/Statement_EXPRESSION_pre_validate_before.hpp"
@@ -4348,9 +3766,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_pre_validate.hpp"
         #if __has_include("visitor/Statement_EXPRESSION_pre_validate_post_default.hpp")
         #include "visitor/Statement_EXPRESSION_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_EXPRESSION_pre_validate_after.hpp")
-        #include "visitor/Statement_EXPRESSION_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4371,9 +3786,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_visit_before.hpp")
         #include "visitor/Statement_EXPRESSION_pre_visit_before.hpp"
@@ -4387,9 +3799,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_pre_visit.hpp"
         #if __has_include("visitor/Statement_EXPRESSION_pre_visit_post_default.hpp")
         #include "visitor/Statement_EXPRESSION_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_EXPRESSION_pre_visit_after.hpp")
-        #include "visitor/Statement_EXPRESSION_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4415,9 +3824,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_post_visit_before.hpp")
         #include "visitor/Statement_EXPRESSION_post_visit_before.hpp"
@@ -4431,9 +3837,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_post_visit.hpp"
         #if __has_include("visitor/Statement_EXPRESSION_post_visit_post_default.hpp")
         #include "visitor/Statement_EXPRESSION_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_EXPRESSION_post_visit_after.hpp")
-        #include "visitor/Statement_EXPRESSION_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4464,9 +3867,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_validate_before.hpp"
@@ -4480,9 +3880,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_pre_validate.hpp"
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate_post_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate_after.hpp")
-        #include "visitor/Statement_ERROR_REPORT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4503,9 +3900,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_visit_before.hpp"
@@ -4519,9 +3913,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_pre_visit.hpp"
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit_post_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit_after.hpp")
-        #include "visitor/Statement_ERROR_REPORT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4547,9 +3938,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_post_visit_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_post_visit_before.hpp"
@@ -4563,9 +3951,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_post_visit.hpp"
         #if __has_include("visitor/Statement_ERROR_REPORT_post_visit_post_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ERROR_REPORT_post_visit_after.hpp")
-        #include "visitor/Statement_ERROR_REPORT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4596,9 +3981,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp"
@@ -4612,9 +3994,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp"
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_post_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_after.hpp")
-        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4635,9 +4014,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp"
@@ -4651,9 +4027,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp"
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_post_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_after.hpp")
-        #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4679,9 +4052,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp"
@@ -4695,9 +4065,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp"
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_post_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_after.hpp")
-        #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4728,9 +4095,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp"
@@ -4744,9 +4108,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp"
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_post_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_after.hpp")
-        #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4767,9 +4128,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp"
@@ -4783,9 +4141,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp"
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_post_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_after.hpp")
-        #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4811,9 +4166,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp"
@@ -4827,9 +4179,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp"
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_post_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_after.hpp")
-        #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4860,9 +4209,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_before.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_validate_before.hpp"
@@ -4876,9 +4222,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_validate.hpp"
         #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_post_default.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_after.hpp")
-        #include "visitor/Statement_INIT_CHECK_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -4899,9 +4242,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_before.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_visit_before.hpp"
@@ -4915,9 +4255,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_visit.hpp"
         #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_post_default.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_after.hpp")
-        #include "visitor/Statement_INIT_CHECK_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -4943,9 +4280,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_post_visit_before.hpp")
         #include "visitor/Statement_INIT_CHECK_post_visit_before.hpp"
@@ -4959,9 +4293,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_post_visit.hpp"
         #if __has_include("visitor/Statement_INIT_CHECK_post_visit_post_default.hpp")
         #include "visitor/Statement_INIT_CHECK_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_INIT_CHECK_post_visit_after.hpp")
-        #include "visitor/Statement_INIT_CHECK_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -4992,9 +4323,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
         #include "visitor/Statement_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_validate_after.hpp")
-        #include "visitor/Statement_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate_before.hpp"
@@ -5008,9 +4336,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_pre_validate.hpp"
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate_post_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate_after.hpp")
-        #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -5031,9 +4356,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
         #include "visitor/Statement_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_pre_visit_after.hpp")
-        #include "visitor/Statement_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit_before.hpp"
@@ -5047,9 +4369,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_pre_visit.hpp"
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit_post_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit_after.hpp")
-        #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5075,9 +4394,6 @@ namespace ebm2python {
         #if __has_include("visitor/Statement_post_visit_post_default.hpp")
         #include "visitor/Statement_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Statement_post_visit_after.hpp")
-        #include "visitor/Statement_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_post_visit_before.hpp"
@@ -5091,9 +4407,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_post_visit.hpp"
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit_post_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit_after.hpp")
-        #include "visitor/Statement_ENDIAN_VARIABLE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5115,9 +4428,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp"
         #if __has_include("visitor/Statement_dispatch_post_default.hpp")
         #include "visitor/Statement_dispatch_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Statement_dispatch_after.hpp")
-        #include "visitor/Statement_dispatch_after.hpp"
         #endif
         #else
         switch (in.body.kind) {
@@ -5208,6 +4518,20 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Block(Visitor&& visitor,const ebm::Block& in) {
+        #if __has_include("visitor/Block_dispatch_before.hpp")
+        #include "visitor/Block_dispatch_before.hpp"
+        #endif
+        #if __has_include("visitor/Block_dispatch.hpp")
+        #include "visitor/Block_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Block_dispatch.hpp")
+        #if __has_include("visitor/Block_dispatch_pre_default.hpp")
+        #include "visitor/Block_dispatch_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Block_dispatch.hpp"
+        #if __has_include("visitor/Block_dispatch_post_default.hpp")
+        #include "visitor/Block_dispatch_post_default.hpp"
+        #endif
+        #else
         CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Statement(visitor,elem);
@@ -5217,6 +4541,7 @@ namespace ebm2python {
             merge_result(visitor, w, std::move(result.value()));
         }
         return w;
+        #endif
     }
     template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
@@ -5243,9 +4568,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_validate_before.hpp"
@@ -5259,9 +4581,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_INT_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5283,9 +4602,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_visit_before.hpp"
@@ -5299,9 +4615,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_INT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5327,9 +4640,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT_post_visit_before.hpp"
@@ -5343,9 +4653,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_INT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5376,9 +4683,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_validate_before.hpp"
@@ -5392,9 +4696,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_INT64_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5416,9 +4717,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_visit_before.hpp"
@@ -5432,9 +4730,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_INT64_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5460,9 +4755,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_post_visit_before.hpp"
@@ -5476,9 +4768,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_INT64_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_INT64_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_INT64_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5509,9 +4798,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_validate_before.hpp"
@@ -5525,9 +4811,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_BOOL_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5549,9 +4832,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_visit_before.hpp"
@@ -5565,9 +4845,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_BOOL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5593,9 +4870,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_post_visit_before.hpp"
@@ -5609,9 +4883,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_BOOL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5642,9 +4913,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_validate_before.hpp"
@@ -5658,9 +4926,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_STRING_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5682,9 +4947,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_visit_before.hpp"
@@ -5698,9 +4960,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_STRING_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5726,9 +4985,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_post_visit_before.hpp"
@@ -5742,9 +4998,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_STRING_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_STRING_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_STRING_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5775,9 +5028,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_validate_before.hpp"
@@ -5791,9 +5041,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_TYPE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5815,9 +5062,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_visit_before.hpp"
@@ -5831,9 +5075,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_TYPE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5859,9 +5100,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_post_visit_before.hpp"
@@ -5875,9 +5113,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_TYPE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -5908,9 +5143,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_validate_before.hpp"
@@ -5924,9 +5156,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_pre_validate.hpp"
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate_post_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate_after.hpp")
-        #include "visitor/Expression_LITERAL_CHAR_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -5948,9 +5177,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_visit_before.hpp"
@@ -5964,9 +5190,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_pre_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_CHAR_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -5992,9 +5215,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_post_visit_before.hpp"
@@ -6008,9 +5228,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_post_visit.hpp"
         #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit_post_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit_after.hpp")
-        #include "visitor/Expression_LITERAL_CHAR_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6041,9 +5258,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_validate_before.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_validate_before.hpp"
@@ -6057,9 +5271,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_pre_validate.hpp"
         #if __has_include("visitor/Expression_IDENTIFIER_pre_validate_post_default.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IDENTIFIER_pre_validate_after.hpp")
-        #include "visitor/Expression_IDENTIFIER_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6081,9 +5292,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_visit_before.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_visit_before.hpp"
@@ -6097,9 +5305,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_pre_visit.hpp"
         #if __has_include("visitor/Expression_IDENTIFIER_pre_visit_post_default.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IDENTIFIER_pre_visit_after.hpp")
-        #include "visitor/Expression_IDENTIFIER_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6125,9 +5330,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_post_visit_before.hpp")
         #include "visitor/Expression_IDENTIFIER_post_visit_before.hpp"
@@ -6141,9 +5343,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_post_visit.hpp"
         #if __has_include("visitor/Expression_IDENTIFIER_post_visit_post_default.hpp")
         #include "visitor/Expression_IDENTIFIER_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IDENTIFIER_post_visit_after.hpp")
-        #include "visitor/Expression_IDENTIFIER_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6174,9 +5373,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_validate_before.hpp")
         #include "visitor/Expression_BINARY_OP_pre_validate_before.hpp"
@@ -6190,9 +5386,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_pre_validate.hpp"
         #if __has_include("visitor/Expression_BINARY_OP_pre_validate_post_default.hpp")
         #include "visitor/Expression_BINARY_OP_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_BINARY_OP_pre_validate_after.hpp")
-        #include "visitor/Expression_BINARY_OP_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6222,9 +5415,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_visit_before.hpp")
         #include "visitor/Expression_BINARY_OP_pre_visit_before.hpp"
@@ -6238,9 +5428,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_pre_visit.hpp"
         #if __has_include("visitor/Expression_BINARY_OP_pre_visit_post_default.hpp")
         #include "visitor/Expression_BINARY_OP_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_BINARY_OP_pre_visit_after.hpp")
-        #include "visitor/Expression_BINARY_OP_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6266,9 +5453,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_post_visit_before.hpp")
         #include "visitor/Expression_BINARY_OP_post_visit_before.hpp"
@@ -6282,9 +5466,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_post_visit.hpp"
         #if __has_include("visitor/Expression_BINARY_OP_post_visit_post_default.hpp")
         #include "visitor/Expression_BINARY_OP_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_BINARY_OP_post_visit_after.hpp")
-        #include "visitor/Expression_BINARY_OP_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6315,9 +5496,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_validate_before.hpp")
         #include "visitor/Expression_UNARY_OP_pre_validate_before.hpp"
@@ -6331,9 +5509,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_pre_validate.hpp"
         #if __has_include("visitor/Expression_UNARY_OP_pre_validate_post_default.hpp")
         #include "visitor/Expression_UNARY_OP_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_UNARY_OP_pre_validate_after.hpp")
-        #include "visitor/Expression_UNARY_OP_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6359,9 +5534,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_visit_before.hpp")
         #include "visitor/Expression_UNARY_OP_pre_visit_before.hpp"
@@ -6375,9 +5547,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_pre_visit.hpp"
         #if __has_include("visitor/Expression_UNARY_OP_pre_visit_post_default.hpp")
         #include "visitor/Expression_UNARY_OP_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_UNARY_OP_pre_visit_after.hpp")
-        #include "visitor/Expression_UNARY_OP_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6403,9 +5572,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_post_visit_before.hpp")
         #include "visitor/Expression_UNARY_OP_post_visit_before.hpp"
@@ -6419,9 +5585,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_post_visit.hpp"
         #if __has_include("visitor/Expression_UNARY_OP_post_visit_post_default.hpp")
         #include "visitor/Expression_UNARY_OP_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_UNARY_OP_post_visit_after.hpp")
-        #include "visitor/Expression_UNARY_OP_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6452,9 +5615,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CALL_pre_validate_before.hpp")
         #include "visitor/Expression_CALL_pre_validate_before.hpp"
@@ -6468,9 +5628,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CALL_pre_validate.hpp"
         #if __has_include("visitor/Expression_CALL_pre_validate_post_default.hpp")
         #include "visitor/Expression_CALL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CALL_pre_validate_after.hpp")
-        #include "visitor/Expression_CALL_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6492,9 +5649,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CALL_pre_visit_before.hpp")
         #include "visitor/Expression_CALL_pre_visit_before.hpp"
@@ -6508,9 +5662,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CALL_pre_visit.hpp"
         #if __has_include("visitor/Expression_CALL_pre_visit_post_default.hpp")
         #include "visitor/Expression_CALL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CALL_pre_visit_after.hpp")
-        #include "visitor/Expression_CALL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6536,9 +5687,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CALL_post_visit_before.hpp")
         #include "visitor/Expression_CALL_post_visit_before.hpp"
@@ -6552,9 +5700,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CALL_post_visit.hpp"
         #if __has_include("visitor/Expression_CALL_post_visit_post_default.hpp")
         #include "visitor/Expression_CALL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CALL_post_visit_after.hpp")
-        #include "visitor/Expression_CALL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6585,9 +5730,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_validate_before.hpp"
@@ -6601,9 +5743,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_pre_validate.hpp"
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate_post_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate_after.hpp")
-        #include "visitor/Expression_INDEX_ACCESS_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6629,9 +5768,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_visit_before.hpp"
@@ -6645,9 +5781,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_pre_visit.hpp"
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit_post_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit_after.hpp")
-        #include "visitor/Expression_INDEX_ACCESS_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6673,9 +5806,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_post_visit_before.hpp"
@@ -6689,9 +5819,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_post_visit.hpp"
         #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit_post_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit_after.hpp")
-        #include "visitor/Expression_INDEX_ACCESS_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6722,9 +5849,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_validate_before.hpp"
@@ -6738,9 +5862,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_pre_validate.hpp"
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate_post_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate_after.hpp")
-        #include "visitor/Expression_MEMBER_ACCESS_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6766,9 +5887,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_visit_before.hpp"
@@ -6782,9 +5900,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_pre_visit.hpp"
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit_post_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit_after.hpp")
-        #include "visitor/Expression_MEMBER_ACCESS_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6810,9 +5925,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_post_visit_before.hpp"
@@ -6826,9 +5938,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_post_visit.hpp"
         #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit_post_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit_after.hpp")
-        #include "visitor/Expression_MEMBER_ACCESS_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6859,9 +5968,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_validate_before.hpp"
@@ -6875,9 +5981,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_pre_validate.hpp"
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate_post_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate_after.hpp")
-        #include "visitor/Expression_ENUM_MEMBER_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -6903,9 +6006,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_visit_before.hpp"
@@ -6919,9 +6019,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_pre_visit.hpp"
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit_post_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit_after.hpp")
-        #include "visitor/Expression_ENUM_MEMBER_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -6947,9 +6044,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_post_visit_before.hpp"
@@ -6963,9 +6057,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_post_visit.hpp"
         #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit_post_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit_after.hpp")
-        #include "visitor/Expression_ENUM_MEMBER_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -6996,9 +6087,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_validate_before.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_validate_before.hpp"
@@ -7012,9 +6100,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_pre_validate.hpp"
         #if __has_include("visitor/Expression_TYPE_CAST_pre_validate_post_default.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_TYPE_CAST_pre_validate_after.hpp")
-        #include "visitor/Expression_TYPE_CAST_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7044,9 +6129,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_visit_before.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_visit_before.hpp"
@@ -7060,9 +6142,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_pre_visit.hpp"
         #if __has_include("visitor/Expression_TYPE_CAST_pre_visit_post_default.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_TYPE_CAST_pre_visit_after.hpp")
-        #include "visitor/Expression_TYPE_CAST_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7088,9 +6167,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_post_visit_before.hpp")
         #include "visitor/Expression_TYPE_CAST_post_visit_before.hpp"
@@ -7104,9 +6180,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_post_visit.hpp"
         #if __has_include("visitor/Expression_TYPE_CAST_post_visit_post_default.hpp")
         #include "visitor/Expression_TYPE_CAST_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_TYPE_CAST_post_visit_after.hpp")
-        #include "visitor/Expression_TYPE_CAST_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7137,9 +6210,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_validate_before.hpp")
         #include "visitor/Expression_RANGE_pre_validate_before.hpp"
@@ -7153,9 +6223,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_RANGE_pre_validate.hpp"
         #if __has_include("visitor/Expression_RANGE_pre_validate_post_default.hpp")
         #include "visitor/Expression_RANGE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_RANGE_pre_validate_after.hpp")
-        #include "visitor/Expression_RANGE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7181,9 +6248,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_visit_before.hpp")
         #include "visitor/Expression_RANGE_pre_visit_before.hpp"
@@ -7197,9 +6261,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_RANGE_pre_visit.hpp"
         #if __has_include("visitor/Expression_RANGE_pre_visit_post_default.hpp")
         #include "visitor/Expression_RANGE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_RANGE_pre_visit_after.hpp")
-        #include "visitor/Expression_RANGE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7225,9 +6286,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_RANGE_post_visit_before.hpp")
         #include "visitor/Expression_RANGE_post_visit_before.hpp"
@@ -7241,9 +6299,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_RANGE_post_visit.hpp"
         #if __has_include("visitor/Expression_RANGE_post_visit_post_default.hpp")
         #include "visitor/Expression_RANGE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_RANGE_post_visit_after.hpp")
-        #include "visitor/Expression_RANGE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7274,9 +6329,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_validate_before.hpp"
@@ -7290,9 +6342,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_pre_validate.hpp"
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate_post_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate_after.hpp")
-        #include "visitor/Expression_DEFAULT_VALUE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7310,9 +6359,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_visit_before.hpp"
@@ -7326,9 +6372,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_pre_visit.hpp"
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit_post_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit_after.hpp")
-        #include "visitor/Expression_DEFAULT_VALUE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7354,9 +6397,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_post_visit_before.hpp"
@@ -7370,9 +6410,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_post_visit.hpp"
         #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit_post_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit_after.hpp")
-        #include "visitor/Expression_DEFAULT_VALUE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7403,9 +6440,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_before.hpp"
@@ -7419,9 +6453,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp"
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_post_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_after.hpp")
-        #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7443,9 +6474,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_before.hpp"
@@ -7459,9 +6487,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp"
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_post_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_after.hpp")
-        #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7487,9 +6512,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_before.hpp"
@@ -7503,9 +6525,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp"
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit_post_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit_after.hpp")
-        #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7536,9 +6555,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate_before.hpp"
@@ -7552,9 +6568,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp"
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate_post_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate_after.hpp")
-        #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7580,9 +6593,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit_before.hpp"
@@ -7596,9 +6606,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp"
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit_post_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit_after.hpp")
-        #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7624,9 +6631,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_before.hpp"
@@ -7640,9 +6644,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp"
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit_post_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit_after.hpp")
-        #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7673,9 +6674,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate_before.hpp"
@@ -7689,9 +6687,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp"
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate_post_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate_after.hpp")
-        #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7713,9 +6708,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit_before.hpp"
@@ -7729,9 +6721,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp"
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit_post_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit_after.hpp")
-        #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7757,9 +6746,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_before.hpp"
@@ -7773,9 +6759,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp"
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit_post_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit_after.hpp")
-        #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7806,9 +6789,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_validate_before.hpp"
@@ -7822,9 +6802,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_pre_validate.hpp"
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate_post_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate_after.hpp")
-        #include "visitor/Expression_CAN_READ_STREAM_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7854,9 +6831,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_visit_before.hpp"
@@ -7870,9 +6844,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_pre_visit.hpp"
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit_post_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit_after.hpp")
-        #include "visitor/Expression_CAN_READ_STREAM_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -7898,9 +6869,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_post_visit_before.hpp"
@@ -7914,9 +6882,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_post_visit.hpp"
         #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit_post_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit_after.hpp")
-        #include "visitor/Expression_CAN_READ_STREAM_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -7947,9 +6912,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_validate_before.hpp"
@@ -7963,9 +6925,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_pre_validate.hpp"
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate_post_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate_after.hpp")
-        #include "visitor/Expression_ARRAY_SIZE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -7987,9 +6946,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_visit_before.hpp"
@@ -8003,9 +6959,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_pre_visit.hpp"
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit_post_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit_after.hpp")
-        #include "visitor/Expression_ARRAY_SIZE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8031,9 +6984,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_post_visit_before.hpp"
@@ -8047,9 +6997,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_post_visit.hpp"
         #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit_post_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit_after.hpp")
-        #include "visitor/Expression_ARRAY_SIZE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8080,9 +7027,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp"
@@ -8096,9 +7040,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp"
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_post_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_after.hpp")
-        #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8124,9 +7065,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp"
@@ -8140,9 +7078,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp"
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_post_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_after.hpp")
-        #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8168,9 +7103,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp"
@@ -8184,9 +7116,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp"
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_post_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_after.hpp")
-        #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8217,9 +7146,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_validate_before.hpp")
         #include "visitor/Expression_IS_ERROR_pre_validate_before.hpp"
@@ -8233,9 +7159,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_pre_validate.hpp"
         #if __has_include("visitor/Expression_IS_ERROR_pre_validate_post_default.hpp")
         #include "visitor/Expression_IS_ERROR_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_ERROR_pre_validate_after.hpp")
-        #include "visitor/Expression_IS_ERROR_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8257,9 +7180,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_visit_before.hpp")
         #include "visitor/Expression_IS_ERROR_pre_visit_before.hpp"
@@ -8273,9 +7193,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_pre_visit.hpp"
         #if __has_include("visitor/Expression_IS_ERROR_pre_visit_post_default.hpp")
         #include "visitor/Expression_IS_ERROR_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_ERROR_pre_visit_after.hpp")
-        #include "visitor/Expression_IS_ERROR_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8301,9 +7218,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_post_visit_before.hpp")
         #include "visitor/Expression_IS_ERROR_post_visit_before.hpp"
@@ -8317,9 +7231,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_post_visit.hpp"
         #if __has_include("visitor/Expression_IS_ERROR_post_visit_post_default.hpp")
         #include "visitor/Expression_IS_ERROR_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_IS_ERROR_post_visit_after.hpp")
-        #include "visitor/Expression_IS_ERROR_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8350,9 +7261,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_validate_before.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_validate_before.hpp"
@@ -8366,9 +7274,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_pre_validate.hpp"
         #if __has_include("visitor/Expression_MAX_VALUE_pre_validate_post_default.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MAX_VALUE_pre_validate_after.hpp")
-        #include "visitor/Expression_MAX_VALUE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8390,9 +7295,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_visit_before.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_visit_before.hpp"
@@ -8406,9 +7308,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_pre_visit.hpp"
         #if __has_include("visitor/Expression_MAX_VALUE_pre_visit_post_default.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MAX_VALUE_pre_visit_after.hpp")
-        #include "visitor/Expression_MAX_VALUE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8434,9 +7333,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_post_visit_before.hpp")
         #include "visitor/Expression_MAX_VALUE_post_visit_before.hpp"
@@ -8450,9 +7346,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_post_visit.hpp"
         #if __has_include("visitor/Expression_MAX_VALUE_post_visit_post_default.hpp")
         #include "visitor/Expression_MAX_VALUE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_MAX_VALUE_post_visit_after.hpp")
-        #include "visitor/Expression_MAX_VALUE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8483,9 +7376,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_validate_before.hpp")
         #include "visitor/Expression_READ_DATA_pre_validate_before.hpp"
@@ -8499,9 +7389,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_pre_validate.hpp"
         #if __has_include("visitor/Expression_READ_DATA_pre_validate_post_default.hpp")
         #include "visitor/Expression_READ_DATA_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_READ_DATA_pre_validate_after.hpp")
-        #include "visitor/Expression_READ_DATA_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8527,9 +7414,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_visit_before.hpp")
         #include "visitor/Expression_READ_DATA_pre_visit_before.hpp"
@@ -8543,9 +7427,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_pre_visit.hpp"
         #if __has_include("visitor/Expression_READ_DATA_pre_visit_post_default.hpp")
         #include "visitor/Expression_READ_DATA_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_READ_DATA_pre_visit_after.hpp")
-        #include "visitor/Expression_READ_DATA_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8571,9 +7452,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_READ_DATA_post_visit_before.hpp")
         #include "visitor/Expression_READ_DATA_post_visit_before.hpp"
@@ -8587,9 +7465,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_READ_DATA_post_visit.hpp"
         #if __has_include("visitor/Expression_READ_DATA_post_visit_post_default.hpp")
         #include "visitor/Expression_READ_DATA_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_READ_DATA_post_visit_after.hpp")
-        #include "visitor/Expression_READ_DATA_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8620,9 +7495,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_validate_before.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_validate_before.hpp"
@@ -8636,9 +7508,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_pre_validate.hpp"
         #if __has_include("visitor/Expression_WRITE_DATA_pre_validate_post_default.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_WRITE_DATA_pre_validate_after.hpp")
-        #include "visitor/Expression_WRITE_DATA_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8664,9 +7533,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_visit_before.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_visit_before.hpp"
@@ -8680,9 +7546,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_pre_visit.hpp"
         #if __has_include("visitor/Expression_WRITE_DATA_pre_visit_post_default.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_WRITE_DATA_pre_visit_after.hpp")
-        #include "visitor/Expression_WRITE_DATA_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8708,9 +7571,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_post_visit_before.hpp")
         #include "visitor/Expression_WRITE_DATA_post_visit_before.hpp"
@@ -8724,9 +7584,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_post_visit.hpp"
         #if __has_include("visitor/Expression_WRITE_DATA_post_visit_post_default.hpp")
         #include "visitor/Expression_WRITE_DATA_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_WRITE_DATA_post_visit_after.hpp")
-        #include "visitor/Expression_WRITE_DATA_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8757,9 +7614,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_before.hpp"
@@ -8773,9 +7627,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_pre_validate.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8801,9 +7652,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_before.hpp"
@@ -8817,9 +7665,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_pre_visit.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8845,9 +7690,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_before.hpp"
@@ -8861,9 +7703,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_post_visit.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -8894,9 +7733,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_before.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_validate_before.hpp"
@@ -8910,9 +7746,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_validate.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -8946,9 +7779,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_visit_before.hpp"
@@ -8962,9 +7792,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_visit.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -8990,9 +7817,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_post_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_post_visit_before.hpp"
@@ -9006,9 +7830,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_post_visit.hpp"
         #if __has_include("visitor/Expression_CONDITIONAL_post_visit_post_default.hpp")
         #include "visitor/Expression_CONDITIONAL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_CONDITIONAL_post_visit_after.hpp")
-        #include "visitor/Expression_CONDITIONAL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9039,9 +7860,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_validate_before.hpp")
         #include "visitor/Expression_AVAILABLE_pre_validate_before.hpp"
@@ -9055,9 +7873,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_validate.hpp"
         #if __has_include("visitor/Expression_AVAILABLE_pre_validate_post_default.hpp")
         #include "visitor/Expression_AVAILABLE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_AVAILABLE_pre_validate_after.hpp")
-        #include "visitor/Expression_AVAILABLE_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9083,9 +7898,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_visit_before.hpp")
         #include "visitor/Expression_AVAILABLE_pre_visit_before.hpp"
@@ -9099,9 +7911,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_visit.hpp"
         #if __has_include("visitor/Expression_AVAILABLE_pre_visit_post_default.hpp")
         #include "visitor/Expression_AVAILABLE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_AVAILABLE_pre_visit_after.hpp")
-        #include "visitor/Expression_AVAILABLE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9127,9 +7936,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_post_visit_before.hpp")
         #include "visitor/Expression_AVAILABLE_post_visit_before.hpp"
@@ -9143,9 +7949,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_post_visit.hpp"
         #if __has_include("visitor/Expression_AVAILABLE_post_visit_post_default.hpp")
         #include "visitor/Expression_AVAILABLE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_AVAILABLE_post_visit_after.hpp")
-        #include "visitor/Expression_AVAILABLE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9176,9 +7979,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_validate_before.hpp")
         #include "visitor/Expression_SIZEOF_pre_validate_before.hpp"
@@ -9192,9 +7992,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_validate.hpp"
         #if __has_include("visitor/Expression_SIZEOF_pre_validate_post_default.hpp")
         #include "visitor/Expression_SIZEOF_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SIZEOF_pre_validate_after.hpp")
-        #include "visitor/Expression_SIZEOF_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9220,9 +8017,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_visit_before.hpp")
         #include "visitor/Expression_SIZEOF_pre_visit_before.hpp"
@@ -9236,9 +8030,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_visit.hpp"
         #if __has_include("visitor/Expression_SIZEOF_pre_visit_post_default.hpp")
         #include "visitor/Expression_SIZEOF_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SIZEOF_pre_visit_after.hpp")
-        #include "visitor/Expression_SIZEOF_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9264,9 +8055,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SIZEOF_post_visit_before.hpp")
         #include "visitor/Expression_SIZEOF_post_visit_before.hpp"
@@ -9280,9 +8068,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF_post_visit.hpp"
         #if __has_include("visitor/Expression_SIZEOF_post_visit_post_default.hpp")
         #include "visitor/Expression_SIZEOF_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SIZEOF_post_visit_after.hpp")
-        #include "visitor/Expression_SIZEOF_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9313,9 +8098,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp"
@@ -9329,9 +8111,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp"
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_post_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_after.hpp")
-        #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9353,9 +8132,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp"
@@ -9369,9 +8145,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp"
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_post_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_after.hpp")
-        #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9397,9 +8170,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp"
@@ -9413,9 +8183,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_post_visit.hpp"
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_post_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_after.hpp")
-        #include "visitor/Expression_SUB_RANGE_INIT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9446,9 +8213,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_validate_before.hpp")
         #include "visitor/Expression_OR_COND_pre_validate_before.hpp"
@@ -9462,9 +8226,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_validate.hpp"
         #if __has_include("visitor/Expression_OR_COND_pre_validate_post_default.hpp")
         #include "visitor/Expression_OR_COND_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OR_COND_pre_validate_after.hpp")
-        #include "visitor/Expression_OR_COND_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9486,9 +8247,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_visit_before.hpp")
         #include "visitor/Expression_OR_COND_pre_visit_before.hpp"
@@ -9502,9 +8260,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_visit.hpp"
         #if __has_include("visitor/Expression_OR_COND_pre_visit_post_default.hpp")
         #include "visitor/Expression_OR_COND_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OR_COND_pre_visit_after.hpp")
-        #include "visitor/Expression_OR_COND_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9530,9 +8285,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OR_COND_post_visit_before.hpp")
         #include "visitor/Expression_OR_COND_post_visit_before.hpp"
@@ -9546,9 +8298,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND_post_visit.hpp"
         #if __has_include("visitor/Expression_OR_COND_post_visit_post_default.hpp")
         #include "visitor/Expression_OR_COND_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OR_COND_post_visit_after.hpp")
-        #include "visitor/Expression_OR_COND_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9579,9 +8328,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_validate_before.hpp"
@@ -9595,9 +8341,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_pre_validate.hpp"
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate_post_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate_after.hpp")
-        #include "visitor/Expression_ADDRESS_OF_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9619,9 +8362,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_visit_before.hpp"
@@ -9635,9 +8375,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_pre_visit.hpp"
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit_post_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit_after.hpp")
-        #include "visitor/Expression_ADDRESS_OF_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9663,9 +8400,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_post_visit_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_post_visit_before.hpp"
@@ -9679,9 +8413,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_post_visit.hpp"
         #if __has_include("visitor/Expression_ADDRESS_OF_post_visit_post_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_ADDRESS_OF_post_visit_after.hpp")
-        #include "visitor/Expression_ADDRESS_OF_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9712,9 +8443,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_validate_before.hpp"
@@ -9728,9 +8456,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_pre_validate.hpp"
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate_post_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate_after.hpp")
-        #include "visitor/Expression_OPTIONAL_OF_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9752,9 +8477,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_visit_before.hpp"
@@ -9768,9 +8490,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_pre_visit.hpp"
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit_post_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit_after.hpp")
-        #include "visitor/Expression_OPTIONAL_OF_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9796,9 +8515,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_post_visit_before.hpp"
@@ -9812,9 +8528,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_post_visit.hpp"
         #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit_post_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit_after.hpp")
-        #include "visitor/Expression_OPTIONAL_OF_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9845,9 +8558,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_validate_before.hpp"
@@ -9861,9 +8571,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_pre_validate.hpp"
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate_post_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate_after.hpp")
-        #include "visitor/Expression_SETTER_STATUS_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -9885,9 +8592,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_visit_before.hpp"
@@ -9901,9 +8605,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_pre_visit.hpp"
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit_post_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit_after.hpp")
-        #include "visitor/Expression_SETTER_STATUS_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -9929,9 +8630,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_post_visit_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_post_visit_before.hpp"
@@ -9945,9 +8643,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_post_visit.hpp"
         #if __has_include("visitor/Expression_SETTER_STATUS_post_visit_post_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SETTER_STATUS_post_visit_after.hpp")
-        #include "visitor/Expression_SETTER_STATUS_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -9978,9 +8673,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_validate_post_default.hpp")
         #include "visitor/Expression_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_validate_after.hpp")
-        #include "visitor/Expression_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SELF_pre_validate_before.hpp")
         #include "visitor/Expression_SELF_pre_validate_before.hpp"
@@ -9994,9 +8686,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SELF_pre_validate.hpp"
         #if __has_include("visitor/Expression_SELF_pre_validate_post_default.hpp")
         #include "visitor/Expression_SELF_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SELF_pre_validate_after.hpp")
-        #include "visitor/Expression_SELF_pre_validate_after.hpp"
         #endif
         #endif
         auto& type = in.body.type;
@@ -10014,9 +8703,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_pre_visit_post_default.hpp")
         #include "visitor/Expression_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_pre_visit_after.hpp")
-        #include "visitor/Expression_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SELF_pre_visit_before.hpp")
         #include "visitor/Expression_SELF_pre_visit_before.hpp"
@@ -10030,9 +8716,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SELF_pre_visit.hpp"
         #if __has_include("visitor/Expression_SELF_pre_visit_post_default.hpp")
         #include "visitor/Expression_SELF_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SELF_pre_visit_after.hpp")
-        #include "visitor/Expression_SELF_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10058,9 +8741,6 @@ namespace ebm2python {
         #if __has_include("visitor/Expression_post_visit_post_default.hpp")
         #include "visitor/Expression_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Expression_post_visit_after.hpp")
-        #include "visitor/Expression_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Expression_SELF_post_visit_before.hpp")
         #include "visitor/Expression_SELF_post_visit_before.hpp"
@@ -10074,9 +8754,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_SELF_post_visit.hpp"
         #if __has_include("visitor/Expression_SELF_post_visit_post_default.hpp")
         #include "visitor/Expression_SELF_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_SELF_post_visit_after.hpp")
-        #include "visitor/Expression_SELF_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10098,9 +8775,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp"
         #if __has_include("visitor/Expression_dispatch_post_default.hpp")
         #include "visitor/Expression_dispatch_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Expression_dispatch_after.hpp")
-        #include "visitor/Expression_dispatch_after.hpp"
         #endif
         #else
         switch (in.body.kind) {
@@ -10189,6 +8863,20 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Expressions(Visitor&& visitor,const ebm::Expressions& in) {
+        #if __has_include("visitor/Expressions_dispatch_before.hpp")
+        #include "visitor/Expressions_dispatch_before.hpp"
+        #endif
+        #if __has_include("visitor/Expressions_dispatch.hpp")
+        #include "visitor/Expressions_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Expressions_dispatch.hpp")
+        #if __has_include("visitor/Expressions_dispatch_pre_default.hpp")
+        #include "visitor/Expressions_dispatch_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Expressions_dispatch.hpp"
+        #if __has_include("visitor/Expressions_dispatch_post_default.hpp")
+        #include "visitor/Expressions_dispatch_post_default.hpp"
+        #endif
+        #else
         CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Expression(visitor,elem);
@@ -10198,6 +8886,7 @@ namespace ebm2python {
             merge_result(visitor, w, std::move(result.value()));
         }
         return w;
+        #endif
     }
     template<typename Visitor>
     expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref = {});
@@ -10224,9 +8913,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_INT_pre_validate_before.hpp")
         #include "visitor/Type_INT_pre_validate_before.hpp"
@@ -10240,9 +8926,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_INT_pre_validate.hpp"
         #if __has_include("visitor/Type_INT_pre_validate_post_default.hpp")
         #include "visitor/Type_INT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_INT_pre_validate_after.hpp")
-        #include "visitor/Type_INT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10263,9 +8946,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_INT_pre_visit_before.hpp")
         #include "visitor/Type_INT_pre_visit_before.hpp"
@@ -10279,9 +8959,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_INT_pre_visit.hpp"
         #if __has_include("visitor/Type_INT_pre_visit_post_default.hpp")
         #include "visitor/Type_INT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_INT_pre_visit_after.hpp")
-        #include "visitor/Type_INT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10307,9 +8984,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_INT_post_visit_before.hpp")
         #include "visitor/Type_INT_post_visit_before.hpp"
@@ -10323,9 +8997,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_INT_post_visit.hpp"
         #if __has_include("visitor/Type_INT_post_visit_post_default.hpp")
         #include "visitor/Type_INT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_INT_post_visit_after.hpp")
-        #include "visitor/Type_INT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10356,9 +9027,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_UINT_pre_validate_before.hpp")
         #include "visitor/Type_UINT_pre_validate_before.hpp"
@@ -10372,9 +9040,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_UINT_pre_validate.hpp"
         #if __has_include("visitor/Type_UINT_pre_validate_post_default.hpp")
         #include "visitor/Type_UINT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_UINT_pre_validate_after.hpp")
-        #include "visitor/Type_UINT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10395,9 +9060,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_UINT_pre_visit_before.hpp")
         #include "visitor/Type_UINT_pre_visit_before.hpp"
@@ -10411,9 +9073,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_UINT_pre_visit.hpp"
         #if __has_include("visitor/Type_UINT_pre_visit_post_default.hpp")
         #include "visitor/Type_UINT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_UINT_pre_visit_after.hpp")
-        #include "visitor/Type_UINT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10439,9 +9098,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_UINT_post_visit_before.hpp")
         #include "visitor/Type_UINT_post_visit_before.hpp"
@@ -10455,9 +9111,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_UINT_post_visit.hpp"
         #if __has_include("visitor/Type_UINT_post_visit_post_default.hpp")
         #include "visitor/Type_UINT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_UINT_post_visit_after.hpp")
-        #include "visitor/Type_UINT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10488,9 +9141,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_validate_before.hpp")
         #include "visitor/Type_FLOAT_pre_validate_before.hpp"
@@ -10504,9 +9154,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FLOAT_pre_validate.hpp"
         #if __has_include("visitor/Type_FLOAT_pre_validate_post_default.hpp")
         #include "visitor/Type_FLOAT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FLOAT_pre_validate_after.hpp")
-        #include "visitor/Type_FLOAT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10527,9 +9174,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_visit_before.hpp")
         #include "visitor/Type_FLOAT_pre_visit_before.hpp"
@@ -10543,9 +9187,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FLOAT_pre_visit.hpp"
         #if __has_include("visitor/Type_FLOAT_pre_visit_post_default.hpp")
         #include "visitor/Type_FLOAT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FLOAT_pre_visit_after.hpp")
-        #include "visitor/Type_FLOAT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10571,9 +9212,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FLOAT_post_visit_before.hpp")
         #include "visitor/Type_FLOAT_post_visit_before.hpp"
@@ -10587,9 +9225,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FLOAT_post_visit.hpp"
         #if __has_include("visitor/Type_FLOAT_post_visit_post_default.hpp")
         #include "visitor/Type_FLOAT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FLOAT_post_visit_after.hpp")
-        #include "visitor/Type_FLOAT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10620,9 +9255,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_validate_before.hpp")
         #include "visitor/Type_STRUCT_pre_validate_before.hpp"
@@ -10636,9 +9268,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_STRUCT_pre_validate.hpp"
         #if __has_include("visitor/Type_STRUCT_pre_validate_post_default.hpp")
         #include "visitor/Type_STRUCT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_STRUCT_pre_validate_after.hpp")
-        #include "visitor/Type_STRUCT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10659,9 +9288,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_visit_before.hpp")
         #include "visitor/Type_STRUCT_pre_visit_before.hpp"
@@ -10675,9 +9301,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_STRUCT_pre_visit.hpp"
         #if __has_include("visitor/Type_STRUCT_pre_visit_post_default.hpp")
         #include "visitor/Type_STRUCT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_STRUCT_pre_visit_after.hpp")
-        #include "visitor/Type_STRUCT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10703,9 +9326,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_STRUCT_post_visit_before.hpp")
         #include "visitor/Type_STRUCT_post_visit_before.hpp"
@@ -10719,9 +9339,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_STRUCT_post_visit.hpp"
         #if __has_include("visitor/Type_STRUCT_post_visit_post_default.hpp")
         #include "visitor/Type_STRUCT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_STRUCT_post_visit_after.hpp")
-        #include "visitor/Type_STRUCT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10752,9 +9369,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_validate_before.hpp"
@@ -10768,9 +9382,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp"
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate_post_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate_after.hpp")
-        #include "visitor/Type_RECURSIVE_STRUCT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10791,9 +9402,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_visit_before.hpp"
@@ -10807,9 +9415,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp"
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit_post_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit_after.hpp")
-        #include "visitor/Type_RECURSIVE_STRUCT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10835,9 +9440,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit_before.hpp"
@@ -10851,9 +9453,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_post_visit.hpp"
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit_post_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit_after.hpp")
-        #include "visitor/Type_RECURSIVE_STRUCT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -10884,9 +9483,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_BOOL_pre_validate_before.hpp")
         #include "visitor/Type_BOOL_pre_validate_before.hpp"
@@ -10900,9 +9496,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_BOOL_pre_validate.hpp"
         #if __has_include("visitor/Type_BOOL_pre_validate_post_default.hpp")
         #include "visitor/Type_BOOL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_BOOL_pre_validate_after.hpp")
-        #include "visitor/Type_BOOL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -10919,9 +9512,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_BOOL_pre_visit_before.hpp")
         #include "visitor/Type_BOOL_pre_visit_before.hpp"
@@ -10935,9 +9525,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_BOOL_pre_visit.hpp"
         #if __has_include("visitor/Type_BOOL_pre_visit_post_default.hpp")
         #include "visitor/Type_BOOL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_BOOL_pre_visit_after.hpp")
-        #include "visitor/Type_BOOL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -10963,9 +9550,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_BOOL_post_visit_before.hpp")
         #include "visitor/Type_BOOL_post_visit_before.hpp"
@@ -10979,9 +9563,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_BOOL_post_visit.hpp"
         #if __has_include("visitor/Type_BOOL_post_visit_post_default.hpp")
         #include "visitor/Type_BOOL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_BOOL_post_visit_after.hpp")
-        #include "visitor/Type_BOOL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11012,9 +9593,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VOID_pre_validate_before.hpp")
         #include "visitor/Type_VOID_pre_validate_before.hpp"
@@ -11028,9 +9606,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VOID_pre_validate.hpp"
         #if __has_include("visitor/Type_VOID_pre_validate_post_default.hpp")
         #include "visitor/Type_VOID_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VOID_pre_validate_after.hpp")
-        #include "visitor/Type_VOID_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11047,9 +9622,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VOID_pre_visit_before.hpp")
         #include "visitor/Type_VOID_pre_visit_before.hpp"
@@ -11063,9 +9635,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VOID_pre_visit.hpp"
         #if __has_include("visitor/Type_VOID_pre_visit_post_default.hpp")
         #include "visitor/Type_VOID_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VOID_pre_visit_after.hpp")
-        #include "visitor/Type_VOID_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11091,9 +9660,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VOID_post_visit_before.hpp")
         #include "visitor/Type_VOID_post_visit_before.hpp"
@@ -11107,9 +9673,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VOID_post_visit.hpp"
         #if __has_include("visitor/Type_VOID_post_visit_post_default.hpp")
         #include "visitor/Type_VOID_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VOID_post_visit_after.hpp")
-        #include "visitor/Type_VOID_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11140,9 +9703,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_META_pre_validate_before.hpp")
         #include "visitor/Type_META_pre_validate_before.hpp"
@@ -11156,9 +9716,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_META_pre_validate.hpp"
         #if __has_include("visitor/Type_META_pre_validate_post_default.hpp")
         #include "visitor/Type_META_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_META_pre_validate_after.hpp")
-        #include "visitor/Type_META_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11175,9 +9732,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_META_pre_visit_before.hpp")
         #include "visitor/Type_META_pre_visit_before.hpp"
@@ -11191,9 +9745,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_META_pre_visit.hpp"
         #if __has_include("visitor/Type_META_pre_visit_post_default.hpp")
         #include "visitor/Type_META_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_META_pre_visit_after.hpp")
-        #include "visitor/Type_META_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11219,9 +9770,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_META_post_visit_before.hpp")
         #include "visitor/Type_META_post_visit_before.hpp"
@@ -11235,9 +9783,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_META_post_visit.hpp"
         #if __has_include("visitor/Type_META_post_visit_post_default.hpp")
         #include "visitor/Type_META_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_META_post_visit_after.hpp")
-        #include "visitor/Type_META_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11268,9 +9813,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENUM_pre_validate_before.hpp")
         #include "visitor/Type_ENUM_pre_validate_before.hpp"
@@ -11284,9 +9826,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENUM_pre_validate.hpp"
         #if __has_include("visitor/Type_ENUM_pre_validate_post_default.hpp")
         #include "visitor/Type_ENUM_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENUM_pre_validate_after.hpp")
-        #include "visitor/Type_ENUM_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11311,9 +9850,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENUM_pre_visit_before.hpp")
         #include "visitor/Type_ENUM_pre_visit_before.hpp"
@@ -11327,9 +9863,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENUM_pre_visit.hpp"
         #if __has_include("visitor/Type_ENUM_pre_visit_post_default.hpp")
         #include "visitor/Type_ENUM_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENUM_pre_visit_after.hpp")
-        #include "visitor/Type_ENUM_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11355,9 +9888,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENUM_post_visit_before.hpp")
         #include "visitor/Type_ENUM_post_visit_before.hpp"
@@ -11371,9 +9901,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENUM_post_visit.hpp"
         #if __has_include("visitor/Type_ENUM_post_visit_post_default.hpp")
         #include "visitor/Type_ENUM_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENUM_post_visit_after.hpp")
-        #include "visitor/Type_ENUM_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11404,9 +9931,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_validate_before.hpp")
         #include "visitor/Type_ARRAY_pre_validate_before.hpp"
@@ -11420,9 +9944,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ARRAY_pre_validate.hpp"
         #if __has_include("visitor/Type_ARRAY_pre_validate_post_default.hpp")
         #include "visitor/Type_ARRAY_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ARRAY_pre_validate_after.hpp")
-        #include "visitor/Type_ARRAY_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11447,9 +9968,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_visit_before.hpp")
         #include "visitor/Type_ARRAY_pre_visit_before.hpp"
@@ -11463,9 +9981,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ARRAY_pre_visit.hpp"
         #if __has_include("visitor/Type_ARRAY_pre_visit_post_default.hpp")
         #include "visitor/Type_ARRAY_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ARRAY_pre_visit_after.hpp")
-        #include "visitor/Type_ARRAY_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11491,9 +10006,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ARRAY_post_visit_before.hpp")
         #include "visitor/Type_ARRAY_post_visit_before.hpp"
@@ -11507,9 +10019,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ARRAY_post_visit.hpp"
         #if __has_include("visitor/Type_ARRAY_post_visit_post_default.hpp")
         #include "visitor/Type_ARRAY_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ARRAY_post_visit_after.hpp")
-        #include "visitor/Type_ARRAY_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11540,9 +10049,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_validate_before.hpp")
         #include "visitor/Type_VECTOR_pre_validate_before.hpp"
@@ -11556,9 +10062,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VECTOR_pre_validate.hpp"
         #if __has_include("visitor/Type_VECTOR_pre_validate_post_default.hpp")
         #include "visitor/Type_VECTOR_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VECTOR_pre_validate_after.hpp")
-        #include "visitor/Type_VECTOR_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11579,9 +10082,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_visit_before.hpp")
         #include "visitor/Type_VECTOR_pre_visit_before.hpp"
@@ -11595,9 +10095,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VECTOR_pre_visit.hpp"
         #if __has_include("visitor/Type_VECTOR_pre_visit_post_default.hpp")
         #include "visitor/Type_VECTOR_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VECTOR_pre_visit_after.hpp")
-        #include "visitor/Type_VECTOR_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11623,9 +10120,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VECTOR_post_visit_before.hpp")
         #include "visitor/Type_VECTOR_post_visit_before.hpp"
@@ -11639,9 +10133,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VECTOR_post_visit.hpp"
         #if __has_include("visitor/Type_VECTOR_post_visit_post_default.hpp")
         #include "visitor/Type_VECTOR_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VECTOR_post_visit_after.hpp")
-        #include "visitor/Type_VECTOR_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11672,9 +10163,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_validate_before.hpp")
         #include "visitor/Type_VARIANT_pre_validate_before.hpp"
@@ -11688,9 +10176,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VARIANT_pre_validate.hpp"
         #if __has_include("visitor/Type_VARIANT_pre_validate_post_default.hpp")
         #include "visitor/Type_VARIANT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VARIANT_pre_validate_after.hpp")
-        #include "visitor/Type_VARIANT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11719,9 +10204,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_visit_before.hpp")
         #include "visitor/Type_VARIANT_pre_visit_before.hpp"
@@ -11735,9 +10217,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VARIANT_pre_visit.hpp"
         #if __has_include("visitor/Type_VARIANT_pre_visit_post_default.hpp")
         #include "visitor/Type_VARIANT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VARIANT_pre_visit_after.hpp")
-        #include "visitor/Type_VARIANT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11763,9 +10242,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_VARIANT_post_visit_before.hpp")
         #include "visitor/Type_VARIANT_post_visit_before.hpp"
@@ -11779,9 +10255,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_VARIANT_post_visit.hpp"
         #if __has_include("visitor/Type_VARIANT_post_visit_post_default.hpp")
         #include "visitor/Type_VARIANT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_VARIANT_post_visit_after.hpp")
-        #include "visitor/Type_VARIANT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11812,9 +10285,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RANGE_pre_validate_before.hpp")
         #include "visitor/Type_RANGE_pre_validate_before.hpp"
@@ -11828,9 +10298,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RANGE_pre_validate.hpp"
         #if __has_include("visitor/Type_RANGE_pre_validate_post_default.hpp")
         #include "visitor/Type_RANGE_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RANGE_pre_validate_after.hpp")
-        #include "visitor/Type_RANGE_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11851,9 +10318,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RANGE_pre_visit_before.hpp")
         #include "visitor/Type_RANGE_pre_visit_before.hpp"
@@ -11867,9 +10331,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RANGE_pre_visit.hpp"
         #if __has_include("visitor/Type_RANGE_pre_visit_post_default.hpp")
         #include "visitor/Type_RANGE_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RANGE_pre_visit_after.hpp")
-        #include "visitor/Type_RANGE_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -11895,9 +10356,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_RANGE_post_visit_before.hpp")
         #include "visitor/Type_RANGE_post_visit_before.hpp"
@@ -11911,9 +10369,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_RANGE_post_visit.hpp"
         #if __has_include("visitor/Type_RANGE_post_visit_post_default.hpp")
         #include "visitor/Type_RANGE_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_RANGE_post_visit_after.hpp")
-        #include "visitor/Type_RANGE_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -11944,9 +10399,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_validate_before.hpp"
@@ -11960,9 +10412,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_pre_validate.hpp"
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate_post_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate_after.hpp")
-        #include "visitor/Type_ENCODER_RETURN_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -11979,9 +10428,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_visit_before.hpp"
@@ -11995,9 +10441,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_pre_visit.hpp"
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit_post_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit_after.hpp")
-        #include "visitor/Type_ENCODER_RETURN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12023,9 +10466,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_post_visit_before.hpp"
@@ -12039,9 +10479,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_post_visit.hpp"
         #if __has_include("visitor/Type_ENCODER_RETURN_post_visit_post_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_RETURN_post_visit_after.hpp")
-        #include "visitor/Type_ENCODER_RETURN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12072,9 +10509,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_validate_before.hpp"
@@ -12088,9 +10522,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_pre_validate.hpp"
         #if __has_include("visitor/Type_DECODER_RETURN_pre_validate_post_default.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_RETURN_pre_validate_after.hpp")
-        #include "visitor/Type_DECODER_RETURN_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12107,9 +10538,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_visit_before.hpp"
@@ -12123,9 +10551,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_pre_visit.hpp"
         #if __has_include("visitor/Type_DECODER_RETURN_pre_visit_post_default.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_RETURN_pre_visit_after.hpp")
-        #include "visitor/Type_DECODER_RETURN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12151,9 +10576,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_DECODER_RETURN_post_visit_before.hpp"
@@ -12167,9 +10589,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_post_visit.hpp"
         #if __has_include("visitor/Type_DECODER_RETURN_post_visit_post_default.hpp")
         #include "visitor/Type_DECODER_RETURN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_RETURN_post_visit_after.hpp")
-        #include "visitor/Type_DECODER_RETURN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12200,9 +10619,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_validate_before.hpp"
@@ -12216,9 +10632,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_pre_validate.hpp"
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate_post_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate_after.hpp")
-        #include "visitor/Type_ENCODER_INPUT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12235,9 +10648,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_visit_before.hpp"
@@ -12251,9 +10661,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_pre_visit.hpp"
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit_post_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit_after.hpp")
-        #include "visitor/Type_ENCODER_INPUT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12279,9 +10686,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_post_visit_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_post_visit_before.hpp"
@@ -12295,9 +10699,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_post_visit.hpp"
         #if __has_include("visitor/Type_ENCODER_INPUT_post_visit_post_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_ENCODER_INPUT_post_visit_after.hpp")
-        #include "visitor/Type_ENCODER_INPUT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12328,9 +10729,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_validate_before.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_validate_before.hpp"
@@ -12344,9 +10742,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_pre_validate.hpp"
         #if __has_include("visitor/Type_DECODER_INPUT_pre_validate_post_default.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_INPUT_pre_validate_after.hpp")
-        #include "visitor/Type_DECODER_INPUT_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12363,9 +10758,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_visit_before.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_visit_before.hpp"
@@ -12379,9 +10771,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_pre_visit.hpp"
         #if __has_include("visitor/Type_DECODER_INPUT_pre_visit_post_default.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_INPUT_pre_visit_after.hpp")
-        #include "visitor/Type_DECODER_INPUT_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12407,9 +10796,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_post_visit_before.hpp")
         #include "visitor/Type_DECODER_INPUT_post_visit_before.hpp"
@@ -12423,9 +10809,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_post_visit.hpp"
         #if __has_include("visitor/Type_DECODER_INPUT_post_visit_post_default.hpp")
         #include "visitor/Type_DECODER_INPUT_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_DECODER_INPUT_post_visit_after.hpp")
-        #include "visitor/Type_DECODER_INPUT_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12456,9 +10839,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_before.hpp"
@@ -12472,9 +10852,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp"
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_post_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_after.hpp")
-        #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12491,9 +10868,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_before.hpp"
@@ -12507,9 +10881,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp"
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_post_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_after.hpp")
-        #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12535,9 +10906,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_before.hpp"
@@ -12551,9 +10919,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp"
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit_post_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit_after.hpp")
-        #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12584,9 +10949,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_validate_before.hpp")
         #include "visitor/Type_OPTIONAL_pre_validate_before.hpp"
@@ -12600,9 +10962,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_pre_validate.hpp"
         #if __has_include("visitor/Type_OPTIONAL_pre_validate_post_default.hpp")
         #include "visitor/Type_OPTIONAL_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_OPTIONAL_pre_validate_after.hpp")
-        #include "visitor/Type_OPTIONAL_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12623,9 +10982,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_visit_before.hpp")
         #include "visitor/Type_OPTIONAL_pre_visit_before.hpp"
@@ -12639,9 +10995,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_pre_visit.hpp"
         #if __has_include("visitor/Type_OPTIONAL_pre_visit_post_default.hpp")
         #include "visitor/Type_OPTIONAL_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_OPTIONAL_pre_visit_after.hpp")
-        #include "visitor/Type_OPTIONAL_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12667,9 +11020,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_OPTIONAL_post_visit_before.hpp")
         #include "visitor/Type_OPTIONAL_post_visit_before.hpp"
@@ -12683,9 +11033,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_OPTIONAL_post_visit.hpp"
         #if __has_include("visitor/Type_OPTIONAL_post_visit_post_default.hpp")
         #include "visitor/Type_OPTIONAL_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_OPTIONAL_post_visit_after.hpp")
-        #include "visitor/Type_OPTIONAL_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12716,9 +11063,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PTR_pre_validate_before.hpp")
         #include "visitor/Type_PTR_pre_validate_before.hpp"
@@ -12732,9 +11076,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PTR_pre_validate.hpp"
         #if __has_include("visitor/Type_PTR_pre_validate_post_default.hpp")
         #include "visitor/Type_PTR_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PTR_pre_validate_after.hpp")
-        #include "visitor/Type_PTR_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12755,9 +11096,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PTR_pre_visit_before.hpp")
         #include "visitor/Type_PTR_pre_visit_before.hpp"
@@ -12771,9 +11109,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PTR_pre_visit.hpp"
         #if __has_include("visitor/Type_PTR_pre_visit_post_default.hpp")
         #include "visitor/Type_PTR_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PTR_pre_visit_after.hpp")
-        #include "visitor/Type_PTR_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12799,9 +11134,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_PTR_post_visit_before.hpp")
         #include "visitor/Type_PTR_post_visit_before.hpp"
@@ -12815,9 +11147,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_PTR_post_visit.hpp"
         #if __has_include("visitor/Type_PTR_post_visit_post_default.hpp")
         #include "visitor/Type_PTR_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_PTR_post_visit_after.hpp")
-        #include "visitor/Type_PTR_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12848,9 +11177,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_validate_post_default.hpp")
         #include "visitor/Type_pre_validate_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_validate_after.hpp")
-        #include "visitor/Type_pre_validate_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_validate_before.hpp")
         #include "visitor/Type_FUNCTION_pre_validate_before.hpp"
@@ -12864,9 +11190,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_pre_validate.hpp"
         #if __has_include("visitor/Type_FUNCTION_pre_validate_post_default.hpp")
         #include "visitor/Type_FUNCTION_pre_validate_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FUNCTION_pre_validate_after.hpp")
-        #include "visitor/Type_FUNCTION_pre_validate_after.hpp"
         #endif
         #endif
         auto& kind = in.body.kind;
@@ -12891,9 +11214,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_pre_visit_post_default.hpp")
         #include "visitor/Type_pre_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_pre_visit_after.hpp")
-        #include "visitor/Type_pre_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_visit_before.hpp")
         #include "visitor/Type_FUNCTION_pre_visit_before.hpp"
@@ -12907,9 +11227,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_pre_visit.hpp"
         #if __has_include("visitor/Type_FUNCTION_pre_visit_post_default.hpp")
         #include "visitor/Type_FUNCTION_pre_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FUNCTION_pre_visit_after.hpp")
-        #include "visitor/Type_FUNCTION_pre_visit_after.hpp"
         #endif
         #endif
         expected<Result> result;
@@ -12935,9 +11252,6 @@ namespace ebm2python {
         #if __has_include("visitor/Type_post_visit_post_default.hpp")
         #include "visitor/Type_post_visit_post_default.hpp"
         #endif
-        #if __has_include("visitor/Type_post_visit_after.hpp")
-        #include "visitor/Type_post_visit_after.hpp"
-        #endif
         #endif
         #if __has_include("visitor/Type_FUNCTION_post_visit_before.hpp")
         #include "visitor/Type_FUNCTION_post_visit_before.hpp"
@@ -12951,9 +11265,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION_post_visit.hpp"
         #if __has_include("visitor/Type_FUNCTION_post_visit_post_default.hpp")
         #include "visitor/Type_FUNCTION_post_visit_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_FUNCTION_post_visit_after.hpp")
-        #include "visitor/Type_FUNCTION_post_visit_after.hpp"
         #endif
         #endif
         if(!result) {
@@ -12975,9 +11286,6 @@ namespace ebm2python {
         #include "ebmcodegen/default_codegen_visitor/Type_dispatch.hpp"
         #if __has_include("visitor/Type_dispatch_post_default.hpp")
         #include "visitor/Type_dispatch_post_default.hpp"
-        #endif
-        #if __has_include("visitor/Type_dispatch_after.hpp")
-        #include "visitor/Type_dispatch_after.hpp"
         #endif
         #else
         switch (in.body.kind) {
@@ -13036,6 +11344,20 @@ namespace ebm2python {
     }
     template<typename Visitor>
     expected<Result> visit_Types(Visitor&& visitor,const ebm::Types& in) {
+        #if __has_include("visitor/Types_dispatch_before.hpp")
+        #include "visitor/Types_dispatch_before.hpp"
+        #endif
+        #if __has_include("visitor/Types_dispatch.hpp")
+        #include "visitor/Types_dispatch.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Types_dispatch.hpp")
+        #if __has_include("visitor/Types_dispatch_pre_default.hpp")
+        #include "visitor/Types_dispatch_pre_default.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Types_dispatch.hpp"
+        #if __has_include("visitor/Types_dispatch_post_default.hpp")
+        #include "visitor/Types_dispatch_post_default.hpp"
+        #endif
+        #else
         CodeWriter w;
         for(auto& elem:in.container) {
             auto result = visit_Type(visitor,elem);
@@ -13045,6 +11367,7 @@ namespace ebm2python {
             merge_result(visitor, w, std::move(result.value()));
         }
         return w;
+        #endif
     }
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";
@@ -13079,9 +11402,6 @@ namespace ebm2python {
         #if __has_include("visitor/Visitor_post_default.hpp")
         #include "visitor/Visitor_post_default.hpp"
         #endif
-        #if __has_include("visitor/Visitor_after.hpp")
-        #include "visitor/Visitor_after.hpp"
-        #endif
         #endif
         expected<void> entry() {
             #if __has_include("visitor/entry_before.hpp")
@@ -13096,9 +11416,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/entry.hpp"
             #if __has_include("visitor/entry_post_default.hpp")
             #include "visitor/entry_post_default.hpp"
-            #endif
-            #if __has_include("visitor/entry_after.hpp")
-            #include "visitor/entry_after.hpp"
             #endif
             #endif
             return {};
@@ -13116,9 +11433,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_BLOCK.hpp"
             #if __has_include("visitor/Statement_BLOCK_post_default.hpp")
             #include "visitor/Statement_BLOCK_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_BLOCK_after.hpp")
-            #include "visitor/Statement_BLOCK_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13141,9 +11455,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_ASSIGNMENT_post_default.hpp")
             #include "visitor/Statement_ASSIGNMENT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_ASSIGNMENT_after.hpp")
-            #include "visitor/Statement_ASSIGNMENT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_ASSIGNMENT {}}}}}",get_id(item_id));
@@ -13164,9 +11475,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp"
             #if __has_include("visitor/Statement_YIELD_post_default.hpp")
             #include "visitor/Statement_YIELD_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_YIELD_after.hpp")
-            #include "visitor/Statement_YIELD_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13189,9 +11497,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_APPEND_post_default.hpp")
             #include "visitor/Statement_APPEND_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_APPEND_after.hpp")
-            #include "visitor/Statement_APPEND_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_APPEND {}}}}}",get_id(item_id));
@@ -13212,9 +11517,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_RETURN.hpp"
             #if __has_include("visitor/Statement_RETURN_post_default.hpp")
             #include "visitor/Statement_RETURN_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_RETURN_after.hpp")
-            #include "visitor/Statement_RETURN_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13237,9 +11539,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_ERROR_RETURN_post_default.hpp")
             #include "visitor/Statement_ERROR_RETURN_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_ERROR_RETURN_after.hpp")
-            #include "visitor/Statement_ERROR_RETURN_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_ERROR_RETURN {}}}}}",get_id(item_id));
@@ -13260,9 +11559,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_ASSERT.hpp"
             #if __has_include("visitor/Statement_ASSERT_post_default.hpp")
             #include "visitor/Statement_ASSERT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_ASSERT_after.hpp")
-            #include "visitor/Statement_ASSERT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13285,9 +11581,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_READ_DATA_post_default.hpp")
             #include "visitor/Statement_READ_DATA_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_READ_DATA_after.hpp")
-            #include "visitor/Statement_READ_DATA_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_READ_DATA {}}}}}",get_id(item_id));
@@ -13308,9 +11601,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA.hpp"
             #if __has_include("visitor/Statement_WRITE_DATA_post_default.hpp")
             #include "visitor/Statement_WRITE_DATA_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_WRITE_DATA_after.hpp")
-            #include "visitor/Statement_WRITE_DATA_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13333,9 +11623,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_SEEK_STREAM_post_default.hpp")
             #include "visitor/Statement_SEEK_STREAM_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_SEEK_STREAM_after.hpp")
-            #include "visitor/Statement_SEEK_STREAM_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_SEEK_STREAM {}}}}}",get_id(item_id));
@@ -13356,9 +11643,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT.hpp"
             #if __has_include("visitor/Statement_IF_STATEMENT_post_default.hpp")
             #include "visitor/Statement_IF_STATEMENT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_IF_STATEMENT_after.hpp")
-            #include "visitor/Statement_IF_STATEMENT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13381,9 +11665,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_LOOP_STATEMENT_post_default.hpp")
             #include "visitor/Statement_LOOP_STATEMENT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_LOOP_STATEMENT_after.hpp")
-            #include "visitor/Statement_LOOP_STATEMENT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_LOOP_STATEMENT {}}}}}",get_id(item_id));
@@ -13404,9 +11685,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT.hpp"
             #if __has_include("visitor/Statement_MATCH_STATEMENT_post_default.hpp")
             #include "visitor/Statement_MATCH_STATEMENT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_MATCH_STATEMENT_after.hpp")
-            #include "visitor/Statement_MATCH_STATEMENT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13429,9 +11707,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_MATCH_BRANCH_post_default.hpp")
             #include "visitor/Statement_MATCH_BRANCH_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_MATCH_BRANCH_after.hpp")
-            #include "visitor/Statement_MATCH_BRANCH_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_MATCH_BRANCH {}}}}}",get_id(item_id));
@@ -13452,9 +11727,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_BREAK.hpp"
             #if __has_include("visitor/Statement_BREAK_post_default.hpp")
             #include "visitor/Statement_BREAK_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_BREAK_after.hpp")
-            #include "visitor/Statement_BREAK_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13477,9 +11749,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_CONTINUE_post_default.hpp")
             #include "visitor/Statement_CONTINUE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_CONTINUE_after.hpp")
-            #include "visitor/Statement_CONTINUE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_CONTINUE {}}}}}",get_id(item_id));
@@ -13500,9 +11769,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL.hpp"
             #if __has_include("visitor/Statement_FUNCTION_DECL_post_default.hpp")
             #include "visitor/Statement_FUNCTION_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_FUNCTION_DECL_after.hpp")
-            #include "visitor/Statement_FUNCTION_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13525,9 +11791,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_VARIABLE_DECL_post_default.hpp")
             #include "visitor/Statement_VARIABLE_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_VARIABLE_DECL_after.hpp")
-            #include "visitor/Statement_VARIABLE_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_VARIABLE_DECL {}}}}}",get_id(item_id));
@@ -13548,9 +11811,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp"
             #if __has_include("visitor/Statement_PARAMETER_DECL_post_default.hpp")
             #include "visitor/Statement_PARAMETER_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_PARAMETER_DECL_after.hpp")
-            #include "visitor/Statement_PARAMETER_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13573,9 +11833,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_FIELD_DECL_post_default.hpp")
             #include "visitor/Statement_FIELD_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_FIELD_DECL_after.hpp")
-            #include "visitor/Statement_FIELD_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_FIELD_DECL {}}}}}",get_id(item_id));
@@ -13596,9 +11853,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
             #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_default.hpp")
             #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp")
-            #include "visitor/Statement_COMPOSITE_FIELD_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13621,9 +11875,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_ENUM_DECL_post_default.hpp")
             #include "visitor/Statement_ENUM_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_ENUM_DECL_after.hpp")
-            #include "visitor/Statement_ENUM_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_ENUM_DECL {}}}}}",get_id(item_id));
@@ -13644,9 +11895,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL.hpp"
             #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_default.hpp")
             #include "visitor/Statement_ENUM_MEMBER_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_after.hpp")
-            #include "visitor/Statement_ENUM_MEMBER_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13669,9 +11917,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_STRUCT_DECL_post_default.hpp")
             #include "visitor/Statement_STRUCT_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_STRUCT_DECL_after.hpp")
-            #include "visitor/Statement_STRUCT_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_STRUCT_DECL {}}}}}",get_id(item_id));
@@ -13692,9 +11937,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_UNION_DECL.hpp"
             #if __has_include("visitor/Statement_UNION_DECL_post_default.hpp")
             #include "visitor/Statement_UNION_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_UNION_DECL_after.hpp")
-            #include "visitor/Statement_UNION_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13717,9 +11959,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_default.hpp")
             #include "visitor/Statement_UNION_MEMBER_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_UNION_MEMBER_DECL_after.hpp")
-            #include "visitor/Statement_UNION_MEMBER_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_UNION_MEMBER_DECL {}}}}}",get_id(item_id));
@@ -13740,9 +11979,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL.hpp"
             #if __has_include("visitor/Statement_PROGRAM_DECL_post_default.hpp")
             #include "visitor/Statement_PROGRAM_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_PROGRAM_DECL_after.hpp")
-            #include "visitor/Statement_PROGRAM_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13765,9 +12001,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_PROPERTY_DECL_post_default.hpp")
             #include "visitor/Statement_PROPERTY_DECL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_PROPERTY_DECL_after.hpp")
-            #include "visitor/Statement_PROPERTY_DECL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_PROPERTY_DECL {}}}}}",get_id(item_id));
@@ -13788,9 +12021,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
             #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_default.hpp")
             #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp")
-            #include "visitor/Statement_PROPERTY_MEMBER_DECL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13813,9 +12043,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_METADATA_post_default.hpp")
             #include "visitor/Statement_METADATA_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_METADATA_after.hpp")
-            #include "visitor/Statement_METADATA_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_METADATA {}}}}}",get_id(item_id));
@@ -13836,9 +12063,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE.hpp"
             #if __has_include("visitor/Statement_IMPORT_MODULE_post_default.hpp")
             #include "visitor/Statement_IMPORT_MODULE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_IMPORT_MODULE_after.hpp")
-            #include "visitor/Statement_IMPORT_MODULE_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13861,9 +12085,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_EXPRESSION_post_default.hpp")
             #include "visitor/Statement_EXPRESSION_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_EXPRESSION_after.hpp")
-            #include "visitor/Statement_EXPRESSION_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_EXPRESSION {}}}}}",get_id(item_id));
@@ -13884,9 +12105,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT.hpp"
             #if __has_include("visitor/Statement_ERROR_REPORT_post_default.hpp")
             #include "visitor/Statement_ERROR_REPORT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_ERROR_REPORT_after.hpp")
-            #include "visitor/Statement_ERROR_REPORT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13909,9 +12127,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_default.hpp")
             #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp")
-            #include "visitor/Statement_LOWERED_IO_STATEMENTS_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_LOWERED_IO_STATEMENTS {}}}}}",get_id(item_id));
@@ -13932,9 +12147,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp"
             #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_default.hpp")
             #include "visitor/Statement_SUB_BYTE_RANGE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_SUB_BYTE_RANGE_after.hpp")
-            #include "visitor/Statement_SUB_BYTE_RANGE_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -13957,9 +12169,6 @@ namespace ebm2python {
             #if __has_include("visitor/Statement_INIT_CHECK_post_default.hpp")
             #include "visitor/Statement_INIT_CHECK_post_default.hpp"
             #endif
-            #if __has_include("visitor/Statement_INIT_CHECK_after.hpp")
-            #include "visitor/Statement_INIT_CHECK_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Statement_INIT_CHECK {}}}}}",get_id(item_id));
@@ -13980,9 +12189,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE.hpp"
             #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_default.hpp")
             #include "visitor/Statement_ENDIAN_VARIABLE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Statement_ENDIAN_VARIABLE_after.hpp")
-            #include "visitor/Statement_ENDIAN_VARIABLE_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14005,9 +12211,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_LITERAL_INT_post_default.hpp")
             #include "visitor/Expression_LITERAL_INT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_LITERAL_INT_after.hpp")
-            #include "visitor/Expression_LITERAL_INT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_LITERAL_INT {}}}}}",get_id(item_id));
@@ -14028,9 +12231,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64.hpp"
             #if __has_include("visitor/Expression_LITERAL_INT64_post_default.hpp")
             #include "visitor/Expression_LITERAL_INT64_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_LITERAL_INT64_after.hpp")
-            #include "visitor/Expression_LITERAL_INT64_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14053,9 +12253,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_LITERAL_BOOL_post_default.hpp")
             #include "visitor/Expression_LITERAL_BOOL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_LITERAL_BOOL_after.hpp")
-            #include "visitor/Expression_LITERAL_BOOL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_LITERAL_BOOL {}}}}}",get_id(item_id));
@@ -14076,9 +12273,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING.hpp"
             #if __has_include("visitor/Expression_LITERAL_STRING_post_default.hpp")
             #include "visitor/Expression_LITERAL_STRING_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_LITERAL_STRING_after.hpp")
-            #include "visitor/Expression_LITERAL_STRING_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14101,9 +12295,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_LITERAL_TYPE_post_default.hpp")
             #include "visitor/Expression_LITERAL_TYPE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_LITERAL_TYPE_after.hpp")
-            #include "visitor/Expression_LITERAL_TYPE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_LITERAL_TYPE {}}}}}",get_id(item_id));
@@ -14124,9 +12315,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR.hpp"
             #if __has_include("visitor/Expression_LITERAL_CHAR_post_default.hpp")
             #include "visitor/Expression_LITERAL_CHAR_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_LITERAL_CHAR_after.hpp")
-            #include "visitor/Expression_LITERAL_CHAR_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14149,9 +12337,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_IDENTIFIER_post_default.hpp")
             #include "visitor/Expression_IDENTIFIER_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_IDENTIFIER_after.hpp")
-            #include "visitor/Expression_IDENTIFIER_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_IDENTIFIER {}}}}}",get_id(item_id));
@@ -14172,9 +12357,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_BINARY_OP.hpp"
             #if __has_include("visitor/Expression_BINARY_OP_post_default.hpp")
             #include "visitor/Expression_BINARY_OP_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_BINARY_OP_after.hpp")
-            #include "visitor/Expression_BINARY_OP_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14197,9 +12379,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_UNARY_OP_post_default.hpp")
             #include "visitor/Expression_UNARY_OP_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_UNARY_OP_after.hpp")
-            #include "visitor/Expression_UNARY_OP_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_UNARY_OP {}}}}}",get_id(item_id));
@@ -14220,9 +12399,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_CALL.hpp"
             #if __has_include("visitor/Expression_CALL_post_default.hpp")
             #include "visitor/Expression_CALL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_CALL_after.hpp")
-            #include "visitor/Expression_CALL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14245,9 +12421,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_INDEX_ACCESS_post_default.hpp")
             #include "visitor/Expression_INDEX_ACCESS_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_INDEX_ACCESS_after.hpp")
-            #include "visitor/Expression_INDEX_ACCESS_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_INDEX_ACCESS {}}}}}",get_id(item_id));
@@ -14268,9 +12441,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS.hpp"
             #if __has_include("visitor/Expression_MEMBER_ACCESS_post_default.hpp")
             #include "visitor/Expression_MEMBER_ACCESS_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_MEMBER_ACCESS_after.hpp")
-            #include "visitor/Expression_MEMBER_ACCESS_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14293,9 +12463,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_ENUM_MEMBER_post_default.hpp")
             #include "visitor/Expression_ENUM_MEMBER_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_ENUM_MEMBER_after.hpp")
-            #include "visitor/Expression_ENUM_MEMBER_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_ENUM_MEMBER {}}}}}",get_id(item_id));
@@ -14316,9 +12483,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST.hpp"
             #if __has_include("visitor/Expression_TYPE_CAST_post_default.hpp")
             #include "visitor/Expression_TYPE_CAST_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_TYPE_CAST_after.hpp")
-            #include "visitor/Expression_TYPE_CAST_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14341,9 +12505,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_RANGE_post_default.hpp")
             #include "visitor/Expression_RANGE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_RANGE_after.hpp")
-            #include "visitor/Expression_RANGE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_RANGE {}}}}}",get_id(item_id));
@@ -14364,9 +12525,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE.hpp"
             #if __has_include("visitor/Expression_DEFAULT_VALUE_post_default.hpp")
             #include "visitor/Expression_DEFAULT_VALUE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_DEFAULT_VALUE_after.hpp")
-            #include "visitor/Expression_DEFAULT_VALUE_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14389,9 +12547,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_default.hpp")
             #include "visitor/Expression_IS_LITTLE_ENDIAN_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_after.hpp")
-            #include "visitor/Expression_IS_LITTLE_ENDIAN_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_IS_LITTLE_ENDIAN {}}}}}",get_id(item_id));
@@ -14412,9 +12567,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET.hpp"
             #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_default.hpp")
             #include "visitor/Expression_GET_STREAM_OFFSET_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_GET_STREAM_OFFSET_after.hpp")
-            #include "visitor/Expression_GET_STREAM_OFFSET_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14437,9 +12589,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_default.hpp")
             #include "visitor/Expression_GET_REMAINING_BYTES_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_GET_REMAINING_BYTES_after.hpp")
-            #include "visitor/Expression_GET_REMAINING_BYTES_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_GET_REMAINING_BYTES {}}}}}",get_id(item_id));
@@ -14460,9 +12609,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM.hpp"
             #if __has_include("visitor/Expression_CAN_READ_STREAM_post_default.hpp")
             #include "visitor/Expression_CAN_READ_STREAM_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_CAN_READ_STREAM_after.hpp")
-            #include "visitor/Expression_CAN_READ_STREAM_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14485,9 +12631,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_ARRAY_SIZE_post_default.hpp")
             #include "visitor/Expression_ARRAY_SIZE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_ARRAY_SIZE_after.hpp")
-            #include "visitor/Expression_ARRAY_SIZE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_ARRAY_SIZE {}}}}}",get_id(item_id));
@@ -14508,9 +12651,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp"
             #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_default.hpp")
             #include "visitor/Expression_ENUM_IS_DEFINED_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_ENUM_IS_DEFINED_after.hpp")
-            #include "visitor/Expression_ENUM_IS_DEFINED_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14533,9 +12673,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_IS_ERROR_post_default.hpp")
             #include "visitor/Expression_IS_ERROR_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_IS_ERROR_after.hpp")
-            #include "visitor/Expression_IS_ERROR_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_IS_ERROR {}}}}}",get_id(item_id));
@@ -14556,9 +12693,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE.hpp"
             #if __has_include("visitor/Expression_MAX_VALUE_post_default.hpp")
             #include "visitor/Expression_MAX_VALUE_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_MAX_VALUE_after.hpp")
-            #include "visitor/Expression_MAX_VALUE_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14581,9 +12715,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_READ_DATA_post_default.hpp")
             #include "visitor/Expression_READ_DATA_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_READ_DATA_after.hpp")
-            #include "visitor/Expression_READ_DATA_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_READ_DATA {}}}}}",get_id(item_id));
@@ -14604,9 +12735,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA.hpp"
             #if __has_include("visitor/Expression_WRITE_DATA_post_default.hpp")
             #include "visitor/Expression_WRITE_DATA_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_WRITE_DATA_after.hpp")
-            #include "visitor/Expression_WRITE_DATA_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14629,9 +12757,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_default.hpp")
             #include "visitor/Expression_CONDITIONAL_STATEMENT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_after.hpp")
-            #include "visitor/Expression_CONDITIONAL_STATEMENT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_CONDITIONAL_STATEMENT {}}}}}",get_id(item_id));
@@ -14652,9 +12777,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp"
             #if __has_include("visitor/Expression_CONDITIONAL_post_default.hpp")
             #include "visitor/Expression_CONDITIONAL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_CONDITIONAL_after.hpp")
-            #include "visitor/Expression_CONDITIONAL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14677,9 +12799,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_AVAILABLE_post_default.hpp")
             #include "visitor/Expression_AVAILABLE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_AVAILABLE_after.hpp")
-            #include "visitor/Expression_AVAILABLE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_AVAILABLE {}}}}}",get_id(item_id));
@@ -14700,9 +12819,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp"
             #if __has_include("visitor/Expression_SIZEOF_post_default.hpp")
             #include "visitor/Expression_SIZEOF_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_SIZEOF_after.hpp")
-            #include "visitor/Expression_SIZEOF_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14725,9 +12841,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_default.hpp")
             #include "visitor/Expression_SUB_RANGE_INIT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_SUB_RANGE_INIT_after.hpp")
-            #include "visitor/Expression_SUB_RANGE_INIT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_SUB_RANGE_INIT {}}}}}",get_id(item_id));
@@ -14748,9 +12861,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp"
             #if __has_include("visitor/Expression_OR_COND_post_default.hpp")
             #include "visitor/Expression_OR_COND_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_OR_COND_after.hpp")
-            #include "visitor/Expression_OR_COND_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14773,9 +12883,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_ADDRESS_OF_post_default.hpp")
             #include "visitor/Expression_ADDRESS_OF_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_ADDRESS_OF_after.hpp")
-            #include "visitor/Expression_ADDRESS_OF_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_ADDRESS_OF {}}}}}",get_id(item_id));
@@ -14796,9 +12903,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF.hpp"
             #if __has_include("visitor/Expression_OPTIONAL_OF_post_default.hpp")
             #include "visitor/Expression_OPTIONAL_OF_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_OPTIONAL_OF_after.hpp")
-            #include "visitor/Expression_OPTIONAL_OF_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14821,9 +12925,6 @@ namespace ebm2python {
             #if __has_include("visitor/Expression_SETTER_STATUS_post_default.hpp")
             #include "visitor/Expression_SETTER_STATUS_post_default.hpp"
             #endif
-            #if __has_include("visitor/Expression_SETTER_STATUS_after.hpp")
-            #include "visitor/Expression_SETTER_STATUS_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Expression_SETTER_STATUS {}}}}}",get_id(item_id));
@@ -14844,9 +12945,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Expression_SELF.hpp"
             #if __has_include("visitor/Expression_SELF_post_default.hpp")
             #include "visitor/Expression_SELF_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Expression_SELF_after.hpp")
-            #include "visitor/Expression_SELF_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14869,9 +12967,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_INT_post_default.hpp")
             #include "visitor/Type_INT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_INT_after.hpp")
-            #include "visitor/Type_INT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_INT {}}}}}",get_id(item_id));
@@ -14892,9 +12987,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_UINT.hpp"
             #if __has_include("visitor/Type_UINT_post_default.hpp")
             #include "visitor/Type_UINT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_UINT_after.hpp")
-            #include "visitor/Type_UINT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14917,9 +13009,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_FLOAT_post_default.hpp")
             #include "visitor/Type_FLOAT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_FLOAT_after.hpp")
-            #include "visitor/Type_FLOAT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_FLOAT {}}}}}",get_id(item_id));
@@ -14940,9 +13029,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_STRUCT.hpp"
             #if __has_include("visitor/Type_STRUCT_post_default.hpp")
             #include "visitor/Type_STRUCT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_STRUCT_after.hpp")
-            #include "visitor/Type_STRUCT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -14965,9 +13051,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_default.hpp")
             #include "visitor/Type_RECURSIVE_STRUCT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_RECURSIVE_STRUCT_after.hpp")
-            #include "visitor/Type_RECURSIVE_STRUCT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_RECURSIVE_STRUCT {}}}}}",get_id(item_id));
@@ -14988,9 +13071,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_BOOL.hpp"
             #if __has_include("visitor/Type_BOOL_post_default.hpp")
             #include "visitor/Type_BOOL_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_BOOL_after.hpp")
-            #include "visitor/Type_BOOL_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15013,9 +13093,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_VOID_post_default.hpp")
             #include "visitor/Type_VOID_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_VOID_after.hpp")
-            #include "visitor/Type_VOID_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_VOID {}}}}}",get_id(item_id));
@@ -15036,9 +13113,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_META.hpp"
             #if __has_include("visitor/Type_META_post_default.hpp")
             #include "visitor/Type_META_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_META_after.hpp")
-            #include "visitor/Type_META_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15061,9 +13135,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_ENUM_post_default.hpp")
             #include "visitor/Type_ENUM_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_ENUM_after.hpp")
-            #include "visitor/Type_ENUM_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_ENUM {}}}}}",get_id(item_id));
@@ -15084,9 +13155,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_ARRAY.hpp"
             #if __has_include("visitor/Type_ARRAY_post_default.hpp")
             #include "visitor/Type_ARRAY_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_ARRAY_after.hpp")
-            #include "visitor/Type_ARRAY_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15109,9 +13177,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_VECTOR_post_default.hpp")
             #include "visitor/Type_VECTOR_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_VECTOR_after.hpp")
-            #include "visitor/Type_VECTOR_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_VECTOR {}}}}}",get_id(item_id));
@@ -15132,9 +13197,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_VARIANT.hpp"
             #if __has_include("visitor/Type_VARIANT_post_default.hpp")
             #include "visitor/Type_VARIANT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_VARIANT_after.hpp")
-            #include "visitor/Type_VARIANT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15157,9 +13219,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_RANGE_post_default.hpp")
             #include "visitor/Type_RANGE_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_RANGE_after.hpp")
-            #include "visitor/Type_RANGE_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_RANGE {}}}}}",get_id(item_id));
@@ -15180,9 +13239,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN.hpp"
             #if __has_include("visitor/Type_ENCODER_RETURN_post_default.hpp")
             #include "visitor/Type_ENCODER_RETURN_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_ENCODER_RETURN_after.hpp")
-            #include "visitor/Type_ENCODER_RETURN_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15205,9 +13261,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_DECODER_RETURN_post_default.hpp")
             #include "visitor/Type_DECODER_RETURN_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_DECODER_RETURN_after.hpp")
-            #include "visitor/Type_DECODER_RETURN_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_DECODER_RETURN {}}}}}",get_id(item_id));
@@ -15228,9 +13281,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT.hpp"
             #if __has_include("visitor/Type_ENCODER_INPUT_post_default.hpp")
             #include "visitor/Type_ENCODER_INPUT_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_ENCODER_INPUT_after.hpp")
-            #include "visitor/Type_ENCODER_INPUT_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15253,9 +13303,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_DECODER_INPUT_post_default.hpp")
             #include "visitor/Type_DECODER_INPUT_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_DECODER_INPUT_after.hpp")
-            #include "visitor/Type_DECODER_INPUT_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_DECODER_INPUT {}}}}}",get_id(item_id));
@@ -15276,9 +13323,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN.hpp"
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_default.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_after.hpp")
-            #include "visitor/Type_PROPERTY_SETTER_RETURN_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15301,9 +13345,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_OPTIONAL_post_default.hpp")
             #include "visitor/Type_OPTIONAL_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_OPTIONAL_after.hpp")
-            #include "visitor/Type_OPTIONAL_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_OPTIONAL {}}}}}",get_id(item_id));
@@ -15325,9 +13366,6 @@ namespace ebm2python {
             #if __has_include("visitor/Type_PTR_post_default.hpp")
             #include "visitor/Type_PTR_post_default.hpp"
             #endif
-            #if __has_include("visitor/Type_PTR_after.hpp")
-            #include "visitor/Type_PTR_after.hpp"
-            #endif
             #else
             if (flags.debug_unimplemented) {
                 return std::format("{{{{Unimplemented Type_PTR {}}}}}",get_id(item_id));
@@ -15348,9 +13386,6 @@ namespace ebm2python {
             #include "ebmcodegen/default_codegen_visitor/Type_FUNCTION.hpp"
             #if __has_include("visitor/Type_FUNCTION_post_default.hpp")
             #include "visitor/Type_FUNCTION_post_default.hpp"
-            #endif
-            #if __has_include("visitor/Type_FUNCTION_after.hpp")
-            #include "visitor/Type_FUNCTION_after.hpp"
             #endif
             #else
             if (flags.debug_unimplemented) {
@@ -15469,9 +13504,6 @@ DEFINE_ENTRY(Flags,Output) {
     #if __has_include("visitor/pre_visitor_post_default.hpp")
     #include "visitor/pre_visitor_post_default.hpp"
     #endif
-    #if __has_include("visitor/pre_visitor_after.hpp")
-    #include "visitor/pre_visitor_after.hpp"
-    #endif
     #endif
     ebm2python::Visitor visitor{ebm,w,flags,output};
     #if __has_include("visitor/pre_entry_before.hpp")
@@ -15486,9 +13518,6 @@ DEFINE_ENTRY(Flags,Output) {
     #include "ebmcodegen/default_codegen_visitor/pre_entry.hpp"
     #if __has_include("visitor/pre_entry_post_default.hpp")
     #include "visitor/pre_entry_post_default.hpp"
-    #endif
-    #if __has_include("visitor/pre_entry_after.hpp")
-    #include "visitor/pre_entry_after.hpp"
     #endif
     #endif
     auto result = visitor.entry();
@@ -15508,9 +13537,6 @@ DEFINE_ENTRY(Flags,Output) {
     #include "ebmcodegen/default_codegen_visitor/post_entry.hpp"
     #if __has_include("visitor/post_entry_post_default.hpp")
     #include "visitor/post_entry_post_default.hpp"
-    #endif
-    #if __has_include("visitor/post_entry_after.hpp")
-    #include "visitor/post_entry_after.hpp"
     #endif
     #endif
     return 0;

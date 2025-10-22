@@ -98,6 +98,15 @@ namespace ebmcodegen {
             futils::binary::writer w{fs.get_direct_write_handler(), &fs};
             int ret = then(w, ebm, output);
             if (flags.dump_test_file.size()) {
+                futils::json::Stringer str;
+                auto obj = str.object();
+                obj("line_map", output.line_maps);
+                obj("structs", output.struct_names);
+                obj.close();
+                if (flags.dump_test_file == "-") {
+                    cout << str.out();
+                    return ret;
+                }
                 auto file = futils::file::File::create(flags.dump_test_file);
                 if (!file) {
                     cerr << flags.program_name << ": " << file.error().template error<std::string>() << '\n';
@@ -105,20 +114,6 @@ namespace ebmcodegen {
                 }
                 futils::file::FileStream<std::string> fs{*file};
                 futils::binary::writer w{fs.get_direct_write_handler(), &fs};
-                futils::json::Stringer str;
-                auto obj = str.object();
-                obj("line_map", [&] {
-                    auto element = str.array();
-                    for (auto& lm : output.line_maps) {
-                        element([&] {
-                            auto o = str.object();
-                            o("line", lm.line);
-                            o("loc", lm.loc);
-                        });
-                    }
-                });  // for future use
-                obj("structs", output.struct_names);
-                obj.close();
                 w.write(str.out());
             }
             return ret;

@@ -220,8 +220,8 @@ namespace ebmcodegen::util {
             if (!l) {
                 continue;
             }
-            visitor.output.line_maps.push_back(LineMap{
-                .line = loc.start.line,
+            visitor.output.line_maps.push_back(brgen::ast::LineMap{
+
                 .loc = brgen::lexer::Loc{
                     .pos = {
                         .begin = static_cast<size_t>(l->start.value()),
@@ -231,6 +231,7 @@ namespace ebmcodegen::util {
                     .line = static_cast<size_t>(l->line.value()),
                     .col = static_cast<size_t>(l->column.value()),
                 },
+                .line = loc.start.line,
             });
         }
     }

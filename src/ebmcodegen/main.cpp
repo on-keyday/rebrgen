@@ -87,7 +87,7 @@ constexpr std::string_view suffixes[] = {
     "_before",
     "_pre_default",
     "_post_default",
-    "_after",
+
     // visitor location
     "_pre_validate",
     "_pre_visit",
@@ -102,7 +102,6 @@ constexpr std::string_view suffixes[] = {
 constexpr auto suffix_before = indexof(suffixes, "_before");
 constexpr auto suffix_pre_default = indexof(suffixes, "_pre_default");
 constexpr auto suffix_post_default = indexof(suffixes, "_post_default");
-constexpr auto suffix_after = indexof(suffixes, "_after");
 constexpr auto suffix_pre_validate = indexof(suffixes, "_pre_validate");
 constexpr auto suffix_pre_visit = indexof(suffixes, "_pre_visit");
 constexpr auto suffix_post_visit = indexof(suffixes, "_post_visit");
@@ -126,7 +125,7 @@ constexpr auto prefix_type = indexof(prefixes, "Type");
 constexpr auto prefix_statement = indexof(prefixes, "Statement");
 
 constexpr bool is_include_location(std::string_view suffix) {
-    return indexof(suffixes, suffix) <= suffix_after;
+    return indexof(suffixes, suffix) <= suffix_before;
 }
 
 constexpr bool is_visitor_location(std::string_view suffix) {
@@ -561,11 +560,6 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, post_default, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, post_default, ".hpp", "\"");
         w.writeln("#endif");
-        auto after = concat(concated, suffixes[suffix_after]);
-        hooks.push_back(after);
-        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, after, ".hpp", "\")");
-        w.writeln("#include \"", flags.visitor_impl_dir, after, ".hpp", "\"");
-        w.writeln("#endif");
     };
 
     auto insert_include = [&](auto& w, auto&&... path) {
@@ -903,6 +897,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         stmt_dispatcher.writeln(result_type, " visit_", list_name, "(Visitor&& visitor,const ebm::", list_name, "& in) {");
         {
             auto list_scope = stmt_dispatcher.indent_scope();
+            insert_include_without_endif(stmt_dispatcher, list_name, suffixes[suffix_dispatch]);
+            stmt_dispatcher.writeln("#else");
             if (flags.mode == GenerateMode::CodeGenerator) {
                 stmt_dispatcher.writeln("CodeWriter w;");
             }
@@ -924,6 +920,8 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             else {
                 stmt_dispatcher.writeln("return {};");  // Placeholder for non-codegen mode
             }
+            stmt_dispatcher.writeln("#endif");
+            list_scope.execute();
         }
         stmt_dispatcher.writeln("}");
         w.write_unformatted(stmt_dispatcher.out());

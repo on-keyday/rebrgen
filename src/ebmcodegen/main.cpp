@@ -21,6 +21,7 @@
 #include "json/stringer.h"
 #include "stub/structs.hpp"
 #include "dsl/dsl.h"
+#include "stub/url.hpp"
 
 enum class GenerateMode {
     Template,
@@ -41,6 +42,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     std::string_view program_name;
     GenerateMode mode = GenerateMode::CodeGenerator;
     std::string_view visitor_impl_dir = "visitor/";
+    std::string_view visitor_impl_dsl_dir = "visitor/dsl/";
     std::string_view default_visitor_impl_dir = "ebmcodegen/default_codegen_visitor/";
     std::string_view template_target;
     std::string_view dsl_file;
@@ -102,6 +104,9 @@ constexpr std::string_view suffixes[] = {
     // Flags location
     "_struct",
     "_bind",
+
+    // generated from DSL
+    "_dsl",
 };
 
 constexpr auto suffix_before = indexof(suffixes, "_before");
@@ -113,6 +118,7 @@ constexpr auto suffix_post_visit = indexof(suffixes, "_post_visit");
 constexpr auto suffix_dispatch = indexof(suffixes, "_dispatch");
 constexpr auto suffix_struct = indexof(suffixes, "_struct");
 constexpr auto suffix_bind = indexof(suffixes, "_bind");
+constexpr auto suffix_dsl = indexof(suffixes, "_dsl");
 
 constexpr std::string_view prefixes[] = {"entry", "includes", "pre_visitor", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
 
@@ -151,6 +157,7 @@ struct ParsedHookName {
     std::string_view kind;
     std::optional<ebmcodegen::Struct> struct_info;
     std::set<std::string_view> body_subset;
+    bool dsl = false;
 };
 
 namespace ebmgen {
@@ -182,6 +189,9 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
                     return error("Duplicate flags suffix: {} vs {}", result.flags_suffix, suffix);
                 }
                 result.flags_suffix = suffix;
+            }
+            else if (suffix == suffixes[suffix_dsl]) {
+                result.dsl = true;
             }
             else {
                 return error("Unknown suffix: {}", suffix);
@@ -239,7 +249,6 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
     return result;
 }
 
-constexpr auto repo_url = "https://github.com/on-keyday/rebrgen";
 using CodeWriter = ebmcodegen::CodeWriter;
 
 int print_cmake(CodeWriter& w, Flags& flags) {
@@ -468,7 +477,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             return 1;
         }
         auto dsl_source = std::string_view((const char*)view.data(), view.size());
-        auto res = ebmcodegen::dsl::generate_dsl_output(dsl_source);
+        auto res = ebmcodegen::dsl::generate_dsl_output(flags.dsl_file, dsl_source);
         if (!res) {
             cerr << "Failed to generate DSL output: " << res.error().error() << "\n";
             return 1;
@@ -564,14 +573,22 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
         auto concated = concat(std::forward<decltype(path)>(path)...);
+        auto concated_dsl = concat(concated, suffixes[suffix_dsl]);
         hooks.push_back(concated);
+        hooks.push_back(concated_dsl);
         auto before = concat(concated, suffixes[suffix_before]);
+        auto before_dsl = concat(before, suffixes[suffix_dsl]);
         hooks.push_back(before);
+        hooks.push_back(before_dsl);
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, before, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, before, ".hpp", "\"");
+        w.writeln("#elif __has_include(\"", flags.visitor_impl_dsl_dir, before_dsl, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dsl_dir, before_dsl, ".hpp", "\"");
         w.writeln("#endif");
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
+        w.writeln("#elif __has_include(\"", flags.visitor_impl_dsl_dir, concated_dsl, ".hpp", "\")");
+        w.writeln("#include \"", flags.visitor_impl_dsl_dir, concated_dsl, ".hpp", "\"");
         w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
         auto pre_default = concat(concated, suffixes[suffix_pre_default]);
         auto post_default = concat(concated, suffixes[suffix_post_default]);
@@ -913,6 +930,15 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         }
         stmt_dispatcher.writeln("}");
 
+        stmt_dispatcher.writeln("// generic visitor for ", ref_name);
+        stmt_dispatcher.writeln("template<typename Visitor>");
+        stmt_dispatcher.writeln(result_type, " visit_Object(Visitor&& visitor,const ebm::", ref_name, "& ref) {");
+        {
+            auto scope = stmt_dispatcher.indent_scope();
+            stmt_dispatcher.writeln("return visit_", kind, "(visitor,ref);");
+        }
+        stmt_dispatcher.writeln("}");
+
         auto list_name = std::format("{}s", kind);
         if (kind == "Statement") {
             list_name = "Block";
@@ -947,6 +973,15 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
             stmt_dispatcher.writeln("#endif");
             list_scope.execute();
+        }
+        stmt_dispatcher.writeln("}");
+
+        stmt_dispatcher.writeln("// generic visitor for ", list_name);
+        stmt_dispatcher.writeln("template<typename Visitor>");
+        stmt_dispatcher.writeln(result_type, " visit_Object(Visitor&& visitor,const ebm::", list_name, "& in) {");
+        {
+            auto scope = stmt_dispatcher.indent_scope();
+            stmt_dispatcher.writeln("return visit_", list_name, "(visitor,in);");
         }
         stmt_dispatcher.writeln("}");
         w.write_unformatted(stmt_dispatcher.out());

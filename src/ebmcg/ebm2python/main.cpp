@@ -10,9 +10,13 @@
 #include <code/loc_writer.h>
 #if __has_include("visitor/includes_before.hpp")
 #include "visitor/includes_before.hpp"
+#elif __has_include("visitor/dsl/includes_before_dsl.hpp")
+#include "visitor/dsl/includes_before_dsl.hpp"
 #endif
 #if __has_include("visitor/includes.hpp")
 #include "visitor/includes.hpp"
+#elif __has_include("visitor/dsl/includes_dsl.hpp")
+#include "visitor/dsl/includes_dsl.hpp"
 #elif __has_include("ebmcodegen/default_codegen_visitor/includes.hpp")
 #if __has_include("visitor/includes_pre_default.hpp")
 #include "visitor/includes_pre_default.hpp"
@@ -38,9 +42,13 @@ struct Flags : ebmcodegen::Flags {
     #define END_MAP_FLAG() 
     #if __has_include("visitor/Flags_before.hpp")
     #include "visitor/Flags_before.hpp"
+    #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
+    #include "visitor/dsl/Flags_before_dsl.hpp"
     #endif
     #if __has_include("visitor/Flags.hpp")
     #include "visitor/Flags.hpp"
+    #elif __has_include("visitor/dsl/Flags_dsl.hpp")
+    #include "visitor/dsl/Flags_dsl.hpp"
     #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
     #if __has_include("visitor/Flags_pre_default.hpp")
     #include "visitor/Flags_pre_default.hpp"
@@ -63,9 +71,13 @@ struct Flags : ebmcodegen::Flags {
     #undef FILE_EXTENSIONS
     #if __has_include("visitor/Flags_struct_before.hpp")
     #include "visitor/Flags_struct_before.hpp"
+    #elif __has_include("visitor/dsl/Flags_struct_before_dsl.hpp")
+    #include "visitor/dsl/Flags_struct_before_dsl.hpp"
     #endif
     #if __has_include("visitor/Flags_struct.hpp")
     #include "visitor/Flags_struct.hpp"
+    #elif __has_include("visitor/dsl/Flags_struct_dsl.hpp")
+    #include "visitor/dsl/Flags_struct_dsl.hpp"
     #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct.hpp")
     #if __has_include("visitor/Flags_struct_pre_default.hpp")
     #include "visitor/Flags_struct_pre_default.hpp"
@@ -96,9 +108,13 @@ struct Flags : ebmcodegen::Flags {
         #define END_MAP_FLAG() ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + "}",std::move(map__)); }
         #if __has_include("visitor/Flags_before.hpp")
         #include "visitor/Flags_before.hpp"
+        #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
+        #include "visitor/dsl/Flags_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Flags.hpp")
         #include "visitor/Flags.hpp"
+        #elif __has_include("visitor/dsl/Flags_dsl.hpp")
+        #include "visitor/dsl/Flags_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
         #if __has_include("visitor/Flags_pre_default.hpp")
         #include "visitor/Flags_pre_default.hpp"
@@ -121,9 +137,13 @@ struct Flags : ebmcodegen::Flags {
         #undef FILE_EXTENSIONS
         #if __has_include("visitor/Flags_bind_before.hpp")
         #include "visitor/Flags_bind_before.hpp"
+        #elif __has_include("visitor/dsl/Flags_bind_before_dsl.hpp")
+        #include "visitor/dsl/Flags_bind_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Flags_bind.hpp")
         #include "visitor/Flags_bind.hpp"
+        #elif __has_include("visitor/dsl/Flags_bind_dsl.hpp")
+        #include "visitor/dsl/Flags_bind_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind.hpp")
         #if __has_include("visitor/Flags_bind_pre_default.hpp")
         #include "visitor/Flags_bind_pre_default.hpp"
@@ -138,9 +158,13 @@ struct Flags : ebmcodegen::Flags {
 struct Output : ebmcodegen::Output {
 #if __has_include("visitor/Output_before.hpp")
 #include "visitor/Output_before.hpp"
+#elif __has_include("visitor/dsl/Output_before_dsl.hpp")
+#include "visitor/dsl/Output_before_dsl.hpp"
 #endif
 #if __has_include("visitor/Output.hpp")
 #include "visitor/Output.hpp"
+#elif __has_include("visitor/dsl/Output_dsl.hpp")
+#include "visitor/dsl/Output_dsl.hpp"
 #elif __has_include("ebmcodegen/default_codegen_visitor/Output.hpp")
 #if __has_include("visitor/Output_pre_default.hpp")
 #include "visitor/Output_pre_default.hpp"
@@ -173,9 +197,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Result_before.hpp")
         #include "visitor/Result_before.hpp"
+        #elif __has_include("visitor/dsl/Result_before_dsl.hpp")
+        #include "visitor/dsl/Result_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Result.hpp")
         #include "visitor/Result.hpp"
+        #elif __has_include("visitor/dsl/Result_dsl.hpp")
+        #include "visitor/dsl/Result_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Result.hpp")
         #if __has_include("visitor/Result_pre_default.hpp")
         #include "visitor/Result_pre_default.hpp"
@@ -200,9 +228,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_BLOCK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -214,9 +246,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_validate_before.hpp")
         #include "visitor/Statement_BLOCK_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_validate.hpp")
         #include "visitor/Statement_BLOCK_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_pre_validate.hpp")
         #if __has_include("visitor/Statement_BLOCK_pre_validate_pre_default.hpp")
         #include "visitor/Statement_BLOCK_pre_validate_pre_default.hpp"
@@ -233,9 +269,13 @@ namespace ebm2python {
         auto& block = *in.body.block();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -247,9 +287,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_visit_before.hpp")
         #include "visitor/Statement_BLOCK_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BLOCK_pre_visit.hpp")
         #include "visitor/Statement_BLOCK_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_pre_visit.hpp")
         #if __has_include("visitor/Statement_BLOCK_pre_visit_pre_default.hpp")
         #include "visitor/Statement_BLOCK_pre_visit_pre_default.hpp"
@@ -271,9 +315,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -285,9 +333,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BLOCK_post_visit_before.hpp")
         #include "visitor/Statement_BLOCK_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BLOCK_post_visit.hpp")
         #include "visitor/Statement_BLOCK_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_BLOCK_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_BLOCK_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_post_visit.hpp")
         #if __has_include("visitor/Statement_BLOCK_post_visit_pre_default.hpp")
         #include "visitor/Statement_BLOCK_post_visit_pre_default.hpp"
@@ -314,9 +366,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ASSIGNMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -328,9 +384,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_pre_validate.hpp")
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_validate_pre_default.hpp"
@@ -355,9 +415,13 @@ namespace ebm2python {
         auto& value = *in.body.value();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -369,9 +433,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_pre_visit.hpp")
         #if __has_include("visitor/Statement_ASSIGNMENT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_pre_visit_pre_default.hpp"
@@ -393,9 +461,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -407,9 +479,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_post_visit_before.hpp")
         #include "visitor/Statement_ASSIGNMENT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSIGNMENT_post_visit.hpp")
         #include "visitor/Statement_ASSIGNMENT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSIGNMENT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT_post_visit.hpp")
         #if __has_include("visitor/Statement_ASSIGNMENT_post_visit_pre_default.hpp")
         #include "visitor/Statement_ASSIGNMENT_post_visit_pre_default.hpp"
@@ -436,9 +512,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_YIELD(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -450,9 +530,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_validate_before.hpp")
         #include "visitor/Statement_YIELD_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_validate.hpp")
         #include "visitor/Statement_YIELD_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_validate.hpp")
         #if __has_include("visitor/Statement_YIELD_pre_validate_pre_default.hpp")
         #include "visitor/Statement_YIELD_pre_validate_pre_default.hpp"
@@ -477,9 +561,13 @@ namespace ebm2python {
         auto& value = *in.body.value();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -491,9 +579,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_visit_before.hpp")
         #include "visitor/Statement_YIELD_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_YIELD_pre_visit.hpp")
         #include "visitor/Statement_YIELD_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_pre_visit.hpp")
         #if __has_include("visitor/Statement_YIELD_pre_visit_pre_default.hpp")
         #include "visitor/Statement_YIELD_pre_visit_pre_default.hpp"
@@ -515,9 +607,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -529,9 +625,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_YIELD_post_visit_before.hpp")
         #include "visitor/Statement_YIELD_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_YIELD_post_visit.hpp")
         #include "visitor/Statement_YIELD_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_YIELD_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_YIELD_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD_post_visit.hpp")
         #if __has_include("visitor/Statement_YIELD_post_visit_pre_default.hpp")
         #include "visitor/Statement_YIELD_post_visit_pre_default.hpp"
@@ -558,9 +658,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_APPEND(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -572,9 +676,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_validate_before.hpp")
         #include "visitor/Statement_APPEND_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_validate.hpp")
         #include "visitor/Statement_APPEND_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_pre_validate.hpp")
         #if __has_include("visitor/Statement_APPEND_pre_validate_pre_default.hpp")
         #include "visitor/Statement_APPEND_pre_validate_pre_default.hpp"
@@ -595,9 +703,13 @@ namespace ebm2python {
         auto& value = *in.body.value();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -609,9 +721,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_visit_before.hpp")
         #include "visitor/Statement_APPEND_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_APPEND_pre_visit.hpp")
         #include "visitor/Statement_APPEND_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_pre_visit.hpp")
         #if __has_include("visitor/Statement_APPEND_pre_visit_pre_default.hpp")
         #include "visitor/Statement_APPEND_pre_visit_pre_default.hpp"
@@ -633,9 +749,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -647,9 +767,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_APPEND_post_visit_before.hpp")
         #include "visitor/Statement_APPEND_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_APPEND_post_visit.hpp")
         #include "visitor/Statement_APPEND_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_APPEND_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_APPEND_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND_post_visit.hpp")
         #if __has_include("visitor/Statement_APPEND_post_visit_pre_default.hpp")
         #include "visitor/Statement_APPEND_post_visit_pre_default.hpp"
@@ -676,9 +800,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_RETURN(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -690,9 +818,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_validate_before.hpp")
         #include "visitor/Statement_RETURN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_validate.hpp")
         #include "visitor/Statement_RETURN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_pre_validate.hpp")
         #if __has_include("visitor/Statement_RETURN_pre_validate_pre_default.hpp")
         #include "visitor/Statement_RETURN_pre_validate_pre_default.hpp"
@@ -709,9 +841,13 @@ namespace ebm2python {
         auto& value = *in.body.value();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -723,9 +859,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_visit_before.hpp")
         #include "visitor/Statement_RETURN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_RETURN_pre_visit.hpp")
         #include "visitor/Statement_RETURN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_pre_visit.hpp")
         #if __has_include("visitor/Statement_RETURN_pre_visit_pre_default.hpp")
         #include "visitor/Statement_RETURN_pre_visit_pre_default.hpp"
@@ -747,9 +887,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -761,9 +905,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_RETURN_post_visit_before.hpp")
         #include "visitor/Statement_RETURN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_RETURN_post_visit.hpp")
         #include "visitor/Statement_RETURN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_RETURN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_RETURN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN_post_visit.hpp")
         #if __has_include("visitor/Statement_RETURN_post_visit_pre_default.hpp")
         #include "visitor/Statement_RETURN_post_visit_pre_default.hpp"
@@ -790,9 +938,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ERROR_RETURN(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -804,9 +956,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_pre_validate.hpp")
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_validate_pre_default.hpp"
@@ -823,9 +979,13 @@ namespace ebm2python {
         auto& value = *in.body.value();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -837,9 +997,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_pre_visit.hpp")
         #if __has_include("visitor/Statement_ERROR_RETURN_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_pre_visit_pre_default.hpp"
@@ -861,9 +1025,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -875,9 +1043,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_post_visit_before.hpp")
         #include "visitor/Statement_ERROR_RETURN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_RETURN_post_visit.hpp")
         #include "visitor/Statement_ERROR_RETURN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_RETURN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN_post_visit.hpp")
         #if __has_include("visitor/Statement_ERROR_RETURN_post_visit_pre_default.hpp")
         #include "visitor/Statement_ERROR_RETURN_post_visit_pre_default.hpp"
@@ -904,9 +1076,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ASSERT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -918,9 +1094,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_validate_before.hpp")
         #include "visitor/Statement_ASSERT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_validate.hpp")
         #include "visitor/Statement_ASSERT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_pre_validate.hpp")
         #if __has_include("visitor/Statement_ASSERT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ASSERT_pre_validate_pre_default.hpp"
@@ -937,9 +1117,13 @@ namespace ebm2python {
         auto& assert_desc = *in.body.assert_desc();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -951,9 +1135,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_visit_before.hpp")
         #include "visitor/Statement_ASSERT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSERT_pre_visit.hpp")
         #include "visitor/Statement_ASSERT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_pre_visit.hpp")
         #if __has_include("visitor/Statement_ASSERT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ASSERT_pre_visit_pre_default.hpp"
@@ -975,9 +1163,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -989,9 +1181,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ASSERT_post_visit_before.hpp")
         #include "visitor/Statement_ASSERT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ASSERT_post_visit.hpp")
         #include "visitor/Statement_ASSERT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ASSERT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ASSERT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT_post_visit.hpp")
         #if __has_include("visitor/Statement_ASSERT_post_visit_pre_default.hpp")
         #include "visitor/Statement_ASSERT_post_visit_pre_default.hpp"
@@ -1018,9 +1214,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_READ_DATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1032,9 +1232,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_validate_before.hpp")
         #include "visitor/Statement_READ_DATA_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_validate.hpp")
         #include "visitor/Statement_READ_DATA_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_pre_validate.hpp")
         #if __has_include("visitor/Statement_READ_DATA_pre_validate_pre_default.hpp")
         #include "visitor/Statement_READ_DATA_pre_validate_pre_default.hpp"
@@ -1051,9 +1255,13 @@ namespace ebm2python {
         auto& read_data = *in.body.read_data();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1065,9 +1273,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_visit_before.hpp")
         #include "visitor/Statement_READ_DATA_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_READ_DATA_pre_visit.hpp")
         #include "visitor/Statement_READ_DATA_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_pre_visit.hpp")
         #if __has_include("visitor/Statement_READ_DATA_pre_visit_pre_default.hpp")
         #include "visitor/Statement_READ_DATA_pre_visit_pre_default.hpp"
@@ -1089,9 +1301,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1103,9 +1319,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_READ_DATA_post_visit_before.hpp")
         #include "visitor/Statement_READ_DATA_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_READ_DATA_post_visit.hpp")
         #include "visitor/Statement_READ_DATA_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_READ_DATA_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_READ_DATA_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA_post_visit.hpp")
         #if __has_include("visitor/Statement_READ_DATA_post_visit_pre_default.hpp")
         #include "visitor/Statement_READ_DATA_post_visit_pre_default.hpp"
@@ -1132,9 +1352,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_WRITE_DATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1146,9 +1370,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_validate_before.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_validate.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_pre_validate.hpp")
         #if __has_include("visitor/Statement_WRITE_DATA_pre_validate_pre_default.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_validate_pre_default.hpp"
@@ -1165,9 +1393,13 @@ namespace ebm2python {
         auto& write_data = *in.body.write_data();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1179,9 +1411,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_visit_before.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_pre_visit.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_pre_visit.hpp")
         #if __has_include("visitor/Statement_WRITE_DATA_pre_visit_pre_default.hpp")
         #include "visitor/Statement_WRITE_DATA_pre_visit_pre_default.hpp"
@@ -1203,9 +1439,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1217,9 +1457,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_post_visit_before.hpp")
         #include "visitor/Statement_WRITE_DATA_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_WRITE_DATA_post_visit.hpp")
         #include "visitor/Statement_WRITE_DATA_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_WRITE_DATA_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_WRITE_DATA_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA_post_visit.hpp")
         #if __has_include("visitor/Statement_WRITE_DATA_post_visit_pre_default.hpp")
         #include "visitor/Statement_WRITE_DATA_post_visit_pre_default.hpp"
@@ -1246,9 +1490,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1260,9 +1508,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_validate.hpp")
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_pre_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_validate_pre_default.hpp"
@@ -1275,9 +1527,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1289,9 +1545,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_visit.hpp")
         #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_pre_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_pre_visit_pre_default.hpp"
@@ -1313,9 +1573,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1327,9 +1591,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_before.hpp")
         #include "visitor/Statement_SEEK_STREAM_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SEEK_STREAM_post_visit.hpp")
         #include "visitor/Statement_SEEK_STREAM_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_SEEK_STREAM_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_post_visit.hpp")
         #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_pre_default.hpp")
         #include "visitor/Statement_SEEK_STREAM_post_visit_pre_default.hpp"
@@ -1356,9 +1624,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_IF_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1370,9 +1642,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_pre_validate.hpp")
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_validate_pre_default.hpp"
@@ -1389,9 +1665,13 @@ namespace ebm2python {
         auto& if_statement = *in.body.if_statement();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1403,9 +1683,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_pre_visit.hpp")
         #if __has_include("visitor/Statement_IF_STATEMENT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_pre_visit_pre_default.hpp"
@@ -1427,9 +1711,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1441,9 +1729,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_IF_STATEMENT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IF_STATEMENT_post_visit.hpp")
         #include "visitor/Statement_IF_STATEMENT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_IF_STATEMENT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT_post_visit.hpp")
         #if __has_include("visitor/Statement_IF_STATEMENT_post_visit_pre_default.hpp")
         #include "visitor/Statement_IF_STATEMENT_post_visit_pre_default.hpp"
@@ -1470,9 +1762,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_LOOP_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1484,9 +1780,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_pre_validate.hpp")
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_validate_pre_default.hpp"
@@ -1503,9 +1803,13 @@ namespace ebm2python {
         auto& loop = *in.body.loop();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1517,9 +1821,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_pre_visit.hpp")
         #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_pre_visit_pre_default.hpp"
@@ -1541,9 +1849,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1555,9 +1867,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_LOOP_STATEMENT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT_post_visit.hpp")
         #if __has_include("visitor/Statement_LOOP_STATEMENT_post_visit_pre_default.hpp")
         #include "visitor/Statement_LOOP_STATEMENT_post_visit_pre_default.hpp"
@@ -1584,9 +1900,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_MATCH_STATEMENT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1598,9 +1918,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_pre_validate.hpp")
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_validate_pre_default.hpp"
@@ -1617,9 +1941,13 @@ namespace ebm2python {
         auto& match_statement = *in.body.match_statement();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1631,9 +1959,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_pre_visit.hpp")
         #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_pre_visit_pre_default.hpp"
@@ -1655,9 +1987,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1669,9 +2005,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit_before.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_STATEMENT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT_post_visit.hpp")
         #if __has_include("visitor/Statement_MATCH_STATEMENT_post_visit_pre_default.hpp")
         #include "visitor/Statement_MATCH_STATEMENT_post_visit_pre_default.hpp"
@@ -1698,9 +2038,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_MATCH_BRANCH(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1712,9 +2056,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_pre_validate.hpp")
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_validate_pre_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_validate_pre_default.hpp"
@@ -1731,9 +2079,13 @@ namespace ebm2python {
         auto& match_branch = *in.body.match_branch();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1745,9 +2097,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_pre_visit.hpp")
         #if __has_include("visitor/Statement_MATCH_BRANCH_pre_visit_pre_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_pre_visit_pre_default.hpp"
@@ -1769,9 +2125,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1783,9 +2143,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit_before.hpp")
         #include "visitor/Statement_MATCH_BRANCH_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit.hpp")
         #include "visitor/Statement_MATCH_BRANCH_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_MATCH_BRANCH_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH_post_visit.hpp")
         #if __has_include("visitor/Statement_MATCH_BRANCH_post_visit_pre_default.hpp")
         #include "visitor/Statement_MATCH_BRANCH_post_visit_pre_default.hpp"
@@ -1812,9 +2176,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_BREAK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1826,9 +2194,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_validate_before.hpp")
         #include "visitor/Statement_BREAK_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_validate.hpp")
         #include "visitor/Statement_BREAK_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_pre_validate.hpp")
         #if __has_include("visitor/Statement_BREAK_pre_validate_pre_default.hpp")
         #include "visitor/Statement_BREAK_pre_validate_pre_default.hpp"
@@ -1845,9 +2217,13 @@ namespace ebm2python {
         auto& break_ = *in.body.break_();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1859,9 +2235,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_visit_before.hpp")
         #include "visitor/Statement_BREAK_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BREAK_pre_visit.hpp")
         #include "visitor/Statement_BREAK_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_pre_visit.hpp")
         #if __has_include("visitor/Statement_BREAK_pre_visit_pre_default.hpp")
         #include "visitor/Statement_BREAK_pre_visit_pre_default.hpp"
@@ -1883,9 +2263,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -1897,9 +2281,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_BREAK_post_visit_before.hpp")
         #include "visitor/Statement_BREAK_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_BREAK_post_visit.hpp")
         #include "visitor/Statement_BREAK_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_BREAK_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_BREAK_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK_post_visit.hpp")
         #if __has_include("visitor/Statement_BREAK_post_visit_pre_default.hpp")
         #include "visitor/Statement_BREAK_post_visit_pre_default.hpp"
@@ -1926,9 +2314,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_CONTINUE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -1940,9 +2332,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_validate_before.hpp")
         #include "visitor/Statement_CONTINUE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_validate.hpp")
         #include "visitor/Statement_CONTINUE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_pre_validate.hpp")
         #if __has_include("visitor/Statement_CONTINUE_pre_validate_pre_default.hpp")
         #include "visitor/Statement_CONTINUE_pre_validate_pre_default.hpp"
@@ -1959,9 +2355,13 @@ namespace ebm2python {
         auto& continue_ = *in.body.continue_();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -1973,9 +2373,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_visit_before.hpp")
         #include "visitor/Statement_CONTINUE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_CONTINUE_pre_visit.hpp")
         #include "visitor/Statement_CONTINUE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_pre_visit.hpp")
         #if __has_include("visitor/Statement_CONTINUE_pre_visit_pre_default.hpp")
         #include "visitor/Statement_CONTINUE_pre_visit_pre_default.hpp"
@@ -1997,9 +2401,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2011,9 +2419,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_CONTINUE_post_visit_before.hpp")
         #include "visitor/Statement_CONTINUE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_CONTINUE_post_visit.hpp")
         #include "visitor/Statement_CONTINUE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_CONTINUE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_CONTINUE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE_post_visit.hpp")
         #if __has_include("visitor/Statement_CONTINUE_post_visit_pre_default.hpp")
         #include "visitor/Statement_CONTINUE_post_visit_pre_default.hpp"
@@ -2040,9 +2452,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_FUNCTION_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2054,9 +2470,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_validate_pre_default.hpp"
@@ -2073,9 +2493,13 @@ namespace ebm2python {
         auto& func_decl = *in.body.func_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2087,9 +2511,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_FUNCTION_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_pre_visit_pre_default.hpp"
@@ -2111,9 +2539,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2125,9 +2557,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit_before.hpp")
         #include "visitor/Statement_FUNCTION_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit.hpp")
         #include "visitor/Statement_FUNCTION_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_FUNCTION_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_FUNCTION_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_FUNCTION_DECL_post_visit_pre_default.hpp"
@@ -2154,9 +2590,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_VARIABLE_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2168,9 +2608,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_validate_pre_default.hpp"
@@ -2187,9 +2631,13 @@ namespace ebm2python {
         auto& var_decl = *in.body.var_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2201,9 +2649,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_VARIABLE_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_pre_visit_pre_default.hpp"
@@ -2225,9 +2677,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2239,9 +2695,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit_before.hpp")
         #include "visitor/Statement_VARIABLE_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit.hpp")
         #include "visitor/Statement_VARIABLE_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_VARIABLE_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_VARIABLE_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_VARIABLE_DECL_post_visit_pre_default.hpp"
@@ -2268,9 +2728,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_PARAMETER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2282,9 +2746,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_validate_pre_default.hpp"
@@ -2301,9 +2769,13 @@ namespace ebm2python {
         auto& param_decl = *in.body.param_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2315,9 +2787,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_PARAMETER_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_pre_visit_pre_default.hpp"
@@ -2339,9 +2815,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2353,9 +2833,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PARAMETER_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit.hpp")
         #include "visitor/Statement_PARAMETER_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PARAMETER_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_PARAMETER_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_PARAMETER_DECL_post_visit_pre_default.hpp"
@@ -2382,9 +2866,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2396,9 +2884,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_validate.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_FIELD_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_validate_pre_default.hpp"
@@ -2415,9 +2907,13 @@ namespace ebm2python {
         auto& field_decl = *in.body.field_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2429,9 +2925,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_pre_visit.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_FIELD_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_FIELD_DECL_pre_visit_pre_default.hpp"
@@ -2453,9 +2953,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2467,9 +2971,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_post_visit_before.hpp")
         #include "visitor/Statement_FIELD_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_FIELD_DECL_post_visit.hpp")
         #include "visitor/Statement_FIELD_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_FIELD_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_FIELD_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_FIELD_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_FIELD_DECL_post_visit_pre_default.hpp"
@@ -2496,9 +3004,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_COMPOSITE_FIELD_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2510,9 +3022,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_validate_pre_default.hpp"
@@ -2529,9 +3045,13 @@ namespace ebm2python {
         auto& composite_field_decl = *in.body.composite_field_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2543,9 +3063,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_visit_pre_default.hpp"
@@ -2567,9 +3091,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2581,9 +3109,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_COMPOSITE_FIELD_DECL_post_visit_pre_default.hpp"
@@ -2610,9 +3142,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ENUM_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2624,9 +3160,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_validate.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_ENUM_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_validate_pre_default.hpp"
@@ -2643,9 +3183,13 @@ namespace ebm2python {
         auto& enum_decl = *in.body.enum_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2657,9 +3201,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_pre_visit.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_ENUM_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ENUM_DECL_pre_visit_pre_default.hpp"
@@ -2681,9 +3229,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2695,9 +3247,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_post_visit_before.hpp")
         #include "visitor/Statement_ENUM_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_DECL_post_visit.hpp")
         #include "visitor/Statement_ENUM_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_ENUM_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_ENUM_DECL_post_visit_pre_default.hpp"
@@ -2724,9 +3280,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ENUM_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2738,9 +3298,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_validate_pre_default.hpp"
@@ -2757,9 +3321,13 @@ namespace ebm2python {
         auto& enum_member_decl = *in.body.enum_member_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2771,9 +3339,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_pre_visit_pre_default.hpp"
@@ -2795,9 +3367,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2809,9 +3385,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_ENUM_MEMBER_DECL_post_visit_pre_default.hpp"
@@ -2838,9 +3418,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_STRUCT_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2852,9 +3436,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_validate_pre_default.hpp"
@@ -2871,9 +3459,13 @@ namespace ebm2python {
         auto& struct_decl = *in.body.struct_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2885,9 +3477,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_STRUCT_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_pre_visit_pre_default.hpp"
@@ -2909,9 +3505,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -2923,9 +3523,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_post_visit_before.hpp")
         #include "visitor/Statement_STRUCT_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_STRUCT_DECL_post_visit.hpp")
         #include "visitor/Statement_STRUCT_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_STRUCT_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_STRUCT_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_STRUCT_DECL_post_visit_pre_default.hpp"
@@ -2952,9 +3556,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_UNION_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -2966,9 +3574,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_UNION_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_validate.hpp")
         #include "visitor/Statement_UNION_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_UNION_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_UNION_DECL_pre_validate_pre_default.hpp"
@@ -2981,9 +3593,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -2995,9 +3611,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_UNION_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_pre_visit.hpp")
         #include "visitor/Statement_UNION_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_UNION_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_UNION_DECL_pre_visit_pre_default.hpp"
@@ -3019,9 +3639,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3033,9 +3657,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_post_visit_before.hpp")
         #include "visitor/Statement_UNION_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_DECL_post_visit.hpp")
         #include "visitor/Statement_UNION_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_UNION_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_UNION_DECL_post_visit_pre_default.hpp"
@@ -3062,9 +3690,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_UNION_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3076,9 +3708,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_validate_pre_default.hpp"
@@ -3091,9 +3727,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3105,9 +3745,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_pre_visit_pre_default.hpp"
@@ -3129,9 +3773,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3143,9 +3791,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_UNION_MEMBER_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_UNION_MEMBER_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_UNION_MEMBER_DECL_post_visit_pre_default.hpp"
@@ -3172,9 +3824,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_PROGRAM_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3186,9 +3842,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_validate_pre_default.hpp"
@@ -3205,9 +3865,13 @@ namespace ebm2python {
         auto& block = *in.body.block();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3219,9 +3883,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_PROGRAM_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_pre_visit_pre_default.hpp"
@@ -3243,9 +3911,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3257,9 +3929,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROGRAM_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit.hpp")
         #include "visitor/Statement_PROGRAM_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROGRAM_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_PROGRAM_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_PROGRAM_DECL_post_visit_pre_default.hpp"
@@ -3286,9 +3962,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_PROPERTY_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3300,9 +3980,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_validate_pre_default.hpp"
@@ -3319,9 +4003,13 @@ namespace ebm2python {
         auto& property_decl = *in.body.property_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3333,9 +4021,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_PROPERTY_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_pre_visit_pre_default.hpp"
@@ -3357,9 +4049,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3371,9 +4067,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit.hpp")
         #include "visitor/Statement_PROPERTY_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_PROPERTY_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_DECL_post_visit_pre_default.hpp"
@@ -3400,9 +4100,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_PROPERTY_MEMBER_DECL(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3414,9 +4118,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate.hpp")
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_validate_pre_default.hpp"
@@ -3433,9 +4141,13 @@ namespace ebm2python {
         auto& property_member_decl = *in.body.property_member_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3447,9 +4159,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit.hpp")
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_visit_pre_default.hpp"
@@ -3471,9 +4187,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3485,9 +4205,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL_post_visit.hpp")
         #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_pre_default.hpp")
         #include "visitor/Statement_PROPERTY_MEMBER_DECL_post_visit_pre_default.hpp"
@@ -3514,9 +4238,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_METADATA(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3528,9 +4256,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_validate_before.hpp")
         #include "visitor/Statement_METADATA_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_validate.hpp")
         #include "visitor/Statement_METADATA_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_pre_validate.hpp")
         #if __has_include("visitor/Statement_METADATA_pre_validate_pre_default.hpp")
         #include "visitor/Statement_METADATA_pre_validate_pre_default.hpp"
@@ -3547,9 +4279,13 @@ namespace ebm2python {
         auto& metadata = *in.body.metadata();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3561,9 +4297,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_visit_before.hpp")
         #include "visitor/Statement_METADATA_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_METADATA_pre_visit.hpp")
         #include "visitor/Statement_METADATA_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_pre_visit.hpp")
         #if __has_include("visitor/Statement_METADATA_pre_visit_pre_default.hpp")
         #include "visitor/Statement_METADATA_pre_visit_pre_default.hpp"
@@ -3585,9 +4325,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3599,9 +4343,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_METADATA_post_visit_before.hpp")
         #include "visitor/Statement_METADATA_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_METADATA_post_visit.hpp")
         #include "visitor/Statement_METADATA_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_METADATA_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_METADATA_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA_post_visit.hpp")
         #if __has_include("visitor/Statement_METADATA_post_visit_pre_default.hpp")
         #include "visitor/Statement_METADATA_post_visit_pre_default.hpp"
@@ -3628,9 +4376,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_IMPORT_MODULE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3642,9 +4394,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_pre_validate.hpp")
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_validate_pre_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_validate_pre_default.hpp"
@@ -3661,9 +4417,13 @@ namespace ebm2python {
         auto& import_decl = *in.body.import_decl();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3675,9 +4435,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_pre_visit.hpp")
         #if __has_include("visitor/Statement_IMPORT_MODULE_pre_visit_pre_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_pre_visit_pre_default.hpp"
@@ -3699,9 +4463,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3713,9 +4481,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit_before.hpp")
         #include "visitor/Statement_IMPORT_MODULE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit.hpp")
         #include "visitor/Statement_IMPORT_MODULE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_IMPORT_MODULE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE_post_visit.hpp")
         #if __has_include("visitor/Statement_IMPORT_MODULE_post_visit_pre_default.hpp")
         #include "visitor/Statement_IMPORT_MODULE_post_visit_pre_default.hpp"
@@ -3742,9 +4514,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_EXPRESSION(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3756,9 +4532,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_validate_before.hpp")
         #include "visitor/Statement_EXPRESSION_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_validate.hpp")
         #include "visitor/Statement_EXPRESSION_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_pre_validate.hpp")
         #if __has_include("visitor/Statement_EXPRESSION_pre_validate_pre_default.hpp")
         #include "visitor/Statement_EXPRESSION_pre_validate_pre_default.hpp"
@@ -3775,9 +4555,13 @@ namespace ebm2python {
         auto& expression = *in.body.expression();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3789,9 +4573,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_visit_before.hpp")
         #include "visitor/Statement_EXPRESSION_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_pre_visit.hpp")
         #include "visitor/Statement_EXPRESSION_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_pre_visit.hpp")
         #if __has_include("visitor/Statement_EXPRESSION_pre_visit_pre_default.hpp")
         #include "visitor/Statement_EXPRESSION_pre_visit_pre_default.hpp"
@@ -3813,9 +4601,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3827,9 +4619,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_post_visit_before.hpp")
         #include "visitor/Statement_EXPRESSION_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_EXPRESSION_post_visit.hpp")
         #include "visitor/Statement_EXPRESSION_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_EXPRESSION_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_EXPRESSION_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION_post_visit.hpp")
         #if __has_include("visitor/Statement_EXPRESSION_post_visit_pre_default.hpp")
         #include "visitor/Statement_EXPRESSION_post_visit_pre_default.hpp"
@@ -3856,9 +4652,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ERROR_REPORT(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3870,9 +4670,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_pre_validate.hpp")
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_validate_pre_default.hpp"
@@ -3889,9 +4693,13 @@ namespace ebm2python {
         auto& error_report = *in.body.error_report();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -3903,9 +4711,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_pre_visit.hpp")
         #if __has_include("visitor/Statement_ERROR_REPORT_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_pre_visit_pre_default.hpp"
@@ -3927,9 +4739,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -3941,9 +4757,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_post_visit_before.hpp")
         #include "visitor/Statement_ERROR_REPORT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ERROR_REPORT_post_visit.hpp")
         #include "visitor/Statement_ERROR_REPORT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ERROR_REPORT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT_post_visit.hpp")
         #if __has_include("visitor/Statement_ERROR_REPORT_post_visit_pre_default.hpp")
         #include "visitor/Statement_ERROR_REPORT_post_visit_pre_default.hpp"
@@ -3970,9 +4790,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_LOWERED_IO_STATEMENTS(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -3984,9 +4808,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate.hpp")
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_pre_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_validate_pre_default.hpp"
@@ -4003,9 +4831,13 @@ namespace ebm2python {
         auto& lowered_io_statements = *in.body.lowered_io_statements();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -4017,9 +4849,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit.hpp")
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_pre_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_visit_pre_default.hpp"
@@ -4041,9 +4877,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -4055,9 +4895,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS_post_visit.hpp")
         #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_pre_default.hpp")
         #include "visitor/Statement_LOWERED_IO_STATEMENTS_post_visit_pre_default.hpp"
@@ -4084,9 +4928,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_SUB_BYTE_RANGE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -4098,9 +4946,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_validate.hpp")
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_validate_pre_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_validate_pre_default.hpp"
@@ -4117,9 +4969,13 @@ namespace ebm2python {
         auto& sub_byte_range = *in.body.sub_byte_range();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -4131,9 +4987,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_pre_visit.hpp")
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_visit_pre_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_pre_visit_pre_default.hpp"
@@ -4155,9 +5015,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -4169,9 +5033,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_SUB_BYTE_RANGE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE_post_visit.hpp")
         #if __has_include("visitor/Statement_SUB_BYTE_RANGE_post_visit_pre_default.hpp")
         #include "visitor/Statement_SUB_BYTE_RANGE_post_visit_pre_default.hpp"
@@ -4198,9 +5066,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_INIT_CHECK(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -4212,9 +5084,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_before.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_validate.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_validate.hpp")
         #if __has_include("visitor/Statement_INIT_CHECK_pre_validate_pre_default.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_validate_pre_default.hpp"
@@ -4231,9 +5107,13 @@ namespace ebm2python {
         auto& init_check = *in.body.init_check();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -4245,9 +5125,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_before.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_pre_visit.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_pre_visit.hpp")
         #if __has_include("visitor/Statement_INIT_CHECK_pre_visit_pre_default.hpp")
         #include "visitor/Statement_INIT_CHECK_pre_visit_pre_default.hpp"
@@ -4269,9 +5153,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -4283,9 +5171,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_post_visit_before.hpp")
         #include "visitor/Statement_INIT_CHECK_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_INIT_CHECK_post_visit.hpp")
         #include "visitor/Statement_INIT_CHECK_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_INIT_CHECK_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_INIT_CHECK_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK_post_visit.hpp")
         #if __has_include("visitor/Statement_INIT_CHECK_post_visit_pre_default.hpp")
         #include "visitor/Statement_INIT_CHECK_post_visit_pre_default.hpp"
@@ -4312,9 +5204,13 @@ namespace ebm2python {
     expected<Result> dispatch_Statement_ENDIAN_VARIABLE(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_pre_validate_before.hpp")
         #include "visitor/Statement_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_validate.hpp")
         #include "visitor/Statement_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
         #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
         #include "visitor/Statement_pre_validate_pre_default.hpp"
@@ -4326,9 +5222,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_pre_validate.hpp")
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_validate_pre_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_validate_pre_default.hpp"
@@ -4345,9 +5245,13 @@ namespace ebm2python {
         auto& endian_variable = *in.body.endian_variable();
         #if __has_include("visitor/Statement_pre_visit_before.hpp")
         #include "visitor/Statement_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_pre_visit.hpp")
         #include "visitor/Statement_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
         #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
         #include "visitor/Statement_pre_visit_pre_default.hpp"
@@ -4359,9 +5263,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_pre_visit.hpp")
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_visit_pre_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_pre_visit_pre_default.hpp"
@@ -4383,9 +5291,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Statement_post_visit_before.hpp")
         #include "visitor/Statement_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_post_visit.hpp")
         #include "visitor/Statement_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
         #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
         #include "visitor/Statement_post_visit_pre_default.hpp"
@@ -4397,9 +5309,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit_before.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Statement_ENDIAN_VARIABLE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE_post_visit.hpp")
         #if __has_include("visitor/Statement_ENDIAN_VARIABLE_post_visit_pre_default.hpp")
         #include "visitor/Statement_ENDIAN_VARIABLE_post_visit_pre_default.hpp"
@@ -4418,9 +5334,13 @@ namespace ebm2python {
     expected<Result> visit_Statement(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
         #if __has_include("visitor/Statement_dispatch_before.hpp")
         #include "visitor/Statement_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Statement_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Statement_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Statement_dispatch.hpp")
         #include "visitor/Statement_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Statement_dispatch_dsl.hpp")
+        #include "visitor/dsl/Statement_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_dispatch.hpp")
         #if __has_include("visitor/Statement_dispatch_pre_default.hpp")
         #include "visitor/Statement_dispatch_pre_default.hpp"
@@ -4516,13 +5436,22 @@ namespace ebm2python {
         MAYBE(elem, visitor.module_.get_statement(ref));
         return visit_Statement(visitor,elem,ref);
     }
+    // generic visitor for StatementRef
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::StatementRef& ref) {
+        return visit_Statement(visitor,ref);
+    }
     template<typename Visitor>
     expected<Result> visit_Block(Visitor&& visitor,const ebm::Block& in) {
         #if __has_include("visitor/Block_dispatch_before.hpp")
         #include "visitor/Block_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Block_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Block_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Block_dispatch.hpp")
         #include "visitor/Block_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Block_dispatch_dsl.hpp")
+        #include "visitor/dsl/Block_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Block_dispatch.hpp")
         #if __has_include("visitor/Block_dispatch_pre_default.hpp")
         #include "visitor/Block_dispatch_pre_default.hpp"
@@ -4543,6 +5472,11 @@ namespace ebm2python {
         return w;
         #endif
     }
+    // generic visitor for Block
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::Block& in) {
+        return visit_Block(visitor,in);
+    }
     template<typename Visitor>
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref = {});
     template<typename Visitor>
@@ -4557,9 +5491,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_INT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -4571,9 +5509,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_validate_pre_default.hpp"
@@ -4591,9 +5533,13 @@ namespace ebm2python {
         auto& int_value = *in.body.int_value();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -4605,9 +5551,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT_pre_visit_pre_default.hpp"
@@ -4629,9 +5579,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -4643,9 +5597,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT_post_visit.hpp")
         #include "visitor/Expression_LITERAL_INT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT_post_visit_pre_default.hpp"
@@ -4672,9 +5630,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_INT64(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -4686,9 +5648,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_validate_pre_default.hpp"
@@ -4706,9 +5672,13 @@ namespace ebm2python {
         auto& int64_value = *in.body.int64_value();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -4720,9 +5690,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT64_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_pre_visit_pre_default.hpp"
@@ -4744,9 +5718,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -4758,9 +5736,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_INT64_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_INT64_post_visit.hpp")
         #include "visitor/Expression_LITERAL_INT64_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_INT64_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_INT64_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_INT64_post_visit_pre_default.hpp"
@@ -4787,9 +5769,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_BOOL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -4801,9 +5787,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_validate_pre_default.hpp"
@@ -4821,9 +5811,13 @@ namespace ebm2python {
         auto& bool_value = *in.body.bool_value();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -4835,9 +5829,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_BOOL_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_pre_visit_pre_default.hpp"
@@ -4859,9 +5857,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -4873,9 +5875,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_BOOL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit.hpp")
         #include "visitor/Expression_LITERAL_BOOL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_BOOL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_BOOL_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_BOOL_post_visit_pre_default.hpp"
@@ -4902,9 +5908,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_STRING(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -4916,9 +5926,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_validate_pre_default.hpp"
@@ -4936,9 +5950,13 @@ namespace ebm2python {
         auto& string_value = *in.body.string_value();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -4950,9 +5968,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_STRING_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_pre_visit_pre_default.hpp"
@@ -4974,9 +5996,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -4988,9 +6014,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_STRING_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_STRING_post_visit.hpp")
         #include "visitor/Expression_LITERAL_STRING_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_STRING_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_STRING_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_STRING_post_visit_pre_default.hpp"
@@ -5017,9 +6047,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_TYPE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5031,9 +6065,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_validate_pre_default.hpp"
@@ -5051,9 +6089,13 @@ namespace ebm2python {
         auto& type_ref = *in.body.type_ref();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5065,9 +6107,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_TYPE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_pre_visit_pre_default.hpp"
@@ -5089,9 +6135,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5103,9 +6153,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_TYPE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit.hpp")
         #include "visitor/Expression_LITERAL_TYPE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_TYPE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_TYPE_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_TYPE_post_visit_pre_default.hpp"
@@ -5132,9 +6186,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_LITERAL_CHAR(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5146,9 +6204,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_pre_validate.hpp")
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_validate_pre_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_validate_pre_default.hpp"
@@ -5166,9 +6228,13 @@ namespace ebm2python {
         auto& char_value = *in.body.char_value();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5180,9 +6246,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_pre_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_CHAR_pre_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_pre_visit_pre_default.hpp"
@@ -5204,9 +6274,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5218,9 +6292,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit_before.hpp")
         #include "visitor/Expression_LITERAL_CHAR_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit.hpp")
         #include "visitor/Expression_LITERAL_CHAR_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_LITERAL_CHAR_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR_post_visit.hpp")
         #if __has_include("visitor/Expression_LITERAL_CHAR_post_visit_pre_default.hpp")
         #include "visitor/Expression_LITERAL_CHAR_post_visit_pre_default.hpp"
@@ -5247,9 +6325,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_IDENTIFIER(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5261,9 +6343,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_validate_before.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_validate.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_pre_validate.hpp")
         #if __has_include("visitor/Expression_IDENTIFIER_pre_validate_pre_default.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_validate_pre_default.hpp"
@@ -5281,9 +6367,13 @@ namespace ebm2python {
         auto& id = *in.body.id();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5295,9 +6385,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_visit_before.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_pre_visit.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_pre_visit.hpp")
         #if __has_include("visitor/Expression_IDENTIFIER_pre_visit_pre_default.hpp")
         #include "visitor/Expression_IDENTIFIER_pre_visit_pre_default.hpp"
@@ -5319,9 +6413,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5333,9 +6431,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_post_visit_before.hpp")
         #include "visitor/Expression_IDENTIFIER_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IDENTIFIER_post_visit.hpp")
         #include "visitor/Expression_IDENTIFIER_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IDENTIFIER_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IDENTIFIER_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER_post_visit.hpp")
         #if __has_include("visitor/Expression_IDENTIFIER_post_visit_pre_default.hpp")
         #include "visitor/Expression_IDENTIFIER_post_visit_pre_default.hpp"
@@ -5362,9 +6464,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_BINARY_OP(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5376,9 +6482,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_validate_before.hpp")
         #include "visitor/Expression_BINARY_OP_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_validate.hpp")
         #include "visitor/Expression_BINARY_OP_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_pre_validate.hpp")
         #if __has_include("visitor/Expression_BINARY_OP_pre_validate_pre_default.hpp")
         #include "visitor/Expression_BINARY_OP_pre_validate_pre_default.hpp"
@@ -5404,9 +6514,13 @@ namespace ebm2python {
         auto& right = *in.body.right();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5418,9 +6532,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_visit_before.hpp")
         #include "visitor/Expression_BINARY_OP_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_pre_visit.hpp")
         #include "visitor/Expression_BINARY_OP_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_pre_visit.hpp")
         #if __has_include("visitor/Expression_BINARY_OP_pre_visit_pre_default.hpp")
         #include "visitor/Expression_BINARY_OP_pre_visit_pre_default.hpp"
@@ -5442,9 +6560,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5456,9 +6578,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_post_visit_before.hpp")
         #include "visitor/Expression_BINARY_OP_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_BINARY_OP_post_visit.hpp")
         #include "visitor/Expression_BINARY_OP_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_BINARY_OP_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_BINARY_OP_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP_post_visit.hpp")
         #if __has_include("visitor/Expression_BINARY_OP_post_visit_pre_default.hpp")
         #include "visitor/Expression_BINARY_OP_post_visit_pre_default.hpp"
@@ -5485,9 +6611,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_UNARY_OP(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5499,9 +6629,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_validate_before.hpp")
         #include "visitor/Expression_UNARY_OP_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_validate.hpp")
         #include "visitor/Expression_UNARY_OP_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_pre_validate.hpp")
         #if __has_include("visitor/Expression_UNARY_OP_pre_validate_pre_default.hpp")
         #include "visitor/Expression_UNARY_OP_pre_validate_pre_default.hpp"
@@ -5523,9 +6657,13 @@ namespace ebm2python {
         auto& uop = *in.body.uop();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5537,9 +6675,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_visit_before.hpp")
         #include "visitor/Expression_UNARY_OP_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_pre_visit.hpp")
         #include "visitor/Expression_UNARY_OP_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_pre_visit.hpp")
         #if __has_include("visitor/Expression_UNARY_OP_pre_visit_pre_default.hpp")
         #include "visitor/Expression_UNARY_OP_pre_visit_pre_default.hpp"
@@ -5561,9 +6703,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5575,9 +6721,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_post_visit_before.hpp")
         #include "visitor/Expression_UNARY_OP_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_UNARY_OP_post_visit.hpp")
         #include "visitor/Expression_UNARY_OP_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_UNARY_OP_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_UNARY_OP_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP_post_visit.hpp")
         #if __has_include("visitor/Expression_UNARY_OP_post_visit_pre_default.hpp")
         #include "visitor/Expression_UNARY_OP_post_visit_pre_default.hpp"
@@ -5604,9 +6754,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_CALL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5618,9 +6772,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CALL_pre_validate_before.hpp")
         #include "visitor/Expression_CALL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CALL_pre_validate.hpp")
         #include "visitor/Expression_CALL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_pre_validate.hpp")
         #if __has_include("visitor/Expression_CALL_pre_validate_pre_default.hpp")
         #include "visitor/Expression_CALL_pre_validate_pre_default.hpp"
@@ -5638,9 +6796,13 @@ namespace ebm2python {
         auto& call_desc = *in.body.call_desc();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5652,9 +6814,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CALL_pre_visit_before.hpp")
         #include "visitor/Expression_CALL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CALL_pre_visit.hpp")
         #include "visitor/Expression_CALL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_pre_visit.hpp")
         #if __has_include("visitor/Expression_CALL_pre_visit_pre_default.hpp")
         #include "visitor/Expression_CALL_pre_visit_pre_default.hpp"
@@ -5676,9 +6842,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5690,9 +6860,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CALL_post_visit_before.hpp")
         #include "visitor/Expression_CALL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CALL_post_visit.hpp")
         #include "visitor/Expression_CALL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CALL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CALL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL_post_visit.hpp")
         #if __has_include("visitor/Expression_CALL_post_visit_pre_default.hpp")
         #include "visitor/Expression_CALL_post_visit_pre_default.hpp"
@@ -5719,9 +6893,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_INDEX_ACCESS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5733,9 +6911,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_pre_validate.hpp")
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_validate_pre_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_validate_pre_default.hpp"
@@ -5757,9 +6939,13 @@ namespace ebm2python {
         auto& index = *in.body.index();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5771,9 +6957,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_pre_visit.hpp")
         #if __has_include("visitor/Expression_INDEX_ACCESS_pre_visit_pre_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_pre_visit_pre_default.hpp"
@@ -5795,9 +6985,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5809,9 +7003,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit_before.hpp")
         #include "visitor/Expression_INDEX_ACCESS_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit.hpp")
         #include "visitor/Expression_INDEX_ACCESS_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_INDEX_ACCESS_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS_post_visit.hpp")
         #if __has_include("visitor/Expression_INDEX_ACCESS_post_visit_pre_default.hpp")
         #include "visitor/Expression_INDEX_ACCESS_post_visit_pre_default.hpp"
@@ -5838,9 +7036,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_MEMBER_ACCESS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5852,9 +7054,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_pre_validate.hpp")
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_validate_pre_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_validate_pre_default.hpp"
@@ -5876,9 +7082,13 @@ namespace ebm2python {
         auto& member = *in.body.member();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -5890,9 +7100,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_pre_visit.hpp")
         #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_visit_pre_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_pre_visit_pre_default.hpp"
@@ -5914,9 +7128,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -5928,9 +7146,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit_before.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_MEMBER_ACCESS_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS_post_visit.hpp")
         #if __has_include("visitor/Expression_MEMBER_ACCESS_post_visit_pre_default.hpp")
         #include "visitor/Expression_MEMBER_ACCESS_post_visit_pre_default.hpp"
@@ -5957,9 +7179,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_ENUM_MEMBER(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -5971,9 +7197,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_pre_validate.hpp")
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_validate_pre_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_validate_pre_default.hpp"
@@ -5995,9 +7225,13 @@ namespace ebm2python {
         auto& member = *in.body.member();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6009,9 +7243,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_pre_visit.hpp")
         #if __has_include("visitor/Expression_ENUM_MEMBER_pre_visit_pre_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_pre_visit_pre_default.hpp"
@@ -6033,9 +7271,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6047,9 +7289,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit_before.hpp")
         #include "visitor/Expression_ENUM_MEMBER_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit.hpp")
         #include "visitor/Expression_ENUM_MEMBER_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_MEMBER_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER_post_visit.hpp")
         #if __has_include("visitor/Expression_ENUM_MEMBER_post_visit_pre_default.hpp")
         #include "visitor/Expression_ENUM_MEMBER_post_visit_pre_default.hpp"
@@ -6076,9 +7322,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_TYPE_CAST(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6090,9 +7340,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_validate_before.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_validate.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_pre_validate.hpp")
         #if __has_include("visitor/Expression_TYPE_CAST_pre_validate_pre_default.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_validate_pre_default.hpp"
@@ -6118,9 +7372,13 @@ namespace ebm2python {
         auto& source_expr = *in.body.source_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6132,9 +7390,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_visit_before.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_pre_visit.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_pre_visit.hpp")
         #if __has_include("visitor/Expression_TYPE_CAST_pre_visit_pre_default.hpp")
         #include "visitor/Expression_TYPE_CAST_pre_visit_pre_default.hpp"
@@ -6156,9 +7418,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6170,9 +7436,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_post_visit_before.hpp")
         #include "visitor/Expression_TYPE_CAST_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_TYPE_CAST_post_visit.hpp")
         #include "visitor/Expression_TYPE_CAST_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_TYPE_CAST_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_TYPE_CAST_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST_post_visit.hpp")
         #if __has_include("visitor/Expression_TYPE_CAST_post_visit_pre_default.hpp")
         #include "visitor/Expression_TYPE_CAST_post_visit_pre_default.hpp"
@@ -6199,9 +7469,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_RANGE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6213,9 +7487,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_validate_before.hpp")
         #include "visitor/Expression_RANGE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_validate.hpp")
         #include "visitor/Expression_RANGE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_pre_validate.hpp")
         #if __has_include("visitor/Expression_RANGE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_RANGE_pre_validate_pre_default.hpp"
@@ -6237,9 +7515,13 @@ namespace ebm2python {
         auto& start = *in.body.start();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6251,9 +7533,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_visit_before.hpp")
         #include "visitor/Expression_RANGE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_RANGE_pre_visit.hpp")
         #include "visitor/Expression_RANGE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_pre_visit.hpp")
         #if __has_include("visitor/Expression_RANGE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_RANGE_pre_visit_pre_default.hpp"
@@ -6275,9 +7561,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6289,9 +7579,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_RANGE_post_visit_before.hpp")
         #include "visitor/Expression_RANGE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_RANGE_post_visit.hpp")
         #include "visitor/Expression_RANGE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_RANGE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_RANGE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE_post_visit.hpp")
         #if __has_include("visitor/Expression_RANGE_post_visit_pre_default.hpp")
         #include "visitor/Expression_RANGE_post_visit_pre_default.hpp"
@@ -6318,9 +7612,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_DEFAULT_VALUE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6332,9 +7630,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_pre_validate.hpp")
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_validate_pre_default.hpp"
@@ -6348,9 +7650,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6362,9 +7668,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_pre_visit.hpp")
         #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_pre_visit_pre_default.hpp"
@@ -6386,9 +7696,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6400,9 +7714,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit_before.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_DEFAULT_VALUE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE_post_visit.hpp")
         #if __has_include("visitor/Expression_DEFAULT_VALUE_post_visit_pre_default.hpp")
         #include "visitor/Expression_DEFAULT_VALUE_post_visit_pre_default.hpp"
@@ -6429,9 +7747,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_IS_LITTLE_ENDIAN(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6443,9 +7765,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_pre_validate.hpp")
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_pre_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_validate_pre_default.hpp"
@@ -6463,9 +7789,13 @@ namespace ebm2python {
         auto& endian_expr = *in.body.endian_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6477,9 +7807,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_pre_visit.hpp")
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_pre_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_visit_pre_default.hpp"
@@ -6501,9 +7835,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6515,9 +7853,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit_before.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN_post_visit.hpp")
         #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_post_visit_pre_default.hpp")
         #include "visitor/Expression_IS_LITTLE_ENDIAN_post_visit_pre_default.hpp"
@@ -6544,9 +7886,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_GET_STREAM_OFFSET(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6558,9 +7904,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_pre_validate.hpp")
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_validate_pre_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_validate_pre_default.hpp"
@@ -6582,9 +7932,13 @@ namespace ebm2python {
         auto& unit = *in.body.unit();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6596,9 +7950,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_pre_visit.hpp")
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_visit_pre_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_pre_visit_pre_default.hpp"
@@ -6620,9 +7978,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6634,9 +7996,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit_before.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_STREAM_OFFSET_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET_post_visit.hpp")
         #if __has_include("visitor/Expression_GET_STREAM_OFFSET_post_visit_pre_default.hpp")
         #include "visitor/Expression_GET_STREAM_OFFSET_post_visit_pre_default.hpp"
@@ -6663,9 +8029,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_GET_REMAINING_BYTES(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6677,9 +8047,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_pre_validate.hpp")
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_validate_pre_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_validate_pre_default.hpp"
@@ -6697,9 +8071,13 @@ namespace ebm2python {
         auto& stream_type = *in.body.stream_type();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6711,9 +8089,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_pre_visit.hpp")
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_visit_pre_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_pre_visit_pre_default.hpp"
@@ -6735,9 +8117,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6749,9 +8135,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit_before.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_GET_REMAINING_BYTES_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES_post_visit.hpp")
         #if __has_include("visitor/Expression_GET_REMAINING_BYTES_post_visit_pre_default.hpp")
         #include "visitor/Expression_GET_REMAINING_BYTES_post_visit_pre_default.hpp"
@@ -6778,9 +8168,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_CAN_READ_STREAM(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6792,9 +8186,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_pre_validate.hpp")
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_validate_pre_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_validate_pre_default.hpp"
@@ -6820,9 +8218,13 @@ namespace ebm2python {
         auto& stream_type = *in.body.stream_type();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6834,9 +8236,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_pre_visit.hpp")
         #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_visit_pre_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_pre_visit_pre_default.hpp"
@@ -6858,9 +8264,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6872,9 +8282,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit_before.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CAN_READ_STREAM_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM_post_visit.hpp")
         #if __has_include("visitor/Expression_CAN_READ_STREAM_post_visit_pre_default.hpp")
         #include "visitor/Expression_CAN_READ_STREAM_post_visit_pre_default.hpp"
@@ -6901,9 +8315,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_ARRAY_SIZE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -6915,9 +8333,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_pre_validate.hpp")
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_validate_pre_default.hpp"
@@ -6935,9 +8357,13 @@ namespace ebm2python {
         auto& array_expr = *in.body.array_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -6949,9 +8375,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_pre_visit.hpp")
         #if __has_include("visitor/Expression_ARRAY_SIZE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_pre_visit_pre_default.hpp"
@@ -6973,9 +8403,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -6987,9 +8421,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit_before.hpp")
         #include "visitor/Expression_ARRAY_SIZE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit.hpp")
         #include "visitor/Expression_ARRAY_SIZE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ARRAY_SIZE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE_post_visit.hpp")
         #if __has_include("visitor/Expression_ARRAY_SIZE_post_visit_pre_default.hpp")
         #include "visitor/Expression_ARRAY_SIZE_post_visit_pre_default.hpp"
@@ -7016,9 +8454,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_ENUM_IS_DEFINED(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7030,9 +8472,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_validate.hpp")
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_validate_pre_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_validate_pre_default.hpp"
@@ -7054,9 +8500,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7068,9 +8518,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_pre_visit.hpp")
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_visit_pre_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_pre_visit_pre_default.hpp"
@@ -7092,9 +8546,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7106,9 +8564,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ENUM_IS_DEFINED_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED_post_visit.hpp")
         #if __has_include("visitor/Expression_ENUM_IS_DEFINED_post_visit_pre_default.hpp")
         #include "visitor/Expression_ENUM_IS_DEFINED_post_visit_pre_default.hpp"
@@ -7135,9 +8597,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_IS_ERROR(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7149,9 +8615,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_validate_before.hpp")
         #include "visitor/Expression_IS_ERROR_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_validate.hpp")
         #include "visitor/Expression_IS_ERROR_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_pre_validate.hpp")
         #if __has_include("visitor/Expression_IS_ERROR_pre_validate_pre_default.hpp")
         #include "visitor/Expression_IS_ERROR_pre_validate_pre_default.hpp"
@@ -7169,9 +8639,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7183,9 +8657,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_visit_before.hpp")
         #include "visitor/Expression_IS_ERROR_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_pre_visit.hpp")
         #include "visitor/Expression_IS_ERROR_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_pre_visit.hpp")
         #if __has_include("visitor/Expression_IS_ERROR_pre_visit_pre_default.hpp")
         #include "visitor/Expression_IS_ERROR_pre_visit_pre_default.hpp"
@@ -7207,9 +8685,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7221,9 +8703,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_post_visit_before.hpp")
         #include "visitor/Expression_IS_ERROR_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_IS_ERROR_post_visit.hpp")
         #include "visitor/Expression_IS_ERROR_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_IS_ERROR_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_IS_ERROR_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR_post_visit.hpp")
         #if __has_include("visitor/Expression_IS_ERROR_post_visit_pre_default.hpp")
         #include "visitor/Expression_IS_ERROR_post_visit_pre_default.hpp"
@@ -7250,9 +8736,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_MAX_VALUE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7264,9 +8754,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_validate_before.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_validate.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_pre_validate.hpp")
         #if __has_include("visitor/Expression_MAX_VALUE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_validate_pre_default.hpp"
@@ -7284,9 +8778,13 @@ namespace ebm2python {
         auto& lowered_expr = *in.body.lowered_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7298,9 +8796,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_visit_before.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_pre_visit.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_pre_visit.hpp")
         #if __has_include("visitor/Expression_MAX_VALUE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_MAX_VALUE_pre_visit_pre_default.hpp"
@@ -7322,9 +8824,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7336,9 +8842,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_post_visit_before.hpp")
         #include "visitor/Expression_MAX_VALUE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_MAX_VALUE_post_visit.hpp")
         #include "visitor/Expression_MAX_VALUE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_MAX_VALUE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_MAX_VALUE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE_post_visit.hpp")
         #if __has_include("visitor/Expression_MAX_VALUE_post_visit_pre_default.hpp")
         #include "visitor/Expression_MAX_VALUE_post_visit_pre_default.hpp"
@@ -7365,9 +8875,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_READ_DATA(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7379,9 +8893,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_validate_before.hpp")
         #include "visitor/Expression_READ_DATA_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_validate.hpp")
         #include "visitor/Expression_READ_DATA_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_pre_validate.hpp")
         #if __has_include("visitor/Expression_READ_DATA_pre_validate_pre_default.hpp")
         #include "visitor/Expression_READ_DATA_pre_validate_pre_default.hpp"
@@ -7403,9 +8921,13 @@ namespace ebm2python {
         auto& target_stmt = *in.body.target_stmt();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7417,9 +8939,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_visit_before.hpp")
         #include "visitor/Expression_READ_DATA_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_READ_DATA_pre_visit.hpp")
         #include "visitor/Expression_READ_DATA_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_pre_visit.hpp")
         #if __has_include("visitor/Expression_READ_DATA_pre_visit_pre_default.hpp")
         #include "visitor/Expression_READ_DATA_pre_visit_pre_default.hpp"
@@ -7441,9 +8967,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7455,9 +8985,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_READ_DATA_post_visit_before.hpp")
         #include "visitor/Expression_READ_DATA_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_READ_DATA_post_visit.hpp")
         #include "visitor/Expression_READ_DATA_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_READ_DATA_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_READ_DATA_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA_post_visit.hpp")
         #if __has_include("visitor/Expression_READ_DATA_post_visit_pre_default.hpp")
         #include "visitor/Expression_READ_DATA_post_visit_pre_default.hpp"
@@ -7484,9 +9018,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_WRITE_DATA(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7498,9 +9036,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_validate_before.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_validate.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_pre_validate.hpp")
         #if __has_include("visitor/Expression_WRITE_DATA_pre_validate_pre_default.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_validate_pre_default.hpp"
@@ -7522,9 +9064,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7536,9 +9082,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_visit_before.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_pre_visit.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_pre_visit.hpp")
         #if __has_include("visitor/Expression_WRITE_DATA_pre_visit_pre_default.hpp")
         #include "visitor/Expression_WRITE_DATA_pre_visit_pre_default.hpp"
@@ -7560,9 +9110,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7574,9 +9128,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_post_visit_before.hpp")
         #include "visitor/Expression_WRITE_DATA_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_WRITE_DATA_post_visit.hpp")
         #include "visitor/Expression_WRITE_DATA_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_WRITE_DATA_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_WRITE_DATA_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA_post_visit.hpp")
         #if __has_include("visitor/Expression_WRITE_DATA_post_visit_pre_default.hpp")
         #include "visitor/Expression_WRITE_DATA_post_visit_pre_default.hpp"
@@ -7603,9 +9161,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_CONDITIONAL_STATEMENT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7617,9 +9179,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_pre_validate.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_validate_pre_default.hpp"
@@ -7641,9 +9207,13 @@ namespace ebm2python {
         auto& target_stmt = *in.body.target_stmt();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7655,9 +9225,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_pre_visit.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_visit_pre_default.hpp"
@@ -7679,9 +9253,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7693,9 +9271,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT_post_visit.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_post_visit_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_STATEMENT_post_visit_pre_default.hpp"
@@ -7722,9 +9304,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_CONDITIONAL(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7736,9 +9322,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_before.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_validate.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_validate.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_pre_validate_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_validate_pre_default.hpp"
@@ -7768,9 +9358,13 @@ namespace ebm2python {
         auto& then = *in.body.then();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7782,9 +9376,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_pre_visit.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_pre_visit.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_pre_visit_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_pre_visit_pre_default.hpp"
@@ -7806,9 +9404,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7820,9 +9422,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_post_visit_before.hpp")
         #include "visitor/Expression_CONDITIONAL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_CONDITIONAL_post_visit.hpp")
         #include "visitor/Expression_CONDITIONAL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_CONDITIONAL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_CONDITIONAL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_post_visit.hpp")
         #if __has_include("visitor/Expression_CONDITIONAL_post_visit_pre_default.hpp")
         #include "visitor/Expression_CONDITIONAL_post_visit_pre_default.hpp"
@@ -7849,9 +9455,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_AVAILABLE(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7863,9 +9473,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_validate_before.hpp")
         #include "visitor/Expression_AVAILABLE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_validate.hpp")
         #include "visitor/Expression_AVAILABLE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_validate.hpp")
         #if __has_include("visitor/Expression_AVAILABLE_pre_validate_pre_default.hpp")
         #include "visitor/Expression_AVAILABLE_pre_validate_pre_default.hpp"
@@ -7887,9 +9501,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -7901,9 +9519,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_visit_before.hpp")
         #include "visitor/Expression_AVAILABLE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_pre_visit.hpp")
         #include "visitor/Expression_AVAILABLE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_pre_visit.hpp")
         #if __has_include("visitor/Expression_AVAILABLE_pre_visit_pre_default.hpp")
         #include "visitor/Expression_AVAILABLE_pre_visit_pre_default.hpp"
@@ -7925,9 +9547,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -7939,9 +9565,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_post_visit_before.hpp")
         #include "visitor/Expression_AVAILABLE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_AVAILABLE_post_visit.hpp")
         #include "visitor/Expression_AVAILABLE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_AVAILABLE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_AVAILABLE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE_post_visit.hpp")
         #if __has_include("visitor/Expression_AVAILABLE_post_visit_pre_default.hpp")
         #include "visitor/Expression_AVAILABLE_post_visit_pre_default.hpp"
@@ -7968,9 +9598,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_SIZEOF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -7982,9 +9616,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_validate_before.hpp")
         #include "visitor/Expression_SIZEOF_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_validate.hpp")
         #include "visitor/Expression_SIZEOF_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_validate.hpp")
         #if __has_include("visitor/Expression_SIZEOF_pre_validate_pre_default.hpp")
         #include "visitor/Expression_SIZEOF_pre_validate_pre_default.hpp"
@@ -8006,9 +9644,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8020,9 +9662,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_visit_before.hpp")
         #include "visitor/Expression_SIZEOF_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SIZEOF_pre_visit.hpp")
         #include "visitor/Expression_SIZEOF_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_pre_visit.hpp")
         #if __has_include("visitor/Expression_SIZEOF_pre_visit_pre_default.hpp")
         #include "visitor/Expression_SIZEOF_pre_visit_pre_default.hpp"
@@ -8044,9 +9690,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8058,9 +9708,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SIZEOF_post_visit_before.hpp")
         #include "visitor/Expression_SIZEOF_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SIZEOF_post_visit.hpp")
         #include "visitor/Expression_SIZEOF_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SIZEOF_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SIZEOF_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF_post_visit.hpp")
         #if __has_include("visitor/Expression_SIZEOF_post_visit_pre_default.hpp")
         #include "visitor/Expression_SIZEOF_post_visit_pre_default.hpp"
@@ -8087,9 +9741,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_SUB_RANGE_INIT(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8101,9 +9759,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_validate.hpp")
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_validate_pre_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_validate_pre_default.hpp"
@@ -8121,9 +9783,13 @@ namespace ebm2python {
         auto& sub_range = *in.body.sub_range();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8135,9 +9801,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_pre_visit.hpp")
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_visit_pre_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_pre_visit_pre_default.hpp"
@@ -8159,9 +9829,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8173,9 +9847,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SUB_RANGE_INIT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT_post_visit.hpp")
         #if __has_include("visitor/Expression_SUB_RANGE_INIT_post_visit_pre_default.hpp")
         #include "visitor/Expression_SUB_RANGE_INIT_post_visit_pre_default.hpp"
@@ -8202,9 +9880,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_OR_COND(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8216,9 +9898,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_validate_before.hpp")
         #include "visitor/Expression_OR_COND_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_validate.hpp")
         #include "visitor/Expression_OR_COND_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_validate.hpp")
         #if __has_include("visitor/Expression_OR_COND_pre_validate_pre_default.hpp")
         #include "visitor/Expression_OR_COND_pre_validate_pre_default.hpp"
@@ -8236,9 +9922,13 @@ namespace ebm2python {
         auto& or_cond = *in.body.or_cond();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8250,9 +9940,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_visit_before.hpp")
         #include "visitor/Expression_OR_COND_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OR_COND_pre_visit.hpp")
         #include "visitor/Expression_OR_COND_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_pre_visit.hpp")
         #if __has_include("visitor/Expression_OR_COND_pre_visit_pre_default.hpp")
         #include "visitor/Expression_OR_COND_pre_visit_pre_default.hpp"
@@ -8274,9 +9968,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8288,9 +9986,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OR_COND_post_visit_before.hpp")
         #include "visitor/Expression_OR_COND_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OR_COND_post_visit.hpp")
         #include "visitor/Expression_OR_COND_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_OR_COND_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_OR_COND_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND_post_visit.hpp")
         #if __has_include("visitor/Expression_OR_COND_post_visit_pre_default.hpp")
         #include "visitor/Expression_OR_COND_post_visit_pre_default.hpp"
@@ -8317,9 +10019,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_ADDRESS_OF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8331,9 +10037,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_pre_validate.hpp")
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_validate_pre_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_validate_pre_default.hpp"
@@ -8351,9 +10061,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8365,9 +10079,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_pre_visit.hpp")
         #if __has_include("visitor/Expression_ADDRESS_OF_pre_visit_pre_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_pre_visit_pre_default.hpp"
@@ -8389,9 +10107,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8403,9 +10125,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_post_visit_before.hpp")
         #include "visitor/Expression_ADDRESS_OF_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_ADDRESS_OF_post_visit.hpp")
         #include "visitor/Expression_ADDRESS_OF_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_ADDRESS_OF_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF_post_visit.hpp")
         #if __has_include("visitor/Expression_ADDRESS_OF_post_visit_pre_default.hpp")
         #include "visitor/Expression_ADDRESS_OF_post_visit_pre_default.hpp"
@@ -8432,9 +10158,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_OPTIONAL_OF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8446,9 +10176,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_pre_validate.hpp")
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_validate_pre_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_validate_pre_default.hpp"
@@ -8466,9 +10200,13 @@ namespace ebm2python {
         auto& target_expr = *in.body.target_expr();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8480,9 +10218,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_pre_visit.hpp")
         #if __has_include("visitor/Expression_OPTIONAL_OF_pre_visit_pre_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_pre_visit_pre_default.hpp"
@@ -8504,9 +10246,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8518,9 +10264,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit_before.hpp")
         #include "visitor/Expression_OPTIONAL_OF_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit.hpp")
         #include "visitor/Expression_OPTIONAL_OF_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_OPTIONAL_OF_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF_post_visit.hpp")
         #if __has_include("visitor/Expression_OPTIONAL_OF_post_visit_pre_default.hpp")
         #include "visitor/Expression_OPTIONAL_OF_post_visit_pre_default.hpp"
@@ -8547,9 +10297,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_SETTER_STATUS(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8561,9 +10315,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_pre_validate.hpp")
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_validate_pre_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_validate_pre_default.hpp"
@@ -8581,9 +10339,13 @@ namespace ebm2python {
         auto& setter_status = *in.body.setter_status();
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8595,9 +10357,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_pre_visit.hpp")
         #if __has_include("visitor/Expression_SETTER_STATUS_pre_visit_pre_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_pre_visit_pre_default.hpp"
@@ -8619,9 +10385,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8633,9 +10403,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_post_visit_before.hpp")
         #include "visitor/Expression_SETTER_STATUS_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SETTER_STATUS_post_visit.hpp")
         #include "visitor/Expression_SETTER_STATUS_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SETTER_STATUS_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS_post_visit.hpp")
         #if __has_include("visitor/Expression_SETTER_STATUS_post_visit_pre_default.hpp")
         #include "visitor/Expression_SETTER_STATUS_post_visit_pre_default.hpp"
@@ -8662,9 +10436,13 @@ namespace ebm2python {
     expected<Result> dispatch_Expression_SELF(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_pre_validate_before.hpp")
         #include "visitor/Expression_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_validate.hpp")
         #include "visitor/Expression_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_validate.hpp")
         #if __has_include("visitor/Expression_pre_validate_pre_default.hpp")
         #include "visitor/Expression_pre_validate_pre_default.hpp"
@@ -8676,9 +10454,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SELF_pre_validate_before.hpp")
         #include "visitor/Expression_SELF_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SELF_pre_validate.hpp")
         #include "visitor/Expression_SELF_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_pre_validate.hpp")
         #if __has_include("visitor/Expression_SELF_pre_validate_pre_default.hpp")
         #include "visitor/Expression_SELF_pre_validate_pre_default.hpp"
@@ -8692,9 +10474,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Expression_pre_visit_before.hpp")
         #include "visitor/Expression_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_pre_visit.hpp")
         #include "visitor/Expression_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_pre_visit.hpp")
         #if __has_include("visitor/Expression_pre_visit_pre_default.hpp")
         #include "visitor/Expression_pre_visit_pre_default.hpp"
@@ -8706,9 +10492,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SELF_pre_visit_before.hpp")
         #include "visitor/Expression_SELF_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SELF_pre_visit.hpp")
         #include "visitor/Expression_SELF_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_pre_visit.hpp")
         #if __has_include("visitor/Expression_SELF_pre_visit_pre_default.hpp")
         #include "visitor/Expression_SELF_pre_visit_pre_default.hpp"
@@ -8730,9 +10520,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Expression_post_visit_before.hpp")
         #include "visitor/Expression_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_post_visit.hpp")
         #include "visitor/Expression_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_post_visit.hpp")
         #if __has_include("visitor/Expression_post_visit_pre_default.hpp")
         #include "visitor/Expression_post_visit_pre_default.hpp"
@@ -8744,9 +10538,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Expression_SELF_post_visit_before.hpp")
         #include "visitor/Expression_SELF_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_SELF_post_visit.hpp")
         #include "visitor/Expression_SELF_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Expression_SELF_post_visit_dsl.hpp")
+        #include "visitor/dsl/Expression_SELF_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF_post_visit.hpp")
         #if __has_include("visitor/Expression_SELF_post_visit_pre_default.hpp")
         #include "visitor/Expression_SELF_post_visit_pre_default.hpp"
@@ -8765,9 +10563,13 @@ namespace ebm2python {
     expected<Result> visit_Expression(Visitor&& visitor,const ebm::Expression& in,ebm::ExpressionRef alias_ref) {
         #if __has_include("visitor/Expression_dispatch_before.hpp")
         #include "visitor/Expression_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Expression_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Expression_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expression_dispatch.hpp")
         #include "visitor/Expression_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Expression_dispatch_dsl.hpp")
+        #include "visitor/dsl/Expression_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_dispatch.hpp")
         #if __has_include("visitor/Expression_dispatch_pre_default.hpp")
         #include "visitor/Expression_dispatch_pre_default.hpp"
@@ -8861,13 +10663,22 @@ namespace ebm2python {
         MAYBE(elem, visitor.module_.get_expression(ref));
         return visit_Expression(visitor,elem,ref);
     }
+    // generic visitor for ExpressionRef
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::ExpressionRef& ref) {
+        return visit_Expression(visitor,ref);
+    }
     template<typename Visitor>
     expected<Result> visit_Expressions(Visitor&& visitor,const ebm::Expressions& in) {
         #if __has_include("visitor/Expressions_dispatch_before.hpp")
         #include "visitor/Expressions_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Expressions_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Expressions_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Expressions_dispatch.hpp")
         #include "visitor/Expressions_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Expressions_dispatch_dsl.hpp")
+        #include "visitor/dsl/Expressions_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Expressions_dispatch.hpp")
         #if __has_include("visitor/Expressions_dispatch_pre_default.hpp")
         #include "visitor/Expressions_dispatch_pre_default.hpp"
@@ -8888,6 +10699,11 @@ namespace ebm2python {
         return w;
         #endif
     }
+    // generic visitor for Expressions
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::Expressions& in) {
+        return visit_Expressions(visitor,in);
+    }
     template<typename Visitor>
     expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref = {});
     template<typename Visitor>
@@ -8902,9 +10718,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_INT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -8916,9 +10736,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_INT_pre_validate_before.hpp")
         #include "visitor/Type_INT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_INT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_INT_pre_validate.hpp")
         #include "visitor/Type_INT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_INT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_INT_pre_validate.hpp")
         #if __has_include("visitor/Type_INT_pre_validate_pre_default.hpp")
         #include "visitor/Type_INT_pre_validate_pre_default.hpp"
@@ -8935,9 +10759,13 @@ namespace ebm2python {
         auto& size = *in.body.size();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -8949,9 +10777,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_INT_pre_visit_before.hpp")
         #include "visitor/Type_INT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_INT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_INT_pre_visit.hpp")
         #include "visitor/Type_INT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_INT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_INT_pre_visit.hpp")
         #if __has_include("visitor/Type_INT_pre_visit_pre_default.hpp")
         #include "visitor/Type_INT_pre_visit_pre_default.hpp"
@@ -8973,9 +10805,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -8987,9 +10823,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_INT_post_visit_before.hpp")
         #include "visitor/Type_INT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_INT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_INT_post_visit.hpp")
         #include "visitor/Type_INT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_INT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_INT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_INT_post_visit.hpp")
         #if __has_include("visitor/Type_INT_post_visit_pre_default.hpp")
         #include "visitor/Type_INT_post_visit_pre_default.hpp"
@@ -9016,9 +10856,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_UINT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9030,9 +10874,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_UINT_pre_validate_before.hpp")
         #include "visitor/Type_UINT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_UINT_pre_validate.hpp")
         #include "visitor/Type_UINT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_pre_validate.hpp")
         #if __has_include("visitor/Type_UINT_pre_validate_pre_default.hpp")
         #include "visitor/Type_UINT_pre_validate_pre_default.hpp"
@@ -9049,9 +10897,13 @@ namespace ebm2python {
         auto& size = *in.body.size();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9063,9 +10915,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_UINT_pre_visit_before.hpp")
         #include "visitor/Type_UINT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_UINT_pre_visit.hpp")
         #include "visitor/Type_UINT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_pre_visit.hpp")
         #if __has_include("visitor/Type_UINT_pre_visit_pre_default.hpp")
         #include "visitor/Type_UINT_pre_visit_pre_default.hpp"
@@ -9087,9 +10943,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9101,9 +10961,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_UINT_post_visit_before.hpp")
         #include "visitor/Type_UINT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_UINT_post_visit.hpp")
         #include "visitor/Type_UINT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_UINT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_UINT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_UINT_post_visit.hpp")
         #if __has_include("visitor/Type_UINT_post_visit_pre_default.hpp")
         #include "visitor/Type_UINT_post_visit_pre_default.hpp"
@@ -9130,9 +10994,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_FLOAT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9144,9 +11012,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_validate_before.hpp")
         #include "visitor/Type_FLOAT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_validate.hpp")
         #include "visitor/Type_FLOAT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_pre_validate.hpp")
         #if __has_include("visitor/Type_FLOAT_pre_validate_pre_default.hpp")
         #include "visitor/Type_FLOAT_pre_validate_pre_default.hpp"
@@ -9163,9 +11035,13 @@ namespace ebm2python {
         auto& size = *in.body.size();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9177,9 +11053,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_visit_before.hpp")
         #include "visitor/Type_FLOAT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FLOAT_pre_visit.hpp")
         #include "visitor/Type_FLOAT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_pre_visit.hpp")
         #if __has_include("visitor/Type_FLOAT_pre_visit_pre_default.hpp")
         #include "visitor/Type_FLOAT_pre_visit_pre_default.hpp"
@@ -9201,9 +11081,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9215,9 +11099,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FLOAT_post_visit_before.hpp")
         #include "visitor/Type_FLOAT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FLOAT_post_visit.hpp")
         #include "visitor/Type_FLOAT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_FLOAT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_FLOAT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT_post_visit.hpp")
         #if __has_include("visitor/Type_FLOAT_post_visit_pre_default.hpp")
         #include "visitor/Type_FLOAT_post_visit_pre_default.hpp"
@@ -9244,9 +11132,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_STRUCT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9258,9 +11150,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_validate_before.hpp")
         #include "visitor/Type_STRUCT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_validate.hpp")
         #include "visitor/Type_STRUCT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_pre_validate.hpp")
         #if __has_include("visitor/Type_STRUCT_pre_validate_pre_default.hpp")
         #include "visitor/Type_STRUCT_pre_validate_pre_default.hpp"
@@ -9277,9 +11173,13 @@ namespace ebm2python {
         auto& id = *in.body.id();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9291,9 +11191,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_visit_before.hpp")
         #include "visitor/Type_STRUCT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_STRUCT_pre_visit.hpp")
         #include "visitor/Type_STRUCT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_pre_visit.hpp")
         #if __has_include("visitor/Type_STRUCT_pre_visit_pre_default.hpp")
         #include "visitor/Type_STRUCT_pre_visit_pre_default.hpp"
@@ -9315,9 +11219,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9329,9 +11237,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_STRUCT_post_visit_before.hpp")
         #include "visitor/Type_STRUCT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_STRUCT_post_visit.hpp")
         #include "visitor/Type_STRUCT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_STRUCT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_STRUCT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT_post_visit.hpp")
         #if __has_include("visitor/Type_STRUCT_post_visit_pre_default.hpp")
         #include "visitor/Type_STRUCT_post_visit_pre_default.hpp"
@@ -9358,9 +11270,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_RECURSIVE_STRUCT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9372,9 +11288,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_pre_validate.hpp")
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_validate_pre_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_validate_pre_default.hpp"
@@ -9391,9 +11311,13 @@ namespace ebm2python {
         auto& id = *in.body.id();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9405,9 +11329,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_pre_visit.hpp")
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_visit_pre_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_pre_visit_pre_default.hpp"
@@ -9429,9 +11357,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9443,9 +11375,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit_before.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_RECURSIVE_STRUCT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT_post_visit.hpp")
         #if __has_include("visitor/Type_RECURSIVE_STRUCT_post_visit_pre_default.hpp")
         #include "visitor/Type_RECURSIVE_STRUCT_post_visit_pre_default.hpp"
@@ -9472,9 +11408,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_BOOL(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9486,9 +11426,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_BOOL_pre_validate_before.hpp")
         #include "visitor/Type_BOOL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_BOOL_pre_validate.hpp")
         #include "visitor/Type_BOOL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_pre_validate.hpp")
         #if __has_include("visitor/Type_BOOL_pre_validate_pre_default.hpp")
         #include "visitor/Type_BOOL_pre_validate_pre_default.hpp"
@@ -9501,9 +11445,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9515,9 +11463,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_BOOL_pre_visit_before.hpp")
         #include "visitor/Type_BOOL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_BOOL_pre_visit.hpp")
         #include "visitor/Type_BOOL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_pre_visit.hpp")
         #if __has_include("visitor/Type_BOOL_pre_visit_pre_default.hpp")
         #include "visitor/Type_BOOL_pre_visit_pre_default.hpp"
@@ -9539,9 +11491,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9553,9 +11509,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_BOOL_post_visit_before.hpp")
         #include "visitor/Type_BOOL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_BOOL_post_visit.hpp")
         #include "visitor/Type_BOOL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_BOOL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_BOOL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL_post_visit.hpp")
         #if __has_include("visitor/Type_BOOL_post_visit_pre_default.hpp")
         #include "visitor/Type_BOOL_post_visit_pre_default.hpp"
@@ -9582,9 +11542,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_VOID(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9596,9 +11560,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VOID_pre_validate_before.hpp")
         #include "visitor/Type_VOID_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VOID_pre_validate.hpp")
         #include "visitor/Type_VOID_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_pre_validate.hpp")
         #if __has_include("visitor/Type_VOID_pre_validate_pre_default.hpp")
         #include "visitor/Type_VOID_pre_validate_pre_default.hpp"
@@ -9611,9 +11579,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9625,9 +11597,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VOID_pre_visit_before.hpp")
         #include "visitor/Type_VOID_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VOID_pre_visit.hpp")
         #include "visitor/Type_VOID_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_pre_visit.hpp")
         #if __has_include("visitor/Type_VOID_pre_visit_pre_default.hpp")
         #include "visitor/Type_VOID_pre_visit_pre_default.hpp"
@@ -9649,9 +11625,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9663,9 +11643,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VOID_post_visit_before.hpp")
         #include "visitor/Type_VOID_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VOID_post_visit.hpp")
         #include "visitor/Type_VOID_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VOID_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VOID_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VOID_post_visit.hpp")
         #if __has_include("visitor/Type_VOID_post_visit_pre_default.hpp")
         #include "visitor/Type_VOID_post_visit_pre_default.hpp"
@@ -9692,9 +11676,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_META(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9706,9 +11694,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_META_pre_validate_before.hpp")
         #include "visitor/Type_META_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_META_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_META_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_META_pre_validate.hpp")
         #include "visitor/Type_META_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_META_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_META_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_META_pre_validate.hpp")
         #if __has_include("visitor/Type_META_pre_validate_pre_default.hpp")
         #include "visitor/Type_META_pre_validate_pre_default.hpp"
@@ -9721,9 +11713,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9735,9 +11731,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_META_pre_visit_before.hpp")
         #include "visitor/Type_META_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_META_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_META_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_META_pre_visit.hpp")
         #include "visitor/Type_META_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_META_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_META_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_META_pre_visit.hpp")
         #if __has_include("visitor/Type_META_pre_visit_pre_default.hpp")
         #include "visitor/Type_META_pre_visit_pre_default.hpp"
@@ -9759,9 +11759,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9773,9 +11777,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_META_post_visit_before.hpp")
         #include "visitor/Type_META_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_META_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_META_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_META_post_visit.hpp")
         #include "visitor/Type_META_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_META_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_META_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_META_post_visit.hpp")
         #if __has_include("visitor/Type_META_post_visit_pre_default.hpp")
         #include "visitor/Type_META_post_visit_pre_default.hpp"
@@ -9802,9 +11810,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_ENUM(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9816,9 +11828,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENUM_pre_validate_before.hpp")
         #include "visitor/Type_ENUM_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENUM_pre_validate.hpp")
         #include "visitor/Type_ENUM_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_pre_validate.hpp")
         #if __has_include("visitor/Type_ENUM_pre_validate_pre_default.hpp")
         #include "visitor/Type_ENUM_pre_validate_pre_default.hpp"
@@ -9839,9 +11855,13 @@ namespace ebm2python {
         auto& id = *in.body.id();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9853,9 +11873,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENUM_pre_visit_before.hpp")
         #include "visitor/Type_ENUM_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENUM_pre_visit.hpp")
         #include "visitor/Type_ENUM_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_pre_visit.hpp")
         #if __has_include("visitor/Type_ENUM_pre_visit_pre_default.hpp")
         #include "visitor/Type_ENUM_pre_visit_pre_default.hpp"
@@ -9877,9 +11901,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -9891,9 +11919,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENUM_post_visit_before.hpp")
         #include "visitor/Type_ENUM_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENUM_post_visit.hpp")
         #include "visitor/Type_ENUM_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENUM_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENUM_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM_post_visit.hpp")
         #if __has_include("visitor/Type_ENUM_post_visit_pre_default.hpp")
         #include "visitor/Type_ENUM_post_visit_pre_default.hpp"
@@ -9920,9 +11952,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_ARRAY(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -9934,9 +11970,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_validate_before.hpp")
         #include "visitor/Type_ARRAY_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_validate.hpp")
         #include "visitor/Type_ARRAY_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_pre_validate.hpp")
         #if __has_include("visitor/Type_ARRAY_pre_validate_pre_default.hpp")
         #include "visitor/Type_ARRAY_pre_validate_pre_default.hpp"
@@ -9957,9 +11997,13 @@ namespace ebm2python {
         auto& length = *in.body.length();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -9971,9 +12015,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_visit_before.hpp")
         #include "visitor/Type_ARRAY_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ARRAY_pre_visit.hpp")
         #include "visitor/Type_ARRAY_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_pre_visit.hpp")
         #if __has_include("visitor/Type_ARRAY_pre_visit_pre_default.hpp")
         #include "visitor/Type_ARRAY_pre_visit_pre_default.hpp"
@@ -9995,9 +12043,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10009,9 +12061,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ARRAY_post_visit_before.hpp")
         #include "visitor/Type_ARRAY_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ARRAY_post_visit.hpp")
         #include "visitor/Type_ARRAY_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ARRAY_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ARRAY_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY_post_visit.hpp")
         #if __has_include("visitor/Type_ARRAY_post_visit_pre_default.hpp")
         #include "visitor/Type_ARRAY_post_visit_pre_default.hpp"
@@ -10038,9 +12094,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_VECTOR(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10052,9 +12112,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_validate_before.hpp")
         #include "visitor/Type_VECTOR_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_validate.hpp")
         #include "visitor/Type_VECTOR_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_pre_validate.hpp")
         #if __has_include("visitor/Type_VECTOR_pre_validate_pre_default.hpp")
         #include "visitor/Type_VECTOR_pre_validate_pre_default.hpp"
@@ -10071,9 +12135,13 @@ namespace ebm2python {
         auto& element_type = *in.body.element_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10085,9 +12153,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_visit_before.hpp")
         #include "visitor/Type_VECTOR_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VECTOR_pre_visit.hpp")
         #include "visitor/Type_VECTOR_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_pre_visit.hpp")
         #if __has_include("visitor/Type_VECTOR_pre_visit_pre_default.hpp")
         #include "visitor/Type_VECTOR_pre_visit_pre_default.hpp"
@@ -10109,9 +12181,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10123,9 +12199,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VECTOR_post_visit_before.hpp")
         #include "visitor/Type_VECTOR_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VECTOR_post_visit.hpp")
         #include "visitor/Type_VECTOR_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VECTOR_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VECTOR_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR_post_visit.hpp")
         #if __has_include("visitor/Type_VECTOR_post_visit_pre_default.hpp")
         #include "visitor/Type_VECTOR_post_visit_pre_default.hpp"
@@ -10152,9 +12232,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_VARIANT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10166,9 +12250,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_validate_before.hpp")
         #include "visitor/Type_VARIANT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_validate.hpp")
         #include "visitor/Type_VARIANT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_pre_validate.hpp")
         #if __has_include("visitor/Type_VARIANT_pre_validate_pre_default.hpp")
         #include "visitor/Type_VARIANT_pre_validate_pre_default.hpp"
@@ -10193,9 +12281,13 @@ namespace ebm2python {
         auto& related_field = *in.body.related_field();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10207,9 +12299,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_visit_before.hpp")
         #include "visitor/Type_VARIANT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VARIANT_pre_visit.hpp")
         #include "visitor/Type_VARIANT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_pre_visit.hpp")
         #if __has_include("visitor/Type_VARIANT_pre_visit_pre_default.hpp")
         #include "visitor/Type_VARIANT_pre_visit_pre_default.hpp"
@@ -10231,9 +12327,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10245,9 +12345,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_VARIANT_post_visit_before.hpp")
         #include "visitor/Type_VARIANT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_VARIANT_post_visit.hpp")
         #include "visitor/Type_VARIANT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_VARIANT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_VARIANT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT_post_visit.hpp")
         #if __has_include("visitor/Type_VARIANT_post_visit_pre_default.hpp")
         #include "visitor/Type_VARIANT_post_visit_pre_default.hpp"
@@ -10274,9 +12378,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_RANGE(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10288,9 +12396,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RANGE_pre_validate_before.hpp")
         #include "visitor/Type_RANGE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RANGE_pre_validate.hpp")
         #include "visitor/Type_RANGE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_pre_validate.hpp")
         #if __has_include("visitor/Type_RANGE_pre_validate_pre_default.hpp")
         #include "visitor/Type_RANGE_pre_validate_pre_default.hpp"
@@ -10307,9 +12419,13 @@ namespace ebm2python {
         auto& base_type = *in.body.base_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10321,9 +12437,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RANGE_pre_visit_before.hpp")
         #include "visitor/Type_RANGE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RANGE_pre_visit.hpp")
         #include "visitor/Type_RANGE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_pre_visit.hpp")
         #if __has_include("visitor/Type_RANGE_pre_visit_pre_default.hpp")
         #include "visitor/Type_RANGE_pre_visit_pre_default.hpp"
@@ -10345,9 +12465,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10359,9 +12483,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_RANGE_post_visit_before.hpp")
         #include "visitor/Type_RANGE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_RANGE_post_visit.hpp")
         #include "visitor/Type_RANGE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_RANGE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_RANGE_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE_post_visit.hpp")
         #if __has_include("visitor/Type_RANGE_post_visit_pre_default.hpp")
         #include "visitor/Type_RANGE_post_visit_pre_default.hpp"
@@ -10388,9 +12516,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_ENCODER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10402,9 +12534,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_pre_validate.hpp")
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_validate_pre_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_validate_pre_default.hpp"
@@ -10417,9 +12553,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10431,9 +12571,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_pre_visit.hpp")
         #if __has_include("visitor/Type_ENCODER_RETURN_pre_visit_pre_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_pre_visit_pre_default.hpp"
@@ -10455,9 +12599,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10469,9 +12617,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_ENCODER_RETURN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_RETURN_post_visit.hpp")
         #include "visitor/Type_ENCODER_RETURN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_RETURN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN_post_visit.hpp")
         #if __has_include("visitor/Type_ENCODER_RETURN_post_visit_pre_default.hpp")
         #include "visitor/Type_ENCODER_RETURN_post_visit_pre_default.hpp"
@@ -10498,9 +12650,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_DECODER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10512,9 +12668,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_validate.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_pre_validate.hpp")
         #if __has_include("visitor/Type_DECODER_RETURN_pre_validate_pre_default.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_validate_pre_default.hpp"
@@ -10527,9 +12687,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10541,9 +12705,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_pre_visit.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_pre_visit.hpp")
         #if __has_include("visitor/Type_DECODER_RETURN_pre_visit_pre_default.hpp")
         #include "visitor/Type_DECODER_RETURN_pre_visit_pre_default.hpp"
@@ -10565,9 +12733,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10579,9 +12751,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_DECODER_RETURN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_RETURN_post_visit.hpp")
         #include "visitor/Type_DECODER_RETURN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_RETURN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_RETURN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN_post_visit.hpp")
         #if __has_include("visitor/Type_DECODER_RETURN_post_visit_pre_default.hpp")
         #include "visitor/Type_DECODER_RETURN_post_visit_pre_default.hpp"
@@ -10608,9 +12784,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_ENCODER_INPUT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10622,9 +12802,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_pre_validate.hpp")
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_validate_pre_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_validate_pre_default.hpp"
@@ -10637,9 +12821,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10651,9 +12839,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_pre_visit.hpp")
         #if __has_include("visitor/Type_ENCODER_INPUT_pre_visit_pre_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_pre_visit_pre_default.hpp"
@@ -10675,9 +12867,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10689,9 +12885,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_post_visit_before.hpp")
         #include "visitor/Type_ENCODER_INPUT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_ENCODER_INPUT_post_visit.hpp")
         #include "visitor/Type_ENCODER_INPUT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_ENCODER_INPUT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT_post_visit.hpp")
         #if __has_include("visitor/Type_ENCODER_INPUT_post_visit_pre_default.hpp")
         #include "visitor/Type_ENCODER_INPUT_post_visit_pre_default.hpp"
@@ -10718,9 +12918,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_DECODER_INPUT(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10732,9 +12936,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_validate_before.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_validate.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_pre_validate.hpp")
         #if __has_include("visitor/Type_DECODER_INPUT_pre_validate_pre_default.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_validate_pre_default.hpp"
@@ -10747,9 +12955,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10761,9 +12973,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_visit_before.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_pre_visit.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_pre_visit.hpp")
         #if __has_include("visitor/Type_DECODER_INPUT_pre_visit_pre_default.hpp")
         #include "visitor/Type_DECODER_INPUT_pre_visit_pre_default.hpp"
@@ -10785,9 +13001,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10799,9 +13019,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_post_visit_before.hpp")
         #include "visitor/Type_DECODER_INPUT_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_DECODER_INPUT_post_visit.hpp")
         #include "visitor/Type_DECODER_INPUT_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_DECODER_INPUT_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_DECODER_INPUT_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT_post_visit.hpp")
         #if __has_include("visitor/Type_DECODER_INPUT_post_visit_pre_default.hpp")
         #include "visitor/Type_DECODER_INPUT_post_visit_pre_default.hpp"
@@ -10828,9 +13052,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_PROPERTY_SETTER_RETURN(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10842,9 +13070,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_pre_validate.hpp")
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_pre_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_validate_pre_default.hpp"
@@ -10857,9 +13089,13 @@ namespace ebm2python {
         auto& kind = in.body.kind;
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10871,9 +13107,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_pre_visit.hpp")
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_pre_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_visit_pre_default.hpp"
@@ -10895,9 +13135,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -10909,9 +13153,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit_before.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN_post_visit.hpp")
         #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_post_visit_pre_default.hpp")
         #include "visitor/Type_PROPERTY_SETTER_RETURN_post_visit_pre_default.hpp"
@@ -10938,9 +13186,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_OPTIONAL(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -10952,9 +13204,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_validate_before.hpp")
         #include "visitor/Type_OPTIONAL_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_validate.hpp")
         #include "visitor/Type_OPTIONAL_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_pre_validate.hpp")
         #if __has_include("visitor/Type_OPTIONAL_pre_validate_pre_default.hpp")
         #include "visitor/Type_OPTIONAL_pre_validate_pre_default.hpp"
@@ -10971,9 +13227,13 @@ namespace ebm2python {
         auto& inner_type = *in.body.inner_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -10985,9 +13245,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_visit_before.hpp")
         #include "visitor/Type_OPTIONAL_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_OPTIONAL_pre_visit.hpp")
         #include "visitor/Type_OPTIONAL_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_pre_visit.hpp")
         #if __has_include("visitor/Type_OPTIONAL_pre_visit_pre_default.hpp")
         #include "visitor/Type_OPTIONAL_pre_visit_pre_default.hpp"
@@ -11009,9 +13273,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -11023,9 +13291,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_OPTIONAL_post_visit_before.hpp")
         #include "visitor/Type_OPTIONAL_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_OPTIONAL_post_visit.hpp")
         #include "visitor/Type_OPTIONAL_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_OPTIONAL_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_OPTIONAL_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL_post_visit.hpp")
         #if __has_include("visitor/Type_OPTIONAL_post_visit_pre_default.hpp")
         #include "visitor/Type_OPTIONAL_post_visit_pre_default.hpp"
@@ -11052,9 +13324,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_PTR(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -11066,9 +13342,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PTR_pre_validate_before.hpp")
         #include "visitor/Type_PTR_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PTR_pre_validate.hpp")
         #include "visitor/Type_PTR_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_pre_validate.hpp")
         #if __has_include("visitor/Type_PTR_pre_validate_pre_default.hpp")
         #include "visitor/Type_PTR_pre_validate_pre_default.hpp"
@@ -11085,9 +13365,13 @@ namespace ebm2python {
         auto& pointee_type = *in.body.pointee_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -11099,9 +13383,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PTR_pre_visit_before.hpp")
         #include "visitor/Type_PTR_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PTR_pre_visit.hpp")
         #include "visitor/Type_PTR_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_pre_visit.hpp")
         #if __has_include("visitor/Type_PTR_pre_visit_pre_default.hpp")
         #include "visitor/Type_PTR_pre_visit_pre_default.hpp"
@@ -11123,9 +13411,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -11137,9 +13429,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_PTR_post_visit_before.hpp")
         #include "visitor/Type_PTR_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_PTR_post_visit.hpp")
         #include "visitor/Type_PTR_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_PTR_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_PTR_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PTR_post_visit.hpp")
         #if __has_include("visitor/Type_PTR_post_visit_pre_default.hpp")
         #include "visitor/Type_PTR_post_visit_pre_default.hpp"
@@ -11166,9 +13462,13 @@ namespace ebm2python {
     expected<Result> dispatch_Type_FUNCTION(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_pre_validate_before.hpp")
         #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_validate.hpp")
         #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
         #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
         #include "visitor/Type_pre_validate_pre_default.hpp"
@@ -11180,9 +13480,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_validate_before.hpp")
         #include "visitor/Type_FUNCTION_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_pre_validate_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_validate.hpp")
         #include "visitor/Type_FUNCTION_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_pre_validate_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_pre_validate.hpp")
         #if __has_include("visitor/Type_FUNCTION_pre_validate_pre_default.hpp")
         #include "visitor/Type_FUNCTION_pre_validate_pre_default.hpp"
@@ -11203,9 +13507,13 @@ namespace ebm2python {
         auto& return_type = *in.body.return_type();
         #if __has_include("visitor/Type_pre_visit_before.hpp")
         #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_pre_visit.hpp")
         #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
         #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
         #include "visitor/Type_pre_visit_pre_default.hpp"
@@ -11217,9 +13525,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_visit_before.hpp")
         #include "visitor/Type_FUNCTION_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_pre_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FUNCTION_pre_visit.hpp")
         #include "visitor/Type_FUNCTION_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_pre_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_pre_visit.hpp")
         #if __has_include("visitor/Type_FUNCTION_pre_visit_pre_default.hpp")
         #include "visitor/Type_FUNCTION_pre_visit_pre_default.hpp"
@@ -11241,9 +13553,13 @@ namespace ebm2python {
         }
         #if __has_include("visitor/Type_post_visit_before.hpp")
         #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_post_visit.hpp")
         #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
         #if __has_include("visitor/Type_post_visit_pre_default.hpp")
         #include "visitor/Type_post_visit_pre_default.hpp"
@@ -11255,9 +13571,13 @@ namespace ebm2python {
         #endif
         #if __has_include("visitor/Type_FUNCTION_post_visit_before.hpp")
         #include "visitor/Type_FUNCTION_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_post_visit_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_FUNCTION_post_visit.hpp")
         #include "visitor/Type_FUNCTION_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_FUNCTION_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_FUNCTION_post_visit_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION_post_visit.hpp")
         #if __has_include("visitor/Type_FUNCTION_post_visit_pre_default.hpp")
         #include "visitor/Type_FUNCTION_post_visit_pre_default.hpp"
@@ -11276,9 +13596,13 @@ namespace ebm2python {
     expected<Result> visit_Type(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
         #if __has_include("visitor/Type_dispatch_before.hpp")
         #include "visitor/Type_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Type_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Type_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Type_dispatch.hpp")
         #include "visitor/Type_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Type_dispatch_dsl.hpp")
+        #include "visitor/dsl/Type_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Type_dispatch.hpp")
         #if __has_include("visitor/Type_dispatch_pre_default.hpp")
         #include "visitor/Type_dispatch_pre_default.hpp"
@@ -11342,13 +13666,22 @@ namespace ebm2python {
         MAYBE(elem, visitor.module_.get_type(ref));
         return visit_Type(visitor,elem,ref);
     }
+    // generic visitor for TypeRef
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::TypeRef& ref) {
+        return visit_Type(visitor,ref);
+    }
     template<typename Visitor>
     expected<Result> visit_Types(Visitor&& visitor,const ebm::Types& in) {
         #if __has_include("visitor/Types_dispatch_before.hpp")
         #include "visitor/Types_dispatch_before.hpp"
+        #elif __has_include("visitor/dsl/Types_dispatch_before_dsl.hpp")
+        #include "visitor/dsl/Types_dispatch_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Types_dispatch.hpp")
         #include "visitor/Types_dispatch.hpp"
+        #elif __has_include("visitor/dsl/Types_dispatch_dsl.hpp")
+        #include "visitor/dsl/Types_dispatch_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Types_dispatch.hpp")
         #if __has_include("visitor/Types_dispatch_pre_default.hpp")
         #include "visitor/Types_dispatch_pre_default.hpp"
@@ -11368,6 +13701,11 @@ namespace ebm2python {
         }
         return w;
         #endif
+    }
+    // generic visitor for Types
+    template<typename Visitor>
+    expected<Result> visit_Object(Visitor&& visitor,const ebm::Types& in) {
+        return visit_Types(visitor,in);
     }
     struct Visitor {
         static constexpr const char* program_name = "ebm2python";
@@ -11391,9 +13729,13 @@ namespace ebm2python {
         Visitor(const ebm::ExtendedBinaryModule& m,futils::binary::writer& w,Flags& f,Output& o) : module_(m), root{w}, flags{f}, output{o} {}
         #if __has_include("visitor/Visitor_before.hpp")
         #include "visitor/Visitor_before.hpp"
+        #elif __has_include("visitor/dsl/Visitor_before_dsl.hpp")
+        #include "visitor/dsl/Visitor_before_dsl.hpp"
         #endif
         #if __has_include("visitor/Visitor.hpp")
         #include "visitor/Visitor.hpp"
+        #elif __has_include("visitor/dsl/Visitor_dsl.hpp")
+        #include "visitor/dsl/Visitor_dsl.hpp"
         #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor.hpp")
         #if __has_include("visitor/Visitor_pre_default.hpp")
         #include "visitor/Visitor_pre_default.hpp"
@@ -11406,9 +13748,13 @@ namespace ebm2python {
         expected<void> entry() {
             #if __has_include("visitor/entry_before.hpp")
             #include "visitor/entry_before.hpp"
+            #elif __has_include("visitor/dsl/entry_before_dsl.hpp")
+            #include "visitor/dsl/entry_before_dsl.hpp"
             #endif
             #if __has_include("visitor/entry.hpp")
             #include "visitor/entry.hpp"
+            #elif __has_include("visitor/dsl/entry_dsl.hpp")
+            #include "visitor/dsl/entry_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/entry.hpp")
             #if __has_include("visitor/entry_pre_default.hpp")
             #include "visitor/entry_pre_default.hpp"
@@ -11423,9 +13769,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_BLOCK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Block& block) {
             #if __has_include("visitor/Statement_BLOCK_before.hpp")
             #include "visitor/Statement_BLOCK_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_BLOCK_before_dsl.hpp")
+            #include "visitor/dsl/Statement_BLOCK_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_BLOCK.hpp")
             #include "visitor/Statement_BLOCK.hpp"
+            #elif __has_include("visitor/dsl/Statement_BLOCK_dsl.hpp")
+            #include "visitor/dsl/Statement_BLOCK_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK.hpp")
             #if __has_include("visitor/Statement_BLOCK_pre_default.hpp")
             #include "visitor/Statement_BLOCK_pre_default.hpp"
@@ -11444,9 +13794,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ASSIGNMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StatementRef& previous_assignment,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
             #if __has_include("visitor/Statement_ASSIGNMENT_before.hpp")
             #include "visitor/Statement_ASSIGNMENT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ASSIGNMENT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ASSIGNMENT.hpp")
             #include "visitor/Statement_ASSIGNMENT.hpp"
+            #elif __has_include("visitor/dsl/Statement_ASSIGNMENT_dsl.hpp")
+            #include "visitor/dsl/Statement_ASSIGNMENT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSIGNMENT.hpp")
             #if __has_include("visitor/Statement_ASSIGNMENT_pre_default.hpp")
             #include "visitor/Statement_ASSIGNMENT_pre_default.hpp"
@@ -11465,9 +13819,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_YIELD(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StatementRef& previous_assignment,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
             #if __has_include("visitor/Statement_YIELD_before.hpp")
             #include "visitor/Statement_YIELD_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_YIELD_before_dsl.hpp")
+            #include "visitor/dsl/Statement_YIELD_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_YIELD.hpp")
             #include "visitor/Statement_YIELD.hpp"
+            #elif __has_include("visitor/dsl/Statement_YIELD_dsl.hpp")
+            #include "visitor/dsl/Statement_YIELD_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_YIELD.hpp")
             #if __has_include("visitor/Statement_YIELD_pre_default.hpp")
             #include "visitor/Statement_YIELD_pre_default.hpp"
@@ -11486,9 +13844,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_APPEND(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
             #if __has_include("visitor/Statement_APPEND_before.hpp")
             #include "visitor/Statement_APPEND_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_APPEND_before_dsl.hpp")
+            #include "visitor/dsl/Statement_APPEND_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_APPEND.hpp")
             #include "visitor/Statement_APPEND.hpp"
+            #elif __has_include("visitor/dsl/Statement_APPEND_dsl.hpp")
+            #include "visitor/dsl/Statement_APPEND_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_APPEND.hpp")
             #if __has_include("visitor/Statement_APPEND_pre_default.hpp")
             #include "visitor/Statement_APPEND_pre_default.hpp"
@@ -11507,9 +13869,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_RETURN(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& value) {
             #if __has_include("visitor/Statement_RETURN_before.hpp")
             #include "visitor/Statement_RETURN_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_RETURN_before_dsl.hpp")
+            #include "visitor/dsl/Statement_RETURN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_RETURN.hpp")
             #include "visitor/Statement_RETURN.hpp"
+            #elif __has_include("visitor/dsl/Statement_RETURN_dsl.hpp")
+            #include "visitor/dsl/Statement_RETURN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_RETURN.hpp")
             #if __has_include("visitor/Statement_RETURN_pre_default.hpp")
             #include "visitor/Statement_RETURN_pre_default.hpp"
@@ -11528,9 +13894,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ERROR_RETURN(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& value) {
             #if __has_include("visitor/Statement_ERROR_RETURN_before.hpp")
             #include "visitor/Statement_ERROR_RETURN_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ERROR_RETURN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ERROR_RETURN.hpp")
             #include "visitor/Statement_ERROR_RETURN.hpp"
+            #elif __has_include("visitor/dsl/Statement_ERROR_RETURN_dsl.hpp")
+            #include "visitor/dsl/Statement_ERROR_RETURN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_RETURN.hpp")
             #if __has_include("visitor/Statement_ERROR_RETURN_pre_default.hpp")
             #include "visitor/Statement_ERROR_RETURN_pre_default.hpp"
@@ -11549,9 +13919,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ASSERT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::AssertDesc& assert_desc) {
             #if __has_include("visitor/Statement_ASSERT_before.hpp")
             #include "visitor/Statement_ASSERT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ASSERT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ASSERT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ASSERT.hpp")
             #include "visitor/Statement_ASSERT.hpp"
+            #elif __has_include("visitor/dsl/Statement_ASSERT_dsl.hpp")
+            #include "visitor/dsl/Statement_ASSERT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ASSERT.hpp")
             #if __has_include("visitor/Statement_ASSERT_pre_default.hpp")
             #include "visitor/Statement_ASSERT_pre_default.hpp"
@@ -11570,9 +13944,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_READ_DATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IOData& read_data) {
             #if __has_include("visitor/Statement_READ_DATA_before.hpp")
             #include "visitor/Statement_READ_DATA_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_READ_DATA_before_dsl.hpp")
+            #include "visitor/dsl/Statement_READ_DATA_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_READ_DATA.hpp")
             #include "visitor/Statement_READ_DATA.hpp"
+            #elif __has_include("visitor/dsl/Statement_READ_DATA_dsl.hpp")
+            #include "visitor/dsl/Statement_READ_DATA_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_READ_DATA.hpp")
             #if __has_include("visitor/Statement_READ_DATA_pre_default.hpp")
             #include "visitor/Statement_READ_DATA_pre_default.hpp"
@@ -11591,9 +13969,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_WRITE_DATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IOData& write_data) {
             #if __has_include("visitor/Statement_WRITE_DATA_before.hpp")
             #include "visitor/Statement_WRITE_DATA_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_WRITE_DATA_before_dsl.hpp")
+            #include "visitor/dsl/Statement_WRITE_DATA_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_WRITE_DATA.hpp")
             #include "visitor/Statement_WRITE_DATA.hpp"
+            #elif __has_include("visitor/dsl/Statement_WRITE_DATA_dsl.hpp")
+            #include "visitor/dsl/Statement_WRITE_DATA_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_WRITE_DATA.hpp")
             #if __has_include("visitor/Statement_WRITE_DATA_pre_default.hpp")
             #include "visitor/Statement_WRITE_DATA_pre_default.hpp"
@@ -11612,9 +13994,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_SEEK_STREAM(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
             #if __has_include("visitor/Statement_SEEK_STREAM_before.hpp")
             #include "visitor/Statement_SEEK_STREAM_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_before_dsl.hpp")
+            #include "visitor/dsl/Statement_SEEK_STREAM_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_SEEK_STREAM.hpp")
             #include "visitor/Statement_SEEK_STREAM.hpp"
+            #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_dsl.hpp")
+            #include "visitor/dsl/Statement_SEEK_STREAM_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM.hpp")
             #if __has_include("visitor/Statement_SEEK_STREAM_pre_default.hpp")
             #include "visitor/Statement_SEEK_STREAM_pre_default.hpp"
@@ -11633,9 +14019,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_IF_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IfStatement& if_statement) {
             #if __has_include("visitor/Statement_IF_STATEMENT_before.hpp")
             #include "visitor/Statement_IF_STATEMENT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_IF_STATEMENT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_IF_STATEMENT.hpp")
             #include "visitor/Statement_IF_STATEMENT.hpp"
+            #elif __has_include("visitor/dsl/Statement_IF_STATEMENT_dsl.hpp")
+            #include "visitor/dsl/Statement_IF_STATEMENT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IF_STATEMENT.hpp")
             #if __has_include("visitor/Statement_IF_STATEMENT_pre_default.hpp")
             #include "visitor/Statement_IF_STATEMENT_pre_default.hpp"
@@ -11654,9 +14044,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_LOOP_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopStatement& loop) {
             #if __has_include("visitor/Statement_LOOP_STATEMENT_before.hpp")
             #include "visitor/Statement_LOOP_STATEMENT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_LOOP_STATEMENT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_LOOP_STATEMENT.hpp")
             #include "visitor/Statement_LOOP_STATEMENT.hpp"
+            #elif __has_include("visitor/dsl/Statement_LOOP_STATEMENT_dsl.hpp")
+            #include "visitor/dsl/Statement_LOOP_STATEMENT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOOP_STATEMENT.hpp")
             #if __has_include("visitor/Statement_LOOP_STATEMENT_pre_default.hpp")
             #include "visitor/Statement_LOOP_STATEMENT_pre_default.hpp"
@@ -11675,9 +14069,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_MATCH_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::MatchStatement& match_statement) {
             #if __has_include("visitor/Statement_MATCH_STATEMENT_before.hpp")
             #include "visitor/Statement_MATCH_STATEMENT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_MATCH_STATEMENT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_MATCH_STATEMENT.hpp")
             #include "visitor/Statement_MATCH_STATEMENT.hpp"
+            #elif __has_include("visitor/dsl/Statement_MATCH_STATEMENT_dsl.hpp")
+            #include "visitor/dsl/Statement_MATCH_STATEMENT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_STATEMENT.hpp")
             #if __has_include("visitor/Statement_MATCH_STATEMENT_pre_default.hpp")
             #include "visitor/Statement_MATCH_STATEMENT_pre_default.hpp"
@@ -11696,9 +14094,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_MATCH_BRANCH(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::MatchBranch& match_branch) {
             #if __has_include("visitor/Statement_MATCH_BRANCH_before.hpp")
             #include "visitor/Statement_MATCH_BRANCH_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_before_dsl.hpp")
+            #include "visitor/dsl/Statement_MATCH_BRANCH_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_MATCH_BRANCH.hpp")
             #include "visitor/Statement_MATCH_BRANCH.hpp"
+            #elif __has_include("visitor/dsl/Statement_MATCH_BRANCH_dsl.hpp")
+            #include "visitor/dsl/Statement_MATCH_BRANCH_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_MATCH_BRANCH.hpp")
             #if __has_include("visitor/Statement_MATCH_BRANCH_pre_default.hpp")
             #include "visitor/Statement_MATCH_BRANCH_pre_default.hpp"
@@ -11717,9 +14119,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_BREAK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopFlowControl& break_) {
             #if __has_include("visitor/Statement_BREAK_before.hpp")
             #include "visitor/Statement_BREAK_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_BREAK_before_dsl.hpp")
+            #include "visitor/dsl/Statement_BREAK_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_BREAK.hpp")
             #include "visitor/Statement_BREAK.hpp"
+            #elif __has_include("visitor/dsl/Statement_BREAK_dsl.hpp")
+            #include "visitor/dsl/Statement_BREAK_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_BREAK.hpp")
             #if __has_include("visitor/Statement_BREAK_pre_default.hpp")
             #include "visitor/Statement_BREAK_pre_default.hpp"
@@ -11738,9 +14144,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_CONTINUE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopFlowControl& continue_) {
             #if __has_include("visitor/Statement_CONTINUE_before.hpp")
             #include "visitor/Statement_CONTINUE_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_CONTINUE_before_dsl.hpp")
+            #include "visitor/dsl/Statement_CONTINUE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_CONTINUE.hpp")
             #include "visitor/Statement_CONTINUE.hpp"
+            #elif __has_include("visitor/dsl/Statement_CONTINUE_dsl.hpp")
+            #include "visitor/dsl/Statement_CONTINUE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_CONTINUE.hpp")
             #if __has_include("visitor/Statement_CONTINUE_pre_default.hpp")
             #include "visitor/Statement_CONTINUE_pre_default.hpp"
@@ -11759,9 +14169,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_FUNCTION_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::FunctionDecl& func_decl) {
             #if __has_include("visitor/Statement_FUNCTION_DECL_before.hpp")
             #include "visitor/Statement_FUNCTION_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_FUNCTION_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_FUNCTION_DECL.hpp")
             #include "visitor/Statement_FUNCTION_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_FUNCTION_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_FUNCTION_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FUNCTION_DECL.hpp")
             #if __has_include("visitor/Statement_FUNCTION_DECL_pre_default.hpp")
             #include "visitor/Statement_FUNCTION_DECL_pre_default.hpp"
@@ -11780,9 +14194,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_VARIABLE_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::VariableDecl& var_decl) {
             #if __has_include("visitor/Statement_VARIABLE_DECL_before.hpp")
             #include "visitor/Statement_VARIABLE_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_VARIABLE_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_VARIABLE_DECL.hpp")
             #include "visitor/Statement_VARIABLE_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_VARIABLE_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_VARIABLE_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_VARIABLE_DECL.hpp")
             #if __has_include("visitor/Statement_VARIABLE_DECL_pre_default.hpp")
             #include "visitor/Statement_VARIABLE_DECL_pre_default.hpp"
@@ -11801,9 +14219,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_PARAMETER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ParameterDecl& param_decl) {
             #if __has_include("visitor/Statement_PARAMETER_DECL_before.hpp")
             #include "visitor/Statement_PARAMETER_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_PARAMETER_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_PARAMETER_DECL.hpp")
             #include "visitor/Statement_PARAMETER_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_PARAMETER_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_PARAMETER_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PARAMETER_DECL.hpp")
             #if __has_include("visitor/Statement_PARAMETER_DECL_pre_default.hpp")
             #include "visitor/Statement_PARAMETER_DECL_pre_default.hpp"
@@ -11822,9 +14244,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::FieldDecl& field_decl) {
             #if __has_include("visitor/Statement_FIELD_DECL_before.hpp")
             #include "visitor/Statement_FIELD_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_FIELD_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_FIELD_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_FIELD_DECL.hpp")
             #include "visitor/Statement_FIELD_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_FIELD_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_FIELD_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_FIELD_DECL.hpp")
             #if __has_include("visitor/Statement_FIELD_DECL_pre_default.hpp")
             #include "visitor/Statement_FIELD_DECL_pre_default.hpp"
@@ -11843,9 +14269,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_COMPOSITE_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::CompositeFieldDecl& composite_field_decl) {
             #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp")
             #include "visitor/Statement_COMPOSITE_FIELD_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
             #include "visitor/Statement_COMPOSITE_FIELD_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_COMPOSITE_FIELD_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_COMPOSITE_FIELD_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_COMPOSITE_FIELD_DECL.hpp")
             #if __has_include("visitor/Statement_COMPOSITE_FIELD_DECL_pre_default.hpp")
             #include "visitor/Statement_COMPOSITE_FIELD_DECL_pre_default.hpp"
@@ -11864,9 +14294,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ENUM_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EnumDecl& enum_decl) {
             #if __has_include("visitor/Statement_ENUM_DECL_before.hpp")
             #include "visitor/Statement_ENUM_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENUM_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ENUM_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ENUM_DECL.hpp")
             #include "visitor/Statement_ENUM_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENUM_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_ENUM_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_DECL.hpp")
             #if __has_include("visitor/Statement_ENUM_DECL_pre_default.hpp")
             #include "visitor/Statement_ENUM_DECL_pre_default.hpp"
@@ -11885,9 +14319,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ENUM_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EnumMemberDecl& enum_member_decl) {
             #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_before.hpp")
             #include "visitor/Statement_ENUM_MEMBER_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ENUM_MEMBER_DECL.hpp")
             #include "visitor/Statement_ENUM_MEMBER_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENUM_MEMBER_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_ENUM_MEMBER_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENUM_MEMBER_DECL.hpp")
             #if __has_include("visitor/Statement_ENUM_MEMBER_DECL_pre_default.hpp")
             #include "visitor/Statement_ENUM_MEMBER_DECL_pre_default.hpp"
@@ -11906,9 +14344,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_STRUCT_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StructDecl& struct_decl) {
             #if __has_include("visitor/Statement_STRUCT_DECL_before.hpp")
             #include "visitor/Statement_STRUCT_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_STRUCT_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_STRUCT_DECL.hpp")
             #include "visitor/Statement_STRUCT_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_STRUCT_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_STRUCT_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_STRUCT_DECL.hpp")
             #if __has_include("visitor/Statement_STRUCT_DECL_pre_default.hpp")
             #include "visitor/Statement_STRUCT_DECL_pre_default.hpp"
@@ -11927,9 +14369,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_UNION_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
             #if __has_include("visitor/Statement_UNION_DECL_before.hpp")
             #include "visitor/Statement_UNION_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_UNION_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_UNION_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_UNION_DECL.hpp")
             #include "visitor/Statement_UNION_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_UNION_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_UNION_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_DECL.hpp")
             #if __has_include("visitor/Statement_UNION_DECL_pre_default.hpp")
             #include "visitor/Statement_UNION_DECL_pre_default.hpp"
@@ -11948,9 +14394,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_UNION_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
             #if __has_include("visitor/Statement_UNION_MEMBER_DECL_before.hpp")
             #include "visitor/Statement_UNION_MEMBER_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_UNION_MEMBER_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_UNION_MEMBER_DECL.hpp")
             #include "visitor/Statement_UNION_MEMBER_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_UNION_MEMBER_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_UNION_MEMBER_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_UNION_MEMBER_DECL.hpp")
             #if __has_include("visitor/Statement_UNION_MEMBER_DECL_pre_default.hpp")
             #include "visitor/Statement_UNION_MEMBER_DECL_pre_default.hpp"
@@ -11969,9 +14419,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_PROGRAM_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Block& block) {
             #if __has_include("visitor/Statement_PROGRAM_DECL_before.hpp")
             #include "visitor/Statement_PROGRAM_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_PROGRAM_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_PROGRAM_DECL.hpp")
             #include "visitor/Statement_PROGRAM_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROGRAM_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_PROGRAM_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROGRAM_DECL.hpp")
             #if __has_include("visitor/Statement_PROGRAM_DECL_pre_default.hpp")
             #include "visitor/Statement_PROGRAM_DECL_pre_default.hpp"
@@ -11990,9 +14444,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_PROPERTY_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::PropertyDecl& property_decl) {
             #if __has_include("visitor/Statement_PROPERTY_DECL_before.hpp")
             #include "visitor/Statement_PROPERTY_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_PROPERTY_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_PROPERTY_DECL.hpp")
             #include "visitor/Statement_PROPERTY_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROPERTY_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_PROPERTY_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_DECL.hpp")
             #if __has_include("visitor/Statement_PROPERTY_DECL_pre_default.hpp")
             #include "visitor/Statement_PROPERTY_DECL_pre_default.hpp"
@@ -12011,9 +14469,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_PROPERTY_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::PropertyMemberDecl& property_member_decl) {
             #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp")
             #include "visitor/Statement_PROPERTY_MEMBER_DECL_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_before_dsl.hpp")
+            #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
             #include "visitor/Statement_PROPERTY_MEMBER_DECL.hpp"
+            #elif __has_include("visitor/dsl/Statement_PROPERTY_MEMBER_DECL_dsl.hpp")
+            #include "visitor/dsl/Statement_PROPERTY_MEMBER_DECL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_PROPERTY_MEMBER_DECL.hpp")
             #if __has_include("visitor/Statement_PROPERTY_MEMBER_DECL_pre_default.hpp")
             #include "visitor/Statement_PROPERTY_MEMBER_DECL_pre_default.hpp"
@@ -12032,9 +14494,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_METADATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Metadata& metadata) {
             #if __has_include("visitor/Statement_METADATA_before.hpp")
             #include "visitor/Statement_METADATA_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_METADATA_before_dsl.hpp")
+            #include "visitor/dsl/Statement_METADATA_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_METADATA.hpp")
             #include "visitor/Statement_METADATA.hpp"
+            #elif __has_include("visitor/dsl/Statement_METADATA_dsl.hpp")
+            #include "visitor/dsl/Statement_METADATA_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_METADATA.hpp")
             #if __has_include("visitor/Statement_METADATA_pre_default.hpp")
             #include "visitor/Statement_METADATA_pre_default.hpp"
@@ -12053,9 +14519,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_IMPORT_MODULE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ImportDecl& import_decl) {
             #if __has_include("visitor/Statement_IMPORT_MODULE_before.hpp")
             #include "visitor/Statement_IMPORT_MODULE_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_before_dsl.hpp")
+            #include "visitor/dsl/Statement_IMPORT_MODULE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_IMPORT_MODULE.hpp")
             #include "visitor/Statement_IMPORT_MODULE.hpp"
+            #elif __has_include("visitor/dsl/Statement_IMPORT_MODULE_dsl.hpp")
+            #include "visitor/dsl/Statement_IMPORT_MODULE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_IMPORT_MODULE.hpp")
             #if __has_include("visitor/Statement_IMPORT_MODULE_pre_default.hpp")
             #include "visitor/Statement_IMPORT_MODULE_pre_default.hpp"
@@ -12074,9 +14544,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_EXPRESSION(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& expression) {
             #if __has_include("visitor/Statement_EXPRESSION_before.hpp")
             #include "visitor/Statement_EXPRESSION_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_EXPRESSION_before_dsl.hpp")
+            #include "visitor/dsl/Statement_EXPRESSION_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_EXPRESSION.hpp")
             #include "visitor/Statement_EXPRESSION.hpp"
+            #elif __has_include("visitor/dsl/Statement_EXPRESSION_dsl.hpp")
+            #include "visitor/dsl/Statement_EXPRESSION_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_EXPRESSION.hpp")
             #if __has_include("visitor/Statement_EXPRESSION_pre_default.hpp")
             #include "visitor/Statement_EXPRESSION_pre_default.hpp"
@@ -12095,9 +14569,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ERROR_REPORT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ErrorReport& error_report) {
             #if __has_include("visitor/Statement_ERROR_REPORT_before.hpp")
             #include "visitor/Statement_ERROR_REPORT_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ERROR_REPORT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ERROR_REPORT.hpp")
             #include "visitor/Statement_ERROR_REPORT.hpp"
+            #elif __has_include("visitor/dsl/Statement_ERROR_REPORT_dsl.hpp")
+            #include "visitor/dsl/Statement_ERROR_REPORT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ERROR_REPORT.hpp")
             #if __has_include("visitor/Statement_ERROR_REPORT_pre_default.hpp")
             #include "visitor/Statement_ERROR_REPORT_pre_default.hpp"
@@ -12116,9 +14594,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_LOWERED_IO_STATEMENTS(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoweredIOStatements& lowered_io_statements) {
             #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp")
             #include "visitor/Statement_LOWERED_IO_STATEMENTS_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_before_dsl.hpp")
+            #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
             #include "visitor/Statement_LOWERED_IO_STATEMENTS.hpp"
+            #elif __has_include("visitor/dsl/Statement_LOWERED_IO_STATEMENTS_dsl.hpp")
+            #include "visitor/dsl/Statement_LOWERED_IO_STATEMENTS_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_LOWERED_IO_STATEMENTS.hpp")
             #if __has_include("visitor/Statement_LOWERED_IO_STATEMENTS_pre_default.hpp")
             #include "visitor/Statement_LOWERED_IO_STATEMENTS_pre_default.hpp"
@@ -12137,9 +14619,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_SUB_BYTE_RANGE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::SubByteRange& sub_byte_range) {
             #if __has_include("visitor/Statement_SUB_BYTE_RANGE_before.hpp")
             #include "visitor/Statement_SUB_BYTE_RANGE_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_before_dsl.hpp")
+            #include "visitor/dsl/Statement_SUB_BYTE_RANGE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_SUB_BYTE_RANGE.hpp")
             #include "visitor/Statement_SUB_BYTE_RANGE.hpp"
+            #elif __has_include("visitor/dsl/Statement_SUB_BYTE_RANGE_dsl.hpp")
+            #include "visitor/dsl/Statement_SUB_BYTE_RANGE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SUB_BYTE_RANGE.hpp")
             #if __has_include("visitor/Statement_SUB_BYTE_RANGE_pre_default.hpp")
             #include "visitor/Statement_SUB_BYTE_RANGE_pre_default.hpp"
@@ -12158,9 +14644,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_INIT_CHECK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::InitCheck& init_check) {
             #if __has_include("visitor/Statement_INIT_CHECK_before.hpp")
             #include "visitor/Statement_INIT_CHECK_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_INIT_CHECK_before_dsl.hpp")
+            #include "visitor/dsl/Statement_INIT_CHECK_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_INIT_CHECK.hpp")
             #include "visitor/Statement_INIT_CHECK.hpp"
+            #elif __has_include("visitor/dsl/Statement_INIT_CHECK_dsl.hpp")
+            #include "visitor/dsl/Statement_INIT_CHECK_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_INIT_CHECK.hpp")
             #if __has_include("visitor/Statement_INIT_CHECK_pre_default.hpp")
             #include "visitor/Statement_INIT_CHECK_pre_default.hpp"
@@ -12179,9 +14669,13 @@ namespace ebm2python {
         expected<Result> visit_Statement_ENDIAN_VARIABLE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EndianVariable& endian_variable) {
             #if __has_include("visitor/Statement_ENDIAN_VARIABLE_before.hpp")
             #include "visitor/Statement_ENDIAN_VARIABLE_before.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_before_dsl.hpp")
+            #include "visitor/dsl/Statement_ENDIAN_VARIABLE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Statement_ENDIAN_VARIABLE.hpp")
             #include "visitor/Statement_ENDIAN_VARIABLE.hpp"
+            #elif __has_include("visitor/dsl/Statement_ENDIAN_VARIABLE_dsl.hpp")
+            #include "visitor/dsl/Statement_ENDIAN_VARIABLE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_ENDIAN_VARIABLE.hpp")
             #if __has_include("visitor/Statement_ENDIAN_VARIABLE_pre_default.hpp")
             #include "visitor/Statement_ENDIAN_VARIABLE_pre_default.hpp"
@@ -12200,9 +14694,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_INT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Varint& int_value) {
             #if __has_include("visitor/Expression_LITERAL_INT_before.hpp")
             #include "visitor/Expression_LITERAL_INT_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_INT_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_INT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_INT.hpp")
             #include "visitor/Expression_LITERAL_INT.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_INT_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_INT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT.hpp")
             #if __has_include("visitor/Expression_LITERAL_INT_pre_default.hpp")
             #include "visitor/Expression_LITERAL_INT_pre_default.hpp"
@@ -12221,9 +14719,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_INT64(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const std::uint64_t& int64_value) {
             #if __has_include("visitor/Expression_LITERAL_INT64_before.hpp")
             #include "visitor/Expression_LITERAL_INT64_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_INT64_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_INT64.hpp")
             #include "visitor/Expression_LITERAL_INT64.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_INT64_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_INT64_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_INT64.hpp")
             #if __has_include("visitor/Expression_LITERAL_INT64_pre_default.hpp")
             #include "visitor/Expression_LITERAL_INT64_pre_default.hpp"
@@ -12242,9 +14744,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_BOOL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const std::uint8_t& bool_value) {
             #if __has_include("visitor/Expression_LITERAL_BOOL_before.hpp")
             #include "visitor/Expression_LITERAL_BOOL_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_BOOL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_BOOL.hpp")
             #include "visitor/Expression_LITERAL_BOOL.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_BOOL_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_BOOL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_BOOL.hpp")
             #if __has_include("visitor/Expression_LITERAL_BOOL_pre_default.hpp")
             #include "visitor/Expression_LITERAL_BOOL_pre_default.hpp"
@@ -12263,9 +14769,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_STRING(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StringRef& string_value) {
             #if __has_include("visitor/Expression_LITERAL_STRING_before.hpp")
             #include "visitor/Expression_LITERAL_STRING_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_STRING_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_STRING.hpp")
             #include "visitor/Expression_LITERAL_STRING.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_STRING_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_STRING_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_STRING.hpp")
             #if __has_include("visitor/Expression_LITERAL_STRING_pre_default.hpp")
             #include "visitor/Expression_LITERAL_STRING_pre_default.hpp"
@@ -12284,9 +14794,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_TYPE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::TypeRef& type_ref) {
             #if __has_include("visitor/Expression_LITERAL_TYPE_before.hpp")
             #include "visitor/Expression_LITERAL_TYPE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_TYPE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_TYPE.hpp")
             #include "visitor/Expression_LITERAL_TYPE.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_TYPE_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_TYPE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_TYPE.hpp")
             #if __has_include("visitor/Expression_LITERAL_TYPE_pre_default.hpp")
             #include "visitor/Expression_LITERAL_TYPE_pre_default.hpp"
@@ -12305,9 +14819,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_LITERAL_CHAR(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Varint& char_value) {
             #if __has_include("visitor/Expression_LITERAL_CHAR_before.hpp")
             #include "visitor/Expression_LITERAL_CHAR_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_before_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_CHAR_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_LITERAL_CHAR.hpp")
             #include "visitor/Expression_LITERAL_CHAR.hpp"
+            #elif __has_include("visitor/dsl/Expression_LITERAL_CHAR_dsl.hpp")
+            #include "visitor/dsl/Expression_LITERAL_CHAR_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_LITERAL_CHAR.hpp")
             #if __has_include("visitor/Expression_LITERAL_CHAR_pre_default.hpp")
             #include "visitor/Expression_LITERAL_CHAR_pre_default.hpp"
@@ -12326,9 +14844,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_IDENTIFIER(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& id) {
             #if __has_include("visitor/Expression_IDENTIFIER_before.hpp")
             #include "visitor/Expression_IDENTIFIER_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_IDENTIFIER_before_dsl.hpp")
+            #include "visitor/dsl/Expression_IDENTIFIER_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_IDENTIFIER.hpp")
             #include "visitor/Expression_IDENTIFIER.hpp"
+            #elif __has_include("visitor/dsl/Expression_IDENTIFIER_dsl.hpp")
+            #include "visitor/dsl/Expression_IDENTIFIER_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IDENTIFIER.hpp")
             #if __has_include("visitor/Expression_IDENTIFIER_pre_default.hpp")
             #include "visitor/Expression_IDENTIFIER_pre_default.hpp"
@@ -12347,9 +14869,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_BINARY_OP(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::BinaryOp& bop,const ebm::ExpressionRef& left,const ebm::ExpressionRef& right) {
             #if __has_include("visitor/Expression_BINARY_OP_before.hpp")
             #include "visitor/Expression_BINARY_OP_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_BINARY_OP_before_dsl.hpp")
+            #include "visitor/dsl/Expression_BINARY_OP_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_BINARY_OP.hpp")
             #include "visitor/Expression_BINARY_OP.hpp"
+            #elif __has_include("visitor/dsl/Expression_BINARY_OP_dsl.hpp")
+            #include "visitor/dsl/Expression_BINARY_OP_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_BINARY_OP.hpp")
             #if __has_include("visitor/Expression_BINARY_OP_pre_default.hpp")
             #include "visitor/Expression_BINARY_OP_pre_default.hpp"
@@ -12368,9 +14894,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_UNARY_OP(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& operand,const ebm::UnaryOp& uop) {
             #if __has_include("visitor/Expression_UNARY_OP_before.hpp")
             #include "visitor/Expression_UNARY_OP_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_UNARY_OP_before_dsl.hpp")
+            #include "visitor/dsl/Expression_UNARY_OP_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_UNARY_OP.hpp")
             #include "visitor/Expression_UNARY_OP.hpp"
+            #elif __has_include("visitor/dsl/Expression_UNARY_OP_dsl.hpp")
+            #include "visitor/dsl/Expression_UNARY_OP_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_UNARY_OP.hpp")
             #if __has_include("visitor/Expression_UNARY_OP_pre_default.hpp")
             #include "visitor/Expression_UNARY_OP_pre_default.hpp"
@@ -12389,9 +14919,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_CALL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::CallDesc& call_desc) {
             #if __has_include("visitor/Expression_CALL_before.hpp")
             #include "visitor/Expression_CALL_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_CALL_before_dsl.hpp")
+            #include "visitor/dsl/Expression_CALL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_CALL.hpp")
             #include "visitor/Expression_CALL.hpp"
+            #elif __has_include("visitor/dsl/Expression_CALL_dsl.hpp")
+            #include "visitor/dsl/Expression_CALL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CALL.hpp")
             #if __has_include("visitor/Expression_CALL_pre_default.hpp")
             #include "visitor/Expression_CALL_pre_default.hpp"
@@ -12410,9 +14944,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_INDEX_ACCESS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& base,const ebm::ExpressionRef& index) {
             #if __has_include("visitor/Expression_INDEX_ACCESS_before.hpp")
             #include "visitor/Expression_INDEX_ACCESS_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_before_dsl.hpp")
+            #include "visitor/dsl/Expression_INDEX_ACCESS_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_INDEX_ACCESS.hpp")
             #include "visitor/Expression_INDEX_ACCESS.hpp"
+            #elif __has_include("visitor/dsl/Expression_INDEX_ACCESS_dsl.hpp")
+            #include "visitor/dsl/Expression_INDEX_ACCESS_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_INDEX_ACCESS.hpp")
             #if __has_include("visitor/Expression_INDEX_ACCESS_pre_default.hpp")
             #include "visitor/Expression_INDEX_ACCESS_pre_default.hpp"
@@ -12431,9 +14969,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_MEMBER_ACCESS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& base,const ebm::ExpressionRef& member) {
             #if __has_include("visitor/Expression_MEMBER_ACCESS_before.hpp")
             #include "visitor/Expression_MEMBER_ACCESS_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_before_dsl.hpp")
+            #include "visitor/dsl/Expression_MEMBER_ACCESS_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_MEMBER_ACCESS.hpp")
             #include "visitor/Expression_MEMBER_ACCESS.hpp"
+            #elif __has_include("visitor/dsl/Expression_MEMBER_ACCESS_dsl.hpp")
+            #include "visitor/dsl/Expression_MEMBER_ACCESS_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MEMBER_ACCESS.hpp")
             #if __has_include("visitor/Expression_MEMBER_ACCESS_pre_default.hpp")
             #include "visitor/Expression_MEMBER_ACCESS_pre_default.hpp"
@@ -12452,9 +14994,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_ENUM_MEMBER(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& enum_decl,const ebm::ExpressionRef& member) {
             #if __has_include("visitor/Expression_ENUM_MEMBER_before.hpp")
             #include "visitor/Expression_ENUM_MEMBER_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_before_dsl.hpp")
+            #include "visitor/dsl/Expression_ENUM_MEMBER_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_ENUM_MEMBER.hpp")
             #include "visitor/Expression_ENUM_MEMBER.hpp"
+            #elif __has_include("visitor/dsl/Expression_ENUM_MEMBER_dsl.hpp")
+            #include "visitor/dsl/Expression_ENUM_MEMBER_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_MEMBER.hpp")
             #if __has_include("visitor/Expression_ENUM_MEMBER_pre_default.hpp")
             #include "visitor/Expression_ENUM_MEMBER_pre_default.hpp"
@@ -12473,9 +15019,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_TYPE_CAST(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::CastType& cast_kind,const ebm::TypeRef& from_type,const ebm::ExpressionRef& source_expr) {
             #if __has_include("visitor/Expression_TYPE_CAST_before.hpp")
             #include "visitor/Expression_TYPE_CAST_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_TYPE_CAST_before_dsl.hpp")
+            #include "visitor/dsl/Expression_TYPE_CAST_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_TYPE_CAST.hpp")
             #include "visitor/Expression_TYPE_CAST.hpp"
+            #elif __has_include("visitor/dsl/Expression_TYPE_CAST_dsl.hpp")
+            #include "visitor/dsl/Expression_TYPE_CAST_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_TYPE_CAST.hpp")
             #if __has_include("visitor/Expression_TYPE_CAST_pre_default.hpp")
             #include "visitor/Expression_TYPE_CAST_pre_default.hpp"
@@ -12494,9 +15044,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_RANGE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& end,const ebm::ExpressionRef& start) {
             #if __has_include("visitor/Expression_RANGE_before.hpp")
             #include "visitor/Expression_RANGE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_RANGE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_RANGE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_RANGE.hpp")
             #include "visitor/Expression_RANGE.hpp"
+            #elif __has_include("visitor/dsl/Expression_RANGE_dsl.hpp")
+            #include "visitor/dsl/Expression_RANGE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_RANGE.hpp")
             #if __has_include("visitor/Expression_RANGE_pre_default.hpp")
             #include "visitor/Expression_RANGE_pre_default.hpp"
@@ -12515,9 +15069,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_DEFAULT_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind) {
             #if __has_include("visitor/Expression_DEFAULT_VALUE_before.hpp")
             #include "visitor/Expression_DEFAULT_VALUE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_DEFAULT_VALUE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_DEFAULT_VALUE.hpp")
             #include "visitor/Expression_DEFAULT_VALUE.hpp"
+            #elif __has_include("visitor/dsl/Expression_DEFAULT_VALUE_dsl.hpp")
+            #include "visitor/dsl/Expression_DEFAULT_VALUE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_DEFAULT_VALUE.hpp")
             #if __has_include("visitor/Expression_DEFAULT_VALUE_pre_default.hpp")
             #include "visitor/Expression_DEFAULT_VALUE_pre_default.hpp"
@@ -12536,9 +15094,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_IS_LITTLE_ENDIAN(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& endian_expr) {
             #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_before.hpp")
             #include "visitor/Expression_IS_LITTLE_ENDIAN_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_before_dsl.hpp")
+            #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN.hpp")
             #include "visitor/Expression_IS_LITTLE_ENDIAN.hpp"
+            #elif __has_include("visitor/dsl/Expression_IS_LITTLE_ENDIAN_dsl.hpp")
+            #include "visitor/dsl/Expression_IS_LITTLE_ENDIAN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_LITTLE_ENDIAN.hpp")
             #if __has_include("visitor/Expression_IS_LITTLE_ENDIAN_pre_default.hpp")
             #include "visitor/Expression_IS_LITTLE_ENDIAN_pre_default.hpp"
@@ -12557,9 +15119,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_GET_STREAM_OFFSET(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StreamType& stream_type,const ebm::SizeUnit& unit) {
             #if __has_include("visitor/Expression_GET_STREAM_OFFSET_before.hpp")
             #include "visitor/Expression_GET_STREAM_OFFSET_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_before_dsl.hpp")
+            #include "visitor/dsl/Expression_GET_STREAM_OFFSET_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_GET_STREAM_OFFSET.hpp")
             #include "visitor/Expression_GET_STREAM_OFFSET.hpp"
+            #elif __has_include("visitor/dsl/Expression_GET_STREAM_OFFSET_dsl.hpp")
+            #include "visitor/dsl/Expression_GET_STREAM_OFFSET_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_STREAM_OFFSET.hpp")
             #if __has_include("visitor/Expression_GET_STREAM_OFFSET_pre_default.hpp")
             #include "visitor/Expression_GET_STREAM_OFFSET_pre_default.hpp"
@@ -12578,9 +15144,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_GET_REMAINING_BYTES(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StreamType& stream_type) {
             #if __has_include("visitor/Expression_GET_REMAINING_BYTES_before.hpp")
             #include "visitor/Expression_GET_REMAINING_BYTES_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_before_dsl.hpp")
+            #include "visitor/dsl/Expression_GET_REMAINING_BYTES_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_GET_REMAINING_BYTES.hpp")
             #include "visitor/Expression_GET_REMAINING_BYTES.hpp"
+            #elif __has_include("visitor/dsl/Expression_GET_REMAINING_BYTES_dsl.hpp")
+            #include "visitor/dsl/Expression_GET_REMAINING_BYTES_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_GET_REMAINING_BYTES.hpp")
             #if __has_include("visitor/Expression_GET_REMAINING_BYTES_pre_default.hpp")
             #include "visitor/Expression_GET_REMAINING_BYTES_pre_default.hpp"
@@ -12599,9 +15169,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_CAN_READ_STREAM(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_ref,const ebm::Size& num_bytes,const ebm::StreamType& stream_type) {
             #if __has_include("visitor/Expression_CAN_READ_STREAM_before.hpp")
             #include "visitor/Expression_CAN_READ_STREAM_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_before_dsl.hpp")
+            #include "visitor/dsl/Expression_CAN_READ_STREAM_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_CAN_READ_STREAM.hpp")
             #include "visitor/Expression_CAN_READ_STREAM.hpp"
+            #elif __has_include("visitor/dsl/Expression_CAN_READ_STREAM_dsl.hpp")
+            #include "visitor/dsl/Expression_CAN_READ_STREAM_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CAN_READ_STREAM.hpp")
             #if __has_include("visitor/Expression_CAN_READ_STREAM_pre_default.hpp")
             #include "visitor/Expression_CAN_READ_STREAM_pre_default.hpp"
@@ -12620,9 +15194,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_ARRAY_SIZE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& array_expr) {
             #if __has_include("visitor/Expression_ARRAY_SIZE_before.hpp")
             #include "visitor/Expression_ARRAY_SIZE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_ARRAY_SIZE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_ARRAY_SIZE.hpp")
             #include "visitor/Expression_ARRAY_SIZE.hpp"
+            #elif __has_include("visitor/dsl/Expression_ARRAY_SIZE_dsl.hpp")
+            #include "visitor/dsl/Expression_ARRAY_SIZE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ARRAY_SIZE.hpp")
             #if __has_include("visitor/Expression_ARRAY_SIZE_pre_default.hpp")
             #include "visitor/Expression_ARRAY_SIZE_pre_default.hpp"
@@ -12641,9 +15219,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_ENUM_IS_DEFINED(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_ENUM_IS_DEFINED_before.hpp")
             #include "visitor/Expression_ENUM_IS_DEFINED_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_before_dsl.hpp")
+            #include "visitor/dsl/Expression_ENUM_IS_DEFINED_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_ENUM_IS_DEFINED.hpp")
             #include "visitor/Expression_ENUM_IS_DEFINED.hpp"
+            #elif __has_include("visitor/dsl/Expression_ENUM_IS_DEFINED_dsl.hpp")
+            #include "visitor/dsl/Expression_ENUM_IS_DEFINED_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ENUM_IS_DEFINED.hpp")
             #if __has_include("visitor/Expression_ENUM_IS_DEFINED_pre_default.hpp")
             #include "visitor/Expression_ENUM_IS_DEFINED_pre_default.hpp"
@@ -12662,9 +15244,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_IS_ERROR(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_IS_ERROR_before.hpp")
             #include "visitor/Expression_IS_ERROR_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_IS_ERROR_before_dsl.hpp")
+            #include "visitor/dsl/Expression_IS_ERROR_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_IS_ERROR.hpp")
             #include "visitor/Expression_IS_ERROR.hpp"
+            #elif __has_include("visitor/dsl/Expression_IS_ERROR_dsl.hpp")
+            #include "visitor/dsl/Expression_IS_ERROR_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_IS_ERROR.hpp")
             #if __has_include("visitor/Expression_IS_ERROR_pre_default.hpp")
             #include "visitor/Expression_IS_ERROR_pre_default.hpp"
@@ -12683,9 +15269,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_MAX_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr) {
             #if __has_include("visitor/Expression_MAX_VALUE_before.hpp")
             #include "visitor/Expression_MAX_VALUE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_MAX_VALUE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_MAX_VALUE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_MAX_VALUE.hpp")
             #include "visitor/Expression_MAX_VALUE.hpp"
+            #elif __has_include("visitor/dsl/Expression_MAX_VALUE_dsl.hpp")
+            #include "visitor/dsl/Expression_MAX_VALUE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_MAX_VALUE.hpp")
             #if __has_include("visitor/Expression_MAX_VALUE_pre_default.hpp")
             #include "visitor/Expression_MAX_VALUE_pre_default.hpp"
@@ -12704,9 +15294,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_READ_DATA(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_statement,const ebm::StatementRef& target_stmt) {
             #if __has_include("visitor/Expression_READ_DATA_before.hpp")
             #include "visitor/Expression_READ_DATA_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_READ_DATA_before_dsl.hpp")
+            #include "visitor/dsl/Expression_READ_DATA_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_READ_DATA.hpp")
             #include "visitor/Expression_READ_DATA.hpp"
+            #elif __has_include("visitor/dsl/Expression_READ_DATA_dsl.hpp")
+            #include "visitor/dsl/Expression_READ_DATA_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_READ_DATA.hpp")
             #if __has_include("visitor/Expression_READ_DATA_pre_default.hpp")
             #include "visitor/Expression_READ_DATA_pre_default.hpp"
@@ -12725,9 +15319,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_WRITE_DATA(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_statement,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_WRITE_DATA_before.hpp")
             #include "visitor/Expression_WRITE_DATA_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_WRITE_DATA_before_dsl.hpp")
+            #include "visitor/dsl/Expression_WRITE_DATA_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_WRITE_DATA.hpp")
             #include "visitor/Expression_WRITE_DATA.hpp"
+            #elif __has_include("visitor/dsl/Expression_WRITE_DATA_dsl.hpp")
+            #include "visitor/dsl/Expression_WRITE_DATA_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_WRITE_DATA.hpp")
             #if __has_include("visitor/Expression_WRITE_DATA_pre_default.hpp")
             #include "visitor/Expression_WRITE_DATA_pre_default.hpp"
@@ -12746,9 +15344,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_CONDITIONAL_STATEMENT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& conditional_stmt,const ebm::StatementRef& target_stmt) {
             #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_before.hpp")
             #include "visitor/Expression_CONDITIONAL_STATEMENT_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_before_dsl.hpp")
+            #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT.hpp")
             #include "visitor/Expression_CONDITIONAL_STATEMENT.hpp"
+            #elif __has_include("visitor/dsl/Expression_CONDITIONAL_STATEMENT_dsl.hpp")
+            #include "visitor/dsl/Expression_CONDITIONAL_STATEMENT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL_STATEMENT.hpp")
             #if __has_include("visitor/Expression_CONDITIONAL_STATEMENT_pre_default.hpp")
             #include "visitor/Expression_CONDITIONAL_STATEMENT_pre_default.hpp"
@@ -12767,9 +15369,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_CONDITIONAL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& condition,const ebm::ExpressionRef& else_,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& then) {
             #if __has_include("visitor/Expression_CONDITIONAL_before.hpp")
             #include "visitor/Expression_CONDITIONAL_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_CONDITIONAL_before_dsl.hpp")
+            #include "visitor/dsl/Expression_CONDITIONAL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_CONDITIONAL.hpp")
             #include "visitor/Expression_CONDITIONAL.hpp"
+            #elif __has_include("visitor/dsl/Expression_CONDITIONAL_dsl.hpp")
+            #include "visitor/dsl/Expression_CONDITIONAL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_CONDITIONAL.hpp")
             #if __has_include("visitor/Expression_CONDITIONAL_pre_default.hpp")
             #include "visitor/Expression_CONDITIONAL_pre_default.hpp"
@@ -12788,9 +15394,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_AVAILABLE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_AVAILABLE_before.hpp")
             #include "visitor/Expression_AVAILABLE_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_AVAILABLE_before_dsl.hpp")
+            #include "visitor/dsl/Expression_AVAILABLE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_AVAILABLE.hpp")
             #include "visitor/Expression_AVAILABLE.hpp"
+            #elif __has_include("visitor/dsl/Expression_AVAILABLE_dsl.hpp")
+            #include "visitor/dsl/Expression_AVAILABLE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_AVAILABLE.hpp")
             #if __has_include("visitor/Expression_AVAILABLE_pre_default.hpp")
             #include "visitor/Expression_AVAILABLE_pre_default.hpp"
@@ -12809,9 +15419,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_SIZEOF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_SIZEOF_before.hpp")
             #include "visitor/Expression_SIZEOF_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_SIZEOF_before_dsl.hpp")
+            #include "visitor/dsl/Expression_SIZEOF_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_SIZEOF.hpp")
             #include "visitor/Expression_SIZEOF.hpp"
+            #elif __has_include("visitor/dsl/Expression_SIZEOF_dsl.hpp")
+            #include "visitor/dsl/Expression_SIZEOF_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SIZEOF.hpp")
             #if __has_include("visitor/Expression_SIZEOF_pre_default.hpp")
             #include "visitor/Expression_SIZEOF_pre_default.hpp"
@@ -12830,9 +15444,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_SUB_RANGE_INIT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& sub_range) {
             #if __has_include("visitor/Expression_SUB_RANGE_INIT_before.hpp")
             #include "visitor/Expression_SUB_RANGE_INIT_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_before_dsl.hpp")
+            #include "visitor/dsl/Expression_SUB_RANGE_INIT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_SUB_RANGE_INIT.hpp")
             #include "visitor/Expression_SUB_RANGE_INIT.hpp"
+            #elif __has_include("visitor/dsl/Expression_SUB_RANGE_INIT_dsl.hpp")
+            #include "visitor/dsl/Expression_SUB_RANGE_INIT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SUB_RANGE_INIT.hpp")
             #if __has_include("visitor/Expression_SUB_RANGE_INIT_pre_default.hpp")
             #include "visitor/Expression_SUB_RANGE_INIT_pre_default.hpp"
@@ -12851,9 +15469,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_OR_COND(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Expressions& or_cond) {
             #if __has_include("visitor/Expression_OR_COND_before.hpp")
             #include "visitor/Expression_OR_COND_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_OR_COND_before_dsl.hpp")
+            #include "visitor/dsl/Expression_OR_COND_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_OR_COND.hpp")
             #include "visitor/Expression_OR_COND.hpp"
+            #elif __has_include("visitor/dsl/Expression_OR_COND_dsl.hpp")
+            #include "visitor/dsl/Expression_OR_COND_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OR_COND.hpp")
             #if __has_include("visitor/Expression_OR_COND_pre_default.hpp")
             #include "visitor/Expression_OR_COND_pre_default.hpp"
@@ -12872,9 +15494,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_ADDRESS_OF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_ADDRESS_OF_before.hpp")
             #include "visitor/Expression_ADDRESS_OF_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_before_dsl.hpp")
+            #include "visitor/dsl/Expression_ADDRESS_OF_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_ADDRESS_OF.hpp")
             #include "visitor/Expression_ADDRESS_OF.hpp"
+            #elif __has_include("visitor/dsl/Expression_ADDRESS_OF_dsl.hpp")
+            #include "visitor/dsl/Expression_ADDRESS_OF_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_ADDRESS_OF.hpp")
             #if __has_include("visitor/Expression_ADDRESS_OF_pre_default.hpp")
             #include "visitor/Expression_ADDRESS_OF_pre_default.hpp"
@@ -12893,9 +15519,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_OPTIONAL_OF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
             #if __has_include("visitor/Expression_OPTIONAL_OF_before.hpp")
             #include "visitor/Expression_OPTIONAL_OF_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_before_dsl.hpp")
+            #include "visitor/dsl/Expression_OPTIONAL_OF_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_OPTIONAL_OF.hpp")
             #include "visitor/Expression_OPTIONAL_OF.hpp"
+            #elif __has_include("visitor/dsl/Expression_OPTIONAL_OF_dsl.hpp")
+            #include "visitor/dsl/Expression_OPTIONAL_OF_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_OPTIONAL_OF.hpp")
             #if __has_include("visitor/Expression_OPTIONAL_OF_pre_default.hpp")
             #include "visitor/Expression_OPTIONAL_OF_pre_default.hpp"
@@ -12914,9 +15544,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_SETTER_STATUS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::SetterStatus& setter_status) {
             #if __has_include("visitor/Expression_SETTER_STATUS_before.hpp")
             #include "visitor/Expression_SETTER_STATUS_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_before_dsl.hpp")
+            #include "visitor/dsl/Expression_SETTER_STATUS_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_SETTER_STATUS.hpp")
             #include "visitor/Expression_SETTER_STATUS.hpp"
+            #elif __has_include("visitor/dsl/Expression_SETTER_STATUS_dsl.hpp")
+            #include "visitor/dsl/Expression_SETTER_STATUS_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SETTER_STATUS.hpp")
             #if __has_include("visitor/Expression_SETTER_STATUS_pre_default.hpp")
             #include "visitor/Expression_SETTER_STATUS_pre_default.hpp"
@@ -12935,9 +15569,13 @@ namespace ebm2python {
         expected<Result> visit_Expression_SELF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind) {
             #if __has_include("visitor/Expression_SELF_before.hpp")
             #include "visitor/Expression_SELF_before.hpp"
+            #elif __has_include("visitor/dsl/Expression_SELF_before_dsl.hpp")
+            #include "visitor/dsl/Expression_SELF_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Expression_SELF.hpp")
             #include "visitor/Expression_SELF.hpp"
+            #elif __has_include("visitor/dsl/Expression_SELF_dsl.hpp")
+            #include "visitor/dsl/Expression_SELF_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Expression_SELF.hpp")
             #if __has_include("visitor/Expression_SELF_pre_default.hpp")
             #include "visitor/Expression_SELF_pre_default.hpp"
@@ -12956,9 +15594,13 @@ namespace ebm2python {
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_INT_before.hpp")
             #include "visitor/Type_INT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_INT_before_dsl.hpp")
+            #include "visitor/dsl/Type_INT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_INT.hpp")
             #include "visitor/Type_INT.hpp"
+            #elif __has_include("visitor/dsl/Type_INT_dsl.hpp")
+            #include "visitor/dsl/Type_INT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_INT.hpp")
             #if __has_include("visitor/Type_INT_pre_default.hpp")
             #include "visitor/Type_INT_pre_default.hpp"
@@ -12977,9 +15619,13 @@ namespace ebm2python {
         expected<Result> visit_Type_UINT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_UINT_before.hpp")
             #include "visitor/Type_UINT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_UINT_before_dsl.hpp")
+            #include "visitor/dsl/Type_UINT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_UINT.hpp")
             #include "visitor/Type_UINT.hpp"
+            #elif __has_include("visitor/dsl/Type_UINT_dsl.hpp")
+            #include "visitor/dsl/Type_UINT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_UINT.hpp")
             #if __has_include("visitor/Type_UINT_pre_default.hpp")
             #include "visitor/Type_UINT_pre_default.hpp"
@@ -12998,9 +15644,13 @@ namespace ebm2python {
         expected<Result> visit_Type_FLOAT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             #if __has_include("visitor/Type_FLOAT_before.hpp")
             #include "visitor/Type_FLOAT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_FLOAT_before_dsl.hpp")
+            #include "visitor/dsl/Type_FLOAT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_FLOAT.hpp")
             #include "visitor/Type_FLOAT.hpp"
+            #elif __has_include("visitor/dsl/Type_FLOAT_dsl.hpp")
+            #include "visitor/dsl/Type_FLOAT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FLOAT.hpp")
             #if __has_include("visitor/Type_FLOAT_pre_default.hpp")
             #include "visitor/Type_FLOAT_pre_default.hpp"
@@ -13019,9 +15669,13 @@ namespace ebm2python {
         expected<Result> visit_Type_STRUCT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::StatementRef& id) {
             #if __has_include("visitor/Type_STRUCT_before.hpp")
             #include "visitor/Type_STRUCT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_STRUCT_before_dsl.hpp")
+            #include "visitor/dsl/Type_STRUCT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_STRUCT.hpp")
             #include "visitor/Type_STRUCT.hpp"
+            #elif __has_include("visitor/dsl/Type_STRUCT_dsl.hpp")
+            #include "visitor/dsl/Type_STRUCT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_STRUCT.hpp")
             #if __has_include("visitor/Type_STRUCT_pre_default.hpp")
             #include "visitor/Type_STRUCT_pre_default.hpp"
@@ -13040,9 +15694,13 @@ namespace ebm2python {
         expected<Result> visit_Type_RECURSIVE_STRUCT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::StatementRef& id) {
             #if __has_include("visitor/Type_RECURSIVE_STRUCT_before.hpp")
             #include "visitor/Type_RECURSIVE_STRUCT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_before_dsl.hpp")
+            #include "visitor/dsl/Type_RECURSIVE_STRUCT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_RECURSIVE_STRUCT.hpp")
             #include "visitor/Type_RECURSIVE_STRUCT.hpp"
+            #elif __has_include("visitor/dsl/Type_RECURSIVE_STRUCT_dsl.hpp")
+            #include "visitor/dsl/Type_RECURSIVE_STRUCT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RECURSIVE_STRUCT.hpp")
             #if __has_include("visitor/Type_RECURSIVE_STRUCT_pre_default.hpp")
             #include "visitor/Type_RECURSIVE_STRUCT_pre_default.hpp"
@@ -13061,9 +15719,13 @@ namespace ebm2python {
         expected<Result> visit_Type_BOOL(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_BOOL_before.hpp")
             #include "visitor/Type_BOOL_before.hpp"
+            #elif __has_include("visitor/dsl/Type_BOOL_before_dsl.hpp")
+            #include "visitor/dsl/Type_BOOL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_BOOL.hpp")
             #include "visitor/Type_BOOL.hpp"
+            #elif __has_include("visitor/dsl/Type_BOOL_dsl.hpp")
+            #include "visitor/dsl/Type_BOOL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_BOOL.hpp")
             #if __has_include("visitor/Type_BOOL_pre_default.hpp")
             #include "visitor/Type_BOOL_pre_default.hpp"
@@ -13082,9 +15744,13 @@ namespace ebm2python {
         expected<Result> visit_Type_VOID(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_VOID_before.hpp")
             #include "visitor/Type_VOID_before.hpp"
+            #elif __has_include("visitor/dsl/Type_VOID_before_dsl.hpp")
+            #include "visitor/dsl/Type_VOID_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_VOID.hpp")
             #include "visitor/Type_VOID.hpp"
+            #elif __has_include("visitor/dsl/Type_VOID_dsl.hpp")
+            #include "visitor/dsl/Type_VOID_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VOID.hpp")
             #if __has_include("visitor/Type_VOID_pre_default.hpp")
             #include "visitor/Type_VOID_pre_default.hpp"
@@ -13103,9 +15769,13 @@ namespace ebm2python {
         expected<Result> visit_Type_META(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_META_before.hpp")
             #include "visitor/Type_META_before.hpp"
+            #elif __has_include("visitor/dsl/Type_META_before_dsl.hpp")
+            #include "visitor/dsl/Type_META_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_META.hpp")
             #include "visitor/Type_META.hpp"
+            #elif __has_include("visitor/dsl/Type_META_dsl.hpp")
+            #include "visitor/dsl/Type_META_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_META.hpp")
             #if __has_include("visitor/Type_META_pre_default.hpp")
             #include "visitor/Type_META_pre_default.hpp"
@@ -13124,9 +15794,13 @@ namespace ebm2python {
         expected<Result> visit_Type_ENUM(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& base_type,const ebm::StatementRef& id) {
             #if __has_include("visitor/Type_ENUM_before.hpp")
             #include "visitor/Type_ENUM_before.hpp"
+            #elif __has_include("visitor/dsl/Type_ENUM_before_dsl.hpp")
+            #include "visitor/dsl/Type_ENUM_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_ENUM.hpp")
             #include "visitor/Type_ENUM.hpp"
+            #elif __has_include("visitor/dsl/Type_ENUM_dsl.hpp")
+            #include "visitor/dsl/Type_ENUM_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENUM.hpp")
             #if __has_include("visitor/Type_ENUM_pre_default.hpp")
             #include "visitor/Type_ENUM_pre_default.hpp"
@@ -13145,9 +15819,13 @@ namespace ebm2python {
         expected<Result> visit_Type_ARRAY(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& element_type,const ebm::Varint& length) {
             #if __has_include("visitor/Type_ARRAY_before.hpp")
             #include "visitor/Type_ARRAY_before.hpp"
+            #elif __has_include("visitor/dsl/Type_ARRAY_before_dsl.hpp")
+            #include "visitor/dsl/Type_ARRAY_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_ARRAY.hpp")
             #include "visitor/Type_ARRAY.hpp"
+            #elif __has_include("visitor/dsl/Type_ARRAY_dsl.hpp")
+            #include "visitor/dsl/Type_ARRAY_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ARRAY.hpp")
             #if __has_include("visitor/Type_ARRAY_pre_default.hpp")
             #include "visitor/Type_ARRAY_pre_default.hpp"
@@ -13166,9 +15844,13 @@ namespace ebm2python {
         expected<Result> visit_Type_VECTOR(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& element_type) {
             #if __has_include("visitor/Type_VECTOR_before.hpp")
             #include "visitor/Type_VECTOR_before.hpp"
+            #elif __has_include("visitor/dsl/Type_VECTOR_before_dsl.hpp")
+            #include "visitor/dsl/Type_VECTOR_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_VECTOR.hpp")
             #include "visitor/Type_VECTOR.hpp"
+            #elif __has_include("visitor/dsl/Type_VECTOR_dsl.hpp")
+            #include "visitor/dsl/Type_VECTOR_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VECTOR.hpp")
             #if __has_include("visitor/Type_VECTOR_pre_default.hpp")
             #include "visitor/Type_VECTOR_pre_default.hpp"
@@ -13187,9 +15869,13 @@ namespace ebm2python {
         expected<Result> visit_Type_VARIANT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& common_type,const ebm::Types& members,const ebm::StatementRef& related_field) {
             #if __has_include("visitor/Type_VARIANT_before.hpp")
             #include "visitor/Type_VARIANT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_VARIANT_before_dsl.hpp")
+            #include "visitor/dsl/Type_VARIANT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_VARIANT.hpp")
             #include "visitor/Type_VARIANT.hpp"
+            #elif __has_include("visitor/dsl/Type_VARIANT_dsl.hpp")
+            #include "visitor/dsl/Type_VARIANT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_VARIANT.hpp")
             #if __has_include("visitor/Type_VARIANT_pre_default.hpp")
             #include "visitor/Type_VARIANT_pre_default.hpp"
@@ -13208,9 +15894,13 @@ namespace ebm2python {
         expected<Result> visit_Type_RANGE(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& base_type) {
             #if __has_include("visitor/Type_RANGE_before.hpp")
             #include "visitor/Type_RANGE_before.hpp"
+            #elif __has_include("visitor/dsl/Type_RANGE_before_dsl.hpp")
+            #include "visitor/dsl/Type_RANGE_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_RANGE.hpp")
             #include "visitor/Type_RANGE.hpp"
+            #elif __has_include("visitor/dsl/Type_RANGE_dsl.hpp")
+            #include "visitor/dsl/Type_RANGE_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_RANGE.hpp")
             #if __has_include("visitor/Type_RANGE_pre_default.hpp")
             #include "visitor/Type_RANGE_pre_default.hpp"
@@ -13229,9 +15919,13 @@ namespace ebm2python {
         expected<Result> visit_Type_ENCODER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_ENCODER_RETURN_before.hpp")
             #include "visitor/Type_ENCODER_RETURN_before.hpp"
+            #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_before_dsl.hpp")
+            #include "visitor/dsl/Type_ENCODER_RETURN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_ENCODER_RETURN.hpp")
             #include "visitor/Type_ENCODER_RETURN.hpp"
+            #elif __has_include("visitor/dsl/Type_ENCODER_RETURN_dsl.hpp")
+            #include "visitor/dsl/Type_ENCODER_RETURN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_RETURN.hpp")
             #if __has_include("visitor/Type_ENCODER_RETURN_pre_default.hpp")
             #include "visitor/Type_ENCODER_RETURN_pre_default.hpp"
@@ -13250,9 +15944,13 @@ namespace ebm2python {
         expected<Result> visit_Type_DECODER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_DECODER_RETURN_before.hpp")
             #include "visitor/Type_DECODER_RETURN_before.hpp"
+            #elif __has_include("visitor/dsl/Type_DECODER_RETURN_before_dsl.hpp")
+            #include "visitor/dsl/Type_DECODER_RETURN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_DECODER_RETURN.hpp")
             #include "visitor/Type_DECODER_RETURN.hpp"
+            #elif __has_include("visitor/dsl/Type_DECODER_RETURN_dsl.hpp")
+            #include "visitor/dsl/Type_DECODER_RETURN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_RETURN.hpp")
             #if __has_include("visitor/Type_DECODER_RETURN_pre_default.hpp")
             #include "visitor/Type_DECODER_RETURN_pre_default.hpp"
@@ -13271,9 +15969,13 @@ namespace ebm2python {
         expected<Result> visit_Type_ENCODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_ENCODER_INPUT_before.hpp")
             #include "visitor/Type_ENCODER_INPUT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_before_dsl.hpp")
+            #include "visitor/dsl/Type_ENCODER_INPUT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_ENCODER_INPUT.hpp")
             #include "visitor/Type_ENCODER_INPUT.hpp"
+            #elif __has_include("visitor/dsl/Type_ENCODER_INPUT_dsl.hpp")
+            #include "visitor/dsl/Type_ENCODER_INPUT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_ENCODER_INPUT.hpp")
             #if __has_include("visitor/Type_ENCODER_INPUT_pre_default.hpp")
             #include "visitor/Type_ENCODER_INPUT_pre_default.hpp"
@@ -13292,9 +15994,13 @@ namespace ebm2python {
         expected<Result> visit_Type_DECODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_DECODER_INPUT_before.hpp")
             #include "visitor/Type_DECODER_INPUT_before.hpp"
+            #elif __has_include("visitor/dsl/Type_DECODER_INPUT_before_dsl.hpp")
+            #include "visitor/dsl/Type_DECODER_INPUT_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_DECODER_INPUT.hpp")
             #include "visitor/Type_DECODER_INPUT.hpp"
+            #elif __has_include("visitor/dsl/Type_DECODER_INPUT_dsl.hpp")
+            #include "visitor/dsl/Type_DECODER_INPUT_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_DECODER_INPUT.hpp")
             #if __has_include("visitor/Type_DECODER_INPUT_pre_default.hpp")
             #include "visitor/Type_DECODER_INPUT_pre_default.hpp"
@@ -13313,9 +16019,13 @@ namespace ebm2python {
         expected<Result> visit_Type_PROPERTY_SETTER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_before.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN_before.hpp"
+            #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_before_dsl.hpp")
+            #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN.hpp"
+            #elif __has_include("visitor/dsl/Type_PROPERTY_SETTER_RETURN_dsl.hpp")
+            #include "visitor/dsl/Type_PROPERTY_SETTER_RETURN_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PROPERTY_SETTER_RETURN.hpp")
             #if __has_include("visitor/Type_PROPERTY_SETTER_RETURN_pre_default.hpp")
             #include "visitor/Type_PROPERTY_SETTER_RETURN_pre_default.hpp"
@@ -13334,9 +16044,13 @@ namespace ebm2python {
         expected<Result> visit_Type_OPTIONAL(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& inner_type) {
             #if __has_include("visitor/Type_OPTIONAL_before.hpp")
             #include "visitor/Type_OPTIONAL_before.hpp"
+            #elif __has_include("visitor/dsl/Type_OPTIONAL_before_dsl.hpp")
+            #include "visitor/dsl/Type_OPTIONAL_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_OPTIONAL.hpp")
             #include "visitor/Type_OPTIONAL.hpp"
+            #elif __has_include("visitor/dsl/Type_OPTIONAL_dsl.hpp")
+            #include "visitor/dsl/Type_OPTIONAL_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_OPTIONAL.hpp")
             #if __has_include("visitor/Type_OPTIONAL_pre_default.hpp")
             #include "visitor/Type_OPTIONAL_pre_default.hpp"
@@ -13355,9 +16069,13 @@ namespace ebm2python {
         expected<Result> visit_Type_PTR(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& pointee_type) {
             #if __has_include("visitor/Type_PTR_before.hpp")
             #include "visitor/Type_PTR_before.hpp"
+            #elif __has_include("visitor/dsl/Type_PTR_before_dsl.hpp")
+            #include "visitor/dsl/Type_PTR_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_PTR.hpp")
             #include "visitor/Type_PTR.hpp"
+            #elif __has_include("visitor/dsl/Type_PTR_dsl.hpp")
+            #include "visitor/dsl/Type_PTR_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_PTR.hpp")
             #if __has_include("visitor/Type_PTR_pre_default.hpp")
             #include "visitor/Type_PTR_pre_default.hpp"
@@ -13376,9 +16094,13 @@ namespace ebm2python {
         expected<Result> visit_Type_FUNCTION(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Types& params,const ebm::TypeRef& return_type) {
             #if __has_include("visitor/Type_FUNCTION_before.hpp")
             #include "visitor/Type_FUNCTION_before.hpp"
+            #elif __has_include("visitor/dsl/Type_FUNCTION_before_dsl.hpp")
+            #include "visitor/dsl/Type_FUNCTION_before_dsl.hpp"
             #endif
             #if __has_include("visitor/Type_FUNCTION.hpp")
             #include "visitor/Type_FUNCTION.hpp"
+            #elif __has_include("visitor/dsl/Type_FUNCTION_dsl.hpp")
+            #include "visitor/dsl/Type_FUNCTION_dsl.hpp"
             #elif __has_include("ebmcodegen/default_codegen_visitor/Type_FUNCTION.hpp")
             #if __has_include("visitor/Type_FUNCTION_pre_default.hpp")
             #include "visitor/Type_FUNCTION_pre_default.hpp"
@@ -13493,9 +16215,13 @@ namespace ebm2python {
 DEFINE_ENTRY(Flags,Output) {
     #if __has_include("visitor/pre_visitor_before.hpp")
     #include "visitor/pre_visitor_before.hpp"
+    #elif __has_include("visitor/dsl/pre_visitor_before_dsl.hpp")
+    #include "visitor/dsl/pre_visitor_before_dsl.hpp"
     #endif
     #if __has_include("visitor/pre_visitor.hpp")
     #include "visitor/pre_visitor.hpp"
+    #elif __has_include("visitor/dsl/pre_visitor_dsl.hpp")
+    #include "visitor/dsl/pre_visitor_dsl.hpp"
     #elif __has_include("ebmcodegen/default_codegen_visitor/pre_visitor.hpp")
     #if __has_include("visitor/pre_visitor_pre_default.hpp")
     #include "visitor/pre_visitor_pre_default.hpp"
@@ -13508,9 +16234,13 @@ DEFINE_ENTRY(Flags,Output) {
     ebm2python::Visitor visitor{ebm,w,flags,output};
     #if __has_include("visitor/pre_entry_before.hpp")
     #include "visitor/pre_entry_before.hpp"
+    #elif __has_include("visitor/dsl/pre_entry_before_dsl.hpp")
+    #include "visitor/dsl/pre_entry_before_dsl.hpp"
     #endif
     #if __has_include("visitor/pre_entry.hpp")
     #include "visitor/pre_entry.hpp"
+    #elif __has_include("visitor/dsl/pre_entry_dsl.hpp")
+    #include "visitor/dsl/pre_entry_dsl.hpp"
     #elif __has_include("ebmcodegen/default_codegen_visitor/pre_entry.hpp")
     #if __has_include("visitor/pre_entry_pre_default.hpp")
     #include "visitor/pre_entry_pre_default.hpp"
@@ -13527,9 +16257,13 @@ DEFINE_ENTRY(Flags,Output) {
     }
     #if __has_include("visitor/post_entry_before.hpp")
     #include "visitor/post_entry_before.hpp"
+    #elif __has_include("visitor/dsl/post_entry_before_dsl.hpp")
+    #include "visitor/dsl/post_entry_before_dsl.hpp"
     #endif
     #if __has_include("visitor/post_entry.hpp")
     #include "visitor/post_entry.hpp"
+    #elif __has_include("visitor/dsl/post_entry_dsl.hpp")
+    #include "visitor/dsl/post_entry_dsl.hpp"
     #elif __has_include("ebmcodegen/default_codegen_visitor/post_entry.hpp")
     #if __has_include("visitor/post_entry_pre_default.hpp")
     #include "visitor/post_entry_pre_default.hpp"

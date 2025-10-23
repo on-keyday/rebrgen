@@ -49,9 +49,19 @@ def run_save_template(tool_path, template_target, lang):
             print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
             sys.exit(1)
         visitor_dir = os.path.join(lang_dir, "visitor")
+    isDSL = template_target.endswith("_dsl")
+    suffix = ".hpp"
+    DSL_CODE_PREFIX = ""
+    DSL_CODE_SUFFIX = ""
+    if isDSL:  # if DSL template, save to dsl subdirectory
+        visitor_dir = os.path.join(lang_dir, "dsl")
+        suffix = ".dsl"
+        DSL_CODE_PREFIX = "{%\n"
+        DSL_CODE_SUFFIX = "%}\n"
+
     os.makedirs(visitor_dir, exist_ok=True)  # Ensure visitor directory exists
 
-    output_path = os.path.join(visitor_dir, f"{template_target}.hpp")
+    output_path = os.path.join(visitor_dir, f"{template_target}{suffix}")
     if os.path.exists(output_path):
         print(f"Error: File '{output_path}' already exists.", file=sys.stderr)
         sys.exit(1)
@@ -63,9 +73,7 @@ def run_save_template(tool_path, template_target, lang):
             command, check=True, capture_output=True, text=True, encoding="utf-8"
         )
         # Add markers to the template content
-        template_content = (
-            f"{START_MARKER}{result.stdout}{END_MARKER}\n/*here to write the hook*/\n"
-        )
+        template_content = f"{DSL_CODE_PREFIX}{START_MARKER}{result.stdout}{END_MARKER}\n/*here to write the hook*/\n{DSL_CODE_SUFFIX}"
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")
@@ -82,6 +90,40 @@ def run_save_template(tool_path, template_target, lang):
         )
         print(f"Stderr: {e.stderr}", file=sys.stderr)
         sys.exit(1)
+
+
+def isDSLSuitableDir(dir: str) -> bool:
+    """Check if the given directory is suitable for DSL templates."""
+    return dir.endswith("dsl") or dir.endswith("dsl/") or dir.endswith("dsl\\")
+
+
+def isSuitableDir(name: str, dir: str) -> bool:
+    """Check if the given file is suitable for DSL templates."""
+    isDSLTemplate = name.endswith("_dsl")
+    isDSLDir = isDSLSuitableDir(dir)
+    return isDSLTemplate == isDSLDir
+
+
+def list_templates(
+    dir: str, strict_set: set[str], suffix: str = ".hpp"
+) -> tuple[list[dict[str, str]], list[str]]:
+    """List all .hpp files in the given directory and its subdirectories."""
+    hpp_files = []
+    non_template_files = []
+    for root, _, files in os.walk(dir):
+        for file in files:
+            if file.endswith(suffix):
+                name = os.path.splitext(file)[0]
+                if name in strict_set and isSuitableDir(name, root):
+                    hpp_files.append(
+                        {
+                            "name": name,
+                            "path": os.path.join(root, file),
+                        }
+                    )
+                else:
+                    non_template_files.append(os.path.join(root, file))
+    return hpp_files, non_template_files
 
 
 def run_update_hooks(tool_path, lang):
@@ -110,22 +152,29 @@ def run_update_hooks(tool_path, lang):
 
     if lang == "default_codegen":
         visitor_dir = "src/ebmcodegen/default_codegen_visitor"
+        dsl_dir = None
     else:
         visitor_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "visitor")
+        dsl_dir = os.path.join("src", "ebmcg", f"ebm2{lang}", "dsl")
     if not os.path.isdir(visitor_dir):
         print(f"Error: Visitor directory '{visitor_dir}' not found.", file=sys.stderr)
         sys.exit(1)
 
     print(f"Checking for updates in '{visitor_dir}'...")
-    hpp_files = [f for f in os.listdir(visitor_dir) if f.endswith(".hpp")]
+    hpp_files, _ = list_templates(visitor_dir, set(get_available_templates()))
+    dsl_files, _ = (
+        list_templates(dsl_dir, set(get_available_templates()), suffix=".dsl")
+        if dsl_dir
+        else ([], [])
+    )
 
-    if not hpp_files:
-        print("No .hpp files found to update.", file=sys.stderr)
+    if not hpp_files and not dsl_files:
+        print("No .hpp or .dsl files found to update.", file=sys.stderr)
         return
-
-    for filename in hpp_files:
-        template_target = os.path.splitext(filename)[0]
-        file_path = os.path.join(visitor_dir, filename)
+    targets = hpp_files + dsl_files
+    for file in targets:
+        template_target = file["name"]
+        file_path = file["path"]
         print(f"-- Processing '{file_path}'...", file=sys.stderr)
 
         try:
@@ -192,25 +241,9 @@ def run_test_mode(tool_path):
     )
 
     # Get the list of hooks
-    try:
-        hooklist_cmd = [tool_path, "--mode", "hooklist"]
-        result = subprocess.run(
-            hooklist_cmd, check=True, capture_output=True, text=True, encoding="utf-8"
-        )
-        targets = [line for line in result.stdout.splitlines() if line.strip()]
-        if not targets:
-            print(
-                "Error: Could not retrieve any template targets from 'hooklist'.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        print(f"Found {len(targets)} targets to test.", file=sys.stderr)
-    except subprocess.CalledProcessError as e:
-        print(
-            f"Error: Failed to get hooklist. ebmcodegen exited with code {e.returncode}",
-            file=sys.stderr,
-        )
-        print(f"Stderr: {e.stderr}", file=sys.stderr)
+    targets = get_available_templates()
+    if not targets:
+        print("No available templates found. Exiting test mode.", file=sys.stderr)
         sys.exit(1)
 
     # Test each target
@@ -272,17 +305,10 @@ def list_defined_templates(lang: str):
         print("No available templates found.", file=sys.stderr)
         return
     # detect defined hook file and non template files
-    defined_hooks = dict()
-    non_template_files = set()
-    for filename in os.listdir(visitor_dir):
-        added = False
-        if filename.endswith(".hpp"):
-            hook_name = os.path.splitext(filename)[0]
-            if hook_name in available_hooks:
-                defined_hooks[hook_name] = os.path.join(visitor_dir, filename)
-                added = True
-        if not added:
-            non_template_files.add(os.path.join(visitor_dir, filename))
+    defined_hooks_source, non_template_files = list_templates(
+        visitor_dir, available_hooks
+    )
+    defined_hooks = {d["name"]: d["path"] for d in defined_hooks_source}
     defined_hooks = dict(sorted(defined_hooks.items()))
     non_template_files = sorted(list(non_template_files))
     print(

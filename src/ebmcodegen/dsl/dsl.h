@@ -49,6 +49,72 @@ namespace ebmcodegen::dsl {
 
         constexpr auto dsl = *(cpp_target | cpp_var_writer | cpp_visited_node | cpp_identifier_getter | cpp_special_marker | indent | line | target_lang) & eos;
 
+        enum class SpecialOutputKind {
+            TransferAndResetWriter,
+            ForIdent,
+            ForRangeBegin,
+            ForRangeEnd,
+            ForRangeStep,
+            ForItem,
+            EndFor,
+            EndIf,
+            IfCondition,
+            ElifCondition,
+            Else,
+            DefineVariableIdent,
+            DefineVariableValue,
+        };
+
+        constexpr auto transfer_and_reset = str(SpecialOutputKind::TransferAndResetWriter, lit("transfer_and_reset_writer"));
+        constexpr auto for_ident = str(SpecialOutputKind::ForIdent, cps::c_ident);
+        constexpr auto for_range_begin = str(SpecialOutputKind::ForRangeBegin, ~(not_(lit(",") | lit(")")) & uany));
+        constexpr auto for_range_end = str(SpecialOutputKind::ForRangeEnd, ~(not_(lit(",") | lit(")")) & uany));
+        constexpr auto for_range_step = str(SpecialOutputKind::ForRangeStep, ~(not_(lit(")")) & uany));
+        constexpr auto spaces = *(cps::space);
+        constexpr auto least_one_space = ~(cps::space);
+        constexpr auto ranges = lit("range") &
+                                least_one_space &
+                                lit("(") &
+                                for_range_begin &
+                                -(
+                                    lit(",") &
+                                    for_range_end) &
+                                -(
+                                    lit(",") &
+                                    for_range_step) &
+                                lit(")");
+        constexpr auto for_loop = lit("for") &
+                                  least_one_space &
+                                  for_ident &
+                                  least_one_space &
+                                  lit("in") &
+                                  least_one_space & (ranges | str(SpecialOutputKind::ForItem, *uany));
+
+        constexpr auto end_for = str(SpecialOutputKind::EndFor, lit("endfor"));
+        constexpr auto end_if = str(SpecialOutputKind::EndIf, lit("endif"));
+
+        constexpr auto if_ = lit("if") &
+                             least_one_space &
+                             str(SpecialOutputKind::IfCondition, *uany);
+
+        constexpr auto elif_ = lit("elif") &
+                               least_one_space &
+                               str(SpecialOutputKind::ElifCondition, *uany);
+
+        constexpr auto else_ =
+            str(SpecialOutputKind::Else, lit("else"));
+
+        constexpr auto define_variable =
+            str(SpecialOutputKind::DefineVariableIdent, cps::c_ident) &
+            spaces &
+            lit(":=") &
+            spaces &
+            str(SpecialOutputKind::DefineVariableValue, *uany);
+
+        constexpr auto inner_special_marker =
+            spaces & (transfer_and_reset | for_loop | end_for | end_if | if_ | elif_ | else_ | define_variable) &
+            eos;
+
         constexpr auto test_syntax() {
             auto seq = futils::make_ref_seq(R"(
 {% int a = 0; %}
@@ -62,19 +128,40 @@ if ({{ a }} > 0) {
         }
 
         static_assert(test_syntax(), "DSL syntax static assert");
+
+        constexpr auto test_inner_syntax() {
+            auto test_case = [](const char* str) {
+                auto seq = futils::make_ref_seq(str);
+                return inner_special_marker(seq, futils::comb2::test::TestContext<SpecialOutputKind>{}, 0) == futils::comb2::Status::match;
+            };
+            return test_case("transfer_and_reset_writer") &&
+                   test_case("for item in range(0, 10)") &&
+                   test_case("for i in range(1, 20, 2)") &&
+                   test_case("for element in some_collection") &&
+                   test_case("endfor") &&
+                   test_case("endif") &&
+                   test_case("if (a > b)") &&
+                   test_case("my_var := 42") &&
+                   test_case("elif (a == b)") &&
+                   test_case("else");
+        }
+
+        static_assert(test_inner_syntax(), "DSL inner special marker syntax static assert");
     }  // namespace syntax
 
+    template <class Kind>
     struct DSLNode {
-        syntax::OutputKind kind{};
+        Kind kind{};
         std::string_view content;
     };
 
-    struct DSLContext : futils::comb2::LexContext<syntax::OutputKind, std::string> {
-        std::vector<DSLNode> nodes;
+    template <class Kind>
+    struct DSLContext : futils::comb2::LexContext<Kind, std::string> {
+        std::vector<DSLNode<Kind>> nodes;
 
-        constexpr void end_string(futils::comb2::Status res, syntax::OutputKind kind, auto&& seq, futils::comb2::Pos pos) {
+        constexpr void end_string(futils::comb2::Status res, Kind kind, auto&& seq, futils::comb2::Pos pos) {
             if (res == futils::comb2::Status::match) {
-                DSLNode node;
+                DSLNode<Kind> node;
                 node.kind = kind;
                 futils::comb2::seq_range_to_string(node.content, seq, pos);
                 nodes.push_back(std::move(node));

@@ -138,7 +138,7 @@
         "--mode",
         "dsl",
         "--dsl-file",
-        "${workspaceFolder}/save/dsl_sample.txt"
+        "${workspaceFolder}/src/ebmcg/ebm2python/dsl_sample/Expression_CAN_READ_STREAM_dsl.dsl"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",

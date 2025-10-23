@@ -20,14 +20,15 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto io_val = module_.get_identifier_or(io_ref);
-MAYBE(size_str, get_size_str(*this, num_bytes));
-
-auto tmp_id = std::format("{}", get_id(item_id));
-auto current_offset = std::format("current_offset_{}", tmp_id);
-auto end_offset = std::format("end_offset_{}", tmp_id);
-auto result = std::format("result_{}", tmp_id);
 %}
+{! io_val := module_.get_identifier_or(io_ref) !}
+{! tmp_id := std::format("{}", get_id(item_id)) !}
+{! size_str := get_size_str(*this,num_bytes) !}
+{! current_offset := std::format("current_offset_{}", tmp_id) !}
+{! end_offset := std::format("end_offset_{}", tmp_id) !}
+{! result := std::format("result_{}", tmp_id) !}
+
+
 if isinstance({{io_val}},io.BytesIO) and {{io_val}}.seekable():
   {{current_offset}} = {{io_val}}.tell()
   {{end_offset}} = {{io_val}}.seek(0,2)
@@ -36,7 +37,11 @@ if isinstance({{io_val}},io.BytesIO) and {{io_val}}.seekable():
 elif isinstance({{io_val}},io.BufferedReader):
   {{result}} = builtins.len({{io_val}}.peek({{size_str}}))
 else:
+  {! if !is_nil(io_ref) !}
   raise ValueError("Unsupported stream type for CAN_READ_STREAM: {}",type({{io_val}}))
+  {! else !}
+  raise ValueError("Broken!")
+  {! endif !}
 
 {! transfer_and_reset_writer !}
 bool({{result}} >= {{size_str}})

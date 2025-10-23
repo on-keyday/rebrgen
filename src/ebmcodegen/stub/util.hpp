@@ -4,6 +4,7 @@
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
 #include <string_view>
+#include <type_traits>
 #include "core/sequencer.h"
 #include "helper/template_instance.h"
 #include "output.hpp"
@@ -377,6 +378,15 @@ namespace ebmcodegen::util {
             auto seq = futils::make_ref_seq(ident);
             auto res = futils::comb2::composite::c_ident(seq, 0, 0);
             return res == futils::comb2::Status::match && seq.eos();
+        }
+
+        constexpr auto force_wrap_expected(auto&& value) {
+            if constexpr (std::is_pointer_v<std::decay_t<decltype(value)>> || futils::helper::is_template_instance_of<std::decay_t<decltype(value)>, futils::helper::either::expected>) {
+                return value;
+            }
+            else {
+                return ebmgen::expected<std::decay_t<decltype(value)>>{std::forward<decltype(value)>(value)};
+            }
         }
     }  // namespace internal
 }  // namespace ebmcodegen::util

@@ -10,7 +10,7 @@
 namespace ebmcodegen::dsl {
 
     ebmgen::expected<std::string> generate_dsl_output(std::string_view file_name, std::string_view source) {
-        DSLContext ctx;
+        DSLContext<syntax::OutputKind> ctx;
         auto seq = futils::make_ref_seq(source);
         auto res = syntax::dsl(seq, ctx, 0);
         if (res != futils::comb2::Status::match) {
@@ -22,42 +22,38 @@ namespace ebmcodegen::dsl {
         bool expected_indent = false;
         size_t indent_level = 0;
         // first, insert indent nodes if only lines
-        std::vector<DSLNode> new_nodes;
+        std::vector<DSLNode<syntax::OutputKind>> new_nodes;
         for (size_t i = 0; i < ctx.nodes.size(); i++) {
             if (i == 0 && ctx.nodes[i].kind != syntax::OutputKind::Indent) {
                 // insert indent at beginning
-                DSLNode indent_node;
+                DSLNode<syntax::OutputKind> indent_node;
                 indent_node.kind = syntax::OutputKind::Indent;
                 indent_node.content = "";
                 new_nodes.push_back(std::move(indent_node));
             }
-            if (ctx.nodes[i].kind == syntax::OutputKind::Line) {
-                expected_indent = true;
-            }
-            else if (expected_indent) {
+            if (expected_indent) {
                 if (ctx.nodes[i].kind != syntax::OutputKind::Indent) {
                     // insert indent after line
-                    DSLNode indent_node;
+                    DSLNode<syntax::OutputKind> indent_node;
                     indent_node.kind = syntax::OutputKind::Indent;
                     indent_node.content = "";
                     new_nodes.push_back(std::move(indent_node));
                 }
                 expected_indent = false;
             }
+            if (ctx.nodes[i].kind == syntax::OutputKind::Line) {
+                expected_indent = true;
+            }
             new_nodes.push_back(std::move(ctx.nodes[i]));
         }
         std::vector<size_t> indent_levels{0};
         std::set<size_t> indent_meaningful_levels;
-        std::vector<DSLNode> finalized_nodes;
+        std::vector<DSLNode<syntax::OutputKind>> finalized_nodes;
         // next, insert dedent at change point
         for (size_t i = 0; i < new_nodes.size(); i++) {
             if (new_nodes[i].kind == syntax::OutputKind::Indent) {
                 if (i == new_nodes.size() - 1) {
                     continue;  // skip final indent
-                }
-                if (new_nodes[i + 1].kind == syntax::OutputKind::CppLiteral ||
-                    new_nodes[i + 1].kind == syntax::OutputKind::CppSpecialMarker) {
-                    continue;
                 }
                 if (new_nodes[i].content.size() > indent_levels.back()) {
                     indent_levels.push_back(new_nodes[i].content.size());  // increase indent
@@ -103,6 +99,15 @@ namespace ebmcodegen::dsl {
             return str.substr(start, end - start);
         };
         std::vector<std::string> dsl_lines;
+        std::vector<syntax::SpecialOutputKind> dsl_stack;
+        auto most_recent = [&](syntax::SpecialOutputKind kind) -> bool {
+            if (dsl_stack.empty()) {
+                return false;
+            }
+            return dsl_stack.back() == kind;
+        };
+        size_t tmp_counter = 0;
+
         for (const auto& node : finalized_nodes) {
             switch (node.kind) {
                 case syntax::OutputKind::CppLiteral: {
@@ -116,7 +121,16 @@ namespace ebmcodegen::dsl {
                 }
                 case syntax::OutputKind::CppSpecialMarker: {
                     auto content = trim(node.content);
-                    if (content == "transfer_and_reset_writer") {
+                    DSLContext<syntax::SpecialOutputKind> inner_ctx;
+                    auto seq = futils::make_ref_seq(content);
+                    auto res = syntax::inner_special_marker(seq, inner_ctx, 0);
+                    if (res != futils::comb2::Status::match) {
+                        return ebmgen::unexpect_error("Failed to parse DSL special marker {}: {}", content, inner_ctx.errbuf);
+                    }
+                    if (inner_ctx.nodes.empty()) {
+                        return ebmgen::unexpect_error("Empty DSL special marker: {}", content);
+                    }
+                    if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::TransferAndResetWriter) {
                         w.writeln("{");
                         auto scope = w.indent_scope();
                         w.writeln("MAYBE(got_writer, get_writer()); ", make_dsl_line_comment(line));
@@ -125,12 +139,115 @@ namespace ebmcodegen::dsl {
                         scope.execute();
                         w.writeln("}", make_dsl_line_comment(line));
                     }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::ForIdent) {
+                        auto ident = inner_ctx.nodes[0].content;
+                        std::string_view init = "0";
+                        std::string_view limit;
+                        std::string_view step = "1";
+                        std::string_view collection;
+                        for (auto& n : inner_ctx.nodes) {
+                            if (n.kind == syntax::SpecialOutputKind::ForItem) {
+                                collection = n.content;
+                            }
+                            else if (n.kind == syntax::SpecialOutputKind::ForRangeBegin) {
+                                limit = n.content;
+                            }
+                            else if (n.kind == syntax::SpecialOutputKind::ForRangeEnd) {
+                                init = limit;
+                                limit = n.content;
+                            }
+                            else if (n.kind == syntax::SpecialOutputKind::ForRangeStep) {
+                                step = n.content;
+                            }
+                        }
+                        if (limit.empty() || collection.size()) {
+                            return ebmgen::unexpect_error("invalid for loop range: {}", content);
+                        }
+                        if (collection.size()) {
+                            w.writeln("for (decltype(auto) ", ident, " : ", collection, ") {", make_dsl_line_comment(line));
+                        }
+                        else {
+                            w.writeln("for (size_t ", ident, " = ", init, "; ", ident, " < ", limit, "; ", ident, " += ", step, ") {", make_dsl_line_comment(line));
+                        }
+                        auto scope = w.indent_scope_ex();
+                        defers.emplace_back([&w, scope = std::move(scope)]() mutable {
+                            scope.execute();
+                            w.writeln("}");
+                        });
+                        dsl_stack.push_back(syntax::SpecialOutputKind::ForIdent);
+                    }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::IfCondition ||
+                             inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::ElifCondition) {
+                        auto condition = inner_ctx.nodes[0].content;
+                        if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::ElifCondition) {
+                            if (!most_recent(syntax::SpecialOutputKind::IfCondition)) {
+                                return ebmgen::unexpect_error("inconsistent elif");
+                            }
+                            if (defers.empty()) {
+                                return ebmgen::unexpect_error("inconsistent elif");
+                            }
+                            defers.pop_back();
+                            w.write("else ");
+                        }
+                        w.writeln("if (", condition, ") {", make_dsl_line_comment(line));
+                        auto scope = w.indent_scope_ex();
+                        defers.emplace_back([&w, scope = std::move(scope)]() mutable {
+                            scope.execute();
+                            w.writeln("}");
+                        });
+                        if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::IfCondition) {
+                            dsl_stack.push_back(syntax::SpecialOutputKind::IfCondition);
+                        }
+                    }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::Else) {
+                        if (!most_recent(syntax::SpecialOutputKind::IfCondition)) {
+                            return ebmgen::unexpect_error("inconsistent else");
+                        }
+                        if (defers.empty()) {
+                            return ebmgen::unexpect_error("inconsistent else");
+                        }
+                        defers.pop_back();
+                        w.writeln("else {", make_dsl_line_comment(line));
+                        auto scope = w.indent_scope_ex();
+                        defers.emplace_back([&w, scope = std::move(scope)]() mutable {
+                            scope.execute();
+                            w.writeln("}");
+                        });
+                    }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::EndFor) {
+                        if (dsl_stack.empty() || dsl_stack.back() != syntax::SpecialOutputKind::ForIdent) {
+                            return ebmgen::unexpect_error("inconsistent endfor");
+                        }
+                        if (defers.empty()) {
+                            return ebmgen::unexpect_error("inconsistent endfor");
+                        }
+                        dsl_stack.pop_back();
+                        defers.pop_back();
+                    }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::EndIf) {
+                        if (dsl_stack.empty() || dsl_stack.back() != syntax::SpecialOutputKind::IfCondition) {
+                            return ebmgen::unexpect_error("inconsistent endif");
+                        }
+                        if (defers.empty()) {
+                            return ebmgen::unexpect_error("inconsistent endif");
+                        }
+                        dsl_stack.pop_back();
+                        defers.pop_back();
+                    }
+                    else if (inner_ctx.nodes[0].kind == syntax::SpecialOutputKind::DefineVariableIdent) {
+                        if (inner_ctx.nodes.size() < 2 || inner_ctx.nodes[1].kind != syntax::SpecialOutputKind::DefineVariableValue) {
+                            return ebmgen::unexpect_error("invalid define variable syntax: {}", content);
+                        }
+                        auto ident = inner_ctx.nodes[0].content;
+                        auto value = inner_ctx.nodes[1].content;
+                        w.writeln("MAYBE(", ident, ", ebmcodegen::util::internal::force_wrap_expected(", value, ")); ", make_dsl_line_comment(line));
+                    }
                     else {
                         return ebmgen::unexpect_error("unknown special marker: {}", content);
                     }
                     prev_was_literal = true;
                     line += futils::strutil::count(node.content, "\n");
-                    break;
+                    continue;
                 }
                 case syntax::OutputKind::CppIdentifierGetter:
                 case syntax::OutputKind::CppVisitedNode: {
@@ -177,12 +294,13 @@ namespace ebmcodegen::dsl {
                     break;
                 }
                 case syntax::OutputKind::Indent: {
+                    auto tmp_indent_counter = std::format("indent_{}", tmp_counter++);
                     w.writeln("{");
-                    auto indent_scope = w.indent_scope_ex();
-                    w.writeln("auto indent_scope = w.indent_scope(); ", make_dsl_line_comment(line));
-                    defers.emplace_back([&w, scope = std::move(indent_scope)]() mutable {
+                    auto scope = w.indent_scope_ex();
+                    w.writeln("auto ", tmp_indent_counter, " = w.indent_scope(); ", make_dsl_line_comment(line));
+                    defers.emplace_back([&w, tmp_indent_counter, scope = std::move(scope)]() mutable {
                         scope.execute();
-                        w.writeln("}");
+                        w.writeln("} // end indent ", tmp_indent_counter);
                     });
                     break;
                 }
@@ -203,6 +321,11 @@ namespace ebmcodegen::dsl {
             }
             prev_was_literal = false;
         }
+        /*
+        if (!dsl_stack.empty() || !defers.empty()) {
+            return ebmgen::unexpect_error("unclosed DSL block");
+        }
+        */
         w.writeln("return w;");
         return w.out();
     }

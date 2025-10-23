@@ -65,7 +65,7 @@ if mode == "codegen":
             None,
         )
         with open(flags_path, "a") as f:
-            f.write(f'\nFILE_EXTENSIONS("{file_extension}")\n')
+            f.write(f'\nFILE_EXTENSIONS("{file_extension}");\n')
         print(f"Added FILE_EXTENSIONS to {flags_path} with extension: {file_extension}")
     else:
         print(
@@ -91,9 +91,15 @@ if not os.path.exists(TEST_SCRIPT_PATH):
         f.write("    # This is a placeholder for actual test implementation\n")
         f.write("    with open(INPUT_FILE, 'rb') as f:\n")
         f.write("        data = f.read()\n")
+        f.write("    # Implement test logic based on TEST_TARGET_FORMAT\n")
+        f.write(
+            "    # Return 0 for success, 10 for decode error, 20 for encode error\n"
+        )
         f.write("    # For demonstration, just write the same data to output\n")
         f.write("    with open(OUTPUT_FILE, 'wb') as f:\n")
         f.write("        f.write(data)\n")
+        f.write("    print('Test logic is not implemented yet.')\n")
+        f.write("    exit(1)\n")
         f.write("if __name__ == '__main__':\n")
         f.write("    main()\n")
     print(f"Created test script: {TEST_SCRIPT_PATH}")

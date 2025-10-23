@@ -22,7 +22,14 @@ TEST_CASE_FILE = "test/unictest.json"
 
 try:
     sp.check_call(
-        [UNICTEST.as_posix(), "-c", TEST_CASE_FILE, "--save-tmp-dir", "--clean-tmp"]
+        [
+            UNICTEST.as_posix(),
+            "-c",
+            TEST_CASE_FILE,
+            "--save-tmp-dir",
+            "--clean-tmp",
+            "--shorter-path",
+        ]
         + sys.argv[1:],
         stdout=sys.stdout,
         stderr=sys.stderr,

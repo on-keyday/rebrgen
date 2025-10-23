@@ -27,15 +27,17 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
+/*here to write the hook*/
 auto name = module_.get_identifier_or(item_id);
 
 CodeWriter w;
-
-w.writeln("struct ", name, " {");
+w.writeln("pub struct ", name, " {");
 {
     auto scope = w.indent_scope();
-    MAYBE(block, visit_Block(*this, struct_decl.fields));
-    merge_result(*this, w, block);
+    for(auto& field : struct_decl.fields.container) {
+        MAYBE(field_str, visit_Statement(*this, field));
+        w.write(field_str.to_writer());
+    }
 }
-w.writeln("};");
+w.writeln("}");
 return w;

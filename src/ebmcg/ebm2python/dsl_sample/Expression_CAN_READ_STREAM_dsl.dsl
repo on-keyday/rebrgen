@@ -37,7 +37,7 @@ if isinstance({{io_val}},io.BytesIO) and {{io_val}}.seekable():
 elif isinstance({{io_val}},io.BufferedReader):
   {{result}} = builtins.len({{io_val}}.peek({{size_str}}))
 else:
-  {! if !is_nil(io_ref) !}
+  {! if !is_nil(io_ref) !}{%/*this is added for example*/%}
   raise ValueError("Unsupported stream type for CAN_READ_STREAM: {}",type({{io_val}}))
   {! else !}
   raise ValueError("Broken!")

@@ -21,6 +21,7 @@ namespace ebmcodegen::dsl {
             CppWrite,
             CppVisitedNode,
             CppIdentifierGetter,
+            CppSpecialMarker,
             TargetLang,
             Indent,
             Dedent,
@@ -34,16 +35,19 @@ namespace ebmcodegen::dsl {
         constexpr auto end_cpp_visited_node = lit("*}");
         constexpr auto begin_cpp_identifier_getter = lit("{&");
         constexpr auto end_cpp_identifier_getter = lit("&}");
+        constexpr auto begin_cpp_special_marker = lit("{!");
+        constexpr auto end_cpp_special_marker = lit("!}");
         constexpr auto cpp_code = [](OutputKind tag, auto end) { return str(tag, *(not_(end) & +uany)); };
         constexpr auto cpp_target = begin_cpp & cpp_code(OutputKind::CppLiteral, end_cpp) & end_cpp;
         constexpr auto cpp_var_writer = begin_cpp_var_writer & cpp_code(OutputKind::CppWrite, end_cpp_var_writer) & end_cpp_var_writer;
         constexpr auto cpp_visited_node = begin_cpp_visited_node & cpp_code(OutputKind::CppVisitedNode, end_cpp_visited_node) & end_cpp_visited_node;
         constexpr auto cpp_identifier_getter = begin_cpp_identifier_getter & cpp_code(OutputKind::CppIdentifierGetter, end_cpp_identifier_getter) & end_cpp_identifier_getter;
+        constexpr auto cpp_special_marker = begin_cpp_special_marker & cpp_code(OutputKind::CppSpecialMarker, end_cpp_special_marker) & end_cpp_special_marker;
         constexpr auto indent = str(OutputKind::Indent, bol & ~cps::space);
         constexpr auto line = str(OutputKind::Line, cps::eol);
-        constexpr auto target_lang = str(OutputKind::TargetLang, ~(not_(cps::eol | begin_cpp | begin_cpp_var_writer | begin_cpp_visited_node | begin_cpp_identifier_getter) & uany));
+        constexpr auto target_lang = str(OutputKind::TargetLang, ~(not_(cps::eol | begin_cpp | begin_cpp_var_writer | begin_cpp_visited_node | begin_cpp_identifier_getter | begin_cpp_special_marker) & uany));
 
-        constexpr auto dsl = *(cpp_target | cpp_var_writer | cpp_visited_node | cpp_identifier_getter | indent | line | target_lang) & eos;
+        constexpr auto dsl = *(cpp_target | cpp_var_writer | cpp_visited_node | cpp_identifier_getter | cpp_special_marker | indent | line | target_lang) & eos;
 
         constexpr auto test_syntax() {
             auto seq = futils::make_ref_seq(R"(
@@ -52,6 +56,7 @@ if ({{ a }} > 0) {
     {{ a }} += 1;
     {& item_id &}
     {* expr *}
+    {! special !}
 })");
             return dsl(seq, futils::comb2::test::TestContext<OutputKind>{}, 0) == futils::comb2::Status::match;
         }

@@ -55,7 +55,8 @@ namespace ebmcodegen::dsl {
                 if (i == new_nodes.size() - 1) {
                     continue;  // skip final indent
                 }
-                if (new_nodes[i + 1].kind == syntax::OutputKind::CppLiteral) {
+                if (new_nodes[i + 1].kind == syntax::OutputKind::CppLiteral ||
+                    new_nodes[i + 1].kind == syntax::OutputKind::CppSpecialMarker) {
                     continue;
                 }
                 if (new_nodes[i].content.size() > indent_levels.back()) {
@@ -90,6 +91,17 @@ namespace ebmcodegen::dsl {
         auto make_dsl_line_comment = [&](size_t line) {
             return std::format("/* DSL line {} */", line);
         };
+        auto trim = [](std::string_view str) {
+            size_t start = 0;
+            while (start < str.size() && std::isspace(static_cast<unsigned char>(str[start]))) {
+                start++;
+            }
+            size_t end = str.size();
+            while (end > start && std::isspace(static_cast<unsigned char>(str[end - 1]))) {
+                end--;
+            }
+            return str.substr(start, end - start);
+        };
         std::vector<std::string> dsl_lines;
         for (const auto& node : finalized_nodes) {
             switch (node.kind) {
@@ -101,6 +113,24 @@ namespace ebmcodegen::dsl {
                     line += futils::strutil::count(node.content, "\n");
                     w.writeln(make_dsl_line_comment(line));
                     continue;
+                }
+                case syntax::OutputKind::CppSpecialMarker: {
+                    auto content = trim(node.content);
+                    if (content == "transfer_and_reset_writer") {
+                        w.writeln("{");
+                        auto scope = w.indent_scope();
+                        w.writeln("MAYBE(got_writer, get_writer()); ", make_dsl_line_comment(line));
+                        w.writeln("got_writer.write(std::move(w)); ", make_dsl_line_comment(line));
+                        w.writeln("w.reset(); ", make_dsl_line_comment(line));
+                        scope.execute();
+                        w.writeln("}", make_dsl_line_comment(line));
+                    }
+                    else {
+                        return ebmgen::unexpect_error("unknown special marker: {}", content);
+                    }
+                    prev_was_literal = true;
+                    line += futils::strutil::count(node.content, "\n");
+                    break;
                 }
                 case syntax::OutputKind::CppIdentifierGetter:
                 case syntax::OutputKind::CppVisitedNode: {

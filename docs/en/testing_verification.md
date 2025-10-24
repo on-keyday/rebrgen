@@ -4,7 +4,7 @@
 The `script/unictest.py` script, in conjunction with `script/unictest_setup.py`, provides a comprehensive automated testing and development workflow. It orchestrates the following steps:
 1.  **EBM Generation**: Converts source files (e.g., `.bgn` files) into EBM format using `ebmgen`.
 2.  **Code Generator Execution**: Runs the target code generator (e.g., `ebm2rust`) with the generated EBM file.
-3.  **Visitor Hook Debugging**: When run in "setup" mode, it uses the `--debug-unimplemented` flag to identify and report any unimplemented visitor hooks in the code generator.
+3.  **Visitor Hook Debugging**: When `unictest.py` runs in a mode that involves checking for unimplemented hooks (e.g., during setup or when a code generator is first run), it automatically passes the `--debug-unimplemented` flag to the *code generator executable* (e.g., `ebm2python`, `ebm2rust`). This flag instructs the code generator to identify and report any unimplemented visitor hooks.
 4.  **Test Execution**: In "test" mode, it executes language-specific test scripts to compare the generated output with expected results.
 This framework simplifies the development process by automating repetitive tasks and providing clear feedback on the status of visitor hook implementation.
 

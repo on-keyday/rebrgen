@@ -38,6 +38,10 @@ elif isinstance({{io_val}},io.BufferedReader):
   {{result}} = builtins.len({{io_val}}.peek({{size_str}}))
 else:
   {! if !is_nil(io_ref) !}{%/*this is added for example*/%}
+  {%
+   /* special block's indent must be same as other code (also target language) 
+      so that you can generate code correctly*/
+  %}
   raise ValueError("Unsupported stream type for CAN_READ_STREAM: {}",type({{io_val}}))
   {! else !}
   raise ValueError("Broken!")

@@ -31,6 +31,7 @@
 auto name = module_.get_identifier_or(item_id);
 
 CodeWriter w;
+w.writeln("#[derive(Default)]");
 w.writeln("pub struct ", name, " {");
 {
     auto scope = w.indent_scope();
@@ -40,4 +41,31 @@ w.writeln("pub struct ", name, " {");
     }
 }
 w.writeln("}");
+
+// Add impl block for new()
+w.writeln(); // Add a newline for separation
+w.writeln("impl ", name, " {");
+{
+    auto impl_scope = w.indent_scope();
+    w.writeln("pub fn new() -> Self {");
+    {
+        auto new_scope = w.indent_scope();
+        w.writeln("Self {");
+        {
+            auto self_scope = w.indent_scope();
+            // Iterate through fields to generate default initialization
+            for(auto& field_ref : struct_decl.fields.container) {
+                MAYBE(field_decl_stmt, module_.get_statement(field_ref));
+                if (field_decl_stmt.body.kind == ebm::StatementKind::FIELD_DECL) {
+                    auto field_name = module_.get_identifier_or(field_decl_stmt.id); // Use item_id for field name
+                    w.writeln(field_name, ": Default::default(),");
+                }
+            }
+        }
+        w.writeln("}");
+    }
+    w.writeln("}");
+}
+w.writeln("}");
+
 return w;

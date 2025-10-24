@@ -24,4 +24,4 @@ auto name = ident->body.data;
 
 MAYBE(value_str, visit_Expression(*this, enum_member_decl.value));
 
-return CODE(name, " = ", value_str.to_writer(), ",");
+return CODELINE(name, " = ", value_str.to_writer(), ",");

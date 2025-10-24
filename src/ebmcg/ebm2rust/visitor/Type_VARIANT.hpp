@@ -17,24 +17,24 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto enum_name = "Variant_" + std::to_string(item_id.id);
+auto enum_name = "Variant" + std::format("{}", get_id(item_id));
 
 MAYBE(struct_members, struct_union_members(*this, item_id));
 
-for(auto& member : struct_members) {
+for (auto& member : struct_members) {
     output.custom_types.push_back(member.to_string());
 }
 
 CodeWriter w;
 w.writeln("pub enum ", enum_name, " {");
-w.indent();
+auto scope = w.indent_scope();
 int i = 0;
 for (auto& member_type_ref : members.container) {
     MAYBE(type, visit_Type(*this, member_type_ref));
-    w.writeln("V", i, "(", type.to_writer(), "),");
+    w.writeln("V", std::format("{}", i), "(", type.to_writer(), "),");
     i++;
 }
-w.unindent();
+scope.execute();
 w.writeln("}");
 
 output.custom_types.push_back(w.to_string());

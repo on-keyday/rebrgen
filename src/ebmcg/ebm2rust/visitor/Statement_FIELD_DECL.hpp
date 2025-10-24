@@ -22,4 +22,4 @@ auto name = module_.get_identifier_or(item_id);
 
 MAYBE(type, visit_Type(*this, field_decl.field_type));
 
-return CODE("pub ", name, ": ", type.to_writer(), ",");
+return CODELINE("pub ", name, ": ", type.to_writer(), ",");

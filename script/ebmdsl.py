@@ -21,6 +21,7 @@ for dir_name in dirs:
         continue
     dsls = os.listdir(dsl_dir)
     print(f"Processing DSL files in: {dsl_dir}: {dsls}")
+    dsl_updated = False
     for dsl_file in dsls:
         if not dsl_file.endswith(".dsl"):
             print(f"Skipping non-DSL file: {dsl_file}")
@@ -63,3 +64,8 @@ for dir_name in dirs:
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(output_content)
         print(f"Wrote output to {output_path}.")
+        dsl_updated = True
+    MAIN_FILE = os.path.join(dir_path, "main.cpp")
+    if dsl_updated and os.path.exists(MAIN_FILE):
+        os.utime(MAIN_FILE, None)
+        print(f"Touched main.cpp to trigger rebuild: {MAIN_FILE}")

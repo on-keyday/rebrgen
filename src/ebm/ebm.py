@@ -8,7 +8,17 @@ import difflib
 
 # Absolute path to the brgen tool directory, as specified in the original script.
 # This makes the script dependent on a specific directory structure.
-TOOL_PATH = "C:\\workspace\\shbrgen\\brgen\\tool"
+try:
+    with open("build_config.json") as fp:
+        import json
+
+        build_config = json.load(fp)
+except FileNotFoundError:
+    print("build_config.json not found, using default TOOL_PATH.")
+    build_config = {}
+import os
+
+TOOL_PATH = os.path.join(build_config.get("BRGEN_DIR", "./brgen/"), "tool")
 
 # Paths to the executables.
 # We assume .exe extension for Windows, which is where the original .ps1 ran.

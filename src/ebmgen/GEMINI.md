@@ -150,28 +150,33 @@ python ./script/ebmcodegen.py my_lang
 
 This command utilizes `./tool/ebmcodegen` and creates a new directory at `src/ebmcg/ebm2my_lang/` containing the skeleton for the new generator.
 
-When the EBM structure itself (`extended_binary_module.bgn`) is updated, you must regenerate some of the core `ebmcodegen` and `ebmgen` files:
+When the EBM structure itself (`extended_binary_module.bgn`) is updated, you must regenerate some of the core `ebmcodegen` and `ebmgen` files. This process is automated by `script/update_ebm.py`:
 
 ```bash
-# 1. Regenerate the C++ header and source for the EBM structure
-python src/ebm/ebm.py
-
-# 2. Rebuild ebmcodegen with the new EBM structure
-python script/build.py native Debug
-
-# 3. Regenerate the subset metadata used by ebmcodegen itself
-./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp
-
-# 4. Regenerate the JSON serialization/deserialization code for ebmgen
-# (This part of the process may need to be done manually or via another script)
-
-# 5. Rebuild your project to apply all changes
-python script/build.py native Debug
+python script/update_ebm.py
 ```
 
-Also there are commands at `src/ebm/ebm.ps1` and `src/ebm/ebm.py`. They generate `src/ebm/extended_binary_module.hpp` and `src/ebm/extended_binary_module.cpp` from `src/ebm/extended_binary_module.bgn`. The python script (`ebm.py`) is a cross-platform port of the PowerShell script.
+Refer to [Section 5. Updating the EBM Structure with `script/update_ebm.py`](#5-updating-the-ebm-structure-with-scriptupdate_ebmpy) for more details.
 
-#### 5. Code structure
+#### 5. Updating the EBM Structure with `script/update_ebm.py`
+
+The `script/update_ebm.py` script automates the entire process of regenerating EBM-related files when the `extended_binary_module.bgn` structure is modified. This ensures consistency across the project. The script performs the following actions:
+
+1.  **Updates C++ EBM Definition**: Executes `src/ebm/ebm.py` to regenerate `src/ebm/extended_binary_module.hpp` and `src/ebm/extended_binary_module.cpp` from `src/ebm/extended_binary_module.bgn`.
+2.  **Initial Build**: Runs `script/build.py` to build the project with the updated EBM C++ definitions.
+3.  **Generates `body_subset.cpp`**: Uses `tool/ebmcodegen --mode subset` to create `src/ebmcodegen/body_subset.cpp`, which contains metadata about EBM structures.
+4.  **Generates JSON Conversion Headers**: Uses `tool/ebmcodegen --mode json-conv-header` to create `src/ebmgen/json_conv.hpp` for JSON deserialization.
+5.  **Generates JSON Conversion Source**: Uses `tool/ebmcodegen --mode json-conv-source` to create `src/ebmgen/json_conv.cpp` for JSON deserialization.
+6.  **Conditional Rebuild**: If any of the generated files (steps 3-5) have changed, the script runs `script/build.py` again to ensure all tools are up-to-date.
+7.  **Generates Hex Test Data**: Converts `src/ebm/extended_binary_module.bgn` into a hexadecimal format and saves it to `test/binary_data/extended_binary_module.dat`, which can be used for testing.
+
+To update the EBM structure and all dependent generated files, simply run:
+
+```bash
+python script/update_ebm.py
+```
+
+#### 6. Code structure
 
 These files are in `src/` directory in `rebrgen` root directory.
 
@@ -237,7 +242,7 @@ These files are in `src/` directory in `rebrgen` root directory.
 
 BEFORE YOU ACT, YOU MUST READ ALL OF THESE FILES for consistency
 
-#### 6. Note
+#### 7. Note
 
 - Codebase uses macro (almost defined in helper.hpp).
 
@@ -330,20 +335,20 @@ irrelevant in this specific context.
 In conclusion, the debate revealed that the MAYBE macro, far from being a simple trick, is a sophisticated mechanism that works in tandem with a well-designed Error type. It provides the readability of monadic error handling (like Haskell's do notation) while retaining the flexibility needed for long-term maintenance, proving it to be a powerful and well-reasoned feature of the codebase, not a technical debt.
 ```
 
-#### 7. Development Process
+#### 8. Development Process
 
 Here is a priority of what to do. This does NOT means you need to follow the order except 1. must be run finally.
 It doesn't mean acting in order, but rather the priority of actions.
 You can choose appropriate action in the context.
 After you modified some code, please run these before you do next edit and confirm your modification does not break baseline.
 
-1. run `ebm2<lang name> -i ./save/out.ebm --debug-unimplemented`
-2. run `python script/build.py native Debug`
-3. run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless. this command enforce update ebm2<lang name>/main.cpp file and then rebuild it)
-4. run `./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp`
-5. run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
-6. run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`
-7. run `src/ebm/ebm`
+1.  **Run `python script/unictest.py` (or `python script/unictest.py --print-stdout` for debugging)**: This script automates the process of generating EBM, running the code generator, and testing it. It will also reveal unimplemented visitor hooks.
+2.  run `python script/build.py native Debug`
+3.  run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless. this command enforce update ebm2<lang name>/main.cpp file and then rebuild it)
+4.  run `./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp`
+5.  run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
+6.  run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`
+7.  run `src/ebm/ebm`
 
 note that debug_output is less helpful for AI agent because of too complex structure and too large information that causes misunderstanding frequently. it is for core developer, not for assistant.
 
@@ -356,7 +361,18 @@ THE DEFINITION. DO NOT USE CACHED KNOWLEDGE, RELOAD DATA USING `ReadFile` ACTION
 YOU DO NOT NEED TO READ MACRO DEFINITION, YOU PRIMARY READ TYPE DEFINITION OR VARIABLE DEFINITION FIRST.
 IT IS WASTE OF TIME TO READ MACRO DEFINITION.
 
-#### 8. Action Mental Model
+#### 9. Automated Testing with `unictest.py`
+
+The `script/unictest.py` script, in conjunction with `script/unictest_setup.py`, provides a comprehensive automated testing and development workflow. It orchestrates the following steps:
+
+1.  **EBM Generation**: Converts source files (e.g., `.bgn` files) into EBM format using `ebmgen`.
+2.  **Code Generator Execution**: Runs the target code generator (e.g., `ebm2rust`) with the generated EBM file.
+3.  **Visitor Hook Debugging**: When run in "setup" mode, it uses the `--debug-unimplemented` flag to identify and report any unimplemented visitor hooks in the code generator.
+4.  **Test Execution**: In "test" mode, it executes language-specific test scripts to compare the generated output with expected results.
+
+This framework simplifies the development process by automating repetitive tasks and providing clear feedback on the status of visitor hook implementation.
+
+#### 10. Action Mental Model
 
 When you start or resume development, first run ebm2<lang name> to check the current development stage.
 Don't skip this step, as even if you think you last ran it, humans may have made changes since then, or you'll end up with inconsistent observations.
@@ -370,7 +386,7 @@ If you find yourself thinking, "The output is still the same. It's not generated
 Think carefully about whether it's language-specific or general code, and where to add it.
 This mental model can be applied not only during development but in any interaction.
 
-#### 9. How to Write Code Generation Logic (Visitor Hooks)
+#### 11. How to Write Code Generation Logic (Visitor Hooks)
 
 The logic for generating language-specific code is implemented by creating C++ code snippets called "Visitor Hooks". The primary tool for managing these hooks is the `script/ebmtemplate.py` helper script.
 
@@ -442,15 +458,11 @@ The `script/ebmtemplate.py` script is a wrapper around `ebmcodegen` that simplif
     return Result(std::move(generated_code));
     ```
 
-4.  **Build and Verify**: After implementing the hook, run the main build script to regenerate and recompile your code generator.
-
-```bash
-python script/build.py native Debug
-```
+4.  **Build and Verify**: After implementing the hook, run `python script/unictest.py` (or `python script/unictest.py --print-stdout` for debugging) to build and verify your changes. This will trigger the build process and run the tests defined in the `unictest` framework.
 
 Note: At creation of hook file, please update `src/ebmcg/ebm2<lang>/main.cpp`'s Last updated time before build to make build system recognize new file.
 
-#### 10. Error Fix Strategy
+#### 12. Error Fix Strategy
 
 This is example of Error fix strategy for some compile errors.
 It's usually wrong to guess what something means just by looking at the wording. It's important to check the definition carefully.
@@ -473,7 +485,7 @@ You can find type of `io_data` and then lookup type definition,
 then find the member `size` and then lookup type of `size`
 and finally you can find the definition of `unit`
 
-#### 11. EBM Interactive Query Engine
+#### 13. EBM Interactive Query Engine
 
 The `ebmgen` executable includes a powerful query engine for inspecting EBM (Extended Binary Module) files. This engine can be used in two ways: through an interactive debugger or directly via command-line arguments.
 

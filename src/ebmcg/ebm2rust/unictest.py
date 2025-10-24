@@ -40,7 +40,7 @@ def main():
 use std::fs;
 use std::io::Cursor;
 use std::env;
-use test_runner::*
+use test_runner::*;
 
 fn main() {{
     let args: Vec<String> = env::args().collect();

@@ -16,12 +16,13 @@
 
 /*here to write the hook*/
 CodeWriter w;
-for(auto& custom_type : output.custom_types) {
-    w.writeln(custom_type);
-}
 
 for (auto& stmt_ref : block.container) {
     MAYBE(stmt, visit_Statement(*this, stmt_ref));
+    for (auto& custom_type : output.custom_types) {
+        w.writeln(custom_type);
+    }
+    output.custom_types.clear();
     w.writeln(stmt.to_writer());
 }
 

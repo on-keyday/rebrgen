@@ -72,7 +72,7 @@ EBM (Extended Binary Module) の構造自体を定義した `extended_binary_mod
 - スキーマ仕様 (`ebmcodegen --mode spec-json` で取得) に基づいて JSON を検証します。
 - テストケースファイルと比較し、Ref の解決を含めた深い等価性チェックを行います。
 
-### `run_cycle.py` / `run_cycle.ps1` / `run_cycle.bat` / `run_cycle.sh`
+### `script/bm/run_cycle.py` / `script/bm/run_cycle.ps1` / `script/bm/run_cycle.bat` / `script/bm/run_cycle.sh`
 
 開発サイクル全体を一度に実行するためのスクリプトです。以下のスクリプトを順番に呼び出します。
 

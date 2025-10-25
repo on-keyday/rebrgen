@@ -14,7 +14,7 @@
       string_repr: StringRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-auto name = module_.get_identifier_or(item_id);
+auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
 MAYBE(val, visit_Expression(*this, enum_member_decl.value));

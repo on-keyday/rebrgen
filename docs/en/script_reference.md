@@ -13,6 +13,8 @@
 ### Test & Execution Related
 -   **`ebmtest.py`**: Validates `ebmgen`'s EBM JSON output against schema and test case expectations.
 -   **`unictest.py`**: Orchestrates automated testing and development workflow by running `ebmgen`, code generators, and test scripts (see Section 5.1).
+    *   `--target-runner <runner_name>`: Specifies the name of a target runner, as defined in `unictest_runner.json` files (e.g., `ebm2rust`). Can be specified multiple times.
+    *   `--target-input <input_name>`: Specifies the name of an input, as defined in `test/inputs.json` (e.g., `websocket_frame_valid`). Can be specified multiple times.
 -   **`run_cycle.py` / `run_cycle.ps1` / `run_cycle.bat` / `run_cycle.sh`**: Old generation. Executes entire development cycle: `generate.py`, `run_generated.py`, `run_cmptest.py`.
 
 ### Utilities

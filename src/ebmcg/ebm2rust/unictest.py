@@ -63,7 +63,7 @@ fn main() {{
     let mut reader = Cursor::new(&input_data);
 
     if format_name == \"{TEST_TARGET_FORMAT}\" {{
-        let mut target = {TEST_TARGET_FORMAT}::new();
+        let mut target = {TEST_TARGET_FORMAT}::default();
         if let Err(e) = target.decode(&mut reader) {{
             eprintln!("Decode error: {{:?}}", e);
             std::process::exit(10);

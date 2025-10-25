@@ -23,11 +23,16 @@ User Instruction: Always explain the implementation rationale and the basis for 
 User Instruction: When explaining implementation, specifically state which build error from `script/unictest.py` is being addressed and how the implemented visitor hook will fix it.
 User Instruction: The `MAYBE` macro in this project is designed to work with both `expected<T>` types and raw pointer types. When `expr` is an `expected<T>`, `x` will be of type `T&`. When `expr` is a raw pointer `P*`, `x` will be of type `P&`. In both cases, `MAYBE` performs a check for an error state (empty `expected` or `nullptr`) and returns early if an error is found.
 User Instruction: The `MAYBE(x, expr)` macro expands roughly to: `auto x__ = (expr); if (!x__) { return unexpect_error(...); } decltype(auto) x = *x__;`. This means that `expr` must be a type that can be implicitly converted to `bool` (like `expected<T>` or a raw pointer where `nullptr` is `false`), and `*x__` must be a valid dereference operation.
-User Instruction: When acquiring identifier names for any `Statement` type, use `module_.get_identifier_or(item_id)` where `item_id` is the `StatementRef` of the current statement.
-User Instruction: The `get_identifier_or` function has different return types based on the reference type:
+User Instruction: When acquiring identifier names for any `Statement` type, use `module_.get_associated_identifier(item_id)` where `item_id` is the `StatementRef` of the current statement.
+User Instruction: The `get_associated_identifier` function has different return types based on the reference type:
 
 - For `ebm::StatementRef`, it returns `std::string`.
 - For `ebm::ExpressionRef` and `ebm::TypeRef`, it returns `expected<std::string>`.
+  User Instruction: **Clarification on Identifier Acquisition for Statements:**
+  When acquiring identifier names for any `Statement` type (e.g., `FUNCTION_DECL`, `PARAMETER_DECL`, `VARIABLE_DECL`, `FIELD_DECL`):
+- Always use `module_.get_associated_identifier(statement_ref)` where `statement_ref` is the `StatementRef` of the _declaration statement itself_.
+- This function (`module_.get_associated_identifier`) is specifically designed to handle the internal `IdentifierRef` associated with the statement and will provide a string name. It also robustly generates a temporary name if the underlying identifier is `nil` (e.g., for internal IR variables).
+- **Crucially, do NOT** attempt to directly access `IdentifierRef` members (e.g., `func_decl.name`, `param_decl.name`, `field_decl.name`) and then try to retrieve their string value using `module_.get_identifier(ref)->body` in these contexts. The `module_.get_associated_identifier(statement_ref)` is the intended and correct mechanism for all identifier names associated with `Statement` types.
   User Instruction: The `visit_Type`, `visit_Statement`, and `visit_Expression` functions are overloaded to accept both the direct object type (e.g., `ebm::Type`) and its corresponding reference type (e.g., `ebm::TypeRef`). This allows for more concise calls like `visit_Type(*this, property_decl.property_type)`.
   User Instruction: When passing a `Result` type to `std::format`, using `.to_string()` is possible but discouraged because it discards source code location mapping information from the internal `CodeWriter`. Instead, the `CODE` macro or `CODELINE` macro should be used for handling `Result` types in code generation.
   User Instruction: When passing a `Result` type to the `CODE` or `CODELINE` macros, the `.to_writer()` method should be used.

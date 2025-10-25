@@ -156,7 +156,7 @@ namespace ebmgen {
         return "tmp";
     }
 
-    std::string MappingTable::get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix) const {
+    std::string MappingTable::get_associated_identifier(const ebm::StatementRef& ref, std::string_view prefix) const {
         if (auto it = statement_identifier_direct_map_.find(get_id(ref)); it != statement_identifier_direct_map_.end()) {
             return it->second;
         }
@@ -169,24 +169,24 @@ namespace ebmgen {
         return std::format("{}{}", prefix, get_id(ref));
     }
 
-    expected<std::string> MappingTable::get_identifier_or(const ebm::ExpressionRef& ref, std::string_view prefix) const {
+    expected<std::string> MappingTable::get_associated_identifier(const ebm::ExpressionRef& ref, std::string_view prefix) const {
         auto expr = get_expression(ref);
         if (!expr) {
             return unexpect_error("Invalid expression reference: {}", get_id(ref));
         }
         if (auto id = expr->body.id()) {
-            return get_identifier_or(*id, prefix);
+            return get_associated_identifier(*id, prefix);
         }
         return unexpect_error("Expression does not have an associated identifier: {}", get_id(ref));
     }
 
-    expected<std::string> MappingTable::get_identifier_or(const ebm::TypeRef& ref, std::string_view prefix) const {
+    expected<std::string> MappingTable::get_associated_identifier(const ebm::TypeRef& ref, std::string_view prefix) const {
         auto type = get_type(ref);
         if (!type) {
             return unexpect_error("Invalid type reference: {}", get_id(ref));
         }
         if (auto id = type->body.id()) {
-            return get_identifier_or(*id, prefix);
+            return get_associated_identifier(*id, prefix);
         }
         return unexpect_error("Type does not have an associated identifier: {}", get_id(ref));
     }

@@ -146,7 +146,7 @@ namespace ebmcodegen::util {
                 state = LayerState::as_expr;
             }
         }
-        auto ident = visitor.module_.get_identifier_or(stmt);
+        auto ident = visitor.module_.get_associated_identifier(stmt);
         std::vector<std::pair<ebm::StatementKind, std::string>> layers;
         if (const ebm::StructDecl* decl = statement.body.struct_decl()) {
             if (auto related_varint = decl->related_variant()) {
@@ -277,7 +277,7 @@ namespace ebmcodegen::util {
         if (auto enum_id = type.body.id()) {
             MAYBE(enum_decl, module_.get_statement(*enum_id));
             if (auto enum_ = enum_decl.body.enum_decl()) {
-                return std::make_pair(module_.get_identifier_or(*enum_id), module_.get_identifier_or(enum_->members.container[0]));
+                return std::make_pair(module_.get_associated_identifier(*enum_id), module_.get_associated_identifier(enum_->members.container[0]));
             }
         }
         return ebmgen::unexpect_error("enum type has no members");

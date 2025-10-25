@@ -25,7 +25,7 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-std::string name_str = module_.get_identifier_or(item_id);
+std::string name_str = module_.get_associated_identifier(item_id);
 MAYBE(type_str, visit_Type(*this, property_decl.property_type));
 
 return CODE("pub ", name_str, ": ", type_str.to_writer(), ",");

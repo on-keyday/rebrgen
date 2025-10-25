@@ -55,10 +55,13 @@ namespace ebmgen {
             return std::nullopt;
         }
 
+        // Gets the identifier name associated with the given reference.
+        // Code generator should use this, not direct access to IdentifierRef member access (via get_identifier).
+        std::string get_associated_identifier(const ebm::StatementRef& ref, std::string_view prefix = "") const;
+        expected<std::string> get_associated_identifier(const ebm::ExpressionRef& ref, std::string_view prefix = "") const;
+        expected<std::string> get_associated_identifier(const ebm::TypeRef& ref, std::string_view prefix = "") const;
+
         const ebm::Identifier* get_identifier(const ebm::StatementRef& ref) const;
-        std::string get_identifier_or(const ebm::StatementRef& ref, std::string_view prefix = "") const;
-        expected<std::string> get_identifier_or(const ebm::ExpressionRef& ref, std::string_view prefix = "") const;
-        expected<std::string> get_identifier_or(const ebm::TypeRef& ref, std::string_view prefix = "") const;
 
         const ebm::Identifier* get_identifier(const ebm::ExpressionRef& ref) const;
 

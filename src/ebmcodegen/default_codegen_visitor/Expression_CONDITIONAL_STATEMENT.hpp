@@ -19,4 +19,4 @@ MAYBE(conditional_str, visit_Statement(*this, conditional_stmt));
 MAYBE(w, get_writer());
 merge_result(*this, w, target_str);
 merge_result(*this, w, conditional_str);
-return module_.get_identifier_or(target_stmt);
+return module_.get_associated_identifier(target_stmt);

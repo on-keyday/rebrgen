@@ -14,5 +14,5 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto name = module_.get_identifier_or(id);
+auto name = module_.get_associated_identifier(id);
 return Result(name);

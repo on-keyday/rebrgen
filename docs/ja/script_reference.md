@@ -16,6 +16,8 @@
 
 - **`ebmtest.py`**: `ebmgen`の EBM JSON 出力をスキーマとテストケースの期待値に対して検証します。
 - **`unictest.py`**: `ebmgen`、コードジェネレーター、およびテストスクリプトを実行することで、自動テストおよび開発ワークフローを調整します (セクション 5.1 を参照)。
+    *   `--target-runner <runner_name>`: `unictest_runner.json`ファイルで定義されているターゲットランナーの名前 (例: `ebm2rust`) を指定します。複数回指定できます。
+    *   `--target-input <input_name>`: `test/inputs.json`で定義されている入力の名前 (例: `websocket_frame_valid`) を指定します。複数回指定できます。
 - **`run_cycle.py` / `run_cycle.ps1` / `run_cycle.bat` / `run_cycle.sh`**: 旧世代。開発サイクル全体を実行します: `generate.py`、`run_generated.py`、`run_cmptest.py`。
 
 ### ユーティリティ

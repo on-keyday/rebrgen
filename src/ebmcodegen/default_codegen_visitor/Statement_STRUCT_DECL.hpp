@@ -27,7 +27,7 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-auto name = module_.get_identifier_or(item_id);
+auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
 

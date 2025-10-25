@@ -21,7 +21,7 @@
 
 /*here to write the hook*/
 %}
-{! io_val := module_.get_identifier_or(io_ref) !}
+{! io_val := module_.get_associated_identifier(io_ref) !}
 {! tmp_id := std::format("{}", get_id(item_id)) !}
 {! size_str := get_size_str(*this,num_bytes) !}
 {! current_offset := std::format("current_offset_{}", tmp_id) !}

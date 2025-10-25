@@ -19,7 +19,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto io_val = module_.get_identifier_or(io_ref);
+auto io_val = module_.get_associated_identifier(io_ref);
 
 MAYBE(size_str, get_size_str(*this, num_bytes));
 

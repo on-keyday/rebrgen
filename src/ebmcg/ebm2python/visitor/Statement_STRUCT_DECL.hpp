@@ -29,7 +29,7 @@
 // This code is included within the visit_Statement_STRUCT_DECL function.
 // We can use variables like `visitor` and `struct_decl` directly.
 CodeWriter w;
-auto name = this->module_.get_identifier_or(item_id);
+auto name = this->module_.get_associated_identifier(item_id);
 
 if (this->module_.get_identifier(item_id)) {
     output.struct_names.push_back(name);
@@ -53,7 +53,7 @@ w.writeln("def __init__(self):");
     auto result = handle_fields(*this, struct_decl.fields, true, [&](auto&& field_ref, auto&& field) -> ebmgen::expected<void> {
         if (auto field_decl = field.body.field_decl()) {
             MAYBE(default_, as_DEFAULT_VALUE(*this, field_decl->field_type));
-            auto field_name = this->module_.get_identifier_or(field_ref);
+            auto field_name = this->module_.get_associated_identifier(field_ref);
             w.writeln("self.", field_name, " = ", default_.to_writer());
         }
         return {};

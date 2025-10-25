@@ -101,14 +101,25 @@ This command will build the project in `Debug` mode for your native platform. Th
 
 `ebmgen` can take various input formats and produce an EBM file. It also provides debugging and query capabilities.
 
-**Basic Conversion:**
+**Standard Conversion:**
+
+The recommended way to convert a `.bgn` file to an EBM binary file is directly using `ebmgen`. This command internally handles the conversion from `.bgn` to `brgen AST (json)` and then to EBM.
+
+```bash
+# Convert a .bgn file directly (requires libs2j) to an EBM binary file
+./tool/ebmgen -i <path/to/input.bgn> -o <path/to/output.ebm>
+```
+
+**Advanced/Debugging Conversion:**
+
+For debugging purposes, or when you already have a `brgen AST (json)` file, or need to directly use `src2json`, you can use the following methods:
 
 ```bash
 # Convert a brgen AST JSON to an EBM binary file
 ./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>
 
-# Convert a .bgn file directly (requires libs2j)
-./tool/ebmgen -i <path/to/input.bgn> -o <path/to/output.ebm>
+# Convert a .bgn file to brgen AST JSON using src2json (for internal debugging)
+$BRGEN_DIR/tool/src2json[.exe] <path/to/input.bgn> > <path/to/output.json>
 ```
 
 **Debugging:**
@@ -342,15 +353,16 @@ It doesn't mean acting in order, but rather the priority of actions.
 You can choose appropriate action in the context.
 After you modified some code, please run these before you do next edit and confirm your modification does not break baseline.
 
-1.  **Run `python script/unictest.py` (or `python script/unictest.py --print-stdout` for debugging)**: This script automates the process of generating EBM, running the code generator, and testing it. It will also reveal unimplemented visitor hooks.
+1.  **Run `python script/unictest.py --target-runner <lang name>` (or `python script/unictest.py --target-runner <lang name> --print-stdout` for debugging)**: This script automates the process of generating EBM, running the code generator, and testing it. It will also reveal unimplemented visitor hooks.
 2.  run `python script/build.py native Debug`
 3.  run `python .\script\ebmcodegen.py <lang name>` (if you add new file. otherwise, needless. this command enforce update ebm2<lang name>/main.cpp file and then rebuild it)
 4.  run `./tool/ebmcodegen --mode subset > src/ebmcodegen/body_subset.cpp`
-5.  run `./tool/ebmgen -i <path/to/input.json> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>`
-6.  run `C:/workspace/shbrgen/brgen/tool/src2json.exe src/test/simple_case.bgn > save/simple.json`
-7.  run `src/ebm/ebm`
+5.  run `./tool/ebmgen -i <path/to/input.bgn> -o <path/to/output.ebm>　-d <path/to/debug_output.txt>` (Use this for direct .bgn to .ebm conversion and debug output. For AST JSON input or direct `src2json` usage, refer to the "Advanced/Debugging Conversion" section under "Running `ebmgen`".)
+6.  run `src/ebm/ebm`
 
 note that debug_output is less helpful for AI agent because of too complex structure and too large information that causes misunderstanding frequently. it is for core developer, not for assistant.
+
+**Note on EBM Generation Workflow**: The recommended workflow for generating EBM files for testing and development is through `unictest.py` (point 1), which orchestrates the necessary `ebmgen` calls internally. Direct usage of `ebmgen` (point 5) or `src2json` (which is now an internal function of `ebmgen` or used for advanced debugging) is generally reserved for specific debugging or manual conversion tasks.
 
 IMPORTANT!!!:
 YOU (INCLUDING AI AGENTS, LIKE GEMINI) MUST SEE DEFINITION (ESPECIALLY TYPE DEFINITION) WHILE YOU FIX COMPILE ERROR.
@@ -367,15 +379,38 @@ The `script/unictest.py` script, in conjunction with `script/unictest_setup.py`,
 
 1.  **EBM Generation**: Converts source files (e.g., `.bgn` files) into EBM format using `ebmgen`.
 2.  **Code Generator Execution**: Runs the target code generator (e.g., `ebm2rust`) with the generated EBM file.
-3.  **Visitor Hook Debugging**: When `unictest.py` runs in a mode that involves checking for unimplemented hooks (e.g., during setup or when a code generator is first run), it automatically passes the `--debug-unimplemented` flag to the *code generator executable* (e.g., `ebm2python`, `ebm2rust`). This flag instructs the code generator to identify and report any unimplemented visitor hooks.
+3.  **Visitor Hook Debugging**: When `unictest.py` runs in a mode that involves checking for unimplemented hooks (e.g., during setup or when a code generator is first run), it automatically passes the `--debug-unimplemented` flag to the _code generator executable_ (e.g., `ebm2python`, `ebm2rust`). This flag instructs the code generator to identify and report any unimplemented visitor hooks.
 4.  **Test Execution**: In "test" mode, it executes language-specific test scripts to compare the generated output with expected results.
 
 This framework simplifies the development process by automating repetitive tasks and providing clear feedback on the status of visitor hook implementation.
 
+**Usage:**
+
+```bash
+python script/unictest.py [options]
+```
+
+**Key Options:**
+
+- `--target-runner <runner_name>`: Specifies the name of a target runner (e.g., `ebm2rust`), as defined in `unictest_runner.json` files. Can be specified multiple times to run tests for multiple runners.
+- `--target-input <input_name>`: Specifies the name of an input (e.g., `websocket_frame_valid`), as defined in `test/inputs.json`. Can be specified multiple times to run tests for specific inputs.
+- `--print-stdout`: Prints the standard output of the executed commands, useful for debugging.
+
+**Example:**
+
+```bash
+# Run all tests for the ebm2rust generator
+python script/unictest.py --target-runner ebm2rust
+
+# Run tests for ebm2rust with a specific input
+python script/unictest.py --target-runner ebm2rust --target-input simple_case
+
+# Run all tests and print verbose output
+python script/unictest.py --print-stdout
+```
+
 #### 10. Action Mental Model
 
-When you start or resume development, first run ebm2<lang name> to check the current development stage.
-Don't skip this step, as even if you think you last ran it, humans may have made changes since then, or you'll end up with inconsistent observations.
 If there is a TODO message or a missing code fragment, I first try to find the corresponding visitor/ code. Basically, development is centered around visitor/.
 When you get a compile error like type mismatch or undefined symbol, you might be tempted to guess what it is and name it, but before that, you should get into the habit of looking at the extended_binary_module.hpp file, mapping.hpp, and other \*.hpp files to check the definitions.
 You've read it and sometimes I think there's no definition, but that just means I haven't done ReadFile yet.

@@ -17,14 +17,19 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-auto name = module_.get_identifier_or(item_id);
+auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
-w.writeln("#[derive(Default)]");
+w.writeln("#[derive(Debug, Clone, PartialEq, Eq, Default)]");
 w.writeln("pub enum ", name, " {");
 {
     auto scope = w.indent_scope();
-    for(auto& member_ref : enum_decl.members.container) {
+    bool is_first_member = true;
+    for (auto& member_ref : enum_decl.members.container) {
+        if (is_first_member) {
+            w.writeln("#[default]");
+            is_first_member = false;
+        }
         MAYBE(member_str, visit_Statement(*this, member_ref));
         w.write(member_str.to_writer());
     }

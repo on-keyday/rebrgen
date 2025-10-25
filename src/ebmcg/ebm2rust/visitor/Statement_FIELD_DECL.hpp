@@ -18,7 +18,11 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto name = module_.get_identifier_or(item_id);
+if (field_decl.is_state_variable()) {
+    return Result("");  // Ignore state variables
+}
+
+auto name = module_.get_associated_identifier(item_id);
 
 MAYBE(type, visit_Type(*this, field_decl.field_type));
 

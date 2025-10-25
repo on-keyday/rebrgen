@@ -15,7 +15,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 /*license*/
 MAYBE(base_str, visit_Expression(*this, base));
-MAYBE(ident, module_.get_identifier_or(member));
+MAYBE(ident, module_.get_associated_identifier(member));
 
 CodeWriter w;
 w.write(base_str.to_writer(), ".", ident);

@@ -270,11 +270,30 @@ namespace ebmgen {
         return {};
     }
 
+    expected<ebm::TypeRef> get_coder_return(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
+        EBMA_ADD_TYPE(coder_return, std::move(b));
+        return coder_return;
+    }
+
+    expected<ebm::TypeRef> get_coder_input(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_INPUT : ebm::TypeKind::DECODER_INPUT;
+        EBMA_ADD_TYPE(coder_input, std::move(b));
+        return coder_input;
+    }
+
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::RETURN;
         if (node->expr) {
             EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
             body.value(expr_ref);
+        }
+        else if (ctx.state().get_current_generate_type() != ebm::GenerateType::Normal) {
+            MAYBE(coder_return, get_coder_return(ctx, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode));
+            EBM_DEFAULT_VALUE(nil_value, coder_return);
+            body.value(nil_value);
         }
         else {
             body.value(ebm::ExpressionRef{});
@@ -470,20 +489,6 @@ namespace ebmgen {
         }
         body.block(std::move(program_body_block));
         return {};
-    }
-
-    expected<ebm::TypeRef> get_coder_return(ConverterContext& ctx, bool enc) {
-        ebm::TypeBody b;
-        b.kind = enc ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
-        EBMA_ADD_TYPE(coder_return, std::move(b));
-        return coder_return;
-    }
-
-    expected<ebm::TypeRef> get_coder_input(ConverterContext& ctx, bool enc) {
-        ebm::TypeBody b;
-        b.kind = enc ? ebm::TypeKind::ENCODER_INPUT : ebm::TypeKind::DECODER_INPUT;
-        EBMA_ADD_TYPE(coder_input, std::move(b));
-        return coder_input;
     }
 
     expected<ebm::StatementRef> StatementConverter::convert_struct_decl(const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant) {
@@ -692,8 +697,7 @@ namespace ebmgen {
         }
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;
-        if (auto typ = ctx.state().get_current_generate_type();
-            typ == GenerateType::Encode || typ == GenerateType::Decode) {
+        if (typ == GenerateType::Encode || typ == GenerateType::Decode) {
             MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
             func_decl.return_type = coder_return;
             append(func_decl.params, coder_input_ref);
@@ -716,6 +720,16 @@ namespace ebmgen {
         }
         const auto _mode = ctx.state().set_current_generate_type(typ);
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
+        if (typ != GenerateType::Normal) {
+            // tail return
+            EBM_DEFAULT_VALUE(nil_value, func_decl.return_type);
+            EBM_RETURN(ret_stmt, nil_value);
+            ebm::Block fn_body_block;
+            append(fn_body_block, fn_body);
+            append(fn_body_block, ret_stmt);
+            EBM_BLOCK(fn_body_ref, std::move(fn_body_block));
+            fn_body = fn_body_ref;
+        }
         func_decl.body = fn_body;
         return func_decl;
     }

@@ -294,6 +294,21 @@ namespace ebmcodegen::util {
         }
     }
 
+    ebmgen::expected<size_t> get_variant_index(auto&& visitor, ebm::TypeRef variant_type, ebm::TypeRef candidate_type) {
+        auto& module_ = visitor.module_;
+        MAYBE(type, module_.get_type(variant_type));
+        if (type.body.kind != ebm::TypeKind::VARIANT) {
+            return ebmgen::unexpect_error("not a variant type");
+        }
+        MAYBE(members, type.body.members());
+        for (size_t i = 0; i < members.container.size(); ++i) {
+            if (members->container[i] == candidate_type) {
+                return i;
+            }
+        }
+        return ebmgen::unexpect_error("type not found in variant members");
+    }
+
     template <class CodeWriter>
     auto code_write(auto&&... args) {
         static_assert(!(... || futils::helper::is_template_instance_of<std::decay_t<decltype(args)>, futils::helper::either::expected>), "Unexpected expected<> in code_write. Please unwrap it first.");

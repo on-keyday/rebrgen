@@ -49,7 +49,10 @@ for (auto& param_ref : func_decl.params.container) {
 w.writeln(") -> ", return_type_str.to_writer(), " {");
 {
     auto scope = w.indent_scope();
-    w.writeln("// TODO: Implement function body");
+    if (!is_nil(func_decl.body)) {
+        MAYBE(body_str, visit_Statement(*this, func_decl.body));
+        w.write(body_str.to_writer());
+    }
 }
 w.writeln("}");
 

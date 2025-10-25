@@ -9,7 +9,7 @@ This is aimed at improving flexibility and inter-language compatibility
 
 # How to build
 
-1. you may copy `build_config.template.json` to `build_config.json`
+1. you may copy `build_config.template.json` to `build_config.json`. if not copied, `auto_setup.py` will automatically copies `build_config.template.json`
 2. if you want to build brgen tools, make `AUTO_SETUP_BRGEN` true in `build_config.json`
 3. at first run `python script/auto_setup.py`. on subsequent build, run `python script/build.py`
 

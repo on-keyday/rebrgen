@@ -77,7 +77,7 @@ namespace ebmcodegen {
             if (err) {
                 if (flags.dump_code) {
                     std::stringstream ss;
-                    ebmgen::DebugPrinter printer(ebm, ss);
+                    ebmgen::DebugPrinter printer(ebmgen::EBMProxy(ebm), ss);
                     printer.print_module();
                     cout << ss.str();
                 }
@@ -87,7 +87,7 @@ namespace ebmcodegen {
             if (!r.empty()) {
                 if (flags.dump_code) {
                     std::stringstream ss;
-                    ebmgen::DebugPrinter printer(ebm, ss);
+                    ebmgen::DebugPrinter printer(ebmgen::EBMProxy(ebm), ss);
                     printer.print_module();
                     cout << ss.str();
                 }

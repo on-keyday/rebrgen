@@ -18,8 +18,34 @@ namespace ebmgen {
 
     using ObjectVariant = std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*>;
 
+    struct EBMProxy {
+        ebm::AnyRef max_id;
+        const std::vector<ebm::Statement>& statements;
+        const std::vector<ebm::Expression>& expressions;
+        const std::vector<ebm::Type>& types;
+        const std::vector<ebm::Identifier>& identifiers;
+        const std::vector<ebm::StringLiteral>& strings;
+        const std::vector<ebm::RefAlias>& aliases;
+        const std::vector<ebm::Loc>& locs;
+        const ebm::ExtendedBinaryModule* origin = nullptr;
+
+        constexpr EBMProxy(const ebm::ExtendedBinaryModule& module)
+            : max_id(module.max_id), statements(module.statements), expressions(module.expressions), types(module.types), identifiers(module.identifiers), strings(module.strings), aliases(module.aliases), locs(module.debug_info.locs), origin(&module) {
+        }
+
+        constexpr EBMProxy(const std::vector<ebm::Statement>& stmts,
+                           const std::vector<ebm::Expression>& exprs,
+                           const std::vector<ebm::Type>& tys,
+                           const std::vector<ebm::Identifier>& idents,
+                           const std::vector<ebm::StringLiteral>& strs,
+                           const std::vector<ebm::RefAlias>& als,
+                           const std::vector<ebm::Loc>& locs)
+            : max_id{}, statements(stmts), expressions(exprs), types(tys), identifiers(idents), strings(strs), aliases(als), locs(locs), origin(nullptr) {
+        }
+    };
+
     struct MappingTable {
-        MappingTable(const ebm::ExtendedBinaryModule& module)
+        MappingTable(EBMProxy module)
             : module_(module) {
             build_maps();
         }
@@ -33,6 +59,12 @@ namespace ebmgen {
         const ebm::Expression* get_expression(const ebm::ExpressionRef& ref) const;
 
         ObjectVariant get_object(const ebm::AnyRef& ref) const;
+        // useful for generic use
+        ObjectVariant get_object(const ebm::StatementRef& ref) const;
+        ObjectVariant get_object(const ebm::ExpressionRef& ref) const;
+        ObjectVariant get_object(const ebm::TypeRef& ref) const;
+        ObjectVariant get_object(const ebm::IdentifierRef& ref) const;
+        ObjectVariant get_object(const ebm::StringRef& ref) const;
 
         std::optional<ebm::TypeKind> get_type_kind(const ebm::TypeRef& ref) const {
             if (const auto* type = get_type(ref)) {
@@ -72,7 +104,7 @@ namespace ebmgen {
         // same as get_statement(ebm::StatementRef{module().max_id.id})
         const ebm::Statement* get_entry_point() const;
 
-        const ebm::ExtendedBinaryModule& module() const {
+        const EBMProxy& module() const {
             return module_;
         }
 
@@ -97,7 +129,7 @@ namespace ebmgen {
         void directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name);
 
        private:
-        const ebm::ExtendedBinaryModule& module_;
+        EBMProxy module_;
         // Caches for faster lookups
         std::unordered_map<std::uint64_t, const ebm::Identifier*> identifier_map_;
         std::unordered_map<std::uint64_t, const ebm::StringLiteral*> string_literal_map_;

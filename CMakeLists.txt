@@ -124,6 +124,7 @@ add_library(ebmgen_lib STATIC
     "src/ebmgen/transform/remove_unused.cpp"
     "src/ebmgen/transform/bit_fields.cpp"
     "src/ebmgen/transform/bit_holder.cpp"
+    "src/ebmgen/transform/derive_property.cpp"
     "src/ebmgen/interactive/debugger.cpp"
     "src/ebmcodegen/structs.cpp" # for debug info
 )

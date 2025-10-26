@@ -43,11 +43,10 @@ MAYBE(type_obj, module_.get_type(read_data.data_type));
 
 CodeWriter w;
 
-if (type_obj.body.kind == ebm::TypeKind::INT_TYPE) {
-    auto int_type = type_obj.body.int_type();
-    auto bit_size = int_type->bit_size;
+if (type_obj.body.kind == ebm::TypeKind::INT) {
+    auto bit_size = type_obj.body.size()->value();
     auto byte_size = (bit_size + 7) / 8;
-    w.writeln("let mut buf = [0u8; ", byte_size, "];");
+    w.writeln("let mut buf = [0u8; ", std::to_string(byte_size), "];");
     w.writeln(io_name, ".read_exact(&mut buf)?;");
     w.write(target.to_writer(), " = ", type.to_writer(), "::from_le_bytes(buf);");
 }

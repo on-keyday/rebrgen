@@ -1,7 +1,9 @@
 /*license*/
+#include "ebm/extended_binary_module.hpp"
 #include "transform.hpp"
 #include "../convert/helper.hpp"
 #include <testutil/timer.h>
+#include <cstddef>
 #include <ranges>
 
 namespace ebmgen {
@@ -43,6 +45,12 @@ namespace ebmgen {
         return std::nullopt;
     }
 
+    expected<void> derive_composite_accessor(
+        TransformContext& ctx, ebm::StatementRef composite_ref, ebm::StatementRef field_ref, ebm::StatementRef parent_ref,
+        size_t total_size, size_t current_size, size_t offset) {
+        ebm::FunctionDecl getter_decl, setter_decl;
+    }
+
     expected<void> merge_bit_field(TransformContext& tctx) {
         auto& ctx = tctx.context();
         auto& all_statements = tctx.statement_repository().get_all();
@@ -53,7 +61,7 @@ namespace ebmgen {
                 std::vector<std::pair<size_t, std::optional<size_t>>> sized_fields;
                 std::vector<size_t> not_added_index;
                 size_t added = 0;
-                for (size_t index=0;index<fields.size();index++ ) {
+                for (size_t index = 0; index < fields.size(); index++) {
                     auto& field = fields[index];
                     MAYBE(field_stmt, tctx.statement_repository().get(field));
                     if (auto field_decl = field_stmt.body.field_decl()) {
@@ -65,23 +73,23 @@ namespace ebmgen {
                         not_added_index.push_back(index);
                     }
                 }
-                std::vector<std::pair<std::optional<size_t>, std::vector<size_t>>> merged;
+                std::vector<std::pair<std::optional<size_t>, std::vector<std::pair<size_t /*index*/, size_t /*size*/>>>> merged;
                 for (auto& [index, size] : sized_fields) {
                     if (!size) {
-                        merged.push_back({std::nullopt, {index}});
+                        merged.push_back({std::nullopt, {{index, 0}}});
                         continue;
                     }
                     if (merged.empty()) {
-                        merged.push_back({size, {index}});
+                        merged.push_back({size, {{index, *size}}});
                         continue;
                     }
                     auto& [last_size, last_indexes] = merged.back();
                     if (!last_size) {
-                        merged.push_back({size, {index}});
+                        merged.push_back({size, {{index, *size}}});
                         continue;
                     }
                     if (*last_size % 8 != 0) {
-                        last_indexes.push_back(index);
+                        last_indexes.push_back({index, *size});
                         *last_size += *size;
                         continue;
                     }
@@ -89,16 +97,16 @@ namespace ebmgen {
                         return size == 8 || size == 16 || size == 32 || size == 64;
                     };
                     if (!is_common(*last_size)) {
-                        last_indexes.push_back(index);
+                        last_indexes.push_back({index, *size});
                         *last_size += *size;
                         continue;
                     }
                     if (!is_common(*size) && is_common(*last_size + *size)) {
-                        last_indexes.push_back(index);
+                        last_indexes.push_back({index, *size});
                         *last_size += *size;
                         continue;
                     }
-                    merged.push_back({size, {index}});
+                    merged.push_back({size, {{index, *size}}});
                 }
                 if (merged.size() == added) {
                     continue;
@@ -119,12 +127,12 @@ namespace ebmgen {
                         print_if_verbose(" with unknown size\n");
                     }
                     if (indexes.size() == 1) {
-                        append(block, fields[indexes[0]]);
+                        append(block, fields[indexes[0].first]);
                     }
                     else {
                         ebm::CompositeFieldDecl comp_decl;
                         for (auto& idx : indexes) {
-                            append(comp_decl.fields, fields[idx]);
+                            append(comp_decl.fields, fields[idx.first]);
                         }
                         EBMU_UINT_TYPE(composite_type, *size);
                         comp_decl.composite_type = composite_type;
@@ -132,6 +140,12 @@ namespace ebmgen {
                         body.kind = ebm::StatementKind::COMPOSITE_FIELD_DECL;
                         body.composite_field_decl(std::move(comp_decl));
                         EBMA_ADD_STATEMENT(comp_stmt, std::move(body));
+                        for (auto& idx : indexes) {
+                            MAYBE(field_stmt, tctx.statement_repository().get(fields[idx.first]));
+                            MAYBE(field_decl, field_stmt.body.field_decl());
+                            field_decl.inner_composite(true);
+                            field_decl.composite_field(comp_stmt);
+                        }
                         append(block, comp_stmt);
                     }
                 }

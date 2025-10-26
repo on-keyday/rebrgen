@@ -302,7 +302,7 @@ namespace ebmcodegen::util {
         }
         MAYBE(members, type.body.members());
         for (size_t i = 0; i < members.container.size(); ++i) {
-            if (members->container[i] == candidate_type) {
+            if (ebmgen::get_id(members.container[i]) == ebmgen::get_id(candidate_type)) {
                 return i;
             }
         }

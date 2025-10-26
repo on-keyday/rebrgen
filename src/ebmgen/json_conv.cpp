@@ -833,6 +833,16 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("inner_composite")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.inner_composite(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -844,6 +854,33 @@ namespace ebm {
         }
         else {
             return false;
+        }
+        if (auto got = j.at("composite_field")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.composite_field(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("composite_getter")) {
+            LoweredStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.composite_getter(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("composite_setter")) {
+            LoweredStatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.composite_setter(std::move(tmp))) {
+                return false;
+            }
         }
         return true;
     }

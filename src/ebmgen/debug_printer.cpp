@@ -233,7 +233,7 @@ namespace ebmgen {
 
     // --- Main print methods ---
     void DebugPrinter::print_module() const {
-        print_value(module_.module());
+        print_value(module_.module().origin);
         os_ << "Inverse references:\n";
         indent_level_++;
         for (std::uint64_t i = 1; i <= get_id(module_.module().max_id); ++i) {

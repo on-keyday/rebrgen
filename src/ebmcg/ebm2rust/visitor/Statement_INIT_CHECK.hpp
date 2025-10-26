@@ -21,7 +21,7 @@ MAYBE(target_expr, module_.get_expression(init_check.target_field));
 MAYBE(target_type, module_.get_type(target_expr.body.type));
 MAYBE(expect_expr, module_.get_expression(init_check.expect_value));
 
-if (target_type.kind != ebm::TypeKind::VARIANT) {
+if (target_type.body.kind != ebm::TypeKind::VARIANT) {
     return unexpect_error("unsupported type for INIT_CHECK: {}", to_string(target_type.body.kind));
 }
 

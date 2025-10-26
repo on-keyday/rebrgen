@@ -68,7 +68,7 @@ namespace ebmgen {
                     break;
             }
         }
-        for (const auto& debug_loc : module_.debug_info.locs) {
+        for (const auto& debug_loc : module_.locs) {
             debug_loc_map_[get_id(debug_loc.ident)] = &debug_loc;
         }
     }
@@ -99,7 +99,7 @@ namespace ebmgen {
         return (it != expression_map_.end()) ? it->second : nullptr;
     }
 
-    std::variant<std::monostate, const ebm::Identifier*, const ebm::StringLiteral*, const ebm::Type*, const ebm::Statement*, const ebm::Expression*> MappingTable::get_object(const ebm::AnyRef& ref) const {
+    ObjectVariant MappingTable::get_object(const ebm::AnyRef& ref) const {
         if (auto i = get_identifier(ebm::IdentifierRef{ref.id})) {
             return i;
         }
@@ -114,6 +114,38 @@ namespace ebmgen {
         }
         if (auto e = get_expression(ebm::ExpressionRef{ref.id})) {
             return e;
+        }
+        return std::monostate{};
+    }
+
+    ObjectVariant MappingTable::get_object(const ebm::StatementRef& ref) const {
+        if (auto t = get_statement(ref)) {
+            return t;
+        }
+        return std::monostate{};
+    }
+
+    ObjectVariant MappingTable::get_object(const ebm::ExpressionRef& ref) const {
+        if (auto e = get_expression(ref)) {
+            return e;
+        }
+        return std::monostate{};
+    }
+    ObjectVariant MappingTable::get_object(const ebm::TypeRef& ref) const {
+        if (auto t = get_type(ref)) {
+            return t;
+        }
+        return std::monostate{};
+    }
+    ObjectVariant MappingTable::get_object(const ebm::IdentifierRef& ref) const {
+        if (auto i = get_identifier(ref)) {
+            return i;
+        }
+        return std::monostate{};
+    }
+    ObjectVariant MappingTable::get_object(const ebm::StringRef& ref) const {
+        if (auto s = get_string_literal(ref)) {
+            return s;
         }
         return std::monostate{};
     }

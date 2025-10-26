@@ -68,7 +68,10 @@ namespace ebmgen {
 
     void JSONPrinter::print_module(futils::json::Stringer<>& os) {
         os_ = &os;
-        print_value(module_.module());
+        auto origin = module_.module().origin;
+        if (origin) {
+            print_value(*origin);
+        }
     }
 
     void JSONPrinter ::print_object(futils::json::Stringer<>& os, const ebm::Statement& obj) {

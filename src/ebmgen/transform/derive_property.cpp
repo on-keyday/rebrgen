@@ -1,5 +1,4 @@
 /*license*/
-#pragma once
 #include "transform.hpp"
 #include "ebm/extended_binary_module.hpp"
 #include "../convert/helper.hpp"

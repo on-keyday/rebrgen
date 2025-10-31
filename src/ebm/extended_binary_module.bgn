@@ -621,8 +621,8 @@ format Expressions:
     len :Varint
     container :[len.value]ExpressionRef # List of expressions
 
-format Block:
-    len :Varint
+format Block: # A block of statements. Block does NOT mean {} or scope, just a list of statements. 
+    len :Varint 
     container :[len.value]StatementRef
 
 

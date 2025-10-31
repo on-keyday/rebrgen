@@ -14,4 +14,5 @@ namespace ebmgen {
     expected<void> lowered_dynamic_bit_io(CFGContext& tctx, bool write);
     expected<void> merge_bit_field(TransformContext& tctx);
     expected<void> derive_property_setter_getter(TransformContext& tctx);
+    expected<void> flatten_io_expression(TransformContext& tctx);
 }  // namespace ebmgen

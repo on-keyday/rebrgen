@@ -32,9 +32,6 @@ namespace ebmgen {
                 }
                 type = *base_type;
             }
-            else if (type_ref->body.kind == ebm::TypeKind::STRUCT) {
-                auto size = type_ref->body.size();
-            }
             else {
                 return unexpect_error("Unsupported type for max value: {}", to_string(type_ref->body.kind));
             }

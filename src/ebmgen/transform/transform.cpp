@@ -9,6 +9,10 @@
 namespace ebmgen {
 
     expected<void> transform(TransformContext& ctx, bool debug, std::function<void(const char*)> timer) {
+        MAYBE_VOID(flatten_io_expression, flatten_io_expression(ctx));
+        if (timer) {
+            timer("flatten io expression");
+        }
         // internal CFG used optimization
         {
             CFGContext cfg_ctx{ctx};

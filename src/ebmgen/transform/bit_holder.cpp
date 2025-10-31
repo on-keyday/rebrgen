@@ -92,7 +92,8 @@ namespace ebmgen {
         auto getter_expr = res->first;
         MAYBE(original_field_type_decl, tctx.type_repository().get(original_field_type));
         auto src_type = original_field_type;
-        if (original_field_type_decl.body.kind == ebm::TypeKind::VARIANT) {  // TODO: map to each type
+        if (original_field_type_decl.body.kind == ebm::TypeKind::VARIANT ||
+            original_field_type_decl.body.kind == ebm::TypeKind::STRUCT) {  // TODO: map to each type
             EBMU_UINT_TYPE(temp_type, current_size);
             src_type = temp_type;
         }

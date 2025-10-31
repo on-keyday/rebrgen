@@ -45,7 +45,7 @@ namespace ebmgen {
     };
 
     struct MappingTable {
-        MappingTable(EBMProxy module)
+        explicit MappingTable(EBMProxy module)
             : module_(module) {
             build_maps();
         }

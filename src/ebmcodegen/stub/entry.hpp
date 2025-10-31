@@ -10,6 +10,7 @@
 #include <file/file_stream.h>
 #include <json/stringer.h>
 #include <set>
+#include "ebmgen/mapping.hpp"
 #include "flags.hpp"
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
@@ -36,6 +37,7 @@ namespace ebmcodegen {
         bool debug_unimplemented = false;
 
         std::string_view dump_test_file;
+        std::string_view dump_test_separator;
 
         std::set<std::string_view> web_filtered;
 
@@ -46,8 +48,9 @@ namespace ebmcodegen {
             ctx.VarBool(&show_flags, "show-flags", "show all flags (for debug and code generation)");
             ctx.VarBool(&dump_code, "dump-code", "dump code (for debug)");
             ctx.VarString<true>(&dump_test_file, "test-info", "dump test info file", "FILE");
+            ctx.VarString<true>(&dump_test_separator, "test-separator", "dump test info separator when dumping test info to stdout", "SEP");
             ctx.VarBool(&debug_unimplemented, "debug-unimplemented", "debug unimplemented node (for debug)");
-            web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info"};
+            web_filtered = {"help", "input", "output", "show-flags", "dump-code", "test-info", "test-separator"};
         }
     };
     namespace internal {
@@ -77,7 +80,8 @@ namespace ebmcodegen {
             if (err) {
                 if (flags.dump_code) {
                     std::stringstream ss;
-                    ebmgen::DebugPrinter printer(ebmgen::EBMProxy(ebm), ss);
+                    ebmgen::MappingTable table(ebm);
+                    ebmgen::DebugPrinter printer(table, ss);
                     printer.print_module();
                     cout << ss.str();
                 }
@@ -87,7 +91,8 @@ namespace ebmcodegen {
             if (!r.empty()) {
                 if (flags.dump_code) {
                     std::stringstream ss;
-                    ebmgen::DebugPrinter printer(ebmgen::EBMProxy(ebm), ss);
+                    ebmgen::MappingTable table(ebm);
+                    ebmgen::DebugPrinter printer(table, ss);
                     printer.print_module();
                     cout << ss.str();
                 }
@@ -104,6 +109,7 @@ namespace ebmcodegen {
                 obj("structs", output.struct_names);
                 obj.close();
                 if (flags.dump_test_file == "-") {
+                    cout << flags.dump_test_separator;
                     cout << str.out();
                     return ret;
                 }

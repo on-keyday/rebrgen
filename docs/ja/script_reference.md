@@ -16,9 +16,8 @@
 
 - **`ebmtest.py`**: `ebmgen`の EBM JSON 出力をスキーマとテストケースの期待値に対して検証します。
 - **`unictest.py`**: `ebmgen`、コードジェネレーター、およびテストスクリプトを実行することで、自動テストおよび開発ワークフローを調整します (セクション 5.1 を参照)。
-    *   `--target-runner <runner_name>`: `unictest_runner.json`ファイルで定義されているターゲットランナーの名前 (例: `ebm2rust`) を指定します。複数回指定できます。
-    *   `--target-input <input_name>`: `test/inputs.json`で定義されている入力の名前 (例: `websocket_frame_valid`) を指定します。複数回指定できます。
-- **`run_cycle.py` / `run_cycle.ps1` / `run_cycle.bat` / `run_cycle.sh`**: 旧世代。開発サイクル全体を実行します: `generate.py`、`run_generated.py`、`run_cmptest.py`。
+  - `--target-runner <runner_name>`: `unictest_runner.json`ファイルで定義されているターゲットランナーの名前 (例: `ebm2rust`) を指定します。複数回指定できます。
+  - `--target-input <input_name>`: `test/inputs.json`で定義されている入力の名前 (例: `websocket_frame_valid`) を指定します。複数回指定できます。
 
 ### ユーティリティ
 
@@ -37,3 +36,4 @@
 - **`test_compatibility.py`**: `bmgen`用。`gen_template`の現在の出力と、`generate_golden_master.py`で作成されたゴールデンマスターを比較します。これにより、テンプレート生成ロジックの変更が既存の出力に影響を与えていないか (後方互換性があるか) をテストします。
 - **`binary_module.bat` / `binary_module.ps1`**: `bmgen`用。`brgen`の`src2json`と`json2cpp2`を使用して、`binary_module.bgn`から C++ヘッダーとソースファイル (`binary_module.hpp`、`binary_module.cpp`) を生成します。
 - **`list_lang.py`**: `bmgen`用。`src/`内の`bm2<lang>`ディレクトリを探索して、サポートされている言語のリストを JSON 形式で出力します。
+- **`run_cycle.py` / `run_cycle.ps1` / `run_cycle.bat` / `run_cycle.sh`**: 旧世代。開発サイクル全体を実行します: `generate.py`、`run_generated.py`、`run_cmptest.py`。

@@ -13,17 +13,18 @@
       fields: Block
         len: Varint
         container: std::vector<StatementRef>
-      encode_fn: StatementRef
-      decode_fn: StatementRef
       is_recursive: bool
       is_fixed_size: bool
       has_related_variant: bool
+      has_encode_decode: bool
       reserved: std::uint8_t
       related_variant: *TypeRef
       size: *Size
         unit: SizeUnit
         ref: *ExpressionRef
         size: *Varint
+      decode_fn: *StatementRef
+      encode_fn: *StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
@@ -46,12 +47,12 @@ w.writeln();  // Add a newline for separation
 w.writeln("impl ", name, " {");
 {
     auto impl_scope = w.indent_scope();
-    if (!is_nil(struct_decl.encode_fn)) {
-        MAYBE(encode_fn_str, visit_Statement(*this, struct_decl.encode_fn));
+    if (auto enc_fn = struct_decl.encode_fn()) {
+        MAYBE(encode_fn_str, visit_Statement(*this, *enc_fn));
         w.write(encode_fn_str.to_writer());
     }
-    if (!is_nil(struct_decl.decode_fn)) {
-        MAYBE(decode_fn_str, visit_Statement(*this, struct_decl.decode_fn));
+    if (auto dec_fn = struct_decl.decode_fn()) {
+        MAYBE(decode_fn_str, visit_Statement(*this, *dec_fn));
         w.write(decode_fn_str.to_writer());
     }
 }

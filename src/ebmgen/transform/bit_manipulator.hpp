@@ -87,6 +87,26 @@ namespace ebmgen {
 
         expected<ebm::StatementRef> write_bits_dynamic(
             ebm::ExpressionRef current_bit_offset, ebm::ExpressionRef bit_size, ebm::Endian endian, ebm::TypeRef target_type, ebm::ExpressionRef source_expr);
+        // 値から、エンディアンを考慮して8ビットに収まる範囲を取り出す
+        // expr_shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
+        // byte_shift = big ? (8 - bit_to_read - bit_offset) : bit_offset;
+        // lsb_mask = (1 << bit_to_read) - 1
+        // optimize_shift = expr_shift >= byte_shift
+        // shift = optimize_shift && should_optimize ? expr_shift - byte_shift : expr_shift
+        // mask = optimize_shift ? lsb_mask << byte_shift : lsb_mask
+        // cast_u8 ? uint8((source_expr >> shift) & mask) : (source_expr >> shift) & mask
+        expected<std::pair<ebm::ExpressionRef, bool>> extractBitsFromExpression(
+            ebm::ExpressionRef source_expr,
+            size_t bits_processed, size_t bit_size, size_t bit_offset, size_t bit_to_read,
+            ebm::Endian endian, ebm::TypeRef target_type, bool should_optimize = true, bool cast_u8 = true);
+
+        // 抽出したビット列を、エンディアンを考慮して最終的な値に結合するコードを生成
+        // shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
+        // current_expr | (extracted << shift)
+        expected<ebm::ExpressionRef> appendToExpression(
+            std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef extracted,
+            size_t bits_processed, size_t bit_size, size_t bit_to_read,
+            ebm::Endian endian, ebm::TypeRef target_type,ebm::TypeRef src_type = ebm::TypeRef{});
 
        private:
         // 1バイトから特定のビット範囲を抽出し、LSBにアラインされた値にするコードを生成
@@ -138,26 +158,7 @@ namespace ebmgen {
         // mask = ((1 << bit_to_read) - 1) << shift
         // (tmp_buffer[offset] & mask) >> shift
         expected<ebm::ExpressionRef> extractBitsFromByte(size_t byte_offset, size_t bit_offset, size_t bit_to_read, ebm::Endian endian);
-        // 抽出したビット列を、エンディアンを考慮して最終的な値に結合するコードを生成
-        // shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
-        // current_expr | (extracted << shift)
-        expected<ebm::ExpressionRef> appendToExpression(
-            std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef extracted,
-            size_t bits_processed, size_t bit_size, size_t bit_to_read,
-            ebm::Endian endian, ebm::TypeRef target_type);
 
-        // 値から、エンディアンを考慮して8ビットに収まる範囲を取り出す
-        // expr_shift = big ? bit_size - bits_processed - bit_to_read : bits_processed
-        // byte_shift = big ? (8 - bit_to_read - bit_offset) : bit_offset;
-        // lsb_mask = (1 << bit_to_read) - 1
-        // optimize_shift = expr_shift >= byte_shift
-        // shift = optimize_shift ? expr_shift - byte_shift : expr_shift
-        // mask = optimize_shift ? lsb_mask << byte_shift : lsb_mask
-        // uint8((source_expr >> shift) & mask)
-        expected<std::pair<ebm::ExpressionRef, bool>> extractBitsFromExpression(
-            ebm::ExpressionRef source_expr,
-            size_t bits_processed, size_t bit_size, size_t bit_offset, size_t bit_to_read,
-            ebm::Endian endian, ebm::TypeRef target_type);
         // 1バイトに抽出されたビットを正しい位置に追加する
         // byte_shift = big ? (8 - bit_to_read - bit_offset) : bit_offset
         // shift = optimized_shift ? 0 : byte_shift

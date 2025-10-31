@@ -1,10 +1,13 @@
 /*license*/
+#include "bit_manipulator.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/converter.hpp"
 #include "transform.hpp"
 #include "../convert/helper.hpp"
 #include <testutil/timer.h>
 #include <cstddef>
 #include <ranges>
+#include "../converter.hpp"
 
 namespace ebmgen {
 
@@ -45,10 +48,94 @@ namespace ebmgen {
         return std::nullopt;
     }
 
-    expected<void> derive_composite_accessor(
-        TransformContext& ctx, ebm::StatementRef composite_ref, ebm::StatementRef field_ref, ebm::StatementRef parent_ref,
+    expected<std::pair<ebm::StatementRef, ebm::StatementRef>> derive_composite_accessor(
+        TransformContext& tctx, ebm::StatementRef composite_ref,
+        ebm::TypeRef composite_type,
+        ebm::StatementRef field_ref,
+        ebm::IdentifierRef field_name_ref,
+        ebm::StatementRef parent_ref,
         size_t total_size, size_t current_size, size_t offset) {
+        auto& ctx = tctx.context();
         ebm::FunctionDecl getter_decl, setter_decl;
+        getter_decl.name = field_name_ref;
+        setter_decl.name = field_name_ref;
+        getter_decl.parent_format = parent_ref;
+        setter_decl.parent_format = parent_ref;
+        getter_decl.kind = ebm::FunctionKind::COMPOSITE_GETTER;
+        setter_decl.kind = ebm::FunctionKind::COMPOSITE_SETTER;
+        MAYBE(field_self_id, tctx.context().state().get_self_ref_for_id(field_ref));
+        MAYBE(self_expr, tctx.expression_repository().get(field_self_id));
+        MAYBE(base_, self_expr.body.base());  // must be MEMBER_ACCESS
+        auto original_field_type = self_expr.body.type;
+        auto base = base_;  // copy to avoid memory relocation
+        EBM_IDENTIFIER(composite_ident, composite_ref, composite_type);
+        EBM_MEMBER_ACCESS(composite_expr, composite_type, base, composite_ident);
+        EBMU_INT_LITERAL(offset_expr, offset);
+        EBMU_INT_LITERAL(size_expr, current_size);
+        EBMU_INT_LITERAL(total_size_expr, total_size);
+        EBM_DEFINE_PARAMETER(input_param, {}, original_field_type, false);
+
+        MAYBE(setter_return_type, get_single_type(ebm::TypeKind::PROPERTY_SETTER_RETURN, ctx));
+        setter_decl.return_type = setter_return_type;
+        getter_decl.return_type = original_field_type;
+
+        // getter
+        //
+        BitManipulator manip(ctx, {}, {});
+        auto res = manip.extractBitsFromExpression(
+            composite_expr,
+            offset, total_size, 0, current_size,
+            ebm::Endian::big, composite_type, false, false);
+        if (!res) {
+            return unexpect_error(std::move(res.error()));
+        }
+        auto getter_expr = res->first;
+        MAYBE(original_field_type_decl, tctx.type_repository().get(original_field_type));
+        auto src_type = original_field_type;
+        if (original_field_type_decl.body.kind == ebm::TypeKind::VARIANT) {  // TODO: map to each type
+            EBMU_UINT_TYPE(temp_type, current_size);
+            src_type = temp_type;
+        }
+        MAYBE(expr_max, get_max_value_expr(ctx, src_type));
+        auto bit_mask =
+            manip.appendToExpression(
+                std::nullopt, expr_max, offset,
+                total_size, current_size,
+                ebm::Endian::big, composite_type, src_type);
+        if (!bit_mask) {
+            return unexpect_error(std::move(bit_mask.error()));
+        }
+        auto set_value =
+            manip.appendToExpression(
+                std::nullopt, input_param, offset,
+                total_size, current_size,
+                ebm::Endian::big, composite_type, src_type);
+        if (!set_value) {
+            return unexpect_error(std::move(set_value.error()));
+        }
+        EBM_UNARY_OP(clear_set_position, ebm::UnaryOp::bit_not, composite_type, *bit_mask);
+        EBM_BINARY_OP(cleared_composite, ebm::BinaryOp::bit_and, composite_type, composite_expr, clear_set_position);
+        EBM_BINARY_OP(updated_composite, ebm::BinaryOp::bit_or, composite_type, cleared_composite, *set_value);
+        EBM_RETURN(getter_return, getter_expr);
+        getter_decl.body = getter_return;
+
+        EBM_ASSIGNMENT(assigned, composite_expr, updated_composite);
+        ebm::Block setter_block;
+        append(setter_block, assigned);
+        EBM_SETTER_STATUS(status_ok, setter_return_type, ebm::SetterStatus::SUCCESS);
+        EBM_RETURN(setter_return, status_ok);
+        append(setter_block, setter_return);
+        EBM_BLOCK(setter_body, std::move(setter_block));
+        setter_decl.body = setter_body;
+
+        ebm::StatementBody getter_body{.kind = ebm::StatementKind::FUNCTION_DECL};
+        getter_body.func_decl(std::move(getter_decl));
+        EBMA_ADD_STATEMENT(getter_stmt, std::move(getter_body));
+        ebm::StatementBody setter_body_{.kind = ebm::StatementKind::FUNCTION_DECL};
+        setter_body_.func_decl(std::move(setter_decl));
+        EBMA_ADD_STATEMENT(setter_stmt, std::move(setter_body_));
+
+        return std::pair{getter_stmt, setter_stmt};
     }
 
     expected<void> merge_bit_field(TransformContext& tctx) {
@@ -140,11 +227,32 @@ namespace ebmgen {
                         body.kind = ebm::StatementKind::COMPOSITE_FIELD_DECL;
                         body.composite_field_decl(std::move(comp_decl));
                         EBMA_ADD_STATEMENT(comp_stmt, std::move(body));
+                        size_t offset = 0;
                         for (auto& idx : indexes) {
+                            std::pair<ebm::StatementRef, ebm::StatementRef> getter_setter;
+                            {
+                                MAYBE(field_stmt, tctx.statement_repository().get(fields[idx.first]));
+                                MAYBE(field_decl, field_stmt.body.field_decl());
+                                MAYBE(getter_setter_, derive_composite_accessor(
+                                                          tctx,
+                                                          comp_stmt,
+                                                          composite_type,
+                                                          fields[idx.first],
+                                                          field_decl.name,
+                                                          all_statements[i].id,
+                                                          *size,
+                                                          idx.second,
+                                                          offset /* offset */));
+                                getter_setter = getter_setter_;
+                                offset += idx.second;
+                            }
+                            // refetch because of memory relocation
                             MAYBE(field_stmt, tctx.statement_repository().get(fields[idx.first]));
                             MAYBE(field_decl, field_stmt.body.field_decl());
                             field_decl.inner_composite(true);
                             field_decl.composite_field(comp_stmt);
+                            field_decl.composite_getter(ebm::LoweredStatementRef{getter_setter.first});
+                            field_decl.composite_setter(ebm::LoweredStatementRef{getter_setter.second});
                         }
                         append(block, comp_stmt);
                     }

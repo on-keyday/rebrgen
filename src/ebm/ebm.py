@@ -22,8 +22,11 @@ TOOL_PATH = os.path.join(build_config.get("BRGEN_DIR", "./brgen/"), "tool")
 
 # Paths to the executables.
 # We assume .exe extension for Windows, which is where the original .ps1 ran.
-SRC2JSON_EXE = os.path.join(TOOL_PATH, "src2json.exe")
-JSON2CPP2_EXE = os.path.join(TOOL_PATH, "json2cpp2.exe")
+SRC2JSON_EXE = os.path.join(TOOL_PATH, "src2json")
+JSON2CPP2_EXE = os.path.join(TOOL_PATH, "json2cpp2")
+if os.name == "nt":
+    SRC2JSON_EXE += ".exe"
+    JSON2CPP2_EXE += ".exe"
 
 # File paths (relative to the project root, where this script should be run from)
 BGN_FILE = "src/ebm/extended_binary_module.bgn"

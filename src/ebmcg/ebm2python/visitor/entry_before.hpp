@@ -35,3 +35,5 @@ default_value_option.object_init = "()";
 default_value_option.bytes_init = "bytearray()";
 default_value_option.pointer_init = "None";
 default_value_option.optional_init = "None";
+default_value_option.encoder_return_init = "None";
+default_value_option.decoder_return_init = "None";

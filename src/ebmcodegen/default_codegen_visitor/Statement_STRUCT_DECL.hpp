@@ -13,17 +13,18 @@
       fields: Block
         len: Varint
         container: std::vector<StatementRef>
-      encode_fn: StatementRef
-      decode_fn: StatementRef
       is_recursive: bool
       is_fixed_size: bool
       has_related_variant: bool
+      has_encode_decode: bool
       reserved: std::uint8_t
       related_variant: *TypeRef
       size: *Size
         unit: SizeUnit
         ref: *ExpressionRef
         size: *Varint
+      decode_fn: *StatementRef
+      encode_fn: *StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 

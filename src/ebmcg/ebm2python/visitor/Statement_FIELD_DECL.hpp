@@ -13,7 +13,11 @@
       field_type: TypeRef
       parent_struct: StatementRef
       is_state_variable: bool
+      inner_composite: bool
       reserved: std::uint8_t
+      composite_field: *StatementRef
+      composite_getter: *LoweredStatementRef
+      composite_setter: *LoweredStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 auto name = module_.get_associated_identifier(item_id);

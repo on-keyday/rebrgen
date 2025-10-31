@@ -70,6 +70,8 @@ namespace ebmcodegen::util {
         std::string_view bytes_init;
         std::string_view pointer_init = "nullptr";
         std::string_view optional_init = "std::nullopt";
+        std::string_view encoder_return_init = "{}";
+        std::string_view decoder_return_init = "{}";
     };
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
@@ -114,6 +116,12 @@ namespace ebmcodegen::util {
             }
             case ebm::TypeKind::OPTIONAL: {
                 return std::string(option.optional_init);
+            }
+            case ebm::TypeKind::ENCODER_RETURN: {
+                return std::string(option.encoder_return_init);
+            }
+            case ebm::TypeKind::DECODER_RETURN: {
+                return std::string(option.decoder_return_init);
             }
             default: {
                 return ebmgen::unexpect_error("unsupported default: {}", to_string(type.body.kind));

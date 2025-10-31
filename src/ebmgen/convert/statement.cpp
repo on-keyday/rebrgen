@@ -32,6 +32,9 @@ namespace ebmgen {
                 }
                 type = *base_type;
             }
+            else if (type_ref->body.kind == ebm::TypeKind::STRUCT) {
+                auto size = type_ref->body.size();
+            }
             else {
                 return unexpect_error("Unsupported type for max value: {}", to_string(type_ref->body.kind));
             }
@@ -632,7 +635,15 @@ namespace ebmgen {
                     append(derived_fn.params, st.second);
                 }
                 EBMA_CONVERT_STATEMENT(body, node->body);
-                derived_fn.body = body;
+                ebm::Block fn_body_block;
+                fn_body_block.container.reserve(2);
+                append(fn_body_block, body);
+                // tail return
+                EBM_DEFAULT_VALUE(nil_value, coder_return);
+                EBM_RETURN(ret_stmt, nil_value);
+                append(fn_body_block, ret_stmt);
+                EBM_BLOCK(fn_body_ref, std::move(fn_body_block));
+                derived_fn.body = fn_body_ref;
             }
             derived_fn.kind = typ == GenerateType::Encode ? ebm::FunctionKind::ENCODE : ebm::FunctionKind::DECODE;
             ebm::StatementBody b;
@@ -644,8 +655,9 @@ namespace ebmgen {
         };
         MAYBE_VOID(ok1, handle(enc_id, node->encode_fn.lock(), writer_def, GenerateType::Encode));
         MAYBE_VOID(ok2, handle(dec_id, node->decode_fn.lock(), reader_def, GenerateType::Decode));
-        struct_decl.encode_fn = enc_id;
-        struct_decl.decode_fn = dec_id;
+        struct_decl.has_encode_decode(true);
+        struct_decl.encode_fn(enc_id);
+        struct_decl.decode_fn(dec_id);
         body.struct_decl(std::move(struct_decl));
         return {};
     }

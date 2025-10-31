@@ -13,17 +13,18 @@
       fields: Block
         len: Varint
         container: std::vector<StatementRef>
-      encode_fn: StatementRef
-      decode_fn: StatementRef
       is_recursive: bool
       is_fixed_size: bool
       has_related_variant: bool
+      has_encode_decode: bool
       reserved: std::uint8_t
       related_variant: *TypeRef
       size: *Size
         unit: SizeUnit
         ref: *ExpressionRef
         size: *Varint
+      decode_fn: *StatementRef
+      encode_fn: *StatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_STRUCT_DECL function.
@@ -67,15 +68,15 @@ w.writeln("def __init__(self):");
 }
 
 // Visit encode_fn if it exists
-if (!is_nil(struct_decl.encode_fn)) {  // Corrected: Check value() of Varint id
-    MAYBE(encode_fn_stmt, this->module_.get_statement(struct_decl.encode_fn));
+if (auto enc_fn = struct_decl.encode_fn()) {  // Corrected: Check value() of Varint id
+    MAYBE(encode_fn_stmt, this->module_.get_statement(*enc_fn));
     MAYBE(res, visit_Statement(*this, encode_fn_stmt));
     merge_result(*this, w, res);
 }
 
 // Visit decode_fn if it exists
-if (!is_nil(struct_decl.decode_fn)) {  // Corrected: Check value() of Varint id
-    MAYBE(decode_fn_stmt, this->module_.get_statement(struct_decl.decode_fn));
+if (auto dec_fn = struct_decl.decode_fn()) {  // Corrected: Check value() of Varint id
+    MAYBE(decode_fn_stmt, this->module_.get_statement(*dec_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
     merge_result(*this, w, res);
 }

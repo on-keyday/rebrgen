@@ -386,8 +386,11 @@ namespace ebmgen {
     expected<ebm::ExpressionRef> BitManipulator::appendToExpression(
         std::optional<ebm::ExpressionRef> current_expr, ebm::ExpressionRef extracted,
         size_t bits_processed, size_t bit_size, size_t bit_to_read,
-        ebm::Endian endian, ebm::TypeRef target_type) {
-        EBM_CAST(casted_new_bits, target_type, u8_type, extracted);
+        ebm::Endian endian, ebm::TypeRef target_type, ebm::TypeRef src_type) {
+        if (is_nil(src_type)) {
+            src_type = u8_type;
+        }
+        EBM_CAST(casted_new_bits, target_type, src_type, extracted);
 
         size_t final_shift = get_expr_shift(endian, bit_size, bits_processed, bit_to_read);
 
@@ -417,11 +420,11 @@ namespace ebmgen {
     expected<std::pair<ebm::ExpressionRef, bool>> BitManipulator::extractBitsFromExpression(
         ebm::ExpressionRef source_expr,
         size_t bits_processed, size_t bit_size, size_t bit_offset, size_t bit_to_read,
-        ebm::Endian endian, ebm::TypeRef target_type) {
+        ebm::Endian endian, ebm::TypeRef target_type, bool should_optimize, bool cast_u8) {
         const size_t expr_shift = get_expr_shift(endian, bit_size, bits_processed, bit_to_read);
         const size_t byte_shift = get_byte_shift(endian, bit_offset, bit_to_read);
         const bool optimize_shift = expr_shift >= byte_shift;
-        const size_t shift = optimize_shift ? expr_shift - byte_shift : expr_shift;
+        const size_t shift = optimize_shift && should_optimize ? expr_shift - byte_shift : expr_shift;
         const std::uint8_t lsb_mask = mask_value(bit_to_read);
         const std::uint8_t mask = optimize_shift ? lsb_mask << byte_shift : lsb_mask;
 
@@ -435,9 +438,11 @@ namespace ebmgen {
 
         EBMU_INT_LITERAL(mask_val, mask);
         EBM_BINARY_OP(masked, ebm::BinaryOp::bit_and, target_type, result, mask_val);
+        if (!cast_u8) {
+            return std::pair{masked, optimize_shift && should_optimize};
+        }
         EBM_CAST(casted, u8_type, target_type, masked);
-
-        return std::pair{casted, optimize_shift};
+        return std::pair{casted, optimize_shift && should_optimize};
     }
     // 1バイトに抽出されたビットを正しい位置に追加する
     // byte_shift = big ? (8 - bit_to_read - bit_offset) : bit_offset

@@ -315,17 +315,18 @@ format FieldDecl:
 format StructDecl:
     name :IdentifierRef # Struct name
     fields :Block # List of fields
-    encode_fn :StatementRef
-    decode_fn :StatementRef
     is_recursive :u1 # 0: no, 1: yes (for recursive structs)
     is_fixed_size :u1 # 0: no, 1: yes (if all fields are fixed size)
     has_related_variant :u1 # 0: no, 1: yes (if this struct is related to a variant type)
-    reserved :u5 # Reserved for future use
+    has_encode_decode :u1 # 0: no, 1: yes (if encoder/decoder functions are generated)
+    reserved :u4 # Reserved for future use
     if has_related_variant == 1:
         related_variant :TypeRef # Reference to related variant type (maybe null)
     if is_fixed_size == 1:
         size :Size # Fixed size of the struct
-
+    if has_encode_decode == 1:
+        encode_fn :StatementRef
+        decode_fn :StatementRef
 
 format PropertyMemberDecl:
     condition :ExpressionRef

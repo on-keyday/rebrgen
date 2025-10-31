@@ -2052,22 +2052,6 @@ namespace ebm {
         else {
             return false;
         }
-        if (auto got = j.at("encode_fn")) {
-            if(!futils::json::convert_from_json(*got, obj.encode_fn)) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-        if (auto got = j.at("decode_fn")) {
-            if(!futils::json::convert_from_json(*got, obj.decode_fn)) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
         if (auto got = j.at("is_recursive")) {
             bool tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2094,6 +2078,16 @@ namespace ebm {
                 return false;
             }
             obj.has_related_variant(std::move(tmp));
+        }
+        else {
+            return false;
+        }
+        if (auto got = j.at("has_encode_decode")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_encode_decode(std::move(tmp));
         }
         else {
             return false;
@@ -2125,6 +2119,24 @@ namespace ebm {
                 return false;
             }
             if(!obj.size(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("decode_fn")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.decode_fn(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("encode_fn")) {
+            StatementRef tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.encode_fn(std::move(tmp))) {
                 return false;
             }
         }
@@ -2833,6 +2845,14 @@ namespace ebm {
             }
             if (s == "PROPERTY_SETTER") {
                 obj = FunctionKind::PROPERTY_SETTER;
+                return true;
+            }
+            if (s == "COMPOSITE_GETTER") {
+                obj = FunctionKind::COMPOSITE_GETTER;
+                return true;
+            }
+            if (s == "COMPOSITE_SETTER") {
+                obj = FunctionKind::COMPOSITE_SETTER;
                 return true;
             }
             return false;

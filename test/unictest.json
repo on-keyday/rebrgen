@@ -2,6 +2,9 @@
     "runners": [
         {
             "file": "$WORK_DIR/src/ebmcg/ebm2python/unictest_runner.json"
+        },
+        {
+            "file": "$WORK_DIR/src/ebmcg/ebm2rust/unictest_runner.json"
         }
     ],
     "inputs": {

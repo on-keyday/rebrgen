@@ -270,11 +270,30 @@ namespace ebmgen {
         return {};
     }
 
+    expected<ebm::TypeRef> get_coder_return(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
+        EBMA_ADD_TYPE(coder_return, std::move(b));
+        return coder_return;
+    }
+
+    expected<ebm::TypeRef> get_coder_input(ConverterContext& ctx, bool enc) {
+        ebm::TypeBody b;
+        b.kind = enc ? ebm::TypeKind::ENCODER_INPUT : ebm::TypeKind::DECODER_INPUT;
+        EBMA_ADD_TYPE(coder_input, std::move(b));
+        return coder_input;
+    }
+
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Return>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::RETURN;
         if (node->expr) {
             EBMA_CONVERT_EXPRESSION(expr_ref, node->expr);
             body.value(expr_ref);
+        }
+        else if (ctx.state().get_current_generate_type() != ebm::GenerateType::Normal) {
+            MAYBE(coder_return, get_coder_return(ctx, ctx.state().get_current_generate_type() == ebm::GenerateType::Encode));
+            EBM_DEFAULT_VALUE(nil_value, coder_return);
+            body.value(nil_value);
         }
         else {
             body.value(ebm::ExpressionRef{});
@@ -472,20 +491,6 @@ namespace ebmgen {
         return {};
     }
 
-    expected<ebm::TypeRef> get_coder_return(ConverterContext& ctx, bool enc) {
-        ebm::TypeBody b;
-        b.kind = enc ? ebm::TypeKind::ENCODER_RETURN : ebm::TypeKind::DECODER_RETURN;
-        EBMA_ADD_TYPE(coder_return, std::move(b));
-        return coder_return;
-    }
-
-    expected<ebm::TypeRef> get_coder_input(ConverterContext& ctx, bool enc) {
-        ebm::TypeBody b;
-        b.kind = enc ? ebm::TypeKind::ENCODER_INPUT : ebm::TypeKind::DECODER_INPUT;
-        EBMA_ADD_TYPE(coder_input, std::move(b));
-        return coder_input;
-    }
-
     expected<ebm::StatementRef> StatementConverter::convert_struct_decl(const std::shared_ptr<ast::StructType>& node, ebm::TypeRef related_variant) {
         const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
         if (auto v = ctx.state().is_visited(node)) {
@@ -627,7 +632,15 @@ namespace ebmgen {
                     append(derived_fn.params, st.second);
                 }
                 EBMA_CONVERT_STATEMENT(body, node->body);
-                derived_fn.body = body;
+                ebm::Block fn_body_block;
+                fn_body_block.container.reserve(2);
+                append(fn_body_block, body);
+                // tail return
+                EBM_DEFAULT_VALUE(nil_value, coder_return);
+                EBM_RETURN(ret_stmt, nil_value);
+                append(fn_body_block, ret_stmt);
+                EBM_BLOCK(fn_body_ref, std::move(fn_body_block));
+                derived_fn.body = fn_body_ref;
             }
             derived_fn.kind = typ == GenerateType::Encode ? ebm::FunctionKind::ENCODE : ebm::FunctionKind::DECODE;
             ebm::StatementBody b;
@@ -639,8 +652,9 @@ namespace ebmgen {
         };
         MAYBE_VOID(ok1, handle(enc_id, node->encode_fn.lock(), writer_def, GenerateType::Encode));
         MAYBE_VOID(ok2, handle(dec_id, node->decode_fn.lock(), reader_def, GenerateType::Decode));
-        struct_decl.encode_fn = enc_id;
-        struct_decl.decode_fn = dec_id;
+        struct_decl.has_encode_decode(true);
+        struct_decl.encode_fn(enc_id);
+        struct_decl.decode_fn(dec_id);
         body.struct_decl(std::move(struct_decl));
         return {};
     }
@@ -692,8 +706,7 @@ namespace ebmgen {
         }
         EBMA_ADD_IDENTIFIER(name_ref, node->ident->ident);
         func_decl.name = name_ref;
-        if (auto typ = ctx.state().get_current_generate_type();
-            typ == GenerateType::Encode || typ == GenerateType::Decode) {
+        if (typ == GenerateType::Encode || typ == GenerateType::Decode) {
             MAYBE(coder_return, get_coder_return(ctx, typ == GenerateType::Encode));
             func_decl.return_type = coder_return;
             append(func_decl.params, coder_input_ref);
@@ -716,6 +729,16 @@ namespace ebmgen {
         }
         const auto _mode = ctx.state().set_current_generate_type(typ);
         EBMA_CONVERT_STATEMENT(fn_body, node->body);
+        if (typ != GenerateType::Normal) {
+            // tail return
+            EBM_DEFAULT_VALUE(nil_value, func_decl.return_type);
+            EBM_RETURN(ret_stmt, nil_value);
+            ebm::Block fn_body_block;
+            append(fn_body_block, fn_body);
+            append(fn_body_block, ret_stmt);
+            EBM_BLOCK(fn_body_ref, std::move(fn_body_block));
+            fn_body = fn_body_ref;
+        }
         func_decl.body = fn_body;
         return func_decl;
     }

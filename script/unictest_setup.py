@@ -102,7 +102,6 @@ elif mode == "test":
                 output_file.as_posix(),
                 test_format_name,
             ],
-            env=unictest_env_vars,
             stdout=sys.stdout,
             stderr=sys.stderr,
         )

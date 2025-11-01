@@ -52,10 +52,11 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarString<true>(&lang, "l,lang", "language for output", "LANG");
         ctx.VarString<true>(&program_name, "p,program-name", "program name (default: ebm2{lang})", "PROGRAM_NAME");
         ctx.VarString<true>(&visitor_impl_dir, "d,visitor-impl-dir", "directory for visitor implementation", "DIR");
+        ctx.VarString<true>(&visitor_impl_dsl_dir, "visitor-impl-dsl-dir", "directory for visitor implementation that is generated from DSL", "DIR");
         ctx.VarString<true>(&default_visitor_impl_dir, "default-visitor-impl-dir", "directory for default visitor implementation", "DIR");
         ctx.VarString<true>(&template_target, "template-target", "template target name. see --mode hooklist", "target_name");
         ctx.VarString<true>(&dsl_file, "dsl-file", "DSL source file for --mode dsl", "FILE");
-        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,hookkind,template,spec-json}",
+        ctx.VarMap(&mode, "mode", "generate mode (default: codegen)", "{subset,codegen,interpret,hooklist,hookkind,template,spec-json,dsl}",
                    std::map<std::string, GenerateMode>{
                        {"template", GenerateMode::Template},
                        {"subset", GenerateMode::BodySubset},

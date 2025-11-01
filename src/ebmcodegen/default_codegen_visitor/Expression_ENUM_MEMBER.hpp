@@ -15,6 +15,6 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto enum_name = module_.get_identifier_or(enum_decl);
-MAYBE(member_name, module_.get_identifier_or(member));
+auto enum_name = module_.get_associated_identifier(enum_decl);
+MAYBE(member_name, module_.get_associated_identifier(member));
 return CODE(enum_name, ".", member_name);

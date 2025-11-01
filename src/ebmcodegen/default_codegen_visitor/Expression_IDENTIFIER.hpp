@@ -39,6 +39,6 @@ for (auto& layer : layers) {
     }
 }
 
-auto ident = module_.get_identifier_or(id);
+auto ident = module_.get_associated_identifier(id);
 
 return ident;

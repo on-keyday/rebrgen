@@ -1,6 +1,7 @@
 #include <cmdline/template/help_option.h>
 #include <cmdline/template/parse_and_err.h>
 #include <wrap/cout.h>
+#include "binary/discard.h"
 #include "common.hpp"
 #include "core/ast/file.h"
 #include "core/byte.h"
@@ -77,6 +78,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
     bool show_flags = false;
     std::string_view query;
     bool timing = false;
+    bool print_output_size = false;
 
     void bind(futils::cmdline::option::Context& ctx) {
         auto exe_path = futils::wrap::get_exepath();
@@ -126,6 +128,7 @@ struct Flags : futils::cmdline::templ::HelpOption {
         ctx.VarBool(&show_flags, "show-flags", "output command line flag description in JSON format");
         ctx.VarString<true>(&query, "query,q", "run query to object and output matched objects to stdout", "QUERY");
         ctx.VarBool(&timing, "timing", "Processing timing (for performance debug)");
+        ctx.VarBool(&print_output_size, "output-size", "print output size to stderr (for debugging)");
     }
 };
 
@@ -476,6 +479,17 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                  << "Output written to: " << flags.output << '\n';
         }
         TIMING("output");
+    }
+
+    if (flags.print_output_size) {
+        size_t size = 0;
+        futils::binary::writer w{&futils::binary::discard<>, &size};
+        if (auto err = ebm.encode(w); err) {
+            cerr << "Failed to encode EBM for size calculation: " << err.error<std::string>() << '\n';
+            return 1;
+        }
+        cerr << "Output size: " << size << " bytes\n";
+        TIMING("output size");
     }
 
     if (flags.query.size() > 0) {

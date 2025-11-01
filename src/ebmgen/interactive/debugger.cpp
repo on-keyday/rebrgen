@@ -686,7 +686,7 @@ namespace ebmgen {
         }
 
         void header() {
-            auto& raw_module = table.module();
+            auto& raw_module = *table.module().origin;
             cout << "Header Information:\n";
             cout << " Version: " << raw_module.version << "\n";
             cout << " Max ID: " << get_id(raw_module.max_id) << "\n";

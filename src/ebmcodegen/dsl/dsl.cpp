@@ -263,7 +263,7 @@ namespace ebmcodegen::dsl {
                     if (node.kind == syntax::OutputKind::CppIdentifierGetter) {
                         handle_with_cached([&](auto&& tmp, bool is_write) {
                             if (!is_write) {
-                                w.writeln("auto ", tmp, " = get_identifier_or(", node.content, "); ", make_dsl_line_comment(line));
+                                w.writeln("auto ", tmp, " = get_associated_identifier(", node.content, "); ", make_dsl_line_comment(line));
                             }
                             else {
                                 w.writeln("w.write(", tmp, "); ", make_dsl_line_comment(line));

@@ -21,11 +21,11 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-auto io_ = module_.get_identifier_or(sub_byte_range.io_ref);
+auto io_ = module_.get_associated_identifier(sub_byte_range.io_ref);
 MAYBE(do_io, visit_Statement(*this, sub_byte_range.io_statement));
 
 CodeWriter w;
-auto parent_io_ = module_.get_identifier_or(sub_byte_range.parent_io_ref);
+auto parent_io_ = module_.get_associated_identifier(sub_byte_range.parent_io_ref);
 MAYBE(length, sub_byte_range.length());
 MAYBE(length_str, visit_Expression(*this, length));
 

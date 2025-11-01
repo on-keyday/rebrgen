@@ -70,6 +70,8 @@ namespace ebmcodegen::util {
         std::string_view bytes_init;
         std::string_view pointer_init = "nullptr";
         std::string_view optional_init = "std::nullopt";
+        std::string_view encoder_return_init = "{}";
+        std::string_view decoder_return_init = "{}";
     };
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
@@ -115,6 +117,12 @@ namespace ebmcodegen::util {
             case ebm::TypeKind::OPTIONAL: {
                 return std::string(option.optional_init);
             }
+            case ebm::TypeKind::ENCODER_RETURN: {
+                return std::string(option.encoder_return_init);
+            }
+            case ebm::TypeKind::DECODER_RETURN: {
+                return std::string(option.decoder_return_init);
+            }
             default: {
                 return ebmgen::unexpect_error("unsupported default: {}", to_string(type.body.kind));
             }
@@ -146,7 +154,7 @@ namespace ebmcodegen::util {
                 state = LayerState::as_expr;
             }
         }
-        auto ident = visitor.module_.get_identifier_or(stmt);
+        auto ident = visitor.module_.get_associated_identifier(stmt);
         std::vector<std::pair<ebm::StatementKind, std::string>> layers;
         if (const ebm::StructDecl* decl = statement.body.struct_decl()) {
             if (auto related_varint = decl->related_variant()) {
@@ -277,7 +285,7 @@ namespace ebmcodegen::util {
         if (auto enum_id = type.body.id()) {
             MAYBE(enum_decl, module_.get_statement(*enum_id));
             if (auto enum_ = enum_decl.body.enum_decl()) {
-                return std::make_pair(module_.get_identifier_or(*enum_id), module_.get_identifier_or(enum_->members.container[0]));
+                return std::make_pair(module_.get_associated_identifier(*enum_id), module_.get_associated_identifier(enum_->members.container[0]));
             }
         }
         return ebmgen::unexpect_error("enum type has no members");
@@ -292,6 +300,21 @@ namespace ebmcodegen::util {
                 }
             }
         }
+    }
+
+    ebmgen::expected<size_t> get_variant_index(auto&& visitor, ebm::TypeRef variant_type, ebm::TypeRef candidate_type) {
+        auto& module_ = visitor.module_;
+        MAYBE(type, module_.get_type(variant_type));
+        if (type.body.kind != ebm::TypeKind::VARIANT) {
+            return ebmgen::unexpect_error("not a variant type");
+        }
+        MAYBE(members, type.body.members());
+        for (size_t i = 0; i < members.container.size(); ++i) {
+            if (ebmgen::get_id(members.container[i]) == ebmgen::get_id(candidate_type)) {
+                return i;
+            }
+        }
+        return ebmgen::unexpect_error("type not found in variant members");
     }
 
     template <class CodeWriter>

@@ -13,10 +13,14 @@
       field_type: TypeRef
       parent_struct: StatementRef
       is_state_variable: bool
+      inner_composite: bool
       reserved: std::uint8_t
+      composite_field: *StatementRef
+      composite_getter: *LoweredStatementRef
+      composite_setter: *LoweredStatementRef
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-auto name = module_.get_identifier_or(item_id);
+auto name = module_.get_associated_identifier(item_id);
 auto type_kind = module_.get_type_kind(field_decl.field_type);
 MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
 MAYBE(type_str_val, visit_Type(*this, field_decl.field_type));  // Correctly extract the string value

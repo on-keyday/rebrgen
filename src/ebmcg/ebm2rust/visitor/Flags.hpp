@@ -22,4 +22,5 @@
 
 /*here to write the hook*/
 
-FILE_EXTENSIONS(".rust");
+FILE_EXTENSIONS(".rs");
+WEB_UI_NAME("rust3");

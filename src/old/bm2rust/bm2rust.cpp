@@ -1308,8 +1308,8 @@ namespace bm2rust {
                                 auto shift = std::format("{}", bit_size - consumed_size);
 
                                 auto as_type = std::format("({} as {})", value, type);
-                                if(!enum_ident.empty()){
-                                    as_type = std::format("{}::from({})",type,value);
+                                if (!enum_ident.empty()) {
+                                    as_type = std::format("{}::from({})", type, value);
                                 }
                                 w2.writeln("self.", field_name, " = self.", field_name, "& !(", mask, "<< ", shift, ") | (", as_type, " << ", shift, ");");
                                 w2.writeln("true");
@@ -1472,14 +1472,14 @@ namespace bm2rust {
         if (ctx.decode_slice_directly) {
             auto offset = ctx.offset();
             auto r = ctx.r();
-            w.writeln("if ", offset, " + ", len, " > ", r, ".len() {");
+            w.writeln("if ", offset, " + (", len, " as usize) > ", r, ".len() {");
             w.writeln("return Err(", ctx.error_type, "::DecodeError(\"", loc, "\",std::io::Error::new(std::io::ErrorKind::UnexpectedEof, \"Unexpected end of input\")));");
             w.writeln("}");
         }
     }
 
     std::string slice_input(Context& ctx, const std::string& byte_len) {
-        return std::format("{}[{}..({} + {})]", ctx.r(), ctx.offset(), ctx.offset(), byte_len);
+        return std::format("{}[{}..({} + ({} as usize))]", ctx.r(), ctx.offset(), ctx.offset(), byte_len);
     }
 
     std::string slice_to_end(Context& ctx) {
@@ -1488,7 +1488,7 @@ namespace bm2rust {
 
     void advance_offset(Context& ctx, TmpCodeWriter& w, const std::string& byte_len) {
         auto offset = ctx.offset();
-        w.writeln(offset, " += ", byte_len, ";");
+        w.writeln(offset, " += (", byte_len, " as usize);");
     }
 
     void offset_to_end(Context& ctx, TmpCodeWriter& w) {
@@ -2252,7 +2252,7 @@ namespace bm2rust {
                     auto belong_type = get_belong_type(ctx, code);
                     if (bit_size == 8) {
                         if (ctx.decode_slice_directly) {
-                            w.writeln(std::format("{} = std::borrow::Cow::Borrowed(&{})", vec.back(), slice_to_end(ctx)));
+                            w.writeln(std::format("{} = std::borrow::Cow::Borrowed(&{});", vec.back(), slice_to_end(ctx)));
                             offset_to_end(ctx, w);
                         }
                         else {
@@ -2454,10 +2454,10 @@ namespace bm2rust {
                     auto tmp_array = std::format("tmp_array{}", ref);
                     if (ctx.decode_slice_directly) {
                         check_offset(ctx, w, len.back(), belong_type);
-                        w.writeln("let ", tmp_array, " = ", slice_input(ctx, len.back()), ";");
+                        w.writeln("let ", tmp_array, " = &", slice_input(ctx, len.back()), ";");
                         auto tmp_offset = std::format("offset{}", ref);
                         advance_offset(ctx, w, len.back());
-                        w.writeln("let ", tmp_offset, " = 0;");
+                        w.writeln("let mut ", tmp_offset, " = 0;");
                         ctx.current_r.push_back(std::move(tmp_array));
                         ctx.current_offset.push_back(std::move(tmp_offset));
                         defer.push_back(futils::helper::defer_ex([&, ref = ref, len]() mutable {
@@ -2465,7 +2465,7 @@ namespace bm2rust {
                             ctx.current_r.pop_back();
                             auto tmp_offset = std::move(ctx.current_offset.back());
                             ctx.current_offset.pop_back();
-                            w.writeln("if ", tmp_offset, " != ", len.back(), " {");
+                            w.writeln("if ", tmp_offset, " != (", len.back(), " as usize) {");
                             w.indent_writeln("return Err(", ctx.error_type, "::ArrayLengthMismatch(\"decode ", belong_type, "\",", len.back(), " as usize,", tmp_offset, " as usize));");
                             w.writeln("}");
                         }));

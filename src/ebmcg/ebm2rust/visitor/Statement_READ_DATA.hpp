@@ -36,22 +36,23 @@ if (auto lw = read_data.lowered_statement()) {
 }
 
 MAYBE(target, visit_Expression(*this, read_data.target));
-MAYBE(type, visit_Type(*this, read_data.data_type));
+MAYBE(type, module_.get_type(read_data.data_type));
 auto io_name = module_.get_associated_identifier(read_data.io_ref);
-
-MAYBE(type_obj, module_.get_type(read_data.data_type));
+MAYBE(size, get_size_str(*this, read_data.size));
 
 CodeWriter w;
 
-if (type_obj.body.kind == ebm::TypeKind::INT) {
-    auto bit_size = type_obj.body.size()->value();
-    auto byte_size = (bit_size + 7) / 8;
-    w.writeln("let mut buf = [0u8; ", std::to_string(byte_size), "];");
-    w.writeln(io_name, ".read_exact(&mut buf)?;");
-    w.write(target.to_writer(), " = ", type.to_writer(), "::from_le_bytes(buf);");
+if (auto cand = is_bytes_type(*this, read_data.data_type)) {
+    if (cand == BytesType::array) {
+        w.writeln(io_name, ".read_exact(&mut ", target.to_writer(), ")?;");
+    }
+    else {
+        w.writeln(io_name, ".resize(", size, ");");
+        w.writeln(io_name, ".read_exact(&mut ", target.to_writer(), ")?;");
+    }
 }
 else {
-    return unexpect_error("unsupported type for READ_DATA");
+    return unexpect_error("unsupported type for READ_DATA: {}", to_string(type.body.kind));
 }
 
 return w;

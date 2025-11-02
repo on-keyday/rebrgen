@@ -1,5 +1,6 @@
 /*license*/
 #pragma once
+#include <optional>
 #include <string>
 #include <ebm/extended_binary_module.hpp>
 #include <ebmgen/common.hpp>
@@ -73,6 +74,42 @@ namespace ebmcodegen::util {
         std::string_view encoder_return_init = "{}";
         std::string_view decoder_return_init = "{}";
     };
+
+    enum class BytesType {
+        both,
+        array,
+        vector,
+    };
+
+    std::optional<BytesType> is_bytes_type(auto&& visitor, ebm::TypeRef type_ref, BytesType candidate = BytesType::both) {
+        const ebmgen::MappingTable& module_ = visitor.module_;
+        auto type = module_.get_type(type_ref);
+        if (!type) {
+            return std::nullopt;
+        }
+        std::optional<BytesType> is_candidate;
+        if (candidate == BytesType::both || candidate == BytesType::vector) {
+            if (type->body.kind == ebm::TypeKind::VECTOR) {
+                is_candidate = BytesType::vector;
+            }
+        }
+        if (candidate == BytesType::both || candidate == BytesType::array) {
+            if (type->body.kind == ebm::TypeKind::ARRAY) {
+                is_candidate = BytesType::array;
+            }
+        }
+        if (is_candidate) {
+            auto elem_type_ref = type->body.element_type();
+            if (!elem_type_ref) {
+                return std::nullopt;
+            }
+            auto elem_type = module_.get_type(*elem_type_ref);
+            if (elem_type && elem_type->body.kind == ebm::TypeKind::UINT && elem_type->body.size() && elem_type->body.size()->value() == 8) {
+                return is_candidate;
+            }
+        }
+        return std::nullopt;
+    }
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
         const ebmgen::MappingTable& module_ = visitor.module_;

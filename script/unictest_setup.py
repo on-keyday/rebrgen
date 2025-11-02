@@ -62,7 +62,7 @@ if mode == "setup":
         ebm_input_file,
     ]
     print(f"\nRunning command: {' '.join(cmd)}")
-    sp.check_call(cmd)
+    sp.check_call(cmd, timeout=60)
 
     test_info_file = pl.Path(runner_dir) / "test_info.json"
     cmd = [
@@ -74,7 +74,7 @@ if mode == "setup":
         test_info_file.as_posix(),
     ]
     print(f"\nRunning command: {' '.join(cmd)}")
-    output = sp.check_output(cmd)
+    output = sp.check_output(cmd, timeout=60)
 
     with open(setup_target_file, "wb") as f:
         f.write(output)

@@ -25,7 +25,32 @@
 if (field_decl.is_state_variable()) {
     return Result("");  // Ignore state variables
 }
+MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
 
+if (struct_members.size() > 0) {
+    for (auto& member : struct_members) {
+        custom_types.push_back(member.to_writer());
+    }
+    auto enum_name = "Variant" + std::format("{}", get_id(field_decl.field_type));
+
+    CodeWriter w;
+    w.writeln("#[derive(Debug, Clone, PartialEq, Eq, Default)]");  // Add common derives including Default
+    w.writeln("pub enum ", enum_name, " {");
+    auto scope = w.indent_scope();
+    int i = 0;
+    w.writeln("#[default]");
+    w.writeln("None,");
+    MAYBE(type, module_.get_type(field_decl.field_type));
+    MAYBE(members, type.body.members());
+    for (auto& member_type_ref : members.container) {
+        MAYBE(type, visit_Type(*this, member_type_ref));
+        w.writeln("V", std::format("{}", i), "(", type.to_writer(), "),");
+        i++;
+    }
+    scope.execute();
+    w.writeln("}");
+    custom_types.push_back(std::move(w));
+}
 auto name = module_.get_associated_identifier(item_id);
 
 MAYBE(type, visit_Type(*this, field_decl.field_type));

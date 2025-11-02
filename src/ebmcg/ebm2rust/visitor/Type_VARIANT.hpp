@@ -19,27 +19,4 @@
 /*here to write the hook*/
 auto enum_name = "Variant" + std::format("{}", get_id(item_id));
 
-MAYBE(struct_members, struct_union_members(*this, item_id));
-
-for (auto& member : struct_members) {
-    output.custom_types.push_back(member.to_string());
-}
-
-CodeWriter w;
-w.writeln("#[derive(Debug, Clone, PartialEq, Eq, Default)]");  // Add common derives including Default
-w.writeln("pub enum ", enum_name, " {");
-auto scope = w.indent_scope();
-int i = 0;
-w.writeln("#[default]");
-w.writeln("None,");
-for (auto& member_type_ref : members.container) {
-    MAYBE(type, visit_Type(*this, member_type_ref));
-    w.writeln("V", std::format("{}", i), "(", type.to_writer(), "),");
-    i++;
-}
-scope.execute();
-w.writeln("}");
-
-output.custom_types.push_back(w.to_string());
-
 return Result(enum_name);

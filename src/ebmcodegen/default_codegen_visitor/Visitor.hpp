@@ -22,3 +22,5 @@ std::string metadata_comment_prefix = "/*";
 std::string metadata_comment_suffix = "*/";
 std::string self_value = "this";
 DefaultValueOption default_value_option;
+std::string endof_statement = "";
+std::string enum_member_accessor = ".";

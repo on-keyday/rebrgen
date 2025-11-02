@@ -47,6 +47,6 @@ if (initial_value) {
     w.write(" = ", initial_value->to_string());
 }
 
-w.writeln();
+w.writeln(endof_statement);
 
 return w;

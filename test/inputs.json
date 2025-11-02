@@ -94,5 +94,21 @@
         "source": "$WORK_DIR/src/test/simple_case.bgn",
         "failure_case": false,
         "hex": true
+    },
+    {
+        "name": "capnproto_test",
+        "binary": "$WORK_DIR/test/binary_data/capnproto.dat",
+        "format_name": "CapnProtoTest",
+        "source": "$WORK_DIR/src/test/capnproto_test.bgn",
+        "failure_case": false,
+        "hex": true
+    },
+    {
+        "name": "http2_frame_test",
+        "binary": "$WORK_DIR/test/binary_data/http2_frame_test.dat",
+        "format_name": "HTTP2FrameTest",
+        "source": "$WORK_DIR/src/test/http2_frame_test.bgn",
+        "failure_case": false,
+        "hex": true
     }
 ]

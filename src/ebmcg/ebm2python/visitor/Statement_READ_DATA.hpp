@@ -44,6 +44,6 @@ MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attr
 
 MAYBE(read_size_str, get_size_str(*this, io_data.size));
 
-auto io_value = module_.get_identifier_or(io_data.io_ref);
+auto io_value = module_.get_associated_identifier(io_data.io_ref);
 
 return CODELINE(target_expr_str.to_writer(), " = struct.unpack(", struct_format, ", ", io_value, ".read(", read_size_str, "))[0]");

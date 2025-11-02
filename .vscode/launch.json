@@ -121,7 +121,11 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmgen",
-      "args": ["-i", "./src/ebm/extended_binary_module.bgn", "-I"],
+      "args": [
+        "-i",
+        "C:\\workspace\\shbrgen\\rebrgen/src/test/leb128_test.bgn",
+        "-I"
+      ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

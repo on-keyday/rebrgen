@@ -18,7 +18,7 @@
 
 CodeWriter w;
 w.write(this->metadata_comment_prefix);
-auto name = this->module_.get_identifier_or(item_id);
+auto name = this->module_.get_associated_identifier(item_id);
 w.write(" ", name);
 if (metadata.values.container.size()) {
     w.write("(");

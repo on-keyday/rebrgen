@@ -19,4 +19,4 @@ MAYBE(cond_str, visit_Expression(*this, condition));
 MAYBE(then_str, visit_Expression(*this, then));
 MAYBE(else_str, visit_Expression(*this, else_));
 
-return std::format("({}?{}:{})", cond_str.to_writer(), then_str.to_writer(), else_str.to_writer());
+return CODE("(", cond_str.to_writer(), "?", then_str.to_writer(), ":", else_str.to_writer(), ")");

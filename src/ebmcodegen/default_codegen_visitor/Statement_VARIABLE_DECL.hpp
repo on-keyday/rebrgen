@@ -25,7 +25,7 @@ if (var_decl.is_reference()) {
     return {};
 }
 CodeWriter w;
-auto name = this->module_.get_identifier_or(item_id);
+auto name = this->module_.get_associated_identifier(item_id);
 MAYBE(type_str_val, visit_Type(*this, var_decl.var_type));
 std::optional<Result> initial_value;
 

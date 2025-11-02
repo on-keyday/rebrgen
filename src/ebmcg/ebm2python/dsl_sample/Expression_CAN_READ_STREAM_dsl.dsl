@@ -21,7 +21,7 @@
 
 /*here to write the hook*/
 %}
-{! io_val := module_.get_identifier_or(io_ref) !}
+{! io_val := module_.get_associated_identifier(io_ref) !}
 {! tmp_id := std::format("{}", get_id(item_id)) !}
 {! size_str := get_size_str(*this,num_bytes) !}
 {! current_offset := std::format("current_offset_{}", tmp_id) !}
@@ -38,6 +38,10 @@ elif isinstance({{io_val}},io.BufferedReader):
   {{result}} = builtins.len({{io_val}}.peek({{size_str}}))
 else:
   {! if !is_nil(io_ref) !}{%/*this is added for example*/%}
+  {%
+   /* special block's indent must be same as other code (also target language) 
+      so that you can generate code correctly*/
+  %}
   raise ValueError("Unsupported stream type for CAN_READ_STREAM: {}",type({{io_val}}))
   {! else !}
   raise ValueError("Broken!")

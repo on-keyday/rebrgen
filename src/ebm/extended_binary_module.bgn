@@ -305,22 +305,28 @@ format FieldDecl:
     field_type :TypeRef # Type of the field
     parent_struct :StatementRef # Reference to parent struct/format
     is_state_variable :u1 # 0: regular, 1: state variable
-    reserved :u7 # Reserved for future use    
+    inner_composite :u1 # 0: normal field, 1: part of composite field
+    reserved :u6  # Reserved for future use    
+    if inner_composite == 1:
+        composite_field :StatementRef # Reference to CompositeFieldDecl
+        composite_getter :LoweredStatementRef # Getter function for composite field
+        composite_setter :LoweredStatementRef # Setter function for composite field
 
 format StructDecl:
     name :IdentifierRef # Struct name
     fields :Block # List of fields
-    encode_fn :StatementRef
-    decode_fn :StatementRef
     is_recursive :u1 # 0: no, 1: yes (for recursive structs)
     is_fixed_size :u1 # 0: no, 1: yes (if all fields are fixed size)
     has_related_variant :u1 # 0: no, 1: yes (if this struct is related to a variant type)
-    reserved :u5 # Reserved for future use
+    has_encode_decode :u1 # 0: no, 1: yes (if encoder/decoder functions are generated)
+    reserved :u4 # Reserved for future use
     if has_related_variant == 1:
         related_variant :TypeRef # Reference to related variant type (maybe null)
     if is_fixed_size == 1:
         size :Size # Fixed size of the struct
-
+    if has_encode_decode == 1:
+        encode_fn :StatementRef
+        decode_fn :StatementRef
 
 format PropertyMemberDecl:
     condition :ExpressionRef
@@ -351,6 +357,8 @@ enum FunctionKind:
     DECODE = 3 # Decoder function
     PROPERTY_GETTER = 4 # Property getter function
     PROPERTY_SETTER = 5 # Property setter function
+    COMPOSITE_GETTER = 6 # Composite field getter function
+    COMPOSITE_SETTER = 7 # Composite field setter function
 
 format FunctionDecl:
     name :IdentifierRef # Function name
@@ -613,8 +621,8 @@ format Expressions:
     len :Varint
     container :[len.value]ExpressionRef # List of expressions
 
-format Block:
-    len :Varint
+format Block: # A block of statements. Block does NOT mean {} or scope, just a list of statements. 
+    len :Varint 
     container :[len.value]StatementRef
 
 

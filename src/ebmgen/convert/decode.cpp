@@ -207,7 +207,7 @@ namespace ebmgen {
                     EBM_GET_REMAINING_BYTES(remain_size, ebm::StreamType::INPUT);
                     MAYBE_VOID(ok, set_dynamic_size(remain_size));
                 }
-                else if (field->eventual_follow == ast::Follow::fixed) {
+                else if (field->eventual_follow == ast::Follow::end && field->follow == ast::Follow::fixed) {
                     auto tail = field->belong_struct.lock()->fixed_tail_size / 8;
                     EBMU_INT_LITERAL(last, tail);
                     EBM_GET_REMAINING_BYTES(remain_bytes, ebm::StreamType::INPUT);
@@ -284,7 +284,7 @@ namespace ebmgen {
                     cond_loop = loop_ref;
                 }
                 else {
-                    return unexpect_error("Invalid follow type");
+                    return unexpect_error("Invalid follow type: {}, {}", to_string(field->follow), to_string(field->eventual_follow));
                 }
             }
             else {

@@ -1479,140 +1479,6 @@ namespace ebm2rust {
         return result;
     }
     template<typename Visitor>
-    concept has_visitor_Statement_SEEK_STREAM = requires(Visitor v) {
-         { v.visit_Statement_SEEK_STREAM(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
-    };
-    template<typename Visitor>
-    concept has_visitor_Statement_SEEK_STREAM_call = requires(Visitor fn) {
-         { fn(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind) } -> std::convertible_to<expected<Result>>;
-    };
-    template<typename Visitor>
-    expected<Result> dispatch_Statement_SEEK_STREAM(Visitor&& visitor,const ebm::Statement& in,ebm::StatementRef alias_ref) {
-        #if __has_include("visitor/Statement_pre_validate_before.hpp")
-        #include "visitor/Statement_pre_validate_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_pre_validate_before_dsl.hpp")
-        #include "visitor/dsl/Statement_pre_validate_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_validate.hpp")
-        #include "visitor/Statement_pre_validate.hpp"
-        #elif __has_include("visitor/dsl/Statement_pre_validate_dsl.hpp")
-        #include "visitor/dsl/Statement_pre_validate_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp")
-        #if __has_include("visitor/Statement_pre_validate_pre_default.hpp")
-        #include "visitor/Statement_pre_validate_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_validate.hpp"
-        #if __has_include("visitor/Statement_pre_validate_post_default.hpp")
-        #include "visitor/Statement_pre_validate_post_default.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_before.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_validate_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_validate_before_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_pre_validate_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_validate.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_validate_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_pre_validate_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_validate.hpp")
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_pre_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_validate_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_validate.hpp"
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_validate_post_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_validate_post_default.hpp"
-        #endif
-        #endif
-        auto& kind = in.body.kind;
-        #if __has_include("visitor/Statement_pre_visit_before.hpp")
-        #include "visitor/Statement_pre_visit_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_pre_visit_before_dsl.hpp")
-        #include "visitor/dsl/Statement_pre_visit_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_pre_visit.hpp")
-        #include "visitor/Statement_pre_visit.hpp"
-        #elif __has_include("visitor/dsl/Statement_pre_visit_dsl.hpp")
-        #include "visitor/dsl/Statement_pre_visit_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp")
-        #if __has_include("visitor/Statement_pre_visit_pre_default.hpp")
-        #include "visitor/Statement_pre_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_pre_visit.hpp"
-        #if __has_include("visitor/Statement_pre_visit_post_default.hpp")
-        #include "visitor/Statement_pre_visit_post_default.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_before.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_visit_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_visit_before_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_pre_visit_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_visit.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_pre_visit_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_pre_visit_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_visit.hpp")
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_pre_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_pre_visit.hpp"
-        #if __has_include("visitor/Statement_SEEK_STREAM_pre_visit_post_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_pre_visit_post_default.hpp"
-        #endif
-        #endif
-        expected<Result> result;
-        if constexpr (has_visitor_Statement_SEEK_STREAM<Visitor>) {
-            result = visitor.visit_Statement_SEEK_STREAM(is_nil(alias_ref) ? in.id : alias_ref,kind);
-        }
-        else if constexpr (has_visitor_Statement_SEEK_STREAM_call<Visitor>) {
-            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
-        }
-        else {
-            static_assert(has_visitor_Statement_SEEK_STREAM<Visitor>||has_visitor_Statement_SEEK_STREAM_call<Visitor>, "Visitor does not implement visit_Statement_SEEK_STREAM");
-        }
-        #if __has_include("visitor/Statement_post_visit_before.hpp")
-        #include "visitor/Statement_post_visit_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_post_visit_before_dsl.hpp")
-        #include "visitor/dsl/Statement_post_visit_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_post_visit.hpp")
-        #include "visitor/Statement_post_visit.hpp"
-        #elif __has_include("visitor/dsl/Statement_post_visit_dsl.hpp")
-        #include "visitor/dsl/Statement_post_visit_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp")
-        #if __has_include("visitor/Statement_post_visit_pre_default.hpp")
-        #include "visitor/Statement_post_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_post_visit.hpp"
-        #if __has_include("visitor/Statement_post_visit_post_default.hpp")
-        #include "visitor/Statement_post_visit_post_default.hpp"
-        #endif
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_before.hpp")
-        #include "visitor/Statement_SEEK_STREAM_post_visit_before.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_post_visit_before_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_post_visit_before_dsl.hpp"
-        #endif
-        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit.hpp")
-        #include "visitor/Statement_SEEK_STREAM_post_visit.hpp"
-        #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_post_visit_dsl.hpp")
-        #include "visitor/dsl/Statement_SEEK_STREAM_post_visit_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_post_visit.hpp")
-        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_pre_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_post_visit_pre_default.hpp"
-        #endif
-        #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM_post_visit.hpp"
-        #if __has_include("visitor/Statement_SEEK_STREAM_post_visit_post_default.hpp")
-        #include "visitor/Statement_SEEK_STREAM_post_visit_post_default.hpp"
-        #endif
-        #endif
-        if(!result) {
-            return unexpect_error(std::move(result.error())); // for trace
-        }
-        return result;
-    }
-    template<typename Visitor>
     concept has_visitor_Statement_IF_STATEMENT = requires(Visitor v) {
          { v.visit_Statement_IF_STATEMENT(std::declval<const ebm::StatementRef&>(),std::declval<const ebm::StatementBody&>().kind,*std::declval<const ebm::StatementBody&>().if_statement()) } -> std::convertible_to<expected<Result>>;
     };
@@ -5369,8 +5235,6 @@ namespace ebm2rust {
             return dispatch_Statement_READ_DATA(visitor,in,alias_ref);
         case ebm::StatementKind::WRITE_DATA:
             return dispatch_Statement_WRITE_DATA(visitor,in,alias_ref);
-        case ebm::StatementKind::SEEK_STREAM:
-            return dispatch_Statement_SEEK_STREAM(visitor,in,alias_ref);
         case ebm::StatementKind::IF_STATEMENT:
             return dispatch_Statement_IF_STATEMENT(visitor,in,alias_ref);
         case ebm::StatementKind::LOOP_STATEMENT:
@@ -13991,31 +13855,6 @@ namespace ebm2rust {
             #endif
             return {};
         }
-        expected<Result> visit_Statement_SEEK_STREAM(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
-            #if __has_include("visitor/Statement_SEEK_STREAM_before.hpp")
-            #include "visitor/Statement_SEEK_STREAM_before.hpp"
-            #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_before_dsl.hpp")
-            #include "visitor/dsl/Statement_SEEK_STREAM_before_dsl.hpp"
-            #endif
-            #if __has_include("visitor/Statement_SEEK_STREAM.hpp")
-            #include "visitor/Statement_SEEK_STREAM.hpp"
-            #elif __has_include("visitor/dsl/Statement_SEEK_STREAM_dsl.hpp")
-            #include "visitor/dsl/Statement_SEEK_STREAM_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM.hpp")
-            #if __has_include("visitor/Statement_SEEK_STREAM_pre_default.hpp")
-            #include "visitor/Statement_SEEK_STREAM_pre_default.hpp"
-            #endif
-            #include "ebmcodegen/default_codegen_visitor/Statement_SEEK_STREAM.hpp"
-            #if __has_include("visitor/Statement_SEEK_STREAM_post_default.hpp")
-            #include "visitor/Statement_SEEK_STREAM_post_default.hpp"
-            #endif
-            #else
-            if (flags.debug_unimplemented) {
-                return std::format("{{{{Unimplemented Statement_SEEK_STREAM {}}}}}",get_id(item_id));
-            }
-            #endif
-            return {};
-        }
         expected<Result> visit_Statement_IF_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IfStatement& if_statement) {
             #if __has_include("visitor/Statement_IF_STATEMENT_before.hpp")
             #include "visitor/Statement_IF_STATEMENT_before.hpp"
@@ -16126,7 +15965,6 @@ namespace ebm2rust {
     static_assert(has_visitor_Statement_ASSERT<Visitor>, "Visitor does not implement visit_Statement_ASSERT");
     static_assert(has_visitor_Statement_READ_DATA<Visitor>, "Visitor does not implement visit_Statement_READ_DATA");
     static_assert(has_visitor_Statement_WRITE_DATA<Visitor>, "Visitor does not implement visit_Statement_WRITE_DATA");
-    static_assert(has_visitor_Statement_SEEK_STREAM<Visitor>, "Visitor does not implement visit_Statement_SEEK_STREAM");
     static_assert(has_visitor_Statement_IF_STATEMENT<Visitor>, "Visitor does not implement visit_Statement_IF_STATEMENT");
     static_assert(has_visitor_Statement_LOOP_STATEMENT<Visitor>, "Visitor does not implement visit_Statement_LOOP_STATEMENT");
     static_assert(has_visitor_Statement_MATCH_STATEMENT<Visitor>, "Visitor does not implement visit_Statement_MATCH_STATEMENT");

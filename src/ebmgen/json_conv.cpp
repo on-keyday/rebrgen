@@ -3067,10 +3067,6 @@ namespace ebm {
                 obj = StatementKind::WRITE_DATA;
                 return true;
             }
-            if (s == "SEEK_STREAM") {
-                obj = StatementKind::SEEK_STREAM;
-                return true;
-            }
             if (s == "IF_STATEMENT") {
                 obj = StatementKind::IF_STATEMENT;
                 return true;

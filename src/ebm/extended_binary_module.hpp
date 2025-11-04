@@ -657,34 +657,33 @@ namespace ebm {
         ASSERT = 6,
         READ_DATA = 7,
         WRITE_DATA = 8,
-        SEEK_STREAM = 9,
-        IF_STATEMENT = 10,
-        LOOP_STATEMENT = 11,
-        MATCH_STATEMENT = 12,
-        MATCH_BRANCH = 13,
-        BREAK = 14,
-        CONTINUE = 15,
-        FUNCTION_DECL = 16,
-        VARIABLE_DECL = 17,
-        PARAMETER_DECL = 18,
-        FIELD_DECL = 19,
-        COMPOSITE_FIELD_DECL = 20,
-        ENUM_DECL = 21,
-        ENUM_MEMBER_DECL = 22,
-        STRUCT_DECL = 23,
-        UNION_DECL = 24,
-        UNION_MEMBER_DECL = 25,
-        PROGRAM_DECL = 26,
-        PROPERTY_DECL = 27,
-        PROPERTY_MEMBER_DECL = 28,
-        METADATA = 29,
-        IMPORT_MODULE = 30,
-        EXPRESSION = 31,
-        ERROR_REPORT = 32,
-        LOWERED_IO_STATEMENTS = 33,
-        SUB_BYTE_RANGE = 34,
-        INIT_CHECK = 35,
-        ENDIAN_VARIABLE = 36,
+        IF_STATEMENT = 9,
+        LOOP_STATEMENT = 10,
+        MATCH_STATEMENT = 11,
+        MATCH_BRANCH = 12,
+        BREAK = 13,
+        CONTINUE = 14,
+        FUNCTION_DECL = 15,
+        VARIABLE_DECL = 16,
+        PARAMETER_DECL = 17,
+        FIELD_DECL = 18,
+        COMPOSITE_FIELD_DECL = 19,
+        ENUM_DECL = 20,
+        ENUM_MEMBER_DECL = 21,
+        STRUCT_DECL = 22,
+        UNION_DECL = 23,
+        UNION_MEMBER_DECL = 24,
+        PROGRAM_DECL = 25,
+        PROPERTY_DECL = 26,
+        PROPERTY_MEMBER_DECL = 27,
+        METADATA = 28,
+        IMPORT_MODULE = 29,
+        EXPRESSION = 30,
+        ERROR_REPORT = 31,
+        LOWERED_IO_STATEMENTS = 32,
+        SUB_BYTE_RANGE = 33,
+        INIT_CHECK = 34,
+        ENDIAN_VARIABLE = 35,
     };
     constexpr const char* to_string(StatementKind e, bool origin_form = false) {
         switch(e) {
@@ -697,7 +696,6 @@ namespace ebm {
             case StatementKind::ASSERT: return origin_form ? "ASSERT":"ASSERT" ;
             case StatementKind::READ_DATA: return origin_form ? "READ_DATA":"READ_DATA" ;
             case StatementKind::WRITE_DATA: return origin_form ? "WRITE_DATA":"WRITE_DATA" ;
-            case StatementKind::SEEK_STREAM: return origin_form ? "SEEK_STREAM":"SEEK_STREAM" ;
             case StatementKind::IF_STATEMENT: return origin_form ? "IF_STATEMENT":"IF_STATEMENT" ;
             case StatementKind::LOOP_STATEMENT: return origin_form ? "LOOP_STATEMENT":"LOOP_STATEMENT" ;
             case StatementKind::MATCH_STATEMENT: return origin_form ? "MATCH_STATEMENT":"MATCH_STATEMENT" ;
@@ -759,9 +757,6 @@ namespace ebm {
         }
         if (str == "WRITE_DATA") {
             return StatementKind::WRITE_DATA;
-        }
-        if (str == "SEEK_STREAM") {
-            return StatementKind::SEEK_STREAM;
         }
         if (str == "IF_STATEMENT") {
             return StatementKind::IF_STATEMENT;

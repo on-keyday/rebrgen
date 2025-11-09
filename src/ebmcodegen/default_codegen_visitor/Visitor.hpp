@@ -24,3 +24,6 @@ std::string self_value = "this";
 DefaultValueOption default_value_option;
 std::string endof_statement = "";
 std::string enum_member_accessor = ".";
+std::string array_size_get_function = "len";
+bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
+std::string append_function = "append";

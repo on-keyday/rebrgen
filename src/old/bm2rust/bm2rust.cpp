@@ -825,6 +825,11 @@ namespace bm2rust {
                         res.push_back(std::format("{}::from({})", to_type, ref.back()));
                         break;
                     }
+                    case rebgn::CastType::SIGNED_TO_UNSIGNED:
+                    case rebgn::CastType::UNSIGNED_TO_SIGNED: {
+                        res.push_back(std::format("({} as {})", ref.back(), to_type));
+                        break;
+                    }
                     default: {
                         res.push_back(std::format("/* Unimplemented cast type {} */", to_string(cast_type)));
                         break;

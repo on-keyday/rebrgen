@@ -37,3 +37,5 @@ default_value_option.pointer_init = "None";
 default_value_option.optional_init = "None";
 default_value_option.encoder_return_init = "None";
 default_value_option.decoder_return_init = "None";
+surrounded_array_size = true;
+array_size_get_function = "builtins.len";

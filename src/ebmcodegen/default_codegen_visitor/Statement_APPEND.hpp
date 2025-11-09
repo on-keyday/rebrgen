@@ -16,4 +16,4 @@
 MAYBE(target_str, visit_Expression(*this, target));
 MAYBE(value_str, visit_Expression(*this, value));
 
-return CODELINE(target_str.to_writer(), ".append(", value_str.to_writer(), ")");
+return CODELINE(target_str.to_writer(), ".", append_function, "(", value_str.to_writer(), ")", endof_statement);

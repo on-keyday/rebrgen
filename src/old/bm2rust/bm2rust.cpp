@@ -1303,7 +1303,11 @@ namespace bm2rust {
                                 auto scope3 = w2.indent_scope();
                                 std::string value = "value";
                                 if (return_type != "bool") {
-                                    w2.writeln("if value", enum_ident.size() ? std::format(" as {}", str) : "", " > ", mask, " {");
+                                    auto cmp = std::format("({} as {})", value, str);
+                                    if (enum_ident.size()) {
+                                        cmp = std::format("{}::from({})", str, value);
+                                    }
+                                    w2.writeln("if ", cmp, " > ", mask, " {");
                                     w2.writeln("return false;");
                                     w2.writeln("}");
                                 }

@@ -164,7 +164,7 @@ namespace ebmgen {
             ebm::Block block;
             if (fixed_iter) {
                 EBM_INDEX(array_index, element_type, base_ref, *fixed_iter);
-                EBM_DEFINE_VARIABLE(element, {}, element_type, array_index, false, true);
+                EBM_DEFINE_VARIABLE(element, {}, element_type, array_index, ebm::VariableDeclKind::MUTABLE, true);
                 MAYBE(decode_info, decode_field_type(aty->element_type, element, nullptr));
                 EBMA_ADD_STATEMENT(decode_stmt, std::move(decode_info));
                 append(block, element_def);

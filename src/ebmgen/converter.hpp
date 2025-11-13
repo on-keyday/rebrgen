@@ -33,12 +33,15 @@ namespace std {
 
 namespace ebmgen {
 
+    void debug_id_inspect(std::uint64_t id);
+
     struct ReferenceSource {
        private:
         std::uint64_t next_id = 1;
 
        public:
         expected<ebm::Varint> new_id() {
+            debug_id_inspect(next_id);
             auto v = varint(next_id);
             if (!v) {
                 return unexpect_error(std::move(v.error()));

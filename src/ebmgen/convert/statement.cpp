@@ -78,7 +78,7 @@ namespace ebmgen {
                 if (ast::as<ast::IntType>(bop->right->expr_type)) {
                     EBMA_CONVERT_TYPE(expr_type, bop->left->expr_type);
                     EBM_COUNTER_LOOP_START_CUSTOM(i, expr_type);
-                    EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, true, false);
+                    EBM_DEFINE_VARIABLE(identifier, ident_ref, expr_type, i, ebm::VariableDeclKind::IMMUTABLE, false);
                     make_init_visited(identifier_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
                     ebm::Block block;
@@ -123,7 +123,7 @@ namespace ebmgen {
                     EBMU_BOOL_TYPE(bool_type);
                     EBM_BINARY_OP(cond, l->op == ast::BinaryOp::range_inclusive ? ebm::BinaryOp::less_or_eq : ebm::BinaryOp::less, bool_type, iter, end_casted);
 
-                    EBM_DEFINE_VARIABLE(identifier, ident_ref, counter_type, iter, true, false);
+                    EBM_DEFINE_VARIABLE(identifier, ident_ref, counter_type, iter, ebm::VariableDeclKind::IMMUTABLE, false);
                     make_init_visited(identifier_def);
                     EBMA_CONVERT_STATEMENT(inner_body, node->body);
                     ebm::Block body;
@@ -146,7 +146,7 @@ namespace ebmgen {
                     EBMA_CONVERT_TYPE(element_type, bop->left->expr_type);
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(indexed, element_type, target, i);
-                    EBM_DEFINE_VARIABLE(element, ident_ref, element_type, indexed, false, true);
+                    EBM_DEFINE_VARIABLE(element, ident_ref, element_type, indexed, ebm::VariableDeclKind::MUTABLE, true);
                     make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
 
@@ -176,7 +176,7 @@ namespace ebmgen {
                     MAYBE_VOID(ok, construct_string_array(ctx, block, buffer, candidate));
                     EBM_COUNTER_LOOP_START(i);
                     EBM_INDEX(array_index, u8_t, buffer, i);
-                    EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, true, true);
+                    EBM_DEFINE_VARIABLE(element, ident_ref, u8_t, array_index, ebm::VariableDeclKind::MUTABLE, true);
                     make_init_visited(element_def);
                     EBMA_CONVERT_STATEMENT(inner_block_ref, node->body);
 
@@ -445,6 +445,9 @@ namespace ebmgen {
         MAYBE(variant_alt, handle_variant_alternative(ctx, node->struct_type));
         auto for_each_node = [&]() -> expected<void> {
             for (auto& element : node->elements) {
+                if (ast::as<ast::Function>(element)) {
+                    continue;
+                }
                 EBMA_CONVERT_STATEMENT(stmt_ref, element);
                 append(block_body, stmt_ref);
             }
@@ -536,6 +539,7 @@ namespace ebmgen {
             struct_decl.has_related_variant(true);
             struct_decl.related_variant(related_variant);
         }
+        ebm::Block methods_block;
         {
             const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
             for (auto& element : node->fields) {
@@ -543,7 +547,25 @@ namespace ebmgen {
                     EBMA_CONVERT_STATEMENT(stmt_ref, element);
                     append(struct_decl.fields, stmt_ref);
                 }
+                else if (ast::as<ast::Function>(element)) {
+                    if (element->ident->ident == "encode" || element->ident->ident == "decode") {
+                        continue;
+                    }
+                    MAYBE(func_decl, ctx.get_statement_converter().convert_function_decl(ast::cast_to<ast::Function>(element), GenerateType::Normal, ebm::StatementRef{}));
+                    ebm::StatementBody func_decl_body;
+                    func_decl_body.kind = ebm::StatementKind::FUNCTION_DECL;
+                    func_decl_body.func_decl(std::move(func_decl));
+                    EBMA_ADD_STATEMENT(func_decl_ref, std::move(func_decl_body));
+                    append(methods_block, func_decl_ref);
+                }
+                else {
+                    return unexpect_error("Unsupported struct element type: {}", node_type_to_string(element->node_type));
+                }
             }
+        }
+        if (!methods_block.container.empty()) {
+            struct_decl.has_functions(true);
+            struct_decl.methods(std::move(methods_block));
         }
         return struct_decl;
     }
@@ -746,6 +768,13 @@ namespace ebmgen {
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::Function>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         body.kind = ebm::StatementKind::FUNCTION_DECL;
         const auto _mode = ctx.state().set_current_generate_type(GenerateType::Normal);
+        if (auto self_ = ctx.state().get_self_ref()) {
+            MAYBE(func_type, ctx.get_type_converter().convert_function_type(node->func_type));
+            EBMA_ADD_TYPE(fn_type, std::move(func_type));
+            EBM_IDENTIFIER(name_ref, id, fn_type);
+            EBM_MEMBER_ACCESS(self_fn_access, fn_type, *self_, name_ref);
+            ctx.state().set_self_ref_for_id(id, self_fn_access);
+        }
         MAYBE(decl, convert_function_decl(node, GenerateType::Normal, {}));
         body.func_decl(std::move(decl));
         return {};
@@ -939,11 +968,7 @@ namespace ebmgen {
             body.field_decl(std::move(field_decl));
             temporary.execute();
             if (auto self = ctx.state().get_self_ref()) {
-                ebm::ExpressionBody ident;
-                ident.kind = ebm::ExpressionKind::IDENTIFIER;
-                ident.type = type_ref;
-                ident.id(id);
-                EBMA_ADD_EXPR(ident_expr, std::move(ident));
+                EBM_IDENTIFIER(ident_expr, id, type_ref);
                 ebm::ExpressionBody self_body;
                 self_body.kind = ebm::ExpressionKind::MEMBER_ACCESS;
                 self_body.type = type_ref;
@@ -1050,7 +1075,9 @@ namespace ebmgen {
                     EBMA_CONVERT_EXPRESSION(initial_value_ref, node->right);
                     var_decl.initial_value = initial_value_ref;
                 }
-                var_decl.is_constant(node->op == ast::BinaryOp::const_assign);  // Set is_constant based on operator
+                node->left->constant_level == ast::ConstantLevel::constant             ? var_decl.decl_kind(ebm::VariableDeclKind::CONSTANT)
+                : node->left->constant_level == ast::ConstantLevel::immutable_variable ? var_decl.decl_kind(ebm::VariableDeclKind::IMMUTABLE)
+                                                                                       : var_decl.decl_kind(ebm::VariableDeclKind::MUTABLE);
                 body.var_decl(std::move(var_decl));
             }
         }

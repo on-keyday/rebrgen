@@ -12,13 +12,14 @@
       name: IdentifierRef
       var_type: TypeRef
       initial_value: ExpressionRef
-      is_constant: bool
+      decl_kind: VariableDeclKind
       is_reference: bool
       reserved: std::uint8_t
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_VARIABLE_DECL function.
 // We can use variables like `this` (for Visitor) and `var_decl` directly.
+#include "ebm/extended_binary_module.hpp"
 if (var_decl.is_reference()) {
     MAYBE(initial_value, visit_Expression(*this, var_decl.initial_value));
     module_.directly_map_statement_identifier(item_id, initial_value.to_string());
@@ -36,7 +37,13 @@ if (!is_nil(var_decl.initial_value)) {
     w.merge(std::move(got));
     initial_value = initial_value_;
 }
-if (variable_define_keyword.size()) {
+if (var_decl.decl_kind() == ebm::VariableDeclKind::CONSTANT && constant_define_keyword.size()) {
+    w.write(constant_define_keyword, " ");
+}
+else if (var_decl.decl_kind() == ebm::VariableDeclKind::IMMUTABLE && immutable_variable_define_keyword.size()) {
+    w.write(immutable_variable_define_keyword, " ");
+}
+else if (var_decl.decl_kind() == ebm::VariableDeclKind::MUTABLE && variable_define_keyword.size()) {
     w.write(variable_define_keyword, " ");
 }
 w.write(name);

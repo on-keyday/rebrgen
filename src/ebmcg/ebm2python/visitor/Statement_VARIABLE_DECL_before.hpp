@@ -12,7 +12,7 @@
       name: IdentifierRef
       var_type: TypeRef
       initial_value: ExpressionRef
-      is_constant: bool
+      decl_kind: VariableDeclKind
       is_reference: bool
       reserved: std::uint8_t
 */

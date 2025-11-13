@@ -10,14 +10,14 @@ namespace ebmgen {
         return body;
     }
 
-    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, bool is_const, bool is_reference) {
+    ebm::StatementBody make_variable_decl(ebm::IdentifierRef name, ebm::TypeRef type, ebm::ExpressionRef initial_ref, ebm::VariableDeclKind decl_kind, bool is_reference) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::VARIABLE_DECL;
         ebm::VariableDecl var_decl;
         var_decl.name = name;
         var_decl.var_type = type;
         var_decl.initial_value = initial_ref;
-        var_decl.is_constant(is_const);
+        var_decl.decl_kind(decl_kind);
         var_decl.is_reference(is_reference);
         body.var_decl(std::move(var_decl));
         return body;
@@ -398,6 +398,13 @@ namespace ebmgen {
         body.kind = ebm::ExpressionKind::LITERAL_BOOL;
         body.type = type;
         body.bool_value(value ? 1 : 0);
+        return body;
+    }
+
+    ebm::ExpressionBody make_self(ebm::TypeRef type) {
+        ebm::ExpressionBody body;
+        body.kind = ebm::ExpressionKind::SELF;
+        body.type = type;
         return body;
     }
 

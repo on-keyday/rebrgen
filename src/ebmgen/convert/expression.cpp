@@ -1,6 +1,7 @@
 #include "../converter.hpp"
 #include <core/ast/tool/ident.h>
 #include "core/ast/node/ast_enum.h"
+#include "core/ast/node/base.h"
 #include "core/ast/node/literal.h"
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
@@ -266,9 +267,14 @@ namespace ebmgen {
         ebm::StatementKind kind = ebm::StatementKind::BLOCK;  // temporary init
         ebm::StatementRef id;
         bool is_state_variable = false;
+        auto base_locked = base->first->base.lock();
+        bool has_parent = false;
+        if (auto m = ast::as<ast::Member>(base_locked); m && m->belong.lock()) {
+            has_parent = true;
+        }
         {
             const auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
-            EBMA_CONVERT_STATEMENT(id_ref, base->first->base.lock());
+            EBMA_CONVERT_STATEMENT(id_ref, base_locked);
             body.id(id_ref);
             id = id_ref;
             if (auto got = ctx.repository().get_statement(id_ref)) {
@@ -279,7 +285,7 @@ namespace ebmgen {
                 }
             }
         }
-        if (auto self = ctx.state().get_self_ref(); self && (kind == ebm::StatementKind::FIELD_DECL || kind == ebm::StatementKind::PROPERTY_DECL) && !is_state_variable) {
+        if (auto self = ctx.state().get_self_ref(); self && has_parent && !is_state_variable) {
             if (!ctx.state().is_on_available_check()) {
                 auto got = ctx.state().get_self_ref_for_id(id);
                 if (got) {

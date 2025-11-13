@@ -6,6 +6,7 @@
   Available variables:
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
+#include <string>
 bool use_brace_for_condition = true;
 bool use_elif = false;
 std::string begin_block = "{";
@@ -14,6 +15,8 @@ std::string empty_block_marker = "";
 std::string default_object_brace = "{}";
 std::string default_vector_brace = "[]";
 std::string variable_define_keyword = "";
+std::string immutable_variable_define_keyword = "";
+std::string constant_define_keyword = "";
 bool variable_with_type = true;
 std::string variable_type_separator = ":";
 std::map<ebm::BinaryOp, std::string> alt_binary_op;

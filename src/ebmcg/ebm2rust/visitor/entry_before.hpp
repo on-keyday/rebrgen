@@ -10,10 +10,14 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-variable_define_keyword = "let";
+variable_define_keyword = "let mut";
+immutable_variable_define_keyword = "let";
+constant_define_keyword = "const";
 endof_statement = ";";
 self_value = "self";
 enum_member_accessor = "::";
 module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
 use_brace_for_condition = false;
 append_function = "push";
+default_value_option.encoder_return_init = "Ok(())";
+default_value_option.decoder_return_init = "Ok(())";

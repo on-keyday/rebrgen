@@ -2092,6 +2092,16 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("has_functions")) {
+            bool tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            obj.has_functions(std::move(tmp));
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("reserved")) {
             std::uint8_t tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
@@ -2137,6 +2147,15 @@ namespace ebm {
                 return false;
             }
             if(!obj.encode_fn(std::move(tmp))) {
+                return false;
+            }
+        }
+        if (auto got = j.at("methods")) {
+            Block tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.methods(std::move(tmp))) {
                 return false;
             }
         }
@@ -2408,12 +2427,14 @@ namespace ebm {
         else {
             return false;
         }
-        if (auto got = j.at("is_constant")) {
-            bool tmp;
+        if (auto got = j.at("decl_kind")) {
+            VariableDeclKind tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
-            obj.is_constant(std::move(tmp));
+            if(!obj.decl_kind(std::move(tmp))) {
+                return false;
+            }
         }
         else {
             return false;
@@ -3321,6 +3342,26 @@ namespace ebm {
             }
             if (s == "bit_not") {
                 obj = UnaryOp::bit_not;
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    
+    bool from_json(VariableDeclKind& obj, const futils::json::JSON& j) {
+        if (auto got = j.get_holder().as_str()) {
+            auto& s = *got;
+            if (s == "MUTABLE") {
+                obj = VariableDeclKind::MUTABLE;
+                return true;
+            }
+            if (s == "IMMUTABLE") {
+                obj = VariableDeclKind::IMMUTABLE;
+                return true;
+            }
+            if (s == "CONSTANT") {
+                obj = VariableDeclKind::CONSTANT;
                 return true;
             }
             return false;

@@ -278,13 +278,20 @@ format IfStatement:
     then_block :StatementRef # Block to execute if condition is true
     else_block :StatementRef
 
+enum VariableDeclKind:
+    :u2
+    MUTABLE = 0 # Mutable variable
+    IMMUTABLE = 1 # Immutable variable
+    CONSTANT = 2 # Constant 
+
+
 format VariableDecl:
     name :IdentifierRef # Variable name
     var_type :TypeRef # Type of the variable
     initial_value :ExpressionRef # Optional initial value
-    is_constant :u1 # 0: mutable, 1: constant
+    decl_kind :VariableDeclKind 
     is_reference :u1 # 0: value, 1: reference
-    reserved :u6 # Reserved for future use
+    reserved :u5 # Reserved for future use
 
 format ParameterDecl:
     name :IdentifierRef # Parameter name
@@ -319,7 +326,8 @@ format StructDecl:
     is_fixed_size :u1 # 0: no, 1: yes (if all fields are fixed size)
     has_related_variant :u1 # 0: no, 1: yes (if this struct is related to a variant type)
     has_encode_decode :u1 # 0: no, 1: yes (if encoder/decoder functions are generated)
-    reserved :u4 # Reserved for future use
+    has_functions :u1 # 0: no, 1: yes (if there are methods defined for this struct)
+    reserved :u3 # Reserved for future use
     if has_related_variant == 1:
         related_variant :TypeRef # Reference to related variant type (maybe null)
     if is_fixed_size == 1:
@@ -327,6 +335,8 @@ format StructDecl:
     if has_encode_decode == 1:
         encode_fn :StatementRef
         decode_fn :StatementRef
+    if has_functions == 1:
+        methods :Block # List of method FunctionDecl
 
 format PropertyMemberDecl:
     condition :ExpressionRef

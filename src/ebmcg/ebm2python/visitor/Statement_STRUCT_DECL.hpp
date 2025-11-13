@@ -17,6 +17,7 @@
       is_fixed_size: bool
       has_related_variant: bool
       has_encode_decode: bool
+      has_functions: bool
       reserved: std::uint8_t
       related_variant: *TypeRef
       size: *Size
@@ -25,6 +26,9 @@
         size: *Varint
       decode_fn: *StatementRef
       encode_fn: *StatementRef
+      methods: *Block
+        len: Varint
+        container: std::vector<StatementRef>
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_STRUCT_DECL function.

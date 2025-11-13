@@ -145,4 +145,6 @@ namespace ebm {
     
     bool from_json(UnaryOp& obj, const futils::json::JSON& j);
     
+    bool from_json(VariableDeclKind& obj, const futils::json::JSON& j);
+    
 } // namespace ebm

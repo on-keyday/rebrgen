@@ -13,4 +13,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-return CODELINE("return err;");
+return CODELINE("return Err(err);");

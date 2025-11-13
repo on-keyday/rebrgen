@@ -7,6 +7,9 @@
 #include "ebm/extended_binary_module.hpp"
 namespace ebmgen {
 
+    void debug_id_inspect(std::uint64_t id) {
+    }
+
     void ConverterState::debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {
         if (!verbose_error) {
             return;

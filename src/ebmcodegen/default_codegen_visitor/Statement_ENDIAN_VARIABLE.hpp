@@ -16,6 +16,7 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#include "ebm/extended_binary_module.hpp"
 if (endian_variable.endian() != ebm::Endian::dynamic) {
     return "";
 }
@@ -23,7 +24,7 @@ ebm::VariableDecl decl;
 MAYBE(expr, endian_variable.dynamic_expr());
 MAYBE(expr_body, module_.get_expression(expr));
 decl.initial_value = expr;
-decl.is_constant(true);
+decl.decl_kind(ebm::VariableDeclKind::IMMUTABLE);
 decl.var_type = expr_body.body.type;
 ebm::Statement stmt;
 stmt.body.kind = ebm::StatementKind::VARIABLE_DECL;

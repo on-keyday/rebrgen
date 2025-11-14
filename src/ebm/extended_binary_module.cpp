@@ -17053,6 +17053,9 @@ namespace ebm {
         if (auto err = (*this).name.encode(w)) {
             return err;
         }
+        if (auto err = (*this).enum_decl.encode(w)) {
+            return err;
+        }
         if (auto err = (*this).value.encode(w)) {
             return err;
         }
@@ -17063,6 +17066,9 @@ namespace ebm {
     }
     ::futils::error::Error<> EnumMemberDecl::decode(::futils::binary::reader& r) {
         if (auto err = (*this).name.decode(r)) {
+            return err;
+        }
+        if (auto err = (*this).enum_decl.decode(r)) {
             return err;
         }
         if (auto err = (*this).value.decode(r)) {

@@ -385,6 +385,7 @@ format EnumDecl:
 
 format EnumMemberDecl:
     name :IdentifierRef # Member name
+    enum_decl :StatementRef # Reference to the parent enum declaration
     value :ExpressionRef # Integer value (e.g., 0, 1, 2)
     string_repr :StringRef # Optional string representation (e.g., "MemberName")
 

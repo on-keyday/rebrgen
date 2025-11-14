@@ -156,7 +156,7 @@ namespace ebmgen {
                 EBM_BINARY_OP(is_zero_, ebm::BinaryOp::equal, bool_t, bit_processed, zero);
                 is_zero = is_zero_;
             }
-            EBM_DEFINE_ANONYMOUS_VARIABLE(bit_to_read, counter_t, bit_to_read_v);
+            EBM_DEFINE_VARIABLE(bit_to_read, {}, counter_t, bit_to_read_v, ebm::VariableDeclKind::IMMUTABLE, false);
             MAYBE(body, process(offset, bit_offset, bit_to_read, bit_processed, is_zero));
             EBM_INCREMENT(offset_inc, offset, counter_t);
             EBM_ASSIGNMENT(bit_offset_zero, bit_offset, zero);

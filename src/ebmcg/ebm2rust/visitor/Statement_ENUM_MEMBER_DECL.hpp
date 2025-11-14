@@ -20,8 +20,16 @@ auto ident = module_.get_identifier(enum_member_decl.name);
 if (!ident) {
     return unexpect_error("identifier not found");
 }
+auto enum_ident = module_.get_associated_identifier(enum_member_decl.enum_decl);
+MAYBE(enum_decl, module_.get_statement(enum_member_decl.enum_decl));
+bool has_base = !is_nil(enum_decl.body.enum_decl()->base_type);
 auto name = ident->body.data;
 
 MAYBE(value_str, visit_Expression(*this, enum_member_decl.value));
 
-return CODELINE(name, " = ", value_str.to_writer(), ",");
+if (has_base) {
+    return CODELINE("pub const ", name, ":Self = Self(", value_str.to_writer(), ");");
+}
+else {
+    return CODELINE(name, " = ", value_str.to_writer(), ",");
+}

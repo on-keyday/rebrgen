@@ -36,11 +36,16 @@
 auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
+bool has_property = false;
 w.writeln("#[derive(Debug, Clone, PartialEq, Eq, Default)]");  // Add common derives
 w.writeln("pub struct ", name, " {");
 {
     auto scope = w.indent_scope();
     for (auto& field : struct_decl.fields.container) {
+        if (module_.get_statement_kind(field) == ebm::StatementKind::PROPERTY_DECL) {
+            has_property = true;
+            continue;  // Properties are handled separately
+        }
         MAYBE(field_str, visit_Statement(*this, field));
         w.write(field_str.to_writer());
     }
@@ -48,10 +53,22 @@ w.writeln("pub struct ", name, " {");
 w.writeln("}");
 
 w.writeln();  // Add a newline for separation
-if (struct_decl.has_encode_decode() || struct_decl.has_functions()) {
+if (struct_decl.has_encode_decode() || struct_decl.has_functions() || has_property) {
     w.writeln("impl ", name, " {");
     {
         auto impl_scope = w.indent_scope();
+        if (has_property) {
+            // Handle properties
+            for (auto& field_ref : struct_decl.fields.container) {
+                MAYBE(field_stmt, module_.get_statement(field_ref));
+                if (field_stmt.body.kind != ebm::StatementKind::PROPERTY_DECL) {
+                    continue;
+                }
+                MAYBE(prop_str, visit_Statement(*this, field_stmt));
+                w.write(prop_str.to_writer());
+            }
+        }
+
         if (auto fns = struct_decl.methods()) {
             for (auto& method_ref : fns->container) {
                 MAYBE(method_str, visit_Statement(*this, method_ref));

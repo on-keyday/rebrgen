@@ -74,10 +74,16 @@ else if (init_check.init_check_type == ebm::InitCheckType::decode || init_check.
     w.writeln("};");
 }
 else if (init_check.init_check_type == ebm::InitCheckType::union_get) {
-    w.writeln("if !", matches, " {");
+    w.writeln("let ", variant_hold, " = if let ", alt, "(x) = &", target.to_writer(), " {");
     {
         auto scope = w.indent_scope();
-        w.writeln("return Err(anyhow::anyhow!(\"unexpected variant\"));");
+        w.writeln("x");
+    }
+    w.writeln("}");
+    w.writeln("else {");
+    {
+        auto scope = w.indent_scope();
+        w.writeln("return None;");
     }
     w.writeln("};");
 }

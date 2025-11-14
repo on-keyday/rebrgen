@@ -20,20 +20,55 @@
 auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
-w.writeln("#[derive(Debug, Clone, PartialEq, Eq, Default)]");
-w.writeln("pub enum ", name, " {");
+w.writeln("#[derive(Debug, Clone,Copy, PartialEq, Eq, Default)]");
+std::optional<CodeWriter> base_type_str;
+if (!is_nil(enum_decl.base_type)) {
+    MAYBE(base_type_str_v, visit_Type(*this, enum_decl.base_type));
+    base_type_str = std::move(base_type_str_v.to_writer());
+    w.writeln("pub struct ", name, "(", *base_type_str, ");");
+    w.writeln("impl ", name, " {");
+}
+else {
+    w.writeln("pub enum ", name, " {");
+}
 {
     auto scope = w.indent_scope();
     bool is_first_member = true;
     for (auto& member_ref : enum_decl.members.container) {
-        if (is_first_member) {
+        if (is_first_member && is_nil(enum_decl.base_type)) {
             w.writeln("#[default]");
-            is_first_member = false;
         }
+        is_first_member = false;
         MAYBE(member_str, visit_Statement(*this, member_ref));
         w.write(member_str.to_writer());
     }
 }
 w.writeln("}");
+
+if (base_type_str) {
+    w.writeln("impl From<", *base_type_str, "> for ", name, " {");
+    {
+        auto scope = w.indent_scope();
+        w.writeln("fn from(value:", *base_type_str, ") -> Self {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln(name, "(value)");
+        }
+        w.writeln("}");
+    }
+    w.writeln("}");
+
+    w.writeln("impl From<", name, "> for ", *base_type_str, " {");
+    {
+        auto scope = w.indent_scope();
+        w.writeln("fn from(value:", name, ") -> Self {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("value.0");
+        }
+        w.writeln("}");
+    }
+    w.writeln("}");
+}
 
 return w;

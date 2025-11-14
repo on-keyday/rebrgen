@@ -700,6 +700,8 @@ namespace ebmgen {
 
     expected<void> StatementConverter::convert_statement_impl(const std::shared_ptr<ast::EnumMember>& node, ebm::StatementRef id, ebm::StatementBody& body) {
         ebm::EnumMemberDecl ebm_enum_member_decl;
+        EBMA_CONVERT_STATEMENT(enum_decl_ref, node->belong.lock());
+        ebm_enum_member_decl.enum_decl = enum_decl_ref;
         EBMA_ADD_IDENTIFIER(member_name_ref, node->ident->ident);
         ebm_enum_member_decl.name = member_name_ref;
         if (node->value) {

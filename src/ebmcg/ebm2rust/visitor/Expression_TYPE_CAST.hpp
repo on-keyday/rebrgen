@@ -16,7 +16,10 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-
 MAYBE(source_expr_str, visit_Expression(*this, source_expr));
 MAYBE(target_type_str, visit_Type(*this, type));
+if (cast_kind == ebm::CastType::INT_TO_ENUM || cast_kind == ebm::CastType::ENUM_TO_INT) {
+    return CODE(target_type_str.to_writer(), "::from(", source_expr_str.to_writer(), ")");
+}
+
 return CODE("(", source_expr_str.to_writer(), " as ", target_type_str.to_writer(), ")");

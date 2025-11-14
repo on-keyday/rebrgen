@@ -215,6 +215,14 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("enum_decl")) {
+            if(!futils::json::convert_from_json(*got, obj.enum_decl)) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
         if (auto got = j.at("value")) {
             if(!futils::json::convert_from_json(*got, obj.value)) {
                 return false;

@@ -3083,6 +3083,7 @@ namespace ebm {
     };
     struct EBM_API EnumMemberDecl{
         IdentifierRef name;
+        StatementRef enum_decl;
         ExpressionRef value;
         StringRef string_repr;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
@@ -3091,12 +3092,14 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
             v(v, "name",(*this).name);
+            v(v, "enum_decl",(*this).enum_decl);
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
         }
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "name",(*this).name);
+            v(v, "enum_decl",(*this).enum_decl);
             v(v, "value",(*this).value);
             v(v, "string_repr",(*this).string_repr);
         }
@@ -3108,6 +3111,7 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "name",visitor_tag<decltype(std::declval<EnumMemberDecl>().name),false>{});
+            v(v, "enum_decl",visitor_tag<decltype(std::declval<EnumMemberDecl>().enum_decl),false>{});
             v(v, "value",visitor_tag<decltype(std::declval<EnumMemberDecl>().value),false>{});
             v(v, "string_repr",visitor_tag<decltype(std::declval<EnumMemberDecl>().string_repr),false>{});
         }

@@ -17,6 +17,9 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+if (!is_nil(common_type)) {
+    return visit_Type(*this, common_type);
+}
 auto enum_name = "Variant" + std::format("{}", get_id(item_id));
 
 return Result(enum_name);

@@ -25,6 +25,9 @@ auto name = module_.get_associated_identifier(item_id);
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 CodeWriter w;
+if (func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+    name = "set_" + name;
+}
 w.write("pub fn ", name, "(");
 
 // Parameters

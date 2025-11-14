@@ -333,7 +333,6 @@ namespace ebmcodegen::util {
         for (auto& ident : m.identifiers) {
             if (keyword_list.contains(ident.body.data)) {
                 ident.body.data = change_rule(ident.body.data);
-                break;
             }
         }
     }

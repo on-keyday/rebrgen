@@ -581,6 +581,9 @@ namespace ebmgen {
                     if (ident) {
                         name = ident->body.data;
                     }
+                    else {
+                        name = std::format("fn_{}", get_id(fn->id));
+                    }
                     auto parent_ident = ctx.get_identifier(fn_decl->parent_format);
                     if (parent_ident) {
                         name = std::format("{}.{}", parent_ident->body.data, *name);

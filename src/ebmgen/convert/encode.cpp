@@ -261,7 +261,7 @@ namespace ebmgen {
         MAYBE(typ_ref, get_encoder_return_type(ctx));
 
         EBM_CALL(call_ref, typ_ref, std::move(call_desc));
-        EBM_DEFINE_ANONYMOUS_VARIABLE(result, typ_ref, call_ref);
+        EBM_DEFINE_VARIABLE(result, {}, typ_ref, call_ref, ebm::VariableDeclKind::IMMUTABLE, false);
         EBM_IS_ERROR(is_error, result);
         EBM_ERROR_RETURN(error_return, result);
         EBM_IF_STATEMENT(if_stmt, is_error, error_return, {});

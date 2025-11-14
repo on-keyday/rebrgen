@@ -36,4 +36,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 MAYBE(literal, module_.get_string_literal(error_report.message));
 auto text = futils::escape::escape_str<std::string>(literal.body.data);
-return std::format("return Err(anyhow::anyhow!(\"{}\"))", text);
+return CODELINE(std::format("return Err(anyhow::anyhow!(\"{}\"));", text));

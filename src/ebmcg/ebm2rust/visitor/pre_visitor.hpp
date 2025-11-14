@@ -12,10 +12,43 @@
 
 /*here to write the hook*/
 
-
 ebm2rust::modify_keyword_identifier(
-    ebm, std::vector<std::string_view>{
-             "as", "break", "const", "continue", "crate", "else", "enum", "extern", "false", "fn", "for", "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return", "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use", "where", "while",
+    ebm, std::unordered_set<std::string_view>{
+             "as",
+             "break",
+             "const",
+             "continue",
+             "crate",
+             "else",
+             "enum",
+             "extern",
+             "false",
+             "fn",
+             "for",
+             "if",
+             "impl",
+             "in",
+             "let",
+             "loop",
+             "match",
+             "mod",
+             "move",
+             "mut",
+             "pub",
+             "ref",
+             "return",
+             "self",
+             "Self",
+             "static",
+             "struct",
+             "super",
+             "trait",
+             "true",
+             "type",
+             "unsafe",
+             "use",
+             "where",
+             "while",
          },
     [](auto&& kw) {
         return "r#" + std::string(kw);

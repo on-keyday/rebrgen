@@ -12,7 +12,7 @@
 
 /*here to write the hook*/
 ebm2python::modify_keyword_identifier(
-    ebm, std::vector<std::string_view>{
+    ebm, std::unordered_set<std::string_view>{
              "class",
              "def",
              "return",

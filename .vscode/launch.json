@@ -124,6 +124,8 @@
       "args": [
         "-i",
         "C:\\workspace\\shbrgen\\rebrgen/src/test/leb128_test.bgn",
+        "-c",
+        "-",
         "-I"
       ],
       "stopAtEntry": false,

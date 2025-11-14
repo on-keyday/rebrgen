@@ -12,4 +12,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-return Result("Result<_, anyhow::Error>");
+return Result("Result<(), anyhow::Error>");

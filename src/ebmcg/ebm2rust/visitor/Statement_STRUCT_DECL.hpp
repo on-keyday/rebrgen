@@ -48,18 +48,26 @@ w.writeln("pub struct ", name, " {");
 w.writeln("}");
 
 w.writeln();  // Add a newline for separation
-w.writeln("impl ", name, " {");
-{
-    auto impl_scope = w.indent_scope();
-    if (auto enc_fn = struct_decl.encode_fn()) {
-        MAYBE(encode_fn_str, visit_Statement(*this, *enc_fn));
-        w.write(encode_fn_str.to_writer());
+if (struct_decl.has_encode_decode() || struct_decl.has_functions()) {
+    w.writeln("impl ", name, " {");
+    {
+        auto impl_scope = w.indent_scope();
+        if (auto fns = struct_decl.methods()) {
+            for (auto& method_ref : fns->container) {
+                MAYBE(method_str, visit_Statement(*this, method_ref));
+                w.write(method_str.to_writer());
+            }
+        }
+        if (auto enc_fn = struct_decl.encode_fn()) {
+            MAYBE(encode_fn_str, visit_Statement(*this, *enc_fn));
+            w.write(encode_fn_str.to_writer());
+        }
+        if (auto dec_fn = struct_decl.decode_fn()) {
+            MAYBE(decode_fn_str, visit_Statement(*this, *dec_fn));
+            w.write(decode_fn_str.to_writer());
+        }
     }
-    if (auto dec_fn = struct_decl.decode_fn()) {
-        MAYBE(decode_fn_str, visit_Statement(*this, *dec_fn));
-        w.write(decode_fn_str.to_writer());
-    }
+    w.writeln("}");
 }
-w.writeln("}");
 
 return w;

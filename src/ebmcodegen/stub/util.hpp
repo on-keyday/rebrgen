@@ -11,6 +11,7 @@
 #include "output.hpp"
 #include "ebmgen/mapping.hpp"
 #include "comb2/composite/range.h"
+#include <unordered_set>
 
 namespace ebmcodegen::util {
     // remove top level brace
@@ -328,13 +329,11 @@ namespace ebmcodegen::util {
         return ebmgen::unexpect_error("enum type has no members");
     }
 
-    void modify_keyword_identifier(ebm::ExtendedBinaryModule& m, auto&& keyword_list, auto&& change_rule) {
+    void modify_keyword_identifier(ebm::ExtendedBinaryModule& m, std::unordered_set<std::string_view> keyword_list, auto&& change_rule) {
         for (auto& ident : m.identifiers) {
-            for (auto& kw : keyword_list) {
-                if (ident.body.data == kw) {
-                    ident.body.data = change_rule(ident.body.data);
-                    break;
-                }
+            if (keyword_list.contains(ident.body.data)) {
+                ident.body.data = change_rule(ident.body.data);
+                break;
             }
         }
     }
@@ -349,6 +348,28 @@ namespace ebmcodegen::util {
         for (size_t i = 0; i < members.container.size(); ++i) {
             if (ebmgen::get_id(members.container[i]) == ebmgen::get_id(candidate_type)) {
                 return i;
+            }
+        }
+        return ebmgen::unexpect_error("type not found in variant members");
+    }
+
+    ebmgen::expected<ebm::TypeRef> get_variant_member_from_field(auto&& visitor, ebm::StatementRef field_ref) {
+        ebmgen::MappingTable& module_ = visitor.module_;
+        MAYBE(field_stmt, module_.get_statement(field_ref));
+        MAYBE(field_decl, field_stmt.body.field_decl());
+        MAYBE(parent_struct, module_.get_statement(field_decl.parent_struct));
+        MAYBE(struct_decl, parent_struct.body.struct_decl());
+        MAYBE(rel_var, struct_decl.related_variant());
+        MAYBE(type, module_.get_type(rel_var));
+        if (type.body.kind != ebm::TypeKind::VARIANT) {
+            return ebmgen::unexpect_error("not a variant type");
+        }
+        MAYBE(members, type.body.members());
+        for (auto& member_type_ref : members.container) {
+            MAYBE(member_type, module_.get_type(member_type_ref));
+            MAYBE(member_stmt_id, member_type.body.id());
+            if (ebmgen::get_id(member_stmt_id) == ebmgen::get_id(field_decl.parent_struct)) {
+                return member_type_ref;
             }
         }
         return ebmgen::unexpect_error("type not found in variant members");

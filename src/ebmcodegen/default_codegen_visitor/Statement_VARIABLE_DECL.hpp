@@ -7,6 +7,8 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
     kind: StatementKind
     var_decl: VariableDecl
       name: IdentifierRef

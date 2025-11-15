@@ -7,6 +7,9 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
+    main_logic: std::function<expected<Result>()>
     kind: StatementKind
     if_statement: IfStatement
       condition: Condition

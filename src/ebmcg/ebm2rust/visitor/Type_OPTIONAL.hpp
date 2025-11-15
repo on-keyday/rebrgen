@@ -7,6 +7,8 @@
     *this: Visitor
     module_: MappingTable
     item_id: TypeRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
     kind: TypeKind
     inner_type: TypeRef
 */

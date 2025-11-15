@@ -7,6 +7,9 @@
     *this: Visitor
     module_: MappingTable
     item_id: ExpressionRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
+    main_logic: std::function<expected<Result>()>
     type: TypeRef
     kind: ExpressionKind
     cast_kind: CastType

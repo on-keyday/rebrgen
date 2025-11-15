@@ -7,6 +7,8 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
     kind: StatementKind
     lowered_io_statements: LoweredIOStatements
       len: Varint

@@ -7,9 +7,12 @@
     *this: Visitor
     module_: MappingTable
     item_id: StatementRef
+    generator_default_logic: std::function<expected<Result>()>
+    default_logic: std::function<expected<Result>()>
     kind: StatementKind
     enum_member_decl: EnumMemberDecl
       name: IdentifierRef
+      enum_decl: StatementRef
       value: ExpressionRef
       string_repr: StringRef
 */

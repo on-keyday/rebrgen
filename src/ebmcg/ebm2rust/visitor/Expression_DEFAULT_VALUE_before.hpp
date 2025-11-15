@@ -19,4 +19,8 @@
         MAYBE(length, typ.body.length());
         return CODE("[Default::default();", std::format("{}", length.value()), "]");
     }
+    if(typ.body.kind == ebm::TypeKind::STRUCT || typ.body.kind == ebm::TypeKind::RECURSIVE_STRUCT){
+        MAYBE(ident, visit_Type(*this, type));
+        return CODE(ident.to_writer(), " { ..Default::default() }");
+    }
 }

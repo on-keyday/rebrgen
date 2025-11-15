@@ -93,6 +93,7 @@ constexpr size_t indexof(auto& s, std::string_view text) {
 constexpr std::string_view suffixes[] = {
     // common include location
     "_before",
+    "_after",
     "_pre_default",
     "_post_default",
 
@@ -111,6 +112,7 @@ constexpr std::string_view suffixes[] = {
 };
 
 constexpr auto suffix_before = indexof(suffixes, "_before");
+constexpr auto suffix_after = indexof(suffixes, "_after");
 constexpr auto suffix_pre_default = indexof(suffixes, "_pre_default");
 constexpr auto suffix_post_default = indexof(suffixes, "_post_default");
 constexpr auto suffix_pre_validate = indexof(suffixes, "_pre_validate");
@@ -137,7 +139,7 @@ constexpr auto prefix_type = indexof(prefixes, "Type");
 constexpr auto prefix_statement = indexof(prefixes, "Statement");
 
 constexpr bool is_include_location(std::string_view suffix) {
-    return indexof(suffixes, suffix) <= suffix_before;
+    return indexof(suffixes, suffix) <= suffix_post_default;
 }
 
 constexpr bool is_visitor_location(std::string_view suffix) {
@@ -572,36 +574,108 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         return futils::strutil::concat<std::string>(std::forward<decltype(args)>(args)...);
     };
 
-    auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
-        auto concated = concat(std::forward<decltype(path)>(path)...);
-        auto concated_dsl = concat(concated, suffixes[suffix_dsl]);
+    auto insert_hook_without_end = [&](auto&& w, auto&& concated) {
         hooks.push_back(concated);
-        hooks.push_back(concated_dsl);
-        auto before = concat(concated, suffixes[suffix_before]);
-        auto before_dsl = concat(before, suffixes[suffix_dsl]);
-        hooks.push_back(before);
-        hooks.push_back(before_dsl);
-        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, before, ".hpp", "\")");
-        w.writeln("#include \"", flags.visitor_impl_dir, before, ".hpp", "\"");
-        w.writeln("#elif __has_include(\"", flags.visitor_impl_dsl_dir, before_dsl, ".hpp", "\")");
-        w.writeln("#include \"", flags.visitor_impl_dsl_dir, before_dsl, ".hpp", "\"");
-        w.writeln("#endif");
         w.writeln("#if __has_include(\"", flags.visitor_impl_dir, concated, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dir, concated, ".hpp", "\"");
+    };
+
+    auto insert_hook_and_dsl_without_end = [&](auto&& w, auto&& concated) {
+        insert_hook_without_end(w, concated);
+        auto concated_dsl = concat(concated, suffixes[suffix_dsl]);
+        hooks.push_back(concated_dsl);
         w.writeln("#elif __has_include(\"", flags.visitor_impl_dsl_dir, concated_dsl, ".hpp", "\")");
         w.writeln("#include \"", flags.visitor_impl_dsl_dir, concated_dsl, ".hpp", "\"");
-        w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, concated, ".hpp", "\")");
-        auto pre_default = concat(concated, suffixes[suffix_pre_default]);
-        auto post_default = concat(concated, suffixes[suffix_post_default]);
-        hooks.push_back(pre_default);
-        hooks.push_back(post_default);
-        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, pre_default, ".hpp", "\")");
-        w.writeln("#include \"", flags.visitor_impl_dir, pre_default, ".hpp", "\"");
+    };
+
+    auto insert_include_without_endif = [&](auto&& w, auto&&... path) {
+        auto main_point = concat(std::forward<decltype(path)>(path)...);
+        auto before = concat(main_point, suffixes[suffix_before]);
+        auto pre_default = concat(main_point, suffixes[suffix_pre_default]);
+        auto post_default = concat(main_point, suffixes[suffix_post_default]);
+        auto after = concat(main_point, suffixes[suffix_after]);
+        {
+            insert_hook_and_dsl_without_end(w, before);
+            w.writeln("#endif");
+        }
+        insert_hook_and_dsl_without_end(w, main_point);
+        {
+            w.writeln("#elif __has_include(\"", flags.default_visitor_impl_dir, main_point, ".hpp", "\")");
+            {
+                insert_hook_and_dsl_without_end(w, pre_default);
+                w.writeln("#endif");
+            }
+            w.writeln("#include \"", flags.default_visitor_impl_dir, main_point, ".hpp", "\"");
+            {
+                insert_hook_and_dsl_without_end(w, post_default);
+                w.writeln("#endif");
+            }
+        }
+        {
+            insert_hook_and_dsl_without_end(w, after);
+            w.writeln("#endif");
+        }
+    };
+
+    std::string result_type = "expected<Result>";
+
+    auto insert_include_inner_result_lambda = [&](auto&& w, auto&& on_nothing_implemented, auto&&... path) {
+        auto main_point = concat(std::forward<decltype(path)>(path)...);
+        auto before = concat(main_point, suffixes[suffix_before]);
+        auto pre_default = concat(main_point, suffixes[suffix_pre_default]);
+        auto post_default = concat(main_point, suffixes[suffix_post_default]);
+        auto after = concat(main_point, suffixes[suffix_after]);
+        w.writeln("auto generator_default_logic = [&]() -> ", result_type, " {");
+        {
+            auto scope = w.indent_scope();
+            on_nothing_implemented();
+        }
+        w.writeln("};");
+        w.writeln("auto default_logic = [&]() -> ", result_type, " {");
+        {
+            auto default_indent = w.indent_scope();
+            w.writeln("#if __has_include(\"", flags.default_visitor_impl_dir, main_point, ".hpp", "\") ");
+            {
+                w.writeln("auto do_default = [&]() -> ", result_type, " {");
+                {
+                    auto indent = w.indent_scope();
+                    w.writeln("#include \"", flags.default_visitor_impl_dir, main_point, ".hpp", "\"");
+                    w.writeln("return {}; // placeholder for return value");
+                }
+                w.writeln("};");
+                {
+                    insert_hook_without_end(w, pre_default);
+                    w.writeln("#endif");
+                }
+                w.writeln("auto result = do_default();");
+                {
+                    insert_hook_without_end(w, post_default);
+                    w.writeln("#endif");
+                }
+                w.writeln("return result; // placeholder for return value");
+            }
+            w.writeln("#else");
+            w.writeln("return generator_default_logic();");
+            w.writeln("#endif");
+            w.writeln("return {}; // placeholder for return value");
+        }
+        w.writeln("};");
+        w.writeln("auto main_logic = [&]() -> ", result_type, " {");
+        {
+            auto indent = w.indent_scope();
+            insert_hook_and_dsl_without_end(w, main_point);
+            w.writeln("#else");
+            w.writeln("return default_logic();");
+            w.writeln("#endif");
+            w.writeln("return {}; // placeholder for return value");
+        }
+        w.writeln("};");
+        insert_hook_and_dsl_without_end(w, before);
         w.writeln("#endif");
-        w.writeln("#include \"", flags.default_visitor_impl_dir, concated, ".hpp", "\"");
-        w.writeln("#if __has_include(\"", flags.visitor_impl_dir, post_default, ".hpp", "\")");
-        w.writeln("#include \"", flags.visitor_impl_dir, post_default, ".hpp", "\"");
+        w.writeln("auto result = main_logic();");
+        insert_hook_and_dsl_without_end(w, after);
         w.writeln("#endif");
+        w.writeln("return result;");
     };
 
     auto insert_include = [&](auto& w, auto&&... path) {
@@ -739,8 +813,6 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     result_scope.execute();
     w.writeln("};");
 
-    std::string result_type = "expected<Result>";
-
     auto dispatcher = [&](auto t, std::string_view kind, auto subset) {
         using T = std::decay_t<decltype(t)>;
         CodeWriter stmt_dispatcher;
@@ -751,14 +823,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         };
         write_visit_entry(w, true, "visit_", kind);
         w.writeln(";");
-        write_visit_entry(stmt_dispatcher, false, "visit_", kind);
-        stmt_dispatcher.writeln(" {");
-        auto scope_ = stmt_dispatcher.indent_scope();
-        insert_include_without_endif(stmt_dispatcher, kind, suffixes[suffix_dispatch]);
-        stmt_dispatcher.writeln("#else");
-        stmt_dispatcher.writeln("switch (in.body.kind) {");
+
         auto body_name = std::string(kind) + "Body";
         auto ref_name = std::string(kind) + "Ref";
+
+        auto make_dispatch_func_name = [&](auto v) {
+            return std::format("dispatch_{}_{}", kind, to_string(v));
+        };
 
         for (size_t i = 0; to_string(T(i))[0]; i++) {
             auto& body = struct_map[body_name];
@@ -788,7 +859,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             auto concept_name = std::format("has_visitor_{}_{}", kind, to_string(T(i)));
             auto concept_call_name = concept_name + "_call";
             auto visitor_func_name = std::format("visit_{}_{}", kind, to_string(T(i)));
-            auto dispatch_func_name = std::format("dispatch_{}_{}", kind, to_string(T(i)));
+            auto dispatch_func_name = make_dispatch_func_name(T(i));
 
             // generating concepts
             {
@@ -868,12 +939,6 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             }
             w.writeln("}");
 
-            // generating entry point of dispatch function
-            {
-                stmt_dispatcher.writeln("case ebm::", visit_enum(t), "::", to_string(T(i)), ":");
-                stmt_dispatcher.indent_writeln("return ", dispatch_func_name, "(visitor,in,alias_ref);");
-            }
-
             // generating visitor function
             {
                 visitor_stub.write(result_type, " ", visitor_func_name, "(const ebm::", ref_name, "& item_id");
@@ -895,29 +960,49 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 visitor_stub.writeln(") {");
                 auto stub_include = visitor_stub.indent_scope();
-                insert_include_without_endif(visitor_stub, kind, "_", to_string(T(i)));
-                visitor_stub.writeln("#else");
-                visitor_stub.writeln("if (flags.debug_unimplemented) {");
-                {
-                    auto scope = visitor_stub.indent_scope();
-                    if (flags.mode == GenerateMode::CodeGenerator) {
-                        visitor_stub.writeln("return std::format(\"{{{{Unimplemented ", kind, "_", to_string(T(i)), " {}}}}}\",get_id(item_id));");
-                    }
-                }
-                visitor_stub.writeln("}");
-                visitor_stub.writeln("#endif");
-                visitor_stub.writeln("return {};");
+                insert_include_inner_result_lambda(
+                    visitor_stub,
+                    [&] {
+                        visitor_stub.writeln("if (flags.debug_unimplemented) {");
+                        {
+                            auto scope = visitor_stub.indent_scope();
+                            if (flags.mode == GenerateMode::CodeGenerator) {
+                                visitor_stub.writeln("return std::format(\"{{{{Unimplemented ", kind, "_", to_string(T(i)), " {}}}}}\",get_id(item_id));");
+                            }
+                        }
+                        visitor_stub.writeln("}");
+                        visitor_stub.writeln("return {};");
+                    },
+                    kind, "_", to_string(T(i)));
                 stub_include.execute();
                 visitor_stub.writeln("}");
                 visitor_assert.writeln("static_assert(", concept_name, "<Visitor>, \"Visitor does not implement ", visitor_func_name, "\");");
             }
         }
-        stmt_dispatcher.writeln("default:");
-        stmt_dispatcher.indent_writeln("return unexpect_error(\"Unknown ", kind, " kind: {}\", to_string(in.body.kind));");
-        stmt_dispatcher.writeln("}");
-        stmt_dispatcher.writeln("#endif");
-        scope_.execute();
-        stmt_dispatcher.writeln("}");
+
+        {
+            // generating dispatcher function
+            write_visit_entry(stmt_dispatcher, false, "visit_", kind);
+            stmt_dispatcher.writeln(" {");
+            auto scope_ = stmt_dispatcher.indent_scope();
+            insert_include_inner_result_lambda(
+                stmt_dispatcher,
+                [&] {
+                    stmt_dispatcher.writeln("switch (in.body.kind) {");
+                    // generating entry point of dispatch function
+                    for (size_t i = 0; to_string(T(i))[0]; i++) {
+                        auto dispatch_func_name = make_dispatch_func_name(T(i));
+                        stmt_dispatcher.writeln("case ebm::", visit_enum(t), "::", to_string(T(i)), ":");
+                        stmt_dispatcher.indent_writeln("return ", dispatch_func_name, "(visitor,in,alias_ref);");
+                    }
+                    stmt_dispatcher.writeln("default:");
+                    stmt_dispatcher.indent_writeln("return unexpect_error(\"Unknown ", kind, " kind: {}\", to_string(in.body.kind));");
+                    stmt_dispatcher.writeln("}");
+                },
+                kind, suffixes[suffix_dispatch]);
+            scope_.execute();
+            stmt_dispatcher.writeln("}");
+        }
 
         auto lowered_kind = std::string(kind);
         lowered_kind[0] = std::tolower(kind[0]);
@@ -949,30 +1034,32 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         stmt_dispatcher.writeln(result_type, " visit_", list_name, "(Visitor&& visitor,const ebm::", list_name, "& in) {");
         {
             auto list_scope = stmt_dispatcher.indent_scope();
-            insert_include_without_endif(stmt_dispatcher, list_name, suffixes[suffix_dispatch]);
-            stmt_dispatcher.writeln("#else");
-            if (flags.mode == GenerateMode::CodeGenerator) {
-                stmt_dispatcher.writeln("CodeWriter w;");
-            }
-            stmt_dispatcher.writeln("for(auto& elem:in.container) {");
-            {
-                auto loop_scope = stmt_dispatcher.indent_scope();
-                stmt_dispatcher.writeln("auto result = visit_", kind, "(visitor,elem);");
-                stmt_dispatcher.writeln("if (!result) {");
-                stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
-                stmt_dispatcher.writeln("}");
-                if (flags.mode == GenerateMode::CodeGenerator) {
-                    stmt_dispatcher.writeln("merge_result(visitor, w, std::move(result.value()));");
-                }
-            }
-            stmt_dispatcher.writeln("}");
-            if (flags.mode == GenerateMode::CodeGenerator) {
-                stmt_dispatcher.writeln("return w;");
-            }
-            else {
-                stmt_dispatcher.writeln("return {};");  // Placeholder for non-codegen mode
-            }
-            stmt_dispatcher.writeln("#endif");
+            insert_include_inner_result_lambda(
+                stmt_dispatcher,
+                [&] {
+                    if (flags.mode == GenerateMode::CodeGenerator) {
+                        stmt_dispatcher.writeln("CodeWriter w;");
+                    }
+                    stmt_dispatcher.writeln("for(auto& elem:in.container) {");
+                    {
+                        auto loop_scope = stmt_dispatcher.indent_scope();
+                        stmt_dispatcher.writeln("auto result = visit_", kind, "(visitor,elem);");
+                        stmt_dispatcher.writeln("if (!result) {");
+                        stmt_dispatcher.indent_writeln("return unexpect_error(std::move(result.error()));");
+                        stmt_dispatcher.writeln("}");
+                        if (flags.mode == GenerateMode::CodeGenerator) {
+                            stmt_dispatcher.writeln("merge_result(visitor, w, std::move(result.value()));");
+                        }
+                    }
+                    stmt_dispatcher.writeln("}");
+                    if (flags.mode == GenerateMode::CodeGenerator) {
+                        stmt_dispatcher.writeln("return w;");
+                    }
+                    else {
+                        stmt_dispatcher.writeln("return {};");  // Placeholder for non-codegen mode
+                    }
+                },
+                list_name, suffixes[suffix_dispatch]);
             list_scope.execute();
         }
         stmt_dispatcher.writeln("}");
@@ -1132,11 +1219,23 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                         w.writeln("*this: Visitor");
                         w.writeln("module_: MappingTable");
                         w.writeln("item_id: ", result->target, "Ref");
+                        w.writeln("generator_default_logic: std::function<expected<Result>()>");
+                        if (result->include_location == suffixes[suffix_pre_default] || result->include_location == suffixes[suffix_post_default]) {
+                            w.writeln("do_default: std::function<expected<Result>()>");
+                        }
+                        else {
+                            w.writeln("default_logic: std::function<expected<Result>()>");
+                        }
+                        if (result->include_location == suffixes[suffix_before] || result->include_location == suffixes[suffix_after]) {
+                            w.writeln("main_logic: std::function<expected<Result>()>");
+                        }
+                        if (result->include_location == suffixes[suffix_after] || result->include_location == suffixes[suffix_post_default]) {
+                            w.writeln("result: expected<Result>");
+                        }
                     }
                     if (result->visitor_location == suffixes[suffix_post_visit]) {
                         w.writeln("result: expected<Result>");
                     }
-
                     for (auto& field : result->struct_info->fields) {
                         if (!result->body_subset.contains(field.name)) {
                             continue;

@@ -21,11 +21,15 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
+#include "ebm/extended_binary_module.hpp"
 auto name = module_.get_associated_identifier(item_id);
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 CodeWriter w;
 if (func_decl.kind == ebm::FunctionKind::PROPERTY_SETTER) {
+    if (name.starts_with("r#")) {
+        name = name.substr(2);
+    }
     name = "set_" + name;
 }
 w.write("pub fn ", name, "(");
@@ -33,7 +37,12 @@ w.write("pub fn ", name, "(");
 // Parameters
 bool first_param = true;
 if (!is_nil(func_decl.parent_format)) {  // Check if it's a method (has a parent format)
-    w.write("&mut self");
+    if (func_decl.kind == ebm::FunctionKind::ENCODE || func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+        w.write("&self");
+    }
+    else {
+        w.write("&mut self");
+    }
     first_param = false;
 }
 

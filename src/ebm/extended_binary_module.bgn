@@ -139,6 +139,7 @@ enum ExpressionKind:
     OPTIONAL_OF # for common/uncommon property getter
     SETTER_STATUS # for property setter
     SELF # self reference in method
+    AS_ARG # argument passing marker
 
 enum SetterStatus:
     :u8
@@ -249,6 +250,8 @@ format ExpressionBody:
             target_expr :ExpressionRef
         ExpressionKind.SETTER_STATUS:
             setter_status :SetterStatus
+        ExpressionKind.AS_ARG:
+            target_expr :ExpressionRef
 
 enum LoopType:
     :u8

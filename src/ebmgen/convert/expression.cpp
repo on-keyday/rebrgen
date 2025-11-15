@@ -712,7 +712,9 @@ namespace ebmgen {
         call.callee = callee;
         for (const auto& arg : node->arguments) {
             EBMA_CONVERT_EXPRESSION(arg_ref, arg);
-            append(call.arguments, arg_ref);
+            MAYBE(expr, ctx.repository().get_expression(arg_ref));
+            EBM_AS_ARG(as_arg, expr.body.type, arg_ref);
+            append(call.arguments, as_arg);
         }
         body.call_desc(std::move(call));
         return {};

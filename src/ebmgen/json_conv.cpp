@@ -2844,6 +2844,10 @@ namespace ebm {
                 obj = ExpressionKind::SELF;
                 return true;
             }
+            if (s == "AS_ARG") {
+                obj = ExpressionKind::AS_ARG;
+                return true;
+            }
             return false;
         }
         return false;

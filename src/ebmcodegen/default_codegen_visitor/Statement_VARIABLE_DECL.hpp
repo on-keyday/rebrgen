@@ -19,7 +19,6 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 // This code is included within the visit_Statement_VARIABLE_DECL function.
 // We can use variables like `this` (for Visitor) and `var_decl` directly.
-#include "ebm/extended_binary_module.hpp"
 if (var_decl.is_reference()) {
     MAYBE(initial_value, visit_Expression(*this, var_decl.initial_value));
     module_.directly_map_statement_identifier(item_id, initial_value.to_string());
@@ -51,7 +50,7 @@ if (variable_with_type) {
     w.write(variable_type_separator, " ", type_str_val.to_writer());
 }
 if (initial_value) {
-    w.write(" = ", initial_value->to_string());
+    w.write(" = ", tidy_condition_brace(initial_value->to_string()));
 }
 
 w.writeln(endof_statement);

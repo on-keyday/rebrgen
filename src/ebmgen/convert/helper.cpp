@@ -205,6 +205,14 @@ namespace ebmgen {
         return body;
     }
 
+    ebm::ExpressionBody make_as_arg(ebm::TypeRef type, ebm::ExpressionRef target_expr) {
+        ebm::ExpressionBody body;
+        body.type = type;
+        body.kind = ebm::ExpressionKind::AS_ARG;
+        body.target_expr(target_expr);
+        return body;
+    }
+
     ebm::StatementBody make_expression_statement(ebm::ExpressionRef expr) {
         ebm::StatementBody body;
         body.kind = ebm::StatementKind::EXPRESSION;

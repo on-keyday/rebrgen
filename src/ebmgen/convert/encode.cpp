@@ -247,7 +247,9 @@ namespace ebmgen {
 
         EBM_MEMBER_ACCESS(enc_access, encdec.encode_type, base_ref, encdec.encode);
         call_desc.callee = enc_access;
-        append(call_desc.arguments, cur_encdec.encoder_input);
+        MAYBE(enc_in_def, ctx.repository().get_expression(encdec.encoder_input));
+        EBM_AS_ARG(enc_in_arg, enc_in_def.body.type, encdec.encoder_input);
+        append(call_desc.arguments, enc_in_arg);
         for (auto& st : encdec.state_variables) {
             for (auto& cur_st : cur_encdec.state_variables) {
                 if (get_id(cur_st.second) == get_id(st.second)) {

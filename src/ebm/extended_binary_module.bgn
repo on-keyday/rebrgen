@@ -42,6 +42,13 @@ enum BinaryOp:
     logical_and = "&&"
     logical_or = "||"
 
+enum BinaryOpKind:
+    :u8
+    ARITHMETIC
+    BITWISE
+    COMPARISON
+    LOGICAL
+
 enum UnaryOp:
     :u8
     logical_not = "!"
@@ -647,6 +654,8 @@ enum CastType:
     :u8
     ENUM_TO_INT
     INT_TO_ENUM
+    USIZE_TO_INT
+    INT_TO_USIZE
     FLOAT_TO_INT_BIT
     INT_TO_FLOAT_BIT
     VECTOR_TO_ARRAY
@@ -674,6 +683,7 @@ enum TypeKind:
     # terminal
     INT   
     UINT 
+    USIZE # special marker for platform dependent unsigned integer, derived from ARRAY_SIZE
     FLOAT 
     STRUCT
     RECURSIVE_STRUCT

@@ -5,6 +5,7 @@
 #include "common.hpp"
 #include "convert/helper.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmgen/converter.hpp"
 namespace ebmgen {
 
     void debug_id_inspect(std::uint64_t id) {
@@ -185,7 +186,7 @@ namespace ebmgen {
     }
 
     expected<ebm::TypeRef> get_counter_type(ConverterContext& ctx) {
-        return get_unsigned_n_int(ctx, 64);
+        return get_single_type(ebm::TypeKind::USIZE, ctx);
     }
 
     ebm::ExpressionBody get_int_literal_body(ebm::TypeRef type, std::uint64_t value) {

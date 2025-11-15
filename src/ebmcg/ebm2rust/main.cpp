@@ -15197,6 +15197,194 @@ namespace ebm2rust {
         return result;
     }
     template<typename Visitor>
+    concept has_visitor_Type_USIZE = requires(Visitor v) {
+         { v.visit_Type_USIZE(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    concept has_visitor_Type_USIZE_call = requires(Visitor fn) {
+         { fn(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind) } -> std::convertible_to<expected<Result>>;
+    };
+    template<typename Visitor>
+    expected<Result> dispatch_Type_USIZE(Visitor&& visitor,const ebm::Type& in,ebm::TypeRef alias_ref) {
+        #if __has_include("visitor/Type_pre_validate_before.hpp")
+        #include "visitor/Type_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_pre_validate.hpp")
+        #include "visitor/Type_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp")
+        #if __has_include("visitor/Type_pre_validate_pre_default.hpp")
+        #include "visitor/Type_pre_validate_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_pre_validate.hpp"
+        #if __has_include("visitor/Type_pre_validate_post_default.hpp")
+        #include "visitor/Type_pre_validate_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_pre_validate_after.hpp")
+        #include "visitor/Type_pre_validate_after.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_validate_after_dsl.hpp")
+        #include "visitor/dsl/Type_pre_validate_after_dsl.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_validate_before.hpp")
+        #include "visitor/Type_USIZE_pre_validate_before.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_validate_before_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_validate_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_validate.hpp")
+        #include "visitor/Type_USIZE_pre_validate.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_validate_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_validate_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_pre_validate.hpp")
+        #if __has_include("visitor/Type_USIZE_pre_validate_pre_default.hpp")
+        #include "visitor/Type_USIZE_pre_validate_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_validate_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_validate_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_USIZE_pre_validate.hpp"
+        #if __has_include("visitor/Type_USIZE_pre_validate_post_default.hpp")
+        #include "visitor/Type_USIZE_pre_validate_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_validate_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_validate_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_validate_after.hpp")
+        #include "visitor/Type_USIZE_pre_validate_after.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_validate_after_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_validate_after_dsl.hpp"
+        #endif
+        #endif
+        auto& kind = in.body.kind;
+        #if __has_include("visitor/Type_pre_visit_before.hpp")
+        #include "visitor/Type_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_pre_visit.hpp")
+        #include "visitor/Type_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp")
+        #if __has_include("visitor/Type_pre_visit_pre_default.hpp")
+        #include "visitor/Type_pre_visit_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_pre_visit.hpp"
+        #if __has_include("visitor/Type_pre_visit_post_default.hpp")
+        #include "visitor/Type_pre_visit_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_pre_visit_after.hpp")
+        #include "visitor/Type_pre_visit_after.hpp"
+        #elif __has_include("visitor/dsl/Type_pre_visit_after_dsl.hpp")
+        #include "visitor/dsl/Type_pre_visit_after_dsl.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_visit_before.hpp")
+        #include "visitor/Type_USIZE_pre_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_visit_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_visit.hpp")
+        #include "visitor/Type_USIZE_pre_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_visit_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_visit_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_pre_visit.hpp")
+        #if __has_include("visitor/Type_USIZE_pre_visit_pre_default.hpp")
+        #include "visitor/Type_USIZE_pre_visit_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_visit_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_visit_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_USIZE_pre_visit.hpp"
+        #if __has_include("visitor/Type_USIZE_pre_visit_post_default.hpp")
+        #include "visitor/Type_USIZE_pre_visit_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_visit_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_visit_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_pre_visit_after.hpp")
+        #include "visitor/Type_USIZE_pre_visit_after.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_pre_visit_after_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_pre_visit_after_dsl.hpp"
+        #endif
+        #endif
+        expected<Result> result;
+        if constexpr (has_visitor_Type_USIZE<Visitor>) {
+            result = visitor.visit_Type_USIZE(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else if constexpr (has_visitor_Type_USIZE_call<Visitor>) {
+            result = visitor(is_nil(alias_ref) ? in.id : alias_ref,kind);
+        }
+        else {
+            static_assert(has_visitor_Type_USIZE<Visitor>||has_visitor_Type_USIZE_call<Visitor>, "Visitor does not implement visit_Type_USIZE");
+        }
+        #if __has_include("visitor/Type_post_visit_before.hpp")
+        #include "visitor/Type_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_post_visit.hpp")
+        #include "visitor/Type_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_post_visit.hpp")
+        #if __has_include("visitor/Type_post_visit_pre_default.hpp")
+        #include "visitor/Type_post_visit_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_post_visit.hpp"
+        #if __has_include("visitor/Type_post_visit_post_default.hpp")
+        #include "visitor/Type_post_visit_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_post_visit_after.hpp")
+        #include "visitor/Type_post_visit_after.hpp"
+        #elif __has_include("visitor/dsl/Type_post_visit_after_dsl.hpp")
+        #include "visitor/dsl/Type_post_visit_after_dsl.hpp"
+        #endif
+        #endif
+        #if __has_include("visitor/Type_USIZE_post_visit_before.hpp")
+        #include "visitor/Type_USIZE_post_visit_before.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_post_visit_before_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_post_visit_before_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_post_visit.hpp")
+        #include "visitor/Type_USIZE_post_visit.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_post_visit_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_post_visit_dsl.hpp"
+        #elif __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE_post_visit.hpp")
+        #if __has_include("visitor/Type_USIZE_post_visit_pre_default.hpp")
+        #include "visitor/Type_USIZE_post_visit_pre_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_post_visit_pre_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_post_visit_pre_default_dsl.hpp"
+        #endif
+        #include "ebmcodegen/default_codegen_visitor/Type_USIZE_post_visit.hpp"
+        #if __has_include("visitor/Type_USIZE_post_visit_post_default.hpp")
+        #include "visitor/Type_USIZE_post_visit_post_default.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_post_visit_post_default_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_post_visit_post_default_dsl.hpp"
+        #endif
+        #if __has_include("visitor/Type_USIZE_post_visit_after.hpp")
+        #include "visitor/Type_USIZE_post_visit_after.hpp"
+        #elif __has_include("visitor/dsl/Type_USIZE_post_visit_after_dsl.hpp")
+        #include "visitor/dsl/Type_USIZE_post_visit_after_dsl.hpp"
+        #endif
+        #endif
+        if(!result) {
+            return unexpect_error(std::move(result.error())); // for trace
+        }
+        return result;
+    }
+    template<typename Visitor>
     concept has_visitor_Type_FLOAT = requires(Visitor v) {
          { v.visit_Type_FLOAT(std::declval<const ebm::TypeRef&>(),std::declval<const ebm::TypeBody&>().kind,*std::declval<const ebm::TypeBody&>().size()) } -> std::convertible_to<expected<Result>>;
     };
@@ -18840,6 +19028,8 @@ namespace ebm2rust {
                 return dispatch_Type_INT(visitor,in,alias_ref);
             case ebm::TypeKind::UINT:
                 return dispatch_Type_UINT(visitor,in,alias_ref);
+            case ebm::TypeKind::USIZE:
+                return dispatch_Type_USIZE(visitor,in,alias_ref);
             case ebm::TypeKind::FLOAT:
                 return dispatch_Type_FLOAT(visitor,in,alias_ref);
             case ebm::TypeKind::STRUCT:
@@ -22747,6 +22937,55 @@ namespace ebm2rust {
             #endif
             return result;
         }
+        expected<Result> visit_Type_USIZE(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto generator_default_logic = [&]() -> expected<Result> {
+                if (flags.debug_unimplemented) {
+                    return std::format("{{{{Unimplemented Type_USIZE {}}}}}",get_id(item_id));
+                }
+                return {};
+            };
+            auto default_logic = [&]() -> expected<Result> {
+                #if __has_include("ebmcodegen/default_codegen_visitor/Type_USIZE.hpp") 
+                auto do_default = [&]() -> expected<Result> {
+                    #include "ebmcodegen/default_codegen_visitor/Type_USIZE.hpp"
+                    return {}; // placeholder for return value
+                };
+                #if __has_include("visitor/Type_USIZE_pre_default.hpp")
+                #include "visitor/Type_USIZE_pre_default.hpp"
+                #endif
+                auto result = do_default();
+                #if __has_include("visitor/Type_USIZE_post_default.hpp")
+                #include "visitor/Type_USIZE_post_default.hpp"
+                #endif
+                return result; // placeholder for return value
+                #else
+                return generator_default_logic();
+                #endif
+                return {}; // placeholder for return value
+            };
+            auto main_logic = [&]() -> expected<Result> {
+                #if __has_include("visitor/Type_USIZE.hpp")
+                #include "visitor/Type_USIZE.hpp"
+                #elif __has_include("visitor/dsl/Type_USIZE_dsl.hpp")
+                #include "visitor/dsl/Type_USIZE_dsl.hpp"
+                #else
+                return default_logic();
+                #endif
+                return {}; // placeholder for return value
+            };
+            #if __has_include("visitor/Type_USIZE_before.hpp")
+            #include "visitor/Type_USIZE_before.hpp"
+            #elif __has_include("visitor/dsl/Type_USIZE_before_dsl.hpp")
+            #include "visitor/dsl/Type_USIZE_before_dsl.hpp"
+            #endif
+            auto result = main_logic();
+            #if __has_include("visitor/Type_USIZE_after.hpp")
+            #include "visitor/Type_USIZE_after.hpp"
+            #elif __has_include("visitor/dsl/Type_USIZE_after_dsl.hpp")
+            #include "visitor/dsl/Type_USIZE_after_dsl.hpp"
+            #endif
+            return result;
+        }
         expected<Result> visit_Type_FLOAT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
@@ -23754,6 +23993,7 @@ namespace ebm2rust {
     static_assert(has_visitor_Expression_AS_ARG<Visitor>, "Visitor does not implement visit_Expression_AS_ARG");
     static_assert(has_visitor_Type_INT<Visitor>, "Visitor does not implement visit_Type_INT");
     static_assert(has_visitor_Type_UINT<Visitor>, "Visitor does not implement visit_Type_UINT");
+    static_assert(has_visitor_Type_USIZE<Visitor>, "Visitor does not implement visit_Type_USIZE");
     static_assert(has_visitor_Type_FLOAT<Visitor>, "Visitor does not implement visit_Type_FLOAT");
     static_assert(has_visitor_Type_STRUCT<Visitor>, "Visitor does not implement visit_Type_STRUCT");
     static_assert(has_visitor_Type_RECURSIVE_STRUCT<Visitor>, "Visitor does not implement visit_Type_RECURSIVE_STRUCT");

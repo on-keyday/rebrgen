@@ -23,7 +23,8 @@
         typ == ebm::TypeKind::DECODER_INPUT) {
         MAYBE(expr, module_.get_expression(target_expr));
         if (auto id = expr.body.id(); id && module_.get_statement_kind(*id) == ebm::StatementKind::VARIABLE_DECL) {
-            //
+            MAYBE(var, main_logic())
+            return CODE("&mut ", var.to_writer());
         }
     }
 }

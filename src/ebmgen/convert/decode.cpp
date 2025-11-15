@@ -381,7 +381,10 @@ namespace ebmgen {
 
         EBM_MEMBER_ACCESS(dec_access, encdec.decode_type, base_ref, encdec.decode);
         call_desc.callee = dec_access;
-        append(call_desc.arguments, cur_encdec.decoder_input);
+
+        MAYBE(dec_in_def, ctx.repository().get_expression(encdec.decoder_input));
+        EBM_AS_ARG(dec_in_arg, dec_in_def.body.type, encdec.decoder_input);
+        append(call_desc.arguments, dec_in_arg);
         for (auto& st : encdec.state_variables) {
             for (auto& cur_st : cur_encdec.state_variables) {
                 if (get_id(cur_st.second) == get_id(st.second)) {

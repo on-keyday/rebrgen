@@ -21,7 +21,24 @@
 MAYBE(source_expr_str, visit_Expression(*this, source_expr));
 MAYBE(target_type_str, visit_Type(*this, type));
 if (cast_kind == ebm::CastType::INT_TO_ENUM || cast_kind == ebm::CastType::ENUM_TO_INT) {
-    return CODE(target_type_str.to_writer(), "::from(", source_expr_str.to_writer(), ")");
+    MAYBE(typ, module_.get_type(cast_kind == ebm::CastType::INT_TO_ENUM ? type : from_type));
+    MAYBE(id, typ.body.id());
+    MAYBE(enum_, module_.get_statement(id));
+    MAYBE(enum_decl, enum_.body.enum_decl());
+    std::string base_type;
+    if (is_nil(enum_decl.base_type)) {
+        base_type = "usize";  // currently
+    }
+    else {
+        MAYBE(base_type_str, visit_Type(*this, enum_decl.base_type));
+        base_type = base_type_str.to_string();
+    }
+    if (cast_kind == ebm::CastType::INT_TO_ENUM) {
+        return CODE(target_type_str.to_writer(), "::from(", source_expr_str.to_writer(), " as ", base_type, ")");
+    }
+    else {
+        return CODE("(", base_type, "::from(", source_expr_str.to_writer(), ") as ", target_type_str.to_writer(), ")");
+    }
 }
 
 return CODE("(", source_expr_str.to_writer(), " as ", target_type_str.to_writer(), ")");

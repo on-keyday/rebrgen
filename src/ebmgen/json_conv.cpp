@@ -2604,6 +2604,14 @@ namespace ebm {
                 obj = CastType::INT_TO_ENUM;
                 return true;
             }
+            if (s == "USIZE_TO_INT") {
+                obj = CastType::USIZE_TO_INT;
+                return true;
+            }
+            if (s == "INT_TO_USIZE") {
+                obj = CastType::INT_TO_USIZE;
+                return true;
+            }
             if (s == "FLOAT_TO_INT_BIT") {
                 obj = CastType::FLOAT_TO_INT_BIT;
                 return true;
@@ -3258,6 +3266,10 @@ namespace ebm {
             }
             if (s == "UINT") {
                 obj = TypeKind::UINT;
+                return true;
+            }
+            if (s == "USIZE") {
+                obj = TypeKind::USIZE;
                 return true;
             }
             if (s == "FLOAT") {

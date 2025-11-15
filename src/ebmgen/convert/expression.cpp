@@ -6,6 +6,7 @@
 #include "core/ast/node/type.h"
 #include "ebm/extended_binary_module.hpp"
 #include "ebmgen/common.hpp"
+#include "ebmgen/converter.hpp"
 #include "helper.hpp"
 #include <fnet/util/base64.h>
 #include <core/ast/traverse.h>
@@ -13,71 +14,71 @@
 #include <type_traits>
 
 namespace ebmgen {
-    expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op) {
+    expected<std::pair<ebm::BinaryOp, ebm::BinaryOpKind>> convert_assignment_binary_op(ast::BinaryOp op) {
         switch (op) {
             case ast::BinaryOp::add_assign:
-                return ebm::BinaryOp::add;
+                return std::make_pair(ebm::BinaryOp::add, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::sub_assign:
-                return ebm::BinaryOp::sub;
+                return std::make_pair(ebm::BinaryOp::sub, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::mul_assign:
-                return ebm::BinaryOp::mul;
+                return std::make_pair(ebm::BinaryOp::mul, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::div_assign:
-                return ebm::BinaryOp::div;
+                return std::make_pair(ebm::BinaryOp::div, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::mod_assign:
-                return ebm::BinaryOp::mod;
+                return std::make_pair(ebm::BinaryOp::mod, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::bit_and_assign:
-                return ebm::BinaryOp::bit_and;
+                return std::make_pair(ebm::BinaryOp::bit_and, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::bit_or_assign:
-                return ebm::BinaryOp::bit_or;
+                return std::make_pair(ebm::BinaryOp::bit_or, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::bit_xor_assign:
-                return ebm::BinaryOp::bit_xor;
+                return std::make_pair(ebm::BinaryOp::bit_xor, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::left_logical_shift_assign:
-                return ebm::BinaryOp::left_shift;
+                return std::make_pair(ebm::BinaryOp::left_shift, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::right_logical_shift_assign:
-                return ebm::BinaryOp::right_shift;
+                return std::make_pair(ebm::BinaryOp::right_shift, ebm::BinaryOpKind::BITWISE);
             default:
                 return unexpect_error("Unsupported binary operator: {}", to_string(op));
         }
     }
 
-    expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op) {
+    expected<std::pair<ebm::BinaryOp, ebm::BinaryOpKind>> convert_binary_op(ast::BinaryOp op) {
         switch (op) {
             case ast::BinaryOp::add:
-                return ebm::BinaryOp::add;
+                return std::make_pair(ebm::BinaryOp::add, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::sub:
-                return ebm::BinaryOp::sub;
+                return std::make_pair(ebm::BinaryOp::sub, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::mul:
-                return ebm::BinaryOp::mul;
+                return std::make_pair(ebm::BinaryOp::mul, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::div:
-                return ebm::BinaryOp::div;
+                return std::make_pair(ebm::BinaryOp::div, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::mod:
-                return ebm::BinaryOp::mod;
+                return std::make_pair(ebm::BinaryOp::mod, ebm::BinaryOpKind::ARITHMETIC);
             case ast::BinaryOp::equal:
-                return ebm::BinaryOp::equal;
+                return std::make_pair(ebm::BinaryOp::equal, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::not_equal:
-                return ebm::BinaryOp::not_equal;
+                return std::make_pair(ebm::BinaryOp::not_equal, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::less:
-                return ebm::BinaryOp::less;
+                return std::make_pair(ebm::BinaryOp::less, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::less_or_eq:
-                return ebm::BinaryOp::less_or_eq;
+                return std::make_pair(ebm::BinaryOp::less_or_eq, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::grater:
-                return ebm::BinaryOp::greater;
+                return std::make_pair(ebm::BinaryOp::greater, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::grater_or_eq:
-                return ebm::BinaryOp::greater_or_eq;
+                return std::make_pair(ebm::BinaryOp::greater_or_eq, ebm::BinaryOpKind::COMPARISON);
             case ast::BinaryOp::logical_and:
-                return ebm::BinaryOp::logical_and;
+                return std::make_pair(ebm::BinaryOp::logical_and, ebm::BinaryOpKind::LOGICAL);
             case ast::BinaryOp::logical_or:
-                return ebm::BinaryOp::logical_or;
+                return std::make_pair(ebm::BinaryOp::logical_or, ebm::BinaryOpKind::LOGICAL);
             case ast::BinaryOp::left_logical_shift:
-                return ebm::BinaryOp::left_shift;
+                return std::make_pair(ebm::BinaryOp::left_shift, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::right_logical_shift:
-                return ebm::BinaryOp::right_shift;
+                return std::make_pair(ebm::BinaryOp::right_shift, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::bit_and:
-                return ebm::BinaryOp::bit_and;
+                return std::make_pair(ebm::BinaryOp::bit_and, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::bit_or:
-                return ebm::BinaryOp::bit_or;
+                return std::make_pair(ebm::BinaryOp::bit_or, ebm::BinaryOpKind::BITWISE);
             case ast::BinaryOp::bit_xor:
-                return ebm::BinaryOp::bit_xor;
+                return std::make_pair(ebm::BinaryOp::bit_xor, ebm::BinaryOpKind::BITWISE);
             default:
                 return convert_assignment_binary_op(op);
         }
@@ -115,6 +116,9 @@ namespace ebmgen {
             if (src->body.kind == ebm::TypeKind::BOOL) {
                 return ebm::CastType::BOOL_TO_INT;
             }
+            if (src->body.kind == ebm::TypeKind::USIZE) {
+                return ebm::CastType::USIZE_TO_INT;
+            }
             // Handle int/uint size and signedness conversions
             if ((src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) && dest->body.size() && src->body.size()) {
                 auto dest_size = dest->body.size()->value();
@@ -147,6 +151,11 @@ namespace ebmgen {
         else if (dest->body.kind == ebm::TypeKind::BOOL) {
             if (src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) {
                 return ebm::CastType::INT_TO_BOOL;
+            }
+        }
+        else if (dest->body.kind == ebm::TypeKind::USIZE) {
+            if (src->body.kind == ebm::TypeKind::INT || src->body.kind == ebm::TypeKind::UINT) {
+                return ebm::CastType::INT_TO_USIZE;
             }
         }
         // TODO: Add more complex type conversions (ARRAY, VECTOR, STRUCT, RECURSIVE_STRUCT)
@@ -311,7 +320,28 @@ namespace ebmgen {
         EBMA_CONVERT_EXPRESSION(left_ref, node->left);
         EBMA_CONVERT_EXPRESSION(right_ref, node->right);
         MAYBE(bop, convert_binary_op(node->op));
-        body = make_binary_op(bop, body.type, left_ref, right_ref);
+        if (bop.second == ebm::BinaryOpKind::ARITHMETIC || bop.second == ebm::BinaryOpKind::BITWISE || bop.second == ebm::BinaryOpKind::COMPARISON) {
+            MAYBE(left_expr, ctx.repository().get_expression(left_ref));
+            MAYBE(right_expr, ctx.repository().get_expression(right_ref));
+            auto left_type = left_expr.body.type;
+            auto right_type = right_expr.body.type;
+            if (bop.second == ebm::BinaryOpKind::COMPARISON) {
+                MAYBE(common_type, get_common_type(ctx, left_expr.body.type, right_expr.body.type));
+                if (common_type) {  //  TODO(on-keyday): currently, this is best effort
+                    EBM_CAST(left_casted, *common_type, left_expr.body.type, left_ref);
+                    EBM_CAST(right_casted, *common_type, right_expr.body.type, right_ref);
+                    left_ref = left_casted;
+                    right_ref = right_casted;
+                }
+            }
+            else {
+                EBM_CAST(left_casted, body.type, left_type, left_ref);
+                EBM_CAST(right_casted, body.type, right_type, right_ref);
+                left_ref = left_casted;
+                right_ref = right_casted;
+            }
+        }
+        body = make_binary_op(bop.first, body.type, left_ref, right_ref);
         return {};
     }
 
@@ -355,6 +385,9 @@ namespace ebmgen {
         if (auto member = ast::as<ast::Ident>(node->member); member && member->usage == ast::IdentUsage::reference_builtin_fn) {
             if (auto typ = ast::as<ast::ArrayType>(node->target->expr_type)) {
                 if (member->ident == "length") {
+                    // replace type with USIZE
+                    MAYBE(type, get_single_type(ebm::TypeKind::USIZE, ctx));
+                    body.type = type;
                     body.kind = ebm::ExpressionKind::ARRAY_SIZE;
                     body.array_expr(base_ref);
                     return {};

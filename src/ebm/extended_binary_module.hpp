@@ -161,6 +161,43 @@ namespace ebm {
     constexpr const char* visit_enum(BinaryOp) {
         return "BinaryOp";
     }
+    enum class BinaryOpKind : std::uint8_t {
+        ARITHMETIC = 0,
+        BITWISE = 1,
+        COMPARISON = 2,
+        LOGICAL = 3,
+    };
+    constexpr const char* to_string(BinaryOpKind e, bool origin_form = false) {
+        switch(e) {
+            case BinaryOpKind::ARITHMETIC: return origin_form ? "ARITHMETIC":"ARITHMETIC" ;
+            case BinaryOpKind::BITWISE: return origin_form ? "BITWISE":"BITWISE" ;
+            case BinaryOpKind::COMPARISON: return origin_form ? "COMPARISON":"COMPARISON" ;
+            case BinaryOpKind::LOGICAL: return origin_form ? "LOGICAL":"LOGICAL" ;
+        }
+        return "";
+    }
+    
+    constexpr std::optional<BinaryOpKind> BinaryOpKind_from_string(std::string_view str) {
+        if (str.empty()) {
+            return std::nullopt;
+        }
+        if (str == "ARITHMETIC") {
+            return BinaryOpKind::ARITHMETIC;
+        }
+        if (str == "BITWISE") {
+            return BinaryOpKind::BITWISE;
+        }
+        if (str == "COMPARISON") {
+            return BinaryOpKind::COMPARISON;
+        }
+        if (str == "LOGICAL") {
+            return BinaryOpKind::LOGICAL;
+        }
+        return std::nullopt;
+    }
+    constexpr const char* visit_enum(BinaryOpKind) {
+        return "BinaryOpKind";
+    }
     enum class UnaryOp : std::uint8_t {
         logical_not = 0,
         minus_sign = 1,
@@ -1005,26 +1042,30 @@ namespace ebm {
     enum class CastType : std::uint8_t {
         ENUM_TO_INT = 0,
         INT_TO_ENUM = 1,
-        FLOAT_TO_INT_BIT = 2,
-        INT_TO_FLOAT_BIT = 3,
-        VECTOR_TO_ARRAY = 4,
-        ARRAY_TO_VECTOR = 5,
-        INT_TO_VECTOR = 6,
-        INT_TO_ARRAY = 7,
-        SMALL_INT_TO_LARGE_INT = 8,
-        LARGE_INT_TO_SMALL_INT = 9,
-        SIGNED_TO_UNSIGNED = 10,
-        UNSIGNED_TO_SIGNED = 11,
-        BOOL_TO_INT = 12,
-        INT_TO_BOOL = 13,
-        STRUCT_TO_RECURSIVE_STRUCT = 14,
-        RECURSIVE_STRUCT_TO_STRUCT = 15,
-        OTHER = 16,
+        USIZE_TO_INT = 2,
+        INT_TO_USIZE = 3,
+        FLOAT_TO_INT_BIT = 4,
+        INT_TO_FLOAT_BIT = 5,
+        VECTOR_TO_ARRAY = 6,
+        ARRAY_TO_VECTOR = 7,
+        INT_TO_VECTOR = 8,
+        INT_TO_ARRAY = 9,
+        SMALL_INT_TO_LARGE_INT = 10,
+        LARGE_INT_TO_SMALL_INT = 11,
+        SIGNED_TO_UNSIGNED = 12,
+        UNSIGNED_TO_SIGNED = 13,
+        BOOL_TO_INT = 14,
+        INT_TO_BOOL = 15,
+        STRUCT_TO_RECURSIVE_STRUCT = 16,
+        RECURSIVE_STRUCT_TO_STRUCT = 17,
+        OTHER = 18,
     };
     constexpr const char* to_string(CastType e, bool origin_form = false) {
         switch(e) {
             case CastType::ENUM_TO_INT: return origin_form ? "ENUM_TO_INT":"ENUM_TO_INT" ;
             case CastType::INT_TO_ENUM: return origin_form ? "INT_TO_ENUM":"INT_TO_ENUM" ;
+            case CastType::USIZE_TO_INT: return origin_form ? "USIZE_TO_INT":"USIZE_TO_INT" ;
+            case CastType::INT_TO_USIZE: return origin_form ? "INT_TO_USIZE":"INT_TO_USIZE" ;
             case CastType::FLOAT_TO_INT_BIT: return origin_form ? "FLOAT_TO_INT_BIT":"FLOAT_TO_INT_BIT" ;
             case CastType::INT_TO_FLOAT_BIT: return origin_form ? "INT_TO_FLOAT_BIT":"INT_TO_FLOAT_BIT" ;
             case CastType::VECTOR_TO_ARRAY: return origin_form ? "VECTOR_TO_ARRAY":"VECTOR_TO_ARRAY" ;
@@ -1053,6 +1094,12 @@ namespace ebm {
         }
         if (str == "INT_TO_ENUM") {
             return CastType::INT_TO_ENUM;
+        }
+        if (str == "USIZE_TO_INT") {
+            return CastType::USIZE_TO_INT;
+        }
+        if (str == "INT_TO_USIZE") {
+            return CastType::INT_TO_USIZE;
         }
         if (str == "FLOAT_TO_INT_BIT") {
             return CastType::FLOAT_TO_INT_BIT;
@@ -1139,30 +1186,32 @@ namespace ebm {
     enum class TypeKind : std::uint8_t {
         INT = 0,
         UINT = 1,
-        FLOAT = 2,
-        STRUCT = 3,
-        RECURSIVE_STRUCT = 4,
-        BOOL = 5,
-        VOID = 6,
-        META = 7,
-        ENUM = 8,
-        ARRAY = 9,
-        VECTOR = 10,
-        VARIANT = 11,
-        RANGE = 12,
-        ENCODER_RETURN = 13,
-        DECODER_RETURN = 14,
-        ENCODER_INPUT = 15,
-        DECODER_INPUT = 16,
-        PROPERTY_SETTER_RETURN = 17,
-        OPTIONAL = 18,
-        PTR = 19,
-        FUNCTION = 20,
+        USIZE = 2,
+        FLOAT = 3,
+        STRUCT = 4,
+        RECURSIVE_STRUCT = 5,
+        BOOL = 6,
+        VOID = 7,
+        META = 8,
+        ENUM = 9,
+        ARRAY = 10,
+        VECTOR = 11,
+        VARIANT = 12,
+        RANGE = 13,
+        ENCODER_RETURN = 14,
+        DECODER_RETURN = 15,
+        ENCODER_INPUT = 16,
+        DECODER_INPUT = 17,
+        PROPERTY_SETTER_RETURN = 18,
+        OPTIONAL = 19,
+        PTR = 20,
+        FUNCTION = 21,
     };
     constexpr const char* to_string(TypeKind e, bool origin_form = false) {
         switch(e) {
             case TypeKind::INT: return origin_form ? "INT":"INT" ;
             case TypeKind::UINT: return origin_form ? "UINT":"UINT" ;
+            case TypeKind::USIZE: return origin_form ? "USIZE":"USIZE" ;
             case TypeKind::FLOAT: return origin_form ? "FLOAT":"FLOAT" ;
             case TypeKind::STRUCT: return origin_form ? "STRUCT":"STRUCT" ;
             case TypeKind::RECURSIVE_STRUCT: return origin_form ? "RECURSIVE_STRUCT":"RECURSIVE_STRUCT" ;
@@ -1195,6 +1244,9 @@ namespace ebm {
         }
         if (str == "UINT") {
             return TypeKind::UINT;
+        }
+        if (str == "USIZE") {
+            return TypeKind::USIZE;
         }
         if (str == "FLOAT") {
             return TypeKind::FLOAT;

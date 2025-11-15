@@ -30,9 +30,4 @@ auto name = ident->body.data;
 
 MAYBE(value_str, visit_Expression(*this, enum_member_decl.value));
 
-if (has_base) {
-    return CODELINE("pub const ", name, ":Self = Self(", value_str.to_writer(), ");");
-}
-else {
-    return CODELINE(name, " = ", value_str.to_writer(), ",");
-}
+return CODELINE("pub const ", name, ":Self = Self(", value_str.to_writer(), ");");

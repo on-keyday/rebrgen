@@ -27,12 +27,12 @@ std::optional<CodeWriter> base_type_str;
 if (!is_nil(enum_decl.base_type)) {
     MAYBE(base_type_str_v, visit_Type(*this, enum_decl.base_type));
     base_type_str = std::move(base_type_str_v.to_writer());
-    w.writeln("pub struct ", name, "(", *base_type_str, ");");
-    w.writeln("impl ", name, " {");
 }
 else {
-    w.writeln("pub enum ", name, " {");
+    base_type_str = CODE("usize");
 }
+w.writeln("pub struct ", name, "(", *base_type_str, ");");
+w.writeln("impl ", name, " {");
 {
     auto scope = w.indent_scope();
     bool is_first_member = true;
@@ -47,30 +47,28 @@ else {
 }
 w.writeln("}");
 
-if (base_type_str) {
-    w.writeln("impl From<", *base_type_str, "> for ", name, " {");
+w.writeln("impl From<", *base_type_str, "> for ", name, " {");
+{
+    auto scope = w.indent_scope();
+    w.writeln("fn from(value:", *base_type_str, ") -> Self {");
     {
         auto scope = w.indent_scope();
-        w.writeln("fn from(value:", *base_type_str, ") -> Self {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln(name, "(value)");
-        }
-        w.writeln("}");
-    }
-    w.writeln("}");
-
-    w.writeln("impl From<", name, "> for ", *base_type_str, " {");
-    {
-        auto scope = w.indent_scope();
-        w.writeln("fn from(value:", name, ") -> Self {");
-        {
-            auto scope = w.indent_scope();
-            w.writeln("value.0");
-        }
-        w.writeln("}");
+        w.writeln(name, "(value)");
     }
     w.writeln("}");
 }
+w.writeln("}");
+
+w.writeln("impl From<", name, "> for ", *base_type_str, " {");
+{
+    auto scope = w.indent_scope();
+    w.writeln("fn from(value:", name, ") -> Self {");
+    {
+        auto scope = w.indent_scope();
+        w.writeln("value.0");
+    }
+    w.writeln("}");
+}
+w.writeln("}");
 
 return w;

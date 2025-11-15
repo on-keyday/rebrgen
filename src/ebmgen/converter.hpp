@@ -722,8 +722,9 @@ namespace ebmgen {
     expected<ebm::StatementBody> assert_statement_body(ConverterContext& ctx, ebm::ExpressionRef condition);
     expected<ebm::StatementRef> assert_statement(ConverterContext& ctx, ebm::ExpressionRef condition);
     expected<ebm::ExpressionRef> get_max_value_expr(ConverterContext& ctx, ebm::TypeRef type);
-    expected<ebm::BinaryOp> convert_assignment_binary_op(ast::BinaryOp op);
-    expected<ebm::BinaryOp> convert_binary_op(ast::BinaryOp op);
+    expected<std::pair<ebm::BinaryOp, ebm::BinaryOpKind>> convert_assignment_binary_op(ast::BinaryOp op);
+    expected<std::pair<ebm::BinaryOp, ebm::BinaryOpKind>> convert_binary_op(ast::BinaryOp op);
+    expected<std::optional<ebm::TypeRef>> get_common_type(ConverterContext& ctx, ebm::TypeRef a, ebm::TypeRef b);
     expected<ebm::ExpressionBody> make_conditional(ConverterContext& ctx, ebm::TypeRef type, ebm::ExpressionRef cond, ebm::ExpressionRef then, ebm::ExpressionRef els);
     expected<std::optional<std::pair<ebm::StatementRef, ebm::ExpressionRef>>> handle_variant_alternative(ConverterContext& ctx, ebm::TypeRef alt_type, ebm::InitCheckType typ);
     struct TransformContext {

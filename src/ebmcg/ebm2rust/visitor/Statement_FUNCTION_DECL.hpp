@@ -23,7 +23,6 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-#include "ebm/extended_binary_module.hpp"
 auto name = module_.get_associated_identifier(item_id);
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
@@ -39,7 +38,7 @@ w.write("pub fn ", name, "(");
 // Parameters
 bool first_param = true;
 if (!is_nil(func_decl.parent_format)) {  // Check if it's a method (has a parent format)
-    if (func_decl.kind == ebm::FunctionKind::ENCODE || func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
+    if (func_decl.kind == ebm::FunctionKind::METHOD || func_decl.kind == ebm::FunctionKind::ENCODE || func_decl.kind == ebm::FunctionKind::PROPERTY_GETTER) {
         w.write("&self");
     }
     else {

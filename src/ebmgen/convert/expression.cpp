@@ -601,6 +601,10 @@ namespace ebmgen {
         ebm::ExpressionBody body;
         body.type = type;
         body.kind = ebm::ExpressionKind::CONDITIONAL;
+        // reusing cast insertion logic TODO(on-keyday): change name of function?
+        MAYBE(casted, insert_binary_op_cast(ctx, ebm::BinaryOp::add, type, then, els));
+        then = casted.first;
+        els = casted.second;
         body.condition(cond);
         body.then(then);
         body.else_(els);

@@ -6,7 +6,6 @@
   Available variables:
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-#include <string>
 bool use_brace_for_condition = true;
 bool use_elif = false;
 std::string begin_block = "{";
@@ -30,3 +29,4 @@ std::string enum_member_accessor = ".";
 std::string array_size_get_function = "len";
 bool surrounded_array_size = false; /*true: len(x) false: x.len()*/
 std::string append_function = "append";
+std::string infinity_loop_keyword = "";

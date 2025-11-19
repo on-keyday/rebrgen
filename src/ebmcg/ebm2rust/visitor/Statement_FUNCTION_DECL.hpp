@@ -55,7 +55,11 @@ for (auto& param_ref : func_decl.params.container) {
         if (!first_param) {
             w.write(", ");
         }
-        w.write(param_name, ": ", param_type_str.to_writer());
+        w.write(param_name, ": ");
+        if (param_stmt.body.param_decl()->is_state_variable()) {
+            w.write("&mut ");
+        }
+        w.write(param_type_str.to_writer());
         first_param = false;
     }
 }

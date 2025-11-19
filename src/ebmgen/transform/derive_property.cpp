@@ -20,6 +20,8 @@ namespace ebmgen {
                 setter.name = prop->name;
                 getter.parent_format = prop->parent_format;
                 setter.parent_format = prop->parent_format;
+                MAYBE(encdec_ref, ctx.state().get_format_encode_decode(getter.parent_format));
+                auto copy_state_vars = encdec_ref.state_variables;
                 // getter return value
                 {
                     ebm::TypeBody ptr_type;
@@ -32,6 +34,10 @@ namespace ebmgen {
                     }
                     EBMA_ADD_TYPE(ret_type, std::move(ptr_type));
                     getter.return_type = ret_type;
+
+                    for (auto& v : copy_state_vars) {
+                        append(getter.params, v.second);
+                    }
                 }
                 // setter return value and arguments
                 EBM_DEFINE_PARAMETER(arg, {}, prop->property_type, false);
@@ -41,6 +47,10 @@ namespace ebmgen {
                     EBMA_ADD_TYPE(ret_type, std::move(set_return));
                     setter.return_type = ret_type;
                     append(setter.params, arg_def);
+
+                    for (auto& v : copy_state_vars) {
+                        append(setter.params, v.second);
+                    }
                 }
                 // getter match
                 {

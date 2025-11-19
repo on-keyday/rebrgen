@@ -1,6 +1,7 @@
 /*license*/
 #include "bit_manipulator.hpp"
 #include "../convert/helper.hpp"
+#include "ebmgen/converter.hpp"
 
 namespace ebmgen {
     expected<ebm::StatementRef> xassign(ConverterContext& ctx, ebm::BinaryOp op, ebm::TypeRef type, ebm::ExpressionRef target, ebm::ExpressionRef value) {
@@ -321,11 +322,15 @@ namespace ebmgen {
     expected<ebm::ExpressionRef> BitManipulator::mask_value_expr(ebm::ExpressionRef n_bit) {
         EBMU_INT_LITERAL(one, 1);
         auto src_ty = ctx.repository().get_expression(one)->body.type;
+        // for bit shift overflow safety (in most case, this is translated to wider type like uint16)
+        // n_bit can be max 8, so use uint9
+        EBMU_UINT_TYPE(u9_t, 9);
         EBMU_U8(u8_t);
-        EBM_CAST(casted, u8_t, src_ty, one);
-        EBM_BINARY_OP(shift, ebm::BinaryOp::left_shift, u8_t, one, n_bit);
-        EBM_BINARY_OP(mask, ebm::BinaryOp::sub, u8_t, shift, one);
-        return mask;
+        EBM_CAST(casted, u9_t, src_ty, one);
+        EBM_BINARY_OP(shift, ebm::BinaryOp::left_shift, u9_t, one, n_bit);
+        EBM_BINARY_OP(mask, ebm::BinaryOp::sub, u9_t, shift, one);
+        EBM_CAST(result, u8_t, u9_t, mask);
+        return result;
     }
 
     size_t BitManipulator::get_expr_shift(ebm::Endian endian, size_t bit_size, size_t bits_processed, size_t bit_to_read) const {

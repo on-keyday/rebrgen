@@ -123,8 +123,9 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:\\workspace\\shbrgen\\rebrgen/brgen/example/tcp_segment.bgn",
-        "-I"
+        "C:\\workspace\\shbrgen\\rebrgen/src/ebm/extended_binary_module.bgn",
+        "-I",
+        "-g"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
@@ -182,14 +183,14 @@
       ]
     },
     {
-      "type": "debugpy",
+      "type": "cppvsdbg",
       "request": "launch",
-      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-251fd10778\\r-d4045118cb\\t-551868d2db",
-      "name": "Debug ebm2python unictest (TCPSegment)",
-      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-251fd10778\\r-d4045118cb\\t-551868d2db\\test_script.py",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-9e090ebc7d\\r-2738fa3835\\t-448e8106f9",
+      "name": "Debug ebm2rust unictest (ExtendedBinaryModule)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-9e090ebc7d\\r-2738fa3835\\t-448e8106f9\\cargo_proj\\target\\debug\\test_runner.exe",
       "args": [
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-251fd10778/r-d4045118cb/t-551868d2db/input.bin",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-251fd10778/r-d4045118cb/t-551868d2db/output.bin"
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-9e090ebc7d/r-2738fa3835/t-448e8106f9/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-9e090ebc7d/r-2738fa3835/t-448e8106f9/output.bin"
       ]
     }
   ]

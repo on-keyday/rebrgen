@@ -629,7 +629,7 @@ namespace ebmgen {
             state_vars.emplace_back(var, var_def);
         }
 
-        ctx.state().add_format_encode_decode(node, encode, enc_type, writer, writer_def,
+        ctx.state().add_format_encode_decode(node, id, encode, enc_type, writer, writer_def,
                                              decode, dec_type, reader, reader_def,
                                              state_vars);
         const auto _node = ctx.state().set_current_node(node);

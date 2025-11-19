@@ -32,7 +32,7 @@ if (auto init = loop.init(); init && init->id.value() != 0) {
     MAYBE(init_s, visit_Statement(*this, *init));
     merge_result(*this, w, init_s);
 }
-std::string cond;
+std::optional<std::string> cond;
 CodeWriter condition_related;
 if (auto c = loop.condition()) {
     auto added = add_writer();
@@ -43,15 +43,22 @@ if (auto c = loop.condition()) {
     w.write(condition_related);
 }
 else {
-    MAYBE(true_, get_bool_literal(*this, true));
-    cond = std::move(true_);
+    if (infinity_loop_keyword.empty()) {
+        MAYBE(true_, get_bool_literal(*this, true));
+        cond = std::move(true_);
+    }
 }
 
-if (use_brace_for_condition) {
-    w.writeln("while (", tidy_condition_brace(std::move(cond)), ") ", begin_block);
+if (cond) {
+    if (use_brace_for_condition) {
+        w.writeln("while (", tidy_condition_brace(std::move(*cond)), ") ", begin_block);
+    }
+    else {
+        w.writeln("while ", tidy_condition_brace(std::move(*cond)), " ", begin_block);
+    }
 }
 else {
-    w.writeln("while ", tidy_condition_brace(std::move(cond)), " ", begin_block);
+    w.writeln(infinity_loop_keyword, " ", begin_block);
 }
 {
     auto body_indent = w.indent_scope();

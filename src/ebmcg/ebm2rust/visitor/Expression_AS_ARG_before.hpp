@@ -19,9 +19,9 @@
 /*here to write the hook*/
 {
     auto typ = module_.get_type_kind(type);
+    MAYBE(expr, module_.get_expression(target_expr));
     if (typ == ebm::TypeKind::ENCODER_INPUT ||
         typ == ebm::TypeKind::DECODER_INPUT) {
-        MAYBE(expr, module_.get_expression(target_expr));
         if (auto id = expr.body.id(); id && module_.get_statement_kind(*id) == ebm::StatementKind::VARIABLE_DECL) {
             MAYBE(var, main_logic())
             return CODE("&mut ", var.to_writer());

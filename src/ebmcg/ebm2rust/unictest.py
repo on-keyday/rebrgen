@@ -4,6 +4,7 @@ import sys
 import os
 import subprocess
 import pathlib
+import json
 
 
 def main():
@@ -40,18 +41,17 @@ def main():
 use std::fs;
 use std::io::Cursor;
 use std::env;
-use test_runner::*;
+use test_runner;
 
 fn main() {{
     let args: Vec<String> = env::args().collect();
-    if args.len() < 4 {{
-        eprintln!("Usage: {{}} <input_file> <output_file> <format_name>", args[0]);
+    if args.len() < 3 {{
+        eprintln!("Usage: {{}} <input_file> <output_file>", args[0]);
         std::process::exit(1);
     }}
 
     let input_path = &args[1];
     let output_path = &args[2];
-    let format_name = &args[3];
 
     let input_data = match fs::read(input_path) {{
         Ok(data) => data,
@@ -62,28 +62,24 @@ fn main() {{
     }};
     let mut reader = Cursor::new(&input_data);
 
-    if format_name == \"{TEST_TARGET_FORMAT}\" {{
-        let mut target = {TEST_TARGET_FORMAT}::default();
-        if let Err(e) = target.decode(&mut reader) {{
-            eprintln!("Decode error: {{:?}}", e);
-            std::process::exit(10);
-        }}
 
-        let mut output_buf = Vec::new();
-        if let Err(e) = target.encode(&mut Cursor::new(&mut output_buf)) {{
-            eprintln!("Encode error: {{:?}}", e);
-            std::process::exit(20);
-        }}
-        
-        if let Err(e) = fs::write(output_path, &output_buf) {{
-            eprintln!("Failed to write output file '{{}}': {{}}", output_path, e);
-            std::process::exit(1);
-        }}
-    }} else {{
-        eprintln!("Unknown format name: {{}}", format_name);
-        std::process::exit(1);
+    let mut target = test_runner::{TEST_TARGET_FORMAT}::default();
+    if let Err(e) = target.decode(&mut reader) {{
+        eprintln!("Decode error: {{:?}}", e);
+        std::process::exit(10);
+    }}
+
+    let mut output_buf = Vec::new();
+    if let Err(e) = target.encode(&mut Cursor::new(&mut output_buf)) {{
+        eprintln!("Encode error: {{:?}}", e);
+        std::process::exit(20);
     }}
     
+    if let Err(e) = fs::write(output_path, &output_buf) {{
+        eprintln!("Failed to write output file '{{}}': {{}}", output_path, e);
+        std::process::exit(1);
+    }}
+
     // success
     std::process::exit(0);
 }}
@@ -93,7 +89,7 @@ fn main() {{
     # Compile the rust code
     print("\nCompiling generated rust code...")
     result = subprocess.run(
-        ["cargo", "build", "--release", "--color=never"],
+        ["cargo", "build", "--color=never"],
         cwd=proj_dir,
         capture_output=True,
         text=True,
@@ -105,11 +101,27 @@ fn main() {{
         sys.exit(1)
 
     print("Compilation successful.")
-
     # Run the compiled test executable
-    executable_path = proj_dir / "target" / "release" / "test_runner"
+    executable_path = proj_dir / "target" / "debug" / "test_runner"
     if os.name == "nt":
         executable_path = executable_path.with_suffix(".exe")
+    print("for VSCode debugging")
+    print(
+        json.dumps(
+            {
+                "type": "cppvsdbg" if os.name == "nt" else "cppdbg",
+                "request": "launch",
+                "cwd": os.getcwd(),
+                "name": f"Debug ebm2rust unictest ({TEST_TARGET_FORMAT})",
+                "program": os.path.abspath(executable_path),
+                "args": [
+                    INPUT_FILE,
+                    OUTPUT_FILE,
+                ],
+            },
+            indent=4,
+        )
+    )
 
     print(f"\nRunning compiled test: {executable_path}")
     proc = subprocess.run(

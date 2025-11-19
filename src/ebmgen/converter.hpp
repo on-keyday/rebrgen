@@ -215,6 +215,7 @@ namespace ebmgen {
         GenerateType current_generate_type = GenerateType::Normal;
         std::unordered_map<VisitedKey, ebm::StatementRef> visited_nodes;
         std::unordered_map<std::shared_ptr<ast::Node>, FormatEncodeDecode> format_encode_decode;
+        std::unordered_map<std::uint64_t, FormatEncodeDecode*> format_encode_decode_cache;
         ebm::Block* current_block = nullptr;
         ebm::StatementRef current_loop_id;
         ebm::StatementRef current_yield_statement;
@@ -308,6 +309,7 @@ namespace ebmgen {
         }
 
         void add_format_encode_decode(const std::shared_ptr<ast::Node>& node,
+                                      ebm::StatementRef format_id,
                                       ebm::ExpressionRef encode,
                                       ebm::TypeRef encode_type,
                                       ebm::ExpressionRef encoder_input,
@@ -328,6 +330,7 @@ namespace ebmgen {
                 .decoder_input_def = decoder_input_def,
                 .state_variables = state_variables,
             };
+            format_encode_decode_cache[get_id(format_id)] = &format_encode_decode[node];
         }
 
         auto set_current_node(const std::shared_ptr<ast::Node>& node) {
@@ -346,6 +349,14 @@ namespace ebmgen {
             auto it = format_encode_decode.find(node);
             if (it != format_encode_decode.end()) {
                 return &it->second;
+            }
+            return nullptr;
+        }
+
+        FormatEncodeDecode* get_format_encode_decode(ebm::StatementRef id) {
+            auto it = format_encode_decode_cache.find(get_id(id));
+            if (it != format_encode_decode_cache.end()) {
+                return it->second;
             }
             return nullptr;
         }

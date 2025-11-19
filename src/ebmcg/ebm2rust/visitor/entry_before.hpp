@@ -23,3 +23,4 @@ default_value_option.encoder_return_init = "Ok(())";
 default_value_option.decoder_return_init = "Ok(())";
 default_value_option.pointer_init = "None";
 default_value_option.optional_init = "None";
+infinity_loop_keyword = "loop";

@@ -26,8 +26,12 @@
         MAYBE(member, visit_Expression(*this, member));
         return CODE(variant_hold, ".", member.to_writer());
     }
-    if (module_.get_statement_kind(id) == ebm::StatementKind::PROPERTY_DECL) {
+    if (auto stmt = module_.get_statement(id); stmt && stmt->body.kind == ebm::StatementKind::PROPERTY_DECL) {
         MAYBE(main, main_logic());
+        MAYBE(prop_decl, stmt->body.property_decl());
+        if (prop_decl.merge_mode == ebm::MergeMode::STRICT_TYPE) {
+            return CODE("*", main.to_writer(), "().unwrap()");
+        }
         return CODE(main.to_writer(), "().unwrap()");
     }
 }

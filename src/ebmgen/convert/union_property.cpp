@@ -21,10 +21,18 @@ namespace ebmgen {
         MAYBE(type_A, ctx.repository().get_type(a));
         MAYBE(type_B, ctx.repository().get_type(b));
         if (type_A.body.kind != type_B.body.kind) {
+            bool is_integral_A = type_A.body.kind == ebm::TypeKind::INT || type_A.body.kind == ebm::TypeKind::UINT || type_A.body.kind == ebm::TypeKind::USIZE;
+            bool is_integral_B = type_B.body.kind == ebm::TypeKind::INT || type_B.body.kind == ebm::TypeKind::UINT || type_B.body.kind == ebm::TypeKind::USIZE;
             if (type_A.body.kind == ebm::TypeKind::USIZE && (type_B.body.kind == ebm::TypeKind::INT || type_B.body.kind == ebm::TypeKind::UINT)) {
                 return a;
             }
             else if (type_B.body.kind == ebm::TypeKind::USIZE && (type_A.body.kind == ebm::TypeKind::INT || type_A.body.kind == ebm::TypeKind::UINT)) {
+                return b;
+            }
+            if (is_integral_A && type_B.body.kind == ebm::TypeKind::VARIANT) {
+                return a;
+            }
+            else if (is_integral_B && type_A.body.kind == ebm::TypeKind::VARIANT) {
                 return b;
             }
             auto is_any_range = [&](ebm::Type& t) {
@@ -437,7 +445,8 @@ namespace ebmgen {
         MAYBE_VOID(merge_field, merge_fields_per_type(ctx, cases, merged_fields));
         print_if_verbose("Merged ", merged_fields.size(), " types for property\n");
         if (merged_fields.size() == 1) {  // single strict type
-            MAYBE_VOID(s, strict_merge(ctx, derive, base_cond, ebm::TypeRef{merged_fields.begin()->first}, merged_fields.begin()->second));
+            MAYBE(varint_, varint(merged_fields.begin()->first));
+            MAYBE_VOID(s, strict_merge(ctx, derive, base_cond, ebm::TypeRef{varint_}, merged_fields.begin()->second));
             return {};
         }
         std::vector<ebm::PropertyDecl> properties;

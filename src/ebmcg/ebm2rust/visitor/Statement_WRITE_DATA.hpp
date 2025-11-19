@@ -79,7 +79,7 @@ MAYBE(size, get_size_str(*this, write_data.size));
 CodeWriter w;
 
 if (auto cand = is_bytes_type(*this, write_data.data_type)) {
-    w.writeln(io_name, ".write_all(&", target.to_writer(), ")?;");
+    w.writeln(io_name, ".write_all(&", target.to_writer(), "[..", size, "]", ")?;");
 }
 else {
     return unexpect_error("unsupported type for READ_DATA: {}", to_string(type.body.kind));

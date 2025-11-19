@@ -376,16 +376,16 @@ namespace ebmgen {
             auto normal = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(ok, base);
         }
-        MAYBE(encdec, ctx.state().get_format_encode_decode(base));
+        MAYBE(par_encdec, ctx.state().get_format_encode_decode(base));
         MAYBE(cur_encdec, ctx.state().get_format_encode_decode(ctx.state().get_current_node()));
 
-        EBM_MEMBER_ACCESS(dec_access, encdec.decode_type, base_ref, encdec.decode);
+        EBM_MEMBER_ACCESS(dec_access, cur_encdec.decode_type, base_ref, cur_encdec.decode);
         call_desc.callee = dec_access;
 
-        MAYBE(dec_in_def, ctx.repository().get_expression(encdec.decoder_input));
-        EBM_AS_ARG(dec_in_arg, dec_in_def.body.type, encdec.decoder_input);
+        MAYBE(dec_in_def, ctx.repository().get_expression(cur_encdec.decoder_input));
+        EBM_AS_ARG(dec_in_arg, dec_in_def.body.type, cur_encdec.decoder_input);
         append(call_desc.arguments, dec_in_arg);
-        for (auto& st : encdec.state_variables) {
+        for (auto& st : par_encdec.state_variables) {
             for (auto& cur_st : cur_encdec.state_variables) {
                 if (get_id(cur_st.second) == get_id(st.second)) {
                     MAYBE(expr, ctx.repository().get_expression(cur_st.first));

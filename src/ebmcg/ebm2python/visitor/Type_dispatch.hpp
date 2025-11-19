@@ -117,6 +117,8 @@ switch (type.body.kind) {
     case ebm::TypeKind::PROPERTY_SETTER_RETURN: {
         return "bool";
     }
+    case ebm::TypeKind::USIZE:
+        return "int";
     default:
         return unexpect_error("Unhandled TypeKind: {}", to_string(type.body.kind));  // Return an error for unhandled types
 }

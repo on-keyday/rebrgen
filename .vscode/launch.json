@@ -123,7 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:\\workspace\\shbrgen\\rebrgen/src/test/dns_label.bgn",
+        "C:\\workspace\\shbrgen\\rebrgen/brgen/example/tcp_segment.bgn",
         "-I"
       ],
       "stopAtEntry": false,
@@ -179,6 +179,17 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/syntax/sections-txt"
+      ]
+    },
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "cwd": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-251fd10778\\r-d4045118cb\\t-551868d2db",
+      "name": "Debug ebm2python unictest (TCPSegment)",
+      "program": "C:\\Users\\ukfco\\AppData\\Local\\Temp\\unictest\\tr-251fd10778\\r-d4045118cb\\t-551868d2db\\test_script.py",
+      "args": [
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-251fd10778/r-d4045118cb/t-551868d2db/input.bin",
+        "C:/Users/ukfco/AppData/Local/Temp/unictest/tr-251fd10778/r-d4045118cb/t-551868d2db/output.bin"
       ]
     }
   ]

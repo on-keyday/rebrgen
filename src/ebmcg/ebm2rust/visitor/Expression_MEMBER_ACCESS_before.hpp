@@ -26,4 +26,8 @@
         MAYBE(member, visit_Expression(*this, member));
         return CODE(variant_hold, ".", member.to_writer());
     }
+    if (module_.get_statement_kind(id) == ebm::StatementKind::PROPERTY_DECL) {
+        MAYBE(main, main_logic());
+        return CODE(main.to_writer(), "().unwrap()");
+    }
 }

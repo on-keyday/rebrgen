@@ -21,6 +21,12 @@ namespace ebmgen {
         MAYBE(type_A, ctx.repository().get_type(a));
         MAYBE(type_B, ctx.repository().get_type(b));
         if (type_A.body.kind != type_B.body.kind) {
+            if (type_A.body.kind == ebm::TypeKind::USIZE && (type_B.body.kind == ebm::TypeKind::INT || type_B.body.kind == ebm::TypeKind::UINT)) {
+                return a;
+            }
+            else if (type_B.body.kind == ebm::TypeKind::USIZE && (type_A.body.kind == ebm::TypeKind::INT || type_A.body.kind == ebm::TypeKind::UINT)) {
+                return b;
+            }
             auto is_any_range = [&](ebm::Type& t) {
                 return t.body.kind == ebm::TypeKind::RANGE && is_nil(*t.body.base_type());
             };

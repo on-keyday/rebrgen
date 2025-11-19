@@ -123,9 +123,7 @@
       "program": "${workspaceRoot}/tool/ebmgen",
       "args": [
         "-i",
-        "C:\\workspace\\shbrgen\\rebrgen/src/test/leb128_test.bgn",
-        "-c",
-        "-",
+        "C:\\workspace\\shbrgen\\rebrgen/src/test/dns_label.bgn",
         "-I"
       ],
       "stopAtEntry": false,

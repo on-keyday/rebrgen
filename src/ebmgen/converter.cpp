@@ -9,6 +9,9 @@
 namespace ebmgen {
 
     void debug_id_inspect(std::uint64_t id) {
+        if (id == 269) {
+            ;
+        }
     }
 
     void ConverterState::debug_visited(const char* action, const std::shared_ptr<ast::Node>& node, ebm::StatementRef ref, GenerateType typ) const {

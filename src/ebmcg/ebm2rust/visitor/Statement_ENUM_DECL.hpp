@@ -37,9 +37,11 @@ w.writeln("impl ", name, " {");
     auto scope = w.indent_scope();
     bool is_first_member = true;
     for (auto& member_ref : enum_decl.members.container) {
+        /*
         if (is_first_member && is_nil(enum_decl.base_type)) {
             w.writeln("#[default]");
         }
+        */
         is_first_member = false;
         MAYBE(member_str, visit_Statement(*this, member_ref));
         w.write(member_str.to_writer());

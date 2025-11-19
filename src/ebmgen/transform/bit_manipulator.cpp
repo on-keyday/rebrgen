@@ -183,7 +183,7 @@ namespace ebmgen {
             MAYBE(extracted, extractBitsFromByteDynamic(offset, bit_offset, bit_to_read, endian));
             MAYBE(to_append, appendToExpressionDynamic(extracted, bit_processed, bit_size, bit_to_read, endian, target_type));
             EBM_ASSIGNMENT(if_zero, dst_expr, to_append);
-            MAYBE(if_non_zero, xassign(ctx, ebm::BinaryOp::bit_or, u8_type, dst_expr, to_append));
+            MAYBE(if_non_zero, xassign(ctx, ebm::BinaryOp::bit_or, target_type, dst_expr, to_append));
             EBM_IF_STATEMENT(append, is_zero, if_zero, if_non_zero);
             return append;
         });

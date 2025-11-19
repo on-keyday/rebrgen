@@ -34,7 +34,7 @@ MAYBE(length_str, visit_Expression(*this, length));
 
 if (sub_byte_range.stream_type == ebm::StreamType::INPUT) {
     w.writeln("let mut ", io_, " = Vec::new();");
-    w.writeln(io_, ".resize(", length_str.to_writer(), ",0);");
+    w.writeln(io_, ".resize(", length_str.to_writer(), " as usize,0);");
     w.writeln(parent_io_, ".read_exact(&mut ", io_, ")?;");
     w.writeln("let mut ", io_, " = std::io::Cursor::new(", io_, ");");
 }

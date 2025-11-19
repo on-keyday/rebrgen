@@ -87,7 +87,7 @@ namespace ebmgen {
                     append(block, inner_block_ref);
                     EBM_BLOCK(outer_block_ref, std::move(block));
                     EBMU_BOOL_TYPE(bool_type);
-                    EBM_COUNTER_LOOP_END(lowered_loop, i, target, outer_block_ref);
+                    EBM_COUNTER_LOOP_END_CUSTOM(lowered_loop, i, expr_type, target, outer_block_ref);
                     result_loop_stmt.item_var(identifier_def);
                     result_loop_stmt.lowered_statement = ebm::LoweredStatementRef{lowered_loop};
                     result_loop_stmt.body = inner_block_ref;

@@ -127,8 +127,13 @@ namespace ebmgen {
 
     ebm::ExpressionBody make_binary_op(ebm::BinaryOp bop, ebm::TypeRef type, ebm::ExpressionRef left, ebm::ExpressionRef right);
 
-#define EBM_BINARY_OP(ref_name, bop__, typ, left__, right__) \
-    EBM_AST_EXPRESSION(ref_name, make_binary_op, bop__, typ, left__, right__)
+#define EBM_BINARY_OP(ref_name, bop__, typ, left__, right__)                                       \
+    ebm::ExpressionRef ref_name;                                                                   \
+    {                                                                                              \
+        MAYBE(casted, insert_binary_op_cast(ctx, bop__, typ, left__, right__));                    \
+        EBM_AST_EXPRESSION(ref_name##__, make_binary_op, bop__, typ, casted.first, casted.second); \
+        ref_name = ref_name##__;                                                                   \
+    }
 
     ebm::ExpressionBody make_unary_op(ebm::UnaryOp uop, ebm::TypeRef type, ebm::ExpressionRef operand);
 
@@ -201,22 +206,29 @@ namespace ebmgen {
         EBM_AST_VARIABLE_REF_SET(counter_name, counter_name##__, counter_name##___def); \
     }
 
-#define EBM_COUNTER_LOOP_END_BODY(loop_stmt, counter_name, limit_expr__, body__)        \
-    ebm::StatementBody loop_stmt;                                                       \
-    {                                                                                   \
-        EBMU_BOOL_TYPE(bool_type);                                                      \
-        EBM_BINARY_OP(cmp, ebm::BinaryOp::less, bool_type, counter_name, limit_expr__); \
-        EBMU_COUNTER_TYPE(counter_type);                                                \
-        EBM_INCREMENT(inc, counter_name, counter_type);                                 \
-        loop_stmt = make_for_loop(counter_name##_def, cmp, inc, body__);                \
+#define EBM_COUNTER_LOOP_END_BODY(loop_stmt, counter_name, counter_type, limit_expr__, body__) \
+    ebm::StatementBody loop_stmt;                                                              \
+    {                                                                                          \
+        EBMU_BOOL_TYPE(bool_type);                                                             \
+        EBM_BINARY_OP(cmp, ebm::BinaryOp::less, bool_type, counter_name, limit_expr__);        \
+        EBM_INCREMENT(inc, counter_name, counter_type);                                        \
+        loop_stmt = make_for_loop(counter_name##_def, cmp, inc, body__);                       \
     }
 
-#define EBM_COUNTER_LOOP_END(loop_stmt, counter_name, limit_expr__, body__)  \
-    ebm::StatementRef loop_stmt;                                             \
-    {                                                                        \
-        EBM_COUNTER_LOOP_END_BODY(body, counter_name, limit_expr__, body__); \
-        EBMA_ADD_STATEMENT(added, std::move(body));                          \
-        loop_stmt = added;                                                   \
+#define EBM_COUNTER_LOOP_END_CUSTOM(loop_stmt, counter_name, counter_type, limit_expr__, body__) \
+    ebm::StatementRef loop_stmt;                                                                 \
+    {                                                                                            \
+        EBM_COUNTER_LOOP_END_BODY(body, counter_name, counter_type, limit_expr__, body__);       \
+        EBMA_ADD_STATEMENT(added, std::move(body));                                              \
+        loop_stmt = added;                                                                       \
+    }
+
+#define EBM_COUNTER_LOOP_END(loop_stmt, counter_name, limit_expr__, body__)                           \
+    ebm::StatementRef loop_stmt;                                                                      \
+    {                                                                                                 \
+        EBMU_COUNTER_TYPE(counter_type);                                                              \
+        EBM_COUNTER_LOOP_END_CUSTOM(loop_stmt##__, counter_name, counter_type, limit_expr__, body__); \
+        loop_stmt = loop_stmt##__;                                                                    \
     }
 
     ebm::ExpressionBody make_array_size(ebm::TypeRef type, ebm::ExpressionRef array_expr);

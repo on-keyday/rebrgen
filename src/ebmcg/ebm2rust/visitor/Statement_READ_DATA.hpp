@@ -49,7 +49,7 @@ if (auto cand = is_bytes_type(*this, read_data.data_type)) {
         w.writeln(io_name, ".read_exact(&mut ", target.to_writer(), ")?;");
     }
     else {
-        w.writeln(target.to_writer(), ".resize(", size, ",0);");
+        w.writeln(target.to_writer(), ".resize(", size, " as usize,0);");
         w.writeln(io_name, ".read_exact(&mut ", target.to_writer(), ")?;");
     }
 }

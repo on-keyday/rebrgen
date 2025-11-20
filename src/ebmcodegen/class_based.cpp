@@ -129,14 +129,16 @@ namespace ebmcodegen {
         w.writeln("};");
     }
 
-    void generate_actual_Visitor(CodeWriter& source) {}
-
-    void generate_class_based(CodeWriter& header, CodeWriter& source, std::map<std::string_view, Struct>& struct_map, bool is_codegen) {
+    void generate_class_based(std::string_view ns_name, CodeWriter& header, CodeWriter& source, std::map<std::string_view, Struct>& struct_map, bool is_codegen) {
         // in merge order
         CodeWriter contexts_decl;
         CodeWriter dispatch_decl;
         CodeWriter user_logic_includes;
         CodeWriter dispatch_impl;
+        CodeWriter actual_visitor_impl;
+
+        actual_visitor_impl.writeln("struct VisitorImpl : ");
+        auto actual_visitor_impl_scope = actual_visitor_impl.indent_scope();
 
         std::string result_type = "expected<Result>";
         std::string default_visitor_impl_dir = "ebmcodegen/default_codegen_class_visitor/";
@@ -164,6 +166,7 @@ namespace ebmcodegen {
 
         auto define_tag = [&](auto&& w, auto&&... tag) {
             w.writeln("struct ", tag..., " {};");
+            actual_visitor_impl.writeln("public ", tag..., ",");
         };
         auto context_of = [&](auto&& kind, auto&&... suffix) -> std::string {
             return concat("Context_", kind, concat(suffix...));
@@ -174,7 +177,7 @@ namespace ebmcodegen {
         };
 
         auto with_variant = [&](std::string_view variant, auto&& tag) -> std::string {
-            return concat(variant, "<", tag, ">");
+            return concat(ns_name, "::", variant, "<", ns_name, "::", tag, ">");
         };
 
         auto visitor_of = [&](auto&& tag) {
@@ -192,23 +195,24 @@ namespace ebmcodegen {
             w.writeln("}");
         };
 
-        auto insert_include = [&](auto&& w, auto&& impl_dir, auto&& logic_path, auto&& class_name) {
+        auto insert_include = [&](auto&& w, auto&& impl_dir, auto&& logic_path, auto&& class_name, auto&& more_requirements) {
             w.writeln("#if __has_include(\"", impl_dir, logic_path, ".hpp", "\")");
             w.writeln("#include \"", impl_dir, logic_path, ".hpp", "\"");
-            w.writeln("static_assert(requires { sizeof(", class_name, "); },\"MUST implement ", class_name, "\");");
+            w.writeln("static_assert(requires { sizeof(", ns_name, "::", class_name, "); },\"MUST implement ", class_name, "\");");
+            more_requirements();
             w.writeln("#else");
             w.writeln("// stub implementation");
             w.writeln("template<>");
-            w.writeln("struct ", class_name, " {};");
+            w.writeln("struct ", ns_name, "::", class_name, " {};");
             w.writeln("#endif");
         };
 
-        auto requires_implementation = [&](std::string_view class_name, std::string_view method_name, auto&&... args) {
-            return std::format("requires {{ ctx.visitor.{}::{}({}); }}", class_name, method_name, concat(args...));
+        auto requires_implementation = [&](std::string_view self, std::string_view class_name, std::string_view method_name, auto&&... args) {
+            return std::format("requires {{ {}.{}::{}({}); }}", self, class_name, method_name, concat(args...));
         };
 
         auto insert_invoke = [&](auto&& w, auto&& class_name, auto&& method_name, auto&& args, auto&& result_handle) {
-            w.writeln("if constexpr (", requires_implementation(class_name, method_name, args), ") {");
+            w.writeln("if constexpr (", requires_implementation("ctx.visitor", class_name, method_name, args), ") {");
             {
                 auto indent = w.indent_scope();
                 w.writeln(result_handle, " ctx.visitor.", class_name, "::", method_name, "(", args, ");");
@@ -321,9 +325,30 @@ namespace ebmcodegen {
                         auto user_hook = visitor_of(with_variant("UserHook", tag));
                         auto user_hook_dsl = visitor_of(with_variant("UserDSL", tag));
                         auto default_hook = visitor_of(with_variant("DefaultCodegen", tag));
-                        insert_include(user_logic_includes, visitor_impl_dir, path, user_hook);
-                        insert_include(user_logic_includes, visitor_dsl_impl_dir, path, user_hook_dsl);
-                        insert_include(user_logic_includes, default_visitor_impl_dir, path, default_hook);
+                        auto make_declval = [&](auto&& hook_ty) {
+                            return std::format("std::declval<{}::{}>()", ns_name, hook_ty);
+                        };
+                        insert_include(user_logic_includes, visitor_impl_dir, path, user_hook, [&] {
+                            auto requires_impl = requires_implementation(make_declval(user_hook), user_hook, "visit", args1);
+                            if (std::string_view(args2) != "") {
+                                requires_impl += " || " + requires_implementation(make_declval(user_hook), user_hook, "visit", args2);
+                            }
+                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", user_hook, "\");");
+                        });
+                        insert_include(user_logic_includes, visitor_dsl_impl_dir, path, user_hook_dsl, [&] {
+                            auto requires_impl = requires_implementation(make_declval(user_hook_dsl), user_hook_dsl, "visit", args1);
+                            if (std::string_view(args2) != "") {
+                                requires_impl += " || " + requires_implementation(make_declval(user_hook_dsl), user_hook_dsl, "visit", args2);
+                            }
+                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", user_hook_dsl, "\");");
+                        });
+                        insert_include(user_logic_includes, default_visitor_impl_dir, path, default_hook, [&] {
+                            auto requires_impl = requires_implementation(make_declval(default_hook), default_hook, "visit", args1);
+                            if (std::string_view(args2) != "") {
+                                requires_impl += " || " + requires_implementation(make_declval(default_hook), default_hook, "visit", args2);
+                            }
+                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", default_hook, "\");");
+                        });
                         insert_invoke(w, user_hook, "visit", args1, result_handle);
                         w.write("else ");
                         if (std::string_view(args2) != "") {
@@ -448,18 +473,33 @@ namespace ebmcodegen {
         dispatcher(ebm::ExpressionKind{}, prefixes[prefix_expression], ebmcodegen::body_subset_ExpressionBody());
         dispatcher(ebm::TypeKind{}, prefixes[prefix_type], ebmcodegen::body_subset_TypeBody());
 
-        header.writeln("using namespace ebmgen;");
-        header.writeln("using namespace ebmcodegen::util;");
-        header.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
+        actual_visitor_impl.writeln(" std::monostate {};");
+        actual_visitor_impl_scope.execute();
+        header.writeln("namespace ", ns_name, " {");
+        {
+            auto ns_scope = header.indent_scope();
+            header.writeln("using namespace ebmgen;");
+            header.writeln("using namespace ebmcodegen::util;");
+            header.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
 
-        generate_Result(header, is_codegen);
+            generate_Result(header, is_codegen);
 
-        header.write_unformatted(contexts_decl.out());
-        header.writeln();
-        header.write_unformatted(dispatch_decl.out());
-        header.writeln();
+            header.write_unformatted(contexts_decl.out());
+            header.writeln();
+            header.write_unformatted(dispatch_decl.out());
+            header.writeln();
+        }
+        header.writeln("} // namespace ", ns_name);
         source.write_unformatted(user_logic_includes.out());
         source.writeln();
-        source.write_unformatted(dispatch_impl.out());
+        source.writeln("namespace ", ns_name, " {");
+        {
+            auto ns_scope = source.indent_scope();
+            source.write_unformatted(dispatch_impl.out());
+            source.writeln();
+            source.write_unformatted(actual_visitor_impl.out());
+            source.writeln();
+        }
+        source.writeln("} // namespace ", ns_name);
     }
 }  // namespace ebmcodegen

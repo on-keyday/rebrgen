@@ -477,7 +477,7 @@ namespace ebmcodegen::util {
         template <CODEGEN_CONTEXT_PARAMETERS(dummy_name)>                      \
         ebmgen::expected<void> visit(const CODEGEN_CONTEXT(dummy_name) & ctx); \
     };                                                                         \
-    template <>                                                                \
+                                                                               \
     template <CODEGEN_CONTEXT_PARAMETERS(dummy_name)>                          \
     ebmgen::expected<void> CODEGEN_VISITOR(dummy_name)::visit(const CODEGEN_CONTEXT(dummy_name) & ctx)
 

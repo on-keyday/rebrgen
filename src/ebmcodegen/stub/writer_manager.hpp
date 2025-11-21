@@ -8,7 +8,7 @@
 namespace ebmcodegen {
     template <class CodeWriter>
     struct WriterManager {
-        futils::code::CodeWriter<futils::binary::writer&>& root;
+        futils::code::CodeWriter<futils::binary::writer&> root;
         std::vector<CodeWriter> tmp_writers;
         [[nodiscard]] auto add_writer() {
             tmp_writers.emplace_back();

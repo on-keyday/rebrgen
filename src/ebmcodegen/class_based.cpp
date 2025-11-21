@@ -20,7 +20,8 @@ namespace ebmcodegen {
         ContextClassKind_VariantMask = 3,
 
         ContextClassKind_List = 4,
-        ContextClassKind_Generic = 8,  // like Statement, Expression, Type
+        ContextClassKind_Generic = 8,   // like Statement, Expression, Type
+        ContextClassKind_Special = 16,  // like entry
     };
 
     std::string upper(std::string_view s) {
@@ -227,6 +228,13 @@ namespace ebmcodegen {
             for_after.fields.push_back(ContextClassField{.name = "result", .type = result_type + "&"});
             result.after() = std::move(for_after);
         };
+
+        ContextClasses entry;
+        entry.main().base = "entry";
+        entry.main().kind = ContextClassKind_Special;
+        add_common_visitor(entry.main());
+        add_context_variant_for_before_after(entry);
+        context_classes.push_back(std::move(entry));
 
         auto convert = [&](auto t, std::string_view kind, auto subset) {
             using T = std::decay_t<decltype(t)>;
@@ -455,6 +463,9 @@ namespace ebmcodegen {
     }
 
     void generate_dispatcher_function(CodeWriter& hdr, CodeWriter& src, const ContextClasses& clss, const std::string_view result_type) {
+        if (clss.main().has(ContextClassKind_Special)) {
+            return;
+        }
         auto& cls = clss.main();
         generate_dispatch_fn_signature(hdr, cls, result_type, true);
         auto visitor_arg = "ctx.visitor";
@@ -607,18 +618,31 @@ namespace ebmcodegen {
         std::vector<UtilityClassField> fields;
     };
 
-    void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info) {
+    using UtilityClasses = std::map<std::string, UtilityClass>;
+
+    UtilityClasses generate_utility_classes() {
+        UtilityClasses utility_classes;
         UtilityClass base_visitor;
+        base_visitor.fields.push_back(UtilityClassField{.name = "program_name", .type = "static constexpr const char*"});
         base_visitor.fields.push_back(UtilityClassField{.name = "module_", .type = "ebmgen::MappingTable"});
         base_visitor.fields.push_back(UtilityClassField{.name = "flags", .type = "Flags&"});
         base_visitor.fields.push_back(UtilityClassField{.name = "output", .type = "Output&"});
         base_visitor.fields.push_back(UtilityClassField{.name = "wm", .type = "ebmcodegen::WriterManager<CodeWriter>"});
+        utility_classes["BaseVisitor"] = std::move(base_visitor);
+        return utility_classes;
+    }
+
+    void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor) {
         w.writeln("struct BaseVisitor {");
         {
             auto scope = w.indent_scope();
             w.writeln("BaseVisitor(ebmgen::EBMProxy proxy, futils::binary::writer& w, Flags& flags_, Output& output_) : module_(proxy), flags(flags_), output(output_), wm{w} {}");
             for (auto& field : base_visitor.fields) {
-                w.writeln(field.type, " ", field.name, ";");
+                w.write(field.type, " ", field.name);
+                if (field.name == "program_name") {
+                    w.write(" = \"", includes_info.includes.program_name, "\"");
+                }
+                w.writeln(";");
             }
             user_config_include(w, prefixes[prefix_visitor], includes_info);
         }
@@ -951,7 +975,9 @@ namespace ebmcodegen {
     }
 
     void generate_inlined_hook(CodeWriter& w,
-                               std::string_view ns_name, std::string_view header_name, const HookType& hook, const ContextClass& cls, const std::string_view result_type) {
+                               std::string_view ns_name,
+                               std::string_view header_name,
+                               const HookType& hook, const ContextClass& cls, const std::string_view result_type, UtilityClasses& utils) {
         auto instance = hook.visitor_instance_name(cls, ns_name);
         w.writeln("// Inlined hook for ", cls.class_name(), " for backward compatibility");
         w.writeln("template <>");
@@ -965,7 +991,15 @@ namespace ebmcodegen {
                 auto visit_scope = w.indent_scope();
                 auto deconstruct_macro = deconstruct_macro_name(ns_name, cls);
                 w.writeln(deconstruct_macro, "(ctx);");
-                w.writeln("auto& module_ = ctx.visitor.module_;");
+                auto& base_visitor = utils["BaseVisitor"];
+                for (auto& field : base_visitor.fields) {
+                    w.writeln("auto& ", field.name, " = ctx.visitor.", field.name, ";");
+                }
+                w.writeln("// for backward compatibility");
+                w.writeln("auto& root = wm.root;");
+                w.writeln("auto add_writer = [&]{ return wm.add_writer(); };");
+                w.writeln("auto get_writer = [&]{ return wm.get_writer(); };");
+                w.writeln("using namespace ", ns_name, ";");
                 w.writeln("#include ", header_name);
                 if (cls.is_before_after()) {
                     w.writeln("return pass;");
@@ -979,7 +1013,7 @@ namespace ebmcodegen {
         w.writeln("};");
     }
 
-    void generate_user_implemented_includes(CodeWriter& w, std::string_view ns_name, const std::vector<HookType>& hooks, const IncludeLocations& locations, const std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
+    void generate_user_implemented_includes(CodeWriter& w, std::string_view ns_name, const std::vector<HookType>& hooks, const IncludeLocations& locations, const std::vector<ContextClasses>& context_classes, const std::string_view result_type, UtilityClasses& utils) {
         assert(hooks.size() - 1 == locations.include_locations.size());
         // without last hidden hook
         for (auto i = 0; i < hooks.size() - 1; i++) {
@@ -993,7 +1027,7 @@ namespace ebmcodegen {
                         w, header,
                         [&] {
                             if (hook.name.contains("Inlined")) {
-                                generate_inlined_hook(w, ns_name, header, hook, cls, result_type);
+                                generate_inlined_hook(w, ns_name, header, hook, cls, result_type, utils);
                                 return;
                             }
                             auto type_param_body = cls.type_parameters_body(true);
@@ -1074,9 +1108,12 @@ namespace ebmcodegen {
         }
     }
 
+    void generate_entry_point() {}
+
     void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
         auto result_type = "expected<Result>";
         auto context_classes = generate_context_classes(structs, locations.ns_name);
+        auto utility_classes = generate_utility_classes();
         std::vector<HookType> hooks = {
             {.name = "UserHook"},
             {.name = "UserDSLHook"},
@@ -1094,7 +1131,7 @@ namespace ebmcodegen {
         auto is_codegen = locations.is_codegen;
         generate_namespace(hdr, ns_name, true);
         generate_undef_dummy_macros(src);
-        generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type);
+        generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type, utility_classes);
         generate_namespace(src, ns_name, true);
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
@@ -1105,7 +1142,7 @@ namespace ebmcodegen {
         generate_Result(hdr, is_codegen, includes_info);
         generate_Flags(hdr, includes_info);
         generate_Output(hdr, includes_info);
-        generate_BaseVisitor(hdr, includes_info);
+        generate_BaseVisitor(hdr, includes_info, utility_classes["BaseVisitor"]);
 
         generate_pass_error_type(hdr);
 

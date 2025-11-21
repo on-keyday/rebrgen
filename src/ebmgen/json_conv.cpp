@@ -2896,6 +2896,10 @@ namespace ebm {
                 obj = FunctionKind::COMPOSITE_SETTER;
                 return true;
             }
+            if (s == "CAST") {
+                obj = FunctionKind::CAST;
+                return true;
+            }
             return false;
         }
         return false;

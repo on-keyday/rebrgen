@@ -139,12 +139,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmcodegen",
-      "args": [
-        "--mode",
-        "dsl",
-        "--dsl-file",
-        "${workspaceFolder}/src/ebmcg/ebm2python/dsl_sample/Expression_CAN_READ_STREAM_dsl.dsl"
-      ],
+      "args": ["--mode", "class-based-codegen-source"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],

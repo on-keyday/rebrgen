@@ -453,8 +453,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
             w.writeln("#include \"class_based.hpp\"");  // TODO: fix include path
         }
+        else {
+            w.writeln("#include <concepts>");
+            w.writeln("#include <strutil/append.h>");
+        }
         CodeWriter header, source;
-        ebmcodegen::generate_class_based(ns_name, header, source, struct_map, true);
+        ebmcodegen::generate(ns_name, header, source, struct_map, true);
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
             w.write_unformatted(header.out());
         }

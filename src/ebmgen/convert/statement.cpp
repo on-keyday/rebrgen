@@ -723,7 +723,7 @@ namespace ebmgen {
             auto n = ctx.state().set_current_generate_type(GenerateType::Normal);
             EBMA_CONVERT_STATEMENT(parent_ref, parent);
             func_decl.parent_format = parent_ref;
-            func_decl.kind = ebm::FunctionKind::METHOD;
+            func_decl.kind = node->is_cast ? ebm::FunctionKind::CAST : ebm::FunctionKind::METHOD;
         }
         else {
             func_decl.kind = ebm::FunctionKind::NORMAL;

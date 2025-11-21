@@ -379,6 +379,7 @@ enum FunctionKind:
     PROPERTY_SETTER = 5 # Property setter function
     COMPOSITE_GETTER = 6 # Composite field getter function
     COMPOSITE_SETTER = 7 # Composite field setter function
+    CAST = 8 # Type cast function (also a method)
 
 format FunctionDecl:
     name :IdentifierRef # Function name

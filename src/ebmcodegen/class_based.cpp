@@ -269,7 +269,7 @@ namespace ebmcodegen {
             per_kind.main().base = kind;
             per_kind.main().kind = ContextClassKind_Generic;
             add_common_visitor(per_kind.main());
-            per_kind.main().fields.push_back(ContextClassField{.name = "in", .type = "ebm::" + std::string(kind)});
+            per_kind.main().fields.push_back(ContextClassField{.name = "in", .type = "ebm::" + std::string(kind) + "&"});
             per_kind.main().fields.push_back(ContextClassField{.name = "alias_ref", .type = "ebm::" + std::string(kind) + "Ref"});
             add_context_variant_for_before_after(per_kind);
             context_classes.push_back(std::move(per_kind));

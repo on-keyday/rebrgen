@@ -454,11 +454,26 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.writeln("#include \"class_based.hpp\"");  // TODO: fix include path
         }
         else {
+            w.writeln("#include <ebmcodegen/stub/writer_manager.hpp>");
             w.writeln("#include <concepts>");
             w.writeln("#include <strutil/append.h>");
         }
         CodeWriter header, source;
-        ebmcodegen::generate(ns_name, header, source, struct_map, true);
+        ebmcodegen::IncludeLocations locations;
+        locations.include_locations = {
+            {flags.visitor_impl_dir, std::string{suffixes[suffix_class]}},
+            {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]} + std::string(suffixes[suffix_class])},
+            {flags.default_visitor_impl_dir, std::string{suffixes[suffix_class]}},
+            // backward compatibility
+            {flags.visitor_impl_dir, std::string{}},
+            {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]}},
+            {flags.default_visitor_impl_dir, std::string{}},
+        };
+        locations.ns_name = ns_name;
+        locations.lang = flags.lang;
+        locations.program_name = flags.program_name;
+        locations.is_codegen = true;
+        ebmcodegen::generate(locations, header, source, struct_map);
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
             w.write_unformatted(header.out());
         }

@@ -1,6 +1,8 @@
 /*license*/
+#include "stub/class_based.hpp"
 #include "stub/structs.hpp"
 #include <format>
+#include <string>
 #include "stub/hooks.hpp"
 
 namespace ebmcodegen {
@@ -25,6 +27,14 @@ namespace ebmcodegen {
         std::string result;
         for (auto c : s) {
             result += std::toupper(c);
+        }
+        return result;
+    }
+
+    std::string lower(std::string_view s) {
+        std::string result;
+        for (auto c : s) {
+            result += std::tolower(c);
         }
         return result;
     }
@@ -112,10 +122,10 @@ namespace ebmcodegen {
                 name += variant;
             }
             if (kind & ContextClassKind_Before) {
-                name += "_before";
+                name += suffixes[suffix_before];
             }
             else if (kind & ContextClassKind_After) {
-                name += "_after";
+                name += suffixes[suffix_after];
             }
             return name;
         }
@@ -209,14 +219,6 @@ namespace ebmcodegen {
 
         auto convert = [&](auto t, std::string_view kind, auto subset) {
             using T = std::decay_t<decltype(t)>;
-            ContextClasses per_kind;
-            per_kind.main().base = kind;
-            per_kind.main().kind = ContextClassKind_Generic;
-            add_common_visitor(per_kind.main());
-            per_kind.main().fields.push_back(ContextClassField{.name = "in", .type = "ebm::" + std::string(kind)});
-            per_kind.main().fields.push_back(ContextClassField{.name = "alias_ref", .type = "ebm::" + std::string(kind) + "Ref"});
-            add_context_variant_for_before_after(per_kind);
-            context_classes.push_back(std::move(per_kind));
             for (size_t i = 0; to_string(T(i))[0]; i++) {
                 ContextClasses per_variant;
                 per_variant.main().base = kind;
@@ -244,6 +246,14 @@ namespace ebmcodegen {
                 add_context_variant_for_before_after(per_variant);
                 context_classes.push_back(std::move(per_variant));
             }
+            ContextClasses per_kind;
+            per_kind.main().base = kind;
+            per_kind.main().kind = ContextClassKind_Generic;
+            add_common_visitor(per_kind.main());
+            per_kind.main().fields.push_back(ContextClassField{.name = "in", .type = "ebm::" + std::string(kind)});
+            per_kind.main().fields.push_back(ContextClassField{.name = "alias_ref", .type = "ebm::" + std::string(kind) + "Ref"});
+            add_context_variant_for_before_after(per_kind);
+            context_classes.push_back(std::move(per_kind));
             ContextClasses per_list;
             per_list.main().base = kind;
             per_list.main().kind = ContextClassKind_List;
@@ -323,9 +333,13 @@ namespace ebmcodegen {
         }
     }
 
+    std::string deconstruct_macro_name(std::string_view ns_name, const ContextClass& cls) {
+        return upper(ns_name) + "_DECONSTRUCT_" + cls.upper_class_name();
+    }
+
     void deconstruct_context_fields_macro(CodeWriter& w, std::string_view ns_name, const ContextClass& cls) {
         w.writeln("// Deconstruct context fields");
-        w.writeln("#define ", upper(ns_name), "_DECONSTRUCT_", cls.upper_class_name(), "(instance_name) \\");
+        w.writeln("#define ", deconstruct_macro_name(ns_name, cls), "(instance_name) \\");
         for (auto& field : cls.fields) {
             w.write("auto& ", field.name, " = instance_name.", field.name, ";");
         }
@@ -333,11 +347,10 @@ namespace ebmcodegen {
     }
 
     void handle_hijack_logic(CodeWriter& w, std::string_view may_inject) {
-        constexpr auto pass_error = "PassError";
         w.writeln("if (!", may_inject, ") {");
         {
             auto if_scope = w.indent_scope();
-            w.writeln("if(!", may_inject, ".error().template as<", pass_error, ">()) {");
+            w.writeln("if(!is_pass_error(", may_inject, ".error())) {");
             {
                 auto if_scope2 = w.indent_scope();
                 w.writeln("return unexpect_error(std::move(", may_inject, ".error())); // for trace");
@@ -464,8 +477,14 @@ namespace ebmcodegen {
     }
 
     void generate_pass_error_type(CodeWriter& w) {
-        w.writeln("struct PassError { void error(auto&& pb) { futils::strutil::append(pb,\"THIS IS NOT AN ERROR, but a marker for before or after hook that is not needed to be hijacked\"); } };");
-        w.writeln("constexpr auto pass = futils::helper::either::unexpected{PassError{}};");
+        w.writeln("// This is for signaling continue normal processing without error");
+        w.writeln("constexpr auto pass = futils::helper::either::unexpected{ebmgen::Error(futils::error::Category::lib,0xba55ba55)};");
+        w.writeln("constexpr bool is_pass_error(const ebmgen::Error& err) {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("return err.category() == futils::error::Category::lib && err.sub_category() == 0xba55ba55;");
+        }
+        w.writeln("}");
     }
 
     void hook_with_fallback_single(CodeWriter& w, std::string_view self, const HookType& hook, const ContextClass& cls) {
@@ -527,10 +546,18 @@ namespace ebmcodegen {
         w.writeln("}");
     }
 
+    void generate_visitor_common(CodeWriter& w) {
+        w.writeln("ebmgen::MappingTable module_;");
+        w.writeln("Flags& flags;");
+        w.writeln("Output& output;");
+        w.writeln("ebmcodegen::WriterManager<CodeWriter> wm;");
+    }
+
     void generate_merged_visitor(CodeWriter& w, const std::vector<HookType>& hooks, const std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
         w.writeln("struct MergedVisitor {");
         {
             auto scope = w.indent_scope();
+            generate_visitor_common(w);
             for (auto& cls_group : context_classes) {
                 for (auto& cls : cls_group.classes) {
                     for (auto& hook : hooks) {
@@ -542,6 +569,101 @@ namespace ebmcodegen {
                 }
             }
         }
+        w.writeln("};");
+    }
+
+    void generate_Flags(CodeWriter& w, const IncludeLocations& flags) {
+        auto with_flag_bind = [&](bool on_define) {
+            constexpr auto ensure_c_ident = "static_assert(ebmcodegen::util::internal::is_c_ident(#name),\"name must be a valid C identifier\");";
+            w.writeln("#define DEFINE_FLAG(type,name,default_,flag_name,flag_func,...) \\");
+            if (on_define) {
+                w.indent_writeln(ensure_c_ident, "type name = default_");
+            }
+            else {
+                w.indent_writeln("ctx.flag_func(&name,flag_name,__VA_ARGS__)");
+            }
+            w.write("#define WEB_FILTERED(...) ");
+            if (!on_define) {
+                w.write("web_filtered.insert_range(std::set{__VA_ARGS__})");
+            }
+            w.writeln();
+            auto map_name = [&](auto name, auto dst, auto src) {
+                w.write("#define ", name, "(", src, ") ");
+                if (!on_define) {
+                    w.write(dst, " = ", src);
+                }
+                w.writeln();
+            };
+            map_name("WEB_UI_NAME", "ui_lang_name", "name");
+            map_name("WEB_LSP_NAME", "lsp_name", "name");
+            map_name("WEB_WORKER_NAME", "webworker_name", "name");
+            w.write("#define FILE_EXTENSIONS(...) ");
+            if (!on_define) {
+                w.write("file_extensions = std::vector<std::string_view>{__VA_ARGS__}");
+            }
+            w.writeln();
+
+            w.writeln("#define DEFINE_BOOL_FLAG(name,default_,flag_name,desc) DEFINE_FLAG(bool,name,default_,flag_name,VarBool,desc)");
+            w.writeln("#define DEFINE_STRING_FLAG(name,default_,flag_name,desc,arg_desc) DEFINE_FLAG(std::string_view,name,default_,flag_name,VarString<true>,desc,arg_desc)");
+            w.write("#define BEGIN_MAP_FLAG(name,MappedType,default_,flag_name,desc)");
+            if (on_define) {
+                w.write(ensure_c_ident, "MappedType name = default_;");
+            }
+            else {
+                w.write("{ std::map<std::string,MappedType> map__; auto& target__ = name; auto flag_name__ = flag_name; auto desc__ = desc; std::string arg_desc__ = \"{\"; ");
+            }
+            w.writeln();
+            w.write("#define MAP_FLAG_ITEM(key,value) ");
+            if (!on_define) {
+                w.write("map__[key] = value;");
+                w.write("if (!arg_desc__.empty() && arg_desc__.back() != '{') { arg_desc__ += \",\"; }");
+                w.write("arg_desc__ += key;");
+            }
+            w.writeln();
+            w.write("#define END_MAP_FLAG() ");
+            if (!on_define) {
+                w.write("ctx.VarMap(&target__,flag_name__,desc__,arg_desc__ + \"}\",std::move(map__)); }");
+            }
+            w.writeln();
+
+            // insert_include(w, prefixes[prefix_flags]);
+            w.writeln("#undef DEFINE_FLAG");
+            w.writeln("#undef WEB_FILTERED");
+            w.writeln("#undef DEFINE_BOOL_FLAG");
+            w.writeln("#undef DEFINE_STRING_FLAG");
+            w.writeln("#undef BEGIN_MAP_FLAG");
+            w.writeln("#undef MAP_FLAG_ITEM");
+            w.writeln("#undef END_MAP_FLAG");
+            w.writeln("#undef WEB_UI_NAME");
+            w.writeln("#undef WEB_LSP_NAME");
+            w.writeln("#undef WEB_WORKER_NAME");
+            w.writeln("#undef FILE_EXTENSIONS");
+        };
+
+        w.writeln("struct Flags : ebmcodegen::Flags {");
+        {
+            auto flag_scope = w.indent_scope();
+            with_flag_bind(true);
+            // insert_include(w, prefixes[prefix_flags], suffixes[suffix_struct]);
+            w.writeln("void bind(futils::cmdline::option::Context& ctx) {");
+            auto nested_scope = w.indent_scope();
+            w.writeln("lang_name = \"", flags.lang, "\";");
+            w.writeln("ui_lang_name = lang_name;");
+            w.writeln("lsp_name = lang_name;");
+            w.writeln("webworker_name = \"", flags.program_name, "\";");
+            w.writeln("file_extensions = {\".", flags.lang, "\"};");
+            w.writeln("ebmcodegen::Flags::bind(ctx); // bind basis");
+            with_flag_bind(false);
+            // insert_include(w, prefixes[prefix_flags], suffixes[suffix_bind]);
+            nested_scope.execute();
+            w.writeln("}");
+        }
+        w.writeln("};");
+    }
+
+    void generate_Output(CodeWriter& w) {
+        w.writeln("struct Output : ebmcodegen::Output {");
+        // insert_include(w, prefixes[prefix_output]);
         w.writeln("};");
     }
 
@@ -585,23 +707,317 @@ namespace ebmcodegen {
         }
     }
 
-    void generate(std::string_view ns_name, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs, bool is_codegen) {
+    void generate_list_dispatch_default(CodeWriter& w, const ContextClass& cls, bool is_codegen, const std::string_view result_type) {
+        if (!cls.has(ContextClassKind_List)) {
+            return;
+        }
+        auto class_name = cls.class_name();
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " dispatch_", class_name, "_default(Context&& ctx,const ebm::", class_name, "& in) {");
+        {
+            auto list_scope = w.indent_scope();
+            if (is_codegen) {
+                w.writeln("CodeWriter w;");
+            }
+            w.writeln("for(auto& elem:in.container) {");
+            {
+                auto loop_scope = w.indent_scope();
+                w.writeln("auto result = visit_", cls.base, "(ctx,elem);");
+                w.writeln("if (!result) {");
+                w.indent_writeln("return unexpect_error(std::move(result.error()));");
+                w.writeln("}");
+                if (is_codegen) {
+                    w.writeln("w.write(result->to_writer());");
+                }
+            }
+            w.writeln("}");
+            if (is_codegen) {
+                w.writeln("return w;");
+            }
+            else {
+                w.writeln("return {};");  // Placeholder for non-codegen mode
+            }
+        }
+        w.writeln("}");
+    }
+
+    void generate_generic_dispatch_default(CodeWriter& w, const ContextClass& cls, const std::string_view result_type) {
+        if (!cls.has(ContextClassKind_Generic)) {
+            return;
+        }
+        auto class_name = cls.class_name();
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " dispatch_", class_name, "_default(Context&& ctx,const ebm::", class_name, "& in,ebm::", cls.ref_name(), " alias_ref = {}) {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("switch(in.body.kind) {");
+            {
+                auto switch_scope = w.indent_scope();
+                auto do_for_each = [&](auto t) {
+                    using T = std::decay_t<decltype(t)>;
+                    for (size_t i = 0; to_string(T(i))[0]; i++) {
+                        w.writeln("case ebm::", cls.base, "Kind::", to_string(T(i)), ": {");
+                        {
+                            auto case_scope = w.indent_scope();
+                            w.writeln("return dispatch_", cls.base, "_", to_string(T(i)), "(std::forward<Context>(ctx),in,alias_ref);");
+                        }
+                        w.writeln("}");
+                    }
+                };
+                if (cls.base == "Statement") {
+                    do_for_each(ebm::StatementKind{});
+                }
+                else if (cls.base == "Expression") {
+                    do_for_each(ebm::ExpressionKind{});
+                }
+                else if (cls.base == "Type") {
+                    do_for_each(ebm::TypeKind{});
+                }
+                w.writeln("default: {");
+                {
+                    auto default_scope = w.indent_scope();
+                    w.writeln("return unexpect_error(\"Unknown ", cls.base, " kind: {}\", to_string(in.body.kind));");
+                }
+                w.writeln("}");
+            }
+            w.writeln("}");
+        }
+        w.writeln("}");
+    }
+
+    void generate_generator_default_hook(CodeWriter& src, const HookType& hook, const ContextClass& cls, bool is_codegen, const std::string_view result_type) {
+        auto type_name = hook.visitor_instance_name(cls);
+        src.writeln("template <>");
+        src.writeln("struct ", type_name, " {");
+        {
+            auto scope = src.indent_scope();
+            src.writeln("template<typename Context>");
+            src.writeln("auto visit(const Context& ctx) {");
+            {
+                auto visit_scope = src.indent_scope();
+                if (cls.is_before_after()) {
+                    src.writeln("return pass;");
+                }
+                else if (cls.has(ContextClassKind_List)) {
+                    src.writeln("return dispatch_", cls.class_name(), "_default(ctx,ctx.in);");
+                }
+                else if (cls.has(ContextClassKind_Generic)) {
+                    src.writeln("return dispatch_", cls.class_name(), "_default(ctx,ctx.in,ctx.alias_ref);");
+                }
+                else {
+                    src.writeln("if (ctx.visitor.flags.debug_unimplemented) {");
+                    {
+                        auto scope = src.indent_scope();
+                        if (is_codegen) {
+                            src.writeln("return std::format(\"{{{{Unimplemented ", cls.class_name(), " {}}}}}\",get_id(ctx.item_id));");
+                        }
+                    }
+                    src.writeln("}");
+                    src.writeln("return ", result_type, "{}; // Unimplemented");
+                }
+            }
+            src.writeln("}");
+        }
+        src.writeln("};");
+    }
+
+    void include_with_if_exists(CodeWriter& w, std::string_view header, auto&& then, auto&& otherwise) {
+        w.writeln("#if __has_include(", header, ")");
+        then();
+        w.writeln("#else");
+        otherwise();
+        w.writeln("#endif");
+    }
+
+    auto define_local_macro(CodeWriter& w, std::string_view macro_name, std::string_view func_arg, std::string_view body) {
+        w.writeln("#define ", macro_name, func_arg, " ", body);
+        return futils::helper::defer([=, &w]() {
+            w.writeln("#undef ", macro_name);
+        });
+    }
+
+    constexpr auto macro_CODEGEN_VISITOR = "CODEGEN_VISITOR";
+    constexpr auto macro_CODEGEN_CONTEXT_PARAMETERS = "CODEGEN_CONTEXT_PARAMETERS";
+    constexpr auto macro_CODEGEN_CONTEXT = "CODEGEN_CONTEXT";
+
+    void generate_dummy_macro_for_class(CodeWriter& w, std::string_view ns_name, const HookType& hook, const ContextClass& cls) {
+        auto instance = std::format("{}::{}", ns_name, context_instance_name(cls));
+        auto visitor = hook.visitor_instance_name(cls, ns_name);
+        auto upper_ns = upper(ns_name);
+        auto cls_name = cls.class_name();
+        w.writeln("#define ", upper_ns, "_", macro_CODEGEN_VISITOR, "_", cls_name, " ", visitor);
+        w.writeln("#define ", upper_ns, "_", macro_CODEGEN_CONTEXT_PARAMETERS, "_", cls_name, " ", cls.type_parameters_body());
+        w.writeln("#define ", upper_ns, "_", macro_CODEGEN_CONTEXT, "_", cls_name, " ", instance);
+    }
+
+    void generate_undef_dummy_macros(CodeWriter& src) {
+        src.writeln("#undef ", macro_CODEGEN_VISITOR);
+        src.writeln("#undef ", macro_CODEGEN_CONTEXT_PARAMETERS);
+        src.writeln("#undef ", macro_CODEGEN_CONTEXT);
+    }
+
+    void generate_dummy_macros(CodeWriter& hdr, std::string_view ns_name, const HookType& hook, const std::vector<ContextClasses>& context_classes) {
+        for (auto& cls_group : context_classes) {
+            for (auto& cls : cls_group.classes) {
+                generate_dummy_macro_for_class(hdr, ns_name, hook, cls);
+            }
+        }
+        hdr.writeln("#define ", macro_CODEGEN_VISITOR, "(name) ", upper(ns_name), "_", macro_CODEGEN_VISITOR, "_##name");
+        hdr.writeln("#define ", macro_CODEGEN_CONTEXT_PARAMETERS, "(name) ", upper(ns_name), "_", macro_CODEGEN_CONTEXT_PARAMETERS, "_##name");
+        hdr.writeln("#define ", macro_CODEGEN_CONTEXT, "(name) ", upper(ns_name), "_", macro_CODEGEN_CONTEXT, "_##name");
+    }
+
+    void generate_inlined_hook(CodeWriter& w,
+                               std::string_view ns_name, std::string_view header_name, const HookType& hook, const ContextClass& cls, const std::string_view result_type) {
+        auto instance = hook.visitor_instance_name(cls, ns_name);
+        w.writeln("// Inlined hook for ", cls.class_name(), " for backward compatibility");
+        w.writeln("template <>");
+        w.writeln("struct ", instance, " {");
+        {
+            auto scope = w.indent_scope();
+            auto context_name = context_instance_name(cls);
+            w.writeln(cls.type_parameters());
+            w.writeln(result_type, " visit(const ", context_name, "& ctx) {");
+            {
+                auto visit_scope = w.indent_scope();
+                auto deconstruct_macro = deconstruct_macro_name(ns_name, cls);
+                w.writeln(deconstruct_macro, "(ctx);");
+                w.writeln("auto& module_ = ctx.visitor.module_;");
+                w.writeln("#include ", header_name);
+                if (cls.is_before_after()) {
+                    w.writeln("return pass;");
+                }
+                else {
+                    w.writeln("return {};");
+                }
+            }
+            w.writeln("}");
+        }
+        w.writeln("};");
+    }
+
+    void generate_user_implemented_includes(CodeWriter& w, std::string_view ns_name, const std::vector<HookType>& hooks, const IncludeLocations& locations, const std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
+        assert(hooks.size() - 1 == locations.include_locations.size());
+        // without last hidden hook
+        for (auto i = 0; i < hooks.size() - 1; i++) {
+            auto& hook = hooks[i];
+            auto location = locations.include_locations[i];
+            for (auto& cls_group : context_classes) {
+                for (auto& cls : cls_group.classes) {
+                    auto header = std::format("\"{}{}{}.hpp\"", location.location, cls.class_name(), location.suffix);
+                    auto instance = hook.visitor_instance_name(cls, ns_name);
+                    include_with_if_exists(
+                        w, header,
+                        [&] {
+                            if (hook.name.contains("Inlined")) {
+                                generate_inlined_hook(w, ns_name, header, hook, cls, result_type);
+                                return;
+                            }
+                            auto current_class = define_local_macro(w, macro_CODEGEN_VISITOR, "(dummy_name)", instance);
+                            auto current_context_parameters = define_local_macro(w, macro_CODEGEN_CONTEXT_PARAMETERS, "(dummy_name)", cls.type_parameters_body());
+                            auto current_context = define_local_macro(w, macro_CODEGEN_CONTEXT, "(dummy_name)", context_instance_name(cls));
+                            w.writeln("#include ", header);
+                        },
+                        [&] {
+                            w.writeln("template <>");
+                            w.writeln("struct ", instance, " {}; // Unimplemented");
+                        });
+                }
+            }
+        }
+    }
+
+    void generate_generic_visit_for_ui(CodeWriter& w, const ContextClass& cls, const std::string_view result_type) {
+        if (!cls.has(ContextClassKind_Generic)) {
+            return;
+        }
+        w.writeln("// generic visitor for ", cls.class_name());
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " visit_", cls.class_name(), "(Context&& ctx,const ebm::", cls.class_name(), "& in,ebm::", cls.ref_name(), " alias_ref = {}) {");
+        {
+            auto scope = w.indent_scope();
+            auto dispatch_fn = dispatch_fn_name(cls);
+            w.writeln("return ", dispatch_fn, "(ctx,in,alias_ref);");
+        }
+        w.writeln("}");
+
+        w.writeln("// short-hand visitor for ", cls.class_name());
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " visit_", cls.class_name(), "(Context&& ctx,const ebm::", cls.ref_name(), "& ref) {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("MAYBE(elem, ctx.visitor.module_.get_", lower(cls.class_name()), "(ref));");
+            auto dispatch_fn = dispatch_fn_name(cls);
+            w.writeln("return ", dispatch_fn, "(ctx,elem,ref);");
+        }
+        w.writeln("}");
+
+        w.writeln("// for DSL convenience");
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " visit_Object(Context&& ctx,const ebm::", cls.class_name(), "& in, ebm::", cls.ref_name(), " alias_ref = {})  {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("return visit_", cls.class_name(), "(ctx,in,alias_ref);");
+        }
+        w.writeln("}");
+
+        w.writeln("// for DSL convenience");
+        w.writeln("template<typename Context>");
+        w.writeln(result_type, " visit_Object(Context&& ctx, ebm::", cls.ref_name(), " ref)  {");
+        {
+            auto scope = w.indent_scope();
+            auto dispatch_fn = dispatch_fn_name(cls);
+            w.writeln("return visit_", cls.class_name(), "(ctx,ref);");
+        }
+        w.writeln("}");
+    }
+
+    void generate_user_interface(CodeWriter& w, std::vector<ContextClasses>& context_classes, const std::string_view result_type) {
+        w.writeln("template<typename VisitorImpl>");
+        w.writeln("struct InitialContext {");
+        {
+            auto scope = w.indent_scope();
+            w.writeln("VisitorImpl& visitor;");
+        }
+        w.writeln("};");
+
+        w.writeln("// for backward compatibility");
+        w.writeln();
+
+        for (auto& cls : context_classes) {
+            generate_generic_visit_for_ui(w, cls.main(), result_type);
+        }
+    }
+
+    void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
         auto result_type = "expected<Result>";
         auto context_classes = generate_context_classes(structs);
         std::vector<HookType> hooks = {
             {.name = "UserHook"},
             {.name = "UserDSLHook"},
             {.name = "DefaultCodegenVisitorHook"},
+
+            // for backward compatibility
+            {.name = "UserInlinedHook"},
+            {.name = "UserInlinedDSLHook"},
+            {.name = "DefaultCodegenVisitorInlinedHook"},
+
             {.name = "GeneratorDefaultHook"},  // this is hidden
         };
 
+        auto ns_name = locations.ns_name;
+        auto is_codegen = locations.is_codegen;
         generate_namespace(hdr, ns_name, true);
+        generate_undef_dummy_macros(src);
+        generate_user_implemented_includes(src, ns_name, hooks, locations, context_classes, result_type);
         generate_namespace(src, ns_name, true);
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
 
         generate_namespace_injection(hdr);
         generate_Result(hdr, is_codegen);
+        generate_Flags(hdr, locations);
+        generate_Output(hdr);
         generate_pass_error_type(hdr);
 
         for (size_t i = 0; i < hooks.size() - 1; i++) {
@@ -617,11 +1033,17 @@ namespace ebmcodegen {
                 generate_visitor_tag(hdr, cls);
                 generate_visitor_requirements(hdr, cls, result_type);
                 deconstruct_context_fields_macro(hdr, ns_name, cls);
+                generate_generator_default_hook(src, hooks.back(), cls, is_codegen, result_type);
             }
             generate_dispatcher_function(hdr, src, cls_group, result_type);
+            generate_list_dispatch_default(hdr, cls_group.main(), is_codegen, result_type);
+            generate_generic_dispatch_default(hdr, cls_group.main(), result_type);
         }
 
         generate_merged_visitor(src, hooks, context_classes, result_type);
+
+        generate_user_interface(hdr, context_classes, result_type);
+        generate_dummy_macros(hdr, ns_name, hooks.front(), context_classes);
 
         ns_scope_hdr.execute();
         ns_scope_src.execute();
@@ -629,478 +1051,4 @@ namespace ebmcodegen {
         generate_namespace(src, ns_name, false);
     }
 
-    /*
-    auto make_dispatch_func_name(std::string_view kind, auto t) {
-        return std::format("dispatch_{}_{}", kind, to_string(t));
-    }
-
-    auto write_visit_entry(auto& w, auto&& result_type, std::string_view kind, bool decl, auto&&... name) {
-        w.writeln("template<typename Context>");
-        w.write(result_type, " ", name..., "(Context&& ctx,const ebm::", kind, "& in,ebm::", kind, "Ref alias_ref", decl ? " = {}" : "", ")");
-    };
-
-    template <class T>
-    void common_dispatch(CodeWriter& dispatch_decl, std::string_view kind, std::string_view ref_name, bool is_codegen, std::string_view result_type) {
-        {
-            // generating dispatcher function
-            write_visit_entry(dispatch_decl, result_type, kind, false, "visit_", kind, "_default");
-            dispatch_decl.writeln(" {");
-            auto scope_ = dispatch_decl.indent_scope();
-            dispatch_decl.writeln("switch (in.body.kind) {");
-            // generating entry point of dispatch function
-            for (size_t i = 0; to_string(T(i))[0]; i++) {
-                auto dispatch_func_name = make_dispatch_func_name(kind, T(i));
-                dispatch_decl.writeln("case ebm::", visit_enum(T(i)), "::", to_string(T(i)), ":");
-                dispatch_decl.indent_writeln("return ", dispatch_func_name, "(ctx,in,alias_ref);");
-            }
-            dispatch_decl.writeln("default:");
-            dispatch_decl.indent_writeln("return unexpect_error(\"Unknown ", kind, " kind: {}\", to_string(in.body.kind));");
-            dispatch_decl.writeln("}");
-            scope_.execute();
-            dispatch_decl.writeln("}");
-        }
-
-        // generating dispatcher declaration for short-hand visitor
-        auto lowered_kind = std::string(kind);
-        lowered_kind[0] = kind[0] - 'A' + 'a';
-        dispatch_decl.writeln("// short-hand visitor for ", ref_name);
-        dispatch_decl.writeln("template<typename Visitor>");
-        dispatch_decl.writeln(result_type, " visit_", kind, "(Visitor&& visitor,const ebm::", ref_name, "& ref) {");
-        {
-            auto scope = dispatch_decl.indent_scope();
-            dispatch_decl.writeln("MAYBE(elem, visitor.module_.get_", lowered_kind, "(ref));");
-            dispatch_decl.writeln("return visit_", kind, "(visitor,elem,ref);");
-        }
-        dispatch_decl.writeln("}");
-
-        // generic visitor
-        dispatch_decl.writeln("// generic visitor for ", ref_name);
-        dispatch_decl.writeln("template<typename Context>");
-        dispatch_decl.writeln(result_type, " visit_Object(Context&& ctx,const ebm::", ref_name, "& ref) {");
-        {
-            auto scope = dispatch_decl.indent_scope();
-            dispatch_decl.writeln("return visit_", kind, "(ctx,ref);");
-        }
-        dispatch_decl.writeln("}");
-
-        auto list_name = std::format("{}s", kind);
-        if (kind == "Statement") {
-            list_name = "Block";
-        }
-
-        // generating dispatcher function for list
-        dispatch_decl.writeln("template<typename Context>");
-        dispatch_decl.writeln(result_type, " visit_", list_name, "_default(Context&& ctx,const ebm::", list_name, "& in) {");
-        {
-            auto list_scope = dispatch_decl.indent_scope();
-            if (is_codegen) {
-                dispatch_decl.writeln("CodeWriter w;");
-            }
-            dispatch_decl.writeln("for(auto& elem:in.container) {");
-            {
-                auto loop_scope = dispatch_decl.indent_scope();
-                dispatch_decl.writeln("auto result = visit_", kind, "(ctx,elem);");
-                dispatch_decl.writeln("if (!result) {");
-                dispatch_decl.indent_writeln("return unexpect_error(std::move(result.error()));");
-                dispatch_decl.writeln("}");
-                if (is_codegen) {
-                    dispatch_decl.writeln("w.write(result.to_writer());");
-                }
-            }
-            dispatch_decl.writeln("}");
-            if (is_codegen) {
-                dispatch_decl.writeln("return w;");
-            }
-            else {
-                dispatch_decl.writeln("return {};");  // Placeholder for non-codegen mode
-            }
-        }
-        dispatch_decl.writeln("}");
-        // generic visitor
-        {
-            dispatch_decl.writeln("// generic visitor for ", list_name);
-            dispatch_decl.writeln("template<typename Context>");
-            dispatch_decl.writeln(result_type, " visit_Object(Context&& ctx,const ebm::", list_name, "& in) {");
-            {
-                auto scope = dispatch_decl.indent_scope();
-                dispatch_decl.writeln("return visit_", list_name, "(ctx,in);");
-            }
-            dispatch_decl.writeln("}");
-        }
-    }
-
-    void generate_class_based(std::string_view ns_name, CodeWriter& header, CodeWriter& source, std::map<std::string_view, Struct>& struct_map, bool is_codegen) {
-        // in merge order
-        CodeWriter contexts_decl;
-        CodeWriter dispatch_decl;
-        CodeWriter user_logic_includes;
-        CodeWriter dispatch_impl;
-        CodeWriter actual_visitor_impl;
-
-        actual_visitor_impl.writeln("struct VisitorImpl : ");
-        auto actual_visitor_impl_scope = actual_visitor_impl.indent_scope();
-
-        std::string result_type = "expected<Result>";
-        std::string default_visitor_impl_dir = "ebmcodegen/default_codegen_class_visitor/";
-        std::string visitor_impl_dir = "visitor/";
-        std::string visitor_dsl_impl_dir = "visitor/dsl/";
-
-        dispatch_decl.writeln("// Customization point for visitor implementation");
-        dispatch_decl.writeln("template<class Tag>");
-        dispatch_decl.writeln("struct Visitor;");
-
-        auto define_tag_variant = [&](auto&& name) {
-            dispatch_decl.writeln("template<class TagDetail>");
-            dispatch_decl.writeln("struct ", name, "{};");
-        };
-
-        define_tag_variant("UserHook");
-        define_tag_variant("UserDSL");
-        define_tag_variant("DefaultCodegen");
-
-        auto concat = [](auto&&... parts) {
-            std::string result;
-            ((result += parts), ...);
-            return result;
-        };
-
-        auto define_tag = [&](auto&& w, auto&&... tag) {
-            w.writeln("struct ", tag..., " {};");
-            actual_visitor_impl.writeln("public ", tag..., ",");
-        };
-        auto context_of = [&](auto&& kind, auto&&... suffix) -> std::string {
-            return concat("Context_", kind, concat(suffix...));
-        };
-
-        auto tag_of = [&](auto&& kind, auto&&... suffix) -> std::string {
-            return concat("VisitorTag_", kind, concat(suffix...));
-        };
-
-        auto with_variant = [&](std::string_view variant, auto&& tag) -> std::string {
-            return concat(ns_name, "::", variant, "<", ns_name, "::", tag, ">");
-        };
-
-        auto visitor_of = [&](auto&& tag) {
-            return concat("Visitor<", tag, ">");
-        };
-
-        auto define_visit = [&](auto&& w, auto&& func_name, auto&& ctx_point, auto&& inner) {
-            w.writeln("template<typename Visitor>");
-            w.write(result_type, " ", func_name, "(", context_of(ctx_point), "<Visitor>& ctx)");
-            w.writeln(" {");
-            {
-                auto indent = w.indent_scope();
-                inner();
-            }
-            w.writeln("}");
-        };
-
-        auto insert_include = [&](auto&& w, auto&& impl_dir, auto&& logic_path, auto&& class_name, auto&& more_requirements) {
-            w.writeln("#if __has_include(\"", impl_dir, logic_path, ".hpp", "\")");
-            w.writeln("#include \"", impl_dir, logic_path, ".hpp", "\"");
-            w.writeln("static_assert(requires { sizeof(", ns_name, "::", class_name, "); },\"MUST implement ", class_name, "\");");
-            more_requirements();
-            w.writeln("#else");
-            w.writeln("// stub implementation");
-            w.writeln("template<>");
-            w.writeln("struct ", ns_name, "::", class_name, " {};");
-            w.writeln("#endif");
-        };
-
-        auto requires_implementation = [&](std::string_view self, std::string_view class_name, std::string_view method_name, auto&&... args) {
-            return std::format("requires {{ {}.{}::{}({}); }}", self, class_name, method_name, concat(args...));
-        };
-
-        auto insert_invoke = [&](auto&& w, auto&& class_name, auto&& method_name, auto&& args, auto&& result_handle) {
-            w.writeln("if constexpr (", requires_implementation("ctx.visitor", class_name, method_name, args), ") {");
-            {
-                auto indent = w.indent_scope();
-                w.writeln(result_handle, " ctx.visitor.", class_name, "::", method_name, "(", args, ");");
-            }
-            w.writeln("}");
-        };
-
-        auto dispatcher = [&](auto t, std::string_view kind, auto subset) {
-            using T = std::decay_t<decltype(t)>;
-            auto body_name = std::string(kind) + "Body";
-            auto ref_name = std::string(kind) + "Ref";
-
-            write_visit_entry(dispatch_decl, result_type, kind, true, "visit_", kind);
-            dispatch_decl.writeln(";");
-
-            auto& body = struct_map[body_name];
-
-            auto insert_context_definition = [&](auto& w, T t) {
-                w.writeln("template<typename Visitor>");
-                w.writeln("struct ", context_of(kind, "_", to_string(t)), " {");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("ebm::", ref_name, " item_id;");
-                    for (auto& field : body.fields) {
-                        if (!subset[t].first.contains(field.name)) {
-                            continue;
-                        }
-                        std::string typ;
-                        if (field.type.contains("std::") || field.type == "bool") {
-                            typ = field.type;
-                        }
-                        else {
-                            typ = std::format("ebm::{}", field.type);
-                        }
-                        if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
-                            typ = std::format("std::vector<{}>", typ);
-                        }
-                        w.writeln("const ", typ, "& ", field.name, ";");
-                    }
-                    w.writeln("Visitor& visitor;");
-                }
-                w.writeln("};");
-            };
-
-            auto construct_context = [&](auto& w, T t) {
-                w.writeln(context_of(kind, "_", to_string(t)), "<std::decay_t<decltype(ctx.visitor)>> new_ctx{");
-                {
-                    auto scope = w.indent_scope();
-                    w.writeln("is_nil(alias_ref) ? in.id : alias_ref,");
-                    for (auto& field : body.fields) {
-                        if (!subset[t].first.contains(field.name)) {
-                            continue;
-                        }
-                        w.writeln(field.name, ",");
-                    }
-                    w.writeln("ctx.visitor,");
-                }
-                w.writeln("};");
-            };
-
-            auto deconstruct_context_macro = [&](auto& w, T t) {
-                std::string upper_kind = std::string(kind);
-                for (auto& c : upper_kind) {
-                    c = std::toupper(c);
-                }
-                w.writeln("#define DECONSTRUCT_CONTEXT_", upper_kind, "_", to_string(t), "(ctx) \\");
-                w.write("auto& item_id = ctx.item_id;");
-                for (auto& field : body.fields) {
-                    if (!subset[t].first.contains(field.name)) {
-                        continue;
-                    }
-                    w.writeln(" \\");
-                    w.write("auto& ", field.name, " = ctx.", field.name, ";");
-                }
-                w.writeln();
-                w.writeln();
-            };
-
-            auto validate_body = [&](auto& w, T t) {
-                for (auto& field : body.fields) {
-                    if (!subset[t].first.contains(field.name)) {
-                        continue;
-                    }
-                    if (field.attr & ebmcodegen::TypeAttribute::PTR) {
-                        w.writeln("if (!in.body.", field.name, "()) {");
-                        w.indent_writeln("return unexpect_error(\"Unexpected null pointer for ", body_name, "::", field.name, "\");");
-                        w.writeln("}");
-                        w.writeln("auto& ", field.name, " = *in.body.", field.name, "();");
-                    }
-                    else {
-                        w.writeln("auto& ", field.name, " = in.body.", field.name, ";");
-                    }
-                }
-            };
-
-            auto insert_dispatch_function = [&](auto& w, auto&& fn_sig_action, auto&& target, auto&& entry_action, auto&& orig_arg, auto&& default_action) {
-                fn_sig_action();
-                w.writeln(" {");
-                {
-                    auto scope = w.indent_scope();
-                    entry_action();
-                    auto main_path = concat(target);
-                    auto main_tag = tag_of(main_path);
-                    auto before_path = concat(target, suffixes[suffix_before]);
-                    auto before_tag = tag_of(before_path);
-                    auto after_path = concat(target, suffixes[suffix_after]);
-                    auto after_tag = tag_of(after_path);
-
-                    auto insert_includes = [&](auto&& tag, auto&& path, auto&& args1, auto&& args2, auto&& result_handle) {
-                        auto user_hook = visitor_of(with_variant("UserHook", tag));
-                        auto user_hook_dsl = visitor_of(with_variant("UserDSL", tag));
-                        auto default_hook = visitor_of(with_variant("DefaultCodegen", tag));
-                        auto make_declval = [&](auto&& hook_ty) {
-                            return std::format("std::declval<{}::{}>()", ns_name, hook_ty);
-                        };
-                        insert_include(user_logic_includes, visitor_impl_dir, path, user_hook, [&] {
-                            auto requires_impl = requires_implementation(make_declval(user_hook), user_hook, "visit", args1);
-                            if (std::string_view(args2) != "") {
-                                requires_impl += " || " + requires_implementation(make_declval(user_hook), user_hook, "visit", args2);
-                            }
-                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", user_hook, "\");");
-                        });
-                        insert_include(user_logic_includes, visitor_dsl_impl_dir, path, user_hook_dsl, [&] {
-                            auto requires_impl = requires_implementation(make_declval(user_hook_dsl), user_hook_dsl, "visit", args1);
-                            if (std::string_view(args2) != "") {
-                                requires_impl += " || " + requires_implementation(make_declval(user_hook_dsl), user_hook_dsl, "visit", args2);
-                            }
-                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", user_hook_dsl, "\");");
-                        });
-                        insert_include(user_logic_includes, default_visitor_impl_dir, path, default_hook, [&] {
-                            auto requires_impl = requires_implementation(make_declval(default_hook), default_hook, "visit", args1);
-                            if (std::string_view(args2) != "") {
-                                requires_impl += " || " + requires_implementation(make_declval(default_hook), default_hook, "visit", args2);
-                            }
-                            user_logic_includes.writeln("static_assert(", requires_impl, ",\"MUST implement visit method in ", default_hook, "\");");
-                        });
-                        insert_invoke(w, user_hook, "visit", args1, result_handle);
-                        w.write("else ");
-                        if (std::string_view(args2) != "") {
-                            insert_invoke(w, user_hook, "visit", args2, result_handle);
-                            w.write("else ");
-                        }
-                        insert_invoke(w, user_hook_dsl, "visit", args1, result_handle);
-                        w.write("else ");
-                        if (std::string_view(args2) != "") {
-                            insert_invoke(w, user_hook_dsl, "visit", args2, result_handle);
-                            w.write("else ");
-                        }
-                        insert_invoke(w, default_hook, "visit", args1, result_handle);
-                        if (std::string_view(args2) != "") {
-                            w.write("else ");
-                            insert_invoke(w, default_hook, "visit", args2, result_handle);
-                        }
-                        if (tag == main_tag) {
-                            w.writeln("else {");
-                            {
-                                auto indent = w.indent_scope();
-                                default_action();
-                            }
-                            w.writeln("}");
-                        }
-                    };
-                    w.writeln("auto main_logic = [&]() -> ", result_type, " {");
-                    {
-                        auto indent = w.indent_scope();
-                        insert_includes(main_tag, main_path, orig_arg, "", "return ");
-                    }
-                    w.writeln("};");
-                    w.writeln("std::optional<", result_type, "> result_before;");
-                    insert_includes(before_tag, before_path, concat(orig_arg, ", main_logic"), orig_arg, "result_before = ");
-                    w.writeln("if(result_before) {");
-                    w.indent_writeln("return *result_before;");
-                    w.writeln("}");
-                    w.writeln("auto result = main_logic();");
-                    w.writeln("std::optional<", result_type, "> result_after;");
-                    insert_includes(after_tag, after_path, concat(orig_arg, ", result"), orig_arg, "result_after = ");
-                    w.writeln("if(result_after) {");
-                    w.indent_writeln("return *result_after;");
-                    w.writeln("}");
-                    w.writeln("return result;");
-                }
-                w.writeln("}");
-            };
-
-            define_tag(dispatch_decl, tag_of(kind));
-            define_tag(dispatch_decl, tag_of(kind, suffixes[suffix_before]));
-            define_tag(dispatch_decl, tag_of(kind, suffixes[suffix_after]));
-
-            for (size_t i = 0; to_string(T(i))[0]; i++) {
-                insert_context_definition(contexts_decl, T(i));
-                deconstruct_context_macro(contexts_decl, T(i));
-                auto t_kind = concat(kind, "_", to_string(T(i)));
-                define_tag(dispatch_decl, tag_of(t_kind));
-                define_tag(dispatch_decl, tag_of(t_kind, suffixes[suffix_before]));
-                define_tag(dispatch_decl, tag_of(t_kind, suffixes[suffix_after]));
-                write_visit_entry(dispatch_decl, result_type, kind, true, make_dispatch_func_name(kind, T(i)));
-                dispatch_decl.writeln(";");
-                insert_dispatch_function(
-                    dispatch_impl,
-                    [&] {
-                        write_visit_entry(dispatch_impl, result_type, kind, false, make_dispatch_func_name(kind, T(i)));
-                    },
-                    concat(kind, "_", to_string(T(i))),
-                    [&] {
-                        validate_body(dispatch_impl, T(i));
-                        construct_context(dispatch_impl, T(i));
-                    },
-                    "new_ctx",
-                    [&] {
-                    if (is_codegen) {
-                        dispatch_impl.writeln("if (ctx.visitor.flags.debug_unimplemented) {");
-                        {
-                            auto indent = dispatch_impl.indent_scope();
-
-                            dispatch_impl.writeln("return std::format(\"{{{{Unimplemented ", kind, "_", to_string(T(i)), " {}}}}}\",get_id(new_ctx.item_id));");
-                        }
-                        dispatch_impl.writeln("}");
-                    }
-                    dispatch_impl.writeln("return expected<Result>{}; // default empty result"); });
-            }
-
-            common_dispatch<T>(dispatch_decl, kind, ref_name, is_codegen, result_type);
-
-            insert_dispatch_function(
-                dispatch_impl,
-                [&] {
-                    write_visit_entry(dispatch_impl, result_type, kind, false, concat("visit_", kind));
-                },
-                kind,
-                [] {},
-                "ctx, in, alias_ref",
-                [&] {
-                    return dispatch_impl.writeln("return visit_", kind, "_default(ctx, in, alias_ref);");
-                });
-            auto list_name = std::format("{}s", kind);
-            if (kind == "Statement") {
-                list_name = "Block";
-            }
-            define_tag(dispatch_decl, tag_of(list_name));
-            define_tag(dispatch_decl, tag_of(list_name, suffixes[suffix_before]));
-            define_tag(dispatch_decl, tag_of(list_name, suffixes[suffix_after]));
-
-            insert_dispatch_function(
-                dispatch_impl,
-                [&] {
-                    dispatch_impl.writeln("template<typename Context>");
-                    dispatch_impl.write(result_type, " visit_", list_name, "(Context&& ctx,const ebm::", list_name, "& in)");
-                },
-                list_name,
-                [] {},
-                "ctx, in",
-                [&] {
-                    return dispatch_impl.writeln("return visit_", list_name, "_default(ctx, in);");
-                });
-        };
-
-        dispatcher(ebm::StatementKind{}, prefixes[prefix_statement], ebmcodegen::body_subset_StatementBody());
-        dispatcher(ebm::ExpressionKind{}, prefixes[prefix_expression], ebmcodegen::body_subset_ExpressionBody());
-        dispatcher(ebm::TypeKind{}, prefixes[prefix_type], ebmcodegen::body_subset_TypeBody());
-
-        actual_visitor_impl.writeln(" std::monostate {};");
-        actual_visitor_impl_scope.execute();
-        header.writeln("namespace ", ns_name, " {");
-        {
-            auto ns_scope = header.indent_scope();
-            header.writeln("using namespace ebmgen;");
-            header.writeln("using namespace ebmcodegen::util;");
-            header.writeln("using CodeWriter = futils::code::LocWriter<std::string,std::vector,ebm::AnyRef>;");
-
-            generate_Result(header, is_codegen);
-
-            header.write_unformatted(contexts_decl.out());
-            header.writeln();
-            header.write_unformatted(dispatch_decl.out());
-            header.writeln();
-        }
-        header.writeln("} // namespace ", ns_name);
-        source.write_unformatted(user_logic_includes.out());
-        source.writeln();
-        source.writeln("namespace ", ns_name, " {");
-        {
-            auto ns_scope = source.indent_scope();
-            source.write_unformatted(dispatch_impl.out());
-            source.writeln();
-            source.write_unformatted(actual_visitor_impl.out());
-            source.writeln();
-        }
-        source.writeln("} // namespace ", ns_name);
-    }
-    */
 }  // namespace ebmcodegen

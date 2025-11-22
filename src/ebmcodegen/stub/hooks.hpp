@@ -35,11 +35,10 @@ constexpr std::string_view suffixes[] = {
     "_struct",
     "_bind",
 
-    // generated from DSL
-    "_dsl",
-
     // class based
     "_class",
+    // generated from DSL
+    "_dsl",
 };
 
 constexpr auto suffix_before = indexof(suffixes, "_before");
@@ -93,4 +92,5 @@ struct ParsedHookName {
     std::optional<ebmcodegen::Struct> struct_info;
     std::set<std::string_view> body_subset;
     bool dsl = false;
+    bool class_based = false;
 };

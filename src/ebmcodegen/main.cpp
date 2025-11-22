@@ -115,6 +115,9 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
             else if (suffix == suffixes[suffix_dsl]) {
                 result.dsl = true;
             }
+            else if (suffix == suffixes[suffix_class]) {
+                result.class_based = true;
+            }
             else {
                 return error("Unknown suffix: {}", suffix);
             }
@@ -451,7 +454,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader || flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
-            w.writeln("#include \"class_based.hpp\"");  // TODO: fix include path
+            w.writeln("#include \"", flags.visitor_impl_dir, "codegen.hpp\"");
         }
         else {
             w.writeln("#include <ebmcodegen/stub/writer_manager.hpp>");

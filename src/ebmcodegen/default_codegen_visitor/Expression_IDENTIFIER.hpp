@@ -33,7 +33,7 @@ for (auto& layer : layers) {
             result += layer.second;
         }
         else {
-            result += self_value;
+            result += visitor.self_value;
         }
     }
     else {

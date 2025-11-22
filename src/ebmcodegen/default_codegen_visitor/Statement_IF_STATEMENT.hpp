@@ -21,16 +21,16 @@
 MAYBE(condition, visit_Expression(*this, if_statement.condition.cond));
 MAYBE(then_block, visit_Statement(*this, if_statement.then_block));
 CodeWriter w;
-if (use_brace_for_condition) {
-    w.writeln("if (", tidy_condition_brace(std::move(condition.to_string())), ") ", begin_block);
+if (visitor.use_brace_for_condition) {
+    w.writeln("if (", tidy_condition_brace(std::move(condition.to_string())), ") ", visitor.begin_block);
 }
 else {
-    w.writeln("if ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
+    w.writeln("if ", tidy_condition_brace(std::move(condition.to_string())), " ", visitor.begin_block);
 }
 auto then_scope = w.indent_scope();
 if (then_block.to_writer().empty()) {
-    if (empty_block_marker.size()) {
-        w.writeln(empty_block_marker);
+    if (visitor.empty_block_marker.size()) {
+        w.writeln(visitor.empty_block_marker);
     }
 }
 else {
@@ -40,11 +40,11 @@ if (get_id(if_statement.else_block) == 4688) {
     ;
 }
 then_scope.execute();
-w.write(end_block);
+w.write(visitor.end_block);
 auto els_block = if_statement.else_block;
-auto if_word = use_elif ? "elif" : "if";
+auto if_word = visitor.use_elif ? "elif" : "if";
 while (!is_nil(els_block)) {
-    if (!use_elif) {
+    if (!visitor.use_elif) {
         w.write(" else ");
     }
     auto kind = module_.get_statement_kind(els_block);
@@ -54,42 +54,42 @@ while (!is_nil(els_block)) {
 
         MAYBE(condition, visit_Expression(*this, next_if.condition.cond));
         MAYBE(then_block, visit_Statement(*this, next_if.then_block));
-        if (use_brace_for_condition) {
-            w.writeln(if_word, " (", tidy_condition_brace(std::move(condition.to_string())), ") ", begin_block);
+        if (visitor.use_brace_for_condition) {
+            w.writeln(if_word, " (", tidy_condition_brace(std::move(condition.to_string())), ") ", visitor.begin_block);
         }
         else {
-            w.writeln(if_word, " ", tidy_condition_brace(std::move(condition.to_string())), " ", begin_block);
+            w.writeln(if_word, " ", tidy_condition_brace(std::move(condition.to_string())), " ", visitor.begin_block);
         }
         auto then_scope = w.indent_scope();
         if (then_block.to_writer().empty()) {
-            if (empty_block_marker.size()) {
-                w.writeln(empty_block_marker);
+            if (visitor.empty_block_marker.size()) {
+                w.writeln(visitor.empty_block_marker);
             }
         }
         else {
             w.write(then_block.to_writer());
         }
         then_scope.execute();
-        w.write(end_block);
+        w.write(visitor.end_block);
         els_block = next_if.else_block;
     }
     else {
-        if (use_elif) {
+        if (visitor.use_elif) {
             w.write("else");
         }
         MAYBE(else_block, visit_Statement(*this, els_block));
-        w.writeln(begin_block);
+        w.writeln(visitor.begin_block);
         auto else_scope = w.indent_scope();
         if (else_block.to_writer().empty()) {
-            if (empty_block_marker.size()) {
-                w.writeln(empty_block_marker);
+            if (visitor.empty_block_marker.size()) {
+                w.writeln(visitor.empty_block_marker);
             }
         }
         else {
             w.write(else_block.to_writer());
         }
         else_scope.execute();
-        w.write(end_block);
+        w.write(visitor.end_block);
         els_block = {};
     }
 }

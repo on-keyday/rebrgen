@@ -19,8 +19,8 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 CodeWriter w;
-w.write(this->metadata_comment_prefix);
-auto name = this->module_.get_associated_identifier(item_id);
+w.write(visitor.metadata_comment_prefix);
+auto name = module_.get_associated_identifier(item_id);
 w.write(" ", name);
 if (metadata.values.container.size()) {
     w.write("(");
@@ -35,5 +35,5 @@ if (metadata.values.container.size()) {
     }
     w.write(")");
 }
-w.writeln(this->metadata_comment_suffix);
+w.writeln(visitor.metadata_comment_suffix);
 return w;

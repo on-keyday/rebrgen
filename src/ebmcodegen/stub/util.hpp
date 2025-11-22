@@ -480,5 +480,9 @@ namespace ebmcodegen::util {
                                                                                \
     template <CODEGEN_CONTEXT_PARAMETERS(dummy_name)>                          \
     ebmgen::expected<void> CODEGEN_VISITOR(dummy_name)::visit(const CODEGEN_CONTEXT(dummy_name) & ctx)
-
+    // This is for signaling continue normal processing without error
+    constexpr auto pass = futils::helper::either::unexpected{ebmgen::Error(futils::error::Category::lib, 0xba55ba55)};
+    constexpr bool is_pass_error(const ebmgen::Error& err) {
+        return err.category() == futils::error::Category::lib && err.sub_category() == 0xba55ba55;
+    }
 }  // namespace ebmcodegen::util

@@ -27,7 +27,7 @@ if (var_decl.is_reference()) {
     return {};
 }
 CodeWriter w;
-auto name = this->module_.get_associated_identifier(item_id);
+auto name = module_.get_associated_identifier(item_id);
 MAYBE(type_str_val, visit_Type(*this, var_decl.var_type));
 std::optional<Result> initial_value;
 
@@ -38,23 +38,23 @@ if (!is_nil(var_decl.initial_value)) {
     w.merge(std::move(got));
     initial_value = initial_value_;
 }
-if (var_decl.decl_kind() == ebm::VariableDeclKind::CONSTANT && constant_define_keyword.size()) {
-    w.write(constant_define_keyword, " ");
+if (var_decl.decl_kind() == ebm::VariableDeclKind::CONSTANT && visitor.constant_define_keyword.size()) {
+    w.write(visitor.constant_define_keyword, " ");
 }
-else if (var_decl.decl_kind() == ebm::VariableDeclKind::IMMUTABLE && immutable_variable_define_keyword.size()) {
-    w.write(immutable_variable_define_keyword, " ");
+else if (var_decl.decl_kind() == ebm::VariableDeclKind::IMMUTABLE && visitor.immutable_variable_define_keyword.size()) {
+    w.write(visitor.immutable_variable_define_keyword, " ");
 }
-else if (var_decl.decl_kind() == ebm::VariableDeclKind::MUTABLE && variable_define_keyword.size()) {
-    w.write(variable_define_keyword, " ");
+else if (var_decl.decl_kind() == ebm::VariableDeclKind::MUTABLE && visitor.variable_define_keyword.size()) {
+    w.write(visitor.variable_define_keyword, " ");
 }
 w.write(name);
-if (variable_with_type) {
-    w.write(variable_type_separator, " ", type_str_val.to_writer());
+if (visitor.variable_with_type) {
+    w.write(visitor.variable_type_separator, " ", type_str_val.to_writer());
 }
 if (initial_value) {
     w.write(" = ", tidy_condition_brace(initial_value->to_string()));
 }
 
-w.writeln(endof_statement);
+w.writeln(visitor.endof_statement);
 
 return w;

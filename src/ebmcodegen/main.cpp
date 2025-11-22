@@ -917,6 +917,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 visitor_stub.writeln(") {");
                 auto stub_include = visitor_stub.indent_scope();
+                visitor_stub.writeln("auto& visitor = *this; // for forward compatibility");
                 insert_include_inner_result_lambda(
                     visitor_stub,
                     [&] {

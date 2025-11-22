@@ -19263,6 +19263,7 @@ namespace ebm2python {
             return {};
         }
         expected<Result> visit_Statement_BLOCK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Block& block) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_BLOCK {}}}}}",get_id(item_id));
@@ -19312,6 +19313,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ASSIGNMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StatementRef& previous_assignment,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ASSIGNMENT {}}}}}",get_id(item_id));
@@ -19361,6 +19363,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_YIELD(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StatementRef& previous_assignment,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_YIELD {}}}}}",get_id(item_id));
@@ -19410,6 +19413,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_APPEND(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& target,const ebm::ExpressionRef& value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_APPEND {}}}}}",get_id(item_id));
@@ -19459,6 +19463,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_RETURN(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_RETURN {}}}}}",get_id(item_id));
@@ -19508,6 +19513,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ERROR_RETURN(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ERROR_RETURN {}}}}}",get_id(item_id));
@@ -19557,6 +19563,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ASSERT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::AssertDesc& assert_desc) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ASSERT {}}}}}",get_id(item_id));
@@ -19606,6 +19613,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_READ_DATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IOData& read_data) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_READ_DATA {}}}}}",get_id(item_id));
@@ -19655,6 +19663,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_WRITE_DATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IOData& write_data) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_WRITE_DATA {}}}}}",get_id(item_id));
@@ -19704,6 +19713,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_IF_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::IfStatement& if_statement) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_IF_STATEMENT {}}}}}",get_id(item_id));
@@ -19753,6 +19763,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_LOOP_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopStatement& loop) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_LOOP_STATEMENT {}}}}}",get_id(item_id));
@@ -19802,6 +19813,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_MATCH_STATEMENT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::MatchStatement& match_statement) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_MATCH_STATEMENT {}}}}}",get_id(item_id));
@@ -19851,6 +19863,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_MATCH_BRANCH(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::MatchBranch& match_branch) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_MATCH_BRANCH {}}}}}",get_id(item_id));
@@ -19900,6 +19913,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_BREAK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopFlowControl& break_) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_BREAK {}}}}}",get_id(item_id));
@@ -19949,6 +19963,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_CONTINUE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoopFlowControl& continue_) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_CONTINUE {}}}}}",get_id(item_id));
@@ -19998,6 +20013,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_FUNCTION_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::FunctionDecl& func_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_FUNCTION_DECL {}}}}}",get_id(item_id));
@@ -20047,6 +20063,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_VARIABLE_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::VariableDecl& var_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_VARIABLE_DECL {}}}}}",get_id(item_id));
@@ -20096,6 +20113,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_PARAMETER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ParameterDecl& param_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_PARAMETER_DECL {}}}}}",get_id(item_id));
@@ -20145,6 +20163,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::FieldDecl& field_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_FIELD_DECL {}}}}}",get_id(item_id));
@@ -20194,6 +20213,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_COMPOSITE_FIELD_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::CompositeFieldDecl& composite_field_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_COMPOSITE_FIELD_DECL {}}}}}",get_id(item_id));
@@ -20243,6 +20263,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ENUM_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EnumDecl& enum_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ENUM_DECL {}}}}}",get_id(item_id));
@@ -20292,6 +20313,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ENUM_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EnumMemberDecl& enum_member_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ENUM_MEMBER_DECL {}}}}}",get_id(item_id));
@@ -20341,6 +20363,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_STRUCT_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::StructDecl& struct_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_STRUCT_DECL {}}}}}",get_id(item_id));
@@ -20390,6 +20413,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_UNION_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_UNION_DECL {}}}}}",get_id(item_id));
@@ -20439,6 +20463,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_UNION_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_UNION_MEMBER_DECL {}}}}}",get_id(item_id));
@@ -20488,6 +20513,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_PROGRAM_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Block& block) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_PROGRAM_DECL {}}}}}",get_id(item_id));
@@ -20537,6 +20563,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_PROPERTY_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::PropertyDecl& property_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_PROPERTY_DECL {}}}}}",get_id(item_id));
@@ -20586,6 +20613,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_PROPERTY_MEMBER_DECL(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::PropertyMemberDecl& property_member_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_PROPERTY_MEMBER_DECL {}}}}}",get_id(item_id));
@@ -20635,6 +20663,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_METADATA(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::Metadata& metadata) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_METADATA {}}}}}",get_id(item_id));
@@ -20684,6 +20713,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_IMPORT_MODULE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ImportDecl& import_decl) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_IMPORT_MODULE {}}}}}",get_id(item_id));
@@ -20733,6 +20763,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_EXPRESSION(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ExpressionRef& expression) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_EXPRESSION {}}}}}",get_id(item_id));
@@ -20782,6 +20813,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ERROR_REPORT(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::ErrorReport& error_report) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ERROR_REPORT {}}}}}",get_id(item_id));
@@ -20831,6 +20863,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_LOWERED_IO_STATEMENTS(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::LoweredIOStatements& lowered_io_statements) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_LOWERED_IO_STATEMENTS {}}}}}",get_id(item_id));
@@ -20880,6 +20913,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_SUB_BYTE_RANGE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::SubByteRange& sub_byte_range) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_SUB_BYTE_RANGE {}}}}}",get_id(item_id));
@@ -20929,6 +20963,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_INIT_CHECK(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::InitCheck& init_check) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_INIT_CHECK {}}}}}",get_id(item_id));
@@ -20978,6 +21013,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Statement_ENDIAN_VARIABLE(const ebm::StatementRef& item_id,const ebm::StatementKind& kind,const ebm::EndianVariable& endian_variable) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Statement_ENDIAN_VARIABLE {}}}}}",get_id(item_id));
@@ -21027,6 +21063,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_INT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Varint& int_value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_INT {}}}}}",get_id(item_id));
@@ -21076,6 +21113,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_INT64(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const std::uint64_t& int64_value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_INT64 {}}}}}",get_id(item_id));
@@ -21125,6 +21163,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_BOOL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const std::uint8_t& bool_value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_BOOL {}}}}}",get_id(item_id));
@@ -21174,6 +21213,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_STRING(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StringRef& string_value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_STRING {}}}}}",get_id(item_id));
@@ -21223,6 +21263,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_TYPE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::TypeRef& type_ref) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_TYPE {}}}}}",get_id(item_id));
@@ -21272,6 +21313,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_LITERAL_CHAR(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Varint& char_value) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_LITERAL_CHAR {}}}}}",get_id(item_id));
@@ -21321,6 +21363,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_IDENTIFIER(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& id) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_IDENTIFIER {}}}}}",get_id(item_id));
@@ -21370,6 +21413,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_BINARY_OP(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::BinaryOp& bop,const ebm::ExpressionRef& left,const ebm::ExpressionRef& right) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_BINARY_OP {}}}}}",get_id(item_id));
@@ -21419,6 +21463,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_UNARY_OP(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& operand,const ebm::UnaryOp& uop) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_UNARY_OP {}}}}}",get_id(item_id));
@@ -21468,6 +21513,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_CALL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::CallDesc& call_desc) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_CALL {}}}}}",get_id(item_id));
@@ -21517,6 +21563,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_INDEX_ACCESS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& base,const ebm::ExpressionRef& index) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_INDEX_ACCESS {}}}}}",get_id(item_id));
@@ -21566,6 +21613,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_MEMBER_ACCESS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& base,const ebm::ExpressionRef& member) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_MEMBER_ACCESS {}}}}}",get_id(item_id));
@@ -21615,6 +21663,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_ENUM_MEMBER(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& enum_decl,const ebm::ExpressionRef& member) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_ENUM_MEMBER {}}}}}",get_id(item_id));
@@ -21664,6 +21713,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_TYPE_CAST(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::CastType& cast_kind,const ebm::TypeRef& from_type,const ebm::ExpressionRef& source_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_TYPE_CAST {}}}}}",get_id(item_id));
@@ -21713,6 +21763,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_RANGE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& end,const ebm::ExpressionRef& start) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_RANGE {}}}}}",get_id(item_id));
@@ -21762,6 +21813,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_DEFAULT_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_DEFAULT_VALUE {}}}}}",get_id(item_id));
@@ -21811,6 +21863,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_IS_LITTLE_ENDIAN(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& endian_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_IS_LITTLE_ENDIAN {}}}}}",get_id(item_id));
@@ -21860,6 +21913,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_GET_STREAM_OFFSET(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StreamType& stream_type,const ebm::SizeUnit& unit) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_GET_STREAM_OFFSET {}}}}}",get_id(item_id));
@@ -21909,6 +21963,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_GET_REMAINING_BYTES(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StreamType& stream_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_GET_REMAINING_BYTES {}}}}}",get_id(item_id));
@@ -21958,6 +22013,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_CAN_READ_STREAM(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_ref,const ebm::Size& num_bytes,const ebm::StreamType& stream_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_CAN_READ_STREAM {}}}}}",get_id(item_id));
@@ -22007,6 +22063,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_ARRAY_SIZE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& array_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_ARRAY_SIZE {}}}}}",get_id(item_id));
@@ -22056,6 +22113,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_ENUM_IS_DEFINED(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_ENUM_IS_DEFINED {}}}}}",get_id(item_id));
@@ -22105,6 +22163,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_IS_ERROR(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_IS_ERROR {}}}}}",get_id(item_id));
@@ -22154,6 +22213,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_MAX_VALUE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_MAX_VALUE {}}}}}",get_id(item_id));
@@ -22203,6 +22263,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_READ_DATA(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_statement,const ebm::StatementRef& target_stmt) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_READ_DATA {}}}}}",get_id(item_id));
@@ -22252,6 +22313,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_WRITE_DATA(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& io_statement,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_WRITE_DATA {}}}}}",get_id(item_id));
@@ -22301,6 +22363,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_CONDITIONAL_STATEMENT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& conditional_stmt,const ebm::StatementRef& target_stmt) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_CONDITIONAL_STATEMENT {}}}}}",get_id(item_id));
@@ -22350,6 +22413,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_CONDITIONAL(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& condition,const ebm::ExpressionRef& else_,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& then) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_CONDITIONAL {}}}}}",get_id(item_id));
@@ -22399,6 +22463,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_AVAILABLE(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_AVAILABLE {}}}}}",get_id(item_id));
@@ -22448,6 +22513,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_SIZEOF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::LoweredExpressionRef& lowered_expr,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_SIZEOF {}}}}}",get_id(item_id));
@@ -22497,6 +22563,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_SUB_RANGE_INIT(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::StatementRef& sub_range) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_SUB_RANGE_INIT {}}}}}",get_id(item_id));
@@ -22546,6 +22613,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_OR_COND(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::Expressions& or_cond) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_OR_COND {}}}}}",get_id(item_id));
@@ -22595,6 +22663,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_ADDRESS_OF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_ADDRESS_OF {}}}}}",get_id(item_id));
@@ -22644,6 +22713,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_OPTIONAL_OF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_OPTIONAL_OF {}}}}}",get_id(item_id));
@@ -22693,6 +22763,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_SETTER_STATUS(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::SetterStatus& setter_status) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_SETTER_STATUS {}}}}}",get_id(item_id));
@@ -22742,6 +22813,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_SELF(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_SELF {}}}}}",get_id(item_id));
@@ -22791,6 +22863,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Expression_AS_ARG(const ebm::ExpressionRef& item_id,const ebm::TypeRef& type,const ebm::ExpressionKind& kind,const ebm::ExpressionRef& target_expr) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Expression_AS_ARG {}}}}}",get_id(item_id));
@@ -22840,6 +22913,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_INT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_INT {}}}}}",get_id(item_id));
@@ -22889,6 +22963,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_UINT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_UINT {}}}}}",get_id(item_id));
@@ -22938,6 +23013,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_USIZE(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_USIZE {}}}}}",get_id(item_id));
@@ -22987,6 +23063,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_FLOAT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Varint& size) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_FLOAT {}}}}}",get_id(item_id));
@@ -23036,6 +23113,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_STRUCT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::StatementRef& id) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_STRUCT {}}}}}",get_id(item_id));
@@ -23085,6 +23163,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_RECURSIVE_STRUCT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::StatementRef& id) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_RECURSIVE_STRUCT {}}}}}",get_id(item_id));
@@ -23134,6 +23213,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_BOOL(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_BOOL {}}}}}",get_id(item_id));
@@ -23183,6 +23263,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_VOID(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_VOID {}}}}}",get_id(item_id));
@@ -23232,6 +23313,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_META(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_META {}}}}}",get_id(item_id));
@@ -23281,6 +23363,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_ENUM(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& base_type,const ebm::StatementRef& id) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_ENUM {}}}}}",get_id(item_id));
@@ -23330,6 +23413,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_ARRAY(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& element_type,const ebm::Varint& length) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_ARRAY {}}}}}",get_id(item_id));
@@ -23379,6 +23463,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_VECTOR(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& element_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_VECTOR {}}}}}",get_id(item_id));
@@ -23428,6 +23513,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_VARIANT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& common_type,const ebm::Types& members,const ebm::StatementRef& related_field) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_VARIANT {}}}}}",get_id(item_id));
@@ -23477,6 +23563,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_RANGE(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& base_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_RANGE {}}}}}",get_id(item_id));
@@ -23526,6 +23613,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_ENCODER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_ENCODER_RETURN {}}}}}",get_id(item_id));
@@ -23575,6 +23663,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_DECODER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_DECODER_RETURN {}}}}}",get_id(item_id));
@@ -23624,6 +23713,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_ENCODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_ENCODER_INPUT {}}}}}",get_id(item_id));
@@ -23673,6 +23763,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_DECODER_INPUT(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_DECODER_INPUT {}}}}}",get_id(item_id));
@@ -23722,6 +23813,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_PROPERTY_SETTER_RETURN(const ebm::TypeRef& item_id,const ebm::TypeKind& kind) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_PROPERTY_SETTER_RETURN {}}}}}",get_id(item_id));
@@ -23771,6 +23863,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_OPTIONAL(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& inner_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_OPTIONAL {}}}}}",get_id(item_id));
@@ -23820,6 +23913,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_PTR(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::TypeRef& pointee_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_PTR {}}}}}",get_id(item_id));
@@ -23869,6 +23963,7 @@ namespace ebm2python {
             return result;
         }
         expected<Result> visit_Type_FUNCTION(const ebm::TypeRef& item_id,const ebm::TypeKind& kind,const ebm::Types& params,const ebm::TypeRef& return_type) {
+            auto& visitor = *this; // for forward compatibility
             auto generator_default_logic = [&]() -> expected<Result> {
                 if (flags.debug_unimplemented) {
                     return std::format("{{{{Unimplemented Type_FUNCTION {}}}}}",get_id(item_id));

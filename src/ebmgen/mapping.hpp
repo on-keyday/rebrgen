@@ -44,10 +44,18 @@ namespace ebmgen {
         }
     };
 
+    struct lazy_init_tag {};
+
+    constexpr lazy_init_tag lazy_init{};
+
     struct MappingTable {
         explicit MappingTable(EBMProxy module)
             : module_(module) {
             build_maps();
+        }
+
+        explicit MappingTable(EBMProxy module, lazy_init_tag)
+            : module_(module) {
         }
 
         bool valid() const;
@@ -127,6 +135,7 @@ namespace ebmgen {
         const ebm::Loc* get_debug_loc(const ebm::AnyRef& ref) const;
 
         void directly_map_statement_identifier(ebm::StatementRef ref, std::string&& name);
+        void build_maps();
 
        private:
         EBMProxy module_;
@@ -140,6 +149,5 @@ namespace ebmgen {
         std::unordered_map<ebm::StatementKind, std::string> default_identifier_prefix_;
         std::unordered_map<std::uint64_t, std::string> statement_identifier_direct_map_;
         std::unordered_map<std::uint64_t, const ebm::Loc*> debug_loc_map_;
-        void build_maps();
     };
 }  // namespace ebmgen

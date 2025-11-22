@@ -150,6 +150,13 @@ add_executable(ebmcodegen
 target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
 
+add_executable(
+    test_class_based
+    "save/class_based.cpp"
+)
+target_link_libraries(test_class_based ebm futils ebm_mapping)
+
+
 #add_executable(gen_template2
 #    "src/old/bm2/gen_template2/main.cpp"
 #)

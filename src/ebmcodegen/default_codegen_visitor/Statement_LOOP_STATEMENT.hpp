@@ -43,22 +43,22 @@ if (auto c = loop.condition()) {
     w.write(condition_related);
 }
 else {
-    if (infinity_loop_keyword.empty()) {
+    if (visitor.infinity_loop_keyword.empty()) {
         MAYBE(true_, get_bool_literal(*this, true));
         cond = std::move(true_);
     }
 }
 
 if (cond) {
-    if (use_brace_for_condition) {
-        w.writeln("while (", tidy_condition_brace(std::move(*cond)), ") ", begin_block);
+    if (visitor.use_brace_for_condition) {
+        w.writeln("while (", tidy_condition_brace(std::move(*cond)), ") ", visitor.begin_block);
     }
     else {
-        w.writeln("while ", tidy_condition_brace(std::move(*cond)), " ", begin_block);
+        w.writeln("while ", tidy_condition_brace(std::move(*cond)), " ", visitor.begin_block);
     }
 }
 else {
-    w.writeln(infinity_loop_keyword, " ", begin_block);
+    w.writeln(visitor.infinity_loop_keyword, " ", visitor.begin_block);
 }
 {
     auto body_indent = w.indent_scope();
@@ -70,6 +70,6 @@ else {
     }
     w.write(condition_related);
 }
-w.writeln(end_block);
+w.writeln(visitor.end_block);
 
 return w;

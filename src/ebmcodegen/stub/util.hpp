@@ -98,7 +98,7 @@ namespace ebmcodegen::util {
     };
 
     std::optional<BytesType> is_bytes_type(auto&& visitor, ebm::TypeRef type_ref, BytesType candidate = BytesType::both) {
-        const ebmgen::MappingTable& module_ = visitor.module_;
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         auto type = module_.get_type(type_ref);
         if (!type) {
             return std::nullopt;
@@ -356,7 +356,7 @@ namespace ebmcodegen::util {
     }
 
     ebmgen::expected<size_t> get_variant_index(auto&& visitor, ebm::TypeRef variant_type, ebm::TypeRef candidate_type) {
-        auto& module_ = visitor.module_;
+        auto& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(variant_type));
         if (type.body.kind != ebm::TypeKind::VARIANT) {
             return ebmgen::unexpect_error("not a variant type");
@@ -371,7 +371,7 @@ namespace ebmcodegen::util {
     }
 
     ebmgen::expected<ebm::TypeRef> get_variant_member_from_field(auto&& visitor, ebm::StatementRef field_ref) {
-        ebmgen::MappingTable& module_ = visitor.module_;
+        ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(field_stmt, module_.get_statement(field_ref));
         MAYBE(field_decl, field_stmt.body.field_decl());
         MAYBE(parent_struct, module_.get_statement(field_decl.parent_struct));

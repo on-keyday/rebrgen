@@ -21,10 +21,10 @@ CodeWriter w;
 
 for (auto& stmt_ref : block.container) {
     MAYBE(stmt, visit_Statement(*this, stmt_ref));
-    for (auto& custom_type : custom_types) {
+    for (auto& custom_type : visitor.custom_types) {
         w.writeln(custom_type);
     }
-    custom_types.clear();
+    visitor.custom_types.clear();
     w.writeln(stmt.to_writer());
 }
 

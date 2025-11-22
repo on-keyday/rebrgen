@@ -1,5 +1,7 @@
 /*license*/
 #include "stub/class_based.hpp"
+#include "ebmgen/common.hpp"
+#include "error/error.h"
 #include "stub/structs.hpp"
 #include <format>
 #include <string>
@@ -17,7 +19,7 @@ namespace ebmcodegen {
     struct ContextClassField {
         std::string_view name;
         std::string type;
-        StructField* base = nullptr;
+        const StructField* base = nullptr;
     };
 
     enum ContextClassKind {
@@ -217,7 +219,7 @@ namespace ebmcodegen {
         }
     };
 
-    std::vector<ContextClasses> generate_context_classes(std::map<std::string_view, Struct>& struct_map, std::string_view ns_name) {
+    std::vector<ContextClasses> generate_context_classes(const std::map<std::string_view, Struct>& struct_map) {
         std::vector<ContextClasses> context_classes;
         std::string result_type = "expected<Result>";
         auto add_common_visitor = [&](ContextClass& context_class) {
@@ -266,7 +268,7 @@ namespace ebmcodegen {
                 per_variant.main().variant = to_string(T(i));
                 add_common_visitor(per_variant.main());
                 per_variant.main().fields.push_back(ContextClassField{.name = "item_id", .type = "ebm::" + std::string(kind) + "Ref"});
-                auto& body = struct_map[std::string(kind) + "Body"];
+                auto& body = struct_map.at(std::string(kind) + "Body");
                 for (auto& field : body.fields) {
                     if (!subset[T(i)].first.contains(field.name)) {
                         continue;
@@ -1472,10 +1474,7 @@ namespace ebmcodegen {
         w.writeln("}");
     }
 
-    void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
-        auto result_type = "expected<Result>";
-        auto context_classes = generate_context_classes(structs, locations.ns_name);
-        auto utility_classes = generate_utility_classes();
+    auto generate_hooks() {
         std::vector<HookType> hooks = {
             {.name = "UserHook"},
             {.name = "UserDSLHook"},
@@ -1488,7 +1487,14 @@ namespace ebmcodegen {
 
             {.name = "GeneratorDefaultHook"},  // this is hidden
         };
+        return hooks;
+    }
 
+    void generate(const IncludeLocations& locations, CodeWriter& hdr, CodeWriter& src, std::map<std::string_view, Struct>& structs) {
+        auto result_type = "expected<Result>";
+        auto context_classes = generate_context_classes(structs);
+        auto utility_classes = generate_utility_classes();
+        auto hooks = generate_hooks();
         auto ns_name = locations.ns_name;
         auto is_codegen = locations.is_codegen;
         generate_common_include_guard(hdr, true);
@@ -1547,4 +1553,82 @@ namespace ebmcodegen {
         generate_entry_point(src, ns_name);
     }
 
+    void generate_hook_description(CodeWriter& w, const ParsedHookName& hook_name, const ContextClass& cls, UtilityClasses& utils, const std::map<std::string_view, Struct>& struct_map) {
+        w.writeln("/*");
+        {
+            auto scope0 = w.indent_scope();
+            w.writeln("Name: ", hook_name.original);
+            w.writeln("Available Variables:");
+            auto print_struct = [&](auto&& print_struct, std::string_view type) -> void {
+                if (auto found = struct_map.find(type); found != struct_map.end()) {
+                    auto nest = w.indent_scope();
+                    for (auto& field : found->second.fields) {
+                        w.write(field.name, ": ");
+                        if (field.attr & ebmcodegen::TypeAttribute::PTR) {
+                            w.write("*");
+                        }
+                        if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
+                            w.write("std::vector<", field.type, ">");
+                        }
+                        else {
+                            w.write(field.type);
+                        }
+                        w.writeln();
+                        if (field.type != "Varint" && !field.type.ends_with("Ref")) {
+                            print_struct(print_struct, field.type);
+                        }
+                    }
+                }
+            };
+            {
+                auto scope = w.indent_scope();
+                w.writeln("ctx: ", context_instance_name(cls));
+                {
+                    auto scope2 = w.indent_scope();
+                    for (auto& field : cls.fields) {
+                        if (field.name == "visitor") {
+                            w.writeln("visitor: MergedVisitor&");
+                            {
+                                auto scope3 = w.indent_scope();
+                                auto& base_visitor = utils["BaseVisitor"];
+                                for (auto& field : base_visitor.fields) {
+                                    if (field.name == legacy_compat_ptr_name) {
+                                        continue;
+                                    }
+                                    w.writeln(field.name, ": ", field.type);
+                                }
+                            }
+                            continue;
+                        }
+                        w.writeln(field.name, ": ", field.type);
+                        if (field.base) {
+                            print_struct(print_struct, field.base->type);
+                        }
+                    }
+                }
+            }
+        }
+        w.writeln("*/");
+    }
+
+    ebmgen::expected<void> class_based_hook_descriptions(CodeWriter& w, const ParsedHookName& hook_name, const std::map<std::string_view, Struct>& structs) {
+        auto context_classes = generate_context_classes(structs);
+        auto utility_classes = generate_utility_classes();
+        auto hooks = generate_hooks();
+
+        for (auto& cls_group : context_classes) {
+            for (auto& cls : cls_group.classes) {
+                if (hook_name.target == cls.base && hook_name.kind == cls.variant) {
+                    auto before_after = cls.is_before_after();
+                    if ((before_after == ContextClassKind_Before && hook_name.include_location == suffixes[suffix_before]) ||
+                        (before_after == ContextClassKind_After && hook_name.include_location == suffixes[suffix_after]) ||
+                        (before_after == ContextClassKind_Normal && hook_name.include_location.empty())) {
+                        generate_hook_description(w, hook_name, cls, utility_classes, structs);
+                        return {};
+                    }
+                }
+            }
+        }
+        return futils::helper::either::unexpected(futils::error::StrError<std::string>{std::format("No matching class found for hook description: {}", hook_name.original)});
+    }
 }  // namespace ebmcodegen

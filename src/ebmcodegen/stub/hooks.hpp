@@ -84,6 +84,7 @@ constexpr bool is_flag_location(std::string_view suffix) {
 }
 
 struct ParsedHookName {
+    std::string_view original;
     std::string_view target;
     std::string_view include_location;
     std::string_view visitor_location;

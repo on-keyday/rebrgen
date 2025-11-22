@@ -42,7 +42,7 @@ auto& io_data = read_data;
 MAYBE(target_expr_str, visit_Expression(*this, io_data.target));
 
 // Generate Python code for writing
-MAYBE(struct_format, this->type_to_struct_format(io_data.data_type, io_data.attribute, io_data.size));
+MAYBE(struct_format, visitor.type_to_struct_format(io_data.data_type, io_data.attribute, io_data.size));
 
 MAYBE(read_size_str, get_size_str(*this, io_data.size));
 

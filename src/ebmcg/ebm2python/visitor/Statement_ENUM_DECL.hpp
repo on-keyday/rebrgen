@@ -23,11 +23,11 @@ auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
 
-w.writeln("class ", name, "(enum.IntEnum)", begin_block);
+w.writeln("class ", name, "(enum.IntEnum)", visitor.begin_block);
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, enum_decl.members));
     merge_result(*this, w, block);
 }
-w.writeln(end_block);
+w.writeln(visitor.end_block);
 return w;

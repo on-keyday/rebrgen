@@ -14,6 +14,21 @@
 #include <unordered_set>
 
 namespace ebmcodegen::util {
+
+    template <typename T>
+    concept has_get_visitor_from_context = requires(T ctx) {
+        { get_visitor_from_context(ctx) };
+    };
+
+    auto& get_visitor(auto&& ctx) {
+        if constexpr (has_get_visitor_from_context<decltype(ctx)>) {
+            return get_visitor_from_context(ctx);
+        }
+        else {
+            return ctx;
+        }
+    }
+
     // remove top level brace
     inline std::string tidy_condition_brace(std::string&& brace) {
         if (brace.starts_with("(") && brace.ends_with(")")) {
@@ -41,12 +56,12 @@ namespace ebmcodegen::util {
         return std::move(brace);
     }
 
-    ebmgen::expected<std::string> get_size_str(auto&& visitor, const ebm::Size& s) {
+    ebmgen::expected<std::string> get_size_str(auto&& ctx, const ebm::Size& s) {
         if (auto size = s.size()) {
             return std::format("{}", size->value());
         }
         else if (auto ref = s.ref()) {
-            MAYBE(expr, visit_Expression(visitor, *ref));
+            MAYBE(expr, visit_Expression(ctx, *ref));
             return expr.to_string();
         }
         return ebmgen::unexpect_error("unsupported size: {}", to_string(s.unit));
@@ -113,7 +128,7 @@ namespace ebmcodegen::util {
     }
 
     ebmgen::expected<std::string> get_default_value(auto&& visitor, ebm::TypeRef ref, const DefaultValueOption& option = {}) {
-        const ebmgen::MappingTable& module_ = visitor.module_;
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(ref));
         switch (type.body.kind) {
             case ebm::TypeKind::INT:
@@ -181,7 +196,8 @@ namespace ebmcodegen::util {
         as_expr,
     };
 
-    ebmgen::expected<std::vector<std::pair<ebm::StatementKind, std::string>>> get_identifier_layer(auto&& visitor, ebm::StatementRef stmt, LayerState state = LayerState::root) {
+    ebmgen::expected<std::vector<std::pair<ebm::StatementKind, std::string>>> get_identifier_layer(auto&& ctx, ebm::StatementRef stmt, LayerState state = LayerState::root) {
+        auto& visitor = get_visitor(ctx);
         MAYBE(statement, visitor.module_.get_statement(stmt));
         if (state == LayerState::root) {
             if (statement.body.kind == ebm::StatementKind::STRUCT_DECL ||
@@ -228,7 +244,7 @@ namespace ebmcodegen::util {
     }
 
     auto struct_union_members(auto&& visitor, ebm::TypeRef variant) -> ebmgen::expected<std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>>> {
-        const ebmgen::MappingTable& module_ = visitor.module_;
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(variant));
         std::vector<std::decay_t<decltype(*visit_Statement(visitor, ebm::StatementRef{}))>> result;
         if (type.body.kind == ebm::TypeKind::VARIANT) {
@@ -262,7 +278,8 @@ namespace ebmcodegen::util {
         w.merge(std::move(result.to_writer()));
     }
 
-    void convert_location_info(auto&& visitor, auto&& loc_writer) {
+    void convert_location_info(auto&& ctx, auto&& loc_writer) {
+        auto& visitor = get_visitor(ctx);
         auto& m = visitor.module_;
         for (auto& loc : loc_writer.locs_data()) {
             const ebm::Loc* l = m.get_debug_loc(loc.loc);
@@ -286,7 +303,7 @@ namespace ebmcodegen::util {
     }
 
     bool is_u8(auto&& visitor, ebm::TypeRef type_ref) {
-        const ebmgen::MappingTable& module_ = visitor.module_;
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         if (auto type = module_.get_type(type_ref)) {
             if (type->body.kind == ebm::TypeKind::UINT) {
                 if (auto size = type->body.size()) {
@@ -299,13 +316,14 @@ namespace ebmcodegen::util {
         return false;
     }
 
-    ebmgen::expected<void> handle_fields(auto&& visitor, auto&& fields, bool recurse_composite, auto&& callback) {
+    ebmgen::expected<void> handle_fields(auto&& ctx, auto&& fields, bool recurse_composite, auto&& callback) {
+        auto& visitor = get_visitor(ctx);
         ebmgen::expected<void> result = {};
         for (auto& field_ref : fields.container) {
             MAYBE(field, visitor.module_.get_statement(field_ref));
             if (auto comp = field.body.composite_field_decl()) {
                 if (recurse_composite) {
-                    MAYBE_VOID(res, handle_fields(visitor, comp->fields, recurse_composite, callback));
+                    MAYBE_VOID(res, handle_fields(ctx, comp->fields, recurse_composite, callback));
                     continue;
                 }
             }
@@ -318,7 +336,7 @@ namespace ebmcodegen::util {
     }
 
     ebmgen::expected<std::pair<std::string, std::string>> first_enum_name(auto&& visitor, ebm::TypeRef enum_type) {
-        const ebmgen::MappingTable& module_ = visitor.module_;
+        const ebmgen::MappingTable& module_ = get_visitor(visitor).module_;
         MAYBE(type, module_.get_type(enum_type));
         if (auto enum_id = type.body.id()) {
             MAYBE(enum_decl, module_.get_statement(*enum_id));
@@ -471,18 +489,39 @@ namespace ebmcodegen::util {
     }  // namespace internal
 
 // for class based
-#define DEFINE_VISITOR(dummy_name)                                             \
-    template <>                                                                \
-    struct CODEGEN_VISITOR(dummy_name) {                                       \
-        template <CODEGEN_CONTEXT_PARAMETERS(dummy_name)>                      \
-        ebmgen::expected<void> visit(const CODEGEN_CONTEXT(dummy_name) & ctx); \
-    };                                                                         \
-                                                                               \
-    template <CODEGEN_CONTEXT_PARAMETERS(dummy_name)>                          \
-    ebmgen::expected<void> CODEGEN_VISITOR(dummy_name)::visit(const CODEGEN_CONTEXT(dummy_name) & ctx)
+#define DEFINE_VISITOR(dummy_name)                                                            \
+    template <>                                                                               \
+    struct CODEGEN_VISITOR(dummy_name) {                                                      \
+        ebmgen::expected<CODEGEN_NAMESPACE::Result> visit(CODEGEN_CONTEXT(dummy_name) & ctx); \
+    };                                                                                        \
+                                                                                              \
+    inline ebmgen::expected<CODEGEN_NAMESPACE::Result> CODEGEN_VISITOR(dummy_name)::visit(CODEGEN_CONTEXT(dummy_name) & ctx)
+
     // This is for signaling continue normal processing without error
     constexpr auto pass = futils::helper::either::unexpected{ebmgen::Error(futils::error::Category::lib, 0xba55ba55)};
     constexpr bool is_pass_error(const ebmgen::Error& err) {
         return err.category() == futils::error::Category::lib && err.sub_category() == 0xba55ba55;
     }
+
+    template <class ResultType>
+    struct MainLogicWrapper {
+       private:
+        ebmgen::expected<ResultType> (*main_logic_)(void*);
+        void* arg_;
+
+        template <class F>
+        constexpr static ebmgen::expected<ResultType> invoke_main_logic(void* arg) {
+            auto* self = static_cast<F*>(arg);
+            return (*self)();
+        }
+
+       public:
+        template <class F>
+        constexpr MainLogicWrapper(F&& f)
+            : main_logic_(&invoke_main_logic<std::decay_t<F>>), arg_(static_cast<void*>(std::addressof(f))) {}
+
+        constexpr ebmgen::expected<ResultType> operator()() {
+            return main_logic_(arg_);
+        }
+    };
 }  // namespace ebmcodegen::util

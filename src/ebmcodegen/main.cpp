@@ -68,8 +68,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"json-conv-source", GenerateMode::JSONConverterSource},
                        {"cmake", GenerateMode::CMake},
                        {"codegen", GenerateMode::CodeGenerator},
-                       {"class-based-codegen-header", GenerateMode::ClassBasedCodeGeneratorHeader},
-                       {"class-based-codegen-source", GenerateMode::ClassBasedCodeGeneratorSource},
+                       {"codegen-class-header", GenerateMode::ClassBasedCodeGeneratorHeader},
+                       {"codegen-class-source", GenerateMode::ClassBasedCodeGeneratorSource},
                        {"interpret", GenerateMode::Interpreter},
                        {"hooklist", GenerateMode::HookList},
                        {"hookkind", GenerateMode::HookKind},
@@ -185,6 +185,27 @@ int print_cmake(CodeWriter& w, Flags& flags) {
     w.writeln("add_executable(", target_name);
     w.indent_writeln("\"main.cpp\"");
     w.writeln(")");
+    w.write("target_precompile_headers(", target_name, " ");
+    w.write_unformatted(R"(PRIVATE
+    <format>
+    <expected>
+    <string>
+    <vector>
+    <variant>
+    <optional>
+    <ebm/extended_binary_module.hpp>
+    <ebmcodegen/stub/entry.hpp>
+    <ebmcodegen/stub/util.hpp>
+    <ebmgen/common.hpp>
+    <ebmgen/convert/helper.hpp>
+    <ebmgen/mapping.hpp>
+    <code/code_writer.h>
+    <code/loc_writer.h>
+    <ebmcodegen/stub/writer_manager.hpp>
+    <concepts>
+    <strutil/append.h>
+)
+)");
     w.writeln("if(UNIX)");
     w.writeln("set_target_properties(", target_name, " PROPERTIES INSTALL_RPATH \"${CMAKE_SOURCE_DIR}/tool\")");
     w.writeln("endif()");
@@ -454,14 +475,13 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
 
     if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader || flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
-            w.writeln("#include \"", flags.visitor_impl_dir, "codegen.hpp\"");
+            w.writeln("#include \"codegen.hpp\"");
         }
         else {
             w.writeln("#include <ebmcodegen/stub/writer_manager.hpp>");
             w.writeln("#include <concepts>");
             w.writeln("#include <strutil/append.h>");
         }
-        CodeWriter header, source;
         ebmcodegen::IncludeLocations locations;
         locations.include_locations = {
             {flags.visitor_impl_dir, std::string{suffixes[suffix_class]}},
@@ -476,12 +496,12 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         locations.lang = flags.lang;
         locations.program_name = flags.program_name;
         locations.is_codegen = true;
-        ebmcodegen::generate(locations, header, source, struct_map);
+        CodeWriter dummy;
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
-            w.write_unformatted(header.out());
+            ebmcodegen::generate(locations, w, dummy, struct_map);
         }
         else {
-            w.write_unformatted(source.out());
+            ebmcodegen::generate(locations, dummy, w, struct_map);
         }
         cout << w.out();
         return 0;

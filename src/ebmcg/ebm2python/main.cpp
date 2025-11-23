@@ -159,77 +159,77 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::Visito
 template <>
 struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor
-#include "visitor/post_visitor_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor"))
+#if __has_include("visitor/post_entry_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry
+#include "visitor/post_entry_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 0
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 0
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor_before_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_before>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_before
-#include "visitor/post_visitor_before_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_before"))
+#if __has_include("visitor/post_entry_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_before
+#include "visitor/post_entry_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_before>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_before>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 0
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 0
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor_after_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_after>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_after
-#include "visitor/post_visitor_after_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_after"))
+#if __has_include("visitor/post_entry_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_after
+#include "visitor/post_entry_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_after>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_after>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 0
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 0
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/Statement_BLOCK_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserHook<ebm2python::VisitorTag_Statement_BLOCK>>
@@ -7647,77 +7647,77 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::Vis
 template <>
 struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_dsl_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor
-#include "visitor/dsl/post_visitor_dsl_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor"))
+#if __has_include("visitor/dsl/post_entry_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry
+#include "visitor/dsl/post_entry_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 1
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 1
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_before_dsl_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_before>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_before
-#include "visitor/dsl/post_visitor_before_dsl_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_before"))
+#if __has_include("visitor/dsl/post_entry_before_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_before
+#include "visitor/dsl/post_entry_before_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_before>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_before>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 1
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 1
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_after_dsl_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_after>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_after
-#include "visitor/dsl/post_visitor_after_dsl_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_after"))
+#if __has_include("visitor/dsl/post_entry_after_dsl_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_after
+#include "visitor/dsl/post_entry_after_dsl_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_after>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_after>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 1
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 1
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/dsl/Statement_BLOCK_dsl_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::UserDSLHook<ebm2python::VisitorTag_Statement_BLOCK>>
@@ -15135,77 +15135,77 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<e
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor
-#include "ebmcodegen/default_codegen_visitor/post_visitor_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor"))
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry
+#include "ebmcodegen/default_codegen_visitor/post_entry_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 2
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 2
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor_before_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_before>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_before
-#include "ebmcodegen/default_codegen_visitor/post_visitor_before_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_before"))
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_before_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_before
+#include "ebmcodegen/default_codegen_visitor/post_entry_before_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_before"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_before>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 2
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 2
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor_after_class.hpp")
-#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_after>>
-#define CODEGEN_CONTEXT(dummy_name) Context_post_visitor_after
-#include "ebmcodegen/default_codegen_visitor/post_visitor_after_class.hpp"
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_visitor_after"))
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_after_class.hpp")
+#define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>>
+#define CODEGEN_CONTEXT(dummy_name) Context_post_entry_after
+#include "ebmcodegen/default_codegen_visitor/post_entry_after_class.hpp"
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("Context_post_entry_after"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_CONTEXT(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_CONTEXT
-#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_after>>"))
+#define TEMPORARY_CHECK_MACRO(x) static_assert(std::string_view(#x) == std::string_view("ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>>"))
 #define PASS_TO_CHECK(x) TEMPORARY_CHECK_MACRO(x)
 PASS_TO_CHECK(CODEGEN_VISITOR(dummy_name));
 #undef TEMPORARY_CHECK_MACRO
 #undef PASS_TO_CHECK
 #undef CODEGEN_VISITOR
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 2
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 2
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK_class.hpp")
 #define CODEGEN_VISITOR(dummy_name) ebm2python::Visitor<ebm2python::DefaultCodegenVisitorHook<ebm2python::VisitorTag_Statement_BLOCK>>
@@ -22665,14 +22665,14 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python:
 template <>
 struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor.hpp")
-// Inlined hook for post_visitor for backward compatibility
+#if __has_include("visitor/post_entry.hpp")
+// Inlined hook for post_entry for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR(ctx);
+    expected<Result> visit(Context_post_entry& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -22684,26 +22684,26 @@ struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_po
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/post_visitor.hpp"
+        #include "visitor/post_entry.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 3
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 3
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor_before.hpp")
-// Inlined hook for post_visitor_before for backward compatibility
+#if __has_include("visitor/post_entry_before.hpp")
+// Inlined hook for post_entry_before for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_before>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_before>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_before& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_BEFORE(ctx);
+    expected<Result> visit(Context_post_entry_before& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -22715,26 +22715,26 @@ struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_po
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/post_visitor_before.hpp"
+        #include "visitor/post_entry_before.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 3
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 3
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/post_visitor_after.hpp")
-// Inlined hook for post_visitor_after for backward compatibility
+#if __has_include("visitor/post_entry_after.hpp")
+// Inlined hook for post_entry_after for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_after>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_after>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_after& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_AFTER(ctx);
+    expected<Result> visit(Context_post_entry_after& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -22746,17 +22746,17 @@ struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_po
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/post_visitor_after.hpp"
+        #include "visitor/post_entry_after.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 3
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 3
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/Statement_BLOCK.hpp")
 // Inlined hook for Statement_BLOCK for backward compatibility
@@ -32337,14 +32337,14 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2pyth
 template <>
 struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_dsl.hpp")
-// Inlined hook for post_visitor for backward compatibility
+#if __has_include("visitor/dsl/post_entry_dsl.hpp")
+// Inlined hook for post_entry for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR(ctx);
+    expected<Result> visit(Context_post_entry& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -32356,26 +32356,26 @@ struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/dsl/post_visitor_dsl.hpp"
+        #include "visitor/dsl/post_entry_dsl.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 4
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 4
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_before_dsl.hpp")
-// Inlined hook for post_visitor_before for backward compatibility
+#if __has_include("visitor/dsl/post_entry_before_dsl.hpp")
+// Inlined hook for post_entry_before for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_before>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_before>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_before& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_BEFORE(ctx);
+    expected<Result> visit(Context_post_entry_before& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -32387,26 +32387,26 @@ struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/dsl/post_visitor_before_dsl.hpp"
+        #include "visitor/dsl/post_entry_before_dsl.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 4
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 4
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("visitor/dsl/post_visitor_after_dsl.hpp")
-// Inlined hook for post_visitor_after for backward compatibility
+#if __has_include("visitor/dsl/post_entry_after_dsl.hpp")
+// Inlined hook for post_entry_after for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_after>> {
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_after>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_after& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_AFTER(ctx);
+    expected<Result> visit(Context_post_entry_after& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -32418,17 +32418,17 @@ struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "visitor/dsl/post_visitor_after_dsl.hpp"
+        #include "visitor/dsl/post_entry_after_dsl.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 4
+static_assert(sizeof(ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 4
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::UserInlinedDSLHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("visitor/dsl/Statement_BLOCK_dsl.hpp")
 // Inlined hook for Statement_BLOCK for backward compatibility
@@ -42009,14 +42009,14 @@ static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInline
 template <>
 struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_pre_visitor_after>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor.hpp")
-// Inlined hook for post_visitor for backward compatibility
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry.hpp")
+// Inlined hook for post_entry for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor>> {
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR(ctx);
+    expected<Result> visit(Context_post_entry& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -42028,26 +42028,26 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_visitor.hpp"
+        #include "ebmcodegen/default_codegen_visitor/post_entry.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 5
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 5
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor_before.hpp")
-// Inlined hook for post_visitor_before for backward compatibility
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_before.hpp")
+// Inlined hook for post_entry_before for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_before>> {
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_before>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_before& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_BEFORE(ctx);
+    expected<Result> visit(Context_post_entry_before& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_BEFORE(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -42059,26 +42059,26 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_visitor_before.hpp"
+        #include "ebmcodegen/default_codegen_visitor/post_entry_before.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_before>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 5
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_before>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 5
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_before>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_before>> {}; // Unimplemented
 #endif
-#if __has_include("ebmcodegen/default_codegen_visitor/post_visitor_after.hpp")
-// Inlined hook for post_visitor_after for backward compatibility
+#if __has_include("ebmcodegen/default_codegen_visitor/post_entry_after.hpp")
+// Inlined hook for post_entry_after for backward compatibility
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_after>> {
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_after>> {
     // for backward compatibility
     ebm2python::MergedVisitor* __legacy_compat_ptr = nullptr;
-    expected<Result> visit(Context_post_visitor_after& ctx) {
-        EBM2PYTHON_DECONSTRUCT_POST_VISITOR_AFTER(ctx);
+    expected<Result> visit(Context_post_entry_after& ctx) {
+        EBM2PYTHON_DECONSTRUCT_POST_ENTRY_AFTER(ctx);
         auto& program_name = ctx.visitor.program_name;
         auto& module_ = ctx.visitor.module_;
         auto& flags = ctx.visitor.flags;
@@ -42090,17 +42090,17 @@ struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2pyth
         auto add_writer = [&]{ return wm.add_writer(); };
         auto get_writer = [&]{ return wm.get_writer(); };
         using namespace ebm2python;
-        #include "ebmcodegen/default_codegen_visitor/post_visitor_after.hpp"
+        #include "ebmcodegen/default_codegen_visitor/post_entry_after.hpp"
         return pass;
     }
 };
-static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_after>>)); // ensure included
-#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-#define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 5
+static_assert(sizeof(ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_after>>)); // ensure included
+#if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+#define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 5
 #endif
 #else
 template <>
-struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_visitor_after>> {}; // Unimplemented
+struct ebm2python::Visitor<ebm2python::DefaultCodegenVisitorInlinedHook<ebm2python::VisitorTag_post_entry_after>> {}; // Unimplemented
 #endif
 #if __has_include("ebmcodegen/default_codegen_visitor/Statement_BLOCK.hpp")
 // Inlined hook for Statement_BLOCK for backward compatibility
@@ -51578,15 +51578,15 @@ namespace ebm2python {
         return main_result;
     }
     template<typename Context>
-    expected<Result> dispatch_post_visitor(Context&& ctx,expected<Result>& entry_result){
+    expected<Result> dispatch_post_entry(Context&& ctx,expected<Result>& entry_result){
         auto main_logic = [&]() -> expected<Result>{
-            Context_post_visitor new_ctx{
+            Context_post_entry new_ctx{
                 .visitor = get_visitor_from_context(ctx),
                 .entry_result = entry_result,
             };
             return get_visitor_from_context(ctx).visit(new_ctx);
         };
-        Context_post_visitor_before before_ctx{
+        Context_post_entry_before before_ctx{
             .visitor = get_visitor_from_context(ctx),
             .entry_result = entry_result,
             .main_logic = main_logic,
@@ -51601,7 +51601,7 @@ namespace ebm2python {
             return before_result;
         }
         expected<Result> main_result = main_logic();
-        Context_post_visitor_after after_ctx{
+        Context_post_entry_after after_ctx{
             .visitor = get_visitor_from_context(ctx),
             .entry_result = entry_result,
             .main_logic = main_logic,
@@ -57148,34 +57148,34 @@ namespace ebm2python {
     #define CODEGEN_EXPECTED_PRIORITY_PRE_VISITOR_AFTER 6
     #endif
     template <>
-    struct Visitor<GeneratorDefaultHook<VisitorTag_post_visitor>> {
+    struct Visitor<GeneratorDefaultHook<VisitorTag_post_entry>> {
         template<typename Context>
         auto visit(Context&& ctx) {
             return pass;
         }
     };
-    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR)
-    #define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR 6
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY)
+    #define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY 6
     #endif
     template <>
-    struct Visitor<GeneratorDefaultHook<VisitorTag_post_visitor_before>> {
+    struct Visitor<GeneratorDefaultHook<VisitorTag_post_entry_before>> {
         template<typename Context>
         auto visit(Context&& ctx) {
             return pass;
         }
     };
-    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE)
-    #define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE 6
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE)
+    #define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE 6
     #endif
     template <>
-    struct Visitor<GeneratorDefaultHook<VisitorTag_post_visitor_after>> {
+    struct Visitor<GeneratorDefaultHook<VisitorTag_post_entry_after>> {
         template<typename Context>
         auto visit(Context&& ctx) {
             return pass;
         }
     };
-    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER)
-    #define CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER 6
+    #if !defined(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER)
+    #define CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER 6
     #endif
     template <>
     struct Visitor<GeneratorDefaultHook<VisitorTag_Statement_BLOCK>> {
@@ -60406,103 +60406,103 @@ namespace ebm2python {
                 static_assert(CODEGEN_EXPECTED_PRIORITY_PRE_VISITOR_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_PRE_VISITOR_AFTER < 7, "No suitable visitor hook found for pre_visitor_after");
             }
         }
-        Visitor<UserHook<VisitorTag_post_visitor>> visitor_post_visitor_UserHook;
-        Visitor<UserDSLHook<VisitorTag_post_visitor>> visitor_post_visitor_UserDSLHook;
-        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_visitor>> visitor_post_visitor_DefaultCodegenVisitorHook;
-        Visitor<UserInlinedHook<VisitorTag_post_visitor>> visitor_post_visitor_UserInlinedHook;
-        Visitor<UserInlinedDSLHook<VisitorTag_post_visitor>> visitor_post_visitor_UserInlinedDSLHook;
-        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_visitor>> visitor_post_visitor_DefaultCodegenVisitorInlinedHook;
-        Visitor<GeneratorDefaultHook<VisitorTag_post_visitor>> visitor_post_visitor_GeneratorDefaultHook;
-        auto& get_visitor_post_visitor(const Context_post_visitor&) {
-            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 0) {
-                return visitor_post_visitor_UserHook;
+        Visitor<UserHook<VisitorTag_post_entry>> visitor_post_entry_UserHook;
+        Visitor<UserDSLHook<VisitorTag_post_entry>> visitor_post_entry_UserDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_entry>> visitor_post_entry_DefaultCodegenVisitorHook;
+        Visitor<UserInlinedHook<VisitorTag_post_entry>> visitor_post_entry_UserInlinedHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_post_entry>> visitor_post_entry_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_entry>> visitor_post_entry_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_post_entry>> visitor_post_entry_GeneratorDefaultHook;
+        auto& get_visitor_post_entry(const Context_post_entry&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 0) {
+                return visitor_post_entry_UserHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 1) {
-                return visitor_post_visitor_UserDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 1) {
+                return visitor_post_entry_UserDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 2) {
-                return visitor_post_visitor_DefaultCodegenVisitorHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 2) {
+                return visitor_post_entry_DefaultCodegenVisitorHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 3) {
-                return visitor_post_visitor_UserInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 3) {
+                return visitor_post_entry_UserInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 4) {
-                return visitor_post_visitor_UserInlinedDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 4) {
+                return visitor_post_entry_UserInlinedDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 5) {
-                return visitor_post_visitor_DefaultCodegenVisitorInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 5) {
+                return visitor_post_entry_DefaultCodegenVisitorInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR == 6) {
-                return visitor_post_visitor_GeneratorDefaultHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY == 6) {
+                return visitor_post_entry_GeneratorDefaultHook;
             }
             else {
-                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_VISITOR < 7, "No suitable visitor hook found for post_visitor");
+                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_ENTRY < 7, "No suitable visitor hook found for post_entry");
             }
         }
-        Visitor<UserHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_UserHook;
-        Visitor<UserDSLHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_UserDSLHook;
-        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_DefaultCodegenVisitorHook;
-        Visitor<UserInlinedHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_UserInlinedHook;
-        Visitor<UserInlinedDSLHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_UserInlinedDSLHook;
-        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_DefaultCodegenVisitorInlinedHook;
-        Visitor<GeneratorDefaultHook<VisitorTag_post_visitor_before>> visitor_post_visitor_before_GeneratorDefaultHook;
-        auto& get_visitor_post_visitor_before(const Context_post_visitor_before&) {
-            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 0) {
-                return visitor_post_visitor_before_UserHook;
+        Visitor<UserHook<VisitorTag_post_entry_before>> visitor_post_entry_before_UserHook;
+        Visitor<UserDSLHook<VisitorTag_post_entry_before>> visitor_post_entry_before_UserDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_entry_before>> visitor_post_entry_before_DefaultCodegenVisitorHook;
+        Visitor<UserInlinedHook<VisitorTag_post_entry_before>> visitor_post_entry_before_UserInlinedHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_post_entry_before>> visitor_post_entry_before_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_entry_before>> visitor_post_entry_before_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_post_entry_before>> visitor_post_entry_before_GeneratorDefaultHook;
+        auto& get_visitor_post_entry_before(const Context_post_entry_before&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 0) {
+                return visitor_post_entry_before_UserHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 1) {
-                return visitor_post_visitor_before_UserDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 1) {
+                return visitor_post_entry_before_UserDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 2) {
-                return visitor_post_visitor_before_DefaultCodegenVisitorHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 2) {
+                return visitor_post_entry_before_DefaultCodegenVisitorHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 3) {
-                return visitor_post_visitor_before_UserInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 3) {
+                return visitor_post_entry_before_UserInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 4) {
-                return visitor_post_visitor_before_UserInlinedDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 4) {
+                return visitor_post_entry_before_UserInlinedDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 5) {
-                return visitor_post_visitor_before_DefaultCodegenVisitorInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 5) {
+                return visitor_post_entry_before_DefaultCodegenVisitorInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE == 6) {
-                return visitor_post_visitor_before_GeneratorDefaultHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE == 6) {
+                return visitor_post_entry_before_GeneratorDefaultHook;
             }
             else {
-                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_BEFORE < 7, "No suitable visitor hook found for post_visitor_before");
+                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_BEFORE < 7, "No suitable visitor hook found for post_entry_before");
             }
         }
-        Visitor<UserHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_UserHook;
-        Visitor<UserDSLHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_UserDSLHook;
-        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_DefaultCodegenVisitorHook;
-        Visitor<UserInlinedHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_UserInlinedHook;
-        Visitor<UserInlinedDSLHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_UserInlinedDSLHook;
-        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_DefaultCodegenVisitorInlinedHook;
-        Visitor<GeneratorDefaultHook<VisitorTag_post_visitor_after>> visitor_post_visitor_after_GeneratorDefaultHook;
-        auto& get_visitor_post_visitor_after(const Context_post_visitor_after&) {
-            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 0) {
-                return visitor_post_visitor_after_UserHook;
+        Visitor<UserHook<VisitorTag_post_entry_after>> visitor_post_entry_after_UserHook;
+        Visitor<UserDSLHook<VisitorTag_post_entry_after>> visitor_post_entry_after_UserDSLHook;
+        Visitor<DefaultCodegenVisitorHook<VisitorTag_post_entry_after>> visitor_post_entry_after_DefaultCodegenVisitorHook;
+        Visitor<UserInlinedHook<VisitorTag_post_entry_after>> visitor_post_entry_after_UserInlinedHook;
+        Visitor<UserInlinedDSLHook<VisitorTag_post_entry_after>> visitor_post_entry_after_UserInlinedDSLHook;
+        Visitor<DefaultCodegenVisitorInlinedHook<VisitorTag_post_entry_after>> visitor_post_entry_after_DefaultCodegenVisitorInlinedHook;
+        Visitor<GeneratorDefaultHook<VisitorTag_post_entry_after>> visitor_post_entry_after_GeneratorDefaultHook;
+        auto& get_visitor_post_entry_after(const Context_post_entry_after&) {
+            if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 0) {
+                return visitor_post_entry_after_UserHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 1) {
-                return visitor_post_visitor_after_UserDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 1) {
+                return visitor_post_entry_after_UserDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 2) {
-                return visitor_post_visitor_after_DefaultCodegenVisitorHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 2) {
+                return visitor_post_entry_after_DefaultCodegenVisitorHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 3) {
-                return visitor_post_visitor_after_UserInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 3) {
+                return visitor_post_entry_after_UserInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 4) {
-                return visitor_post_visitor_after_UserInlinedDSLHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 4) {
+                return visitor_post_entry_after_UserInlinedDSLHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 5) {
-                return visitor_post_visitor_after_DefaultCodegenVisitorInlinedHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 5) {
+                return visitor_post_entry_after_DefaultCodegenVisitorInlinedHook;
             }
-            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER == 6) {
-                return visitor_post_visitor_after_GeneratorDefaultHook;
+            else if constexpr (CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER == 6) {
+                return visitor_post_entry_after_GeneratorDefaultHook;
             }
             else {
-                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_VISITOR_AFTER < 7, "No suitable visitor hook found for post_visitor_after");
+                static_assert(CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER>= 0 && CODEGEN_EXPECTED_PRIORITY_POST_ENTRY_AFTER < 7, "No suitable visitor hook found for post_entry_after");
             }
         }
         Visitor<UserHook<VisitorTag_Statement_BLOCK>> visitor_Statement_BLOCK_UserHook;
@@ -70533,16 +70533,16 @@ namespace ebm2python {
             auto visitor = impl.get_visitor_pre_visitor_after(ctx);
             return visitor.visit(ctx);
         }
-        expected<Result> visit(Context_post_visitor& ctx) {
-            auto visitor = impl.get_visitor_post_visitor(ctx);
+        expected<Result> visit(Context_post_entry& ctx) {
+            auto visitor = impl.get_visitor_post_entry(ctx);
             return visitor.visit(ctx);
         }
-        expected<Result> visit(Context_post_visitor_before& ctx) {
-            auto visitor = impl.get_visitor_post_visitor_before(ctx);
+        expected<Result> visit(Context_post_entry_before& ctx) {
+            auto visitor = impl.get_visitor_post_entry_before(ctx);
             return visitor.visit(ctx);
         }
-        expected<Result> visit(Context_post_visitor_after& ctx) {
-            auto visitor = impl.get_visitor_post_visitor_after(ctx);
+        expected<Result> visit(Context_post_entry_after& ctx) {
+            auto visitor = impl.get_visitor_post_entry_after(ctx);
             return visitor.visit(ctx);
         }
         expected<Result> visit(Context_Statement_BLOCK& ctx) {
@@ -71783,7 +71783,7 @@ DEFINE_ENTRY(ebm2python::Flags, ebm2python::Output) {
             visitor.module_.build_maps(); // initialize mapping tables if not yet
         }
         auto entry_result = ebm2python::dispatch_entry(initial_ctx);
-        auto post_visit_result = ebm2python::dispatch_post_visitor(initial_ctx,entry_result);
+        auto post_visit_result = ebm2python::dispatch_post_entry(initial_ctx,entry_result);
         if (!post_visit_result) {
             if(!ebmcodegen::util::is_pass_error(post_visit_result.error())) {
                 return ebmgen::unexpect_error(std::move(post_visit_result.error())); // for trace

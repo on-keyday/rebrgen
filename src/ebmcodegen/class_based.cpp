@@ -3,6 +3,7 @@
 #include "ebmgen/common.hpp"
 #include "error/error.h"
 #include "stub/structs.hpp"
+#include <cstddef>
 #include <format>
 #include <string>
 #include "stub/hooks.hpp"
@@ -252,13 +253,13 @@ namespace ebmcodegen {
         pre_visitor.main().fields.push_back(ContextClassField{.name = "ebm", .type = "ebm::ExtendedBinaryModule&"});
         add_context_variant_for_before_after(pre_visitor);
         context_classes.push_back(std::move(pre_visitor));
-        ContextClasses post_visitor;
-        post_visitor.main().base = "post_visitor";
-        post_visitor.main().kind = ContextClassKind(ContextClassKind_Special | ContextClassKind_Observe);
-        add_common_visitor(post_visitor.main());
-        post_visitor.main().fields.push_back(ContextClassField{.name = "entry_result", .type = result_type + "&"});
-        add_context_variant_for_before_after(post_visitor);
-        context_classes.push_back(std::move(post_visitor));
+        ContextClasses post_entry;
+        post_entry.main().base = "post_entry";  // name is for backward compatibility
+        post_entry.main().kind = ContextClassKind(ContextClassKind_Special | ContextClassKind_Observe);
+        add_common_visitor(post_entry.main());
+        post_entry.main().fields.push_back(ContextClassField{.name = "entry_result", .type = result_type + "&"});
+        add_context_variant_for_before_after(post_entry);
+        context_classes.push_back(std::move(post_entry));
 
         auto convert = [&](auto t, std::string_view kind, auto subset) {
             using T = std::decay_t<decltype(t)>;
@@ -477,7 +478,7 @@ namespace ebmcodegen {
             if (cls.base == "pre_visitor") {  // special case: pre_visitor has ebm ref
                 w.write(",ebm::ExtendedBinaryModule& ebm");
             }
-            if (cls.base == "post_visitor") {  // special case: post_visitor has result ref
+            if (cls.base == "post_entry") {  // special case: post_entry has result ref
                 w.write(",", result_type, "& entry_result");
             }
             w.write(")");
@@ -513,7 +514,7 @@ namespace ebmcodegen {
             std::vector<std::string_view> args;
             if (cls.has(ContextClassKind_Special)) {
                 args = {visitor_arg};
-                if (cls.base == "post_visitor") {
+                if (cls.base == "post_entry") {
                     args.push_back("entry_result");
                 }
                 if (cls.base == "pre_visitor") {
@@ -1312,6 +1313,14 @@ namespace ebmcodegen {
         w.writeln("};");
     }
 
+    std::string header_name(const LocationInfo& location, const ContextClass& cls) {
+        std::string_view additional_suffix;
+        if (cls.has(ContextClassKind_Generic)) {
+            additional_suffix = suffixes[suffix_dispatch];  // for backward compatibility
+        }
+        return std::format("{}{}{}", cls.class_name(), additional_suffix, location.suffix);
+    }
+
     void generate_user_implemented_includes(CodeWriter& w, std::string_view ns_name, const std::vector<HookType>& hooks, const IncludeLocations& locations, const std::vector<ContextClasses>& context_classes, const std::string_view result_type, UtilityClasses& utils) {
         assert(hooks.size() - 1 == locations.include_locations.size());
         // without last hidden hook
@@ -1324,7 +1333,7 @@ namespace ebmcodegen {
                     if (cls.has(ContextClassKind_Generic)) {
                         additional_suffix = suffixes[suffix_dispatch];  // for backward compatibility
                     }
-                    auto header = std::format("\"{}{}{}{}.hpp\"", location.location, cls.class_name(), additional_suffix, location.suffix);
+                    auto header = std::format("\"{}{}.hpp\"", location.location, header_name(location, cls));
                     auto instance = hook.visitor_instance_name(cls, ns_name);
                     include_or_default(
                         w, header,
@@ -1456,7 +1465,7 @@ namespace ebmcodegen {
                 w.indent_writeln("visitor.module_.build_maps(); // initialize mapping tables if not yet");
                 w.writeln("}");
                 w.writeln("auto entry_result = ", ns_name, "::dispatch_entry(initial_ctx);");
-                w.writeln("auto post_visit_result = ", ns_name, "::dispatch_post_visitor(initial_ctx,entry_result);");
+                w.writeln("auto post_visit_result = ", ns_name, "::dispatch_post_entry(initial_ctx,entry_result);");
                 handle_hijack_logic(w, "post_visit_result");
                 w.writeln("return entry_result;");
             }
@@ -1609,6 +1618,21 @@ namespace ebmcodegen {
             }
         }
         w.writeln("*/");
+    }
+
+    std::vector<std::string> class_based_hook_names(const std::map<std::string_view, Struct>& structs, const IncludeLocations& locations) {
+        std::vector<std::string> names;
+        auto context_classes = generate_context_classes(structs);
+        auto hooks = generate_hooks();
+        assert(hooks.size() - 1 == locations.include_locations.size());
+        for (auto& cls_group : context_classes) {
+            for (auto& cls : cls_group.classes) {
+                for (auto& loc : locations.include_locations) {
+                    names.push_back(header_name(loc, cls));
+                }
+            }
+        }
+        return names;
     }
 
     ebmgen::expected<void> class_based_hook_descriptions(CodeWriter& w, const ParsedHookName& hook_name, const std::map<std::string_view, Struct>& structs) {

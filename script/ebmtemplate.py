@@ -49,7 +49,8 @@ def run_save_template(tool_path, template_target, lang):
             print(f"Error: Directory '{lang_dir}' does not exist.", file=sys.stderr)
             sys.exit(1)
         visitor_dir = os.path.join(lang_dir, "visitor")
-    isDSL = template_target.endswith("_dsl")
+    isDSL = "_dsl" in template_target
+    isClass = "_class" in template_target
     suffix = ".hpp"
     DSL_CODE_PREFIX = ""
     DSL_CODE_SUFFIX = ""
@@ -72,8 +73,22 @@ def run_save_template(tool_path, template_target, lang):
         result = subprocess.run(
             command, check=True, capture_output=True, text=True, encoding="utf-8"
         )
+        DEFAULT_IMPL = "/*here to write the hook*/"
+        if isClass:
+            class_name = template_target.removesuffix("_class").removesuffix("_dsl")
+            is_observer = any(
+                x in class_name for x in ("_after", "_before", "pre_", "post_")
+            )
+            DEFAULT_IMPL = f"""
+#include "../codegen.hpp"
+DEFINE_VISITOR({class_name}) {{
+    using namespace CODEGEN_NAMESPACE;
+    /*here to write the hook*/
+    return {"pass" if is_observer else "\"\""};
+}}
+"""
         # Add markers to the template content
-        template_content = f"{DSL_CODE_PREFIX}{START_MARKER}{result.stdout}{END_MARKER}\n/*here to write the hook*/\n{DSL_CODE_SUFFIX}"
+        template_content = f"{DSL_CODE_PREFIX}{START_MARKER}{result.stdout}{END_MARKER}\n{DEFAULT_IMPL}\n{DSL_CODE_SUFFIX}"
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(template_content)
         print(f"Success! Template '{template_target}' saved to '{output_path}'")

@@ -256,7 +256,7 @@ namespace ebm2rust {
     template<typename Context>
     expected<Result> dispatch_pre_visitor(Context&& ctx,ebm::ExtendedBinaryModule& ebm);
     template<typename Context>
-    expected<Result> dispatch_post_visitor(Context&& ctx,expected<Result>& entry_result);
+    expected<Result> dispatch_post_entry(Context&& ctx,expected<Result>& entry_result);
     template<typename Context>
     expected<Result> dispatch_Statement_BLOCK(Context&& ctx,const ebm::Statement& in,ebm::StatementRef alias_ref = {});
     template<typename Context>
@@ -1012,44 +1012,44 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_post_visitor {
+    struct Context_post_entry {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
     };
-    struct VisitorTag_post_visitor {};
+    struct VisitorTag_post_entry {};
     template<typename VisitorImpl>
-    concept has_visitor_post_visitor = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_visitor&>()) } -> std::convertible_to<expected<Result>>;
+    concept has_visitor_post_entry = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_post_entry&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2RUST_DECONSTRUCT_POST_VISITOR(instance_name) \
+    #define EBM2RUST_DECONSTRUCT_POST_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
-    struct Context_post_visitor_before {
+    struct Context_post_entry_before {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
-    struct VisitorTag_post_visitor_before {};
+    struct VisitorTag_post_entry_before {};
     template<typename VisitorImpl>
-    concept has_visitor_post_visitor_before = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_visitor_before&>()) } -> std::convertible_to<expected<Result>>;
+    concept has_visitor_post_entry_before = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_post_entry_before&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2RUST_DECONSTRUCT_POST_VISITOR_BEFORE(instance_name) \
+    #define EBM2RUST_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
-    struct Context_post_visitor_after {
+    struct Context_post_entry_after {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
     };
-    struct VisitorTag_post_visitor_after {};
+    struct VisitorTag_post_entry_after {};
     template<typename VisitorImpl>
-    concept has_visitor_post_visitor_after = requires(VisitorImpl v) {
-         { v.visit(std::declval<Context_post_visitor_after&>()) } -> std::convertible_to<expected<Result>>;
+    concept has_visitor_post_entry_after = requires(VisitorImpl v) {
+         { v.visit(std::declval<Context_post_entry_after&>()) } -> std::convertible_to<expected<Result>>;
     };
     // Deconstruct context fields
-    #define EBM2RUST_DECONSTRUCT_POST_VISITOR_AFTER(instance_name) \
+    #define EBM2RUST_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
     struct Context_Statement_BLOCK {
         BaseVisitor& visitor;
@@ -5746,12 +5746,12 @@ namespace ebm2rust {
     #define EBM2RUST_CODEGEN_CONTEXT_pre_visitor_before ebm2rust::Context_pre_visitor_before
     #define EBM2RUST_CODEGEN_VISITOR_pre_visitor_after ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_pre_visitor_after>>
     #define EBM2RUST_CODEGEN_CONTEXT_pre_visitor_after ebm2rust::Context_pre_visitor_after
-    #define EBM2RUST_CODEGEN_VISITOR_post_visitor ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_visitor>>
-    #define EBM2RUST_CODEGEN_CONTEXT_post_visitor ebm2rust::Context_post_visitor
-    #define EBM2RUST_CODEGEN_VISITOR_post_visitor_before ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_visitor_before>>
-    #define EBM2RUST_CODEGEN_CONTEXT_post_visitor_before ebm2rust::Context_post_visitor_before
-    #define EBM2RUST_CODEGEN_VISITOR_post_visitor_after ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_visitor_after>>
-    #define EBM2RUST_CODEGEN_CONTEXT_post_visitor_after ebm2rust::Context_post_visitor_after
+    #define EBM2RUST_CODEGEN_VISITOR_post_entry ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_entry>>
+    #define EBM2RUST_CODEGEN_CONTEXT_post_entry ebm2rust::Context_post_entry
+    #define EBM2RUST_CODEGEN_VISITOR_post_entry_before ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_entry_before>>
+    #define EBM2RUST_CODEGEN_CONTEXT_post_entry_before ebm2rust::Context_post_entry_before
+    #define EBM2RUST_CODEGEN_VISITOR_post_entry_after ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_post_entry_after>>
+    #define EBM2RUST_CODEGEN_CONTEXT_post_entry_after ebm2rust::Context_post_entry_after
     #define EBM2RUST_CODEGEN_VISITOR_Statement_BLOCK ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_Statement_BLOCK>>
     #define EBM2RUST_CODEGEN_CONTEXT_Statement_BLOCK ebm2rust::Context_Statement_BLOCK
     #define EBM2RUST_CODEGEN_VISITOR_Statement_BLOCK_before ebm2rust::Visitor<ebm2rust::UserHook<ebm2rust::VisitorTag_Statement_BLOCK_before>>

@@ -88,7 +88,9 @@ namespace ebmgen {
 
 namespace ebmcodegen {
     ebmgen::expected<void> class_based_hook_descriptions(CodeWriter& w, const ParsedHookName& hook_name, const std::map<std::string_view, Struct>& structs);
-}
+    std::vector<std::string> class_based_hook_names(const std::map<std::string_view, Struct>& structs, const IncludeLocations& locations);
+
+}  // namespace ebmcodegen
 
 auto error(auto& fmt, auto&&... arg) {
     return futils::helper::either::unexpected{futils::error::StrError<std::string>(std::vformat(fmt, std::make_format_args(std::forward<decltype(arg)>(arg)...)))};
@@ -484,6 +486,20 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("#include <code/loc_writer.h>");
 
     auto ns_name = flags.program_name;
+    ebmcodegen::IncludeLocations locations;
+    locations.include_locations = {
+        {flags.visitor_impl_dir, std::string{suffixes[suffix_class]}},
+        {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]} + std::string(suffixes[suffix_class])},
+        {flags.default_visitor_impl_dir, std::string{suffixes[suffix_class]}},
+        // backward compatibility
+        {flags.visitor_impl_dir, std::string{}},
+        {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]}},
+        {flags.default_visitor_impl_dir, std::string{}},
+    };
+    locations.ns_name = ns_name;
+    locations.lang = flags.lang;
+    locations.program_name = flags.program_name;
+    locations.is_codegen = true;
 
     if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader || flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
@@ -494,20 +510,6 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             w.writeln("#include <concepts>");
             w.writeln("#include <strutil/append.h>");
         }
-        ebmcodegen::IncludeLocations locations;
-        locations.include_locations = {
-            {flags.visitor_impl_dir, std::string{suffixes[suffix_class]}},
-            {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]} + std::string(suffixes[suffix_class])},
-            {flags.default_visitor_impl_dir, std::string{suffixes[suffix_class]}},
-            // backward compatibility
-            {flags.visitor_impl_dir, std::string{}},
-            {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]}},
-            {flags.default_visitor_impl_dir, std::string{}},
-        };
-        locations.ns_name = ns_name;
-        locations.lang = flags.lang;
-        locations.program_name = flags.program_name;
-        locations.is_codegen = true;
         CodeWriter dummy;
         if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
             ebmcodegen::generate(locations, w, dummy, struct_map);
@@ -1105,7 +1107,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     std::unordered_set<std::string> uniq;
 
     if (flags.mode == GenerateMode::HookList) {
+        auto class_based_hooks = ebmcodegen::class_based_hook_names(struct_map, locations);
         for (auto& hook : hooks) {
+            if (!uniq.insert(hook).second) {
+                continue;
+            }
+            cout << hook << "\n";
+        }
+        for (auto& hook : class_based_hooks) {
             if (!uniq.insert(hook).second) {
                 continue;
             }
@@ -1119,11 +1128,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Requires template --template-target option: use --mode hooklist to see what kind exists.\n";
             return 1;
         }
+        auto class_based_hooks = ebmcodegen::class_based_hook_names(struct_map, locations);
         auto target = flags.template_target;
-        if (target.ends_with(suffixes[suffix_class])) {
-            target = target.substr(0, target.size() - suffixes[suffix_class].size());
-        }
-        if (std::find(hooks.begin(), hooks.end(), target) == hooks.end()) {
+        if (std::find(hooks.begin(), hooks.end(), target) == hooks.end() &&
+            std::find(class_based_hooks.begin(), class_based_hooks.end(), target) == class_based_hooks.end()) {
             cerr << "No such template: " << flags.template_target << ": see --mode hooklist for available templates.\n";
             return 1;
         }

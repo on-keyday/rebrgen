@@ -6,12 +6,15 @@ import json
 
 
 sys.path.append(os.path.dirname(__file__))
+from ebmtemplate import get_mode_dir
 from util import execute
 
 
 def do_setup(lang_name: str, mode: str, file_extension: str):
     TOOL_PATH = "tool/ebmcodegen"
-    if mode == "interpret":
+    isInterpreter = mode == "interpret" or mode == "interpret-class"
+    isClassBased = mode == "codegen-class" or mode == "interpret-class"
+    if isInterpreter:
         PARENT_DIR_NAME = "ebmip"
     else:
         PARENT_DIR_NAME = "ebmcg"
@@ -23,12 +26,32 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
 
     CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
 
-    if mode == "codegen-class":
+    DEFAULT_VISITOR_LOCATION = f"ebmcodegen/default_{get_mode_dir(mode)}_visitor/"
+
+    if isClassBased:
         CODE_GENERATOR_HEADER = execute(
-            [TOOL_PATH, "--mode", "codegen-class-header", "--lang", lang_name], None
+            [
+                TOOL_PATH,
+                "--mode",
+                mode + "-header",
+                "--lang",
+                lang_name,
+                "--default-visitor-impl-dir",
+                DEFAULT_VISITOR_LOCATION,
+            ],
+            None,
         )
         CODE_GENERATOR = execute(
-            [TOOL_PATH, "--mode", "codegen-class-source", "--lang", lang_name], None
+            [
+                TOOL_PATH,
+                "--mode",
+                mode + "-source",
+                "--lang",
+                lang_name,
+                "--default-visitor-impl-dir",
+                DEFAULT_VISITOR_LOCATION,
+            ],
+            None,
         )
     else:
         CODE_GENERATOR_HEADER = None
@@ -47,7 +70,7 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
             f.write(CODE_GENERATOR_HEADER)
 
     # add FILE_EXTENSIONS(ext) to Flags.hpp using script/ebmtemplate.py
-    if mode == "codegen":
+    if not isInterpreter:
         flags_path = os.path.join(VISITOR_DIR, "Flags.hpp")
         if not os.path.exists(flags_path):
             execute(
@@ -185,7 +208,7 @@ if __name__ == "__main__":
     parser.add_argument("lang_name", help="Language name")
     parser.add_argument(
         "--mode",
-        choices=["codegen", "interpret", "codegen-class"],
+        choices=["codegen", "interpret", "codegen-class", "interpret-class"],
         default="codegen-class",
         help="Mode of operation",
     )
@@ -202,7 +225,11 @@ if __name__ == "__main__":
         file_extension = "." + lang_name
     if lang_name == "all":
         # scan src/${mode} for all existing languages
-        parent_dir = f"src/ebmip" if mode == "interpret" else f"src/ebmcg"
+        parent_dir = (
+            f"src/ebmip"
+            if (mode == "interpret" or mode == "interpret-class")
+            else f"src/ebmcg"
+        )
         for entry in os.listdir(parent_dir):
             entry_path = os.path.join(parent_dir, entry)
             if os.path.isdir(entry_path) and entry.startswith("ebm2"):

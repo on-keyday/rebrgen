@@ -19,6 +19,6 @@
 MAYBE(target_str, visit_Statement(*this, target_stmt));
 MAYBE(conditional_str, visit_Statement(*this, conditional_stmt));
 MAYBE(w, get_writer());
-merge_result(*this, w, target_str);
-merge_result(*this, w, conditional_str);
+w.write(target_str.to_writer());
+w.write(conditional_str.to_writer());
 return module_.get_associated_identifier(target_stmt);

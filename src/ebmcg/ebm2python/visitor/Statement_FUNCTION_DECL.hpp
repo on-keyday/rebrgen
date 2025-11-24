@@ -55,7 +55,7 @@ if (res.to_writer().empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }
 else {
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 return w;

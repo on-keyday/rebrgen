@@ -30,7 +30,7 @@ if (!is_nil(loop.lowered_statement.id)) {
 CodeWriter w;
 if (auto init = loop.init(); init && init->id.value() != 0) {
     MAYBE(init_s, visit_Statement(*this, *init));
-    merge_result(*this, w, init_s);
+    w.write(init_s.to_writer());
 }
 std::optional<std::string> cond;
 CodeWriter condition_related;
@@ -63,10 +63,10 @@ else {
 {
     auto body_indent = w.indent_scope();
     MAYBE(body, visit_Statement(*this, loop.body));
-    merge_result(*this, w, body);
+    w.write(body.to_writer());
     if (auto iter = loop.increment()) {
         MAYBE(step, visit_Statement(*this, *iter));
-        merge_result(*this, w, step);
+        w.write(step.to_writer());
     }
     w.write(condition_related);
 }

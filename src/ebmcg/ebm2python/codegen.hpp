@@ -906,7 +906,7 @@ namespace ebm2python {
     struct BaseVisitor {
         BaseVisitor(MergedVisitor* __legacy_compat_ptr,ebmgen::EBMProxy module_,Flags& flags,Output& output,futils::binary::writer& wm) :__legacy_compat_ptr(__legacy_compat_ptr),module_(module_, ebmgen::lazy_init),flags(flags),output(output),wm(wm){}
         static constexpr const char* program_name = "ebm2python";
-        MergedVisitor* __legacy_compat_ptr;
+        MergedVisitor* const __legacy_compat_ptr;
         ebmgen::MappingTable module_;
         Flags& flags;
         Output& output;

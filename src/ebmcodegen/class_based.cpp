@@ -844,7 +844,7 @@ namespace ebmcodegen {
         UtilityClass base_visitor;
         base_visitor.name = "BaseVisitor";
         base_visitor.fields.push_back(UtilityClassField{.name = "program_name", .type = "static constexpr const char*"});
-        base_visitor.fields.push_back(UtilityClassField{.name = legacy_compat_ptr_name, .type = "MergedVisitor*", .constructor_type = "MergedVisitor*", .back_ptr_when_derived = true});
+        base_visitor.fields.push_back(UtilityClassField{.name = legacy_compat_ptr_name, .type = "MergedVisitor* const", .constructor_type = "MergedVisitor*", .back_ptr_when_derived = true});
         base_visitor.fields.push_back(UtilityClassField{.name = "module_", .type = "ebmgen::MappingTable", .constructor_type = "ebmgen::EBMProxy", .constructor_additional_arg = "ebmgen::lazy_init"});
         base_visitor.fields.push_back(UtilityClassField{.name = "flags", .type = "Flags&", .constructor_type = "Flags&"});
         base_visitor.fields.push_back(UtilityClassField{.name = "output", .type = "Output&", .constructor_type = "Output&"});

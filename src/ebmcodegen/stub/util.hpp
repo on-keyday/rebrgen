@@ -274,10 +274,6 @@ namespace ebmcodegen::util {
         return result;
     }
 
-    void merge_result(auto&& visitor, auto& w, auto&& result) {
-        w.merge(std::move(result.to_writer()));
-    }
-
     void convert_location_info(auto&& ctx, auto&& loc_writer) {
         auto& visitor = get_visitor(ctx);
         auto& m = visitor.module_;
@@ -563,6 +559,18 @@ namespace ebmcodegen::util {
 
         decltype(auto) visit(ebm::StatementRef stmt_ref) const {
             return visit_Statement(derived(), stmt_ref);
+        }
+
+        decltype(auto) visit(const ebm::Block& block) const {
+            return visit_Block(derived(), block);
+        }
+
+        decltype(auto) visit(const ebm::Expressions& exprs) const {
+            return visit_Expressions(derived(), exprs);
+        }
+
+        decltype(auto) visit(const ebm::Types& types) const {
+            return visit_Types(derived(), types);
         }
 
         decltype(auto) visit() const

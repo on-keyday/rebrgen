@@ -49,7 +49,7 @@ auto scope = w.indent_scope();
 for (auto& field_ref : struct_decl.fields.container) {
     MAYBE(field, module_.get_statement(field_ref));
     MAYBE(res, visit_Statement(*this, field));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 // __init__ method
@@ -77,14 +77,14 @@ w.writeln("def __init__(self):");
 if (auto enc_fn = struct_decl.encode_fn()) {  // Corrected: Check value() of Varint id
     MAYBE(encode_fn_stmt, module_.get_statement(*enc_fn));
     MAYBE(res, visit_Statement(*this, encode_fn_stmt));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 // Visit decode_fn if it exists
 if (auto dec_fn = struct_decl.decode_fn()) {  // Corrected: Check value() of Varint id
     MAYBE(decode_fn_stmt, module_.get_statement(*dec_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 if (w.str_size() == size) {

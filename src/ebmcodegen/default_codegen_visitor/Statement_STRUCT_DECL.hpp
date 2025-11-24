@@ -42,7 +42,7 @@ w.writeln("struct ", name, " {");
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, struct_decl.fields));
-    merge_result(*this, w, block);
+    w.write(block.to_writer());
 }
 w.writeln("};");
 return w;

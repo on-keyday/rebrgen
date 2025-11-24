@@ -34,7 +34,7 @@ if (then_block.to_writer().empty()) {
     }
 }
 else {
-    merge_result(*this, w, then_block);
+    w.write(then_block.to_writer());
 }
 if (get_id(if_statement.else_block) == 4688) {
     ;

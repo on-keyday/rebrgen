@@ -37,7 +37,7 @@ if (sub_byte_range.stream_type == ebm::StreamType::INPUT) {
 else {
     w.writeln(io_, " = io.BytesIO()");
 }
-merge_result(*this, w, do_io);
+w.write(do_io.to_writer());
 if (sub_byte_range.stream_type == ebm::StreamType::OUTPUT) {
     w.writeln("assert ", length_str.to_writer(), " == builtins.len(", io_, ".getvalue())");
     w.writeln(parent_io_, ".write(", io_, ".getvalue())");

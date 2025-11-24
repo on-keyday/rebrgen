@@ -31,7 +31,7 @@ if (metadata.values.container.size()) {
         }
         first = false;
         MAYBE(val, visit_Expression(*this, v));
-        merge_result(*this, w, val);
+        w.write(val.to_writer());
     }
     w.write(")");
 }

@@ -937,7 +937,7 @@ namespace ebm2rust {
     concept BaseVisitorLike = std::derived_from<V,BaseVisitor>;
     template<typename Tag>
     struct Visitor; // Customization point struct
-    struct Context_entry {
+    struct Context_entry : ebmcodegen::util::ContextBase<Context_entry> {
         BaseVisitor& visitor;
     };
     struct VisitorTag_entry {};
@@ -948,7 +948,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;
-    struct Context_entry_before {
+    struct Context_entry_before : ebmcodegen::util::ContextBase<Context_entry_before> {
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
     };
@@ -960,7 +960,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;
-    struct Context_entry_after {
+    struct Context_entry_after : ebmcodegen::util::ContextBase<Context_entry_after> {
         BaseVisitor& visitor;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
         expected<Result>& result;
@@ -973,7 +973,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_pre_visitor {
+    struct Context_pre_visitor : ebmcodegen::util::ContextBase<Context_pre_visitor> {
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
     };
@@ -985,7 +985,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_PRE_VISITOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;
-    struct Context_pre_visitor_before {
+    struct Context_pre_visitor_before : ebmcodegen::util::ContextBase<Context_pre_visitor_before> {
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -998,7 +998,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_PRE_VISITOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;
-    struct Context_pre_visitor_after {
+    struct Context_pre_visitor_after : ebmcodegen::util::ContextBase<Context_pre_visitor_after> {
         BaseVisitor& visitor;
         ebm::ExtendedBinaryModule& ebm;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1012,7 +1012,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_PRE_VISITOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& ebm = instance_name.ebm;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_post_entry {
+    struct Context_post_entry : ebmcodegen::util::ContextBase<Context_post_entry> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
     };
@@ -1024,7 +1024,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_POST_ENTRY(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;
-    struct Context_post_entry_before {
+    struct Context_post_entry_before : ebmcodegen::util::ContextBase<Context_post_entry_before> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1037,7 +1037,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_POST_ENTRY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;
-    struct Context_post_entry_after {
+    struct Context_post_entry_after : ebmcodegen::util::ContextBase<Context_post_entry_after> {
         BaseVisitor& visitor;
         expected<Result>& entry_result;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -1051,7 +1051,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_POST_ENTRY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& entry_result = instance_name.entry_result;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_BLOCK {
+    struct Context_Statement_BLOCK : ebmcodegen::util::ContextBase<Context_Statement_BLOCK> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1065,7 +1065,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
-    struct Context_Statement_BLOCK_before {
+    struct Context_Statement_BLOCK_before : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1080,7 +1080,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_BLOCK_after {
+    struct Context_Statement_BLOCK_after : ebmcodegen::util::ContextBase<Context_Statement_BLOCK_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1096,7 +1096,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ASSIGNMENT {
+    struct Context_Statement_ASSIGNMENT : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1112,7 +1112,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSIGNMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_ASSIGNMENT_before {
+    struct Context_Statement_ASSIGNMENT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1129,7 +1129,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSIGNMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ASSIGNMENT_after {
+    struct Context_Statement_ASSIGNMENT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSIGNMENT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1147,7 +1147,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSIGNMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_YIELD {
+    struct Context_Statement_YIELD : ebmcodegen::util::ContextBase<Context_Statement_YIELD> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1163,7 +1163,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_YIELD(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_YIELD_before {
+    struct Context_Statement_YIELD_before : ebmcodegen::util::ContextBase<Context_Statement_YIELD_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1180,7 +1180,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_YIELD_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_YIELD_after {
+    struct Context_Statement_YIELD_after : ebmcodegen::util::ContextBase<Context_Statement_YIELD_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1198,7 +1198,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_YIELD_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& previous_assignment = instance_name.previous_assignment;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_APPEND {
+    struct Context_Statement_APPEND : ebmcodegen::util::ContextBase<Context_Statement_APPEND> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1213,7 +1213,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_APPEND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;
-    struct Context_Statement_APPEND_before {
+    struct Context_Statement_APPEND_before : ebmcodegen::util::ContextBase<Context_Statement_APPEND_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1229,7 +1229,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_APPEND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_APPEND_after {
+    struct Context_Statement_APPEND_after : ebmcodegen::util::ContextBase<Context_Statement_APPEND_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1246,7 +1246,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_APPEND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& target = instance_name.target;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_RETURN {
+    struct Context_Statement_RETURN : ebmcodegen::util::ContextBase<Context_Statement_RETURN> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1260,7 +1260,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
-    struct Context_Statement_RETURN_before {
+    struct Context_Statement_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_RETURN_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1275,7 +1275,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_RETURN_after {
+    struct Context_Statement_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_RETURN_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1291,7 +1291,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ERROR_RETURN {
+    struct Context_Statement_ERROR_RETURN : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1305,7 +1305,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;
-    struct Context_Statement_ERROR_RETURN_before {
+    struct Context_Statement_ERROR_RETURN_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1320,7 +1320,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ERROR_RETURN_after {
+    struct Context_Statement_ERROR_RETURN_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_RETURN_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1336,7 +1336,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& value = instance_name.value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ASSERT {
+    struct Context_Statement_ASSERT : ebmcodegen::util::ContextBase<Context_Statement_ASSERT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1350,7 +1350,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSERT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;
-    struct Context_Statement_ASSERT_before {
+    struct Context_Statement_ASSERT_before : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1365,7 +1365,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSERT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ASSERT_after {
+    struct Context_Statement_ASSERT_after : ebmcodegen::util::ContextBase<Context_Statement_ASSERT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1381,7 +1381,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ASSERT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& assert_desc = instance_name.assert_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_READ_DATA {
+    struct Context_Statement_READ_DATA : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1395,7 +1395,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;
-    struct Context_Statement_READ_DATA_before {
+    struct Context_Statement_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1410,7 +1410,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_READ_DATA_after {
+    struct Context_Statement_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_READ_DATA_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1426,7 +1426,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& read_data = instance_name.read_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_WRITE_DATA {
+    struct Context_Statement_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1440,7 +1440,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;
-    struct Context_Statement_WRITE_DATA_before {
+    struct Context_Statement_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1455,7 +1455,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_WRITE_DATA_after {
+    struct Context_Statement_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Statement_WRITE_DATA_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1471,7 +1471,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& write_data = instance_name.write_data;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_IF_STATEMENT {
+    struct Context_Statement_IF_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1485,7 +1485,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IF_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;
-    struct Context_Statement_IF_STATEMENT_before {
+    struct Context_Statement_IF_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1500,7 +1500,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IF_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_IF_STATEMENT_after {
+    struct Context_Statement_IF_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_IF_STATEMENT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1516,7 +1516,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IF_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& if_statement = instance_name.if_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_LOOP_STATEMENT {
+    struct Context_Statement_LOOP_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1530,7 +1530,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOOP_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;
-    struct Context_Statement_LOOP_STATEMENT_before {
+    struct Context_Statement_LOOP_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1545,7 +1545,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_LOOP_STATEMENT_after {
+    struct Context_Statement_LOOP_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_LOOP_STATEMENT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1561,7 +1561,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOOP_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& loop = instance_name.loop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_MATCH_STATEMENT {
+    struct Context_Statement_MATCH_STATEMENT : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1575,7 +1575,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;
-    struct Context_Statement_MATCH_STATEMENT_before {
+    struct Context_Statement_MATCH_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1590,7 +1590,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_MATCH_STATEMENT_after {
+    struct Context_Statement_MATCH_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_STATEMENT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1606,7 +1606,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_statement = instance_name.match_statement;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_MATCH_BRANCH {
+    struct Context_Statement_MATCH_BRANCH : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1620,7 +1620,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_BRANCH(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;
-    struct Context_Statement_MATCH_BRANCH_before {
+    struct Context_Statement_MATCH_BRANCH_before : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1635,7 +1635,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_BRANCH_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_MATCH_BRANCH_after {
+    struct Context_Statement_MATCH_BRANCH_after : ebmcodegen::util::ContextBase<Context_Statement_MATCH_BRANCH_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1651,7 +1651,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_MATCH_BRANCH_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& match_branch = instance_name.match_branch;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_BREAK {
+    struct Context_Statement_BREAK : ebmcodegen::util::ContextBase<Context_Statement_BREAK> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1665,7 +1665,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BREAK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;
-    struct Context_Statement_BREAK_before {
+    struct Context_Statement_BREAK_before : ebmcodegen::util::ContextBase<Context_Statement_BREAK_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1680,7 +1680,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BREAK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_BREAK_after {
+    struct Context_Statement_BREAK_after : ebmcodegen::util::ContextBase<Context_Statement_BREAK_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1696,7 +1696,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BREAK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& break_ = instance_name.break_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_CONTINUE {
+    struct Context_Statement_CONTINUE : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1710,7 +1710,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_CONTINUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;
-    struct Context_Statement_CONTINUE_before {
+    struct Context_Statement_CONTINUE_before : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1725,7 +1725,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_CONTINUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_CONTINUE_after {
+    struct Context_Statement_CONTINUE_after : ebmcodegen::util::ContextBase<Context_Statement_CONTINUE_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1741,7 +1741,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_CONTINUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& continue_ = instance_name.continue_;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_FUNCTION_DECL {
+    struct Context_Statement_FUNCTION_DECL : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1755,7 +1755,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FUNCTION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;
-    struct Context_Statement_FUNCTION_DECL_before {
+    struct Context_Statement_FUNCTION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1770,7 +1770,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FUNCTION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_FUNCTION_DECL_after {
+    struct Context_Statement_FUNCTION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FUNCTION_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1786,7 +1786,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FUNCTION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& func_decl = instance_name.func_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_VARIABLE_DECL {
+    struct Context_Statement_VARIABLE_DECL : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1800,7 +1800,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_VARIABLE_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;
-    struct Context_Statement_VARIABLE_DECL_before {
+    struct Context_Statement_VARIABLE_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1815,7 +1815,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_VARIABLE_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_VARIABLE_DECL_after {
+    struct Context_Statement_VARIABLE_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_VARIABLE_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1831,7 +1831,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_VARIABLE_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& var_decl = instance_name.var_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_PARAMETER_DECL {
+    struct Context_Statement_PARAMETER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1845,7 +1845,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PARAMETER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;
-    struct Context_Statement_PARAMETER_DECL_before {
+    struct Context_Statement_PARAMETER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1860,7 +1860,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PARAMETER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PARAMETER_DECL_after {
+    struct Context_Statement_PARAMETER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PARAMETER_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1876,7 +1876,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PARAMETER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& param_decl = instance_name.param_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_FIELD_DECL {
+    struct Context_Statement_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1890,7 +1890,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;
-    struct Context_Statement_FIELD_DECL_before {
+    struct Context_Statement_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1905,7 +1905,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_FIELD_DECL_after {
+    struct Context_Statement_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_FIELD_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1921,7 +1921,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& field_decl = instance_name.field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_COMPOSITE_FIELD_DECL {
+    struct Context_Statement_COMPOSITE_FIELD_DECL : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1935,7 +1935,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;
-    struct Context_Statement_COMPOSITE_FIELD_DECL_before {
+    struct Context_Statement_COMPOSITE_FIELD_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1950,7 +1950,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_COMPOSITE_FIELD_DECL_after {
+    struct Context_Statement_COMPOSITE_FIELD_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_COMPOSITE_FIELD_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1966,7 +1966,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_COMPOSITE_FIELD_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& composite_field_decl = instance_name.composite_field_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ENUM_DECL {
+    struct Context_Statement_ENUM_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1980,7 +1980,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;
-    struct Context_Statement_ENUM_DECL_before {
+    struct Context_Statement_ENUM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -1995,7 +1995,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENUM_DECL_after {
+    struct Context_Statement_ENUM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2011,7 +2011,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ENUM_MEMBER_DECL {
+    struct Context_Statement_ENUM_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2025,7 +2025,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;
-    struct Context_Statement_ENUM_MEMBER_DECL_before {
+    struct Context_Statement_ENUM_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2040,7 +2040,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENUM_MEMBER_DECL_after {
+    struct Context_Statement_ENUM_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_ENUM_MEMBER_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2056,7 +2056,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENUM_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& enum_member_decl = instance_name.enum_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_STRUCT_DECL {
+    struct Context_Statement_STRUCT_DECL : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2070,7 +2070,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_STRUCT_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;
-    struct Context_Statement_STRUCT_DECL_before {
+    struct Context_Statement_STRUCT_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2085,7 +2085,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_STRUCT_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_STRUCT_DECL_after {
+    struct Context_Statement_STRUCT_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_STRUCT_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2101,7 +2101,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_STRUCT_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& struct_decl = instance_name.struct_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_UNION_DECL {
+    struct Context_Statement_UNION_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2114,7 +2114,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Statement_UNION_DECL_before {
+    struct Context_Statement_UNION_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2128,7 +2128,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_UNION_DECL_after {
+    struct Context_Statement_UNION_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2143,7 +2143,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_UNION_MEMBER_DECL {
+    struct Context_Statement_UNION_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2156,7 +2156,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Statement_UNION_MEMBER_DECL_before {
+    struct Context_Statement_UNION_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2170,7 +2170,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_UNION_MEMBER_DECL_after {
+    struct Context_Statement_UNION_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_UNION_MEMBER_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2185,7 +2185,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_UNION_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_PROGRAM_DECL {
+    struct Context_Statement_PROGRAM_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2199,7 +2199,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROGRAM_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;
-    struct Context_Statement_PROGRAM_DECL_before {
+    struct Context_Statement_PROGRAM_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2214,7 +2214,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROGRAM_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROGRAM_DECL_after {
+    struct Context_Statement_PROGRAM_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROGRAM_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2230,7 +2230,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROGRAM_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& block = instance_name.block;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_PROPERTY_DECL {
+    struct Context_Statement_PROPERTY_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2244,7 +2244,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;
-    struct Context_Statement_PROPERTY_DECL_before {
+    struct Context_Statement_PROPERTY_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2259,7 +2259,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROPERTY_DECL_after {
+    struct Context_Statement_PROPERTY_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2275,7 +2275,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_decl = instance_name.property_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_PROPERTY_MEMBER_DECL {
+    struct Context_Statement_PROPERTY_MEMBER_DECL : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2289,7 +2289,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;
-    struct Context_Statement_PROPERTY_MEMBER_DECL_before {
+    struct Context_Statement_PROPERTY_MEMBER_DECL_before : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2304,7 +2304,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_PROPERTY_MEMBER_DECL_after {
+    struct Context_Statement_PROPERTY_MEMBER_DECL_after : ebmcodegen::util::ContextBase<Context_Statement_PROPERTY_MEMBER_DECL_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2320,7 +2320,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_PROPERTY_MEMBER_DECL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& property_member_decl = instance_name.property_member_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_METADATA {
+    struct Context_Statement_METADATA : ebmcodegen::util::ContextBase<Context_Statement_METADATA> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2334,7 +2334,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_METADATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;
-    struct Context_Statement_METADATA_before {
+    struct Context_Statement_METADATA_before : ebmcodegen::util::ContextBase<Context_Statement_METADATA_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2349,7 +2349,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_METADATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_METADATA_after {
+    struct Context_Statement_METADATA_after : ebmcodegen::util::ContextBase<Context_Statement_METADATA_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2365,7 +2365,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_METADATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& metadata = instance_name.metadata;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_IMPORT_MODULE {
+    struct Context_Statement_IMPORT_MODULE : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2379,7 +2379,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IMPORT_MODULE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;
-    struct Context_Statement_IMPORT_MODULE_before {
+    struct Context_Statement_IMPORT_MODULE_before : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2394,7 +2394,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IMPORT_MODULE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_IMPORT_MODULE_after {
+    struct Context_Statement_IMPORT_MODULE_after : ebmcodegen::util::ContextBase<Context_Statement_IMPORT_MODULE_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2410,7 +2410,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_IMPORT_MODULE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& import_decl = instance_name.import_decl;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_EXPRESSION {
+    struct Context_Statement_EXPRESSION : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2424,7 +2424,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;
-    struct Context_Statement_EXPRESSION_before {
+    struct Context_Statement_EXPRESSION_before : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2439,7 +2439,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_EXPRESSION_after {
+    struct Context_Statement_EXPRESSION_after : ebmcodegen::util::ContextBase<Context_Statement_EXPRESSION_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2455,7 +2455,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& expression = instance_name.expression;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ERROR_REPORT {
+    struct Context_Statement_ERROR_REPORT : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2469,7 +2469,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_REPORT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;
-    struct Context_Statement_ERROR_REPORT_before {
+    struct Context_Statement_ERROR_REPORT_before : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2484,7 +2484,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_REPORT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ERROR_REPORT_after {
+    struct Context_Statement_ERROR_REPORT_after : ebmcodegen::util::ContextBase<Context_Statement_ERROR_REPORT_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2500,7 +2500,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ERROR_REPORT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& error_report = instance_name.error_report;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_LOWERED_IO_STATEMENTS {
+    struct Context_Statement_LOWERED_IO_STATEMENTS : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2514,7 +2514,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;
-    struct Context_Statement_LOWERED_IO_STATEMENTS_before {
+    struct Context_Statement_LOWERED_IO_STATEMENTS_before : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2529,7 +2529,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_LOWERED_IO_STATEMENTS_after {
+    struct Context_Statement_LOWERED_IO_STATEMENTS_after : ebmcodegen::util::ContextBase<Context_Statement_LOWERED_IO_STATEMENTS_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2545,7 +2545,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_LOWERED_IO_STATEMENTS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& lowered_io_statements = instance_name.lowered_io_statements;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_SUB_BYTE_RANGE {
+    struct Context_Statement_SUB_BYTE_RANGE : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2559,7 +2559,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;
-    struct Context_Statement_SUB_BYTE_RANGE_before {
+    struct Context_Statement_SUB_BYTE_RANGE_before : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2574,7 +2574,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_SUB_BYTE_RANGE_after {
+    struct Context_Statement_SUB_BYTE_RANGE_after : ebmcodegen::util::ContextBase<Context_Statement_SUB_BYTE_RANGE_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2590,7 +2590,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_SUB_BYTE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& sub_byte_range = instance_name.sub_byte_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_INIT_CHECK {
+    struct Context_Statement_INIT_CHECK : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2604,7 +2604,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_INIT_CHECK(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;
-    struct Context_Statement_INIT_CHECK_before {
+    struct Context_Statement_INIT_CHECK_before : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2619,7 +2619,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_INIT_CHECK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_INIT_CHECK_after {
+    struct Context_Statement_INIT_CHECK_after : ebmcodegen::util::ContextBase<Context_Statement_INIT_CHECK_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2635,7 +2635,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_INIT_CHECK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& init_check = instance_name.init_check;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement_ENDIAN_VARIABLE {
+    struct Context_Statement_ENDIAN_VARIABLE : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2649,7 +2649,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;
-    struct Context_Statement_ENDIAN_VARIABLE_before {
+    struct Context_Statement_ENDIAN_VARIABLE_before : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_before> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2664,7 +2664,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_ENDIAN_VARIABLE_after {
+    struct Context_Statement_ENDIAN_VARIABLE_after : ebmcodegen::util::ContextBase<Context_Statement_ENDIAN_VARIABLE_after> {
         BaseVisitor& visitor;
         ebm::StatementRef item_id;
         const ebm::StatementKind& kind;
@@ -2680,7 +2680,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_ENDIAN_VARIABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& endian_variable = instance_name.endian_variable;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Statement {
+    struct Context_Statement : ebmcodegen::util::ContextBase<Context_Statement> {
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2693,7 +2693,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Statement_before {
+    struct Context_Statement_before : ebmcodegen::util::ContextBase<Context_Statement_before> {
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2707,7 +2707,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Statement_after {
+    struct Context_Statement_after : ebmcodegen::util::ContextBase<Context_Statement_after> {
         BaseVisitor& visitor;
         const ebm::Statement& in;
         ebm::StatementRef alias_ref;
@@ -2722,7 +2722,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Block {
+    struct Context_Block : ebmcodegen::util::ContextBase<Context_Block> {
         BaseVisitor& visitor;
         const ebm::Block& in;
     };
@@ -2734,7 +2734,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_BLOCK(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Block_before {
+    struct Context_Block_before : ebmcodegen::util::ContextBase<Context_Block_before> {
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -2747,7 +2747,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_BLOCK_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Block_after {
+    struct Context_Block_after : ebmcodegen::util::ContextBase<Context_Block_after> {
         BaseVisitor& visitor;
         const ebm::Block& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -2761,7 +2761,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_BLOCK_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_INT {
+    struct Context_Expression_LITERAL_INT : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2776,7 +2776,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;
-    struct Context_Expression_LITERAL_INT_before {
+    struct Context_Expression_LITERAL_INT_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2792,7 +2792,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_INT_after {
+    struct Context_Expression_LITERAL_INT_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2809,7 +2809,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int_value = instance_name.int_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_INT64 {
+    struct Context_Expression_LITERAL_INT64 : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2824,7 +2824,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT64(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;
-    struct Context_Expression_LITERAL_INT64_before {
+    struct Context_Expression_LITERAL_INT64_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2840,7 +2840,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT64_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_INT64_after {
+    struct Context_Expression_LITERAL_INT64_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_INT64_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2857,7 +2857,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_INT64_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& int64_value = instance_name.int64_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_BOOL {
+    struct Context_Expression_LITERAL_BOOL : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2872,7 +2872,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;
-    struct Context_Expression_LITERAL_BOOL_before {
+    struct Context_Expression_LITERAL_BOOL_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2888,7 +2888,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_BOOL_after {
+    struct Context_Expression_LITERAL_BOOL_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_BOOL_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2905,7 +2905,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bool_value = instance_name.bool_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_STRING {
+    struct Context_Expression_LITERAL_STRING : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2920,7 +2920,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_STRING(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;
-    struct Context_Expression_LITERAL_STRING_before {
+    struct Context_Expression_LITERAL_STRING_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2936,7 +2936,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_STRING_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_STRING_after {
+    struct Context_Expression_LITERAL_STRING_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_STRING_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2953,7 +2953,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_STRING_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& string_value = instance_name.string_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_TYPE {
+    struct Context_Expression_LITERAL_TYPE : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2968,7 +2968,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;
-    struct Context_Expression_LITERAL_TYPE_before {
+    struct Context_Expression_LITERAL_TYPE_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -2984,7 +2984,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_TYPE_after {
+    struct Context_Expression_LITERAL_TYPE_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_TYPE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3001,7 +3001,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& type_ref = instance_name.type_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_LITERAL_CHAR {
+    struct Context_Expression_LITERAL_CHAR : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3016,7 +3016,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_CHAR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;
-    struct Context_Expression_LITERAL_CHAR_before {
+    struct Context_Expression_LITERAL_CHAR_before : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3032,7 +3032,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_LITERAL_CHAR_after {
+    struct Context_Expression_LITERAL_CHAR_after : ebmcodegen::util::ContextBase<Context_Expression_LITERAL_CHAR_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3049,7 +3049,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_LITERAL_CHAR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& char_value = instance_name.char_value;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_IDENTIFIER {
+    struct Context_Expression_IDENTIFIER : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3064,7 +3064,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IDENTIFIER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Expression_IDENTIFIER_before {
+    struct Context_Expression_IDENTIFIER_before : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3080,7 +3080,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IDENTIFIER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IDENTIFIER_after {
+    struct Context_Expression_IDENTIFIER_after : ebmcodegen::util::ContextBase<Context_Expression_IDENTIFIER_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3097,7 +3097,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IDENTIFIER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_BINARY_OP {
+    struct Context_Expression_BINARY_OP : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3114,7 +3114,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_BINARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;
-    struct Context_Expression_BINARY_OP_before {
+    struct Context_Expression_BINARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3132,7 +3132,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_BINARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_BINARY_OP_after {
+    struct Context_Expression_BINARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_BINARY_OP_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3151,7 +3151,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_BINARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& bop = instance_name.bop;auto& left = instance_name.left;auto& right = instance_name.right;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_UNARY_OP {
+    struct Context_Expression_UNARY_OP : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3167,7 +3167,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_UNARY_OP(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;
-    struct Context_Expression_UNARY_OP_before {
+    struct Context_Expression_UNARY_OP_before : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3184,7 +3184,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_UNARY_OP_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_UNARY_OP_after {
+    struct Context_Expression_UNARY_OP_after : ebmcodegen::util::ContextBase<Context_Expression_UNARY_OP_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3202,7 +3202,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_UNARY_OP_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& operand = instance_name.operand;auto& uop = instance_name.uop;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_CALL {
+    struct Context_Expression_CALL : ebmcodegen::util::ContextBase<Context_Expression_CALL> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3217,7 +3217,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CALL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;
-    struct Context_Expression_CALL_before {
+    struct Context_Expression_CALL_before : ebmcodegen::util::ContextBase<Context_Expression_CALL_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3233,7 +3233,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CALL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CALL_after {
+    struct Context_Expression_CALL_after : ebmcodegen::util::ContextBase<Context_Expression_CALL_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3250,7 +3250,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CALL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& call_desc = instance_name.call_desc;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_INDEX_ACCESS {
+    struct Context_Expression_INDEX_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3266,7 +3266,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_INDEX_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;
-    struct Context_Expression_INDEX_ACCESS_before {
+    struct Context_Expression_INDEX_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3283,7 +3283,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_INDEX_ACCESS_after {
+    struct Context_Expression_INDEX_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_INDEX_ACCESS_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3301,7 +3301,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_INDEX_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& index = instance_name.index;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_MEMBER_ACCESS {
+    struct Context_Expression_MEMBER_ACCESS : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3317,7 +3317,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;
-    struct Context_Expression_MEMBER_ACCESS_before {
+    struct Context_Expression_MEMBER_ACCESS_before : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3334,7 +3334,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_MEMBER_ACCESS_after {
+    struct Context_Expression_MEMBER_ACCESS_after : ebmcodegen::util::ContextBase<Context_Expression_MEMBER_ACCESS_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3352,7 +3352,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MEMBER_ACCESS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& base = instance_name.base;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_ENUM_MEMBER {
+    struct Context_Expression_ENUM_MEMBER : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3368,7 +3368,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_MEMBER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;
-    struct Context_Expression_ENUM_MEMBER_before {
+    struct Context_Expression_ENUM_MEMBER_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3385,7 +3385,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ENUM_MEMBER_after {
+    struct Context_Expression_ENUM_MEMBER_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_MEMBER_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3403,7 +3403,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_MEMBER_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& enum_decl = instance_name.enum_decl;auto& member = instance_name.member;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_TYPE_CAST {
+    struct Context_Expression_TYPE_CAST : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3420,7 +3420,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_TYPE_CAST(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;
-    struct Context_Expression_TYPE_CAST_before {
+    struct Context_Expression_TYPE_CAST_before : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3438,7 +3438,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_TYPE_CAST_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_TYPE_CAST_after {
+    struct Context_Expression_TYPE_CAST_after : ebmcodegen::util::ContextBase<Context_Expression_TYPE_CAST_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3457,7 +3457,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_TYPE_CAST_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& cast_kind = instance_name.cast_kind;auto& from_type = instance_name.from_type;auto& source_expr = instance_name.source_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_RANGE {
+    struct Context_Expression_RANGE : ebmcodegen::util::ContextBase<Context_Expression_RANGE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3473,7 +3473,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;
-    struct Context_Expression_RANGE_before {
+    struct Context_Expression_RANGE_before : ebmcodegen::util::ContextBase<Context_Expression_RANGE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3490,7 +3490,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_RANGE_after {
+    struct Context_Expression_RANGE_after : ebmcodegen::util::ContextBase<Context_Expression_RANGE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3508,7 +3508,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& end = instance_name.end;auto& start = instance_name.start;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_DEFAULT_VALUE {
+    struct Context_Expression_DEFAULT_VALUE : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3522,7 +3522,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
-    struct Context_Expression_DEFAULT_VALUE_before {
+    struct Context_Expression_DEFAULT_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3537,7 +3537,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_DEFAULT_VALUE_after {
+    struct Context_Expression_DEFAULT_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_DEFAULT_VALUE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3553,7 +3553,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_DEFAULT_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_IS_LITTLE_ENDIAN {
+    struct Context_Expression_IS_LITTLE_ENDIAN : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3568,7 +3568,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;
-    struct Context_Expression_IS_LITTLE_ENDIAN_before {
+    struct Context_Expression_IS_LITTLE_ENDIAN_before : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3584,7 +3584,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IS_LITTLE_ENDIAN_after {
+    struct Context_Expression_IS_LITTLE_ENDIAN_after : ebmcodegen::util::ContextBase<Context_Expression_IS_LITTLE_ENDIAN_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3601,7 +3601,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_LITTLE_ENDIAN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& endian_expr = instance_name.endian_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_GET_STREAM_OFFSET {
+    struct Context_Expression_GET_STREAM_OFFSET : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3617,7 +3617,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;
-    struct Context_Expression_GET_STREAM_OFFSET_before {
+    struct Context_Expression_GET_STREAM_OFFSET_before : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3634,7 +3634,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_GET_STREAM_OFFSET_after {
+    struct Context_Expression_GET_STREAM_OFFSET_after : ebmcodegen::util::ContextBase<Context_Expression_GET_STREAM_OFFSET_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3652,7 +3652,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_STREAM_OFFSET_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& unit = instance_name.unit;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_GET_REMAINING_BYTES {
+    struct Context_Expression_GET_REMAINING_BYTES : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3667,7 +3667,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;
-    struct Context_Expression_GET_REMAINING_BYTES_before {
+    struct Context_Expression_GET_REMAINING_BYTES_before : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3683,7 +3683,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_GET_REMAINING_BYTES_after {
+    struct Context_Expression_GET_REMAINING_BYTES_after : ebmcodegen::util::ContextBase<Context_Expression_GET_REMAINING_BYTES_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3700,7 +3700,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_GET_REMAINING_BYTES_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_CAN_READ_STREAM {
+    struct Context_Expression_CAN_READ_STREAM : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3717,7 +3717,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;
-    struct Context_Expression_CAN_READ_STREAM_before {
+    struct Context_Expression_CAN_READ_STREAM_before : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3735,7 +3735,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CAN_READ_STREAM_after {
+    struct Context_Expression_CAN_READ_STREAM_after : ebmcodegen::util::ContextBase<Context_Expression_CAN_READ_STREAM_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3754,7 +3754,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CAN_READ_STREAM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_ref = instance_name.io_ref;auto& num_bytes = instance_name.num_bytes;auto& stream_type = instance_name.stream_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_ARRAY_SIZE {
+    struct Context_Expression_ARRAY_SIZE : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3769,7 +3769,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ARRAY_SIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;
-    struct Context_Expression_ARRAY_SIZE_before {
+    struct Context_Expression_ARRAY_SIZE_before : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3785,7 +3785,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ARRAY_SIZE_after {
+    struct Context_Expression_ARRAY_SIZE_after : ebmcodegen::util::ContextBase<Context_Expression_ARRAY_SIZE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3802,7 +3802,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ARRAY_SIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& array_expr = instance_name.array_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_ENUM_IS_DEFINED {
+    struct Context_Expression_ENUM_IS_DEFINED : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3818,7 +3818,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_ENUM_IS_DEFINED_before {
+    struct Context_Expression_ENUM_IS_DEFINED_before : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3835,7 +3835,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ENUM_IS_DEFINED_after {
+    struct Context_Expression_ENUM_IS_DEFINED_after : ebmcodegen::util::ContextBase<Context_Expression_ENUM_IS_DEFINED_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3853,7 +3853,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ENUM_IS_DEFINED_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_IS_ERROR {
+    struct Context_Expression_IS_ERROR : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3868,7 +3868,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_ERROR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_IS_ERROR_before {
+    struct Context_Expression_IS_ERROR_before : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3884,7 +3884,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_ERROR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_IS_ERROR_after {
+    struct Context_Expression_IS_ERROR_after : ebmcodegen::util::ContextBase<Context_Expression_IS_ERROR_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3901,7 +3901,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_IS_ERROR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_MAX_VALUE {
+    struct Context_Expression_MAX_VALUE : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3916,7 +3916,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MAX_VALUE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;
-    struct Context_Expression_MAX_VALUE_before {
+    struct Context_Expression_MAX_VALUE_before : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3932,7 +3932,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MAX_VALUE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_MAX_VALUE_after {
+    struct Context_Expression_MAX_VALUE_after : ebmcodegen::util::ContextBase<Context_Expression_MAX_VALUE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3949,7 +3949,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_MAX_VALUE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_READ_DATA {
+    struct Context_Expression_READ_DATA : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3965,7 +3965,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_READ_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;
-    struct Context_Expression_READ_DATA_before {
+    struct Context_Expression_READ_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -3982,7 +3982,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_READ_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_READ_DATA_after {
+    struct Context_Expression_READ_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_READ_DATA_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4000,7 +4000,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_READ_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_WRITE_DATA {
+    struct Context_Expression_WRITE_DATA : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4016,7 +4016,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_WRITE_DATA(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_WRITE_DATA_before {
+    struct Context_Expression_WRITE_DATA_before : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4033,7 +4033,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_WRITE_DATA_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_WRITE_DATA_after {
+    struct Context_Expression_WRITE_DATA_after : ebmcodegen::util::ContextBase<Context_Expression_WRITE_DATA_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4051,7 +4051,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_WRITE_DATA_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& io_statement = instance_name.io_statement;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_CONDITIONAL_STATEMENT {
+    struct Context_Expression_CONDITIONAL_STATEMENT : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4067,7 +4067,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;
-    struct Context_Expression_CONDITIONAL_STATEMENT_before {
+    struct Context_Expression_CONDITIONAL_STATEMENT_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4084,7 +4084,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CONDITIONAL_STATEMENT_after {
+    struct Context_Expression_CONDITIONAL_STATEMENT_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_STATEMENT_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4102,7 +4102,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL_STATEMENT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& conditional_stmt = instance_name.conditional_stmt;auto& target_stmt = instance_name.target_stmt;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_CONDITIONAL {
+    struct Context_Expression_CONDITIONAL : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4120,7 +4120,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;
-    struct Context_Expression_CONDITIONAL_before {
+    struct Context_Expression_CONDITIONAL_before : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4139,7 +4139,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_CONDITIONAL_after {
+    struct Context_Expression_CONDITIONAL_after : ebmcodegen::util::ContextBase<Context_Expression_CONDITIONAL_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4159,7 +4159,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_CONDITIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& condition = instance_name.condition;auto& else_ = instance_name.else_;auto& lowered_expr = instance_name.lowered_expr;auto& then = instance_name.then;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_AVAILABLE {
+    struct Context_Expression_AVAILABLE : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4175,7 +4175,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AVAILABLE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_AVAILABLE_before {
+    struct Context_Expression_AVAILABLE_before : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4192,7 +4192,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AVAILABLE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_AVAILABLE_after {
+    struct Context_Expression_AVAILABLE_after : ebmcodegen::util::ContextBase<Context_Expression_AVAILABLE_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4210,7 +4210,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AVAILABLE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_SIZEOF {
+    struct Context_Expression_SIZEOF : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4226,7 +4226,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SIZEOF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_SIZEOF_before {
+    struct Context_Expression_SIZEOF_before : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4243,7 +4243,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SIZEOF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SIZEOF_after {
+    struct Context_Expression_SIZEOF_after : ebmcodegen::util::ContextBase<Context_Expression_SIZEOF_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4261,7 +4261,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SIZEOF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& lowered_expr = instance_name.lowered_expr;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_SUB_RANGE_INIT {
+    struct Context_Expression_SUB_RANGE_INIT : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4276,7 +4276,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;
-    struct Context_Expression_SUB_RANGE_INIT_before {
+    struct Context_Expression_SUB_RANGE_INIT_before : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4292,7 +4292,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SUB_RANGE_INIT_after {
+    struct Context_Expression_SUB_RANGE_INIT_after : ebmcodegen::util::ContextBase<Context_Expression_SUB_RANGE_INIT_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4309,7 +4309,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SUB_RANGE_INIT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& sub_range = instance_name.sub_range;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_OR_COND {
+    struct Context_Expression_OR_COND : ebmcodegen::util::ContextBase<Context_Expression_OR_COND> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4324,7 +4324,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OR_COND(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;
-    struct Context_Expression_OR_COND_before {
+    struct Context_Expression_OR_COND_before : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4340,7 +4340,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OR_COND_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_OR_COND_after {
+    struct Context_Expression_OR_COND_after : ebmcodegen::util::ContextBase<Context_Expression_OR_COND_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4357,7 +4357,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OR_COND_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& or_cond = instance_name.or_cond;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_ADDRESS_OF {
+    struct Context_Expression_ADDRESS_OF : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4372,7 +4372,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ADDRESS_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_ADDRESS_OF_before {
+    struct Context_Expression_ADDRESS_OF_before : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4388,7 +4388,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ADDRESS_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_ADDRESS_OF_after {
+    struct Context_Expression_ADDRESS_OF_after : ebmcodegen::util::ContextBase<Context_Expression_ADDRESS_OF_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4405,7 +4405,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_ADDRESS_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_OPTIONAL_OF {
+    struct Context_Expression_OPTIONAL_OF : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4420,7 +4420,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OPTIONAL_OF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_OPTIONAL_OF_before {
+    struct Context_Expression_OPTIONAL_OF_before : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4436,7 +4436,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_OPTIONAL_OF_after {
+    struct Context_Expression_OPTIONAL_OF_after : ebmcodegen::util::ContextBase<Context_Expression_OPTIONAL_OF_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4453,7 +4453,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_OPTIONAL_OF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_SETTER_STATUS {
+    struct Context_Expression_SETTER_STATUS : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4468,7 +4468,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SETTER_STATUS(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;
-    struct Context_Expression_SETTER_STATUS_before {
+    struct Context_Expression_SETTER_STATUS_before : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4484,7 +4484,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SETTER_STATUS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SETTER_STATUS_after {
+    struct Context_Expression_SETTER_STATUS_after : ebmcodegen::util::ContextBase<Context_Expression_SETTER_STATUS_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4501,7 +4501,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SETTER_STATUS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& setter_status = instance_name.setter_status;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_SELF {
+    struct Context_Expression_SELF : ebmcodegen::util::ContextBase<Context_Expression_SELF> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4515,7 +4515,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SELF(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;
-    struct Context_Expression_SELF_before {
+    struct Context_Expression_SELF_before : ebmcodegen::util::ContextBase<Context_Expression_SELF_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4530,7 +4530,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SELF_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_SELF_after {
+    struct Context_Expression_SELF_after : ebmcodegen::util::ContextBase<Context_Expression_SELF_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4546,7 +4546,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_SELF_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression_AS_ARG {
+    struct Context_Expression_AS_ARG : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4561,7 +4561,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AS_ARG(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;
-    struct Context_Expression_AS_ARG_before {
+    struct Context_Expression_AS_ARG_before : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_before> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4577,7 +4577,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AS_ARG_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_AS_ARG_after {
+    struct Context_Expression_AS_ARG_after : ebmcodegen::util::ContextBase<Context_Expression_AS_ARG_after> {
         BaseVisitor& visitor;
         ebm::ExpressionRef item_id;
         const ebm::TypeRef& type;
@@ -4594,7 +4594,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AS_ARG_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& type = instance_name.type;auto& kind = instance_name.kind;auto& target_expr = instance_name.target_expr;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expression {
+    struct Context_Expression : ebmcodegen::util::ContextBase<Context_Expression> {
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -4607,7 +4607,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Expression_before {
+    struct Context_Expression_before : ebmcodegen::util::ContextBase<Context_Expression_before> {
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -4621,7 +4621,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Expression_after {
+    struct Context_Expression_after : ebmcodegen::util::ContextBase<Context_Expression_after> {
         BaseVisitor& visitor;
         const ebm::Expression& in;
         ebm::ExpressionRef alias_ref;
@@ -4636,7 +4636,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Expressions {
+    struct Context_Expressions : ebmcodegen::util::ContextBase<Context_Expressions> {
         BaseVisitor& visitor;
         const ebm::Expressions& in;
     };
@@ -4648,7 +4648,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSIONS(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Expressions_before {
+    struct Context_Expressions_before : ebmcodegen::util::ContextBase<Context_Expressions_before> {
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4661,7 +4661,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSIONS_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Expressions_after {
+    struct Context_Expressions_after : ebmcodegen::util::ContextBase<Context_Expressions_after> {
         BaseVisitor& visitor;
         const ebm::Expressions& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -4675,7 +4675,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_EXPRESSIONS_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_INT {
+    struct Context_Type_INT : ebmcodegen::util::ContextBase<Context_Type_INT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4689,7 +4689,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_INT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_INT_before {
+    struct Context_Type_INT_before : ebmcodegen::util::ContextBase<Context_Type_INT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4704,7 +4704,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_INT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_INT_after {
+    struct Context_Type_INT_after : ebmcodegen::util::ContextBase<Context_Type_INT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4720,7 +4720,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_INT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_UINT {
+    struct Context_Type_UINT : ebmcodegen::util::ContextBase<Context_Type_UINT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4734,7 +4734,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_UINT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_UINT_before {
+    struct Context_Type_UINT_before : ebmcodegen::util::ContextBase<Context_Type_UINT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4749,7 +4749,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_UINT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_UINT_after {
+    struct Context_Type_UINT_after : ebmcodegen::util::ContextBase<Context_Type_UINT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4765,7 +4765,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_UINT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_USIZE {
+    struct Context_Type_USIZE : ebmcodegen::util::ContextBase<Context_Type_USIZE> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4778,7 +4778,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_USIZE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_USIZE_before {
+    struct Context_Type_USIZE_before : ebmcodegen::util::ContextBase<Context_Type_USIZE_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4792,7 +4792,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_USIZE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_USIZE_after {
+    struct Context_Type_USIZE_after : ebmcodegen::util::ContextBase<Context_Type_USIZE_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4807,7 +4807,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_USIZE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_FLOAT {
+    struct Context_Type_FLOAT : ebmcodegen::util::ContextBase<Context_Type_FLOAT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4821,7 +4821,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FLOAT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;
-    struct Context_Type_FLOAT_before {
+    struct Context_Type_FLOAT_before : ebmcodegen::util::ContextBase<Context_Type_FLOAT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4836,7 +4836,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FLOAT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_FLOAT_after {
+    struct Context_Type_FLOAT_after : ebmcodegen::util::ContextBase<Context_Type_FLOAT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4852,7 +4852,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FLOAT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& size = instance_name.size;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_STRUCT {
+    struct Context_Type_STRUCT : ebmcodegen::util::ContextBase<Context_Type_STRUCT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4866,7 +4866,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Type_STRUCT_before {
+    struct Context_Type_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_STRUCT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4881,7 +4881,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_STRUCT_after {
+    struct Context_Type_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_STRUCT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4897,7 +4897,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_RECURSIVE_STRUCT {
+    struct Context_Type_RECURSIVE_STRUCT : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4911,7 +4911,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RECURSIVE_STRUCT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;
-    struct Context_Type_RECURSIVE_STRUCT_before {
+    struct Context_Type_RECURSIVE_STRUCT_before : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4926,7 +4926,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_RECURSIVE_STRUCT_after {
+    struct Context_Type_RECURSIVE_STRUCT_after : ebmcodegen::util::ContextBase<Context_Type_RECURSIVE_STRUCT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4942,7 +4942,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RECURSIVE_STRUCT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_BOOL {
+    struct Context_Type_BOOL : ebmcodegen::util::ContextBase<Context_Type_BOOL> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4955,7 +4955,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_BOOL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_BOOL_before {
+    struct Context_Type_BOOL_before : ebmcodegen::util::ContextBase<Context_Type_BOOL_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4969,7 +4969,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_BOOL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_BOOL_after {
+    struct Context_Type_BOOL_after : ebmcodegen::util::ContextBase<Context_Type_BOOL_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4984,7 +4984,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_BOOL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_VOID {
+    struct Context_Type_VOID : ebmcodegen::util::ContextBase<Context_Type_VOID> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -4997,7 +4997,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VOID(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_VOID_before {
+    struct Context_Type_VOID_before : ebmcodegen::util::ContextBase<Context_Type_VOID_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5011,7 +5011,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VOID_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VOID_after {
+    struct Context_Type_VOID_after : ebmcodegen::util::ContextBase<Context_Type_VOID_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5026,7 +5026,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VOID_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_META {
+    struct Context_Type_META : ebmcodegen::util::ContextBase<Context_Type_META> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5039,7 +5039,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_META(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_META_before {
+    struct Context_Type_META_before : ebmcodegen::util::ContextBase<Context_Type_META_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5053,7 +5053,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_META_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_META_after {
+    struct Context_Type_META_after : ebmcodegen::util::ContextBase<Context_Type_META_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5068,7 +5068,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_META_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_ENUM {
+    struct Context_Type_ENUM : ebmcodegen::util::ContextBase<Context_Type_ENUM> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5083,7 +5083,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENUM(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;
-    struct Context_Type_ENUM_before {
+    struct Context_Type_ENUM_before : ebmcodegen::util::ContextBase<Context_Type_ENUM_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5099,7 +5099,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENUM_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENUM_after {
+    struct Context_Type_ENUM_after : ebmcodegen::util::ContextBase<Context_Type_ENUM_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5116,7 +5116,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENUM_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& id = instance_name.id;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_ARRAY {
+    struct Context_Type_ARRAY : ebmcodegen::util::ContextBase<Context_Type_ARRAY> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5131,7 +5131,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ARRAY(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;
-    struct Context_Type_ARRAY_before {
+    struct Context_Type_ARRAY_before : ebmcodegen::util::ContextBase<Context_Type_ARRAY_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5147,7 +5147,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ARRAY_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ARRAY_after {
+    struct Context_Type_ARRAY_after : ebmcodegen::util::ContextBase<Context_Type_ARRAY_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5164,7 +5164,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ARRAY_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& length = instance_name.length;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_VECTOR {
+    struct Context_Type_VECTOR : ebmcodegen::util::ContextBase<Context_Type_VECTOR> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5178,7 +5178,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VECTOR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;
-    struct Context_Type_VECTOR_before {
+    struct Context_Type_VECTOR_before : ebmcodegen::util::ContextBase<Context_Type_VECTOR_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5193,7 +5193,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VECTOR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VECTOR_after {
+    struct Context_Type_VECTOR_after : ebmcodegen::util::ContextBase<Context_Type_VECTOR_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5209,7 +5209,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VECTOR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& element_type = instance_name.element_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_VARIANT {
+    struct Context_Type_VARIANT : ebmcodegen::util::ContextBase<Context_Type_VARIANT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5225,7 +5225,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;
-    struct Context_Type_VARIANT_before {
+    struct Context_Type_VARIANT_before : ebmcodegen::util::ContextBase<Context_Type_VARIANT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5242,7 +5242,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_VARIANT_after {
+    struct Context_Type_VARIANT_after : ebmcodegen::util::ContextBase<Context_Type_VARIANT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5260,7 +5260,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_VARIANT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& common_type = instance_name.common_type;auto& members = instance_name.members;auto& related_field = instance_name.related_field;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_RANGE {
+    struct Context_Type_RANGE : ebmcodegen::util::ContextBase<Context_Type_RANGE> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5274,7 +5274,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RANGE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;
-    struct Context_Type_RANGE_before {
+    struct Context_Type_RANGE_before : ebmcodegen::util::ContextBase<Context_Type_RANGE_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5289,7 +5289,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RANGE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_RANGE_after {
+    struct Context_Type_RANGE_after : ebmcodegen::util::ContextBase<Context_Type_RANGE_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5305,7 +5305,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_RANGE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& base_type = instance_name.base_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_ENCODER_RETURN {
+    struct Context_Type_ENCODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5318,7 +5318,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_ENCODER_RETURN_before {
+    struct Context_Type_ENCODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5332,7 +5332,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENCODER_RETURN_after {
+    struct Context_Type_ENCODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_RETURN_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5347,7 +5347,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_DECODER_RETURN {
+    struct Context_Type_DECODER_RETURN : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5360,7 +5360,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_DECODER_RETURN_before {
+    struct Context_Type_DECODER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5374,7 +5374,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_DECODER_RETURN_after {
+    struct Context_Type_DECODER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_RETURN_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5389,7 +5389,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_ENCODER_INPUT {
+    struct Context_Type_ENCODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5402,7 +5402,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_ENCODER_INPUT_before {
+    struct Context_Type_ENCODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5416,7 +5416,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_ENCODER_INPUT_after {
+    struct Context_Type_ENCODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_ENCODER_INPUT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5431,7 +5431,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_ENCODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_DECODER_INPUT {
+    struct Context_Type_DECODER_INPUT : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5444,7 +5444,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_INPUT(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_DECODER_INPUT_before {
+    struct Context_Type_DECODER_INPUT_before : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5458,7 +5458,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_INPUT_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_DECODER_INPUT_after {
+    struct Context_Type_DECODER_INPUT_after : ebmcodegen::util::ContextBase<Context_Type_DECODER_INPUT_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5473,7 +5473,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_DECODER_INPUT_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_PROPERTY_SETTER_RETURN {
+    struct Context_Type_PROPERTY_SETTER_RETURN : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5486,7 +5486,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;
-    struct Context_Type_PROPERTY_SETTER_RETURN_before {
+    struct Context_Type_PROPERTY_SETTER_RETURN_before : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5500,7 +5500,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_PROPERTY_SETTER_RETURN_after {
+    struct Context_Type_PROPERTY_SETTER_RETURN_after : ebmcodegen::util::ContextBase<Context_Type_PROPERTY_SETTER_RETURN_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5515,7 +5515,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PROPERTY_SETTER_RETURN_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_OPTIONAL {
+    struct Context_Type_OPTIONAL : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5529,7 +5529,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_OPTIONAL(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;
-    struct Context_Type_OPTIONAL_before {
+    struct Context_Type_OPTIONAL_before : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5544,7 +5544,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_OPTIONAL_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_OPTIONAL_after {
+    struct Context_Type_OPTIONAL_after : ebmcodegen::util::ContextBase<Context_Type_OPTIONAL_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5560,7 +5560,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_OPTIONAL_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& inner_type = instance_name.inner_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_PTR {
+    struct Context_Type_PTR : ebmcodegen::util::ContextBase<Context_Type_PTR> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5574,7 +5574,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PTR(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;
-    struct Context_Type_PTR_before {
+    struct Context_Type_PTR_before : ebmcodegen::util::ContextBase<Context_Type_PTR_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5589,7 +5589,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PTR_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_PTR_after {
+    struct Context_Type_PTR_after : ebmcodegen::util::ContextBase<Context_Type_PTR_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5605,7 +5605,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_PTR_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& pointee_type = instance_name.pointee_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type_FUNCTION {
+    struct Context_Type_FUNCTION : ebmcodegen::util::ContextBase<Context_Type_FUNCTION> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5620,7 +5620,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;
-    struct Context_Type_FUNCTION_before {
+    struct Context_Type_FUNCTION_before : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_before> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5636,7 +5636,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_FUNCTION_after {
+    struct Context_Type_FUNCTION_after : ebmcodegen::util::ContextBase<Context_Type_FUNCTION_after> {
         BaseVisitor& visitor;
         ebm::TypeRef item_id;
         const ebm::TypeKind& kind;
@@ -5653,7 +5653,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_FUNCTION_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& item_id = instance_name.item_id;auto& kind = instance_name.kind;auto& params = instance_name.params;auto& return_type = instance_name.return_type;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Type {
+    struct Context_Type : ebmcodegen::util::ContextBase<Context_Type> {
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -5666,7 +5666,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;
-    struct Context_Type_before {
+    struct Context_Type_before : ebmcodegen::util::ContextBase<Context_Type_before> {
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -5680,7 +5680,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;
-    struct Context_Type_after {
+    struct Context_Type_after : ebmcodegen::util::ContextBase<Context_Type_after> {
         BaseVisitor& visitor;
         const ebm::Type& in;
         ebm::TypeRef alias_ref;
@@ -5695,7 +5695,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPE_AFTER(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& alias_ref = instance_name.alias_ref;auto& main_logic = instance_name.main_logic;auto& result = instance_name.result;
-    struct Context_Types {
+    struct Context_Types : ebmcodegen::util::ContextBase<Context_Types> {
         BaseVisitor& visitor;
         const ebm::Types& in;
     };
@@ -5707,7 +5707,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPES(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;
-    struct Context_Types_before {
+    struct Context_Types_before : ebmcodegen::util::ContextBase<Context_Types_before> {
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;
@@ -5720,7 +5720,7 @@ namespace ebm2rust {
     // Deconstruct context fields
     #define EBM2RUST_DECONSTRUCT_TYPES_BEFORE(instance_name) \
     auto& visitor = instance_name.visitor;auto& in = instance_name.in;auto& main_logic = instance_name.main_logic;
-    struct Context_Types_after {
+    struct Context_Types_after : ebmcodegen::util::ContextBase<Context_Types_after> {
         BaseVisitor& visitor;
         const ebm::Types& in;
         ebmcodegen::util::MainLogicWrapper<Result> main_logic;

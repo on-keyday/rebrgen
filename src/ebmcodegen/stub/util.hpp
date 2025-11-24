@@ -490,6 +490,7 @@ namespace ebmcodegen::util {
 
 // for class based
 #define DEFINE_VISITOR(dummy_name)                                                            \
+    static_assert(std::string_view(__FILE__).contains(#dummy_name "_class.hpp"));             \
     template <>                                                                               \
     struct CODEGEN_VISITOR(dummy_name) {                                                      \
         ebmgen::expected<CODEGEN_NAMESPACE::Result> visit(CODEGEN_CONTEXT(dummy_name) & ctx); \
@@ -522,6 +523,46 @@ namespace ebmcodegen::util {
 
         constexpr ebmgen::expected<ResultType> operator()() {
             return main_logic_(arg_);
+        }
+    };
+
+    template <class D>
+    concept has_item_id = requires(D d) {
+        { d.item_id } -> std::convertible_to<ebm::StatementRef>;
+    };
+
+    template <class D>
+    struct ContextBase {
+       private:
+        D& derived() {
+            return static_cast<D&>(*this);
+        }
+
+        const D& derived() const {
+            return static_cast<const D&>(*this);
+        }
+
+       public:
+        decltype(auto) identifier() const
+            requires has_item_id<D>
+        {
+            return derived().visitor.module_.get_associated_identifier(derived().item_id);
+        }
+
+        decltype(auto) module() const {
+            return derived().visitor.module_;
+        }
+
+        decltype(auto) visit(ebm::TypeRef type_ref) const {
+            return visit_Type(derived(), type_ref);
+        }
+
+        decltype(auto) visit(ebm::ExpressionRef expr_ref) const {
+            return visit_Expression(derived(), expr_ref);
+        }
+
+        decltype(auto) visit(ebm::StatementRef stmt_ref) const {
+            return visit_Statement(derived(), stmt_ref);
         }
     };
 }  // namespace ebmcodegen::util

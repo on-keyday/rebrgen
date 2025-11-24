@@ -186,7 +186,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--mode",
         choices=["codegen", "interpret", "codegen-class"],
-        default="codegen",
+        default="codegen-class",
         help="Mode of operation",
     )
     parser.add_argument(

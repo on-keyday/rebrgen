@@ -564,7 +564,7 @@ namespace ebmcodegen {
 
     void generate_context_class(CodeWriter& w, const ContextClass& cls) {
         // w.writeln(cls.type_parameters(true));
-        w.writeln("struct ", context_name(cls), " {");
+        w.writeln("struct ", context_name(cls), " : ebmcodegen::util::ContextBase<", context_name(cls), "> {");
         {
             auto scope = w.indent_scope();
             for (auto& field : cls.fields) {

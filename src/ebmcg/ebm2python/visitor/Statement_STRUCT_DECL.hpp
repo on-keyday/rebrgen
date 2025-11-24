@@ -36,9 +36,9 @@
 // This code is included within the visit_Statement_STRUCT_DECL function.
 // We can use variables like `visitor` and `struct_decl` directly.
 CodeWriter w;
-auto name = this->module_.get_associated_identifier(item_id);
+auto name = module_.get_associated_identifier(item_id);
 
-if (this->module_.get_identifier(item_id)) {
+if (module_.get_identifier(item_id)) {
     output.struct_names.push_back(name);
 }
 w.writeln("@dataclasses.dataclass");
@@ -47,9 +47,9 @@ size_t size = w.str_size();
 auto scope = w.indent_scope();
 
 for (auto& field_ref : struct_decl.fields.container) {
-    MAYBE(field, this->module_.get_statement(field_ref));
+    MAYBE(field, module_.get_statement(field_ref));
     MAYBE(res, visit_Statement(*this, field));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 // __init__ method
@@ -60,7 +60,7 @@ w.writeln("def __init__(self):");
     auto result = handle_fields(*this, struct_decl.fields, true, [&](auto&& field_ref, auto&& field) -> ebmgen::expected<void> {
         if (auto field_decl = field.body.field_decl()) {
             MAYBE(default_, as_DEFAULT_VALUE(*this, field_decl->field_type));
-            auto field_name = this->module_.get_associated_identifier(field_ref);
+            auto field_name = module_.get_associated_identifier(field_ref);
             w.writeln("self.", field_name, " = ", default_.to_writer());
         }
         return {};
@@ -75,16 +75,16 @@ w.writeln("def __init__(self):");
 
 // Visit encode_fn if it exists
 if (auto enc_fn = struct_decl.encode_fn()) {  // Corrected: Check value() of Varint id
-    MAYBE(encode_fn_stmt, this->module_.get_statement(*enc_fn));
+    MAYBE(encode_fn_stmt, module_.get_statement(*enc_fn));
     MAYBE(res, visit_Statement(*this, encode_fn_stmt));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 // Visit decode_fn if it exists
 if (auto dec_fn = struct_decl.decode_fn()) {  // Corrected: Check value() of Varint id
-    MAYBE(decode_fn_stmt, this->module_.get_statement(*dec_fn));
+    MAYBE(decode_fn_stmt, module_.get_statement(*dec_fn));
     MAYBE(res, visit_Statement(*this, decode_fn_stmt));
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 if (w.str_size() == size) {

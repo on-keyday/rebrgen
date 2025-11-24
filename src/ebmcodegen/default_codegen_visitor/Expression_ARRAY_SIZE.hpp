@@ -17,9 +17,9 @@
 
 /*here to write the hook*/
 MAYBE(array, visit_Expression(*this, array_expr));
-if (surrounded_array_size) {
-    return CODE(array_size_get_function, "(", array.to_writer(), ")");
+if (visitor.surrounded_array_size) {
+    return CODE(visitor.array_size_get_function, "(", array.to_writer(), ")");
 }
 else {
-    return CODE(array.to_writer(), ".", array_size_get_function, "()");
+    return CODE(array.to_writer(), ".", visitor.array_size_get_function, "()");
 }

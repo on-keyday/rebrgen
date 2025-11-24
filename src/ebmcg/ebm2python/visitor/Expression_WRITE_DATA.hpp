@@ -17,4 +17,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 MAYBE(statement_text, visit_Statement(*this, io_statement));
 MAYBE(w, get_writer());
-merge_result(*this, w, statement_text);
+w.write(statement_text.to_writer());

@@ -31,7 +31,7 @@ MAYBE(struct_members, struct_union_members(*this, field_decl.field_type));
 
 if (struct_members.size() > 0) {
     for (auto& member : struct_members) {
-        custom_types.push_back(member.to_writer());
+        visitor.custom_types.push_back(member.to_writer());
     }
     auto enum_name = "Variant" + std::format("{}", get_id(field_decl.field_type));
 
@@ -51,7 +51,7 @@ if (struct_members.size() > 0) {
     }
     scope.execute();
     w.writeln("}");
-    custom_types.push_back(std::move(w));
+    visitor.custom_types.push_back(std::move(w));
 }
 auto name = module_.get_associated_identifier(item_id);
 

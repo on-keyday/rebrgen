@@ -15,4 +15,4 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-return self_value;
+return visitor.self_value;

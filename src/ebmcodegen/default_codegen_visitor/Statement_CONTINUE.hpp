@@ -21,7 +21,7 @@ while (!is_nil(loop_ref)) {
     MAYBE(loop, loop_stmt.body.loop());
     if (auto iter = loop.increment()) {
         MAYBE(step, visit_Statement(*this, *iter));
-        merge_result(*this, w, step);
+        w.write(step.to_writer());
         break;
     }
     loop_ref = loop.lowered_statement.id;

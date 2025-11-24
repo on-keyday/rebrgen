@@ -20,5 +20,5 @@ CodeWriter w;
 MAYBE(result_target, visit_Expression(*this, target));
 MAYBE(result_value, visit_Expression(*this, value));
 
-w.writeln(result_target.to_writer(), " = ", tidy_condition_brace(result_value.to_string()), endof_statement);
+w.writeln(result_target.to_writer(), " = ", tidy_condition_brace(result_value.to_string()), visitor.endof_statement);
 return w;

@@ -139,12 +139,7 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebmcodegen",
-      "args": [
-        "--mode",
-        "dsl",
-        "--dsl-file",
-        "${workspaceFolder}/src/ebmcg/ebm2python/dsl_sample/Expression_CAN_READ_STREAM_dsl.dsl"
-      ],
+      "args": ["--mode", "class-based-codegen-source"],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
       "environment": [],
@@ -157,11 +152,8 @@
       "type": "cppvsdbg",
       "request": "launch",
       "program": "${workspaceRoot}/tool/ebm2python",
-      "args": [
-        "-i",
-        "C:/Users/ukfco/AppData/Local/Temp/unictest/test-run-df81da63-e9eb-40b4-8057-878137b6e2ab/runner-c93c559f-995a-44fe-b516-a7c9ab352fa3/runner_input.ebm"
-      ],
-      "stopAtEntry": false,
+      "args": ["-i", "${workspaceRoot}/save/ebm_schema.ebm"],
+      "stopAtEntry": true,
       "cwd": "${workspaceRoot}",
       "environment": [],
       "console": "integratedTerminal"

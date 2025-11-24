@@ -30,7 +30,7 @@ if (!is_nil(loop.lowered_statement.id)) {
 CodeWriter w;
 if (auto init = loop.init(); init && init->id.value() != 0) {
     MAYBE(init_s, visit_Statement(*this, *init));
-    merge_result(*this, w, init_s);
+    w.write(init_s.to_writer());
 }
 std::optional<std::string> cond;
 CodeWriter condition_related;
@@ -43,33 +43,33 @@ if (auto c = loop.condition()) {
     w.write(condition_related);
 }
 else {
-    if (infinity_loop_keyword.empty()) {
+    if (visitor.infinity_loop_keyword.empty()) {
         MAYBE(true_, get_bool_literal(*this, true));
         cond = std::move(true_);
     }
 }
 
 if (cond) {
-    if (use_brace_for_condition) {
-        w.writeln("while (", tidy_condition_brace(std::move(*cond)), ") ", begin_block);
+    if (visitor.use_brace_for_condition) {
+        w.writeln("while (", tidy_condition_brace(std::move(*cond)), ") ", visitor.begin_block);
     }
     else {
-        w.writeln("while ", tidy_condition_brace(std::move(*cond)), " ", begin_block);
+        w.writeln("while ", tidy_condition_brace(std::move(*cond)), " ", visitor.begin_block);
     }
 }
 else {
-    w.writeln(infinity_loop_keyword, " ", begin_block);
+    w.writeln(visitor.infinity_loop_keyword, " ", visitor.begin_block);
 }
 {
     auto body_indent = w.indent_scope();
     MAYBE(body, visit_Statement(*this, loop.body));
-    merge_result(*this, w, body);
+    w.write(body.to_writer());
     if (auto iter = loop.increment()) {
         MAYBE(step, visit_Statement(*this, *iter));
-        merge_result(*this, w, step);
+        w.write(step.to_writer());
     }
     w.write(condition_related);
 }
-w.writeln(end_block);
+w.writeln(visitor.end_block);
 
 return w;

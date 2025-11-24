@@ -24,7 +24,7 @@
 // This code is included within the visit_Statement_FUNCTION_DECL function.
 // We can use variables like `visitor` and `func_decl` directly.
 CodeWriter w;
-auto func_name = this->module_.get_associated_identifier(item_id);
+auto func_name = module_.get_associated_identifier(item_id);
 MAYBE(return_type_str, visit_Type(*this, func_decl.return_type));
 
 std::string params_str = "";
@@ -32,9 +32,9 @@ if (!is_nil(func_decl.parent_format)) {
     params_str += "self";
 }
 for (auto& param_stmt_ref : func_decl.params.container) {
-    MAYBE(param_stmt, this->module_.get_statement(param_stmt_ref));
+    MAYBE(param_stmt, module_.get_statement(param_stmt_ref));
     MAYBE(param_decl, param_stmt.body.param_decl());
-    auto param_name = this->module_.get_associated_identifier(param_stmt_ref);
+    auto param_name = module_.get_associated_identifier(param_stmt_ref);
     MAYBE(param_type_str, visit_Type(*this, param_decl.param_type));  // Correctly extract the string value
     if (!params_str.empty()) {
         params_str += ", ";
@@ -55,7 +55,7 @@ if (res.to_writer().empty()) {
     w.writeln("pass");  // If the body is empty, we just pass
 }
 else {
-    merge_result(*this, w, res);
+    w.write(res.to_writer());
 }
 
 return w;

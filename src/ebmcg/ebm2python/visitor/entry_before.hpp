@@ -8,34 +8,34 @@
     module_: MappingTable
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
-
-begin_block = ":";
-end_block = "";
-use_brace_for_condition = false;
-use_elif = true;
-empty_block_marker = "pass";
-alt_binary_op = {
+auto& config = visitor;
+config.begin_block = ":";
+config.end_block = "";
+config.use_brace_for_condition = false;
+config.use_elif = true;
+config.empty_block_marker = "pass";
+config.alt_binary_op = {
     {ebm::BinaryOp::logical_and, "and"},
     {ebm::BinaryOp::logical_or, "or"},
     {ebm::BinaryOp::div, "//"},
 };
-alt_unary_op = {
+config.alt_unary_op = {
     {ebm::UnaryOp::logical_not, "not"},
 };
-metadata_comment_prefix = "#";
-metadata_comment_suffix = "";
-self_value = "self";
-module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
-module_.register_default_prefix(ebm::StatementKind::ENUM_DECL, "Enum");
-module_.register_default_prefix(ebm::StatementKind::FUNCTION_DECL, "func");
-module_.register_default_prefix(ebm::StatementKind::VARIABLE_DECL, "var");
-module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");
-module_.register_default_prefix(ebm::StatementKind::PARAMETER_DECL, "param");
-default_value_option.object_init = "()";
-default_value_option.bytes_init = "bytearray()";
-default_value_option.pointer_init = "None";
-default_value_option.optional_init = "None";
-default_value_option.encoder_return_init = "None";
-default_value_option.decoder_return_init = "None";
-surrounded_array_size = true;
-array_size_get_function = "builtins.len";
+config.metadata_comment_prefix = "#";
+config.metadata_comment_suffix = "";
+config.self_value = "self";
+config.module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
+config.module_.register_default_prefix(ebm::StatementKind::ENUM_DECL, "Enum");
+config.module_.register_default_prefix(ebm::StatementKind::FUNCTION_DECL, "func");
+config.module_.register_default_prefix(ebm::StatementKind::VARIABLE_DECL, "var");
+config.module_.register_default_prefix(ebm::StatementKind::FIELD_DECL, "field");
+config.module_.register_default_prefix(ebm::StatementKind::PARAMETER_DECL, "param");
+config.default_value_option.object_init = "()";
+config.default_value_option.bytes_init = "bytearray()";
+config.default_value_option.pointer_init = "None";
+config.default_value_option.optional_init = "None";
+config.default_value_option.encoder_return_init = "None";
+config.default_value_option.decoder_return_init = "None";
+config.surrounded_array_size = true;
+config.array_size_get_function = "builtins.len";

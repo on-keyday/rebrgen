@@ -19,4 +19,4 @@
 /*here to write the hook*/
 auto enum_name = module_.get_associated_identifier(enum_decl);
 MAYBE(member_name, module_.get_associated_identifier(member));
-return CODE(enum_name, enum_member_accessor, member_name);
+return CODE(enum_name, visitor.enum_member_accessor, member_name);

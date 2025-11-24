@@ -579,6 +579,7 @@ namespace ebm {
         PROPERTY_SETTER = 5,
         COMPOSITE_GETTER = 6,
         COMPOSITE_SETTER = 7,
+        CAST = 8,
     };
     constexpr const char* to_string(FunctionKind e, bool origin_form = false) {
         switch(e) {
@@ -590,6 +591,7 @@ namespace ebm {
             case FunctionKind::PROPERTY_SETTER: return origin_form ? "PROPERTY_SETTER":"PROPERTY_SETTER" ;
             case FunctionKind::COMPOSITE_GETTER: return origin_form ? "COMPOSITE_GETTER":"COMPOSITE_GETTER" ;
             case FunctionKind::COMPOSITE_SETTER: return origin_form ? "COMPOSITE_SETTER":"COMPOSITE_SETTER" ;
+            case FunctionKind::CAST: return origin_form ? "CAST":"CAST" ;
         }
         return "";
     }
@@ -621,6 +623,9 @@ namespace ebm {
         }
         if (str == "COMPOSITE_SETTER") {
             return FunctionKind::COMPOSITE_SETTER;
+        }
+        if (str == "CAST") {
+            return FunctionKind::CAST;
         }
         return std::nullopt;
     }

@@ -5,6 +5,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tool)
 add_executable(ebm2python
     "main.cpp"
 )
+target_precompile_headers(ebm2python PRIVATE
+    <format>
+    <expected>
+    <string>
+    <vector>
+    <variant>
+    <optional>
+    <ebm/extended_binary_module.hpp>
+    <ebmcodegen/stub/entry.hpp>
+    <ebmcodegen/stub/util.hpp>
+    <ebmgen/common.hpp>
+    <ebmgen/convert/helper.hpp>
+    <ebmgen/mapping.hpp>
+    <code/code_writer.h>
+    <code/loc_writer.h>
+    <ebmcodegen/stub/writer_manager.hpp>
+    <concepts>
+    <strutil/append.h>
+)
 if(UNIX)
 set_target_properties(ebm2python PROPERTIES INSTALL_RPATH "${CMAKE_SOURCE_DIR}/tool")
 endif()

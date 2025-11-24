@@ -37,8 +37,6 @@ auto type_to_python_str = [&](ebm::TypeRef type_ref) -> expected<std::string> {
     return res.to_string();
 };
 
-auto& module_ = visitor.module_;
-
 switch (type.body.kind) {
     case ebm::TypeKind::INT:
     case ebm::TypeKind::UINT:

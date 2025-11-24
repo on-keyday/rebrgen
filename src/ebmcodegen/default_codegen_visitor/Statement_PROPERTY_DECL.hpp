@@ -29,11 +29,11 @@
 CodeWriter cw;
 if (!is_nil(property_decl.setter_function.id)) {
     MAYBE(getter_function_str, visit_Statement(*this, property_decl.getter_function.id));
-    merge_result(*this, cw, getter_function_str);
+    cw.write(getter_function_str.to_writer());
 }
 if (!is_nil(property_decl.getter_function.id)) {
     MAYBE(setter_function_str, visit_Statement(*this, property_decl.setter_function.id));
-    merge_result(*this, cw, setter_function_str);
+    cw.write(setter_function_str.to_writer());
 }
 
 return cw;

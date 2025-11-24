@@ -22,8 +22,8 @@ CodeWriter w;
 
 MAYBE(left_str, visit_Expression(*this, left));
 MAYBE(right_str, visit_Expression(*this, right));
-auto it = this->alt_binary_op.find(bop);
-if (it != this->alt_binary_op.end()) {
+auto it = visitor.alt_binary_op.find(bop);
+if (it != visitor.alt_binary_op.end()) {
     w.write("(", left_str.to_writer(), " ", it->second, " ", right_str.to_writer(), ")");
 }
 else {

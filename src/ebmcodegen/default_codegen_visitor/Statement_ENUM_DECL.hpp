@@ -23,11 +23,11 @@ auto name = module_.get_associated_identifier(item_id);
 
 CodeWriter w;
 
-w.writeln("enum ", name, " ", begin_block);
+w.writeln("enum ", name, " ", visitor.begin_block);
 {
     auto scope = w.indent_scope();
     MAYBE(block, visit_Block(*this, enum_decl.members));
-    merge_result(*this, w, block);
+    w.write(block.to_writer());
 }
-w.writeln(end_block);
+w.writeln(visitor.end_block);
 return w;

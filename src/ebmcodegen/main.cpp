@@ -22,6 +22,8 @@
 #include "stub/structs.hpp"
 #include "dsl/dsl.h"
 #include "stub/url.hpp"
+#include "stub/hooks.hpp"
+#include "stub/class_based.hpp"
 
 enum class GenerateMode {
     Template,
@@ -30,6 +32,8 @@ enum class GenerateMode {
     JSONConverterSource,
     CMake,
     CodeGenerator,
+    ClassBasedCodeGeneratorHeader,
+    ClassBasedCodeGeneratorSource,
     Interpreter,
     HookList,
     HookKind,
@@ -64,6 +68,8 @@ struct Flags : futils::cmdline::templ::HelpOption {
                        {"json-conv-source", GenerateMode::JSONConverterSource},
                        {"cmake", GenerateMode::CMake},
                        {"codegen", GenerateMode::CodeGenerator},
+                       {"codegen-class-header", GenerateMode::ClassBasedCodeGeneratorHeader},
+                       {"codegen-class-source", GenerateMode::ClassBasedCodeGeneratorSource},
                        {"interpret", GenerateMode::Interpreter},
                        {"hooklist", GenerateMode::HookList},
                        {"hookkind", GenerateMode::HookKind},
@@ -76,96 +82,15 @@ struct Flags : futils::cmdline::templ::HelpOption {
 auto& cout = futils::wrap::cout_wrap();
 auto& cerr = futils::wrap::cerr_wrap();
 
-constexpr size_t indexof(auto& s, std::string_view text) {
-    size_t i = 0;
-    for (auto& t : s) {
-        if (t == text) {
-            return i;
-        }
-        i++;
-    }
-    if (std::is_constant_evaluated()) {
-        throw "invalid index";
-    }
-    return -1;
-}
-
-constexpr std::string_view suffixes[] = {
-    // common include location
-    "_before",
-    "_after",
-    "_pre_default",
-    "_post_default",
-
-    // visitor location
-    "_pre_validate",
-    "_pre_visit",
-    "_post_visit",
-    "_dispatch",
-
-    // Flags location
-    "_struct",
-    "_bind",
-
-    // generated from DSL
-    "_dsl",
-};
-
-constexpr auto suffix_before = indexof(suffixes, "_before");
-constexpr auto suffix_after = indexof(suffixes, "_after");
-constexpr auto suffix_pre_default = indexof(suffixes, "_pre_default");
-constexpr auto suffix_post_default = indexof(suffixes, "_post_default");
-constexpr auto suffix_pre_validate = indexof(suffixes, "_pre_validate");
-constexpr auto suffix_pre_visit = indexof(suffixes, "_pre_visit");
-constexpr auto suffix_post_visit = indexof(suffixes, "_post_visit");
-constexpr auto suffix_dispatch = indexof(suffixes, "_dispatch");
-constexpr auto suffix_struct = indexof(suffixes, "_struct");
-constexpr auto suffix_bind = indexof(suffixes, "_bind");
-constexpr auto suffix_dsl = indexof(suffixes, "_dsl");
-
-constexpr std::string_view prefixes[] = {"entry", "includes", "pre_visitor", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
-
-constexpr auto prefix_entry = indexof(prefixes, "entry");
-constexpr auto prefix_includes = indexof(prefixes, "includes");
-constexpr auto prefix_pre_visitor = indexof(prefixes, "pre_visitor");
-constexpr auto prefix_pre_entry = indexof(prefixes, "pre_entry");
-constexpr auto prefix_post_entry = indexof(prefixes, "post_entry");
-constexpr auto prefix_visitor = indexof(prefixes, "Visitor");
-constexpr auto prefix_flags = indexof(prefixes, "Flags");
-constexpr auto prefix_output = indexof(prefixes, "Output");
-constexpr auto prefix_result = indexof(prefixes, "Result");
-constexpr auto prefix_expression = indexof(prefixes, "Expression");
-constexpr auto prefix_type = indexof(prefixes, "Type");
-constexpr auto prefix_statement = indexof(prefixes, "Statement");
-
-constexpr bool is_include_location(std::string_view suffix) {
-    return indexof(suffixes, suffix) <= suffix_post_default;
-}
-
-constexpr bool is_visitor_location(std::string_view suffix) {
-    auto loc = indexof(suffixes, suffix);
-    return suffix_pre_validate <= loc && loc <= suffix_dispatch;
-}
-
-constexpr bool is_flag_location(std::string_view suffix) {
-    auto loc = indexof(suffixes, suffix);
-    return suffix_struct <= loc && loc <= suffix_bind;
-}
-
-struct ParsedHookName {
-    std::string_view target;
-    std::string_view include_location;
-    std::string_view visitor_location;
-    std::string_view flags_suffix;
-    std::string_view kind;
-    std::optional<ebmcodegen::Struct> struct_info;
-    std::set<std::string_view> body_subset;
-    bool dsl = false;
-};
-
 namespace ebmgen {
     bool verbose_error = false;
 }
+
+namespace ebmcodegen {
+    ebmgen::expected<void> class_based_hook_descriptions(CodeWriter& w, const ParsedHookName& hook_name, const std::map<std::string_view, Struct>& structs);
+    std::vector<std::string> class_based_hook_names(const std::map<std::string_view, Struct>& structs, const IncludeLocations& locations);
+
+}  // namespace ebmcodegen
 
 auto error(auto& fmt, auto&&... arg) {
     return futils::helper::either::unexpected{futils::error::StrError<std::string>(std::vformat(fmt, std::make_format_args(std::forward<decltype(arg)>(arg)...)))};
@@ -173,34 +98,7 @@ auto error(auto& fmt, auto&&... arg) {
 
 ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const std::map<std::string_view, ebmcodegen::Struct>& structs) {
     ParsedHookName result;
-    for (auto& suffix : suffixes) {
-        if (parsed.ends_with(suffix)) {
-            parsed = parsed.substr(0, parsed.size() - suffix.size());
-            if (is_include_location(suffix)) {
-                if (result.include_location.size()) {
-                }
-                result.include_location = suffix;
-            }
-            else if (is_visitor_location(suffix)) {
-                if (result.visitor_location.size()) {
-                    return error("Duplicate visitor location suffix: {} vs {}", result.visitor_location, suffix);
-                }
-                result.visitor_location = suffix;
-            }
-            else if (is_flag_location(suffix)) {
-                if (result.flags_suffix.size()) {
-                    return error("Duplicate flags suffix: {} vs {}", result.flags_suffix, suffix);
-                }
-                result.flags_suffix = suffix;
-            }
-            else if (suffix == suffixes[suffix_dsl]) {
-                result.dsl = true;
-            }
-            else {
-                return error("Unknown suffix: {}", suffix);
-            }
-        }
-    }
+    result.original = parsed;
     for (auto& prefix : prefixes) {
         if (parsed.starts_with(prefix)) {
             parsed = parsed.substr(prefix.size());
@@ -210,6 +108,44 @@ ebmgen::expected<ParsedHookName> parse_hook_name(std::string_view parsed, const 
     }
     if (result.target.empty()) {
         return error("Empty target prefix; got parsed: {} {} {} {}", parsed, result.include_location, result.visitor_location, result.flags_suffix);
+    }
+    bool found_suffix = true;
+    while (found_suffix) {
+        found_suffix = false;
+        for (auto& suffix : suffixes) {
+            if (parsed.ends_with(suffix)) {
+                parsed = parsed.substr(0, parsed.size() - suffix.size());
+                if (is_include_location(suffix)) {
+                    if (result.include_location.size()) {
+                        return error("Duplicate include location suffix: {} vs {}", result.include_location, suffix);
+                    }
+                    result.include_location = suffix;
+                }
+                else if (is_visitor_location(suffix)) {
+                    if (result.visitor_location.size()) {
+                        return error("Duplicate visitor location suffix: {} vs {}", result.visitor_location, suffix);
+                    }
+                    result.visitor_location = suffix;
+                }
+                else if (is_flag_location(suffix)) {
+                    if (result.flags_suffix.size()) {
+                        return error("Duplicate flags suffix: {} vs {}", result.flags_suffix, suffix);
+                    }
+                    result.flags_suffix = suffix;
+                }
+                else if (suffix == suffixes[suffix_dsl]) {
+                    result.dsl = true;
+                }
+                else if (suffix == suffixes[suffix_class]) {
+                    result.class_based = true;
+                }
+                else {
+                    return error("Unknown suffix: {}", suffix);
+                }
+                found_suffix = true;
+                break;
+            }
+        }
     }
     std::set<std::string_view> sub_existence;
     if (parsed.starts_with("_")) {
@@ -263,6 +199,27 @@ int print_cmake(CodeWriter& w, Flags& flags) {
     w.writeln("add_executable(", target_name);
     w.indent_writeln("\"main.cpp\"");
     w.writeln(")");
+    w.write("target_precompile_headers(", target_name, " ");
+    w.write_unformatted(R"(PRIVATE
+    <format>
+    <expected>
+    <string>
+    <vector>
+    <variant>
+    <optional>
+    <ebm/extended_binary_module.hpp>
+    <ebmcodegen/stub/entry.hpp>
+    <ebmcodegen/stub/util.hpp>
+    <ebmgen/common.hpp>
+    <ebmgen/convert/helper.hpp>
+    <ebmgen/mapping.hpp>
+    <code/code_writer.h>
+    <code/loc_writer.h>
+    <ebmcodegen/stub/writer_manager.hpp>
+    <concepts>
+    <strutil/append.h>
+)
+)");
     w.writeln("if(UNIX)");
     w.writeln("set_target_properties(", target_name, " PROPERTIES INSTALL_RPATH \"${CMAKE_SOURCE_DIR}/tool\")");
     w.writeln("endif()");
@@ -516,6 +473,9 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     if (flags.mode == GenerateMode::BodySubset) {
         return print_body_subset(w, struct_map);
     }
+    if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
+        w.writeln("#pragma once");
+    }
     w.writeln("// DO NOT EDIT THIS FILE MANUALLY. you should edit visitor implementation files instead.");
     w.writeln("#include <ebmcodegen/stub/entry.hpp>");
     w.writeln("#include <ebmcodegen/stub/util.hpp>");
@@ -526,6 +486,40 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     w.writeln("#include <code/loc_writer.h>");
 
     auto ns_name = flags.program_name;
+    ebmcodegen::IncludeLocations locations;
+    locations.include_locations = {
+        {flags.visitor_impl_dir, std::string{suffixes[suffix_class]}},
+        {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]} + std::string(suffixes[suffix_class])},
+        {flags.default_visitor_impl_dir, std::string{suffixes[suffix_class]}},
+        // backward compatibility
+        {flags.visitor_impl_dir, std::string{}},
+        {flags.visitor_impl_dsl_dir, std::string{suffixes[suffix_dsl]}},
+        {flags.default_visitor_impl_dir, std::string{}},
+    };
+    locations.ns_name = ns_name;
+    locations.lang = flags.lang;
+    locations.program_name = flags.program_name;
+    locations.is_codegen = true;
+
+    if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader || flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
+        if (flags.mode == GenerateMode::ClassBasedCodeGeneratorSource) {
+            w.writeln("#include \"codegen.hpp\"");
+        }
+        else {
+            w.writeln("#include <ebmcodegen/stub/writer_manager.hpp>");
+            w.writeln("#include <concepts>");
+            w.writeln("#include <strutil/append.h>");
+        }
+        CodeWriter dummy;
+        if (flags.mode == GenerateMode::ClassBasedCodeGeneratorHeader) {
+            ebmcodegen::generate(locations, w, dummy, struct_map);
+        }
+        else {
+            ebmcodegen::generate(locations, dummy, w, struct_map);
+        }
+        cout << w.out();
+        return 0;
+    }
 
     CodeWriter visitor_stub;
     CodeWriter visitor_assert;
@@ -960,6 +954,7 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                 }
                 visitor_stub.writeln(") {");
                 auto stub_include = visitor_stub.indent_scope();
+                visitor_stub.writeln("auto& visitor = *this; // for forward compatibility");
                 insert_include_inner_result_lambda(
                     visitor_stub,
                     [&] {
@@ -1112,7 +1107,14 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
     std::unordered_set<std::string> uniq;
 
     if (flags.mode == GenerateMode::HookList) {
+        auto class_based_hooks = ebmcodegen::class_based_hook_names(struct_map, locations);
         for (auto& hook : hooks) {
+            if (!uniq.insert(hook).second) {
+                continue;
+            }
+            cout << hook << "\n";
+        }
+        for (auto& hook : class_based_hooks) {
             if (!uniq.insert(hook).second) {
                 continue;
             }
@@ -1126,7 +1128,10 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
             cerr << "Requires template --template-target option: use --mode hooklist to see what kind exists.\n";
             return 1;
         }
-        if (std::find(hooks.begin(), hooks.end(), flags.template_target) == hooks.end()) {
+        auto class_based_hooks = ebmcodegen::class_based_hook_names(struct_map, locations);
+        auto target = flags.template_target;
+        if (std::find(hooks.begin(), hooks.end(), target) == hooks.end() &&
+            std::find(class_based_hooks.begin(), class_based_hooks.end(), target) == class_based_hooks.end()) {
             cerr << "No such template: " << flags.template_target << ": see --mode hooklist for available templates.\n";
             return 1;
         }
@@ -1138,109 +1143,24 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
         w = CodeWriter{"  "};
         w.writeln("/*license*/");
         w.writeln("// Template generated by ebmcodegen at ", repo_url);
-        w.writeln("/*");
-        auto print_struct = [&](auto&& print_struct, std::string_view type) -> void {
-            if (auto found = struct_map.find(type); found != struct_map.end()) {
-                auto nest = w.indent_scope();
-                for (auto& field : found->second.fields) {
-                    w.write(field.name, ": ");
-                    if (field.attr & ebmcodegen::TypeAttribute::PTR) {
-                        w.write("*");
-                    }
-                    if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
-                        w.write("std::vector<", field.type, ">");
-                    }
-                    else {
-                        w.write(field.type);
-                    }
-                    w.writeln();
-                    if (field.type != "Varint" && !field.type.ends_with("Ref")) {
-                        print_struct(print_struct, field.type);
-                    }
-                }
+        if (result->class_based) {
+            auto res = ebmcodegen::class_based_hook_descriptions(w, *result, struct_map);
+            if (!res) {
+                // this is also a valid behavior
+                cerr << "Failed to parse template: " << flags.template_target << ": " << res.error().error();
+                return 1;
             }
-        };
-        {
-            auto indent = w.indent_scope();
-            w.writeln("Name: ", flags.template_target);
-            w.writeln("Available variables:");
-            auto indent2 = w.indent_scope();
-            if (result->target == prefixes[prefix_pre_visitor]) {
-                w.writeln("ebm :ExtendedBinaryModule");
-                w.writeln("flags :Flags");
-                w.writeln("output :Output");
-            }
-            if (result->target == prefixes[prefix_pre_entry] ||
-                result->target == prefixes[prefix_post_entry]) {
-                w.writeln("visitor: Visitor");
-            }
-            if (result->target == prefixes[prefix_flags]) {
-                if (result->flags_suffix == suffixes[suffix_bind]) {
-                    w.writeln("ctx: futils::cmdline::option::Context&");
-                    w.writeln("lang_name: const char*");
-                    w.writeln("ui_lang_name: const char*");
-                    w.writeln("lsp_name: const char*");
-                    w.writeln("worker_name: const char*");
-                    w.writeln("web_filtered: std::set<std::string>");
-                }
-                else if (result->flags_suffix.empty()) {
-                    w.writeln("These are macros. Do not use other than these");
-                    w.writeln("flag name format: long-name[,short-name,...] (e.g: \"flag-name,f\")");
-                    w.writeln("DEFINE_FLAG(type,name,flag_name,flag_func,flag_func_args...)");
-                    w.writeln("WEB_FILTERED(filtered_flag_names...)");
-                    w.writeln("DEFINE_BOOL_FLAG(name,flag_name,help)");
-                    w.writeln("DEFINE_STRING_FLAG(name,flag_name,help,arg_description)");
-                    w.writeln("BEGIN_MAP_FLAG(name,MappedType,flag_name,help)");
-                    w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
-                    w.writeln("END_MAP_FLAG()");
-                    w.writeln("WEB_UI_NAME(ui_name)");
-                    w.writeln("WEB_LSP_NAME(lsp_name)");
-                    w.writeln("WEB_WORKER_NAME(worker_name)");
-                    w.writeln("FILE_EXTENSIONS(file_ext...)");
-                }
-            }
-            if (result->visitor_location == suffixes[suffix_pre_validate] ||
-                result->visitor_location == suffixes[suffix_pre_visit] ||
-                result->visitor_location == suffixes[suffix_post_visit] ||
-                result->visitor_location == suffixes[suffix_dispatch]) {
-                w.writeln("visitor: Visitor");
-                w.indent_writeln("module_: MappingTable");
-                w.writeln("alias_ref :", result->target, "Ref");
-                w.writeln("in: ", result->target);
-                print_struct(print_struct, result->target);
-            }
-            if (result->target == prefixes[prefix_entry]) {
-                w.writeln("*this: Visitor");
-                w.writeln("module_: MappingTable");
-            }
-            if (result->struct_info) {
-                if (result->visitor_location != suffixes[suffix_pre_validate]) {
-                    if (result->visitor_location.empty()) {
-                        w.writeln("*this: Visitor");
-                        w.writeln("module_: MappingTable");
-                        w.writeln("item_id: ", result->target, "Ref");
-                        w.writeln("generator_default_logic: std::function<expected<Result>()>");
-                        if (result->include_location == suffixes[suffix_pre_default] || result->include_location == suffixes[suffix_post_default]) {
-                            w.writeln("do_default: std::function<expected<Result>()>");
-                        }
-                        else {
-                            w.writeln("default_logic: std::function<expected<Result>()>");
-                        }
-                        if (result->include_location == suffixes[suffix_before] || result->include_location == suffixes[suffix_after]) {
-                            w.writeln("main_logic: std::function<expected<Result>()>");
-                        }
-                        if (result->include_location == suffixes[suffix_after] || result->include_location == suffixes[suffix_post_default]) {
-                            w.writeln("result: expected<Result>");
-                        }
-                    }
-                    if (result->visitor_location == suffixes[suffix_post_visit]) {
-                        w.writeln("result: expected<Result>");
-                    }
-                    for (auto& field : result->struct_info->fields) {
-                        if (!result->body_subset.contains(field.name)) {
-                            continue;
-                        }
+        }
+        else {
+            w.writeln("/*");
+            auto print_struct = [&](auto&& print_struct, std::string_view type) -> void {
+                if (auto found = struct_map.find(type); found != struct_map.end()) {
+                    auto nest = w.indent_scope();
+                    for (auto& field : found->second.fields) {
                         w.write(field.name, ": ");
+                        if (field.attr & ebmcodegen::TypeAttribute::PTR) {
+                            w.write("*");
+                        }
                         if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
                             w.write("std::vector<", field.type, ">");
                         }
@@ -1253,9 +1173,105 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                         }
                     }
                 }
+            };
+            {
+                auto indent = w.indent_scope();
+                w.writeln("Name: ", flags.template_target);
+                w.writeln("Available variables:");
+                auto indent2 = w.indent_scope();
+                futils::helper::DynDefer ctx;
+                if (result->target == prefixes[prefix_pre_visitor]) {
+                    w.writeln("ebm :ExtendedBinaryModule");
+                    w.writeln("flags :Flags");
+                    w.writeln("output :Output");
+                }
+                if (result->target == prefixes[prefix_pre_entry] ||
+                    result->target == prefixes[prefix_post_entry]) {
+                    w.writeln("visitor: Visitor");
+                }
+                if (result->target == prefixes[prefix_flags]) {
+                    if (result->flags_suffix == suffixes[suffix_bind]) {
+                        w.writeln("ctx: futils::cmdline::option::Context&");
+                        w.writeln("lang_name: const char*");
+                        w.writeln("ui_lang_name: const char*");
+                        w.writeln("lsp_name: const char*");
+                        w.writeln("worker_name: const char*");
+                        w.writeln("web_filtered: std::set<std::string>");
+                    }
+                    else if (result->flags_suffix.empty()) {
+                        w.writeln("These are macros. Do not use other than these");
+                        w.writeln("flag name format: long-name[,short-name,...] (e.g: \"flag-name,f\")");
+                        w.writeln("DEFINE_FLAG(type,name,flag_name,flag_func,flag_func_args...)");
+                        w.writeln("WEB_FILTERED(filtered_flag_names...)");
+                        w.writeln("DEFINE_BOOL_FLAG(name,flag_name,help)");
+                        w.writeln("DEFINE_STRING_FLAG(name,flag_name,help,arg_description)");
+                        w.writeln("BEGIN_MAP_FLAG(name,MappedType,flag_name,help)");
+                        w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
+                        w.writeln("END_MAP_FLAG()");
+                        w.writeln("WEB_UI_NAME(ui_name)");
+                        w.writeln("WEB_LSP_NAME(lsp_name)");
+                        w.writeln("WEB_WORKER_NAME(worker_name)");
+                        w.writeln("FILE_EXTENSIONS(file_ext...)");
+                    }
+                }
+                if (result->visitor_location == suffixes[suffix_pre_validate] ||
+                    result->visitor_location == suffixes[suffix_pre_visit] ||
+                    result->visitor_location == suffixes[suffix_post_visit] ||
+                    result->visitor_location == suffixes[suffix_dispatch]) {
+                    w.writeln("visitor: Visitor");
+                    w.indent_writeln("module_: MappingTable");
+                    w.writeln("alias_ref :", result->target, "Ref");
+                    w.writeln("in: ", result->target);
+                    print_struct(print_struct, result->target);
+                }
+                if (result->target == prefixes[prefix_entry]) {
+                    w.writeln("visitor: Visitor");
+                    w.writeln("module_: MappingTable");
+                }
+                if (result->struct_info) {
+                    if (result->visitor_location != suffixes[suffix_pre_validate]) {
+                        if (result->visitor_location.empty()) {
+                            w.writeln("visitor: Visitor");
+                            w.writeln("module_: MappingTable");
+                            w.writeln("item_id: ", result->target, "Ref");
+                            w.writeln("generator_default_logic: std::function<expected<Result>()>");
+                            if (result->include_location == suffixes[suffix_pre_default] || result->include_location == suffixes[suffix_post_default]) {
+                                w.writeln("do_default: std::function<expected<Result>()>");
+                            }
+                            else {
+                                w.writeln("default_logic: std::function<expected<Result>()>");
+                            }
+                            if (result->include_location == suffixes[suffix_before] || result->include_location == suffixes[suffix_after]) {
+                                w.writeln("main_logic: std::function<expected<Result>()>");
+                            }
+                            if (result->include_location == suffixes[suffix_after] || result->include_location == suffixes[suffix_post_default]) {
+                                w.writeln("result: expected<Result>");
+                            }
+                        }
+                        if (result->visitor_location == suffixes[suffix_post_visit]) {
+                            w.writeln("result: expected<Result>");
+                        }
+                        for (auto& field : result->struct_info->fields) {
+                            if (!result->body_subset.contains(field.name)) {
+                                continue;
+                            }
+                            w.write(field.name, ": ");
+                            if (field.attr & ebmcodegen::TypeAttribute::ARRAY) {
+                                w.write("std::vector<", field.type, ">");
+                            }
+                            else {
+                                w.write(field.type);
+                            }
+                            w.writeln();
+                            if (field.type != "Varint" && !field.type.ends_with("Ref")) {
+                                print_struct(print_struct, field.type);
+                            }
+                        }
+                    }
+                }
             }
+            w.writeln("*/");
         }
-        w.writeln("*/");
         cout << w.out();
         return 0;
     }

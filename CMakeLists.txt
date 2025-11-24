@@ -140,6 +140,7 @@ add_library(ebmcodegen_lib STATIC
     "src/ebmcodegen/structs.cpp"
     "src/ebmcodegen/json_loader.cpp"
     "src/ebmcodegen/dsl/dsl.cpp"
+    "src/ebmcodegen/class_based.cpp"
 )
 
 add_executable(ebmcodegen
@@ -148,10 +149,6 @@ add_executable(ebmcodegen
 
 target_link_libraries(ebmcodegen ebm futils ebmcodegen_lib)
 
-
-#add_executable(gen_template2
-#    "src/old/bm2/gen_template2/main.cpp"
-#)
 
 
 #add_subdirectory("src/ebmgen/test")

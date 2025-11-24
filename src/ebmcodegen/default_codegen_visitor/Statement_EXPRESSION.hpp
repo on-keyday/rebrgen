@@ -16,5 +16,5 @@
 auto writer_added = add_writer();
 MAYBE(r, visit_Expression(*this, expression));
 MAYBE(got, get_writer());
-merge_result(*this, got, r);
+got.write(r.to_writer());
 return std::move(got);

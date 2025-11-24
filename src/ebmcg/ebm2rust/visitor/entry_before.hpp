@@ -10,17 +10,18 @@
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
 /*here to write the hook*/
-variable_define_keyword = "let mut";
-immutable_variable_define_keyword = "let";
-constant_define_keyword = "const";
-endof_statement = ";";
-self_value = "self";
-enum_member_accessor = "::";
-module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
-use_brace_for_condition = false;
-append_function = "push";
-default_value_option.encoder_return_init = "Ok(())";
-default_value_option.decoder_return_init = "Ok(())";
-default_value_option.pointer_init = "None";
-default_value_option.optional_init = "None";
-infinity_loop_keyword = "loop";
+auto& config = visitor;
+config.variable_define_keyword = "let mut";
+config.immutable_variable_define_keyword = "let";
+config.constant_define_keyword = "const";
+config.endof_statement = ";";
+config.self_value = "self";
+config.enum_member_accessor = "::";
+config.module_.register_default_prefix(ebm::StatementKind::STRUCT_DECL, "Struct");
+config.use_brace_for_condition = false;
+config.append_function = "push";
+config.default_value_option.encoder_return_init = "Ok(())";
+config.default_value_option.decoder_return_init = "Ok(())";
+config.default_value_option.pointer_init = "None";
+config.default_value_option.optional_init = "None";
+config.infinity_loop_keyword = "loop";

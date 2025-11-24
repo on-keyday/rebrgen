@@ -22,7 +22,17 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
     TEST_CONFIG_PATH = "test/unictest.json"
 
     CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
-    CODE_GENERATOR = execute([TOOL_PATH, "--mode", mode, "--lang", lang_name], None)
+
+    if mode == "codegen-class":
+        CODE_GENERATOR_HEADER = execute(
+            [TOOL_PATH, "--mode", "codegen-class-header", "--lang", lang_name], None
+        )
+        CODE_GENERATOR = execute(
+            [TOOL_PATH, "--mode", "codegen-class-source", "--lang", lang_name], None
+        )
+    else:
+        CODE_GENERATOR_HEADER = None
+        CODE_GENERATOR = execute([TOOL_PATH, "--mode", mode, "--lang", lang_name], None)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     VISITOR_DIR = os.path.join(OUTPUT_DIR, "visitor")
@@ -32,6 +42,9 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
         f.write(CMAKE)
     with open(os.path.join(OUTPUT_DIR, "main.cpp"), "wb") as f:
         f.write(CODE_GENERATOR)
+    if CODE_GENERATOR_HEADER is not None:
+        with open(os.path.join(OUTPUT_DIR, "codegen.hpp"), "wb") as f:
+            f.write(CODE_GENERATOR_HEADER)
 
     # add FILE_EXTENSIONS(ext) to Flags.hpp using script/ebmtemplate.py
     if mode == "codegen":
@@ -172,8 +185,8 @@ if __name__ == "__main__":
     parser.add_argument("lang_name", help="Language name")
     parser.add_argument(
         "--mode",
-        choices=["codegen", "interpret"],
-        default="codegen",
+        choices=["codegen", "interpret", "codegen-class"],
+        default="codegen-class",
         help="Mode of operation",
     )
     parser.add_argument(

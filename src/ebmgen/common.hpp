@@ -209,6 +209,13 @@ namespace ebmgen {
     constexpr ebm::AnyRef to_any_ref(T t) {
         return ebm::AnyRef{t.id};
     }
+
+    template <AnyRef T>
+    constexpr T from_any_ref(const ebm::AnyRef& ref) {
+        T t;
+        t.id = ref.id;
+        return t;
+    }
 }  // namespace ebmgen
 
 namespace ebm {

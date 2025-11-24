@@ -545,20 +545,44 @@ namespace ebmcodegen::util {
             return derived().visitor.module_.get_associated_identifier(derived().item_id);
         }
 
-        decltype(auto) module() const {
+        auto& module() const {
             return derived().visitor.module_;
+        }
+
+        decltype(auto) get_entry_point() const {
+            return derived().visitor.module_.get_entry_point();
+        }
+
+        auto& flags() const {
+            return derived().visitor.flags;
+        }
+
+        auto& output() {
+            return derived().visitor.output;
         }
 
         decltype(auto) visit(ebm::TypeRef type_ref) const {
             return visit_Type(derived(), type_ref);
         }
 
+        decltype(auto) visit(const ebm::Type& type) const {
+            return visit_Type(derived(), type);
+        }
+
         decltype(auto) visit(ebm::ExpressionRef expr_ref) const {
             return visit_Expression(derived(), expr_ref);
         }
 
+        decltype(auto) visit(const ebm::Expression& expr) const {
+            return visit_Expression(derived(), expr);
+        }
+
         decltype(auto) visit(ebm::StatementRef stmt_ref) const {
             return visit_Statement(derived(), stmt_ref);
+        }
+
+        decltype(auto) visit(const ebm::Statement& stmt) const {
+            return visit_Statement(derived(), stmt);
         }
 
         decltype(auto) visit(const ebm::Block& block) const {
@@ -577,6 +601,18 @@ namespace ebmcodegen::util {
             requires has_item_id<D>
         {
             return visit(derived().item_id);
+        }
+
+        decltype(auto) get(ebm::TypeRef type_ref) const {
+            return derived().module().get_type(type_ref);
+        }
+
+        decltype(auto) get(ebm::StatementRef stmt_ref) const {
+            return derived().module().get_statement(stmt_ref);
+        }
+
+        decltype(auto) get(ebm::ExpressionRef expr_ref) const {
+            return derived().module().get_expression(expr_ref);
         }
     };
 }  // namespace ebmcodegen::util

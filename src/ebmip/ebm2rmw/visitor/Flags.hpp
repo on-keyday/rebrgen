@@ -20,12 +20,6 @@
 */
 /*DO NOT EDIT ABOVE SECTION MANUALLY*/
 
-DEFINE_BOOL_FLAG(async, false, "async", "use async for encoder/decoder");
-BEGIN_MAP_FLAG(optimization_level, int, 0, "opt-level", "optimization level")
-MAP_FLAG_ITEM("0", 0)
-MAP_FLAG_ITEM("1", 1)
-MAP_FLAG_ITEM("2", 2)
-MAP_FLAG_ITEM("3", 3)
-END_MAP_FLAG()
-WEB_UI_NAME("python2");
-FILE_EXTENSIONS(".py");
+/*here to write the hook*/
+DEFINE_STRING_FLAG(entry_point, "", "entry-point", "entry point format to parse", "FORMAT");
+FILE_EXTENSIONS(".txt", ".json", ".md");

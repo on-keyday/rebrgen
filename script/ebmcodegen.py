@@ -26,7 +26,9 @@ def do_setup(lang_name: str, mode: str, file_extension: str):
 
     CMAKE = execute([TOOL_PATH, "--mode", "cmake", "--lang", lang_name], None)
 
-    DEFAULT_VISITOR_LOCATION = f"ebmcodegen/default_{get_mode_dir(mode)}_visitor/"
+    DEFAULT_VISITOR_LOCATION = (
+        f"ebmcodegen/default_{"interpret" if isInterpreter else "codegen"}_visitor/"
+    )
 
     if isClassBased:
         CODE_GENERATOR_HEADER = execute(

@@ -4,7 +4,7 @@
 /*
   Name: Type_VOID
   Available variables:
-    *this: Visitor
+    visitor: Visitor
     module_: MappingTable
     item_id: TypeRef
     generator_default_logic: std::function<expected<Result>()>

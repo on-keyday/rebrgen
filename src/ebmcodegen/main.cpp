@@ -1206,11 +1206,11 @@ int Main(Flags& flags, futils::cmdline::option::Context& ctx) {
                     else if (result->flags_suffix.empty()) {
                         w.writeln("These are macros. Do not use other than these");
                         w.writeln("flag name format: long-name[,short-name,...] (e.g: \"flag-name,f\")");
-                        w.writeln("DEFINE_FLAG(type,name,flag_name,flag_func,flag_func_args...)");
+                        w.writeln("DEFINE_FLAG(type,name,default,flag_name,flag_func,flag_func_args...)");
                         w.writeln("WEB_FILTERED(filtered_flag_names...)");
-                        w.writeln("DEFINE_BOOL_FLAG(name,flag_name,help)");
-                        w.writeln("DEFINE_STRING_FLAG(name,flag_name,help,arg_description)");
-                        w.writeln("BEGIN_MAP_FLAG(name,MappedType,flag_name,help)");
+                        w.writeln("DEFINE_BOOL_FLAG(name,default,flag_name,help)");
+                        w.writeln("DEFINE_STRING_FLAG(name,default,flag_name,help,arg_description)");
+                        w.writeln("BEGIN_MAP_FLAG(name,MappedType,default,flag_name,help)");
                         w.writeln("  MAP_FLAG_ITEM(key,value) // repeat this line for each item");
                         w.writeln("END_MAP_FLAG()");
                         w.writeln("WEB_UI_NAME(ui_name)");

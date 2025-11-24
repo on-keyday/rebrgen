@@ -47,6 +47,7 @@ def get_mode_dir(gmode: str) -> str:
 
 def run_save_template(tool_path, template_target, gmode, lang):
     """Generate a template and save it to the specified language's visitor directory."""
+    isInterpreter = gmode == "interpret"
     if lang == "default":
         lang_dir = None
         visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor"
@@ -91,7 +92,7 @@ def run_save_template(tool_path, template_target, gmode, lang):
 DEFINE_VISITOR({class_name}) {{
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    return {"pass" if is_observer else "\"\""};
+    return {"pass" if is_observer else "{}" if isInterpreter else "\"\""};
 }}
 """
         # Add markers to the template content
@@ -154,9 +155,9 @@ def run_update_hooks(tool_path, lang, gmode):
         try:
             with open("build_config.json") as f:
                 build_config = json.load(f)
-            target_languages = build_config.get("TARGET_LANGUAGE", []) + [
-                f"default_{gmode}"
-            ]
+            target_languages = build_config.get(
+                str(gmode).upper() + "_TARGET_LANGUAGE", []
+            ) + [f"default"]
             if not target_languages:
                 print(
                     "Error: No target languages defined in build_config.json.",
@@ -173,7 +174,7 @@ def run_update_hooks(tool_path, lang, gmode):
             sys.exit(1)
 
     if lang == "default":
-        visitor_dir = f"src/ebmcodegen/default_{get_mode_dir(gmode)}_visitor"
+        visitor_dir = f"src/ebmcodegen/default_{gmode}_visitor"
         dsl_dir = None
     else:
         visitor_dir = os.path.join("src", get_mode_dir(gmode), f"ebm2{lang}", "visitor")

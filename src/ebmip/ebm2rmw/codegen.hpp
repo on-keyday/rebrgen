@@ -26,22 +26,22 @@ namespace ebm2rmw {
         #include "visitor/Result_before.hpp"
         #elif __has_include("visitor/dsl/Result_before_dsl.hpp")
         #include "visitor/dsl/Result_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result_before.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Result_before.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Result_before.hpp"
         #endif
         #if __has_include("visitor/Result.hpp")
         #include "visitor/Result.hpp"
         #elif __has_include("visitor/dsl/Result_dsl.hpp")
         #include "visitor/dsl/Result_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Result.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Result.hpp"
         #endif
         #if __has_include("visitor/Result_after.hpp")
         #include "visitor/Result_after.hpp"
         #elif __has_include("visitor/dsl/Result_after_dsl.hpp")
         #include "visitor/dsl/Result_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Result_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Result_after.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Result_after.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Result_after.hpp"
         #endif
     };
     struct Flags : ebmcodegen::Flags {
@@ -61,22 +61,22 @@ namespace ebm2rmw {
         #include "visitor/Flags_before.hpp"
         #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
         #include "visitor/dsl/Flags_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_before.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_before.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags_before.hpp"
         #endif
         #if __has_include("visitor/Flags.hpp")
         #include "visitor/Flags.hpp"
         #elif __has_include("visitor/dsl/Flags_dsl.hpp")
         #include "visitor/dsl/Flags_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags.hpp"
         #endif
         #if __has_include("visitor/Flags_after.hpp")
         #include "visitor/Flags_after.hpp"
         #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
         #include "visitor/dsl/Flags_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_after.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_after.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags_after.hpp"
         #endif
         #undef DEFINE_FLAG
         #undef WEB_FILTERED
@@ -93,22 +93,22 @@ namespace ebm2rmw {
         #include "visitor/Flags_struct_before.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_before_dsl.hpp")
         #include "visitor/dsl/Flags_struct_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct_before.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_struct_before.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags_struct_before.hpp"
         #endif
         #if __has_include("visitor/Flags_struct.hpp")
         #include "visitor/Flags_struct.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_dsl.hpp")
         #include "visitor/dsl/Flags_struct_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_struct.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags_struct.hpp"
         #endif
         #if __has_include("visitor/Flags_struct_after.hpp")
         #include "visitor/Flags_struct_after.hpp"
         #elif __has_include("visitor/dsl/Flags_struct_after_dsl.hpp")
         #include "visitor/dsl/Flags_struct_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_struct_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Flags_struct_after.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_struct_after.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Flags_struct_after.hpp"
         #endif
         void bind(futils::cmdline::option::Context& ctx) {
             lang_name = "rmw";
@@ -133,22 +133,22 @@ namespace ebm2rmw {
             #include "visitor/Flags_before.hpp"
             #elif __has_include("visitor/dsl/Flags_before_dsl.hpp")
             #include "visitor/dsl/Flags_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_before.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_before.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags_before.hpp"
             #endif
             #if __has_include("visitor/Flags.hpp")
             #include "visitor/Flags.hpp"
             #elif __has_include("visitor/dsl/Flags_dsl.hpp")
             #include "visitor/dsl/Flags_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags.hpp"
             #endif
             #if __has_include("visitor/Flags_after.hpp")
             #include "visitor/Flags_after.hpp"
             #elif __has_include("visitor/dsl/Flags_after_dsl.hpp")
             #include "visitor/dsl/Flags_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_after.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_after.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags_after.hpp"
             #endif
             #undef DEFINE_FLAG
             #undef WEB_FILTERED
@@ -165,22 +165,22 @@ namespace ebm2rmw {
             #include "visitor/Flags_bind_before.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_before_dsl.hpp")
             #include "visitor/dsl/Flags_bind_before_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind_before.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind_before.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_bind_before.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags_bind_before.hpp"
             #endif
             #if __has_include("visitor/Flags_bind.hpp")
             #include "visitor/Flags_bind.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_dsl.hpp")
             #include "visitor/dsl/Flags_bind_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_bind.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags_bind.hpp"
             #endif
             #if __has_include("visitor/Flags_bind_after.hpp")
             #include "visitor/Flags_bind_after.hpp"
             #elif __has_include("visitor/dsl/Flags_bind_after_dsl.hpp")
             #include "visitor/dsl/Flags_bind_after_dsl.hpp"
-            #elif __has_include("ebmcodegen/default_codegen_visitor/Flags_bind_after.hpp")
-            #include "ebmcodegen/default_codegen_visitor/Flags_bind_after.hpp"
+            #elif __has_include("ebmcodegen/default_interpret_visitor/Flags_bind_after.hpp")
+            #include "ebmcodegen/default_interpret_visitor/Flags_bind_after.hpp"
             #endif
         }
     };
@@ -189,22 +189,22 @@ namespace ebm2rmw {
     #include "visitor/Output_before.hpp"
     #elif __has_include("visitor/dsl/Output_before_dsl.hpp")
     #include "visitor/dsl/Output_before_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output_before.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output_before.hpp"
+    #elif __has_include("ebmcodegen/default_interpret_visitor/Output_before.hpp")
+    #include "ebmcodegen/default_interpret_visitor/Output_before.hpp"
     #endif
     #if __has_include("visitor/Output.hpp")
     #include "visitor/Output.hpp"
     #elif __has_include("visitor/dsl/Output_dsl.hpp")
     #include "visitor/dsl/Output_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output.hpp"
+    #elif __has_include("ebmcodegen/default_interpret_visitor/Output.hpp")
+    #include "ebmcodegen/default_interpret_visitor/Output.hpp"
     #endif
     #if __has_include("visitor/Output_after.hpp")
     #include "visitor/Output_after.hpp"
     #elif __has_include("visitor/dsl/Output_after_dsl.hpp")
     #include "visitor/dsl/Output_after_dsl.hpp"
-    #elif __has_include("ebmcodegen/default_codegen_visitor/Output_after.hpp")
-    #include "ebmcodegen/default_codegen_visitor/Output_after.hpp"
+    #elif __has_include("ebmcodegen/default_interpret_visitor/Output_after.hpp")
+    #include "ebmcodegen/default_interpret_visitor/Output_after.hpp"
     #endif
     };
     template <typename Tag>
@@ -895,22 +895,22 @@ namespace ebm2rmw {
         #include "visitor/Visitor_before.hpp"
         #elif __has_include("visitor/dsl/Visitor_before_dsl.hpp")
         #include "visitor/dsl/Visitor_before_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor_before.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor_before.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Visitor_before.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Visitor_before.hpp"
         #endif
         #if __has_include("visitor/Visitor.hpp")
         #include "visitor/Visitor.hpp"
         #elif __has_include("visitor/dsl/Visitor_dsl.hpp")
         #include "visitor/dsl/Visitor_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Visitor.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Visitor.hpp"
         #endif
         #if __has_include("visitor/Visitor_after.hpp")
         #include "visitor/Visitor_after.hpp"
         #elif __has_include("visitor/dsl/Visitor_after_dsl.hpp")
         #include "visitor/dsl/Visitor_after_dsl.hpp"
-        #elif __has_include("ebmcodegen/default_codegen_visitor/Visitor_after.hpp")
-        #include "ebmcodegen/default_codegen_visitor/Visitor_after.hpp"
+        #elif __has_include("ebmcodegen/default_interpret_visitor/Visitor_after.hpp")
+        #include "ebmcodegen/default_interpret_visitor/Visitor_after.hpp"
         #endif
     };
     template<typename V>

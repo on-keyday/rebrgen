@@ -1,3 +1,2 @@
 add_subdirectory(ebm2rust)
 add_subdirectory(ebm2python)
-add_subdirectory(ebm2rmw)

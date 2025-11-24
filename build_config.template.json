@@ -9,5 +9,6 @@
     "AUTO_SETUP_BRGEN": false,
     "AUTO_SETUP_FUTILS": true,
     "AUTO_SETUP_EMSDK": false,
-    "TARGET_LANGUAGE": []
+    "CODEGEN_TARGET_LANGUAGE": [],
+    "INTERPERT_TARGET_LANGUAGE": []
 }

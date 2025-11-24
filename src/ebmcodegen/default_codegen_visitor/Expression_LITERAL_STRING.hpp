@@ -4,7 +4,7 @@
 /*
   Name: Expression_LITERAL_STRING
   Available variables:
-    *this: Visitor
+    visitor: Visitor
     module_: MappingTable
     item_id: ExpressionRef
     generator_default_logic: std::function<expected<Result>()>

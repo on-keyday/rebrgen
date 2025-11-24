@@ -4,7 +4,7 @@
 /*
   Name: Statement_CONTINUE
   Available variables:
-    *this: Visitor
+    visitor: Visitor
     module_: MappingTable
     item_id: StatementRef
     generator_default_logic: std::function<expected<Result>()>

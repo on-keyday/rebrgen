@@ -71761,8 +71761,8 @@ namespace ebm2python {
     expected<Result> visit_unimplemented(MergedVisitor& visitor,std::string_view kind,std::uint64_t item_id) {
         if (visitor.flags.debug_unimplemented) {
             return std::format("{{{{Unimplemented {} {}}}}}", kind, item_id);
-        }
-        return expected<Result>{}; // Unimplemented
+            }
+            return expected<Result>{}; // Unimplemented
     }
 }  // namespace ebm2python
 DEFINE_ENTRY(ebm2python::Flags, ebm2python::Output) {

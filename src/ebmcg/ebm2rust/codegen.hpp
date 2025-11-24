@@ -15,6 +15,27 @@
 // This is a measure to prevent any impact on compilation even if a user mistakenly changes something like #include "lang/codegen.hpp" to #include "other_lang/codegen.hpp".
 #ifndef EBM_CODEGEN_COMMON_INCLUDE_GUARD
 #define EBM_CODEGEN_COMMON_INCLUDE_GUARD 1
+#if __has_include("visitor/includes_before.hpp")
+#include "visitor/includes_before.hpp"
+#elif __has_include("visitor/dsl/includes_before_dsl.hpp")
+#include "visitor/dsl/includes_before_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/includes_before.hpp")
+#include "ebmcodegen/default_codegen_visitor/includes_before.hpp"
+#endif
+#if __has_include("visitor/includes.hpp")
+#include "visitor/includes.hpp"
+#elif __has_include("visitor/dsl/includes_dsl.hpp")
+#include "visitor/dsl/includes_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/includes.hpp")
+#include "ebmcodegen/default_codegen_visitor/includes.hpp"
+#endif
+#if __has_include("visitor/includes_after.hpp")
+#include "visitor/includes_after.hpp"
+#elif __has_include("visitor/dsl/includes_after_dsl.hpp")
+#include "visitor/dsl/includes_after_dsl.hpp"
+#elif __has_include("ebmcodegen/default_codegen_visitor/includes_after.hpp")
+#include "ebmcodegen/default_codegen_visitor/includes_after.hpp"
+#endif
 namespace ebm2rust {
     struct MergedVisitor;
     using namespace ebmgen;

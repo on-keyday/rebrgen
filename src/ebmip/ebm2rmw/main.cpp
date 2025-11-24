@@ -71759,7 +71759,10 @@ namespace ebm2rmw {
         }
     };
     expected<Result> visit_unimplemented(MergedVisitor& visitor,std::string_view kind,std::uint64_t item_id) {
-        return expected<Result>{}; // Unimplemented
+        if (visitor.flags.debug_unimplemented) {
+            return unexpect_error("Unimplemented {} {}", kind, item_id);
+            }
+            return expected<Result>{}; // Unimplemented
     }
 }  // namespace ebm2rmw
 DEFINE_ENTRY(ebm2rmw::Flags, ebm2rmw::Output) {

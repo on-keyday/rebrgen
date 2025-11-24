@@ -54,10 +54,11 @@ constexpr auto suffix_bind = indexof(suffixes, "_bind");
 constexpr auto suffix_dsl = indexof(suffixes, "_dsl");
 constexpr auto suffix_class = indexof(suffixes, "_class");
 
-constexpr std::string_view prefixes[] = {"entry", "includes", "pre_visitor", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
+constexpr std::string_view prefixes[] = {"entry", "includes", "post_includes", "pre_visitor", "pre_entry", "post_entry", "Visitor", "Flags", "Output", "Result", "Expression", "Type", "Statement"};
 
 constexpr auto prefix_entry = indexof(prefixes, "entry");
 constexpr auto prefix_includes = indexof(prefixes, "includes");
+constexpr auto prefix_post_includes = indexof(prefixes, "post_includes");
 constexpr auto prefix_pre_visitor = indexof(prefixes, "pre_visitor");
 constexpr auto prefix_pre_entry = indexof(prefixes, "pre_entry");
 constexpr auto prefix_post_entry = indexof(prefixes, "post_entry");

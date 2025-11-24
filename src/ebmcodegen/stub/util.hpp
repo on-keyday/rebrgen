@@ -549,6 +549,11 @@ namespace ebmcodegen::util {
             return derived().visitor.module_;
         }
 
+        // alias for visitor
+        auto& config() const {
+            return derived().visitor;
+        }
+
         decltype(auto) get_entry_point() const {
             return derived().visitor.module_.get_entry_point();
         }

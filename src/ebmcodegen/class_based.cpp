@@ -671,14 +671,16 @@ namespace ebmcodegen {
         src.writeln(result_type, " visit_unimplemented(MergedVisitor& visitor,std::string_view kind,std::uint64_t item_id) {");
         {
             auto scope = src.indent_scope();
+            src.writeln("if (visitor.flags.debug_unimplemented) {");
+            auto if_scope = src.indent_scope();
+
             if (is_codegen) {
-                src.writeln("if (visitor.flags.debug_unimplemented) {");
-                {
-                    auto if_scope = src.indent_scope();
-                    src.writeln("return std::format(\"{{{{Unimplemented {} {}}}}}\", kind, item_id);");
-                }
-                src.writeln("}");
+                src.writeln("return std::format(\"{{{{Unimplemented {} {}}}}}\", kind, item_id);");
             }
+            else {
+                src.writeln("return unexpect_error(\"Unimplemented {} {}\", kind, item_id);");
+            }
+            src.writeln("}");
             src.writeln("return ", result_type, "{}; // Unimplemented");
         }
         src.writeln("}");
@@ -784,6 +786,9 @@ namespace ebmcodegen {
                 if (!field.derived) {
                     continue;
                 }
+                if (field.constructor_type.empty()) {
+                    continue;
+                }
                 if (!first) {
                     w.write(", ");
                 }
@@ -852,6 +857,12 @@ namespace ebmcodegen {
         utility_classes["BaseVisitor"] = std::move(base_visitor);
         return utility_classes;
     }
+
+    struct UserConfigIncludes {
+        std::string_view visitor = prefixes[prefix_visitor];
+        std::string_view post_includes = prefixes[prefix_post_includes];
+        std::string_view includes = prefixes[prefix_includes];
+    };
 
     void generate_BaseVisitor(CodeWriter& w, const IncludeInfo& includes_info, const UtilityClass& base_visitor) {
         w.writeln("struct BaseVisitor {");
@@ -1208,6 +1219,14 @@ namespace ebmcodegen {
         }
     }
 
+    void generate_user_include_before(CodeWriter& w, const IncludeInfo& includes_locations) {
+        user_config_include(w, prefixes[prefix_includes], includes_locations);
+    }
+
+    void generate_user_include_after(CodeWriter& w, const IncludeInfo& includes_locations) {
+        user_config_include(w, prefixes[prefix_post_includes], includes_locations);
+    }
+
     void generate_dummy_macro_for_class(CodeWriter& w, std::string_view ns_name, const HookType& hook, const ContextClass& cls) {
         auto instance = std::format("{}::{}", ns_name, context_instance_name(cls));
         auto visitor = hook.visitor_instance_name(cls, ns_name);
@@ -1506,7 +1525,10 @@ namespace ebmcodegen {
         auto hooks = generate_hooks();
         auto ns_name = locations.ns_name;
         auto is_codegen = locations.is_codegen;
+        IncludeInfo includes_info{.includes = locations, .hooks = hooks};
+
         generate_common_include_guard(hdr, true);
+        generate_user_include_before(hdr, includes_info);
         generate_namespace(hdr, ns_name, true);
         generate_undef_dummy_macros(src);
         generate_forward_declaration_source(src, ns_name, result_type, is_codegen);
@@ -1515,8 +1537,6 @@ namespace ebmcodegen {
         auto ns_scope_hdr = hdr.indent_scope();
         auto ns_scope_src = src.indent_scope();
         generate_forward_declaration_header(hdr);
-
-        IncludeInfo includes_info{.includes = locations, .hooks = hooks};
 
         generate_namespace_injection(hdr);
         generate_Result(hdr, is_codegen, includes_info);
@@ -1558,6 +1578,7 @@ namespace ebmcodegen {
         ns_scope_src.execute();
         generate_namespace(hdr, ns_name, false);
         generate_namespace(src, ns_name, false);
+        generate_user_include_after(hdr, includes_info);
         generate_common_include_guard(hdr, false);
         generate_entry_point(src, ns_name);
     }

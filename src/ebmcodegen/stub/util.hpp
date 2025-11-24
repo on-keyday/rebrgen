@@ -528,7 +528,7 @@ namespace ebmcodegen::util {
 
     template <class D>
     concept has_item_id = requires(D d) {
-        { d.item_id } -> std::convertible_to<ebm::StatementRef>;
+        { d.item_id };
     };
 
     template <class D>
@@ -563,6 +563,12 @@ namespace ebmcodegen::util {
 
         decltype(auto) visit(ebm::StatementRef stmt_ref) const {
             return visit_Statement(derived(), stmt_ref);
+        }
+
+        decltype(auto) visit() const
+            requires has_item_id<D>
+        {
+            return visit(derived().item_id);
         }
     };
 }  // namespace ebmcodegen::util

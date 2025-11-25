@@ -1187,21 +1187,21 @@ namespace ebm {
         else {
             return false;
         }
+        if (auto got = j.at("arg_num")) {
+            Varint tmp;
+            if(!futils::json::convert_from_json(*got, tmp)) {
+                return false;
+            }
+            if(!obj.arg_num(std::move(tmp))) {
+                return false;
+            }
+        }
         if (auto got = j.at("cast_type")) {
             CastType tmp;
             if(!futils::json::convert_from_json(*got, tmp)) {
                 return false;
             }
             if(!obj.cast_type(std::move(tmp))) {
-                return false;
-            }
-        }
-        if (auto got = j.at("func_id")) {
-            Varint tmp;
-            if(!futils::json::convert_from_json(*got, tmp)) {
-                return false;
-            }
-            if(!obj.func_id(std::move(tmp))) {
                 return false;
             }
         }
@@ -3294,6 +3294,10 @@ namespace ebm {
                 obj = OpCode::LOAD_SELF;
                 return true;
             }
+            if (s == "STORE_REF") {
+                obj = OpCode::STORE_REF;
+                return true;
+            }
             if (s == "ADD") {
                 obj = OpCode::ADD;
                 return true;
@@ -3486,12 +3490,8 @@ namespace ebm {
                 obj = OpCode::NEW_STRUCT;
                 return true;
             }
-            if (s == "SET_MEMBER") {
-                obj = OpCode::SET_MEMBER;
-                return true;
-            }
-            if (s == "GET_MEMBER") {
-                obj = OpCode::GET_MEMBER;
+            if (s == "LOAD_MEMBER") {
+                obj = OpCode::LOAD_MEMBER;
                 return true;
             }
             if (s == "NEW_ARRAY") {
@@ -3508,6 +3508,14 @@ namespace ebm {
             }
             if (s == "ARRAY_LEN") {
                 obj = OpCode::ARRAY_LEN;
+                return true;
+            }
+            if (s == "NEW_BYTES") {
+                obj = OpCode::NEW_BYTES;
+                return true;
+            }
+            if (s == "VECTOR_PUSH") {
+                obj = OpCode::VECTOR_PUSH;
                 return true;
             }
             if (s == "MAX_OPCODE") {

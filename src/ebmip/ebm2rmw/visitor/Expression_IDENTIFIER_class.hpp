@@ -24,13 +24,22 @@ DEFINE_VISITOR(Expression_IDENTIFIER) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     auto ident = ctx.identifier(ctx.id);
-    if (!ctx.is(ebm::StatementKind::VARIABLE_DECL, ctx.id)) {
-        auto kind = ctx.get_kind(ctx.id);
-        return ebmgen::unexpect_error("identifier does not refer to a variable declaration: {}", kind ? to_string(*kind) : "unknown");
+    if (ctx.is(ebm::StatementKind::VARIABLE_DECL, ctx.id)) {
+        Instruction instr;
+        instr.str_repr = ident;
+        instr.instr.op = ebm::OpCode::LOAD_LOCAL;
+        instr.instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        ctx.config().env.instructions.push_back(std::move(instr));
+        return Result{.str_repr = ident};
     }
-    auto d = ctx.config().env.get_variable(ident);
-    if (!d) {
-        return ebmgen::unexpect_error("undefined variable identifier: {}", ident);
+    if (ctx.is(ebm::StatementKind::PARAMETER_DECL, ctx.id)) {
+        Instruction instr;
+        instr.str_repr = ident;
+        instr.instr.op = ebm::OpCode::LOAD_PARAM;
+        instr.instr.reg(ebm::RegisterIndex{.index = ctx.id});
+        ctx.config().env.instructions.push_back(std::move(instr));
+        return Result{.str_repr = ident};
     }
-    return Result{.value = d, .str_repr = ident};
+    auto kind = ctx.get_kind(ctx.id);
+    return ebmgen::unexpect_error("identifier does not refer to a variable declaration: {}", kind ? to_string(*kind) : "unknown");
 }

@@ -37,5 +37,5 @@ DEFINE_VISITOR(Expression_UNARY_OP) {
         },
         .str_repr = str_repr,
     });
-    return {};
+    return Result{.str_repr = str_repr};
 }

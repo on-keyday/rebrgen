@@ -21,6 +21,9 @@
 
 #include "../codegen.hpp"
 #include <ebmgen/interactive/debugger.hpp>
+#include "ebmcodegen/stub/util.hpp"
+#include "interpret.hpp"
+#include "wrap/cout.h"
 DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     using namespace CODEGEN_NAMESPACE;
     auto entry_str = ctx.flags().entry_point;
@@ -35,10 +38,16 @@ DEFINE_VISITOR(Statement_PROGRAM_DECL) {
     auto entry_stmt_ref = query_result.first[0];
     MAYBE(entry_stmt, ctx.get(ebmgen::from_any_ref<ebm::StatementRef>(entry_stmt_ref)));
     auto entry_decode_fn = *entry_stmt.body.struct_decl()->decode_fn();
-    ctx.config().env.init_self();
     auto res = ctx.visit(entry_decode_fn);
     if (!res) {
+        if (ctx.flags().debug_unimplemented) {
+            for (auto& instr : ctx.config().env.instructions) {
+                futils::wrap::cerr_wrap() << to_string(instr.instr.op, true) << " // " << tidy_condition_brace(std::move(instr.str_repr)) << "\n";
+            }
+        }
         return res;
     }
+    RuntimeEnv runtime;
+    runtime.interpret(ctx.visitor);
     return res;
 }

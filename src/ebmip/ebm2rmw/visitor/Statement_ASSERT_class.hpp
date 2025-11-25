@@ -22,6 +22,7 @@
 
 #include "../codegen.hpp"
 #include "ebm/extended_binary_module.hpp"
+#include "ebmcodegen/stub/util.hpp"
 DEFINE_VISITOR(Statement_ASSERT) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
@@ -30,7 +31,7 @@ DEFINE_VISITOR(Statement_ASSERT) {
         .instr = {
             .op = ebm::OpCode::ASSERT,
         },
-        .str_repr = std::format("ASSERT {}", res.str_repr),
+        .str_repr = std::format("assert({})", tidy_condition_brace(std::move(res.str_repr))),
     });
     return {};
 }

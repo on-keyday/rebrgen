@@ -1382,6 +1382,7 @@ namespace ebm {
         STORE_LOCAL = 0x17,
         LOAD_PARAM = 0x18,
         LOAD_SELF = 0x19,
+        STORE_REF = 0x1A,
         ADD = 0x20,
         SUB = 0x21,
         MUL = 0x22,
@@ -1430,12 +1431,13 @@ namespace ebm {
         WRITE_BYTES = 0x74,
         WRITE_BITS = 0x75,
         NEW_STRUCT = 0x90,
-        SET_MEMBER = 0x91,
-        GET_MEMBER = 0x92,
+        LOAD_MEMBER = 0x92,
         NEW_ARRAY = 0x93,
         ARRAY_SET = 0x94,
         ARRAY_GET = 0x95,
         ARRAY_LEN = 0x96,
+        NEW_BYTES = 0x97,
+        VECTOR_PUSH = 0x98,
         MAX_OPCODE = 0xFF,
     };
     constexpr const char* to_string(OpCode e, bool origin_form = false) {
@@ -1459,6 +1461,7 @@ namespace ebm {
             case OpCode::STORE_LOCAL: return origin_form ? "STORE_LOCAL":"STORE_LOCAL" ;
             case OpCode::LOAD_PARAM: return origin_form ? "LOAD_PARAM":"LOAD_PARAM" ;
             case OpCode::LOAD_SELF: return origin_form ? "LOAD_SELF":"LOAD_SELF" ;
+            case OpCode::STORE_REF: return origin_form ? "STORE_REF":"STORE_REF" ;
             case OpCode::ADD: return origin_form ? "ADD":"add" ;
             case OpCode::SUB: return origin_form ? "SUB":"sub" ;
             case OpCode::MUL: return origin_form ? "MUL":"mul" ;
@@ -1507,12 +1510,13 @@ namespace ebm {
             case OpCode::WRITE_BYTES: return origin_form ? "WRITE_BYTES":"WRITE_BYTES" ;
             case OpCode::WRITE_BITS: return origin_form ? "WRITE_BITS":"WRITE_BITS" ;
             case OpCode::NEW_STRUCT: return origin_form ? "NEW_STRUCT":"NEW_STRUCT" ;
-            case OpCode::SET_MEMBER: return origin_form ? "SET_MEMBER":"SET_MEMBER" ;
-            case OpCode::GET_MEMBER: return origin_form ? "GET_MEMBER":"GET_MEMBER" ;
+            case OpCode::LOAD_MEMBER: return origin_form ? "LOAD_MEMBER":"LOAD_MEMBER" ;
             case OpCode::NEW_ARRAY: return origin_form ? "NEW_ARRAY":"NEW_ARRAY" ;
             case OpCode::ARRAY_SET: return origin_form ? "ARRAY_SET":"ARRAY_SET" ;
             case OpCode::ARRAY_GET: return origin_form ? "ARRAY_GET":"ARRAY_GET" ;
             case OpCode::ARRAY_LEN: return origin_form ? "ARRAY_LEN":"ARRAY_LEN" ;
+            case OpCode::NEW_BYTES: return origin_form ? "NEW_BYTES":"NEW_BYTES" ;
+            case OpCode::VECTOR_PUSH: return origin_form ? "VECTOR_PUSH":"VECTOR_PUSH" ;
             case OpCode::MAX_OPCODE: return origin_form ? "MAX_OPCODE":"MAX_OPCODE" ;
         }
         return "";
@@ -1578,6 +1582,9 @@ namespace ebm {
         }
         if (str == "LOAD_SELF") {
             return OpCode::LOAD_SELF;
+        }
+        if (str == "STORE_REF") {
+            return OpCode::STORE_REF;
         }
         if (str == "add") {
             return OpCode::ADD;
@@ -1723,11 +1730,8 @@ namespace ebm {
         if (str == "NEW_STRUCT") {
             return OpCode::NEW_STRUCT;
         }
-        if (str == "SET_MEMBER") {
-            return OpCode::SET_MEMBER;
-        }
-        if (str == "GET_MEMBER") {
-            return OpCode::GET_MEMBER;
+        if (str == "LOAD_MEMBER") {
+            return OpCode::LOAD_MEMBER;
         }
         if (str == "NEW_ARRAY") {
             return OpCode::NEW_ARRAY;
@@ -1740,6 +1744,12 @@ namespace ebm {
         }
         if (str == "ARRAY_LEN") {
             return OpCode::ARRAY_LEN;
+        }
+        if (str == "NEW_BYTES") {
+            return OpCode::NEW_BYTES;
+        }
+        if (str == "VECTOR_PUSH") {
+            return OpCode::VECTOR_PUSH;
         }
         if (str == "MAX_OPCODE") {
             return OpCode::MAX_OPCODE;
@@ -2331,7 +2341,7 @@ namespace ebm {
         }
     };
     struct EBM_API RegisterIndex{
-        Varint index;
+        StatementRef index;
         ::futils::error::Error<> encode(::futils::binary::writer& w) const ;
         ::futils::error::Error<> decode(::futils::binary::reader& r);
         constexpr static const char* visitor_name = "RegisterIndex";
@@ -4641,7 +4651,7 @@ namespace ebm {
             JumpOffset target;
         };
         struct EBM_API union_struct_155{
-            Varint func_id;
+            Varint arg_num;
         };
         struct EBM_API union_struct_156{
             StringRef msg_id;
@@ -4686,17 +4696,17 @@ namespace ebm {
             IdentifierRef member_id;
         };
         struct EBM_API union_struct_170{
-            IdentifierRef member_id;
+            OptionalImmediateSize imm;
         };
         std::variant<std::monostate, union_struct_152, union_struct_153, union_struct_154, union_struct_155, union_struct_156, union_struct_157, union_struct_158, union_struct_159, union_struct_160, union_struct_161, union_struct_162, union_struct_163, union_struct_164, union_struct_165, union_struct_166, union_struct_167, union_struct_168, union_struct_169, union_struct_170> union_variant_151;
+        const Varint* arg_num() const;
+        Varint* arg_num();
+        bool arg_num(Varint&& v);
+        bool arg_num(const Varint& v);
         const CastType* cast_type() const;
         CastType* cast_type();
         bool cast_type(CastType&& v);
         bool cast_type(const CastType& v);
-        const Varint* func_id() const;
-        Varint* func_id();
-        bool func_id(Varint&& v);
-        bool func_id(const Varint& v);
         const OptionalImmediateSize* imm() const;
         OptionalImmediateSize* imm();
         bool imm(OptionalImmediateSize&& v);
@@ -4740,8 +4750,8 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) {
             v(v, "op",(*this).op);
+            v(v, "arg_num",(*this).arg_num());
             v(v, "cast_type",(*this).cast_type());
-            v(v, "func_id",(*this).func_id());
             v(v, "imm",(*this).imm());
             v(v, "member_id",(*this).member_id());
             v(v, "msg_id",(*this).msg_id());
@@ -4755,8 +4765,8 @@ namespace ebm {
         template<typename Visitor>
         constexpr void visit(Visitor&& v) const {
             v(v, "op",(*this).op);
+            v(v, "arg_num",(*this).arg_num());
             v(v, "cast_type",(*this).cast_type());
-            v(v, "func_id",(*this).func_id());
             v(v, "imm",(*this).imm());
             v(v, "member_id",(*this).member_id());
             v(v, "msg_id",(*this).msg_id());
@@ -4775,8 +4785,8 @@ namespace ebm {
         template<typename Visitor>
         static constexpr void visit_static(Visitor&& v) {
             v(v, "op",visitor_tag<decltype(std::declval<Instruction>().op),false>{});
+            v(v, "arg_num",visitor_tag<decltype(std::declval<Instruction>().arg_num()),false>{});
             v(v, "cast_type",visitor_tag<decltype(std::declval<Instruction>().cast_type()),false>{});
-            v(v, "func_id",visitor_tag<decltype(std::declval<Instruction>().func_id()),false>{});
             v(v, "imm",visitor_tag<decltype(std::declval<Instruction>().imm()),false>{});
             v(v, "member_id",visitor_tag<decltype(std::declval<Instruction>().member_id()),false>{});
             v(v, "msg_id",visitor_tag<decltype(std::declval<Instruction>().msg_id()),false>{});

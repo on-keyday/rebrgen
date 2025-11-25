@@ -846,6 +846,7 @@ enum OpCode:
     STORE_LOCAL     = 0x17 
     LOAD_PARAM      = 0x18
     LOAD_SELF       = 0x19
+    STORE_REF       = 0x1A
     
     # --- 0x20: Arithmetic & Logic ---
     # name mapping with BinaryOp enum
@@ -915,12 +916,14 @@ enum OpCode:
 
     # --- 0x90: Object & Structure ---
     NEW_STRUCT      = 0x90 
-    SET_MEMBER      = 0x91 
-    GET_MEMBER      = 0x92 
+    # SET_MEMBER      = 0x91 
+    LOAD_MEMBER      = 0x92 
     NEW_ARRAY       = 0x93 
     ARRAY_SET       = 0x94 
     ARRAY_GET       = 0x95 
     ARRAY_LEN       = 0x96 
+    NEW_BYTES       = 0x97
+    VECTOR_PUSH     = 0x98
 
     MAX_OPCODE      = 0xFF
 
@@ -930,7 +933,7 @@ format JumpOffset:
     offset :Varint 
 
 format RegisterIndex:
-    index :Varint 
+    index :StatementRef
 
 format OptionalImmediateSize:
     is_immediate :u1
@@ -953,7 +956,7 @@ format Instruction:
         OpCode.JUMP_IF_FALSE:
             target :JumpOffset
         OpCode.CALL:
-            func_id :Varint 
+            arg_num :Varint
         OpCode.ERROR:
             msg_id :StringRef 
         OpCode.ASSERT:
@@ -992,7 +995,7 @@ format Instruction:
         # -- Object Operations --
         OpCode.NEW_STRUCT:
             type_id :TypeRef 
-        OpCode.SET_MEMBER:
-            member_id :IdentifierRef 
-        OpCode.GET_MEMBER:
+        OpCode.LOAD_MEMBER:
             member_id :IdentifierRef
+        OpCode.NEW_BYTES:
+            imm :OptionalImmediateSize

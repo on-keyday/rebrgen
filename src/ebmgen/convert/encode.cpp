@@ -99,7 +99,7 @@ namespace ebmgen {
         EBM_UNARY_OP(not_condition, ebm::UnaryOp::logical_not, bool_type, condition);
         EBM_IF_STATEMENT(if_stmt, not_condition, error_report, {});
 
-        return make_assert_statement(not_condition, if_stmt);
+        return make_assert_statement(condition, if_stmt);
     }
 
     expected<void> EncoderConverter::encode_array_type(ebm::IOData& io_desc, const std::shared_ptr<ast::ArrayType>& aty, ebm::ExpressionRef base_ref, const std::shared_ptr<ast::Field>& field) {

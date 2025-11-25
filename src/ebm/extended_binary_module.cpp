@@ -15205,6 +15205,65 @@ namespace ebm {
         }
         return false;
     }
+    const Varint* Instruction::arg_num() const {
+        if (OpCode::JUMP==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::CALL==(*this).op) {
+        if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<4>((*this).union_variant_151).arg_num);
+        }
+        return nullptr;
+    }
+    Varint* Instruction::arg_num() {
+        return const_cast<Varint*>(std::as_const(*this).arg_num());
+    }
+    bool Instruction::arg_num(const Varint& v) {
+        if (OpCode::JUMP==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+            return false;
+        }
+        if (OpCode::CALL==(*this).op) {
+            if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
+                union_variant_151 = union_struct_155();
+            }
+            std::get<4>((*this).union_variant_151).arg_num = v;
+            return true;
+        }
+        return false;
+    }
+    bool Instruction::arg_num(Varint&& v) {
+        if (OpCode::JUMP==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_TRUE==(*this).op) {
+            return false;
+        }
+        if (OpCode::JUMP_IF_FALSE==(*this).op) {
+            return false;
+        }
+        if (OpCode::CALL==(*this).op) {
+            if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
+                union_variant_151 = union_struct_155();
+            }
+            std::get<4>((*this).union_variant_151).arg_num = std::move(v);
+            return true;
+        }
+        return false;
+    }
     const CastType* Instruction::cast_type() const {
         if (OpCode::JUMP==(*this).op) {
         return nullptr;
@@ -15372,65 +15431,6 @@ namespace ebm {
         }
         return false;
     }
-    const Varint* Instruction::func_id() const {
-        if (OpCode::JUMP==(*this).op) {
-        return nullptr;
-        }
-        if (OpCode::JUMP_IF_TRUE==(*this).op) {
-        return nullptr;
-        }
-        if (OpCode::JUMP_IF_FALSE==(*this).op) {
-        return nullptr;
-        }
-        if (OpCode::CALL==(*this).op) {
-        if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
-            return nullptr;
-        }
-        return std::addressof(std::get<4>((*this).union_variant_151).func_id);
-        }
-        return nullptr;
-    }
-    Varint* Instruction::func_id() {
-        return const_cast<Varint*>(std::as_const(*this).func_id());
-    }
-    bool Instruction::func_id(const Varint& v) {
-        if (OpCode::JUMP==(*this).op) {
-            return false;
-        }
-        if (OpCode::JUMP_IF_TRUE==(*this).op) {
-            return false;
-        }
-        if (OpCode::JUMP_IF_FALSE==(*this).op) {
-            return false;
-        }
-        if (OpCode::CALL==(*this).op) {
-            if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
-                union_variant_151 = union_struct_155();
-            }
-            std::get<4>((*this).union_variant_151).func_id = v;
-            return true;
-        }
-        return false;
-    }
-    bool Instruction::func_id(Varint&& v) {
-        if (OpCode::JUMP==(*this).op) {
-            return false;
-        }
-        if (OpCode::JUMP_IF_TRUE==(*this).op) {
-            return false;
-        }
-        if (OpCode::JUMP_IF_FALSE==(*this).op) {
-            return false;
-        }
-        if (OpCode::CALL==(*this).op) {
-            if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
-                union_variant_151 = union_struct_155();
-            }
-            std::get<4>((*this).union_variant_151).func_id = std::move(v);
-            return true;
-        }
-        return false;
-    }
     const OptionalImmediateSize* Instruction::imm() const {
         if (OpCode::JUMP==(*this).op) {
         return nullptr;
@@ -15482,6 +15482,24 @@ namespace ebm {
             return nullptr;
         }
         return std::addressof(std::get<14>((*this).union_variant_151).imm);
+        }
+        if (OpCode::SET_ENDIAN==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::CAST==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::NEW_STRUCT==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::LOAD_MEMBER==(*this).op) {
+        return nullptr;
+        }
+        if (OpCode::NEW_BYTES==(*this).op) {
+        if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
+            return nullptr;
+        }
+        return std::addressof(std::get<19>((*this).union_variant_151).imm);
         }
         return nullptr;
     }
@@ -15543,6 +15561,25 @@ namespace ebm {
             std::get<14>((*this).union_variant_151).imm = v;
             return true;
         }
+        if (OpCode::SET_ENDIAN==(*this).op) {
+            return false;
+        }
+        if (OpCode::CAST==(*this).op) {
+            return false;
+        }
+        if (OpCode::NEW_STRUCT==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_MEMBER==(*this).op) {
+            return false;
+        }
+        if (OpCode::NEW_BYTES==(*this).op) {
+            if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
+                union_variant_151 = union_struct_170();
+            }
+            std::get<19>((*this).union_variant_151).imm = v;
+            return true;
+        }
         return false;
     }
     bool Instruction::imm(OptionalImmediateSize&& v) {
@@ -15600,6 +15637,25 @@ namespace ebm {
             std::get<14>((*this).union_variant_151).imm = std::move(v);
             return true;
         }
+        if (OpCode::SET_ENDIAN==(*this).op) {
+            return false;
+        }
+        if (OpCode::CAST==(*this).op) {
+            return false;
+        }
+        if (OpCode::NEW_STRUCT==(*this).op) {
+            return false;
+        }
+        if (OpCode::LOAD_MEMBER==(*this).op) {
+            return false;
+        }
+        if (OpCode::NEW_BYTES==(*this).op) {
+            if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
+                union_variant_151 = union_struct_170();
+            }
+            std::get<19>((*this).union_variant_151).imm = std::move(v);
+            return true;
+        }
         return false;
     }
     const IdentifierRef* Instruction::member_id() const {
@@ -15654,17 +15710,11 @@ namespace ebm {
         if (OpCode::NEW_STRUCT==(*this).op) {
         return nullptr;
         }
-        if (OpCode::SET_MEMBER==(*this).op) {
+        if (OpCode::LOAD_MEMBER==(*this).op) {
         if(!std::holds_alternative<union_struct_169>(union_variant_151)) {
             return nullptr;
         }
         return std::addressof(std::get<18>((*this).union_variant_151).member_id);
-        }
-        if (OpCode::GET_MEMBER==(*this).op) {
-        if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
-            return nullptr;
-        }
-        return std::addressof(std::get<19>((*this).union_variant_151).member_id);
         }
         return nullptr;
     }
@@ -15723,18 +15773,11 @@ namespace ebm {
         if (OpCode::NEW_STRUCT==(*this).op) {
             return false;
         }
-        if (OpCode::SET_MEMBER==(*this).op) {
+        if (OpCode::LOAD_MEMBER==(*this).op) {
             if(!std::holds_alternative<union_struct_169>(union_variant_151)) {
                 union_variant_151 = union_struct_169();
             }
             std::get<18>((*this).union_variant_151).member_id = v;
-            return true;
-        }
-        if (OpCode::GET_MEMBER==(*this).op) {
-            if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
-                union_variant_151 = union_struct_170();
-            }
-            std::get<19>((*this).union_variant_151).member_id = v;
             return true;
         }
         return false;
@@ -15791,18 +15834,11 @@ namespace ebm {
         if (OpCode::NEW_STRUCT==(*this).op) {
             return false;
         }
-        if (OpCode::SET_MEMBER==(*this).op) {
+        if (OpCode::LOAD_MEMBER==(*this).op) {
             if(!std::holds_alternative<union_struct_169>(union_variant_151)) {
                 union_variant_151 = union_struct_169();
             }
             std::get<18>((*this).union_variant_151).member_id = std::move(v);
-            return true;
-        }
-        if (OpCode::GET_MEMBER==(*this).op) {
-            if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
-                union_variant_151 = union_struct_170();
-            }
-            std::get<19>((*this).union_variant_151).member_id = std::move(v);
             return true;
         }
         return false;
@@ -19930,7 +19966,7 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
                 return ::futils::error::Error<>("encode: Instruction: union_variant_151 variant alternative union_struct_155 is not set",::futils::error::Category::lib);
             }
-            if (auto err = std::get<4>((*this).union_variant_151).func_id.encode(w)) {
+            if (auto err = std::get<4>((*this).union_variant_151).arg_num.encode(w)) {
                 return err;
             }
         }
@@ -20039,7 +20075,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (OpCode::SET_MEMBER==(*this).op) {
+        else if (OpCode::LOAD_MEMBER==(*this).op) {
             if(!std::holds_alternative<union_struct_169>(union_variant_151)) {
                 return ::futils::error::Error<>("encode: Instruction: union_variant_151 variant alternative union_struct_169 is not set",::futils::error::Category::lib);
             }
@@ -20047,11 +20083,11 @@ namespace ebm {
                 return err;
             }
         }
-        else if (OpCode::GET_MEMBER==(*this).op) {
+        else if (OpCode::NEW_BYTES==(*this).op) {
             if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
                 return ::futils::error::Error<>("encode: Instruction: union_variant_151 variant alternative union_struct_170 is not set",::futils::error::Category::lib);
             }
-            if (auto err = std::get<19>((*this).union_variant_151).member_id.encode(w)) {
+            if (auto err = std::get<19>((*this).union_variant_151).imm.encode(w)) {
                 return err;
             }
         }
@@ -20091,7 +20127,7 @@ namespace ebm {
             if(!std::holds_alternative<union_struct_155>(union_variant_151)) {
                 union_variant_151 = union_struct_155();
             }
-            if (auto err = std::get<4>((*this).union_variant_151).func_id.decode(r)) {
+            if (auto err = std::get<4>((*this).union_variant_151).arg_num.decode(r)) {
                 return err;
             }
         }
@@ -20201,7 +20237,7 @@ namespace ebm {
                 return err;
             }
         }
-        else if (OpCode::SET_MEMBER==(*this).op) {
+        else if (OpCode::LOAD_MEMBER==(*this).op) {
             if(!std::holds_alternative<union_struct_169>(union_variant_151)) {
                 union_variant_151 = union_struct_169();
             }
@@ -20209,11 +20245,11 @@ namespace ebm {
                 return err;
             }
         }
-        else if (OpCode::GET_MEMBER==(*this).op) {
+        else if (OpCode::NEW_BYTES==(*this).op) {
             if(!std::holds_alternative<union_struct_170>(union_variant_151)) {
                 union_variant_151 = union_struct_170();
             }
-            if (auto err = std::get<19>((*this).union_variant_151).member_id.decode(r)) {
+            if (auto err = std::get<19>((*this).union_variant_151).imm.decode(r)) {
                 return err;
             }
         }

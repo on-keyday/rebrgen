@@ -25,9 +25,12 @@ DEFINE_VISITOR(Expression_INDEX_ACCESS) {
     /*here to write the hook*/
     MAYBE(base, ctx.visit(ctx.base));
     MAYBE(index, ctx.visit(ctx.index));
-    MAYBE(ref_base, base.as_reference());
-    MAYBE(bs, ctx.config().env.index_access_base(ref_base));
-    MAYBE(idx, index.as_value().get_int(ctx.config().env));
-    auto index_access = ctx.config().env.register_index_access_array(&bs, idx);
-    return Result{.value = Value{ValueKind::INDEX_ACCESS, index_access}, .str_repr = std::format("{}[{}]", base.str_repr, index.str_repr)};
+    auto str_repr = std::format("({}[{}])", base.str_repr, index.str_repr);
+    ctx.config().env.instructions.push_back(Instruction{
+        .instr = {
+            .op = ebm::OpCode::ARRAY_GET,
+        },
+        .str_repr = str_repr,
+    });
+    return Result{.str_repr = str_repr};
 }

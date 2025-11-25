@@ -25,7 +25,7 @@ DEFINE_VISITOR(Expression_SELF) {
         .instr = {
             .op = ebm::OpCode::LOAD_SELF,
         },
-        .str_repr = "LOAD_SELF",
+        .str_repr = "self",
     });
-    return Result{.value = ctx.config().env.self, .str_repr = "self"};
+    return Result{.str_repr = "self"};
 }

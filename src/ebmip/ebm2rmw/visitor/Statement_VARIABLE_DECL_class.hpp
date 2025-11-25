@@ -27,14 +27,14 @@
 DEFINE_VISITOR(Statement_VARIABLE_DECL) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
-    auto ident = ctx.identifier();
     MAYBE(initial_value, ctx.visit(ctx.var_decl.initial_value));
-    if (ctx.var_decl.is_reference()) {
-        MAYBE(ref, initial_value.as_reference());
-        ctx.config().env.define_reference(ident, ref);
-    }
-    else {
-        ctx.config().env.define_variable(ident, initial_value.as_value());
-    }
+    auto identifier = ctx.identifier();
+    ebm::Instruction instr;
+    instr.op = ebm::OpCode::STORE_LOCAL;
+    instr.reg(ebm::RegisterIndex{.index = ctx.item_id});
+    ctx.config().env.instructions.push_back(Instruction{
+        .instr = instr,
+        .str_repr = std::format("{} := {}", identifier, initial_value.str_repr),
+    });
     return {};
 }

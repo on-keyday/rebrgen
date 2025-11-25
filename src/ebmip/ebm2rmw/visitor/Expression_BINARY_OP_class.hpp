@@ -29,16 +29,15 @@ DEFINE_VISITOR(Expression_BINARY_OP) {
     MAYBE(left, ctx.visit(ctx.left));
     MAYBE(right, ctx.visit(ctx.right));
     auto str_repr = std::format("({} {} {})", left.str_repr, to_string(ctx.bop), right.str_repr);
-    MAYBE(left_val, left.as_value().get_int(ctx.config().env));
-    MAYBE(right_val, right.as_value().get_int(ctx.config().env));
-    if (ctx.bop == ebm::BinaryOp::div || ctx.bop == ebm::BinaryOp::mod) {
-        if (right_val == 0) {
-            return ebmgen::unexpect_error("division by zero in binary operation: {}", str_repr);
-        }
+    auto op = BinaryOp_to_OpCode(ctx.bop);
+    if (op == ebm::OpCode::NOP) {
+        return ebmgen::unexpect_error("unsupported binary operation: {}", to_string(ctx.bop));
     }
-    APPLY_BINARY_OP(ctx.bop, [&](auto&& op_func) {
-        auto result = op_func(left_val, right_val);
-        return Result{.value = Value{result}, .str_repr = str_repr};
+    ctx.config().env.instructions.push_back(Instruction{
+        .instr = {
+            .op = op,
+        },
+        .str_repr = str_repr,
     });
-    return {};
+    return Result{.str_repr = str_repr};
 }

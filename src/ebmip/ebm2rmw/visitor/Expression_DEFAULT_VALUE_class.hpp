@@ -24,13 +24,31 @@ DEFINE_VISITOR(Expression_DEFAULT_VALUE) {
     using namespace CODEGEN_NAMESPACE;
     /*here to write the hook*/
     if (ctx.is(ebm::TypeKind::INT) || ctx.is(ebm::TypeKind::UINT)) {
-        return Result{.value = Value{0}, .str_repr = "0"};
+        ebm::Instruction instr;
+        instr.op = ebm::OpCode::PUSH_IMM_INT;
+        instr.value(*varint(0));
+        ctx.config().env.instructions.push_back(Instruction{
+            .instr = instr,
+            .str_repr = "0",
+        });
+        return Result{.str_repr = "0"};
     }
     if (auto bytes = is_bytes_type(ctx, ctx.type); bytes) {
         if (bytes == BytesType::array) {
             MAYBE(t, ctx.get(ctx.type));
             MAYBE(size, t.body.length());
-            return Result{Value{ValueKind::BYTES_ARRAY_ZERO, size.value()}, "<bytes_array_zero>"};
+            ebm::Instruction instr;
+            instr.op = ebm::OpCode::NEW_BYTES;
+            ebm::OptionalImmediateSize imm;
+            imm.is_immediate(true);
+            imm.size(size);
+            instr.imm(imm);
+            auto str_repr = std::format("new byte[{}]{{}}", size.value());
+            ctx.config().env.instructions.push_back(Instruction{
+                .instr = instr,
+                .str_repr = str_repr,
+            });
+            return Result{.str_repr = str_repr};
         }
     }
     auto k = ctx.get_kind(ctx.type);
